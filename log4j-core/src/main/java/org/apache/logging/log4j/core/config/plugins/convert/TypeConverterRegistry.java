@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
@@ -84,7 +83,7 @@ public class TypeConverterRegistry {
         if (type instanceof Class<?>) {
             final Class<?> clazz = (Class<?>) type;
             if (clazz.isEnum()) {
-                @SuppressWarnings({"unchecked","rawtypes"})
+                @SuppressWarnings({"unchecked", "rawtypes"})
                 final EnumConverter<? extends Enum> converter = new EnumConverter(clazz.asSubclass(Enum.class));
                 synchronized (INSTANCE_LOCK) {
                     return registerConverter(type, converter);
@@ -118,7 +117,7 @@ public class TypeConverterRegistry {
             final Class<?> clazz = knownType.getPluginClass();
             if (TypeConverter.class.isAssignableFrom(clazz)) {
                 @SuppressWarnings("rawtypes")
-                final Class<? extends TypeConverter> pluginClass =  clazz.asSubclass(TypeConverter.class);
+                final Class<? extends TypeConverter> pluginClass = clazz.asSubclass(TypeConverter.class);
                 final Type conversionType = getTypeConverterSupportedType(pluginClass);
                 final TypeConverter<?> converter = ReflectionUtil.instantiate(pluginClass);
                 registerConverter(conversionType, converter);
@@ -133,16 +132,13 @@ public class TypeConverterRegistry {
      * Registration will fail if there already exists a converter for the given
      * type and neither the existing, nor the provided converter extends from {@link Comparable}.
      */
-    private TypeConverter<?> registerConverter(
-            final Type conversionType,
-            final TypeConverter<?> converter) {
+    private TypeConverter<?> registerConverter(final Type conversionType, final TypeConverter<?> converter) {
         final TypeConverter<?> conflictingConverter = registry.get(conversionType);
         if (conflictingConverter != null) {
             final boolean overridable;
             if (converter instanceof Comparable) {
                 @SuppressWarnings("unchecked")
-                final Comparable<TypeConverter<?>> comparableConverter =
-                        (Comparable<TypeConverter<?>>) converter;
+                final Comparable<TypeConverter<?>> comparableConverter = (Comparable<TypeConverter<?>>) converter;
                 overridable = comparableConverter.compareTo(conflictingConverter) < 0;
             } else if (conflictingConverter instanceof Comparable) {
                 @SuppressWarnings("unchecked")
@@ -155,13 +151,17 @@ public class TypeConverterRegistry {
             if (overridable) {
                 LOGGER.debug(
                         "Replacing TypeConverter [{}] for type [{}] with [{}] after comparison.",
-                        conflictingConverter, conversionType, converter);
+                        conflictingConverter,
+                        conversionType,
+                        converter);
                 registry.put(conversionType, converter);
                 return converter;
             } else {
                 LOGGER.warn(
                         "Ignoring TypeConverter [{}] for type [{}] that conflicts with [{}], since they are not comparable.",
-                        converter, conversionType, conflictingConverter);
+                        converter,
+                        conversionType,
+                        conflictingConverter);
                 return conflictingConverter;
             }
         } else {
@@ -170,7 +170,8 @@ public class TypeConverterRegistry {
         }
     }
 
-    private static Type getTypeConverterSupportedType(@SuppressWarnings("rawtypes") final Class<? extends TypeConverter> typeConverterClass) {
+    private static Type getTypeConverterSupportedType(
+            @SuppressWarnings("rawtypes") final Class<? extends TypeConverter> typeConverterClass) {
         for (final Type type : typeConverterClass.getGenericInterfaces()) {
             if (type instanceof ParameterizedType) {
                 final ParameterizedType pType = (ParameterizedType) type;
@@ -197,5 +198,4 @@ public class TypeConverterRegistry {
     private void registerTypeAlias(final Type knownType, final Type aliasType) {
         registry.putIfAbsent(aliasType, registry.get(knownType));
     }
-
 }

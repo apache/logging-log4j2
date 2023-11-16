@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -40,15 +39,15 @@ public class ConsoleAppenderDefaultSuppressedThrowable {
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderDefaultSuppressedThrowable.class);
 
     public static void main(final String[] args) {
-        final String config = args.length == 0 ? "target/test-classes/log4j2-console-default-suppressed-throwable.xml"
-                : args[0];
+        final String config =
+                args.length == 0 ? "target/test-classes/log4j2-console-default-suppressed-throwable.xml" : args[0];
         test(args, config);
     }
 
     static void test(final String[] args, final String config) {
         // System.out.println(System.getProperty("java.class.path"));
-        try (final LoggerContext ctx = Configurator
-                .initialize(ConsoleAppenderDefaultSuppressedThrowable.class.getName(), config)) {
+        try (final LoggerContext ctx =
+                Configurator.initialize(ConsoleAppenderDefaultSuppressedThrowable.class.getName(), config)) {
             final IOException ioEx = new IOException("test suppressed");
             ioEx.addSuppressed(new IOException("test suppressed 1", new IOException("test 1")));
             final IOException ioEx2 = new IOException("test 2");
@@ -60,5 +59,4 @@ public class ConsoleAppenderDefaultSuppressedThrowable {
             e.printStackTrace();
         }
     }
-
 }

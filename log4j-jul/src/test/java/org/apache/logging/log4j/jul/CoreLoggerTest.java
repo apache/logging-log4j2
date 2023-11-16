@@ -16,9 +16,13 @@
  */
 package org.apache.logging.log4j.jul;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
@@ -26,11 +30,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 public class CoreLoggerTest extends AbstractLoggerTest {
 
@@ -117,5 +116,4 @@ public class CoreLoggerTest extends AbstractLoggerTest {
         assertThat(childLogger.getLevel(), equalTo(Level.SEVERE));
         assertThat(childLogger.isLoggable(Level.FINE), is(false));
     }
-
 }

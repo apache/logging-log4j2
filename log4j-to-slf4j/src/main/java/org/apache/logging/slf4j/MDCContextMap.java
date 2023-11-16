@@ -18,7 +18,6 @@ package org.apache.logging.slf4j;
 
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.apache.logging.log4j.spi.CleanableThreadContextMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -30,6 +29,7 @@ import org.slf4j.MDC;
 public class MDCContextMap implements CleanableThreadContextMap {
 
     private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
+
     static {
         EMPTY_CONTEXT_DATA.freeze();
     }
@@ -55,7 +55,6 @@ public class MDCContextMap implements CleanableThreadContextMap {
     public void remove(final String key) {
         MDC.remove(key);
     }
-
 
     @Override
     public void removeAll(final Iterable<String> keys) {

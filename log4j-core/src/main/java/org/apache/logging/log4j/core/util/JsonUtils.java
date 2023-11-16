@@ -30,6 +30,7 @@ public final class JsonUtils {
      * escaping is to be used.
      */
     private static final int[] ESC_CODES;
+
     static {
         final int[] table = new int[128];
         // Control chars need generic escape sequence
@@ -54,7 +55,7 @@ public final class JsonUtils {
     /**
      * Temporary buffer used for composing quote/escape sequences
      */
-    private final static ThreadLocal<char[]> _qbufLocal = new ThreadLocal<>();
+    private static final ThreadLocal<char[]> _qbufLocal = new ThreadLocal<>();
 
     private static char[] getQBuf() {
         char[] _qbuf = _qbufLocal.get();
@@ -94,9 +95,7 @@ public final class JsonUtils {
             // something to escape; 2 or 6-char variant?
             final char d = input.charAt(inPtr++);
             final int escCode = ESC_CODES[d];
-            final int length = (escCode < 0)
-                    ? _appendNumeric(d, qbuf)
-                    : _appendNamed(escCode, qbuf);
+            final int length = (escCode < 0) ? _appendNumeric(d, qbuf) : _appendNamed(escCode, qbuf);
 
             output.append(qbuf, 0, length);
         }
@@ -114,5 +113,4 @@ public final class JsonUtils {
         qbuf[1] = (char) esc;
         return 2;
     }
-
 }

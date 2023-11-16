@@ -20,12 +20,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
-
 import javax.management.MBeanNotificationInfo;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 import javax.management.ObjectName;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
@@ -34,7 +32,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Implementation of the {@code StatusLoggerAdminMBean} interface.
  */
-public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements StatusListener, StatusLoggerAdminMBean {
+public class StatusLoggerAdmin extends NotificationBroadcasterSupport
+        implements StatusListener, StatusLoggerAdminMBean {
 
     private final AtomicLong sequenceNo = new AtomicLong();
     private final ObjectName objectName;
@@ -87,9 +86,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        final String[] notifTypes = new String[] {
-                NOTIF_TYPE_DATA,
-                NOTIF_TYPE_MESSAGE };
+        final String[] notifTypes = new String[] {NOTIF_TYPE_DATA, NOTIF_TYPE_MESSAGE};
         final String name = Notification.class.getName();
         final String description = "StatusLogger has logged an event";
         return new MBeanNotificationInfo(notifTypes, name, description);
@@ -139,8 +136,8 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
      */
     @Override
     public void log(final StatusData data) {
-        final Notification notifMsg = new Notification(NOTIF_TYPE_MESSAGE, getObjectName(), nextSeqNo(), nowMillis(),
-                data.getFormattedStatus());
+        final Notification notifMsg = new Notification(
+                NOTIF_TYPE_MESSAGE, getObjectName(), nextSeqNo(), nowMillis(), data.getFormattedStatus());
         sendNotification(notifMsg);
 
         final Notification notifData = new Notification(NOTIF_TYPE_DATA, getObjectName(), nextSeqNo(), nowMillis());

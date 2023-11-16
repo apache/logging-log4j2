@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -27,7 +33,6 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -48,48 +53,43 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 @Category(Appenders.Kafka.class)
 public class KafkaAppenderTest {
 
     private static final Serializer<byte[]> SERIALIZER = new ByteArraySerializer();
 
-    private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, SERIALIZER,
-            SERIALIZER) {
+    private static final MockProducer<byte[], byte[]> kafka =
+            new MockProducer<byte[], byte[]>(true, SERIALIZER, SERIALIZER) {
 
-        @Override
-        public synchronized Future<RecordMetadata> send(final ProducerRecord<byte[], byte[]> record) {
+                @Override
+                public synchronized Future<RecordMetadata> send(final ProducerRecord<byte[], byte[]> record) {
 
-            final Future<RecordMetadata> retVal = super.send(record);
+                    final Future<RecordMetadata> retVal = super.send(record);
 
-            final boolean isRetryTest = "true".equals(ThreadContext.get("KafkaAppenderWithRetryCount"));
-            if (isRetryTest) {
-                try {
-                    throw new TimeoutException();
-                } catch (TimeoutException e) {
-                    // TODO Auto-generated catch block
-                    throw new RuntimeException(e);
+                    final boolean isRetryTest = "true".equals(ThreadContext.get("KafkaAppenderWithRetryCount"));
+                    if (isRetryTest) {
+                        try {
+                            throw new TimeoutException();
+                        } catch (TimeoutException e) {
+                            // TODO Auto-generated catch block
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    return retVal;
                 }
-            }
+                ;
 
-            return retVal;
-        };
+                // @Override in version 1.1.1
+                public void close(final long timeout, final TimeUnit timeUnit) {
+                    // Intentionally do not close in order to reuse
+                }
 
-        // @Override in version 1.1.1
-        public void close(final long timeout, final TimeUnit timeUnit) {
-            // Intentionally do not close in order to reuse
-        }
-
-        // @Override in version 3.3.1
-        public void close(final Duration timeout) {
-            // Intentionally do no close in order to reuse
-        }
-    };
+                // @Override in version 3.3.1
+                public void close(final Duration timeout) {
+                    // Intentionally do no close in order to reuse
+                }
+            };
 
     private static final String LOG_MESSAGE = "Hello, world!";
     private static final String TOPIC_NAME = "kafka-topic";
@@ -97,11 +97,11 @@ public class KafkaAppenderTest {
 
     private static Log4jLogEvent createLogEvent() {
         return Log4jLogEvent.newBuilder()
-            .setLoggerName(KafkaAppenderTest.class.getName())
-            .setLoggerFqcn(KafkaAppenderTest.class.getName())
-            .setLevel(Level.INFO)
-            .setMessage(new SimpleMessage(LOG_MESSAGE))
-            .build();
+                .setLoggerName(KafkaAppenderTest.class.getName())
+                .setLoggerFqcn(KafkaAppenderTest.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new SimpleMessage(LOG_MESSAGE))
+                .build();
     }
 
     @BeforeClass
@@ -206,7 +206,6 @@ public class KafkaAppenderTest {
         } finally {
             ThreadContext.clearMap();
         }
-
     }
 
     @Test
@@ -232,23 +231,25 @@ public class KafkaAppenderTest {
         }
     }
 
-//    public void shouldRetryWhenTimeoutExceptionOccursOnSend() throws Exception {
-//        final AtomicInteger attempt = new AtomicInteger(0);
-//        final RecordCollectorImpl collector = new RecordCollectorImpl(
-//                new MockProducer(cluster, true, new DefaultPartitioner(), byteArraySerializer, byteArraySerializer) {
-//                    @Override
-//                    public synchronized Future<RecordMetadata> send(final ProducerRecord record, final Callback callback) {
-//                        if (attempt.getAndIncrement() == 0) {
-//                            throw new TimeoutException();
-//                        }
-//                        return super.send(record, callback);
-//                    }
-//                },
-//                "test");
-//
-//        collector.send("topic1", "3", "0", null, stringSerializer, stringSerializer, streamPartitioner);
-//        final Long offset = collector.offsets().get(new TopicPartition("topic1", 0));
-//        assertEquals(Long.valueOf(0L), offset);
-//    }
+    //    public void shouldRetryWhenTimeoutExceptionOccursOnSend() throws Exception {
+    //        final AtomicInteger attempt = new AtomicInteger(0);
+    //        final RecordCollectorImpl collector = new RecordCollectorImpl(
+    //                new MockProducer(cluster, true, new DefaultPartitioner(), byteArraySerializer,
+    // byteArraySerializer) {
+    //                    @Override
+    //                    public synchronized Future<RecordMetadata> send(final ProducerRecord record, final Callback
+    // callback) {
+    //                        if (attempt.getAndIncrement() == 0) {
+    //                            throw new TimeoutException();
+    //                        }
+    //                        return super.send(record, callback);
+    //                    }
+    //                },
+    //                "test");
+    //
+    //        collector.send("topic1", "3", "0", null, stringSerializer, stringSerializer, streamPartitioner);
+    //        final Long offset = collector.offsets().get(new TopicPartition("topic1", 0));
+    //        assertEquals(Long.valueOf(0L), offset);
+    //    }
 
 }

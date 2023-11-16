@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -31,7 +30,6 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.NamingException;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -60,8 +58,13 @@ public class JmsManager extends AbstractManager {
         private final boolean retry;
         private final long reconnectIntervalMillis;
 
-        JmsManagerConfiguration(final Properties jndiProperties, final String connectionFactoryName,
-                final String destinationName, final String userName, final char[] password, final boolean immediateFail,
+        JmsManagerConfiguration(
+                final Properties jndiProperties,
+                final String connectionFactoryName,
+                final String destinationName,
+                final String userName,
+                final char[] password,
+                final boolean immediateFail,
                 final long reconnectIntervalMillis) {
             this.jndiProperties = jndiProperties;
             this.connectionFactoryName = connectionFactoryName;
@@ -116,7 +119,6 @@ public class JmsManager extends AbstractManager {
                     + ", immediateFail=" + immediateFail + ", retry=" + retry + ", reconnectIntervalMillis="
                     + reconnectIntervalMillis + "]";
         }
-
     }
 
     private static class JmsManagerFactory implements ManagerFactory<JmsManager, JmsManagerConfiguration> {
@@ -186,8 +188,11 @@ public class JmsManager extends AbstractManager {
                     sleep(configuration.getReconnectIntervalMillis());
                     reconnect();
                 } catch (final InterruptedException | JMSException | NamingException e) {
-                    logger().debug("Cannot reestablish JMS connection to {}: {}", configuration, e.getLocalizedMessage(),
-                            e);
+                    logger().debug(
+                                    "Cannot reestablish JMS connection to {}: {}",
+                                    configuration,
+                                    e.getLocalizedMessage(),
+                                    e);
                 } finally {
                     latch.countDown();
                 }
@@ -197,7 +202,6 @@ public class JmsManager extends AbstractManager {
         public void shutdown() {
             shutdown = true;
         }
-
     }
 
     static final JmsManagerFactory FACTORY = new JmsManagerFactory();
@@ -224,11 +228,23 @@ public class JmsManager extends AbstractManager {
      *            JNDI properties.
      * @return The JmsManager as configured.
      */
-    public static JmsManager getJmsManager(final String name, final Properties jndiProperties,
-            final String connectionFactoryName, final String destinationName, final String userName,
-            final char[] password, final boolean immediateFail, final long reconnectIntervalMillis) {
-        final JmsManagerConfiguration configuration = new JmsManagerConfiguration(jndiProperties, connectionFactoryName,
-                destinationName, userName, password, immediateFail, reconnectIntervalMillis);
+    public static JmsManager getJmsManager(
+            final String name,
+            final Properties jndiProperties,
+            final String connectionFactoryName,
+            final String destinationName,
+            final String userName,
+            final char[] password,
+            final boolean immediateFail,
+            final long reconnectIntervalMillis) {
+        final JmsManagerConfiguration configuration = new JmsManagerConfiguration(
+                jndiProperties,
+                connectionFactoryName,
+                destinationName,
+                userName,
+                password,
+                immediateFail,
+                reconnectIntervalMillis);
         return getManager(name, FACTORY, configuration);
     }
 
@@ -267,9 +283,12 @@ public class JmsManager extends AbstractManager {
             temp.close();
             return true;
         } catch (final JMSException e) {
-            StatusLogger.getLogger().debug(
-                    "Caught exception closing JMS Connection: {} ({}); continuing JMS manager shutdown",
-                    e.getLocalizedMessage(), temp, e);
+            StatusLogger.getLogger()
+                    .debug(
+                            "Caught exception closing JMS Connection: {} ({}); continuing JMS manager shutdown",
+                            e.getLocalizedMessage(),
+                            temp,
+                            e);
             return false;
         }
     }
@@ -294,9 +313,12 @@ public class JmsManager extends AbstractManager {
             temp.close();
             return true;
         } catch (final JMSException e) {
-            StatusLogger.getLogger().debug(
-                    "Caught exception closing JMS MessageProducer: {} ({}); continuing JMS manager shutdown",
-                    e.getLocalizedMessage(), temp, e);
+            StatusLogger.getLogger()
+                    .debug(
+                            "Caught exception closing JMS MessageProducer: {} ({}); continuing JMS manager shutdown",
+                            e.getLocalizedMessage(),
+                            temp,
+                            e);
             return false;
         }
     }
@@ -311,9 +333,12 @@ public class JmsManager extends AbstractManager {
             temp.close();
             return true;
         } catch (final JMSException e) {
-            StatusLogger.getLogger().debug(
-                    "Caught exception closing JMS Session: {} ({}); continuing JMS manager shutdown",
-                    e.getLocalizedMessage(), temp, e);
+            StatusLogger.getLogger()
+                    .debug(
+                            "Caught exception closing JMS Session: {} ({}); continuing JMS manager shutdown",
+                            e.getLocalizedMessage(),
+                            temp,
+                            e);
             return false;
         }
     }
@@ -321,11 +346,11 @@ public class JmsManager extends AbstractManager {
     private Connection createConnection(final JndiManager jndiManager) throws NamingException, JMSException {
         final ConnectionFactory connectionFactory = jndiManager.lookup(configuration.getConnectionFactoryName());
         if (configuration.getUserName() != null && configuration.getPassword() != null) {
-            return connectionFactory.createConnection(configuration.getUserName(),
+            return connectionFactory.createConnection(
+                    configuration.getUserName(),
                     configuration.getPassword() == null ? null : String.valueOf(configuration.getPassword()));
         }
         return connectionFactory.createConnection();
-
     }
 
     private Destination createDestination(final JndiManager jndiManager) throws NamingException {
@@ -416,15 +441,18 @@ public class JmsManager extends AbstractManager {
         return this.jndiManager.lookup(destinationName);
     }
 
-    private MapMessage map(final org.apache.logging.log4j.message.MapMessage<?, ?> log4jMapMessage,
-            final MapMessage jmsMapMessage) {
+    private MapMessage map(
+            final org.apache.logging.log4j.message.MapMessage<?, ?> log4jMapMessage, final MapMessage jmsMapMessage) {
         // Map without calling org.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
         log4jMapMessage.forEach((key, value) -> {
             try {
                 jmsMapMessage.setObject(key, value);
             } catch (final JMSException e) {
-                throw new IllegalArgumentException(String.format("%s mapping key '%s' to value '%s': %s",
-                        e.getClass(), key, value, e.getLocalizedMessage()), e);
+                throw new IllegalArgumentException(
+                        String.format(
+                                "%s mapping key '%s' to value '%s': %s",
+                                e.getClass(), key, value, e.getLocalizedMessage()),
+                        e);
             }
         });
         return jmsMapMessage;
@@ -465,8 +493,12 @@ public class JmsManager extends AbstractManager {
                         closeJndiManager();
                         reconnector.reconnect();
                     } catch (NamingException | JMSException reconnEx) {
-                        logger().debug("Cannot reestablish JMS connection to {}: {}; starting reconnector thread {}",
-                                configuration, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
+                        logger().debug(
+                                        "Cannot reestablish JMS connection to {}: {}; starting reconnector thread {}",
+                                        configuration,
+                                        reconnEx.getLocalizedMessage(),
+                                        reconnector.getName(),
+                                        reconnEx);
                         reconnector.start();
                         throw new AppenderLoggingException(
                                 String.format("JMS exception sending to %s for %s", getName(), configuration), causeEx);
@@ -475,7 +507,8 @@ public class JmsManager extends AbstractManager {
                         createMessageAndSend(event, serializable);
                     } catch (final JMSException e) {
                         throw new AppenderLoggingException(
-                                String.format("Error sending to %s after reestablishing JMS connection for %s",
+                                String.format(
+                                        "Error sending to %s after reestablishing JMS connection for %s",
                                         getName(), configuration),
                                 causeEx);
                     }
@@ -483,5 +516,4 @@ public class JmsManager extends AbstractManager {
             }
         }
     }
-
 }

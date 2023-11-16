@@ -77,7 +77,7 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
             this.collectionSize = collectionSize;
             return asBuilder();
         }
-}
+    }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -102,8 +102,7 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDb4Provider(final String connectionStringSource, final boolean isCapped,
-            final Long collectionSize) {
+    private MongoDb4Provider(final String connectionStringSource, final boolean isCapped, final Long collectionSize) {
         LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
         this.connectionString = new ConnectionString(connectionStringSource);
         LOGGER.debug("Created ConnectionString {}", connectionString);
@@ -135,8 +134,11 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     public String toString() {
         return String.format(
                 "%s [connectionString=%s, collectionSize=%s, isCapped=%s, mongoClient=%s, mongoDatabase=%s]",
-                MongoDb4Provider.class.getSimpleName(), connectionString, collectionSize, isCapped, mongoClient,
+                MongoDb4Provider.class.getSimpleName(),
+                connectionString,
+                collectionSize,
+                isCapped,
+                mongoClient,
                 mongoDatabase);
     }
-
 }

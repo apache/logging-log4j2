@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.test;
 
 import java.net.URI;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -32,7 +31,8 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 public class BasicConfigurationFactory extends ConfigurationFactory {
 
     @Override
-    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+    public Configuration getConfiguration(
+            final LoggerContext loggerContext, final String name, final URI configLocation) {
         return new BasicConfiguration();
     }
 

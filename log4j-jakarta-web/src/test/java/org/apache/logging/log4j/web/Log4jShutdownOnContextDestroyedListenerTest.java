@@ -16,25 +16,26 @@
  */
 package org.apache.logging.log4j.web;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @ExtendWith(MockitoExtension.class)
 public class Log4jShutdownOnContextDestroyedListenerTest {
     @Mock(lenient = true)
     private ServletContextEvent event;
+
     @Mock(lenient = true)
     private ServletContext servletContext;
+
     @Mock
     private Log4jWebLifeCycle initializer;
 

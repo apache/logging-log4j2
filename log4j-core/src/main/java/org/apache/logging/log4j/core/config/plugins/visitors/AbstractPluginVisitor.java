@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -114,9 +113,8 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
      * @param aliases    optional aliases of the key name to look up.
      * @return the value corresponding to the given key or {@code null} if nonexistent.
      */
-    protected static String removeAttributeValue(final Map<String, String> attributes,
-                                                 final String name,
-                                                 final String... aliases) {
+    protected static String removeAttributeValue(
+            final Map<String, String> attributes, final String name, final String... aliases) {
         for (final Map.Entry<String, String> entry : attributes.entrySet()) {
             final String key = entry.getKey();
             final String value = entry.getValue();

@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.io;
 
+import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
 
 public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
     protected StringWriter wrapped;
@@ -66,8 +65,7 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
     public void testFlush() throws IOException {
         final OutputStream out = mock(OutputStream.class);
 
-        try (final OutputStream filteredOut =
-            IoBuilder.forLogger(getExtendedLogger())
+        try (final OutputStream filteredOut = IoBuilder.forLogger(getExtendedLogger())
                 .filter(out)
                 .setLevel(LEVEL)
                 .buildOutputStream()) {

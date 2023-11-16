@@ -25,7 +25,7 @@ public class Loader {
 
     static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
-    static private boolean ignoreTCL;
+    private static boolean ignoreTCL;
 
     static {
         final String ignoreTCLProp = OptionConverter.getSystemProperty("log4j.ignoreTCL", null);
@@ -46,7 +46,7 @@ public class Loader {
      * </p>
      * </ol>
      */
-    static public URL getResource(final String resource) {
+    public static URL getResource(final String resource) {
         ClassLoader classLoader = null;
         URL url = null;
 
@@ -123,7 +123,7 @@ public class Loader {
      * @return The Class.
      * @throws ClassNotFoundException Never thrown, declared for compatibility.
      */
-    static public Class loadClass(final String clazz) throws ClassNotFoundException {
+    public static Class loadClass(final String clazz) throws ClassNotFoundException {
         // Just call Class.forName(clazz) if we are instructed to ignore the TCL.
         if (ignoreTCL) {
             return Class.forName(clazz);

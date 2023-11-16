@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -47,7 +46,6 @@ public class OutputBenchmark {
     public static final String MESSAGE = "This is a debug message";
 
     Logger log4j2Logger;
-
 
     @State(Scope.Group)
     public static class Redirect {
@@ -85,7 +83,7 @@ public class OutputBenchmark {
 
     private void deleteLogFiles() {
         final File outFile = new File("target/stdout.log");
-        final File log4j2File = new File ("target/testlog4j2.log");
+        final File log4j2File = new File("target/testlog4j2.log");
         log4j2File.delete();
         outFile.delete();
     }

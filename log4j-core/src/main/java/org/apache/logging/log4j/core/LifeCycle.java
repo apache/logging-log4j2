@@ -64,5 +64,4 @@ public interface LifeCycle {
     boolean isStarted();
 
     boolean isStopped();
-
 }

@@ -20,7 +20,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.io.internal.InternalBufferedInputStream;
@@ -34,18 +33,28 @@ public class LoggerBufferedInputStream extends BufferedInputStream {
     private static final String FQCN = LoggerBufferedInputStream.class.getName();
     private InternalBufferedInputStream stream;
 
-    protected LoggerBufferedInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
-                                        final String fqcn, final Level level, final Marker marker) {
+    protected LoggerBufferedInputStream(
+            final InputStream in,
+            final Charset charset,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(in);
         this.stream = new InternalBufferedInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker);
     }
 
-    protected LoggerBufferedInputStream(final InputStream in, final Charset charset, final int size,
-                                        final ExtendedLogger logger, final String fqcn, final Level level,
-                                        final Marker marker) {
+    protected LoggerBufferedInputStream(
+            final InputStream in,
+            final Charset charset,
+            final int size,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(in);
-        this.stream = new InternalBufferedInputStream(in, charset, size, logger, fqcn == null ? FQCN : fqcn, level,
-            marker);
+        this.stream =
+                new InternalBufferedInputStream(in, charset, size, logger, fqcn == null ? FQCN : fqcn, level, marker);
     }
 
     @Override

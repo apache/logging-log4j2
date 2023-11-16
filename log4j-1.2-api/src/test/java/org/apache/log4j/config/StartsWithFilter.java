@@ -34,5 +34,4 @@ public class StartsWithFilter extends Filter {
         }
         return NEUTRAL;
     }
-
 }

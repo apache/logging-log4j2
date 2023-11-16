@@ -20,7 +20,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.io.internal.InternalPrintWriter;
@@ -48,14 +47,23 @@ public class LoggerPrintWriter extends PrintWriter {
     private static final String FQCN = LoggerPrintWriter.class.getName();
     private final InternalPrintWriter writer;
 
-    protected LoggerPrintWriter(final ExtendedLogger logger, final boolean autoFlush, final String fqcn,
-                                final Level level, final Marker marker) {
+    protected LoggerPrintWriter(
+            final ExtendedLogger logger,
+            final boolean autoFlush,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(new StringWriter());
         writer = new InternalPrintWriter(logger, autoFlush, fqcn == null ? FQCN : fqcn, level, marker);
     }
 
-    protected LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger,
-                                final String fqcn, final Level level, final Marker marker) {
+    protected LoggerPrintWriter(
+            final Writer writer,
+            final boolean autoFlush,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(writer);
         this.writer = new InternalPrintWriter(writer, autoFlush, logger, fqcn == null ? FQCN : fqcn, level, marker);
     }

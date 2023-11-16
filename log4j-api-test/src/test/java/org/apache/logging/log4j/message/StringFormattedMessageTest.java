@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Locale;
-
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class StringFormattedMessageTest {
@@ -142,11 +141,12 @@ public class StringFormattedMessageTest {
         // at java.util.Formatter.format(Formatter.java:2455)
         // at java.lang.String.format(String.java:2981)
         // at org.apache.logging.log4j.message.StringFormattedMessage.formatMessage(StringFormattedMessage.java:120)
-        // at org.apache.logging.log4j.message.StringFormattedMessage.getFormattedMessage(StringFormattedMessage.java:88)
+        // at
+        // org.apache.logging.log4j.message.StringFormattedMessage.getFormattedMessage(StringFormattedMessage.java:88)
         // at
         // org.apache.logging.log4j.message.StringFormattedMessageTest.testPercentInMessageNoArgs(StringFormattedMessageTest.java:153)
-        final StringFormattedMessage msg = new StringFormattedMessage("C:/Program%20Files/Some%20Company/Some%20Product%20Name/", new Object[] {});
+        final StringFormattedMessage msg =
+                new StringFormattedMessage("C:/Program%20Files/Some%20Company/Some%20Product%20Name/", new Object[] {});
         assertEquals("C:/Program%20Files/Some%20Company/Some%20Product%20Name/", msg.getFormattedMessage());
     }
-
 }

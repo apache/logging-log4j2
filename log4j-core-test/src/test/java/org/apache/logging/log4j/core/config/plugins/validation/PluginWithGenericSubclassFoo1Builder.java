@@ -49,7 +49,6 @@ public class PluginWithGenericSubclassFoo1Builder extends AbstractPluginWithGene
             this.foo1 = foo1;
             return asBuilder();
         }
-
     }
 
     @PluginBuilderFactory
@@ -67,5 +66,4 @@ public class PluginWithGenericSubclassFoo1Builder extends AbstractPluginWithGene
     public String getFoo1() {
         return foo1;
     }
-
 }

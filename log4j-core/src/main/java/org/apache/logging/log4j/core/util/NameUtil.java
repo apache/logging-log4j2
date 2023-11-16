@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -51,10 +50,7 @@ public final class NameUtil {
      * @param input string to be hashed
      * @return string composed of 32 hexadecimal digits of the calculated hash
      */
-    @SuppressFBWarnings(
-            value = "WEAK_MESSAGE_DIGEST_MD5",
-            justification = "Used to create unique identifiers."
-    )
+    @SuppressFBWarnings(value = "WEAK_MESSAGE_DIGEST_MD5", justification = "Used to create unique identifiers.")
     @Deprecated
     public static String md5(final String input) {
         Objects.requireNonNull(input, "input");

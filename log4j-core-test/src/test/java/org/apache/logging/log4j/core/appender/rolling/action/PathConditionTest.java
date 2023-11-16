@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+
+import org.junit.jupiter.api.Test;
 
 public class PathConditionTest {
 
@@ -39,5 +39,4 @@ public class PathConditionTest {
         final CountingCondition cc = new CountingCondition(true);
         assertNotSame(cc, PathCondition.copy(cc));
     }
-
 }

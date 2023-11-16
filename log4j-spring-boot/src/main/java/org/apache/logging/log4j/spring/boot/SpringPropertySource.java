@@ -39,7 +39,7 @@ public class SpringPropertySource implements PropertySource {
      */
     @Override
     public int getPriority() {
-        return DEFAULT_PRIORITY ;
+        return DEFAULT_PRIORITY;
     }
 
     @Override

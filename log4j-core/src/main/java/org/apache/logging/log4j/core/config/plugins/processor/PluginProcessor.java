@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -24,7 +28,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.Processor;
@@ -39,14 +42,9 @@ import javax.lang.model.util.SimpleElementVisitor7;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Annotation processor for pre-scanning Log4j 2 plugins.
@@ -101,8 +99,8 @@ public class PluginProcessor extends AbstractProcessor {
     private void collectPlugins(final Iterable<? extends Element> elements) {
         final Elements elementUtils = processingEnv.getElementUtils();
         final ElementVisitor<PluginEntry, Plugin> pluginVisitor = new PluginElementVisitor(elementUtils);
-        final ElementVisitor<Collection<PluginEntry>, Plugin> pluginAliasesVisitor = new PluginAliasesElementVisitor(
-                elementUtils);
+        final ElementVisitor<Collection<PluginEntry>, Plugin> pluginAliasesVisitor =
+                new PluginAliasesElementVisitor(elementUtils);
         for (final Element element : elements) {
             final Plugin plugin = element.getAnnotation(Plugin.class);
             if (plugin == null) {
@@ -119,8 +117,9 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void writeCacheFile(final Element... elements) throws IOException {
-        final FileObject fileObject = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY,
-                PLUGIN_CACHE_FILE, elements);
+        final FileObject fileObject = processingEnv
+                .getFiler()
+                .createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY, PLUGIN_CACHE_FILE, elements);
         try (final OutputStream out = fileObject.openOutputStream()) {
             pluginCache.writeCache(out);
         }
@@ -154,12 +153,13 @@ public class PluginProcessor extends AbstractProcessor {
     /**
      * ElementVisitor to scan the PluginAliases annotation.
      */
-    private static final class PluginAliasesElementVisitor extends SimpleElementVisitor7<Collection<PluginEntry>, Plugin> {
+    private static final class PluginAliasesElementVisitor
+            extends SimpleElementVisitor7<Collection<PluginEntry>, Plugin> {
 
         private final Elements elements;
 
         private PluginAliasesElementVisitor(final Elements elements) {
-            super(Collections.<PluginEntry> emptyList());
+            super(Collections.<PluginEntry>emptyList());
             this.elements = elements;
         }
 

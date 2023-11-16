@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.concurrent.TimeUnit;
+import static java.util.Objects.requireNonNull;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * The default {@link ErrorHandler} implementation falling back to {@link StatusLogger}.
@@ -116,5 +115,4 @@ public class DefaultErrorHandler implements ErrorHandler {
     public Appender getAppender() {
         return appender;
     }
-
 }

@@ -20,7 +20,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
-
 /**
  * Returns the event's NDC in a StringBuilder.
  */
@@ -30,8 +29,7 @@ public final class NdcPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final NdcPatternConverter INSTANCE =
-        new NdcPatternConverter();
+    private static final NdcPatternConverter INSTANCE = new NdcPatternConverter();
 
     /**
      * Private constructor.
@@ -60,5 +58,4 @@ public final class NdcPatternConverter extends LogEventPatternConverter {
     public String emptyVariableOutput() {
         return "[]";
     }
-
 }

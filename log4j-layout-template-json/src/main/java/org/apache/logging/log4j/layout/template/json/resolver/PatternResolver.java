@@ -18,7 +18,6 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
@@ -55,18 +54,14 @@ public final class PatternResolver implements EventResolver {
 
     private final BiConsumer<StringBuilder, LogEvent> emitter;
 
-    PatternResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    PatternResolver(final EventResolverContext context, final TemplateResolverConfig config) {
         final String pattern = config.getString("pattern");
         if (Strings.isBlank(pattern)) {
             throw new IllegalArgumentException("blank pattern: " + config);
         }
-        final boolean stackTraceEnabled = Optional
-                .ofNullable(config.getBoolean("stackTraceEnabled"))
-                .orElse(context.isStackTraceEnabled());
-        final PatternLayout patternLayout = PatternLayout
-                .newBuilder()
+        final boolean stackTraceEnabled =
+                Optional.ofNullable(config.getBoolean("stackTraceEnabled")).orElse(context.isStackTraceEnabled());
+        final PatternLayout patternLayout = PatternLayout.newBuilder()
                 .withConfiguration(context.getConfiguration())
                 .withCharset(context.getCharset())
                 .withPattern(pattern)
@@ -84,5 +79,4 @@ public final class PatternResolver implements EventResolver {
     public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         jsonWriter.writeString(emitter, logEvent);
     }
-
 }

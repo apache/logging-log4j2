@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.async;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -48,10 +47,8 @@ public class Log4j2Jira1688AsyncTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j-list.xml");
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j-list.xml");
     }
 
     @AfterClass
@@ -61,6 +58,7 @@ public class Log4j2Jira1688AsyncTest {
 
     @Rule
     public LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
+
     private ListAppender listAppender;
 
     @Before
@@ -84,13 +82,12 @@ public class Log4j2Jira1688AsyncTest {
         final Object[] originalArgs = Arrays.copyOf(args, args.length);
 
         listAppender.countDownLatch = new CountDownLatch(1);
-        ((ExtendedLogger)log4JLogger).logIfEnabled("test", Level.ERROR, null, "test {}", args);
+        ((ExtendedLogger) log4JLogger).logIfEnabled("test", Level.ERROR, null, "test {}", args);
 
         listAppender.countDownLatch.await(1, TimeUnit.SECONDS);
         Assert.assertArrayEquals(Arrays.toString(args), originalArgs, args);
 
-        ((ExtendedLogger)log4JLogger).logIfEnabled("test", Level.ERROR, null, "test {}", args);
+        ((ExtendedLogger) log4JLogger).logIfEnabled("test", Level.ERROR, null, "test {}", args);
         Assert.assertArrayEquals(Arrays.toString(args), originalArgs, args);
     }
-
 }

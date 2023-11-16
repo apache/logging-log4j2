@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * when this pattern converter has the option set.
  */
 @Plugin(name = "MdcPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "X", "mdc", "MDC" })
+@ConverterKeys({"X", "mdc", "MDC"})
 @PerformanceSensitive("allocation")
 public final class MdcPatternConverter extends LogEventPatternConverter {
 
@@ -39,6 +39,7 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
      * Name of property to output.
      */
     private final String key;
+
     private final String[] keys;
     private final boolean full;
 
@@ -104,7 +105,7 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
                 return;
             }
             appendSelectedKeys(keys, contextData, toAppendTo);
-        } else if (contextData != null){
+        } else if (contextData != null) {
             // otherwise they just want a single key output
             final Object value = contextData.getValue(key);
             if (value != null) {
@@ -126,7 +127,8 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
         }
     }
 
-    private static void appendSelectedKeys(final String[] keys, final ReadOnlyStringMap contextData, final StringBuilder sb) {
+    private static void appendSelectedKeys(
+            final String[] keys, final ReadOnlyStringMap contextData, final StringBuilder sb) {
         // Print all the keys in the array that have a value.
         final int start = sb.length();
         sb.append('{');
@@ -148,5 +150,4 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
     public String emptyVariableOutput() {
         return key == null ? "{}" : "";
     }
-
 }

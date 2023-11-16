@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -28,10 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 @Category(AsyncLoggers.class)
 public class BasicAsyncLoggerContextSelectorTest {
 
@@ -39,8 +38,7 @@ public class BasicAsyncLoggerContextSelectorTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                BasicAsyncLoggerContextSelector.class.getName());
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BasicAsyncLoggerContextSelector.class.getName());
     }
 
     @AfterClass
@@ -83,7 +81,7 @@ public class BasicAsyncLoggerContextSelectorTest {
     public void testContextNameIsAsyncDefault() {
         final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false);
-        assertEquals("AsyncDefault" , context.getName());
+        assertEquals("AsyncDefault", context.getName());
     }
 
     @Test

@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.docker;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -65,14 +64,15 @@ public class DockerLookup extends AbstractLookup {
             if (url.getProtocol().equals(HTTP)) {
                 final String macAddr = NetUtils.getMacAddressString();
                 final ObjectMapper objectMapper = new ObjectMapper();
-                final List<Container> containerList = objectMapper.readValue(url, new TypeReference<List<Container>>(){
-                });
+                final List<Container> containerList =
+                        objectMapper.readValue(url, new TypeReference<List<Container>>() {});
 
                 for (Container container : containerList) {
                     if (macAddr != null && container.getNetworkSettings() != null) {
-                        final Map<String, Network> networks = container.getNetworkSettings().getNetworks();
+                        final Map<String, Network> networks =
+                                container.getNetworkSettings().getNetworks();
                         if (networks != null) {
-                            for (Network network: networks.values()) {
+                            for (Network network : networks.values()) {
                                 if (macAddr.equals(network.getMacAddress())) {
                                     current = container;
                                     break;

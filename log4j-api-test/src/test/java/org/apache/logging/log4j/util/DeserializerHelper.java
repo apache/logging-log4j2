@@ -31,8 +31,8 @@ import java.util.Collections;
 public class DeserializerHelper {
     public static void main(final String... args) throws Exception {
         final File file = new File(args[0]);
-        final Collection<String> allowedExtraClasses = args.length > 1 ? Arrays.asList(args).subList(1, args.length)
-                : Collections.emptyList();
+        final Collection<String> allowedExtraClasses =
+                args.length > 1 ? Arrays.asList(args).subList(1, args.length) : Collections.emptyList();
         ObjectInputStream in = null;
         try {
             in = new FilteredObjectInputStream(new FileInputStream(file), allowedExtraClasses);

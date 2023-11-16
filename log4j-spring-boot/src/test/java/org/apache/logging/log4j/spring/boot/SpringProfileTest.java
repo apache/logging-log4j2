@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
@@ -28,8 +29,6 @@ import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests basic condition processing.
@@ -49,7 +48,8 @@ public class SpringProfileTest {
         loggerContext.removeObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
     }
 
-    private void testAppenderOut(final LoggerContext loggerContext, final Class<? extends Appender> clazz, final String patternPrefix) {
+    private void testAppenderOut(
+            final LoggerContext loggerContext, final Class<? extends Appender> clazz, final String patternPrefix) {
         final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertThat(app).isInstanceOf(clazz);
         final Layout<?> layout = app.getLayout();

@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.core.impl.MutableLogEvent;
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsSame.sameInstance;
+
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.junit.jupiter.api.Test;
 
 /**
  * LOG4J2-1409
@@ -35,7 +35,7 @@ public class MutableLogEventWithReusableParamMsgTest {
         evt.setMessage(msg);
         evt.clear();
 
-        msg.set("Hello {}", new Object[]{1});
+        msg.set("Hello {}", new Object[] {1});
         evt.setMessage(msg);
         evt.clear();
 

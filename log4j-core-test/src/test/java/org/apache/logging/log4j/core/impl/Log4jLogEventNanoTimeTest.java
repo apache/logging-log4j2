@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -34,15 +35,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Tag("functional")
 public class Log4jLogEventNanoTimeTest {
 
     @BeforeAll
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "NanoTimeToFileTest.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "NanoTimeToFileTest.xml");
     }
 
     @AfterAll
@@ -90,5 +88,4 @@ public class Log4jLogEventNanoTimeTest {
         assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);
         assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[1]);
     }
-
 }

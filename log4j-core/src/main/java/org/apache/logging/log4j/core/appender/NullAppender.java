@@ -28,7 +28,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * An Appender that ignores log events. Use for compatibility with version 1.2
  * and handy for composing a {@link ScriptAppenderSelector}.
  */
-@Plugin(name = NullAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(
+        name = NullAppender.PLUGIN_NAME,
+        category = Core.CATEGORY_NAME,
+        elementType = Appender.ELEMENT_TYPE,
+        printObject = true)
 public class NullAppender extends AbstractAppender {
 
     public static final String PLUGIN_NAME = "Null";
@@ -47,5 +51,4 @@ public class NullAppender extends AbstractAppender {
     public void append(final LogEvent event) {
         // Do nothing
     }
-
 }

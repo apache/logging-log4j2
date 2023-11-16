@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Class Description goes here.
@@ -172,5 +171,4 @@ public class CronExpressionTest {
         final Date expected = new GregorianCalendar(2015, 10, 1, 0, 0, 0).getTime();
         assertEquals(expected, fireDate, "Dates not equal.");
     }
-
 }

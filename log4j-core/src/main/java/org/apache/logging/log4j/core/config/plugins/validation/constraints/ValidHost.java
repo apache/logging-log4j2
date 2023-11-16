@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config.plugins.validation.constraints;
 
 import java.lang.annotation.*;
 import java.net.InetAddress;
-
 import org.apache.logging.log4j.core.config.plugins.validation.Constraint;
 import org.apache.logging.log4j.core.config.plugins.validation.validators.ValidHostValidator;
 

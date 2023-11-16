@@ -17,10 +17,8 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.IOException;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-
 
 /**
  * Abstract base class for implementations of Action.
@@ -44,8 +42,7 @@ public abstract class AbstractAction implements Action {
     /**
      * Constructor.
      */
-    protected AbstractAction() {
-    }
+    protected AbstractAction() {}
 
     /**
      * Performs action.
@@ -107,5 +104,4 @@ public abstract class AbstractAction implements Action {
     protected void reportException(final Exception ex) {
         LOGGER.warn("Exception reported by action '{}'", getClass(), ex);
     }
-
 }

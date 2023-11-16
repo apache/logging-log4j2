@@ -19,10 +19,8 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
-
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
@@ -60,7 +58,8 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     public void sendLegacyBsdMessagesOverTls() throws IOException, InterruptedException {
         final int numberOfMessages = 100;
         initTlsTestEnvironment(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
-        final List<String> generatedMessages = TlsSyslogTestUtil.generateMessages(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
+        final List<String> generatedMessages =
+                TlsSyslogTestUtil.generateMessages(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
         sendAndCheckLegacyBsdMessages(generatedMessages);
     }
 
@@ -79,15 +78,16 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     }
 
     private void initServerSocketFactory() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                TestConstants::KEYSTORE_PWD, null, null);
-        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
-                TestConstants::TRUSTSTORE_PWD, null, null);
+        final KeyStoreConfiguration ksc =
+                new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants::KEYSTORE_PWD, null, null);
+        final TrustStoreConfiguration tsc =
+                new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants::TRUSTSTORE_PWD, null, null);
         sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
         serverSocketFactory = sslConfiguration.getSslServerSocketFactory();
     }
 
-    private void initTlsTestEnvironment(final int numberOfMessages, final TlsSyslogMessageFormat messageFormat) throws IOException {
+    private void initTlsTestEnvironment(final int numberOfMessages, final TlsSyslogMessageFormat messageFormat)
+            throws IOException {
         final SSLServerSocket sslServerSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(0);
 
         syslogServer = MockSyslogServerFactory.createTLSSyslogServer(numberOfMessages, messageFormat, sslServerSocket);
@@ -96,8 +96,8 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     }
 
     @Override
-    protected Builder<?> newSyslogAppenderBuilder(final Protocol protocol, final TlsSyslogMessageFormat format,
-            final boolean newLine, final int port) {
+    protected Builder<?> newSyslogAppenderBuilder(
+            final Protocol protocol, final TlsSyslogMessageFormat format, final boolean newLine, final int port) {
         return super.newSyslogAppenderBuilder(protocol, format, newLine, port)
                 .setSslConfiguration(protocol == Protocol.SSL ? sslConfiguration : null);
     }

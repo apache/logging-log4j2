@@ -19,7 +19,6 @@ package org.apache.log4j.bridge;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.log4j.NDC;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
@@ -53,8 +52,8 @@ public class LogEventWrapper implements LogEvent {
         this.event = event;
         this.contextData = new ContextDataMap(event.getProperties());
         this.contextStack = new MutableThreadContextStack(NDC.cloneStack());
-        this.thread = Objects.equals(event.getThreadName(), Thread.currentThread().getName())
-                ? Thread.currentThread() : null;
+        this.thread =
+                Objects.equals(event.getThreadName(), Thread.currentThread().getName()) ? Thread.currentThread() : null;
     }
 
     @Override
@@ -117,8 +116,8 @@ public class LogEventWrapper implements LogEvent {
     @Override
     public StackTraceElement getSource() {
         final LocationInfo info = event.getLocationInformation();
-        return new StackTraceElement(info.getClassName(), info.getMethodName(), info.getFileName(),
-                Integer.parseInt(info.getLineNumber()));
+        return new StackTraceElement(
+                info.getClassName(), info.getMethodName(), info.getFileName(), Integer.parseInt(info.getLineNumber()));
     }
 
     @Override
@@ -172,14 +171,10 @@ public class LogEventWrapper implements LogEvent {
     }
 
     @Override
-    public void setEndOfBatch(final boolean endOfBatch) {
-
-    }
+    public void setEndOfBatch(final boolean endOfBatch) {}
 
     @Override
-    public void setIncludeLocation(final boolean locationRequired) {
-
-    }
+    public void setIncludeLocation(final boolean locationRequired) {}
 
     @Override
     public long getNanoTime() {
@@ -206,12 +201,12 @@ public class LogEventWrapper implements LogEvent {
 
         @Override
         public <V> void forEach(final BiConsumer<String, ? super V> action) {
-            super.forEach((k,v) -> action.accept(k, (V) v));
+            super.forEach((k, v) -> action.accept(k, (V) v));
         }
 
         @Override
         public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
-            super.forEach((k,v) -> action.accept(k, (V) v, state));
+            super.forEach((k, v) -> action.accept(k, (V) v, state));
         }
 
         @Override

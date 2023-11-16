@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.util.stream.Stream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.stream.Stream;
 import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the SimpleMessage class.
@@ -73,7 +72,7 @@ public class SimpleMessageTest {
                 return value.subSequence(start, end);
             }
         }
-        return Stream.of("World", new NonSerializable("World2") , null);
+        return Stream.of("World", new NonSerializable("World2"), null);
     }
 
     @ParameterizedTest
@@ -84,5 +83,4 @@ public class SimpleMessageTest {
         assertThat(actual).isInstanceOf(SimpleMessage.class);
         assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
     }
-
 }

@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.Assert.assertNull;
+
 import java.security.Permission;
 import java.util.PropertyPermission;
-
 import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.Assert.assertNull;
 
 /**
  * Test related to https://issues.apache.org/jira/browse/LOG4J2-2274.
@@ -52,8 +51,8 @@ public class SystemPropertiesPropertySourceSecurityManagerIT {
     private static class TestSecurityManager extends SecurityManager {
         @Override
         public void checkPermission(final Permission permission) {
-            if (permission instanceof PropertyPermission &&
-                    !permission.getName().equals("java.util.secureRandomSeed")) {
+            if (permission instanceof PropertyPermission
+                    && !permission.getName().equals("java.util.secureRandomSeed")) {
                 throw new SecurityException("Unexpected permission: " + permission);
             }
         }

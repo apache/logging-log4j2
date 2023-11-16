@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.filter;
 
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle2;
@@ -80,7 +79,6 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         public B withFilter(final Filter filter) {
             return setFilter(filter);
         }
-
     }
 
     /**
@@ -224,5 +222,4 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
     public Property[] getPropertyArray() {
         return propertyArray;
     }
-
 }

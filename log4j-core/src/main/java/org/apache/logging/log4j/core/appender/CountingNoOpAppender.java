@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Layout;
@@ -32,7 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * No-Operation Appender that counts events.
  */
 @Plugin(name = "CountingNoOp", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
-public class CountingNoOpAppender extends AbstractAppender  {
+public class CountingNoOpAppender extends AbstractAppender {
 
     private final AtomicLong total = new AtomicLong();
 

@@ -25,8 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "ExceptionRootCauseResolverFactory", category = TemplateResolverFactory.CATEGORY)
 public final class ExceptionRootCauseResolverFactory implements EventResolverFactory {
 
-    private static final ExceptionRootCauseResolverFactory INSTANCE =
-            new ExceptionRootCauseResolverFactory();
+    private static final ExceptionRootCauseResolverFactory INSTANCE = new ExceptionRootCauseResolverFactory();
 
     private ExceptionRootCauseResolverFactory() {}
 
@@ -41,10 +40,7 @@ public final class ExceptionRootCauseResolverFactory implements EventResolverFac
     }
 
     @Override
-    public ExceptionRootCauseResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public ExceptionRootCauseResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
         return new ExceptionRootCauseResolver(context, config);
     }
-
 }

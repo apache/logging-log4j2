@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -24,13 +28,9 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class ThrowablePatternConverterTest {
 
-    private final static class LocalizedException extends Exception {
+    private static final class LocalizedException extends Exception {
 
         private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ public class ThrowablePatternConverterTest {
 
     private boolean everyLineEndsWith(final String text, final String suffix) {
         final String[] lines = text.split(Strings.LINE_SEPARATOR);
-        for (final String line: lines) {
+        for (final String line : lines) {
             if (!line.trim().endsWith(suffix)) {
                 return false;
             }
@@ -55,13 +55,13 @@ public class ThrowablePatternConverterTest {
      */
     @Test
     public void testBadShortOption() {
-        final String[] options = { "short.UNKNOWN" };
+        final String[] options = {"short.UNKNOWN"};
         assertThrows(NumberFormatException.class, () -> ThrowablePatternConverter.newInstance(null, options));
     }
 
     @Test
     public void testFull() {
-        final String[] options = { "full" };
+        final String[] options = {"full"};
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         Throwable parent;
         try {
@@ -78,7 +78,8 @@ public class ThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -90,7 +91,7 @@ public class ThrowablePatternConverterTest {
     @Test
     public void testShortClassName() {
         final String packageName = "org.apache.logging.log4j.core.pattern.";
-        final String[] options = { "short.className" };
+        final String[] options = {"short.className"};
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
@@ -99,7 +100,8 @@ public class ThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -108,7 +110,7 @@ public class ThrowablePatternConverterTest {
 
     @Test
     public void testShortFileName() {
-        final String[] options = { "short.fileName" };
+        final String[] options = {"short.fileName"};
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
@@ -117,7 +119,8 @@ public class ThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -126,7 +129,7 @@ public class ThrowablePatternConverterTest {
 
     @Test
     public void testShortLineNumber() {
-        final String[] options = { "short.lineNumber" };
+        final String[] options = {"short.lineNumber"};
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
@@ -138,7 +141,8 @@ public class ThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -147,7 +151,7 @@ public class ThrowablePatternConverterTest {
 
     @Test
     public void testShortLocalizedMessage() {
-        final String[] options = { "short.localizedMessage" };
+        final String[] options = {"short.localizedMessage"};
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable parent = new LocalizedException();
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -155,7 +159,8 @@ public class ThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -164,7 +169,7 @@ public class ThrowablePatternConverterTest {
 
     @Test
     public void testShortMessage() {
-        final String[] options = { "short.message" };
+        final String[] options = {"short.message"};
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
@@ -173,7 +178,8 @@ public class ThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -182,7 +188,7 @@ public class ThrowablePatternConverterTest {
 
     @Test
     public void testShortMethodName() {
-        final String[] options = { "short.methodName" };
+        final String[] options = {"short.methodName"};
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
@@ -191,7 +197,8 @@ public class ThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -200,7 +207,7 @@ public class ThrowablePatternConverterTest {
 
     @Test
     public void testFullWithSuffix() {
-        final String[] options = { "full", "suffix(test suffix)" };
+        final String[] options = {"full", "suffix(test suffix)"};
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         Throwable parent;
         try {
@@ -217,18 +224,20 @@ public class ThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertTrue(everyLineEndsWith(result, "test suffix"),
+        assertTrue(
+                everyLineEndsWith(result, "test suffix"),
                 "Each line of full stack trace should end with the specified suffix");
     }
 
     @Test
     public void testShortOptionWithSuffix() {
         final String packageName = "org.apache.logging.log4j.core.pattern.";
-        final String[] options = { "short.className", "suffix(test suffix)" };
+        final String[] options = {"short.className", "suffix(test suffix)"};
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
@@ -237,11 +246,11 @@ public class ThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
         assertTrue(everyLineEndsWith(result, "test suffix"), "Each line should end with suffix");
     }
-
 }

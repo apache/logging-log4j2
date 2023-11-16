@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing FormattingInfo.
@@ -47,7 +47,8 @@ public class FormattingInfoTest {
 
     @Test
     public void testFormatTruncateFromEndGivenFieldStart() {
-        final StringBuilder message = new StringBuilder("2015-03-09 11:49:28,295; INFO  org.apache.logging.log4j.PatternParserTest");
+        final StringBuilder message =
+                new StringBuilder("2015-03-09 11:49:28,295; INFO  org.apache.logging.log4j.PatternParserTest");
 
         final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
         formattingInfo.format(31, message);

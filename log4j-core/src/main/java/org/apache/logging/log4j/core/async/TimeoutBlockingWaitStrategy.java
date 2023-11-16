@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.TimeUnit;
-
 import com.lmax.disruptor.AlertException;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Blocking strategy that uses a lock and condition variable for {@link EventProcessor}s waiting on a barrier.
@@ -89,10 +88,7 @@ class TimeoutBlockingWaitStrategy implements WaitStrategy {
 
     @Override
     public String toString() {
-        return "TimeoutBlockingWaitStrategy{" +
-                "mutex=" + mutex +
-                ", timeoutInNanos=" + timeoutInNanos +
-                '}';
+        return "TimeoutBlockingWaitStrategy{" + "mutex=" + mutex + ", timeoutInNanos=" + timeoutInNanos + '}';
     }
 
     // below code is from com.lmax.disruptor.util.Util class in disruptor 4.0.0-RC1

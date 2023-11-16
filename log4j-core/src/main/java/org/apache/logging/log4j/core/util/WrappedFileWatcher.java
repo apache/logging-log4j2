@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.util;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
@@ -32,14 +31,16 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     private final FileWatcher watcher;
     private volatile long lastModifiedMillis;
 
-    public WrappedFileWatcher(FileWatcher watcher, final Configuration configuration,
-        final Reconfigurable reconfigurable, final List<ConfigurationListener> configurationListeners,
-        final long lastModifiedMillis) {
+    public WrappedFileWatcher(
+            FileWatcher watcher,
+            final Configuration configuration,
+            final Reconfigurable reconfigurable,
+            final List<ConfigurationListener> configurationListeners,
+            final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
         this.watcher = watcher;
         this.lastModifiedMillis = lastModifiedMillis;
     }
-
 
     public WrappedFileWatcher(final FileWatcher watcher) {
         super(null, null, null);
@@ -91,10 +92,10 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     }
 
     @Override
-    public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners,
-        long lastModifiedMillis) {
-        final WrappedFileWatcher watcher = new WrappedFileWatcher(this.watcher, getConfiguration(), reconfigurable, listeners,
-                lastModifiedMillis);
+    public Watcher newWatcher(
+            final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners, long lastModifiedMillis) {
+        final WrappedFileWatcher watcher =
+                new WrappedFileWatcher(this.watcher, getConfiguration(), reconfigurable, listeners, lastModifiedMillis);
         if (getSource() != null) {
             watcher.watching(getSource());
         }

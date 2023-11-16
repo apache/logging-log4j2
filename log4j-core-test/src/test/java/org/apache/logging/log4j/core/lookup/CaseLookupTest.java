@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CaseLookupTest {
+import org.junit.jupiter.api.Test;
 
+public class CaseLookupTest {
 
     @Test
     public void testLookup() {

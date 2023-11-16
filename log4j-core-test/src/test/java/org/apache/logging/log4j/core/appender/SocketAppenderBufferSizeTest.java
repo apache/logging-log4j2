@@ -73,5 +73,4 @@ public class SocketAppenderBufferSizeTest {
     public void testTcpAppenderSmallestEncoderBufferSize() throws Exception {
         SocketAppenderTest.testTcpAppender(tcpServer, logger, 1);
     }
-
 }

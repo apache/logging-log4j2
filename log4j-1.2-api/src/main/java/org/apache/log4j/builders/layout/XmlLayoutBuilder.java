@@ -16,9 +16,12 @@
  */
 package org.apache.log4j.builders.layout;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -27,10 +30,6 @@ import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.w3c.dom.Element;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build an XML Layout
@@ -41,13 +40,11 @@ public class XmlLayoutBuilder extends AbstractBuilder<Layout> implements LayoutB
     private static final String LOCATION_INFO = "LocationInfo";
     private static final String PROPERTIES = "Properties";
 
-    public XmlLayoutBuilder() {
-    }
+    public XmlLayoutBuilder() {}
 
     public XmlLayoutBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
-
 
     @Override
     public Layout parse(final Element layoutElement, final XmlConfiguration config) {

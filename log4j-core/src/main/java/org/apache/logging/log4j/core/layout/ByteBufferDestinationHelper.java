@@ -25,8 +25,7 @@ import java.nio.ByteBuffer;
  */
 public final class ByteBufferDestinationHelper {
 
-    private ByteBufferDestinationHelper() {
-    }
+    private ByteBufferDestinationHelper() {}
 
     /**
      * Writes the specified data to the specified destination. Doesn't synchronize on the destination object. The helper
@@ -57,8 +56,8 @@ public final class ByteBufferDestinationHelper {
      * @param length      the number of bytes to write
      * @param destination the {@code ByteBufferDestination} to write to
      */
-    public static void writeToUnsynchronized(final byte[] data, final int offset, final int length,
-            final ByteBufferDestination destination) {
+    public static void writeToUnsynchronized(
+            final byte[] data, final int offset, final int length, final ByteBufferDestination destination) {
         ByteBuffer buffer = destination.getByteBuffer();
         int currentOffset = offset;
         int currentLength = length;

@@ -17,7 +17,6 @@
 package org.apache.log4j.util;
 
 import java.util.Arrays;
-
 import org.apache.oro.text.perl.Perl5Util;
 
 public class ControlFilter implements Filter {

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rewrite;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -47,9 +46,14 @@ public final class RewriteAppender extends AbstractAppender {
     private final RewritePolicy rewritePolicy;
     private final AppenderRef[] appenderRefs;
 
-    private RewriteAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                            final AppenderRef[] appenderRefs, final RewritePolicy rewritePolicy,
-                            final Configuration config, final Property[] properties) {
+    private RewriteAppender(
+            final String name,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final AppenderRef[] appenderRefs,
+            final RewritePolicy rewritePolicy,
+            final Configuration config,
+            final Property[] properties) {
         super(name, filter, null, ignoreExceptions, properties);
         this.config = config;
         this.rewritePolicy = rewritePolicy;
@@ -62,8 +66,8 @@ public final class RewriteAppender extends AbstractAppender {
             final String name = ref.getRef();
             final Appender appender = config.getAppender(name);
             if (appender != null) {
-                final Filter filter = appender instanceof AbstractAppender ?
-                    ((AbstractAppender) appender).getFilter() : null;
+                final Filter filter =
+                        appender instanceof AbstractAppender ? ((AbstractAppender) appender).getFilter() : null;
                 appenders.put(name, new AppenderControl(appender, ref.getLevel(), filter));
             } else {
                 LOGGER.error("Appender " + ref + " cannot be located. Reference ignored");
@@ -128,5 +132,4 @@ public final class RewriteAppender extends AbstractAppender {
         }
         return false;
     }
-
 }

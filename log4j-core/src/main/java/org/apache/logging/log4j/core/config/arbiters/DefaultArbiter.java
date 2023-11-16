@@ -23,8 +23,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 /**
  * Default Condition for a Select Condition.
  */
-@Plugin(name = "DefaultArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Plugin(
+        name = "DefaultArbiter",
+        category = Node.CATEGORY,
+        elementType = Arbiter.ELEMENT_TYPE,
+        deferChildren = true,
+        printObject = true)
 public class DefaultArbiter implements Arbiter {
 
     /**

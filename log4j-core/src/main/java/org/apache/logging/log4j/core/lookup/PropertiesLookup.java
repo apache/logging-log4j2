@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
 
@@ -39,12 +38,9 @@ public final class PropertiesLookup implements StrLookup {
     private final Map<String, ConfigurationPropertyResult> configurationProperties;
 
     public PropertiesLookup(final Property[] configProperties, final Map<String, String> contextProperties) {
-        this.contextProperties = contextProperties == null
-                ? Collections.emptyMap()
-                : contextProperties;
-        this.configurationProperties = configProperties == null
-                ? Collections.emptyMap()
-                : createConfigurationPropertyMap(configProperties);
+        this.contextProperties = contextProperties == null ? Collections.emptyMap() : contextProperties;
+        this.configurationProperties =
+                configProperties == null ? Collections.emptyMap() : createConfigurationPropertyMap(configProperties);
     }
 
     /**
@@ -97,10 +93,9 @@ public final class PropertiesLookup implements StrLookup {
 
     @Override
     public String toString() {
-        return "PropertiesLookup{" +
-                "contextProperties=" + contextProperties +
-                ", configurationProperties=" + configurationProperties +
-                '}';
+        return "PropertiesLookup{" + "contextProperties="
+                + contextProperties + ", configurationProperties="
+                + configurationProperties + '}';
     }
 
     private static Map<String, ConfigurationPropertyResult> createConfigurationPropertyMap(final Property[] props) {

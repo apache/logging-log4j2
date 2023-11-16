@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.layout;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;

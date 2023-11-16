@@ -16,14 +16,12 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.io.IOException;
-
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +31,8 @@ public class TestAsyncServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
         final AsyncContext asyncContext = req.startAsync();
         asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(this.getServletContext(), () -> {
             final Logger logger = LogManager.getLogger(TestAsyncServlet.class);
@@ -42,11 +41,12 @@ public class TestAsyncServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
         final AsyncContext asyncContext = req.startAsync();
         asyncContext.start(() -> {
             final Log4jWebSupport webSupport =
-                WebLoggerContextUtils.getWebLifeCycle(TestAsyncServlet.this.getServletContext());
+                    WebLoggerContextUtils.getWebLifeCycle(TestAsyncServlet.this.getServletContext());
             webSupport.setLoggerContext();
             // do stuff
             webSupport.clearLoggerContext();

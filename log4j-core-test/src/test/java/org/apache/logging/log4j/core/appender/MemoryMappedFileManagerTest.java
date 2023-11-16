@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the MemoryMappedFileManager class.
@@ -44,14 +43,13 @@ public class MemoryMappedFileManagerTest {
 
         final boolean append = false;
         final boolean immediateFlush = false;
-        try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(file.getAbsolutePath(),
-                append, immediateFlush, mapSize, null, null)) {
+        try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(
+                file.getAbsolutePath(), append, immediateFlush, mapSize, null, null)) {
             byte[] msg;
             for (int i = 0; i < 1000; i++) {
                 msg = ("Message " + i + "\n").getBytes();
                 manager.write(msg, 0, msg.length, false);
             }
-
         }
 
         try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -79,8 +77,13 @@ public class MemoryMappedFileManagerTest {
 
         final boolean isAppend = true;
         final boolean immediateFlush = false;
-        try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(file.getAbsolutePath(),
-                isAppend, immediateFlush, MemoryMappedFileManager.DEFAULT_REGION_LENGTH, null, null)) {
+        try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(
+                file.getAbsolutePath(),
+                isAppend,
+                immediateFlush,
+                MemoryMappedFileManager.DEFAULT_REGION_LENGTH,
+                null,
+                null)) {
             manager.writeBytes(new byte[initialLength], 0, initialLength);
         }
         final int expected = initialLength * 2;

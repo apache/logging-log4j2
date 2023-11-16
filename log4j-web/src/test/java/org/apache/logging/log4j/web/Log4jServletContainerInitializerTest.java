@@ -16,23 +16,6 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.util.EnumSet;
-import java.util.EventListener;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.any;
@@ -42,14 +25,32 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
 
+import java.util.EnumSet;
+import java.util.EventListener;
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @ExtendWith(MockitoExtension.class)
 public class Log4jServletContainerInitializerTest {
     @Mock
     private ServletContext servletContext;
+
     @Mock
     private Log4jWebLifeCycle initializer;
+
     @Captor
     private ArgumentCaptor<Class<? extends Filter>> filterCaptor;
+
     @Captor
     private ArgumentCaptor<EventListener> listenerCaptor;
 
@@ -79,8 +80,8 @@ public class Log4jServletContainerInitializerTest {
     public void testOnStartupWithServletVersion3_xEffectiveVersion3_xDisabledTrue() throws Exception {
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))).willReturn(
-            "true");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED)))
+                .willReturn("true");
 
         this.containerInitializer.onStartup(null, this.servletContext);
     }
@@ -91,10 +92,11 @@ public class Log4jServletContainerInitializerTest {
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED)))
-                      .willReturn("true");
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))).willReturn(
-                null);
-        given(servletContext.addFilter(eq("log4jServletFilter"), filterCaptor.capture())).willReturn(registration);
+                .willReturn("true");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED)))
+                .willReturn(null);
+        given(servletContext.addFilter(eq("log4jServletFilter"), filterCaptor.capture()))
+                .willReturn(registration);
         given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
 
         this.containerInitializer.onStartup(null, this.servletContext);
@@ -102,7 +104,9 @@ public class Log4jServletContainerInitializerTest {
         then(initializer).should().start();
         then(initializer).should().setLoggerContext();
         then(registration).should().setAsyncSupported(eq(true));
-        then(registration).should().addMappingForUrlPatterns(eq(EnumSet.allOf(DispatcherType.class)), eq(false), eq("/*"));
+        then(registration)
+                .should()
+                .addMappingForUrlPatterns(eq(EnumSet.allOf(DispatcherType.class)), eq(false), eq("/*"));
 
         // initParam IS_LOG4J_AUTO_SHUTDOWN_DISABLED is "true" so addListener shouldn't be called.
         then(servletContext).should(never()).addListener(any(Log4jServletContextListener.class));
@@ -112,8 +116,8 @@ public class Log4jServletContainerInitializerTest {
     public void testOnStartupWithServletVersion3_xEffectiveVersion3_xDisabledTRUE() throws Exception {
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))).willReturn(
-            "TRUE");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED)))
+                .willReturn("TRUE");
 
         this.containerInitializer.onStartup(null, this.servletContext);
     }
@@ -123,9 +127,10 @@ public class Log4jServletContainerInitializerTest {
         final FilterRegistration.Dynamic registration = mock(FilterRegistration.Dynamic.class);
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))).willReturn(
-            null);
-        given(servletContext.addFilter(eq("log4jServletFilter"), filterCaptor.capture())).willReturn(registration);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED)))
+                .willReturn(null);
+        given(servletContext.addFilter(eq("log4jServletFilter"), filterCaptor.capture()))
+                .willReturn(registration);
         given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
 
         containerInitializer.onStartup(null, servletContext);
@@ -134,12 +139,15 @@ public class Log4jServletContainerInitializerTest {
         then(initializer).should().setLoggerContext();
         then(servletContext).should().addListener(listenerCaptor.capture());
         then(registration).should().setAsyncSupported(eq(true));
-        then(registration).should().addMappingForUrlPatterns(eq(EnumSet.allOf(DispatcherType.class)), eq(false), eq("/*"));
+        then(registration)
+                .should()
+                .addMappingForUrlPatterns(eq(EnumSet.allOf(DispatcherType.class)), eq(false), eq("/*"));
 
         assertNotNull(listenerCaptor.getValue(), "The listener should not be null.");
-        assertSame(Log4jServletContextListener.class,
-            listenerCaptor.getValue().getClass(),
-            "The listener is not correct.");
+        assertSame(
+                Log4jServletContextListener.class,
+                listenerCaptor.getValue().getClass(),
+                "The listener is not correct.");
 
         assertNotNull(filterCaptor.getValue(), "The filter should not be null.");
         assertSame(Log4jServletFilter.class, filterCaptor.getValue(), "The filter is not correct.");
@@ -149,9 +157,10 @@ public class Log4jServletContainerInitializerTest {
     public void testOnStartupCanceledDueToPreExistingFilter() throws Exception {
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))).willReturn(
-            "false");
-        given(servletContext.addFilter(eq("log4jServletFilter"), filterCaptor.capture())).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED)))
+                .willReturn("false");
+        given(servletContext.addFilter(eq("log4jServletFilter"), filterCaptor.capture()))
+                .willReturn(null);
 
         this.containerInitializer.onStartup(null, this.servletContext);
 
@@ -165,9 +174,10 @@ public class Log4jServletContainerInitializerTest {
         final IllegalStateException exception = new IllegalStateException(Strings.EMPTY);
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))).willReturn(
-            "balderdash");
-        given(servletContext.addFilter(eq("log4jServletFilter"), filterCaptor.capture())).willReturn(registration);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED)))
+                .willReturn("balderdash");
+        given(servletContext.addFilter(eq("log4jServletFilter"), filterCaptor.capture()))
+                .willReturn(registration);
         given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
         willThrow(exception).given(initializer).start();
 

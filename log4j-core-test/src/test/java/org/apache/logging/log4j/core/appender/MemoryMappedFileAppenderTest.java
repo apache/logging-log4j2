@@ -16,23 +16,22 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests that logged strings appear in the file, that the initial file size is the specified region length,
@@ -41,9 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 2.1
  */
 @CleanUpFiles({
-        "target/MemoryMappedFileAppenderTest.log",
-        "target/MemoryMappedFileAppenderRemapTest.log",
-        "target/MemoryMappedFileAppenderLocationTest.log"
+    "target/MemoryMappedFileAppenderTest.log",
+    "target/MemoryMappedFileAppenderRemapTest.log",
+    "target/MemoryMappedFileAppenderLocationTest.log"
 })
 public class MemoryMappedFileAppenderTest {
 
@@ -112,9 +111,12 @@ public class MemoryMappedFileAppenderTest {
         assertEquals(272 + 2 * System.lineSeparator().length(), Files.size(logFile), "Expected file size to shrink");
 
         final List<String> lines = Files.readAllLines(logFile);
-        assertThat(lines, both(hasSize(2)).and(contains(
-                "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:104): Test log1",
-                "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:107): Test log2"
-        )));
+        assertThat(
+                lines,
+                both(hasSize(2))
+                        .and(
+                                contains(
+                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:104): Test log1",
+                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:107): Test log2")));
     }
 }

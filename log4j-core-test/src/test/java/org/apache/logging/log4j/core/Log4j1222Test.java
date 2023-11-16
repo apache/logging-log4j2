@@ -16,24 +16,22 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.test.TestLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * Tests logging during shutdown.
  */
 @Tag("functional")
-public class Log4j1222Test
-{
+public class Log4j1222Test {
 
     @Test
-    public void homepageRendersSuccessfully()
-    {
+    public void homepageRendersSuccessfully() {
         System.setProperty("log4j.configurationFile", "log4j2-console.xml");
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
@@ -45,8 +43,7 @@ public class Log4j1222Test
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             super.run();
             trigger();
         }

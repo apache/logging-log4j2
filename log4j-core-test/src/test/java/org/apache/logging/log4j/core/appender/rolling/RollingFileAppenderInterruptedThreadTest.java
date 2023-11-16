@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.instanceOf;
 
+import java.io.File;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -33,9 +35,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.instanceOf;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-1798
@@ -55,8 +54,8 @@ public class RollingFileAppenderInterruptedThreadTest {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setConfigurationName("LOG4J2-1798 test");
 
-        builder.add(builder.newAppender("consoleLog", "Console")
-                .addAttribute("target", ConsoleAppender.Target.SYSTEM_ERR));
+        builder.add(
+                builder.newAppender("consoleLog", "Console").addAttribute("target", ConsoleAppender.Target.SYSTEM_ERR));
 
         builder.add(builder.newAppender("fileAppender", "RollingFile")
                 .addAttribute("filePattern", ROLLING_APPENDER_FILES_DIR + "/file-%i.log")

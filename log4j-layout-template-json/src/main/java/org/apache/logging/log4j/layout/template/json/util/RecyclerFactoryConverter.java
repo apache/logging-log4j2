@@ -30,5 +30,4 @@ public final class RecyclerFactoryConverter implements TypeConverter<RecyclerFac
     public RecyclerFactory convert(final String recyclerFactorySpec) {
         return RecyclerFactories.ofSpec(recyclerFactorySpec);
     }
-
 }

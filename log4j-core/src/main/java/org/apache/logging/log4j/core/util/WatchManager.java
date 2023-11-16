@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.Date;
@@ -30,10 +33,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
-import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
@@ -88,10 +87,10 @@ public class WatchManager extends AbstractLifeCycle {
         private static final byte VARIANT = (byte) 0x80;
         private static final int SEQUENCE_MASK = 0x3FFF;
 
-
         public static UUID get() {
-            final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) +
-                    NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) + (COUNT.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
+            final long time =
+                    ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH)
+                            + (COUNT.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
             final long timeLow = (time & LOW_MASK) << SHIFT_4;
             final long timeMid = (time & MID_MASK) >> SHIFT_2;
             final long timeHi = (time & HIGH_MASK) >> SHIFT_6;
@@ -99,6 +98,7 @@ public class WatchManager extends AbstractLifeCycle {
             return new UUID(most, COUNT.incrementAndGet());
         }
     }
+
     private final class WatchRunnable implements Runnable {
 
         // Use a hard class reference here in case a refactoring changes the class name.
@@ -113,9 +113,13 @@ public class WatchManager extends AbstractLifeCycle {
                 if (monitor.getWatcher().isModified()) {
                     final long lastModified = monitor.getWatcher().getLastModified();
                     if (logger.isInfoEnabled()) {
-                        logger.info("Source '{}' was modified on {} ({}), previous modification was on {} ({})", source,
-                            millisToString(lastModified), lastModified, millisToString(monitor.lastModifiedMillis),
-                            monitor.lastModifiedMillis);
+                        logger.info(
+                                "Source '{}' was modified on {} ({}), previous modification was on {} ({})",
+                                source,
+                                millisToString(lastModified),
+                                lastModified,
+                                millisToString(monitor.lastModifiedMillis),
+                                monitor.lastModifiedMillis);
                     }
                     monitor.lastModifiedMillis = lastModified;
                     monitor.getWatcher().modified();
@@ -124,6 +128,7 @@ public class WatchManager extends AbstractLifeCycle {
             logger.trace("{} run ended.", SIMPLE_NAME);
         }
     }
+
     private static final Logger logger = StatusLogger.getLogger();
     private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
     private int intervalSeconds = 0;
@@ -186,7 +191,8 @@ public class WatchManager extends AbstractLifeCycle {
             if (entry.getValue().getWatcher() instanceof ConfigurationFileWatcher) {
                 map.put(entry.getKey().getFile(), (FileWatcher) entry.getValue().getWatcher());
             } else {
-                map.put(entry.getKey().getFile(), new WrappedFileWatcher((FileWatcher) entry.getValue().getWatcher()));
+                map.put(entry.getKey().getFile(), new WrappedFileWatcher((FileWatcher)
+                        entry.getValue().getWatcher()));
             }
         }
         return map;
@@ -257,9 +263,13 @@ public class WatchManager extends AbstractLifeCycle {
             if (watcher.isModified()) {
                 final long lastModifiedMillis = watcher.getLastModified();
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Resetting file monitor for '{}' from {} ({}) to {} ({})", source.getLocation(),
-                        millisToString(monitor.lastModifiedMillis), monitor.lastModifiedMillis,
-                        millisToString(lastModifiedMillis), lastModifiedMillis);
+                    logger.debug(
+                            "Resetting file monitor for '{}' from {} ({}) to {} ({})",
+                            source.getLocation(),
+                            millisToString(monitor.lastModifiedMillis),
+                            monitor.lastModifiedMillis,
+                            millisToString(lastModifiedMillis),
+                            lastModifiedMillis);
                 }
                 monitor.setLastModifiedMillis(lastModifiedMillis);
             }
@@ -282,8 +292,8 @@ public class WatchManager extends AbstractLifeCycle {
         super.start();
 
         if (intervalSeconds > 0) {
-            future = scheduler
-                .scheduleWithFixedDelay(new WatchRunnable(), intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
+            future = scheduler.scheduleWithFixedDelay(
+                    new WatchRunnable(), intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
         }
         for (WatchEventService service : eventServiceList) {
             service.subscribe(this);
@@ -304,7 +314,7 @@ public class WatchManager extends AbstractLifeCycle {
     @Override
     public String toString() {
         return "WatchManager [intervalSeconds=" + intervalSeconds + ", watchers=" + watchers + ", scheduler="
-            + scheduler + ", future=" + future + "]";
+                + scheduler + ", future=" + future + "]";
     }
 
     /**
@@ -340,8 +350,11 @@ public class WatchManager extends AbstractLifeCycle {
         watcher.watching(source);
         final long lastModified = watcher.getLastModified();
         if (logger.isDebugEnabled()) {
-            logger.debug("Watching configuration '{}' for lastModified {} ({})", source, millisToString(lastModified),
-                lastModified);
+            logger.debug(
+                    "Watching configuration '{}' for lastModified {} ({})",
+                    source,
+                    millisToString(lastModified),
+                    lastModified);
         }
         watchers.put(source, new ConfigurationMonitor(lastModified, watcher));
     }

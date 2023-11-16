@@ -16,10 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.*;
+
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -32,12 +37,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
-
 /**
  * Tests for LOG4J2-2760
  */
@@ -49,7 +48,6 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
 
     @Test
     public void testRollingFileAppenderWithHtmlLayout() throws Exception {
@@ -68,7 +66,9 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
                 .setName("RollingHtml")
                 .withFilePattern(DIR + "/" + prefix + "_-%d{MM-dd-yy-HH-mm}-%i.html")
                 .withPolicy(new SizeBasedTriggeringPolicy(500))
-                .withStrategy(DirectWriteRolloverStrategy.newBuilder().withConfig(config).build())
+                .withStrategy(DirectWriteRolloverStrategy.newBuilder()
+                        .withConfig(config)
+                        .build())
                 .setLayout(HtmlLayout.createDefaultLayout())
                 .withAppend(append)
                 .build();
@@ -78,8 +78,7 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
             for (int i = 0; i < count; ++i) {
                 appender.append(Log4jLogEvent.newBuilder()
                         .setMessage(new SimpleMessage("This is test message number " + i))
-                        .build()
-                );
+                        .build());
             }
             appender.getManager().flush();
             appender.stop();

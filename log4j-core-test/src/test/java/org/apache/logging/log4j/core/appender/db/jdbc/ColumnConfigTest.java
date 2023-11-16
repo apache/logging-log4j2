@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ColumnConfigTest {
 
@@ -33,10 +33,10 @@ public class ColumnConfigTest {
     @Test
     public void testPatternAndLiteralNoConfig() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col")
-            .setPattern("%l")
-            .setLiteral("literal")
-            .build();
+                .setName("col")
+                .setPattern("%l")
+                .setLiteral("literal")
+                .build();
 
         assertNull("The result should be null.", config);
     }
@@ -44,10 +44,10 @@ public class ColumnConfigTest {
     @Test
     public void testPatternAndDateNoConfig() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col")
-            .setPattern("%l")
-            .setEventTimestamp(true)
-            .build();
+                .setName("col")
+                .setPattern("%l")
+                .setEventTimestamp(true)
+                .build();
 
         assertNull("The result should be null.", config);
     }
@@ -55,10 +55,10 @@ public class ColumnConfigTest {
     @Test
     public void testLiteralAndDateNoConfig() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col")
-            .setLiteral("literal")
-            .setEventTimestamp(true)
-            .build();
+                .setName("col")
+                .setLiteral("literal")
+                .setEventTimestamp(true)
+                .build();
 
         assertNull("The result should be null.", config);
     }
@@ -73,9 +73,9 @@ public class ColumnConfigTest {
     @Test
     public void testNoSettingNoConfig02() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col")
-            .setEventTimestamp(false)
-            .build();
+                .setName("col")
+                .setEventTimestamp(false)
+                .build();
 
         assertNull("The result should be null.", config);
     }
@@ -83,21 +83,19 @@ public class ColumnConfigTest {
     @Test
     public void testNoSettingNoConfig03() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col")
-            .setPattern(Strings.EMPTY)
-            .setLiteral(Strings.EMPTY)
-            .setEventTimestamp(false)
-            .build();
+                .setName("col")
+                .setPattern(Strings.EMPTY)
+                .setLiteral(Strings.EMPTY)
+                .setEventTimestamp(false)
+                .build();
 
         assertNull("The result should be null.", config);
     }
 
     @Test
     public void testDateColumn01() {
-        final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col")
-            .setEventTimestamp(true)
-            .build();
+        final ColumnConfig config =
+                ColumnConfig.newBuilder().setName("col").setEventTimestamp(true).build();
 
         assertNotNull("The result should not be null.", config);
         assertEquals("The column name is not correct.", "col", config.getColumnName());
@@ -111,11 +109,11 @@ public class ColumnConfigTest {
     @Test
     public void testDateColumn02() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col2")
-            .setEventTimestamp(true)
-            .setUnicode(true)
-            .setClob(true)
-            .build();
+                .setName("col2")
+                .setEventTimestamp(true)
+                .setUnicode(true)
+                .setClob(true)
+                .build();
 
         assertNotNull("The result should not be null.", config);
         assertEquals("The column name is not correct.", "col2", config.getColumnName());
@@ -128,10 +126,8 @@ public class ColumnConfigTest {
 
     @Test
     public void testPatternColumn01() {
-        final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col")
-            .setPattern("%l")
-            .build();
+        final ColumnConfig config =
+                ColumnConfig.newBuilder().setName("col").setPattern("%l").build();
 
         assertNotNull("The result should not be null.", config);
         assertEquals("The column name is not correct.", "col", config.getColumnName());
@@ -146,18 +142,21 @@ public class ColumnConfigTest {
     @Test
     public void testPatternColumn02() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col2")
-            .setPattern("%X{id} %level")
-            .setLiteral(Strings.EMPTY)
-            .setEventTimestamp(false)
-            .setUnicode(false)
-            .setClob(true)
-            .build();
+                .setName("col2")
+                .setPattern("%X{id} %level")
+                .setLiteral(Strings.EMPTY)
+                .setEventTimestamp(false)
+                .setUnicode(false)
+                .setClob(true)
+                .build();
 
         assertNotNull("The result should not be null.", config);
         assertEquals("The column name is not correct.", "col2", config.getColumnName());
         assertNotNull("The pattern should not be null.", config.getLayout());
-        assertEquals("The pattern is not correct.", "%X{id} %level", config.getLayout().toString());
+        assertEquals(
+                "The pattern is not correct.",
+                "%X{id} %level",
+                config.getLayout().toString());
         assertNull("The literal value should be null.", config.getLiteralValue());
         assertFalse("The timestamp flag should be false.", config.isEventTimestamp());
         assertFalse("The unicode flag should be false.", config.isUnicode());
@@ -167,18 +166,21 @@ public class ColumnConfigTest {
     @Test
     public void testPatternColumn03() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col3")
-            .setPattern("%X{id} %level")
-            .setLiteral(Strings.EMPTY)
-            .setEventTimestamp(false)
-            .setUnicode(true)
-            .setClob(false)
-            .build();
+                .setName("col3")
+                .setPattern("%X{id} %level")
+                .setLiteral(Strings.EMPTY)
+                .setEventTimestamp(false)
+                .setUnicode(true)
+                .setClob(false)
+                .build();
 
         assertNotNull("The result should not be null.", config);
         assertEquals("The column name is not correct.", "col3", config.getColumnName());
         assertNotNull("The pattern should not be null.", config.getLayout());
-        assertEquals("The pattern is not correct.", "%X{id} %level", config.getLayout().toString());
+        assertEquals(
+                "The pattern is not correct.",
+                "%X{id} %level",
+                config.getLayout().toString());
         assertNull("The literal value should be null.", config.getLiteralValue());
         assertFalse("The timestamp flag should be false.", config.isEventTimestamp());
         assertTrue("The unicode flag should be true.", config.isUnicode());
@@ -188,9 +190,9 @@ public class ColumnConfigTest {
     @Test
     public void testLiteralColumn01() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col")
-            .setLiteral("literalValue01")
-            .build();
+                .setName("col")
+                .setLiteral("literalValue01")
+                .build();
 
         assertNotNull("The result should not be null.", config);
         assertEquals("The column name is not correct.", "col", config.getColumnName());
@@ -205,11 +207,11 @@ public class ColumnConfigTest {
     @Test
     public void testLiteralColumn02() {
         final ColumnConfig config = ColumnConfig.newBuilder()
-            .setName("col2")
-            .setLiteral("USER1.MY_SEQUENCE.NEXT")
-            .setUnicode(true)
-            .setClob(true)
-            .build();
+                .setName("col2")
+                .setLiteral("USER1.MY_SEQUENCE.NEXT")
+                .setUnicode(true)
+                .setClob(true)
+                .build();
 
         assertNotNull("The result should not be null.", config);
         assertEquals("The column name is not correct.", "col2", config.getColumnName());

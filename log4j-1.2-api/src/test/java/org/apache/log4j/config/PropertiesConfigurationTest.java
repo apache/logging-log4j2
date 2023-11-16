@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +28,6 @@ import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -48,11 +52,6 @@ import org.apache.logging.log4j.core.filter.LevelRangeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 /**
  * Test configuration from Properties.
  */
@@ -75,7 +74,8 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
 
     @Test
     public void testConfigureNullPointerException() throws Exception {
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
+        try (final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
             // [LOG4J2-3247] configure() should not throw an NPE.
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
@@ -86,7 +86,8 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
 
     @Test
     public void testConsoleAppenderFilter() throws Exception {
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
+        try (final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
             // LOG4J2-3281 PropertiesConfiguration.buildAppender not adding filters to appender
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
@@ -101,7 +102,8 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
 
     @Test
     public void testCustomAppenderFilter() throws Exception {
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3281.properties")) {
+        try (final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/LOG4J2-3281.properties")) {
             // LOG4J2-3281 PropertiesConfiguration.buildAppender not adding filters to appender
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
@@ -117,7 +119,8 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
     @Test
     public void testConsoleAppenderLevelRangeFilter() throws Exception {
         PluginManager.addPackage("org.apache.log4j.builders.filter");
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3326.properties")) {
+        try (final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/LOG4J2-3326.properties")) {
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
             final Appender appender = configuration.getAppender("CUSTOM");
@@ -157,13 +160,14 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             // deny
             logger.fatal("FATAL");
             assertEquals(3, legacyAppender.getEvents().size());
-      }
+        }
     }
 
     @Test
     public void testConfigureAppenderDoesNotExist() throws Exception {
         // Verify that we tolerate a logger which specifies an appender that does not exist.
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3407.properties")) {
+        try (final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/LOG4J2-3407.properties")) {
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
         }
@@ -171,7 +175,8 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
 
     @Test
     public void testListAppender() throws Exception {
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
+        try (final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
             final Logger logger = LogManager.getLogger("test");
             logger.debug("This is a test of the root logger");
             final Configuration configuration = loggerContext.getConfiguration();
@@ -196,7 +201,8 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
 
     @Test
     public void testProperties() throws Exception {
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-file-1.properties")) {
+        try (final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/log4j1-file-1.properties")) {
             final Logger logger = LogManager.getLogger("test");
             logger.debug("This is a test of the root logger");
             File file = new File("target/temp.A1");
@@ -212,7 +218,8 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
     public void testSystemProperties() throws Exception {
         final String testPathLocation = "target";
         System.setProperty(TEST_KEY, testPathLocation);
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/config-1.2/log4j-FileAppender-with-props.properties")) {
+        try (final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/config-1.2/log4j-FileAppender-with-props.properties")) {
             // [LOG4J2-3312] Bridge does not convert properties.
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
@@ -227,7 +234,6 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             System.clearProperty(TEST_KEY);
         }
     }
-
 
     @Override
     @Test
@@ -329,7 +335,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             assertTrue(appender instanceof ConsoleAppender);
             final Layout<? extends Serializable> layout = appender.getLayout();
             assertTrue(layout instanceof PatternLayout);
-            assertEquals("%v1Level - %m%n", ((PatternLayout)layout).getConversionPattern());
+            assertEquals("%v1Level - %m%n", ((PatternLayout) layout).getConversionPattern());
             final Filter filter = ((Filterable) appender).getFilter();
             assertTrue(filter instanceof DenyAllFilter);
             config.start();

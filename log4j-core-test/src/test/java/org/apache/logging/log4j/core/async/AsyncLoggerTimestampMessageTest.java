@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -38,8 +39,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
  * <p>
@@ -51,12 +50,9 @@ public class AsyncLoggerTimestampMessageTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerTimestampMessageTest.xml");
-        System.setProperty(ClockFactory.PROPERTY_NAME,
-                PoisonClock.class.getName());
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerTimestampMessageTest.xml");
+        System.setProperty(ClockFactory.PROPERTY_NAME, PoisonClock.class.getName());
     }
 
     @AfterClass
@@ -87,9 +83,10 @@ public class AsyncLoggerTimestampMessageTest {
 
     public static class PoisonClock implements Clock {
         public static boolean called = false;
+
         @Override
         public long currentTimeMillis() {
-            //throw new RuntimeException("This should not have been called");
+            // throw new RuntimeException("This should not have been called");
             called = true;
             return 987654321L;
         }

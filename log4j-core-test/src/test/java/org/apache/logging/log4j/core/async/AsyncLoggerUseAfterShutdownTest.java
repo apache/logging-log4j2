@@ -39,10 +39,8 @@ public class AsyncLoggerUseAfterShutdownTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerTest.xml");
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerTest.xml");
     }
 
     @AfterClass
@@ -61,5 +59,4 @@ public class AsyncLoggerUseAfterShutdownTest {
         // before the LOG4J2-639 fix this would throw a NPE
         ((AbstractLogger) log).logMessage("com.foo.Bar", Level.INFO, null, new SimpleMessage("msg"), null);
     }
-
 }

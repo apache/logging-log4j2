@@ -29,5 +29,4 @@ interface Clearable {
      * Resets the object to a clean state.
      */
     void clear();
-
 }

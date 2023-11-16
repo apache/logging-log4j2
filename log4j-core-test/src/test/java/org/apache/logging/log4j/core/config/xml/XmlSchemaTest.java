@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,14 +25,12 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-
 import javax.xml.XMLConstants;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.xml.sax.Attributes;
@@ -39,8 +39,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.helpers.XMLReaderFactory;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class XmlSchemaTest {
 
@@ -61,17 +59,15 @@ public class XmlSchemaTest {
             "reconfiguration-deadlock.xml", // uses test-appender ReconfigurationDeadlockTestAppender
             "AsyncWaitStrategy", // uses AsyncWaitStrategyFactory (LOG4J2-3472)
             "XmlConfigurationSecurity.xml", // used for testing XML parser; shouldn't be parseable in secure settings
-            "InvalidConfig.xml", "InvalidXML.xml"
-    );
+            "InvalidConfig.xml",
+            "InvalidXML.xml");
 
     static Stream<Path> testXmlSchemaValidation() throws IOException {
         return Files.list(Paths.get("src", "test", "resources")).filter(filePath -> {
             final String fileName = filePath.getFileName().toString();
-            if (!fileName.endsWith(".xml"))
-                return false;
+            if (!fileName.endsWith(".xml")) return false;
             for (final String ignore : IGNORE_CONFIGS) {
-                if (fileName.contains(ignore))
-                    return false;
+                if (fileName.contains(ignore)) return false;
             }
             return true;
         });
@@ -86,8 +82,9 @@ public class XmlSchemaTest {
 
         final XMLFilterImpl namespaceAdder = new XMLFilterImpl(XMLReaderFactory.createXMLReader()) {
             @Override
-            public void startElement(final String namespace, final String localName, final String qName,
-                    final Attributes atts) throws SAXException {
+            public void startElement(
+                    final String namespace, final String localName, final String qName, final Attributes atts)
+                    throws SAXException {
                 super.startElement(TARGET_NAMESPACE, localName, qName, atts);
             }
         };

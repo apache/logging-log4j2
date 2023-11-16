@@ -26,8 +26,7 @@ import com.lmax.disruptor.SequenceReportingEventHandler;
  * controlled by the {@code Executor} passed to the {@code Disruptor}
  * constructor.
  */
-public class RingBufferLogEventHandler implements
-        SequenceReportingEventHandler<RingBufferLogEvent>, LifecycleAware {
+public class RingBufferLogEventHandler implements SequenceReportingEventHandler<RingBufferLogEvent>, LifecycleAware {
 
     private static final int NOTIFY_PROGRESS_THRESHOLD = 50;
     private Sequence sequenceCallback;
@@ -40,8 +39,8 @@ public class RingBufferLogEventHandler implements
     }
 
     @Override
-    public void onEvent(final RingBufferLogEvent event, final long sequence,
-            final boolean endOfBatch) throws Exception {
+    public void onEvent(final RingBufferLogEvent event, final long sequence, final boolean endOfBatch)
+            throws Exception {
         try {
             // RingBufferLogEvents are populated by an EventTranslator. If an exception is thrown during event
             // translation, the event may not be fully populated, but Disruptor requires that the associated sequence
@@ -50,8 +49,7 @@ public class RingBufferLogEventHandler implements
             if (event.isPopulated()) {
                 event.execute(endOfBatch);
             }
-        }
-        finally {
+        } finally {
             event.clear();
             // notify the BatchEventProcessor that the sequence has progressed.
             // Without this callback the sequence would not be progressed
@@ -82,6 +80,5 @@ public class RingBufferLogEventHandler implements
     }
 
     @Override
-    public void onShutdown() {
-    }
+    public void onShutdown() {}
 }

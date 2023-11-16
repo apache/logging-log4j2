@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import static org.junit.Assert.*;
+
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -28,8 +29,6 @@ import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockPageContext;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -59,7 +58,7 @@ public class SetLoggerTagTest {
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger) attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagLoggerVarPageScope", logger.getName());
     }
 
@@ -77,7 +76,7 @@ public class SetLoggerTagTest {
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger) attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagStringVarPageScope", logger.getName());
     }
 
@@ -98,7 +97,7 @@ public class SetLoggerTagTest {
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger) attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagStringFactoryVarPageScope", logger.getName());
         checkMessageFactory("The message factory is not correct.", factory, logger);
     }
@@ -118,7 +117,7 @@ public class SetLoggerTagTest {
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger) attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagLoggerVarSessionScope", logger.getName());
     }
 
@@ -137,7 +136,7 @@ public class SetLoggerTagTest {
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger) attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagStringVarRequestScope", logger.getName());
     }
 
@@ -159,16 +158,18 @@ public class SetLoggerTagTest {
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
-        assertEquals("The logger name is not correct.", "testDoEndTagStringFactoryVarApplicationScope",
-                logger.getName());
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger) attribute;
+        assertEquals(
+                "The logger name is not correct.", "testDoEndTagStringFactoryVarApplicationScope", logger.getName());
         checkMessageFactory("The message factory is not correct.", factory, logger);
     }
 
-    private static void checkMessageFactory(final String msg, final MessageFactory messageFactory1,
-            final Logger testLogger1) {
+    private static void checkMessageFactory(
+            final String msg, final MessageFactory messageFactory1, final Logger testLogger1) {
         if (messageFactory1 == null) {
-            assertEquals(msg, AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS,
+            assertEquals(
+                    msg,
+                    AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS,
                     testLogger1.getMessageFactory().getClass());
         } else {
             MessageFactory actual = testLogger1.getMessageFactory();

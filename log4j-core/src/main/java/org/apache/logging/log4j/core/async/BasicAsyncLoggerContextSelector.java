@@ -20,7 +20,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -35,7 +34,8 @@ public class BasicAsyncLoggerContextSelector implements ContextSelector {
     private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");
 
     @Override
-    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
+    public void shutdown(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
         final LoggerContext ctx = getContext(fqcn, loader, currentContext);
         if (ctx != null && ctx.isStarted()) {
             ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -54,13 +54,9 @@ public class BasicAsyncLoggerContextSelector implements ContextSelector {
         return ctx != null ? ctx : CONTEXT;
     }
 
-
     @Override
     public LoggerContext getContext(
-            final String fqcn,
-            final ClassLoader loader,
-            final boolean currentContext,
-            final URI configLocation) {
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : CONTEXT;
     }
@@ -79,5 +75,4 @@ public class BasicAsyncLoggerContextSelector implements ContextSelector {
     public List<LoggerContext> getLoggerContexts() {
         return Collections.singletonList(CONTEXT);
     }
-
 }

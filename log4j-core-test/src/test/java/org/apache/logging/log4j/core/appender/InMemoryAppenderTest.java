@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,8 +27,6 @@ import org.apache.logging.log4j.core.test.appender.InMemoryAppender;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryAppenderTest {
 
@@ -41,7 +41,8 @@ public class InMemoryAppenderTest {
 
     @Test
     public void testHeaderRequested() {
-        final PatternLayout layout = PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
+        final PatternLayout layout =
+                PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
         final boolean writeHeader = true;
         final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
         final String expectedHeader = "HEADERHEADER";
@@ -50,7 +51,8 @@ public class InMemoryAppenderTest {
 
     @Test
     public void testHeaderSuppressed() {
-        final PatternLayout layout = PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
+        final PatternLayout layout =
+                PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
         final boolean writeHeader = false;
         final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
         final String expectedHeader = null;

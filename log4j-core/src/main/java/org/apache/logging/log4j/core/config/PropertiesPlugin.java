@@ -35,8 +35,7 @@ public final class PropertiesPlugin {
 
     private static final StrSubstitutor UNESCAPING_SUBSTITUTOR = createUnescapingSubstitutor();
 
-    private PropertiesPlugin() {
-    }
+    private PropertiesPlugin() {}
 
     /**
      * Creates the Properties component.
@@ -45,8 +44,8 @@ public final class PropertiesPlugin {
      * @return An Interpolator that includes the configuration properties.
      */
     @PluginFactory
-    public static StrLookup configureSubstitutor(@PluginElement("Properties") final Property[] properties,
-                                                 @PluginConfiguration final Configuration config) {
+    public static StrLookup configureSubstitutor(
+            @PluginElement("Properties") final Property[] properties, @PluginConfiguration final Configuration config) {
         // For backwards compatibility, we unescape all escaped lookups when properties are parsed.
         // This matches previous behavior for escaped components which were meant to be executed later on.
         final Property[] unescapedProperties = new Property[properties == null ? 0 : properties.length];
@@ -54,15 +53,11 @@ public final class PropertiesPlugin {
             unescapedProperties[i] = unescape(properties[i]);
         }
         return new Interpolator(
-                new PropertiesLookup(unescapedProperties, config.getProperties()),
-                config.getPluginPackages());
+                new PropertiesLookup(unescapedProperties, config.getProperties()), config.getPluginPackages());
     }
 
     private static Property unescape(final Property input) {
-        return Property.createProperty(
-                input.getName(),
-                unescape(input.getRawValue()),
-                input.getValue());
+        return Property.createProperty(input.getName(), unescape(input.getRawValue()), input.getValue());
     }
 
     // Visible for testing

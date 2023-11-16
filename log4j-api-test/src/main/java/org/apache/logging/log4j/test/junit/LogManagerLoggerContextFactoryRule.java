@@ -47,5 +47,4 @@ public class LogManagerLoggerContextFactoryRule extends ExternalResource {
         this.restoreLoggerContextFactory = LogManager.getFactory();
         LogManager.setFactory(this.loggerContextFactory);
     }
-
 }

@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -87,7 +86,10 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
      * @param logFile the log file.
      */
     @Override
-    public void initialize(final LoggingInitializationContext initializationContext, final String configLocation, final LogFile logFile) {
+    public void initialize(
+            final LoggingInitializationContext initializationContext,
+            final String configLocation,
+            final LogFile logFile) {
         final Environment environment = initializationContext.getEnvironment();
         PropertiesUtil.getProperties().addPropertySource(new SpringPropertySource(environment));
         getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, environment);
@@ -165,16 +167,20 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                     final ConfigurationSource source = getConfigurationSource(ResourceUtils.getURL(sourceLocation));
                     if (source != null) {
                         try {
-                            final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, source);
+                            final Configuration config =
+                                    ConfigurationFactory.getInstance().getConfiguration(ctx, source);
                             if (config instanceof AbstractConfiguration) {
                                 configs.add((AbstractConfiguration) config);
                             } else {
-                                LOGGER.warn("Configuration at {} cannot be combined in a CompositeConfiguration", sourceLocation);
+                                LOGGER.warn(
+                                        "Configuration at {} cannot be combined in a CompositeConfiguration",
+                                        sourceLocation);
                                 return;
                             }
                         } catch (Exception ex) {
                             if (!first) {
-                                LOGGER.warn("Error accessing {}: {}. Ignoring override", sourceLocation, ex.getMessage());
+                                LOGGER.warn(
+                                        "Error accessing {}: {}. Ignoring override", sourceLocation, ex.getMessage());
                             } else {
                                 throw ex;
                             }
@@ -188,10 +194,8 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                     ctx.start(configs.get(0));
                 }
             }
-        }
-        catch (Exception ex) {
-            throw new IllegalStateException(
-                    "Could not initialize Log4J2 logging from " + location, ex);
+        } catch (Exception ex) {
+            throw new IllegalStateException("Could not initialize Log4J2 logging from " + location, ex);
         }
     }
 
@@ -229,11 +233,11 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     }
 
     private ConfigurationSource getConfigurationSource(final URL url) throws IOException, URISyntaxException {
-        final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-        final SslConfiguration sslConfiguration = url.getProtocol().equals(HTTPS)
-                ? SslConfigurationFactory.getSslConfiguration() : null;
-        final URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration,
-                provider);
+        final AuthorizationProvider provider =
+                ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+        final SslConfiguration sslConfiguration =
+                url.getProtocol().equals(HTTPS) ? SslConfigurationFactory.getSslConfiguration() : null;
+        final URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration, provider);
 
         final File file = FileUtils.fileFromUri(url.toURI());
         try {
@@ -261,7 +265,5 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
             }
             return new Log4j2SpringBootLoggingSystem(classLoader);
         }
-
     }
-
 }

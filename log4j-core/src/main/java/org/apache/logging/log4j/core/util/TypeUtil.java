@@ -41,8 +41,7 @@ import java.util.Objects;
  */
 public final class TypeUtil {
 
-    private TypeUtil() {
-    }
+    private TypeUtil() {}
 
     /**
      * Gets all declared fields for the given class (including superclasses).
@@ -147,9 +146,9 @@ public final class TypeUtil {
             // verify all type arguments are assignable
             final Type lhsArgument = lhsTypeArguments[i];
             final Type rhsArgument = rhsTypeArguments[i];
-            if (!lhsArgument.equals(rhsArgument) &&
-                !(lhsArgument instanceof WildcardType &&
-                    isWildcardAssignable((WildcardType) lhsArgument, rhsArgument))) {
+            if (!lhsArgument.equals(rhsArgument)
+                    && !(lhsArgument instanceof WildcardType
+                            && isWildcardAssignable((WildcardType) lhsArgument, rhsArgument))) {
                 return false;
             }
         }
@@ -206,12 +205,12 @@ public final class TypeUtil {
 
     private static Type[] getEffectiveUpperBounds(final WildcardType type) {
         final Type[] upperBounds = type.getUpperBounds();
-        return upperBounds.length == 0 ? new Type[]{Object.class} : upperBounds;
+        return upperBounds.length == 0 ? new Type[] {Object.class} : upperBounds;
     }
 
     private static Type[] getEffectiveLowerBounds(final WildcardType type) {
         final Type[] lowerBounds = type.getLowerBounds();
-        return lowerBounds.length == 0 ? new Type[]{null} : lowerBounds;
+        return lowerBounds.length == 0 ? new Type[] {null} : lowerBounds;
     }
 
     private static boolean isBoundAssignable(final Type lhs, final Type rhs) {

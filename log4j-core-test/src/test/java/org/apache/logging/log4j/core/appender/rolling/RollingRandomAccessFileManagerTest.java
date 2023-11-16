@@ -16,6 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.beforeNow;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasLength;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.isEmpty;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.lastModified;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,25 +40,12 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 import java.util.concurrent.locks.LockSupport;
-
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
-
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.beforeNow;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasLength;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.isEmpty;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.lastModified;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the RollingRandomAccessFileManager class.
@@ -69,10 +68,25 @@ public class RollingRandomAccessFileManagerTest {
             final long time = System.currentTimeMillis();
             final TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(triggerSize);
             final RolloverStrategy rolloverStrategy = null;
-            final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(null, raf,
-                    file.getName(), Strings.EMPTY, os, append, flushNow,
-                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, time, triggerPolicy, rolloverStrategy,
-                    null, null, null, null, null, true);
+            final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(
+                    null,
+                    raf,
+                    file.getName(),
+                    Strings.EMPTY,
+                    os,
+                    append,
+                    flushNow,
+                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                    triggerSize,
+                    time,
+                    triggerPolicy,
+                    rolloverStrategy,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    true);
 
             final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
             final byte[] data = new byte[size];
@@ -99,10 +113,25 @@ public class RollingRandomAccessFileManagerTest {
             final long time = System.currentTimeMillis();
             final TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(triggerSize);
             final RolloverStrategy rolloverStrategy = null;
-            final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(null, raf,
-                    file.getName(), Strings.EMPTY, os, append, flushNow,
-                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, time, triggerPolicy, rolloverStrategy,
-                    null, null, null, null, null, true);
+            final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(
+                    null,
+                    raf,
+                    file.getName(),
+                    Strings.EMPTY,
+                    os,
+                    append,
+                    flushNow,
+                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                    triggerSize,
+                    time,
+                    triggerPolicy,
+                    rolloverStrategy,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    true);
 
             final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             final byte[] data = new byte[size];
@@ -128,9 +157,25 @@ public class RollingRandomAccessFileManagerTest {
             final int bufferSize = 4 * 1024;
             assertNotEquals(bufferSize, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
             final RolloverStrategy rolloverStrategy = null;
-            final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(null, raf,
-                    file.getName(), Strings.EMPTY, os, append, flushNow, bufferSize, triggerSize, time, triggerPolicy,
-                    rolloverStrategy, null, null, null, null, null, true);
+            final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(
+                    null,
+                    raf,
+                    file.getName(),
+                    Strings.EMPTY,
+                    os,
+                    append,
+                    flushNow,
+                    bufferSize,
+                    triggerSize,
+                    time,
+                    triggerPolicy,
+                    rolloverStrategy,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    true);
 
             // check the resulting buffer size is what was requested
             assertEquals(bufferSize, manager.getBufferSize());
@@ -160,9 +205,19 @@ public class RollingRandomAccessFileManagerTest {
         final boolean immediateFlush = true;
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
                 //
-                file.getAbsolutePath(), Strings.EMPTY, isAppend, immediateFlush,
-                RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
-                null, null, null, null, null, null, null);
+                file.getAbsolutePath(),
+                Strings.EMPTY,
+                isAppend,
+                immediateFlush,
+                RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
         manager.write(bytes, 0, bytes.length, immediateFlush);
         final int expected = bytes.length * 2;
         assertThat("appended, not overwritten", file, hasLength(expected));
@@ -182,9 +237,19 @@ public class RollingRandomAccessFileManagerTest {
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
                 //
-                file.getAbsolutePath(), Strings.EMPTY, isAppend, true,
-                RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
-                null, null, null, null, null, null, null);
+                file.getAbsolutePath(),
+                Strings.EMPTY,
+                isAppend,
+                true,
+                RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
         assertTrue(manager.getFileTime() < expectedMax);
         assertTrue(manager.getFileTime() >= expectedMin);
     }
@@ -200,9 +265,19 @@ public class RollingRandomAccessFileManagerTest {
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
                 //
-                file.getAbsolutePath(), Strings.EMPTY, isAppend, true,
-                RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
-                null, null, null, null, null, null, null);
+                file.getAbsolutePath(),
+                Strings.EMPTY,
+                isAppend,
+                true,
+                RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
         assertThat(file, lastModified(equalTo(manager.getFileTime())));
     }
 
@@ -220,34 +295,31 @@ public class RollingRandomAccessFileManagerTest {
 
         // Set the initial file attributes.
         final String filePermissionsString = "rwxrwxrwx";
-        final Set<PosixFilePermission> filePermissions =
-                PosixFilePermissions.fromString(filePermissionsString);
+        final Set<PosixFilePermission> filePermissions = PosixFilePermissions.fromString(filePermissionsString);
         FileUtils.defineFilePosixAttributeView(file.toPath(), filePermissions, null, null);
 
         // Create the manager.
-        final RolloverStrategy rolloverStrategy = DefaultRolloverStrategy
-                .newBuilder()
+        final RolloverStrategy rolloverStrategy = DefaultRolloverStrategy.newBuilder()
                 .withMax("7")
                 .withMin("1")
                 .withFileIndex("max")
                 .withStopCustomActionsOnError(false)
                 .withConfig(new DefaultConfiguration())
                 .build();
-        final RollingRandomAccessFileManager manager =
-                RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
-                        file.getAbsolutePath(),
-                        Strings.EMPTY,
-                        true,
-                        true,
-                        RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
-                        new SizeBasedTriggeringPolicy(Long.MAX_VALUE),
-                        rolloverStrategy,
-                        null,
-                        null,
-                        filePermissionsString,
-                        null,
-                        null,
-                        null);
+        final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
+                file.getAbsolutePath(),
+                Strings.EMPTY,
+                true,
+                true,
+                RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                new SizeBasedTriggeringPolicy(Long.MAX_VALUE),
+                rolloverStrategy,
+                null,
+                null,
+                filePermissionsString,
+                null,
+                null,
+                null);
         assertNotNull(manager);
         manager.initialize();
 
@@ -255,14 +327,10 @@ public class RollingRandomAccessFileManagerTest {
         manager.rollover();
 
         // Verify the rolled over file attributes.
-        final Set<PosixFilePermission> actualFilePermissions = Files
-                .getFileAttributeView(
-                        Paths.get(manager.getFileName()),
-                        PosixFileAttributeView.class)
+        final Set<PosixFilePermission> actualFilePermissions = Files.getFileAttributeView(
+                        Paths.get(manager.getFileName()), PosixFileAttributeView.class)
                 .readAttributes()
                 .permissions();
         assertEquals(filePermissions, actualFilePermissions);
-
     }
-
 }

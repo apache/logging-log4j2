@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.util;
 
 import java.security.Permission;
-
 import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
 import org.junit.Rule;
 import org.junit.Test;

@@ -30,12 +30,12 @@ class CategoryKey {
     }
 
     @Override
-    final public int hashCode() {
+    public final int hashCode() {
         return hashCache;
     }
 
     @Override
-    final public boolean equals(final Object rArg) {
+    public final boolean equals(final Object rArg) {
         if (this == rArg) {
             return true;
         }

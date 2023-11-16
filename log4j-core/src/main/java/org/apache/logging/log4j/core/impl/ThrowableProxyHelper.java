@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -67,7 +66,8 @@ final class ThrowableProxyHelper {
      */
     static ExtendedStackTraceElement[] toExtendedStackTrace(
             final ThrowableProxy src,
-            final Deque<Class<?>> stack, final Map<String, CacheEntry> map,
+            final Deque<Class<?>> stack,
+            final Map<String, CacheEntry> map,
             final StackTraceElement[] rootTrace,
             final StackTraceElement[] stackTrace) {
         int stackLength;
@@ -188,7 +188,6 @@ final class ThrowableProxyHelper {
         }
         return new CacheEntry(new ExtendedClassInfo(exact, location, version), lastLoader);
     }
-
 
     /**
      * Loads classes not located via Reflection.getCallerClass.

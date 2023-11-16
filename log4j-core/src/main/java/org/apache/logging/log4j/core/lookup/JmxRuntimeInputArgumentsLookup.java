@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.lookup;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
@@ -42,8 +41,7 @@ public class JmxRuntimeInputArgumentsLookup extends MapLookup {
     /**
      * Constructor when used directly as a plugin.
      */
-    public JmxRuntimeInputArgumentsLookup() {
-    }
+    public JmxRuntimeInputArgumentsLookup() {}
 
     public JmxRuntimeInputArgumentsLookup(final Map<String, String> map) {
         super(map);

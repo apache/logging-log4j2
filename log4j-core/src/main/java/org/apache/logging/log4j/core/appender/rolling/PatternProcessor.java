@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
@@ -96,7 +95,6 @@ public class PatternProcessor {
             }
         }
     }
-
 
     /**
      * Copy constructor with another pattern as source.
@@ -242,8 +240,13 @@ public class PatternProcessor {
 
     private long debugGetNextTime(final long nextTime) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("PatternProcessor.getNextTime returning {}, nextFileTime={}, prevFileTime={}, current={}, freq={}", //
-                    format(nextTime), format(nextFileTime), format(prevFileTime), format(System.currentTimeMillis()), frequency);
+            LOGGER.trace(
+                    "PatternProcessor.getNextTime returning {}, nextFileTime={}, prevFileTime={}, current={}, freq={}", //
+                    format(nextTime),
+                    format(nextFileTime),
+                    format(prevFileTime),
+                    format(System.currentTimeMillis()),
+                    frequency);
         }
         return nextTime;
     }
@@ -253,7 +256,7 @@ public class PatternProcessor {
     }
 
     private void increment(final Calendar cal, final int type, final int increment, final boolean modulate) {
-        final int interval =  modulate ? increment - (cal.get(type) % increment) : increment;
+        final int interval = modulate ? increment - (cal.get(type) % increment) : increment;
         cal.add(type, interval);
     }
 
@@ -286,14 +289,18 @@ public class PatternProcessor {
      * @param buf string buffer to which formatted file name is appended, may not be null.
      * @param obj object to be evaluated in formatting, may not be null.
      */
-    public final void formatFileName(final StrSubstitutor subst, final StringBuilder buf, final boolean useCurrentTime,
-                                     final Object obj) {
+    public final void formatFileName(
+            final StrSubstitutor subst, final StringBuilder buf, final boolean useCurrentTime, final Object obj) {
         // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
         // for creating the file name of rolled-over files.
-        LOGGER.debug("Formatting file name. useCurrentTime={}. currentFileTime={}, prevFileTime={}",
-            useCurrentTime, currentFileTime, prevFileTime);
-        final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
-                prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
+        LOGGER.debug(
+                "Formatting file name. useCurrentTime={}. currentFileTime={}, prevFileTime={}",
+                useCurrentTime,
+                currentFileTime,
+                prevFileTime);
+        final long time = useCurrentTime
+                ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis()
+                : prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);
         // LOG4J2-3643
         final String fileName = subst.replace(null, buf);
@@ -370,5 +377,4 @@ public class PatternProcessor {
     public long getNextFileTime() {
         return nextFileTime;
     }
-
 }

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.web;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Map;
-
 import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
@@ -28,8 +28,6 @@ import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockServletContext;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class WebLookupTest {
 
@@ -107,5 +105,4 @@ public class WebLookupTest {
         initializer.stop();
         ContextAnchor.THREAD_CONTEXT.remove();
     }
-
 }

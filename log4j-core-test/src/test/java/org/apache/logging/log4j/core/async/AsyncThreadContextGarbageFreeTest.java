@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.nio.file.Path;
-
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;

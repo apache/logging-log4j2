@@ -20,7 +20,6 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.IntStream;
-
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FastDatePrinter;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
@@ -55,8 +54,7 @@ public class DateTimeFormatBenchmark {
 
     private static final Instant INIT_INSTANT = Instant.parse("2020-05-14T10:44:23.901Z");
 
-    private static final MutableInstant[] INSTANTS = IntStream
-            .range(0, 1_000)
+    private static final MutableInstant[] INSTANTS = IntStream.range(0, 1_000)
             .mapToObj((final int index) -> {
                 final MutableInstant instant = new MutableInstant();
                 instant.initFromEpochSecond(
@@ -66,8 +64,7 @@ public class DateTimeFormatBenchmark {
             })
             .toArray(MutableInstant[]::new);
 
-    private static final Calendar[] CALENDARS = Arrays
-            .stream(INSTANTS)
+    private static final Calendar[] CALENDARS = Arrays.stream(INSTANTS)
             .map((final MutableInstant instant) -> {
                 final Calendar calendar = Calendar.getInstance(TIME_ZONE, LOCALE);
                 calendar.setTimeInMillis(instant.getEpochMillisecond());
@@ -75,19 +72,14 @@ public class DateTimeFormatBenchmark {
             })
             .toArray(Calendar[]::new);
 
-    private static final FastDatePrinter FAST_DATE_PRINTER =
-            new FastDatePrinter(PATTERN, TIME_ZONE, LOCALE) {};
+    private static final FastDatePrinter FAST_DATE_PRINTER = new FastDatePrinter(PATTERN, TIME_ZONE, LOCALE) {};
 
-    private static final FixedDateFormat FIXED_DATE_FORMAT =
-            Objects.requireNonNull(
-                    FixedDateFormat.createIfSupported(PATTERN, TIME_ZONE.getID()),
-                    "couldn't create FixedDateTime for pattern " + PATTERN + " and time zone " + TIME_ZONE.getID());
+    private static final FixedDateFormat FIXED_DATE_FORMAT = Objects.requireNonNull(
+            FixedDateFormat.createIfSupported(PATTERN, TIME_ZONE.getID()),
+            "couldn't create FixedDateTime for pattern " + PATTERN + " and time zone " + TIME_ZONE.getID());
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
-            DateTimeFormatter
-                    .ofPattern(PATTERN)
-                    .withZone(TIME_ZONE.toZoneId())
-                    .withLocale(LOCALE);
+            DateTimeFormatter.ofPattern(PATTERN).withZone(TIME_ZONE.toZoneId()).withLocale(LOCALE);
 
     private final StringBuilder stringBuilder = new StringBuilder(PATTERN.length() * 2);
 
@@ -118,5 +110,4 @@ public class DateTimeFormatBenchmark {
             blackhole.consume(stringBuilder.length());
         }
     }
-
 }

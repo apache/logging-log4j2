@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.osgi.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.osgi.tests.junit.OsgiRule;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.junit.Assert;
@@ -33,9 +35,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.FrameworkFactory;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests a basic Log4J 'setup' in an OSGi container.
@@ -64,7 +63,6 @@ public abstract class AbstractLoadBundleTest {
     private Bundle getApiBundle() throws BundleException {
         return installBundle("org.apache.logging.log4j.api");
     }
-
 
     private Bundle getCoreBundle() throws BundleException {
         return installBundle("org.apache.logging.log4j.core");
@@ -193,17 +191,20 @@ public abstract class AbstractLoadBundleTest {
         // fails if LOG4J2-1637 is not fixed
         try {
             core.start();
-        }
-        catch (final BundleException ex) {
+        } catch (final BundleException ex) {
             boolean shouldRethrow = true;
             final Throwable t = ex.getCause();
             if (t != null) {
                 final Throwable t2 = t.getCause();
                 if (t2 != null) {
                     final String cause = t2.toString();
-                    final boolean result = cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger") // Equinox
-                                  || cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger not found by org.apache.logging.log4j.core [2]"); // Felix
-                    Assert.assertFalse("org.apache.logging.log4j package is not properly imported in org.apache.logging.log4j.core bundle, check that the package is exported from api and is not split between api and core", result);
+                    final boolean result =
+                            cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger") // Equinox
+                                    || cause.equals(
+                                            "java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger not found by org.apache.logging.log4j.core [2]"); // Felix
+                    Assert.assertFalse(
+                            "org.apache.logging.log4j package is not properly imported in org.apache.logging.log4j.core bundle, check that the package is exported from api and is not split between api and core",
+                            result);
                     shouldRethrow = !result;
                 }
             }
@@ -237,8 +238,14 @@ public abstract class AbstractLoadBundleTest {
         final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
         final Class<?> levelClassFromAPI = core.loadClass("org.apache.logging.log4j.Level");
 
-        Assert.assertEquals("expected 1.2 API Level to have the same class loader as Core", levelClassFrom12API.getClassLoader(), coreClassFromCore.getClassLoader());
-        Assert.assertNotEquals("expected 1.2 API Level NOT to have the same class loader as API Level", levelClassFrom12API.getClassLoader(), levelClassFromAPI.getClassLoader());
+        Assert.assertEquals(
+                "expected 1.2 API Level to have the same class loader as Core",
+                levelClassFrom12API.getClassLoader(),
+                coreClassFromCore.getClassLoader());
+        Assert.assertNotEquals(
+                "expected 1.2 API Level NOT to have the same class loader as API Level",
+                levelClassFrom12API.getClassLoader(),
+                levelClassFromAPI.getClassLoader());
 
         core.stop();
         api.stop();
@@ -259,13 +266,15 @@ public abstract class AbstractLoadBundleTest {
         final Bundle apiTests = getApiTestsBundle();
 
         final Class<?> osgiServiceLocator = api.loadClass("org.apache.logging.log4j.util.OsgiServiceLocator");
-        assertTrue("OsgiServiceLocator is active", (boolean) osgiServiceLocator.getMethod("isAvailable").invoke(null));
+        assertTrue("OsgiServiceLocator is active", (boolean)
+                osgiServiceLocator.getMethod("isAvailable").invoke(null));
 
         core.start();
         apiTests.start();
         assertEquals("api-tests is not in ACTIVE state", Bundle.ACTIVE, apiTests.getState());
 
-        final Class<?> osgiServiceLocatorTest = apiTests.loadClass("org.apache.logging.log4j.test.util.OsgiServiceLocatorTest");
+        final Class<?> osgiServiceLocatorTest =
+                apiTests.loadClass("org.apache.logging.log4j.test.util.OsgiServiceLocatorTest");
 
         final Method loadProviders = osgiServiceLocatorTest.getDeclaredMethod("loadProviders");
         final Object obj = loadProviders.invoke(null);
@@ -273,7 +282,9 @@ public abstract class AbstractLoadBundleTest {
         @SuppressWarnings("unchecked")
         final List<Object> services = ((Stream<Object>) obj).collect(Collectors.toList());
         assertEquals(1, services.size());
-        assertEquals("org.apache.logging.log4j.core.impl.Log4jProvider", services.get(0).getClass().getName());
+        assertEquals(
+                "org.apache.logging.log4j.core.impl.Log4jProvider",
+                services.get(0).getClass().getName());
 
         apiTests.stop();
         core.stop();

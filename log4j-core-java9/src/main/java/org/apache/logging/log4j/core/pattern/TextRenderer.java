@@ -27,5 +27,4 @@ public interface TextRenderer {
     void render(String input, StringBuilder output, String styleName);
 
     void render(StringBuilder input, StringBuilder output);
-
 }

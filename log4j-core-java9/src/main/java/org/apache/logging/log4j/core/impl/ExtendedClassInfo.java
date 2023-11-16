@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 
 /**
@@ -26,8 +25,7 @@ import org.apache.logging.log4j.core.pattern.TextRenderer;
  */
 public class ExtendedClassInfo implements Serializable {
 
-    public ExtendedClassInfo(final boolean exact, final String location, final String version) {
-    }
+    public ExtendedClassInfo(final boolean exact, final String location, final String version) {}
 
     public boolean getExact() {
         return false;
@@ -41,7 +39,5 @@ public class ExtendedClassInfo implements Serializable {
         return null;
     }
 
-    public void renderOn(final StringBuilder output, final TextRenderer textRenderer) {
-    }
-
+    public void renderOn(final StringBuilder output, final TextRenderer textRenderer) {}
 }

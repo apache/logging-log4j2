@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.util.Date;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.StringLayout;
@@ -34,8 +35,6 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A configuration element for specifying a database column name mapping.
@@ -89,20 +88,23 @@ public class ColumnMapping {
         public ColumnMapping build() {
             if (pattern != null) {
                 layout = PatternLayout.newBuilder()
-                    .withPattern(pattern)
-                    .withConfiguration(configuration)
-                    .withAlwaysWriteExceptions(false)
-                    .build();
+                        .withPattern(pattern)
+                        .withConfiguration(configuration)
+                        .withAlwaysWriteExceptions(false)
+                        .build();
             }
             final Class<?> columnType = type != null ? type : this.columnType;
             if (!(layout == null
-                || literal == null
-                || Date.class.isAssignableFrom(columnType)
-                || ReadOnlyStringMap.class.isAssignableFrom(columnType)
-                || ThreadContextMap.class.isAssignableFrom(columnType)
-                || ThreadContextStack.class.isAssignableFrom(columnType))) {
-                LOGGER.error("No 'layout' or 'literal' value specified and type ({}) is not compatible with " +
-                        "ThreadContextMap, ThreadContextStack, or java.util.Date for the mapping", columnType, this);
+                    || literal == null
+                    || Date.class.isAssignableFrom(columnType)
+                    || ReadOnlyStringMap.class.isAssignableFrom(columnType)
+                    || ThreadContextMap.class.isAssignableFrom(columnType)
+                    || ThreadContextStack.class.isAssignableFrom(columnType))) {
+                LOGGER.error(
+                        "No 'layout' or 'literal' value specified and type ({}) is not compatible with "
+                                + "ThreadContextMap, ThreadContextStack, or java.util.Date for the mapping",
+                        columnType,
+                        this);
                 return null;
             }
             if (literal != null && parameter != null) {
@@ -156,7 +158,7 @@ public class ColumnMapping {
          * @return this.
          */
         public Builder setParameter(final String parameter) {
-            this.parameter= parameter;
+            this.parameter = parameter;
             return this;
         }
 
@@ -229,7 +231,13 @@ public class ColumnMapping {
     private final String source;
     private final Class<?> type;
 
-    private ColumnMapping(final String name, final String source, final StringLayout layout, final String literalValue, final String parameter, final Class<?> type) {
+    private ColumnMapping(
+            final String name,
+            final String source,
+            final StringLayout layout,
+            final String literalValue,
+            final String parameter,
+            final Class<?> type) {
         this.name = Objects.requireNonNull(name);
         this.nameKey = toKey(name);
         this.source = source;
@@ -278,9 +286,12 @@ public class ColumnMapping {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ColumnMapping that = (ColumnMapping) o;
-        return Objects.equals(layout, that.layout) && Objects.equals(literalValue, that.literalValue) && name.equals(
-                that.name) && Objects.equals(parameter, that.parameter) && Objects.equals(source,
-                that.source) && Objects.equals(type, that.type);
+        return Objects.equals(layout, that.layout)
+                && Objects.equals(literalValue, that.literalValue)
+                && name.equals(that.name)
+                && Objects.equals(parameter, that.parameter)
+                && Objects.equals(source, that.source)
+                && Objects.equals(type, that.type);
     }
 
     @Override

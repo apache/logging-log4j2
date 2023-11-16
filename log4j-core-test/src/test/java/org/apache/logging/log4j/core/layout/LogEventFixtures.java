@@ -16,9 +16,13 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.IOException;
 import java.util.Collections;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -29,11 +33,6 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 class LogEventFixtures {
 
@@ -78,16 +77,23 @@ class LogEventFixtures {
                 .setContextStack(contextStack) //
                 .setThreadName("MyThreadName") //
                 .setSource(source) //
-                .setTimeMillis(1).build();
+                .setTimeMillis(1)
+                .build();
         // validate event?
         return expected;
     }
 
     @SuppressWarnings("deprecation")
-    static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
-            final boolean includeContext, final boolean includeStacktrace) {
+    static void assertEqualLogEvents(
+            final LogEvent expected,
+            final LogEvent actual,
+            final boolean includeSource,
+            final boolean includeContext,
+            final boolean includeStacktrace) {
         assertEquals(expected.getClass(), actual.getClass());
-        assertEquals(includeContext ? expected.getContextData() : ContextDataFactory.createContextData(), actual.getContextData());
+        assertEquals(
+                includeContext ? expected.getContextData() : ContextDataFactory.createContextData(),
+                actual.getContextData());
         assertEquals(includeContext ? expected.getContextMap() : Collections.EMPTY_MAP, actual.getContextMap());
         assertEquals(expected.getContextStack(), actual.getContextStack());
         assertEquals(expected.getLevel(), actual.getLevel());
@@ -111,5 +117,4 @@ class LogEventFixtures {
         assertNotEquals(expected.hashCode(), actual.hashCode());
         assertNotEquals(expected, actual);
     }
-
 }

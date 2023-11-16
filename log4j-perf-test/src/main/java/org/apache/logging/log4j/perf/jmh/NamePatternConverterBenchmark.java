@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.pattern.LoggerPatternConverter;
@@ -57,15 +56,16 @@ public class NamePatternConverterBenchmark {
     @State(Scope.Benchmark)
     public static class ExecutionPlan {
         @Param({
-                "org.bogus.hokus.pokus.org.bogus.hokus.pokus.org.bogus.hokus.pokus.RetroEncabulatorFactorySingleton",
-                "org.bogus.hokus.pokus.Clazz1",
-                "com.bogus.hokus.pokus.Clazz2",
-                "edu.bogus.hokus.pokus.a.Clazz3",
-                "de.bogus.hokus.b.Clazz4",
-                "jp.bogus.c.Clazz5",
-                "cn.d.Clazz6"
+            "org.bogus.hokus.pokus.org.bogus.hokus.pokus.org.bogus.hokus.pokus.RetroEncabulatorFactorySingleton",
+            "org.bogus.hokus.pokus.Clazz1",
+            "com.bogus.hokus.pokus.Clazz2",
+            "edu.bogus.hokus.pokus.a.Clazz3",
+            "de.bogus.hokus.b.Clazz4",
+            "jp.bogus.c.Clazz5",
+            "cn.d.Clazz6"
         })
         String className;
+
         LogEvent event;
         private final ThreadLocal<StringBuilder> destination = ThreadLocal.withInitial(StringBuilder::new);
 
@@ -102,5 +102,4 @@ public class NamePatternConverterBenchmark {
             return loggerName;
         }
     }
-
 }

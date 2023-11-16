@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.Serializable;
 import java.util.Locale;
-
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests LocalizedMessage.
@@ -40,13 +39,15 @@ public class LocalizedMessageTest {
 
     @Test
     public void testMessageFormat() {
-        final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
+        final LocalizedMessage msg =
+                new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
 
     @Test
     public void testSerializationMessageFormat() {
-        final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
+        final LocalizedMessage msg =
+                new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
         final LocalizedMessage msg2 = roundtrip(msg);
         assertEquals("This is test number 1 with string argument Test.", msg2.getFormattedMessage());
@@ -54,7 +55,8 @@ public class LocalizedMessageTest {
 
     @Test
     public void testSerializationStringFormat() {
-        final LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
+        final LocalizedMessage msg =
+                new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
         final LocalizedMessage msg2 = roundtrip(msg);
         assertEquals("This is test number 1 with string argument Test.", msg2.getFormattedMessage());
@@ -62,7 +64,8 @@ public class LocalizedMessageTest {
 
     @Test
     public void testStringFormat() {
-        final LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
+        final LocalizedMessage msg =
+                new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
 

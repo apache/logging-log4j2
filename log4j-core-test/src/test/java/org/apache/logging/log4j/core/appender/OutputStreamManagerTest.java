@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -27,8 +28,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * OutputStreamManager Tests.
@@ -46,12 +45,13 @@ public class OutputStreamManagerTest {
             data = statusData.get(1);
         }
         assertEquals(Level.ERROR, data.getLevel());
-        assertEquals("Could not create plugin of type class org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender for element RollingRandomAccessFile",
+        assertEquals(
+                "Could not create plugin of type class org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender for element RollingRandomAccessFile",
                 data.getMessage().getFormattedMessage());
-        assertEquals("org.apache.logging.log4j.core.config.ConfigurationException: Configuration has multiple incompatible Appenders pointing to the same resource 'target/multiIncompatibleAppender.log'",
+        assertEquals(
+                "org.apache.logging.log4j.core.config.ConfigurationException: Configuration has multiple incompatible Appenders pointing to the same resource 'target/multiIncompatibleAppender.log'",
                 data.getThrowable().toString());
     }
-
 
     @Test
     public void testOutputStreamAppenderFlushClearsBufferOnException() {
@@ -64,7 +64,8 @@ public class OutputStreamManagerTest {
         };
 
         final int bufferSize = 3;
-        final OutputStreamManager outputStreamManager = new OutputStreamManager(throwingOutputStream, "test", null, false, bufferSize);
+        final OutputStreamManager outputStreamManager =
+                new OutputStreamManager(throwingOutputStream, "test", null, false, bufferSize);
 
         for (int i = 0; i < bufferSize - 1; i++) {
             outputStreamManager.getByteBuffer().put((byte) 0);
@@ -72,9 +73,13 @@ public class OutputStreamManagerTest {
 
         assertEquals(outputStreamManager.getByteBuffer().remaining(), 1);
 
-        final AppenderLoggingException appenderLoggingException = assertThrows(AppenderLoggingException.class, () -> outputStreamManager.flushBuffer(outputStreamManager.getByteBuffer()));
+        final AppenderLoggingException appenderLoggingException = assertThrows(
+                AppenderLoggingException.class,
+                () -> outputStreamManager.flushBuffer(outputStreamManager.getByteBuffer()));
         assertEquals(appenderLoggingException.getCause(), exception);
 
-        assertEquals(outputStreamManager.getByteBuffer().limit(), outputStreamManager.getByteBuffer().capacity());
+        assertEquals(
+                outputStreamManager.getByteBuffer().limit(),
+                outputStreamManager.getByteBuffer().capacity());
     }
 }

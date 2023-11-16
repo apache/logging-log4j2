@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -158,6 +157,5 @@ public final class CategoryUtil {
         getExactLoggerConfig(logger).ifPresent(lc -> lc.log(event));
     }
 
-    private CategoryUtil() {
-    }
+    private CategoryUtil() {}
 }

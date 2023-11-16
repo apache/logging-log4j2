@@ -19,7 +19,6 @@ package org.apache.logging.log4j.status;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.test.AbstractSerializationTest;
 import org.junit.Ignore;
 import org.junit.runners.Parameterized.Parameters;
@@ -29,11 +28,10 @@ public class StatusLoggerSerializationTest extends AbstractSerializationTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { StatusLogger.getLogger() } });
+        return Arrays.asList(new Object[][] {{StatusLogger.getLogger()}});
     }
 
     public StatusLoggerSerializationTest(final Serializable serializable) {
         super(serializable);
     }
-
 }

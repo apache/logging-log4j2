@@ -39,9 +39,13 @@ public class Log4jJsonObjectMapper extends ObjectMapper {
     /**
      * Create a new instance using the {@link Log4jJsonModule}.
      */
-    public Log4jJsonObjectMapper(final boolean encodeThreadContextAsList, final boolean includeStacktrace, final boolean stacktraceAsString, final boolean objectMessageAsJsonObject) {
-        this.registerModule(new Log4jJsonModule(encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject));
+    public Log4jJsonObjectMapper(
+            final boolean encodeThreadContextAsList,
+            final boolean includeStacktrace,
+            final boolean stacktraceAsString,
+            final boolean objectMessageAsJsonObject) {
+        this.registerModule(new Log4jJsonModule(
+                encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject));
         this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
-
 }

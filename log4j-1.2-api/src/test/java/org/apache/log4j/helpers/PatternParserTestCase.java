@@ -45,6 +45,7 @@ public class PatternParserTestCase extends TestCase {
         suite.addTest(new PatternParserTestCase("mdcPattern"));
         return suite;
     }
+
     Logger root;
 
     Logger logger;
@@ -125,5 +126,4 @@ public class PatternParserTestCase extends TestCase {
     public void tearDown() {
         root.getLoggerRepository().resetConfiguration();
     }
-
 }

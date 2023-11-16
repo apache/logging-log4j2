@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -28,7 +27,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * Equals ignore case pattern converter.
  */
 @Plugin(name = "equalsIgnoreCase", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "equalsIgnoreCase" })
+@ConverterKeys({"equalsIgnoreCase"})
 @PerformanceSensitive("allocation")
 public final class EqualsIgnoreCaseReplacementConverter extends EqualsBaseReplacementConverter {
 
@@ -72,8 +71,11 @@ public final class EqualsIgnoreCaseReplacementConverter extends EqualsBaseReplac
      * @param substitution The substitution string.
      * @param parser        The PatternParser.
      */
-    private EqualsIgnoreCaseReplacementConverter(final List<PatternFormatter> formatters, final String testString,
-            final String substitution, final PatternParser parser) {
+    private EqualsIgnoreCaseReplacementConverter(
+            final List<PatternFormatter> formatters,
+            final String testString,
+            final String substitution,
+            final PatternParser parser) {
         super("equalsIgnoreCase", "equalsIgnoreCase", formatters, testString, substitution, parser);
     }
 

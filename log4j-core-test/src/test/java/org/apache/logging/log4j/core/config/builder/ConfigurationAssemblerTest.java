@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,18 +45,15 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.*;
-
 public class ConfigurationAssemblerTest {
 
     @Test
     public void testBuildConfiguration() throws Exception {
         try {
-            System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                    "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
-            final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+            System.setProperty(
+                    Constants.LOG4J_CONTEXT_SELECTOR, "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+            final ConfigurationBuilder<BuiltConfiguration> builder =
+                    ConfigurationBuilderFactory.newConfigurationBuilder();
             CustomConfigurationFactory.addTestFixtures("config name", builder);
             final Configuration configuration = builder.build();
             try (final LoggerContext ctx = Configurator.initialize(configuration)) {
@@ -67,10 +67,11 @@ public class ConfigurationAssemblerTest {
     @Test
     public void testCustomConfigurationFactory() throws Exception {
         try {
-            System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
+            System.setProperty(
+                    ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
                     "org.apache.logging.log4j.core.config.builder.CustomConfigurationFactory");
-            System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                    "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+            System.setProperty(
+                    Constants.LOG4J_CONTEXT_SELECTOR, "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
             final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
             validate(config);
         } finally {
@@ -88,10 +89,10 @@ public class ConfigurationAssemblerTest {
         final Map<String, Appender> appenders = config.getAppenders();
         assertNotNull(appenders);
         assertEquals(appenders.size(), 2, "Incorrect number of Appenders: " + appenders.size());
-        final KafkaAppender kafkaAppender = (KafkaAppender)appenders.get("Kafka");
-        final GelfLayout gelfLayout = (GelfLayout)kafkaAppender.getLayout();
-        final ConsoleAppender consoleAppender = (ConsoleAppender)appenders.get("Stdout");
-        final PatternLayout patternLayout = (PatternLayout)consoleAppender.getLayout();
+        final KafkaAppender kafkaAppender = (KafkaAppender) appenders.get("Kafka");
+        final GelfLayout gelfLayout = (GelfLayout) kafkaAppender.getLayout();
+        final ConsoleAppender consoleAppender = (ConsoleAppender) appenders.get("Stdout");
+        final PatternLayout patternLayout = (PatternLayout) consoleAppender.getLayout();
         final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertNotNull(loggers);
         assertEquals(loggers.size(), 2, "Incorrect number of LoggerConfigs: " + loggers.size());

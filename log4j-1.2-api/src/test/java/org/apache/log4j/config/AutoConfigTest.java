@@ -16,9 +16,11 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -30,9 +32,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test configuration from XML.
@@ -49,7 +48,8 @@ public class AutoConfigTest {
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         final LoggerContext loggerContext = org.apache.logging.log4j.LogManager.getContext(false);
-        final Configuration configuration = ((org.apache.logging.log4j.core.LoggerContext) loggerContext).getConfiguration();
+        final Configuration configuration =
+                ((org.apache.logging.log4j.core.LoggerContext) loggerContext).getConfiguration();
         final Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
         ListAppender messageAppender = null;
@@ -67,5 +67,4 @@ public class AutoConfigTest {
         final List<String> messages = messageAppender.getMessages();
         assertTrue("No messages", messages != null && messages.size() > 0);
     }
-
 }

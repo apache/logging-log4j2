@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class DateLookupTest {
 
@@ -61,7 +60,7 @@ public class DateLookupTest {
 
     @ParameterizedTest
     @NullSource
-    @ValueSource(strings = { "bananas" })
+    @ValueSource(strings = {"bananas"})
     public void testInvalidKey(final String key) {
         // For invalid keys without event, the current time in default format should be returned.
         // Checking this may depend on locale and exact time, and could become flaky.

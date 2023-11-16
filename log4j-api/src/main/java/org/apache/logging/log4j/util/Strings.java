@@ -34,6 +34,7 @@ public final class Strings {
      * The empty string.
      */
     public static final String EMPTY = "";
+
     private static final String COMMA_DELIMITED_RE = "\\s*,\\s*";
 
     /**
@@ -45,8 +46,8 @@ public final class Strings {
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
      */
-    public static final String LINE_SEPARATOR = SystemPropertiesPropertySource.getSystemProperty("line.separator",
-            "\n");
+    public static final String LINE_SEPARATOR =
+            SystemPropertiesPropertySource.getSystemProperty("line.separator", "\n");
 
     /**
      * Returns a double quoted string.
@@ -347,5 +348,4 @@ public final class Strings {
             sb.setLength(0);
         }
     }
-
 }

@@ -31,8 +31,8 @@ public class PluginLoggerContextVisitor extends AbstractPluginVisitor<PluginConf
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-                        final StringBuilder log) {
+    public Object visit(
+            final Configuration configuration, final Node node, final LogEvent event, final StringBuilder log) {
         if (this.conversionType.isAssignableFrom(LoggerContext.class)) {
             if (configuration.getLoggerContext() != null) {
                 return configuration.getLoggerContext();

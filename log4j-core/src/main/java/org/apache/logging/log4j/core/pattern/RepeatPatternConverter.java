@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.Strings;
  * Equals pattern converter.
  */
 @Plugin(name = "repeat", category = PatternConverter.CATEGORY)
-@ConverterKeys({ ":|","repeat" })
+@ConverterKeys({":|", "repeat"})
 @PerformanceSensitive("allocation")
 public final class RepeatPatternConverter extends LogEventPatternConverter {
 
@@ -69,7 +69,7 @@ public final class RepeatPatternConverter extends LogEventPatternConverter {
      * Construct the converter.
      *
      * @param result  The repeated String
-
+     *
      */
     private RepeatPatternConverter(final String result) {
         super("repeat", "repeat");

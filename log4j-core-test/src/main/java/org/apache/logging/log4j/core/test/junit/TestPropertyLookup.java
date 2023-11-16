@@ -32,5 +32,4 @@ public class TestPropertyLookup extends AbstractLookup {
     public String lookup(LogEvent event, String key) {
         return TestPropertySource.getProperties().getProperty(key);
     }
-
 }

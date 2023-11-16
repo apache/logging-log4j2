@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertTrue;
+
+import com.google.common.io.ByteStreams;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.google.common.io.ByteStreams;
-
-import static org.junit.Assert.assertTrue;
 
 public final class GarbageCollectionHelper implements Closeable, Runnable {
     private static final OutputStream sink = ByteStreams.nullOutputStream();
@@ -59,8 +58,7 @@ public final class GarbageCollectionHelper implements Closeable, Runnable {
     public void close() {
         running.set(false);
         try {
-            assertTrue("GarbageCollectionHelper did not shut down cleanly",
-                    latch.await(10, TimeUnit.SECONDS));
+            assertTrue("GarbageCollectionHelper did not shut down cleanly", latch.await(10, TimeUnit.SECONDS));
         } catch (final InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGURATION;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.JAVA_BASE_PREFIX;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
@@ -28,7 +36,6 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
@@ -38,14 +45,6 @@ import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGURATION;
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.JAVA_BASE_PREFIX;
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 class StackTraceStringResolverTest {
 
     ////////////////////////////////////////////////////////////////////////////
@@ -53,9 +52,10 @@ class StackTraceStringResolverTest {
     ////////////////////////////////////////////////////////////////////////////
 
     // Below we create arbitrary exceptions containing stack entries from non-Log4j packages.
-    // Non-Log4j package origin is needed to avoid the truncation (e.g., `... 58 more`) done by `Throwable#printStackTrace()`.
+    // Non-Log4j package origin is needed to avoid the truncation (e.g., `... 58 more`) done by
+    // `Throwable#printStackTrace()`.
 
-    private static final String EXCEPTION_REGEX_FLAGS = "(?s)";     // DOTALL
+    private static final String EXCEPTION_REGEX_FLAGS = "(?s)"; // DOTALL
 
     private static final String TRUNCATION_SUFFIX = "<truncated>";
 
@@ -66,8 +66,8 @@ class StackTraceStringResolverTest {
 
     private static String exception1Regex(final boolean truncated) {
         final String truncationCorrectionRegex = truncationSuffixRegexOr(truncated, ".divide\\(");
-        return "java.lang.ArithmeticException: Division by zero\r?\n" +
-                "\t+at " + JAVA_BASE_PREFIX + "java.math.BigDecimal" + truncationCorrectionRegex + ".*";
+        return "java.lang.ArithmeticException: Division by zero\r?\n" + "\t+at " + JAVA_BASE_PREFIX
+                + "java.math.BigDecimal" + truncationCorrectionRegex + ".*";
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -77,8 +77,8 @@ class StackTraceStringResolverTest {
 
     private static String exception2Regex(final boolean truncated) {
         final String truncationCorrectionRegex = truncationSuffixRegexOr(truncated, ".add\\(");
-        return "java.lang.UnsupportedOperationException\r?\n" +
-                "\t+at " + JAVA_BASE_PREFIX + "java.util.AbstractList" + truncationCorrectionRegex + ".*";
+        return "java.lang.UnsupportedOperationException\r?\n" + "\t+at " + JAVA_BASE_PREFIX + "java.util.AbstractList"
+                + truncationCorrectionRegex + ".*";
     }
 
     private static Throwable exception3() {
@@ -87,14 +87,12 @@ class StackTraceStringResolverTest {
 
     private static String exception3Regex(final boolean truncated) {
         final String truncationCorrectionRegex = truncationSuffixRegexOr(truncated, ".<init>");
-        return "java.lang.IllegalArgumentException: Port value out of range: -1\r?\n" +
-                "\t+at " + JAVA_BASE_PREFIX + "java.net.ServerSocket" + truncationCorrectionRegex + ".*";
+        return "java.lang.IllegalArgumentException: Port value out of range: -1\r?\n" + "\t+at " + JAVA_BASE_PREFIX
+                + "java.net.ServerSocket" + truncationCorrectionRegex + ".*";
     }
 
     private static String truncationSuffixRegexOr(final boolean truncated, final String fallback) {
-        return truncated
-                ? ("\r?\n" + TRUNCATION_SUFFIX)
-                : fallback;
+        return truncated ? ("\r?\n" + TRUNCATION_SUFFIX) : fallback;
     }
 
     private static Throwable catchException(final ThrowingRunnable runnable) {
@@ -110,7 +108,6 @@ class StackTraceStringResolverTest {
     private interface ThrowingRunnable {
 
         void run() throws Throwable;
-
     }
 
     @Test
@@ -140,7 +137,7 @@ class StackTraceStringResolverTest {
     private static String stackTrace(final Throwable throwable) {
         final String encoding = "UTF-8";
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             final PrintStream printStream = new PrintStream(outputStream, false, encoding)) {
+                final PrintStream printStream = new PrintStream(outputStream, false, encoding)) {
             throwable.printStackTrace(printStream);
             printStream.flush();
             return outputStream.toString(encoding);
@@ -153,7 +150,7 @@ class StackTraceStringResolverTest {
     // abstract tests //////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    private static abstract class AbstractTestCases {
+    private abstract static class AbstractTestCases {
 
         private final boolean truncated;
 
@@ -189,11 +186,9 @@ class StackTraceStringResolverTest {
             exception.initCause(cause);
 
             // Check the serialized exception.
-            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS +
-                    exception1Regex() +
-                    "\nCaused by: " + exception2Regex();
+            final String serializedExceptionRegex =
+                    EXCEPTION_REGEX_FLAGS + exception1Regex() + "\nCaused by: " + exception2Regex();
             assertSerializedException(exception, serializedExceptionRegex);
-
         }
 
         @Test
@@ -207,12 +202,11 @@ class StackTraceStringResolverTest {
             cause1.initCause(cause2);
 
             // Check the serialized exception.
-            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS +
-                    exception1Regex() +
-                    "\nCaused by: " + exception2Regex() +
-                    "\nCaused by: " + exception3Regex();
+            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS + exception1Regex()
+                    + "\nCaused by: "
+                    + exception2Regex() + "\nCaused by: "
+                    + exception3Regex();
             assertSerializedException(exception, serializedExceptionRegex);
-
         }
 
         @Test
@@ -224,11 +218,9 @@ class StackTraceStringResolverTest {
             exception.addSuppressed(suppressed);
 
             // Check the serialized exception.
-            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS +
-                    exception1Regex() +
-                    "\n\tSuppressed: " + exception2Regex();
+            final String serializedExceptionRegex =
+                    EXCEPTION_REGEX_FLAGS + exception1Regex() + "\n\tSuppressed: " + exception2Regex();
             assertSerializedException(exception, serializedExceptionRegex);
-
         }
 
         @Test
@@ -242,12 +234,11 @@ class StackTraceStringResolverTest {
             exception.addSuppressed(suppressed2);
 
             // Check the serialized exception.
-            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS +
-                    exception1Regex() +
-                    "\n\tSuppressed: " + exception2Regex() +
-                    "\n\tSuppressed: " + exception3Regex();
+            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS + exception1Regex()
+                    + "\n\tSuppressed: "
+                    + exception2Regex() + "\n\tSuppressed: "
+                    + exception3Regex();
             assertSerializedException(exception, serializedExceptionRegex);
-
         }
 
         @Test
@@ -261,12 +252,11 @@ class StackTraceStringResolverTest {
             exception.initCause(cause);
 
             // Check the serialized exception.
-            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS +
-                    exception1Regex() +
-                    "\n\tSuppressed: " + exception2Regex() +
-                    "\nCaused by: " + exception3Regex();
+            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS + exception1Regex()
+                    + "\n\tSuppressed: "
+                    + exception2Regex() + "\nCaused by: "
+                    + exception3Regex();
             assertSerializedException(exception, serializedExceptionRegex);
-
         }
 
         @Test
@@ -280,12 +270,11 @@ class StackTraceStringResolverTest {
             cause.addSuppressed(suppressed);
 
             // Check the serialized exception.
-            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS +
-                    exception1Regex() +
-                    "\nCaused by: " + exception2Regex() +
-                    "\n\tSuppressed: " + exception3Regex();
+            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS + exception1Regex()
+                    + "\nCaused by: "
+                    + exception2Regex() + "\n\tSuppressed: "
+                    + exception3Regex();
             assertSerializedException(exception, serializedExceptionRegex);
-
         }
 
         @Test
@@ -299,17 +288,14 @@ class StackTraceStringResolverTest {
             suppressed.initCause(cause);
 
             // Check the serialized exception.
-            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS +
-                    exception1Regex() +
-                    "\n\tSuppressed: " + exception2Regex() +
-                    "\n\tCaused by: " + exception3Regex();
+            final String serializedExceptionRegex = EXCEPTION_REGEX_FLAGS + exception1Regex()
+                    + "\n\tSuppressed: "
+                    + exception2Regex() + "\n\tCaused by: "
+                    + exception3Regex();
             assertSerializedException(exception, serializedExceptionRegex);
-
         }
 
-        abstract void assertSerializedException(
-                final Throwable exception,
-                final String regex);
+        abstract void assertSerializedException(final Throwable exception, final String regex);
 
         private static void assertSerializedException(
                 final Map<String, ?> exceptionResolverTemplate,
@@ -320,26 +306,21 @@ class StackTraceStringResolverTest {
             final String eventTemplate = writeJson(asMap("output", exceptionResolverTemplate));
 
             // Create the layout.
-            final JsonTemplateLayout layout = JsonTemplateLayout
-                    .newBuilder()
+            final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                     .setConfiguration(CONFIGURATION)
                     .setEventTemplate(eventTemplate)
                     .build();
 
             // Create the log event.
-            final LogEvent logEvent = Log4jLogEvent
-                    .newBuilder()
-                    .setThrown(exception)
-                    .build();
+            final LogEvent logEvent =
+                    Log4jLogEvent.newBuilder().setThrown(exception).build();
 
             // Check the serialized event.
             usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
                 final AbstractStringAssert<?> serializedExceptionAssert = assertThat(accessor.getString("output"));
                 serializedExceptionAsserter.accept(serializedExceptionAssert);
             });
-
         }
-
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -358,9 +339,7 @@ class StackTraceStringResolverTest {
             assertSerializedExceptionWithoutTruncation(exception, regex);
         }
 
-        private void assertSerializedExceptionWithoutTruncation(
-                final Throwable exception,
-                final String regex) {
+        private void assertSerializedExceptionWithoutTruncation(final Throwable exception, final String regex) {
 
             // Create the event template.
             final Map<String, ?> exceptionResolverTemplate = asMap(
@@ -373,7 +352,6 @@ class StackTraceStringResolverTest {
                     exceptionResolverTemplate,
                     exception,
                     serializedExceptionAssert -> serializedExceptionAssert.matches(regex));
-
         }
 
         @Test
@@ -381,15 +359,15 @@ class StackTraceStringResolverTest {
 
             // Create the event template.
             final String eventTemplate = writeJson(asMap(
-                    "ex", asMap(
+                    "ex",
+                    asMap(
                             "$resolver", "exception",
                             "field", "stackTrace",
                             "stringified", true)));
 
             // Create the layout.
             final int maxStringLength = eventTemplate.length();
-            final JsonTemplateLayout layout = JsonTemplateLayout
-                    .newBuilder()
+            final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                     .setConfiguration(CONFIGURATION)
                     .setEventTemplate(eventTemplate)
                     .setMaxStringLength(maxStringLength)
@@ -398,20 +376,16 @@ class StackTraceStringResolverTest {
 
             // Create the log event.
             final Throwable exception = exception1();
-            final LogEvent logEvent = Log4jLogEvent
-                    .newBuilder()
-                    .setThrown(exception)
-                    .build();
+            final LogEvent logEvent =
+                    Log4jLogEvent.newBuilder().setThrown(exception).build();
 
             // Check the serialized event.
             usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-                final int expectedLength = maxStringLength +
-                        JsonTemplateLayoutDefaults.getTruncatedStringSuffix().length();
+                final int expectedLength = maxStringLength
+                        + JsonTemplateLayoutDefaults.getTruncatedStringSuffix().length();
                 assertThat(accessor.getString("ex").length()).isEqualTo(expectedLength);
             });
-
         }
-
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -430,34 +404,34 @@ class StackTraceStringResolverTest {
             assertSerializedExceptionWithStringTruncation(exception, regex);
         }
 
-        private void assertSerializedExceptionWithStringTruncation(
-                final Throwable exception,
-                final String regex) {
+        private void assertSerializedExceptionWithStringTruncation(final Throwable exception, final String regex) {
 
             // Create the event template.
             final List<String> pointMatcherStrings = pointMatcherStrings();
             final Map<String, ?> exceptionResolverTemplate = asMap(
                     "$resolver", "exception",
                     "field", "stackTrace",
-                    "stackTrace", asMap("stringified", asMap(
-                            "truncation", asMap(
-                                    "suffix", TRUNCATION_SUFFIX,
-                                    "pointMatcherStrings", pointMatcherStrings))));
+                    "stackTrace",
+                            asMap(
+                                    "stringified",
+                                    asMap(
+                                            "truncation",
+                                            asMap(
+                                                    "suffix", TRUNCATION_SUFFIX,
+                                                    "pointMatcherStrings", pointMatcherStrings))));
 
             // Check the serialized event.
             AbstractTestCases.assertSerializedException(
                     exceptionResolverTemplate,
                     exception,
                     serializedExceptionAssert -> serializedExceptionAssert.matches(regex));
-
         }
 
         private List<String> pointMatcherStrings() {
             final Throwable exception1 = exception1();
             final Throwable exception2 = exception2();
             final Throwable exception3 = exception3();
-            return Stream
-                    .of(exception1, exception2, exception3)
+            return Stream.of(exception1, exception2, exception3)
                     .map(this::pointMatcherString)
                     .collect(Collectors.toList());
         }
@@ -474,109 +448,124 @@ class StackTraceStringResolverTest {
             final String eventTemplate = writeJson(asMap(
 
                     // Raw exception
-                    "ex", asMap(
-                            "$resolver", "exception",
-                            "field", "stackTrace",
-                            "stackTrace", asMap(
-                                    "stringified", true)),
+                    "ex",
+                            asMap(
+                                    "$resolver", "exception",
+                                    "field", "stackTrace",
+                                    "stackTrace", asMap("stringified", true)),
 
                     // Exception matcher using strings
-                    "stringMatchedEx", asMap(
-                            "$resolver", "exception",
-                            "field", "stackTrace",
-                            "stackTrace", asMap(
-                                    "stringified", asMap(
-                                            "truncation", asMap(
-                                                    "suffix", TRUNCATION_SUFFIX,
-                                                    "pointMatcherStrings", Arrays.asList(
-                                                            "this string shouldn't match with anything",
-                                                            pointMatcherString(parentError)))))),
+                    "stringMatchedEx",
+                            asMap(
+                                    "$resolver", "exception",
+                                    "field", "stackTrace",
+                                    "stackTrace",
+                                            asMap(
+                                                    "stringified",
+                                                    asMap(
+                                                            "truncation",
+                                                            asMap(
+                                                                    "suffix",
+                                                                    TRUNCATION_SUFFIX,
+                                                                    "pointMatcherStrings",
+                                                                    Arrays.asList(
+                                                                            "this string shouldn't match with anything",
+                                                                            pointMatcherString(parentError)))))),
 
                     // Exception matcher using regexes
-                    "regexMatchedEx", asMap(
-                            "$resolver", "exception",
-                            "field", "stackTrace",
-                            "stackTrace", asMap(
-                                    "stringified", asMap(
-                                            "truncation", asMap(
-                                                    "suffix", TRUNCATION_SUFFIX,
-                                                    "pointMatcherRegexes", Arrays.asList(
-                                                            "this string shouldn't match with anything",
-                                                            pointMatcherRegex(parentError)))))),
+                    "regexMatchedEx",
+                            asMap(
+                                    "$resolver", "exception",
+                                    "field", "stackTrace",
+                                    "stackTrace",
+                                            asMap(
+                                                    "stringified",
+                                                    asMap(
+                                                            "truncation",
+                                                            asMap(
+                                                                    "suffix",
+                                                                    TRUNCATION_SUFFIX,
+                                                                    "pointMatcherRegexes",
+                                                                    Arrays.asList(
+                                                                            "this string shouldn't match with anything",
+                                                                            pointMatcherRegex(parentError)))))),
 
                     // Raw exception root cause
-                    "rootEx", asMap(
-                            "$resolver", "exceptionRootCause",
-                            "field", "stackTrace",
-                            "stackTrace", asMap(
-                                    "stringified", true)),
+                    "rootEx",
+                            asMap(
+                                    "$resolver", "exceptionRootCause",
+                                    "field", "stackTrace",
+                                    "stackTrace", asMap("stringified", true)),
 
                     // Exception root cause matcher using strings
-                    "stringMatchedRootEx", asMap(
-                            "$resolver", "exceptionRootCause",
-                            "field", "stackTrace",
-                            "stackTrace", asMap(
-                                    "stringified", asMap(
-                                            "truncation", asMap(
-                                                    "suffix", TRUNCATION_SUFFIX,
-                                                    "pointMatcherStrings", Arrays.asList(
-                                                            "this string shouldn't match with anything",
-                                                            pointMatcherString(childError)))))),
+                    "stringMatchedRootEx",
+                            asMap(
+                                    "$resolver", "exceptionRootCause",
+                                    "field", "stackTrace",
+                                    "stackTrace",
+                                            asMap(
+                                                    "stringified",
+                                                    asMap(
+                                                            "truncation",
+                                                            asMap(
+                                                                    "suffix",
+                                                                    TRUNCATION_SUFFIX,
+                                                                    "pointMatcherStrings",
+                                                                    Arrays.asList(
+                                                                            "this string shouldn't match with anything",
+                                                                            pointMatcherString(childError)))))),
 
                     // Exception root cause matcher using regexes
-                    "regexMatchedRootEx", asMap(
-                            "$resolver", "exceptionRootCause",
-                            "field", "stackTrace",
-                            "stackTrace", asMap(
-                                    "stringified", asMap(
-                                            "truncation", asMap(
-                                                    "suffix", TRUNCATION_SUFFIX,
-                                                    "pointMatcherRegexes", Arrays.asList(
-                                                            "this string shouldn't match with anything",
-                                                            pointMatcherRegex(childError))))))));
+                    "regexMatchedRootEx",
+                            asMap(
+                                    "$resolver", "exceptionRootCause",
+                                    "field", "stackTrace",
+                                    "stackTrace",
+                                            asMap(
+                                                    "stringified",
+                                                    asMap(
+                                                            "truncation",
+                                                            asMap(
+                                                                    "suffix",
+                                                                    TRUNCATION_SUFFIX,
+                                                                    "pointMatcherRegexes",
+                                                                    Arrays.asList(
+                                                                            "this string shouldn't match with anything",
+                                                                            pointMatcherRegex(childError))))))));
 
             // Create the layout.
-            final JsonTemplateLayout layout = JsonTemplateLayout
-                    .newBuilder()
+            final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                     .setConfiguration(CONFIGURATION)
                     .setEventTemplate(eventTemplate)
                     .build();
 
             // Create the log event.
-            final LogEvent logEvent = Log4jLogEvent
-                    .newBuilder()
-                    .setThrown(parentError)
-                    .build();
+            final LogEvent logEvent =
+                    Log4jLogEvent.newBuilder().setThrown(parentError).build();
 
             // Check the serialized event.
             usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
 
                 // Check the raw parent exception.
-                final String exPattern = EXCEPTION_REGEX_FLAGS +
-                        exception1Regex(false) +
-                        "\nCaused by: " + exception3Regex(false);
+                final String exPattern =
+                        EXCEPTION_REGEX_FLAGS + exception1Regex(false) + "\nCaused by: " + exception3Regex(false);
                 assertThat(accessor.getString("ex")).matches(exPattern);
 
                 // Check the matcher usage on parent exception.
-                final String matchedExPattern = EXCEPTION_REGEX_FLAGS +
-                        exception1Regex(true) +
-                        "\nCaused by: " + exception3Regex(false);
+                final String matchedExPattern =
+                        EXCEPTION_REGEX_FLAGS + exception1Regex(true) + "\nCaused by: " + exception3Regex(false);
                 assertThat(accessor.getString("stringMatchedEx")).matches(matchedExPattern);
                 assertThat(accessor.getString("regexMatchedEx")).matches(matchedExPattern);
 
                 // Check the raw child exception.
-                final String rootExPattern = EXCEPTION_REGEX_FLAGS +
-                        exception3Regex(false);
+                final String rootExPattern = EXCEPTION_REGEX_FLAGS + exception3Regex(false);
                 assertThat(accessor.getString("rootEx")).matches(rootExPattern);
 
                 // Check the matcher usage on child exception.
-                final String matchedRootExPattern = EXCEPTION_REGEX_FLAGS +
-                        exception3Regex(true);
+                final String matchedRootExPattern = EXCEPTION_REGEX_FLAGS + exception3Regex(true);
                 assertThat(accessor.getString("stringMatchedRootEx")).matches(matchedRootExPattern);
                 assertThat(accessor.getString("regexMatchedRootEx")).matches(matchedRootExPattern);
-
             });
-
         }
 
         private String pointMatcherString(final Throwable exception) {
@@ -584,9 +573,9 @@ class StackTraceStringResolverTest {
             final String className = stackTraceElement.getClassName();
             final String moduleName;
             if (Constants.JAVA_MAJOR_VERSION > 8) {
-                moduleName = assertDoesNotThrow(
-                        () -> (String) StackTraceElement.class.getDeclaredMethod("getModuleName")
-                                .invoke(stackTraceElement));
+                moduleName = assertDoesNotThrow(() -> (String) StackTraceElement.class
+                        .getDeclaredMethod("getModuleName")
+                        .invoke(stackTraceElement));
             } else {
                 moduleName = null;
             }
@@ -604,38 +593,34 @@ class StackTraceStringResolverTest {
         private String matchingRegex(final String string) {
             return "[" + string.charAt(0) + "]" + Pattern.quote(string.substring(1));
         }
-
     }
 
     @Test
     void nonAscii_utf8_method_name_should_get_serialized() {
 
         // Create the log event.
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = Log4jLogEvent.newBuilder()
                 .setThrown(NonAsciiUtf8MethodNameContainingException.INSTANCE)
                 .build();
 
         // Create the event template.
         final String eventTemplate = writeJson(asMap(
-                "ex_stacktrace", asMap(
+                "ex_stacktrace",
+                asMap(
                         "$resolver", "exception",
                         "field", "stackTrace",
                         "stringified", true)));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
                 .build();
 
         // Check the serialized event.
-        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
-                assertThat(accessor.getString("ex_stacktrace"))
-                        .contains(NonAsciiUtf8MethodNameContainingException.NON_ASCII_UTF8_TEXT));
-
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> assertThat(accessor.getString("ex_stacktrace"))
+                .contains(NonAsciiUtf8MethodNameContainingException.NON_ASCII_UTF8_TEXT));
     }
 
     private static final class NonAsciiUtf8MethodNameContainingException extends RuntimeException {
@@ -644,8 +629,7 @@ class StackTraceStringResolverTest {
 
         private static final String NON_ASCII_UTF8_TEXT = "அஆஇฬ๘";
 
-        private static final NonAsciiUtf8MethodNameContainingException INSTANCE =
-                createInstance();
+        private static final NonAsciiUtf8MethodNameContainingException INSTANCE = createInstance();
 
         @SuppressWarnings("UnicodeInCode")
         private static NonAsciiUtf8MethodNameContainingException createInstance() {
@@ -659,14 +643,11 @@ class StackTraceStringResolverTest {
 
         @SuppressWarnings({"NonAsciiCharacters", "UnicodeInCode"})
         private static void throwException_அஆஇฬ๘() {
-            throw new NonAsciiUtf8MethodNameContainingException(
-                    "exception with non-ASCII UTF-8 method name");
+            throw new NonAsciiUtf8MethodNameContainingException("exception with non-ASCII UTF-8 method name");
         }
 
         private NonAsciiUtf8MethodNameContainingException(final String message) {
             super(message);
         }
-
     }
-
 }

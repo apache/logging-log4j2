@@ -17,7 +17,6 @@
 package org.apache.logging.slf4j;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -30,13 +29,15 @@ public class EventDataConverter {
 
     public Message convertEvent(final String message, final Object[] objects, final Throwable throwable) {
         try {
-            final EventData data = objects != null && objects[0] instanceof EventData ?
-                    (EventData) objects[0] : new EventData(message);
+            final EventData data = objects != null && objects[0] instanceof EventData
+                    ? (EventData) objects[0]
+                    : new EventData(message);
             final StructuredDataMessage msg =
                     new StructuredDataMessage(data.getEventId(), data.getMessage(), data.getEventType());
             for (final Map.Entry<String, Object> entry : data.getEventMap().entrySet()) {
                 final String key = entry.getKey();
-                if (EventData.EVENT_TYPE.equals(key) || EventData.EVENT_ID.equals(key)
+                if (EventData.EVENT_TYPE.equals(key)
+                        || EventData.EVENT_ID.equals(key)
                         || EventData.EVENT_MESSAGE.equals(key)) {
                     continue;
                 }

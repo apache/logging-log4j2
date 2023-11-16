@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
@@ -78,7 +77,7 @@ public class RollingFileManagerTest {
 
             Assert.assertNotNull(appender);
             final String testContent = "Test";
-            try(final RollingFileManager manager = appender.getManager()) {
+            try (final RollingFileManager manager = appender.getManager()) {
                 Assert.assertEquals(file.getAbsolutePath(), manager.getFileName());
                 manager.writeToDestination(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
             }
@@ -111,10 +110,21 @@ public class RollingFileManagerTest {
         // Create the manager.
         final File file = File.createTempFile("testSynchronousActionFailure", "log");
         final RollingFileManager manager = RollingFileManager.getFileManager(
-            file.getAbsolutePath(),
-            "testSynchronousActionFailure.log.%d{yyyy-MM-dd}", true, false,
-            OnStartupTriggeringPolicy.createPolicy(1), new FailingSynchronousStrategy(), null,
-            PatternLayout.createDefaultLayout(), 0, true, false, null, null, null, configuration);
+                file.getAbsolutePath(),
+                "testSynchronousActionFailure.log.%d{yyyy-MM-dd}",
+                true,
+                false,
+                OnStartupTriggeringPolicy.createPolicy(1),
+                new FailingSynchronousStrategy(),
+                null,
+                PatternLayout.createDefaultLayout(),
+                0,
+                true,
+                false,
+                null,
+                null,
+                null,
+                configuration);
         Assert.assertNotNull(manager);
         manager.initialize();
 
@@ -133,6 +143,5 @@ public class RollingFileManagerTest {
 
         // The initialTime should not have changed
         Assert.assertEquals(initialTime, manager.getFileTime());
-
     }
 }

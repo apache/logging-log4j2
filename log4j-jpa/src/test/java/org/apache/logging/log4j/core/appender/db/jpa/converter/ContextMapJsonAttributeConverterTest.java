@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import static org.junit.Assert.*;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(Appenders.Jpa.class)
 public class ContextMapJsonAttributeConverterTest {

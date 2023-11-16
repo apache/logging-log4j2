@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.script.Script;
@@ -29,8 +30,6 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ScriptCondition class.
@@ -45,7 +44,8 @@ public class ScriptConditionTest {
 
     @Test
     public void testConstructorDisallowsNullConfig() {
-        assertThrows(NullPointerException.class,
+        assertThrows(
+                NullPointerException.class,
                 () -> ScriptCondition.createCondition(new Script("test", "js", "print('hi')"), null));
     }
 
@@ -56,8 +56,9 @@ public class ScriptConditionTest {
 
     @Test
     public void testCreateConditionDisallowsNullConfig() {
-        assertThrows(NullPointerException.class, () -> ScriptCondition.createCondition(
-                new Script("test", "js", "print('hi')"), null));
+        assertThrows(
+                NullPointerException.class,
+                () -> ScriptCondition.createCondition(new Script("test", "js", "print('hi')"), null));
     }
 
     @Test
@@ -133,5 +134,4 @@ public class ScriptConditionTest {
         assertEquals(1, result.size());
         assertEquals(Paths.get("/path/2/abc/bbb.txt"), result.get(0).getPath());
     }
-
 }

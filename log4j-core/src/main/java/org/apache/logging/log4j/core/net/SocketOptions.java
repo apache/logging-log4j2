@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.net;
 
 import java.net.Socket;
 import java.net.SocketException;
-
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -361,9 +360,12 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     @Override
     public String toString() {
-        return "SocketOptions [keepAlive=" + keepAlive + ", oobInline=" + oobInline + ", performancePreferences=" + performancePreferences
-            + ", receiveBufferSize=" + receiveBufferSize + ", reuseAddress=" + reuseAddress + ", rfc1349TrafficClass=" + rfc1349TrafficClass
-            + ", sendBufferSize=" + sendBufferSize + ", soLinger=" + soLinger + ", soTimeout=" + soTimeout + ", tcpNoDelay=" + tcpNoDelay + ", trafficClass="
-            + trafficClass + "]";
+        return "SocketOptions [keepAlive=" + keepAlive + ", oobInline=" + oobInline + ", performancePreferences="
+                + performancePreferences
+                + ", receiveBufferSize=" + receiveBufferSize + ", reuseAddress=" + reuseAddress
+                + ", rfc1349TrafficClass=" + rfc1349TrafficClass
+                + ", sendBufferSize=" + sendBufferSize + ", soLinger=" + soLinger + ", soTimeout=" + soTimeout
+                + ", tcpNoDelay=" + tcpNoDelay + ", trafficClass="
+                + trafficClass + "]";
     }
 }

@@ -45,7 +45,9 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
 
     protected final BuilderManager manager = new BuilderManager();
 
-    public Log4j1Configuration(final LoggerContext loggerContext, final ConfigurationSource configurationSource,
+    public Log4j1Configuration(
+            final LoggerContext loggerContext,
+            final ConfigurationSource configurationSource,
             final int monitorIntervalSeconds) {
         super(loggerContext, configurationSource);
         initializeWatchers(this, configurationSource, monitorIntervalSeconds);

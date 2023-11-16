@@ -19,9 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-
 import javax.script.SimpleBindings;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -66,7 +64,8 @@ public class ScriptCondition {
      * @return a list of paths selected to delete by the script execution
      */
     @SuppressWarnings("unchecked")
-    public List<PathWithAttributes> selectFilesToDelete(final Path basePath, final List<PathWithAttributes> candidates) {
+    public List<PathWithAttributes> selectFilesToDelete(
+            final Path basePath, final List<PathWithAttributes> candidates) {
         final SimpleBindings bindings = new SimpleBindings();
         bindings.put("basePath", basePath);
         bindings.put("pathList", candidates);
@@ -98,7 +97,8 @@ public class ScriptCondition {
      * @return A ScriptCondition.
      */
     @PluginFactory
-    public static ScriptCondition createCondition(@PluginElement("Script") final AbstractScript script,
+    public static ScriptCondition createCondition(
+            @PluginElement("Script") final AbstractScript script,
             @PluginConfiguration final Configuration configuration) {
 
         if (script == null) {

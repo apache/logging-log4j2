@@ -45,6 +45,5 @@ public final class ContextUtil {
         }
     }
 
-    private ContextUtil() {
-    }
+    private ContextUtil() {}
 }

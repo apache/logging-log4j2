@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NoSqlAppenderTest {
@@ -43,7 +43,8 @@ public class NoSqlAppenderTest {
         final NoSqlAppender appender = NoSqlAppender.createAppender("myName01", null, null, null, provider);
 
         assertNotNull("The appender should not be null.", appender);
-        assertEquals("The toString value is not correct.",
+        assertEquals(
+                "The toString value is not correct.",
                 "myName01{ manager=noSqlManager{ description=myName01, bufferSize=0, provider=" + provider + " } }",
                 appender.toString());
 
@@ -55,9 +56,11 @@ public class NoSqlAppenderTest {
         final NoSqlAppender appender = NoSqlAppender.createAppender("anotherName02", null, null, "25", provider);
 
         assertNotNull("The appender should not be null.", appender);
-        assertEquals("The toString value is not correct.",
+        assertEquals(
+                "The toString value is not correct.",
                 "anotherName02{ manager=noSqlManager{ description=anotherName02, bufferSize=25, provider=" + provider
-                        + " } }", appender.toString());
+                        + " } }",
+                appender.toString());
 
         appender.stop();
     }

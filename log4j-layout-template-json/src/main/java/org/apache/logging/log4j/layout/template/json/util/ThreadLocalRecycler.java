@@ -25,9 +25,7 @@ public class ThreadLocalRecycler<V> implements Recycler<V> {
 
     private final ThreadLocal<V> holder;
 
-    public ThreadLocalRecycler(
-            final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
+    public ThreadLocalRecycler(final Supplier<V> supplier, final Consumer<V> cleaner) {
         this.cleaner = cleaner;
         this.holder = ThreadLocal.withInitial(supplier);
     }
@@ -41,5 +39,4 @@ public class ThreadLocalRecycler<V> implements Recycler<V> {
 
     @Override
     public void release(final V value) {}
-
 }

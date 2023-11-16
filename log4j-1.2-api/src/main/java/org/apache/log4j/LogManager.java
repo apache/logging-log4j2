@@ -19,7 +19,6 @@ package org.apache.log4j;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.stream.Collectors;
-
 import org.apache.log4j.legacy.core.ContextUtil;
 import org.apache.log4j.spi.DefaultRepositorySelector;
 import org.apache.log4j.spi.LoggerFactory;
@@ -61,7 +60,7 @@ public final class LogManager {
 
     static final String DEFAULT_XML_CONFIGURATION_FILE = "log4j.xml";
 
-    static private RepositorySelector repositorySelector;
+    private static RepositorySelector repositorySelector;
 
     private static final boolean LOG4J_CORE_PRESENT;
 
@@ -118,9 +117,8 @@ public final class LogManager {
     @SuppressWarnings("rawtypes")
     static Enumeration getCurrentLoggers(final ClassLoader classLoader) {
         // @formatter:off
-        return Collections.enumeration(
-            LogManager.getContext(classLoader).getLoggerRegistry()
-                .getLoggers().stream().map(e -> LogManager.getLogger(e.getName(), classLoader))
+        return Collections.enumeration(LogManager.getContext(classLoader).getLoggerRegistry().getLoggers().stream()
+                .map(e -> LogManager.getLogger(e.getName(), classLoader))
                 .collect(Collectors.toList()));
         // @formatter:on
     }
@@ -135,8 +133,9 @@ public final class LogManager {
      */
     public static Logger getLogger(final Class<?> clazz) {
         final Hierarchy hierarchy = getHierarchy();
-        return hierarchy != null ? hierarchy.getLogger(clazz.getName(), StackLocatorUtil.getCallerClassLoader(2))
-            : getLoggerRepository().getLogger(clazz.getName());
+        return hierarchy != null
+                ? hierarchy.getLogger(clazz.getName(), StackLocatorUtil.getCallerClassLoader(2))
+                : getLoggerRepository().getLogger(clazz.getName());
     }
 
     /**
@@ -144,23 +143,30 @@ public final class LogManager {
      */
     public static Logger getLogger(final String name) {
         final Hierarchy hierarchy = getHierarchy();
-        return hierarchy != null ? hierarchy.getLogger(name, StackLocatorUtil.getCallerClassLoader(2)) : getLoggerRepository().getLogger(name);
+        return hierarchy != null
+                ? hierarchy.getLogger(name, StackLocatorUtil.getCallerClassLoader(2))
+                : getLoggerRepository().getLogger(name);
     }
 
     static Logger getLogger(final String name, final ClassLoader classLoader) {
         final Hierarchy hierarchy = getHierarchy();
-        return hierarchy != null ? hierarchy.getLogger(name, classLoader) : getLoggerRepository().getLogger(name);
+        return hierarchy != null
+                ? hierarchy.getLogger(name, classLoader)
+                : getLoggerRepository().getLogger(name);
     }
 
     public static Logger getLogger(final String name, final LoggerFactory factory) {
         final Hierarchy hierarchy = getHierarchy();
-        return hierarchy != null ? hierarchy.getLogger(name, factory, StackLocatorUtil.getCallerClassLoader(2))
-            : getLoggerRepository().getLogger(name, factory);
+        return hierarchy != null
+                ? hierarchy.getLogger(name, factory, StackLocatorUtil.getCallerClassLoader(2))
+                : getLoggerRepository().getLogger(name, factory);
     }
 
     static Logger getLogger(final String name, final LoggerFactory factory, final ClassLoader classLoader) {
         final Hierarchy hierarchy = getHierarchy();
-        return hierarchy != null ? hierarchy.getLogger(name, factory, classLoader) : getLoggerRepository().getLogger(name, factory);
+        return hierarchy != null
+                ? hierarchy.getLogger(name, factory, classLoader)
+                : getLoggerRepository().getLogger(name, factory);
     }
 
     public static LoggerRepository getLoggerRepository() {
@@ -179,7 +185,9 @@ public final class LogManager {
 
     static Logger getRootLogger(final ClassLoader classLoader) {
         final Hierarchy hierarchy = getHierarchy();
-        return hierarchy != null ? hierarchy.getRootLogger(classLoader) : getLoggerRepository().getRootLogger();
+        return hierarchy != null
+                ? hierarchy.getRootLogger(classLoader)
+                : getLoggerRepository().getRootLogger();
     }
 
     static boolean isLog4jCorePresent() {
@@ -205,7 +213,8 @@ public final class LogManager {
         }
     }
 
-    public static void setRepositorySelector(final RepositorySelector selector, final Object guard) throws IllegalArgumentException {
+    public static void setRepositorySelector(final RepositorySelector selector, final Object guard)
+            throws IllegalArgumentException {
         if (selector == null) {
             throw new IllegalArgumentException("RepositorySelector must be non-null.");
         }
@@ -227,5 +236,4 @@ public final class LogManager {
             getLoggerRepository().shutdown();
         }
     }
-
 }

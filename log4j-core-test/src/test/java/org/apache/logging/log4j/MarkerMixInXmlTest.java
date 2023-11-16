@@ -28,5 +28,4 @@ public class MarkerMixInXmlTest extends MarkerMixInTest {
     protected ObjectMapper newObjectMapper() {
         return new Log4jXmlObjectMapper(true, false);
     }
-
 }

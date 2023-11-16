@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -33,7 +32,6 @@ import org.apache.logging.log4j.core.util.Integers;
  */
 @Plugin(name = "TimeBasedTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
 public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
-
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<TimeBasedTriggeringPolicy> {
 
@@ -64,21 +62,20 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
             return maxRandomDelay;
         }
 
-        public Builder withInterval(final int interval){
+        public Builder withInterval(final int interval) {
             this.interval = interval;
             return this;
         }
 
-        public Builder withModulate(final boolean modulate){
+        public Builder withModulate(final boolean modulate) {
             this.modulate = modulate;
             return this;
         }
 
-        public Builder withMaxRandomDelay(final int maxRandomDelay){
+        public Builder withMaxRandomDelay(final int maxRandomDelay) {
             this.maxRandomDelay = maxRandomDelay;
             return this;
         }
-
     }
 
     private long nextRolloverMillis;
@@ -150,8 +147,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @Deprecated
     public static TimeBasedTriggeringPolicy createPolicy(
-            @PluginAttribute("interval") final String interval,
-            @PluginAttribute("modulate") final String modulate) {
+            @PluginAttribute("interval") final String interval, @PluginAttribute("modulate") final String modulate) {
         return newBuilder()
                 .withInterval(Integers.parseInt(interval, 1))
                 .withModulate(Boolean.parseBoolean(modulate))
@@ -168,5 +164,4 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         return "TimeBasedTriggeringPolicy(nextRolloverMillis=" + nextRolloverMillis + ", interval=" + interval
                 + ", modulate=" + modulate + ")";
     }
-
 }

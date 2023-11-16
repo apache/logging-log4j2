@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
@@ -24,20 +23,20 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
-
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
-@SetTestProperty(key = Constants.LOG4J_CONTEXT_SELECTOR, value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+@SetTestProperty(
+        key = Constants.LOG4J_CONTEXT_SELECTOR,
+        value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
 @SetTestProperty(key = "log4j2.asyncLoggerRingBufferSize", value = "128")
 public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstractTest {
 
     @Override
     @Test
     @LoggerContextSource
-    public void testLoggingFromToStringCausesOutOfOrderMessages(final LoggerContext ctx,
-                                                                final @Named(APPENDER_NAME) BlockingAppender blockingAppender)
-            throws Exception {
+    public void testLoggingFromToStringCausesOutOfOrderMessages(
+            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
         super.testLoggingFromToStringCausesOutOfOrderMessages(ctx, blockingAppender);
     }
 
@@ -45,5 +44,4 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstra
     protected void checkConfig(final LoggerContext ctx) {
         assertAsyncLogger(ctx, 128);
     }
-
 }

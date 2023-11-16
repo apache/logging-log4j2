@@ -21,7 +21,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -67,7 +66,12 @@ public final class IfAccumulatedFileCount implements PathCondition {
         final boolean result = ++count > threshold;
         final String match = result ? ">" : "<=";
         final String accept = result ? "ACCEPTED" : "REJECTED";
-        LOGGER.trace("IfAccumulatedFileCount {}: {} count '{}' {} threshold '{}'", accept, relativePath, count, match,
+        LOGGER.trace(
+                "IfAccumulatedFileCount {}: {} count '{}' {} threshold '{}'",
+                accept,
+                relativePath,
+                count,
+                match,
                 threshold);
         if (result) {
             return IfAll.accept(nestedConditions, basePath, relativePath, attrs);
@@ -97,7 +101,7 @@ public final class IfAccumulatedFileCount implements PathCondition {
             // @formatter:off
             @PluginAttribute(value = "exceeds", defaultInt = Integer.MAX_VALUE) final int threshold,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
-            // @formatter:on
+        // @formatter:on
 
         if (threshold == Integer.MAX_VALUE) {
             LOGGER.error("IfAccumulatedFileCount invalid or missing threshold value.");

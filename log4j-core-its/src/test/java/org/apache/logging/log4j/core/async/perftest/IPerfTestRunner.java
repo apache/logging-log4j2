@@ -17,15 +17,16 @@
 package org.apache.logging.log4j.core.async.perftest;
 
 public interface IPerfTestRunner {
-    String LINE100 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"#$%&'()-=^~|\\@`[]{};:+*,.<>/?_123456";
-    String THROUGHPUT_MSG = LINE100 + LINE100 + LINE100 + LINE100
-            + LINE100;
+    String LINE100 =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"#$%&'()-=^~|\\@`[]{};:+*,.<>/?_123456";
+    String THROUGHPUT_MSG = LINE100 + LINE100 + LINE100 + LINE100 + LINE100;
     String LATENCY_MSG = "Short msg";
 
     void runThroughputTest(int lines, Histogram histogram);
 
-    void runLatencyTest(int samples, Histogram histogram, long nanoTimeCost,
-            int threadCount);
+    void runLatencyTest(int samples, Histogram histogram, long nanoTimeCost, int threadCount);
+
     void shutdown();
+
     void log(String finalMessage);
 }

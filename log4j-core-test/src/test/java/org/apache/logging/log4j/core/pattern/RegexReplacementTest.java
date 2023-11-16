@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -26,10 +29,6 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @LoggerContextSource("log4j-replace.xml")
 @UsingThreadContextMap
@@ -42,7 +41,9 @@ public class RegexReplacementTest {
     private static final String EXPECTED = "/RegexReplacementTest" + Strings.LINE_SEPARATOR;
 
     public RegexReplacementTest(
-            final LoggerContext context, @Named("List") final ListAppender app, @Named("List2") final ListAppender app2) {
+            final LoggerContext context,
+            @Named("List") final ListAppender app,
+            @Named("List2") final ListAppender app2) {
         logger = context.getLogger("LoggerTest");
         logger2 = context.getLogger("ReplacementTest");
         this.app = app.clear();
@@ -56,8 +57,8 @@ public class RegexReplacementTest {
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
         assertTrue(
-                msgs.get(0).endsWith(EXPECTED), "Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0));
-
+                msgs.get(0).endsWith(EXPECTED),
+                "Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0));
     }
 
     @Test
@@ -77,6 +78,7 @@ public class RegexReplacementTest {
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
         assertTrue(
-                msgs.get(0).endsWith(EXPECTED), "Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0));
+                msgs.get(0).endsWith(EXPECTED),
+                "Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0));
     }
 }

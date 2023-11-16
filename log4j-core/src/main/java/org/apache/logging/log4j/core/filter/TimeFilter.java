@@ -23,7 +23,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -58,12 +57,14 @@ public final class TimeFilter extends AbstractFilter {
      * Starting offset from midnight in milliseconds.
      */
     private volatile long start;
+
     private final LocalTime startTime;
 
     /**
      * Ending offset from midnight in milliseconds.
      */
     private volatile long end;
+
     private final LocalTime endTime;
 
     private final long duration;
@@ -76,20 +77,32 @@ public final class TimeFilter extends AbstractFilter {
     /*
      * Expose for unit testing.
      */
-    TimeFilter(final LocalTime start, final LocalTime end, final ZoneId timeZone, final Result onMatch,
-            final Result onMismatch, final LocalDate now) {
+    TimeFilter(
+            final LocalTime start,
+            final LocalTime end,
+            final ZoneId timeZone,
+            final Result onMatch,
+            final Result onMismatch,
+            final LocalDate now) {
         super(onMatch, onMismatch);
         this.startTime = start;
         this.endTime = end;
         this.timeZone = timeZone;
-        this.start = ZonedDateTime.of(now, startTime, timeZone).withEarlierOffsetAtOverlap().toInstant().toEpochMilli();
-        long endMillis = ZonedDateTime.of(now, endTime, timeZone).withEarlierOffsetAtOverlap().toInstant().toEpochMilli();
+        this.start = ZonedDateTime.of(now, startTime, timeZone)
+                .withEarlierOffsetAtOverlap()
+                .toInstant()
+                .toEpochMilli();
+        long endMillis = ZonedDateTime.of(now, endTime, timeZone)
+                .withEarlierOffsetAtOverlap()
+                .toInstant()
+                .toEpochMilli();
         if (end.isBefore(start)) {
             // End time must be tomorrow.
             endMillis += DAY_MS;
         }
-        duration = startTime.isBefore(endTime) ? Duration.between(startTime, endTime).toMillis() :
-            Duration.between(startTime, endTime).plusHours(24).toMillis();
+        duration = startTime.isBefore(endTime)
+                ? Duration.between(startTime, endTime).toMillis()
+                : Duration.between(startTime, endTime).plusHours(24).toMillis();
         final long difference = (endMillis - this.start) - duration;
         if (difference != 0) {
             // Handle switch from standard time to daylight time and daylight time to standard time.
@@ -98,8 +111,12 @@ public final class TimeFilter extends AbstractFilter {
         this.end = endMillis;
     }
 
-    private TimeFilter(final LocalTime start, final LocalTime end, final ZoneId timeZone, final Result onMatch,
-                       final Result onMismatch) {
+    private TimeFilter(
+            final LocalTime start,
+            final LocalTime end,
+            final ZoneId timeZone,
+            final Result onMatch,
+            final Result onMismatch) {
         this(start, end, timeZone, onMatch, onMismatch, LocalDate.now(timeZone));
     }
 
@@ -107,9 +124,16 @@ public final class TimeFilter extends AbstractFilter {
         if (currentTimeMillis <= end) {
             return;
         }
-        final LocalDate date = Instant.ofEpochMilli(currentTimeMillis).atZone(timeZone).toLocalDate();
-        this.start = ZonedDateTime.of(date, startTime, timeZone).withEarlierOffsetAtOverlap().toInstant().toEpochMilli();
-        long endMillis = ZonedDateTime.of(date, endTime, timeZone).withEarlierOffsetAtOverlap().toInstant().toEpochMilli();
+        final LocalDate date =
+                Instant.ofEpochMilli(currentTimeMillis).atZone(timeZone).toLocalDate();
+        this.start = ZonedDateTime.of(date, startTime, timeZone)
+                .withEarlierOffsetAtOverlap()
+                .toInstant()
+                .toEpochMilli();
+        long endMillis = ZonedDateTime.of(date, endTime, timeZone)
+                .withEarlierOffsetAtOverlap()
+                .toInstant()
+                .toEpochMilli();
         if (endTime.isBefore(startTime)) {
             // End time must be tomorrow.
             endMillis += DAY_MS;
@@ -146,84 +170,161 @@ public final class TimeFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-            final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-            final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object... params) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object p0) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
             final Object p6) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return filter();
     }
 
@@ -273,5 +374,4 @@ public final class TimeFilter extends AbstractFilter {
             return defaultValue;
         }
     }
-
 }

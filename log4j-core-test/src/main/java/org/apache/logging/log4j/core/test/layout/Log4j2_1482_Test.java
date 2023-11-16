@@ -24,7 +24,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.test.categories.Layouts;
@@ -66,12 +65,12 @@ public abstract class Log4j2_1482_Test {
     @Rule
     public CleanFolders cleanFolders = new CleanFolders(FOLDER);
 
-    protected abstract void log(int runNumber) ;
+    protected abstract void log(int runNumber);
 
     private void loopingRun(final int loopCount) throws IOException {
         for (int i = 1; i <= loopCount; i++) {
-            try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(),
-                    CONFIG_LOCATION)) {
+            try (final LoggerContext loggerContext =
+                    Configurator.initialize(getClass().getName(), CONFIG_LOCATION)) {
                 log(i);
             }
             assertFileContents(i);
@@ -87,5 +86,4 @@ public abstract class Log4j2_1482_Test {
     public void testSingleRun() throws IOException {
         loopingRun(1);
     }
-
 }

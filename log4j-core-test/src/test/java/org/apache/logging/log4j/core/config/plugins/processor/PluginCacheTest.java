@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class PluginCacheTest {
@@ -51,7 +50,7 @@ public class PluginCacheTest {
 
     private void createCategory(final PluginCache cache, final String categoryName, final List<String> entryNames) {
         final Map<String, PluginEntry> category = cache.getCategory(categoryName);
-        for (String entryName: entryNames) {
+        for (String entryName : entryNames) {
             final PluginEntry entry = new PluginEntry();
             entry.setKey(entryName);
             entry.setClassName("com.example.Plugin");
@@ -66,5 +65,4 @@ public class PluginCacheTest {
         cache.writeCache(outputB);
         return outputB.toByteArray();
     }
-
 }

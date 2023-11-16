@@ -24,8 +24,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * Factory for ReliabilityStrategies.
  */
 public final class ReliabilityStrategyFactory {
-    private ReliabilityStrategyFactory() {
-    }
+    private ReliabilityStrategyFactory() {}
 
     /**
      * Returns a new {@code ReliabilityStrategy} instance based on the value of system property
@@ -45,8 +44,8 @@ public final class ReliabilityStrategyFactory {
      */
     public static ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
 
-        final String strategy = PropertiesUtil.getProperties().getStringProperty("log4j.ReliabilityStrategy",
-                "AwaitCompletion");
+        final String strategy =
+                PropertiesUtil.getProperties().getStringProperty("log4j.ReliabilityStrategy", "AwaitCompletion");
         if ("AwaitCompletion".equals(strategy)) {
             return new AwaitCompletionReliabilityStrategy(loggerConfig);
         }
@@ -57,12 +56,15 @@ public final class ReliabilityStrategyFactory {
             return new LockingReliabilityStrategy(loggerConfig);
         }
         try {
-            final Class<? extends ReliabilityStrategy> cls = Loader.loadClass(strategy).asSubclass(
-                ReliabilityStrategy.class);
+            final Class<? extends ReliabilityStrategy> cls =
+                    Loader.loadClass(strategy).asSubclass(ReliabilityStrategy.class);
             return cls.getConstructor(LoggerConfig.class).newInstance(loggerConfig);
         } catch (final Exception dynamicFailed) {
-            StatusLogger.getLogger().warn(
-                    "Could not create ReliabilityStrategy for '{}', using default AwaitCompletionReliabilityStrategy: {}", strategy, dynamicFailed);
+            StatusLogger.getLogger()
+                    .warn(
+                            "Could not create ReliabilityStrategy for '{}', using default AwaitCompletionReliabilityStrategy: {}",
+                            strategy,
+                            dynamicFailed);
             return new AwaitCompletionReliabilityStrategy(loggerConfig);
         }
     }

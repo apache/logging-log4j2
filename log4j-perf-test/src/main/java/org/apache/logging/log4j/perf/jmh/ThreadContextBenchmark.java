@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -77,16 +76,21 @@ public class ThreadContextBenchmark {
     private static final String NO_GC_OPENHASH_MAP = "NoGcOpenHash";
     private static final String NO_GC_ARRAY_MAP = "NoGcSortedArray";
     private static final Map<String, Class<? extends ThreadContextMap>> IMPLEMENTATIONS = new HashMap<>();
+
     static {
         IMPLEMENTATIONS.put(DEFAULT_CONTEXT_MAP, DefaultThreadContextMap.class);
         IMPLEMENTATIONS.put(COPY_OPENHASH_MAP, CopyOnWriteOpenHashMapThreadContextMap.class);
-        IMPLEMENTATIONS.put(COPY_ARRAY_MAP, CopyOnWriteOpenHashMapThreadContextMap.SUPER); //CopyOnWriteSortedArrayThreadContextMap.class);
+        IMPLEMENTATIONS.put(
+                COPY_ARRAY_MAP,
+                CopyOnWriteOpenHashMapThreadContextMap.SUPER); // CopyOnWriteSortedArrayThreadContextMap.class);
         IMPLEMENTATIONS.put(NO_GC_OPENHASH_MAP, GarbageFreeOpenHashMapThreadContextMap.class);
-        IMPLEMENTATIONS.put(NO_GC_ARRAY_MAP, GarbageFreeOpenHashMapThreadContextMap.SUPER); //GarbageFreeSortedArrayThreadContextMap.class);
+        IMPLEMENTATIONS.put(
+                NO_GC_ARRAY_MAP,
+                GarbageFreeOpenHashMapThreadContextMap.SUPER); // GarbageFreeSortedArrayThreadContextMap.class);
     }
 
-    @Param({ "Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})
-    //@Param({ "Default", }) // for legecyInject benchmarks
+    @Param({"Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})
+    // @Param({ "Default", }) // for legecyInject benchmarks
     public String threadContextMapAlias;
 
     @Param({"5", "50", "500"})
@@ -102,15 +106,16 @@ public class ThreadContextBenchmark {
 
     @Setup
     public void setup() {
-        System.setProperty("log4j2.threadContextMap", IMPLEMENTATIONS.get(threadContextMapAlias).getName());
+        System.setProperty(
+                "log4j2.threadContextMap",
+                IMPLEMENTATIONS.get(threadContextMapAlias).getName());
         ThreadContextBenchmarkAccess.init();
 
         injector = ContextDataInjectorFactory.createInjector();
         System.out.println(threadContextMapAlias + ": Injector = " + injector);
 
-        reusableContextData = threadContextMapAlias.contains("Array")
-                ? new SortedArrayStringMap()
-                : new OpenHashStringMap<>();
+        reusableContextData =
+                threadContextMapAlias.contains("Array") ? new SortedArrayStringMap() : new OpenHashStringMap<>();
 
         keys = new String[count];
         values = new String[count];

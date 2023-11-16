@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.Arrays;
-
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
@@ -74,10 +73,9 @@ public final class MementoMessage implements Message, StringBuilderFormattable {
 
     @Override
     public String toString() {
-        return "MementoMessage{" +
-                "formattedMessage='" + formattedMessage + '\'' +
-                ", format='" + format + '\'' +
-                ", parameters=" + Arrays.toString(parameters) +
-                '}';
+        return "MementoMessage{" + "formattedMessage='"
+                + formattedMessage + '\'' + ", format='"
+                + format + '\'' + ", parameters="
+                + Arrays.toString(parameters) + '}';
     }
 }

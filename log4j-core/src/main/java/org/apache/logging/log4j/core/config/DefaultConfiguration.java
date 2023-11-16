@@ -48,6 +48,5 @@ public class DefaultConfiguration extends AbstractConfiguration {
     }
 
     @Override
-    protected void doConfigure() {
-    }
+    protected void doConfigure() {}
 }

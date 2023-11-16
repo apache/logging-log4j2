@@ -30,10 +30,7 @@ public final class DummyRecyclerFactory implements RecyclerFactory {
     }
 
     @Override
-    public <V> Recycler<V> create(
-            final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
+    public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
         return new DummyRecycler<>(supplier);
     }
-
 }

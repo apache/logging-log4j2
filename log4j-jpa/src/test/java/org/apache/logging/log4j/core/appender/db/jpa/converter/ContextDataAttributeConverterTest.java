@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(Appenders.Jpa.class)
 public class ContextDataAttributeConverterTest {
@@ -40,8 +40,8 @@ public class ContextDataAttributeConverterTest {
         map.putValue("test1", "another1");
         map.putValue("key2", "value2");
 
-        assertEquals("The converted value is not correct.", map.toString(),
-                this.converter.convertToDatabaseColumn(map));
+        assertEquals(
+                "The converted value is not correct.", map.toString(), this.converter.convertToDatabaseColumn(map));
     }
 
     @Test
@@ -51,8 +51,8 @@ public class ContextDataAttributeConverterTest {
         map.putValue("anotherKey", "testValue");
         map.putValue("myKey", "yourValue");
 
-        assertEquals("The converted value is not correct.", map.toString(),
-                this.converter.convertToDatabaseColumn(map));
+        assertEquals(
+                "The converted value is not correct.", map.toString(), this.converter.convertToDatabaseColumn(map));
     }
 
     @Test

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.util.Strings;
@@ -38,14 +37,15 @@ public final class ExtendedStackTraceElement implements Serializable {
 
     static final ExtendedStackTraceElement[] EMPTY_ARRAY = {};
 
-    private static final long serialVersionUID = -2171069569241280505L;;
+    private static final long serialVersionUID = -2171069569241280505L;
+    ;
 
     private final ExtendedClassInfo extraClassInfo;
 
     private final StackTraceElement stackTraceElement;
 
-    public ExtendedStackTraceElement(final StackTraceElement stackTraceElement,
-            final ExtendedClassInfo extraClassInfo) {
+    public ExtendedStackTraceElement(
+            final StackTraceElement stackTraceElement, final ExtendedClassInfo extraClassInfo) {
         this.stackTraceElement = stackTraceElement;
         this.extraClassInfo = extraClassInfo;
     }
@@ -53,11 +53,20 @@ public final class ExtendedStackTraceElement implements Serializable {
     /**
      * Called from Jackson for XML and JSON IO.
      */
-    public ExtendedStackTraceElement(final String classLoaderName, final String moduleName, final String moduleVersion,
-            final String declaringClass, final String methodName, final String fileName, final int lineNumber,
-            final boolean exact, final String location, final String version) {
-        this(new StackTraceElement(classLoaderName, moduleName, moduleVersion, declaringClass, methodName, fileName,
-                        lineNumber),
+    public ExtendedStackTraceElement(
+            final String classLoaderName,
+            final String moduleName,
+            final String moduleVersion,
+            final String declaringClass,
+            final String methodName,
+            final String fileName,
+            final int lineNumber,
+            final boolean exact,
+            final String location,
+            final String version) {
+        this(
+                new StackTraceElement(
+                        classLoaderName, moduleName, moduleVersion, declaringClass, methodName, fileName, lineNumber),
                 new ExtendedClassInfo(exact, location, version));
     }
 
@@ -145,7 +154,8 @@ public final class ExtendedStackTraceElement implements Serializable {
         this.extraClassInfo.renderOn(output, textRenderer);
     }
 
-    private void render(final StackTraceElement stElement, final StringBuilder output, final TextRenderer textRenderer) {
+    private void render(
+            final StackTraceElement stElement, final StringBuilder output, final TextRenderer textRenderer) {
         final String classLoaderName = getClassLoaderName();
         if (Strings.isNotEmpty(classLoaderName)) {
             switch (classLoaderName) {
@@ -198,5 +208,4 @@ public final class ExtendedStackTraceElement implements Serializable {
         renderOn(sb, PlainTextRenderer.getInstance());
         return sb.toString();
     }
-
 }

@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -30,21 +31,22 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class Compiler {
     public static void compile(final File source, final String... compilerOptions) throws IOException {
         compile(Collections.singletonList(source), compilerOptions);
     }
 
-    public static void compile(final Iterable<? extends File> sources, final String... compilerOptions) throws IOException {
+    public static void compile(final Iterable<? extends File> sources, final String... compilerOptions)
+            throws IOException {
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         final List<String> errors = new ArrayList<>();
         try (final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
-            final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(sources);
+            final Iterable<? extends JavaFileObject> compilationUnits =
+                    fileManager.getJavaFileObjectsFromFiles(sources);
             final List<String> options = Arrays.asList(compilerOptions);
-            compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits).call();
+            compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits)
+                    .call();
 
             // check we don't have any compilation errors
             for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {

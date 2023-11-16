@@ -82,7 +82,6 @@ public final class MarkerResolver implements EventResolver {
                     jsonWriter.writeString(parentMarker.getName());
                 }
                 jsonWriter.writeArrayEnd();
-
             };
 
     private final TemplateResolver<LogEvent> internalResolver;
@@ -91,8 +90,7 @@ public final class MarkerResolver implements EventResolver {
         this.internalResolver = createInternalResolver(config);
     }
 
-    private TemplateResolver<LogEvent> createInternalResolver(
-            final TemplateResolverConfig config) {
+    private TemplateResolver<LogEvent> createInternalResolver(final TemplateResolverConfig config) {
         final String fieldName = config.getString("field");
 
         if ("name".equals(fieldName)) {
@@ -116,10 +114,7 @@ public final class MarkerResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         internalResolver.resolve(logEvent, jsonWriter);
     }
-
 }

@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.logging.log4j.status.StatusLogger;
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.AnsiRenderer;
-import org.fusesource.jansi.AnsiRenderer.Code;
-
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 import static org.fusesource.jansi.AnsiRenderer.Code.BG_RED;
 import static org.fusesource.jansi.AnsiRenderer.Code.BOLD;
 import static org.fusesource.jansi.AnsiRenderer.Code.RED;
 import static org.fusesource.jansi.AnsiRenderer.Code.WHITE;
 import static org.fusesource.jansi.AnsiRenderer.Code.YELLOW;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiRenderer;
+import org.fusesource.jansi.AnsiRenderer.Code;
 
 /**
  * Renders an input as ANSI escaped output.
@@ -194,40 +193,48 @@ public final class JAnsiTextRenderer implements TextRenderer {
             for (final String styleAssignmentStr : allStyleAssignmentsArr) {
                 final String[] styleAssignmentArr = styleAssignmentStr.split("=");
                 if (styleAssignmentArr.length != 2) {
-                    StatusLogger.getLogger().warn("{} parsing style \"{}\", expected format: StyleName=Code(,Code)*",
-                            getClass().getSimpleName(), styleAssignmentStr);
+                    StatusLogger.getLogger()
+                            .warn(
+                                    "{} parsing style \"{}\", expected format: StyleName=Code(,Code)*",
+                                    getClass().getSimpleName(),
+                                    styleAssignmentStr);
                 } else {
                     final String styleName = styleAssignmentArr[0];
                     final String codeListStr = styleAssignmentArr[1];
                     final String[] codeNames = codeListStr.split(",");
                     if (codeNames.length == 0) {
-                        StatusLogger.getLogger().warn(
-                                "{} parsing style \"{}\", expected format: StyleName=Code(,Code)*",
-                                getClass().getSimpleName(), styleAssignmentStr);
+                        StatusLogger.getLogger()
+                                .warn(
+                                        "{} parsing style \"{}\", expected format: StyleName=Code(,Code)*",
+                                        getClass().getSimpleName(),
+                                        styleAssignmentStr);
                     } else {
                         switch (styleName) {
-                        case "BeginToken":
-                            tempBeginToken = codeNames[0];
-                            break;
-                        case "EndToken":
-                            tempEndToken = codeNames[0];
-                            break;
-                        case "StyleMapName":
-                            final String predefinedMapName = codeNames[0];
-                            final Map<String, Code[]> predefinedMap = PrefedinedStyleMaps.get(predefinedMapName);
-                            if (predefinedMap != null) {
-                                map.putAll(predefinedMap);
-                            } else {
-                                StatusLogger.getLogger().warn("Unknown predefined map name {}, pick one of {}",
-                                        predefinedMapName, null);
-                            }
-                            break;
-                        default:
-                            final Code[] codes = new Code[codeNames.length];
-                            for (int i = 0; i < codes.length; i++) {
-                                codes[i] = toCode(codeNames[i]);
-                            }
-                            map.put(styleName, codes);
+                            case "BeginToken":
+                                tempBeginToken = codeNames[0];
+                                break;
+                            case "EndToken":
+                                tempEndToken = codeNames[0];
+                                break;
+                            case "StyleMapName":
+                                final String predefinedMapName = codeNames[0];
+                                final Map<String, Code[]> predefinedMap = PrefedinedStyleMaps.get(predefinedMapName);
+                                if (predefinedMap != null) {
+                                    map.putAll(predefinedMap);
+                                } else {
+                                    StatusLogger.getLogger()
+                                            .warn(
+                                                    "Unknown predefined map name {}, pick one of {}",
+                                                    predefinedMapName,
+                                                    null);
+                                }
+                                break;
+                            default:
+                                final Code[] codes = new Code[codeNames.length];
+                                for (int i = 0; i < codes.length; i++) {
+                                    codes[i] = toCode(codeNames[i]);
+                                }
+                                map.put(styleName, codes);
                         }
                     }
                 }
@@ -340,5 +347,4 @@ public final class JAnsiTextRenderer implements TextRenderer {
         return "JAnsiMessageRenderer [beginToken=" + beginToken + ", beginTokenLen=" + beginTokenLen + ", endToken="
                 + endToken + ", endTokenLen=" + endTokenLen + ", styleMap=" + styleMap + "]";
     }
-
 }

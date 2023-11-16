@@ -60,9 +60,7 @@ public class BoundedFIFOTestCase extends TestCase {
     }
 
     @Override
-    public void setUp() {
-
-    }
+    public void setUp() {}
 
     /**
      * Pattern: +++++..-----..

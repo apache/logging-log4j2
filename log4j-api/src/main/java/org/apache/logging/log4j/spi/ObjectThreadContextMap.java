@@ -50,5 +50,4 @@ public interface ObjectThreadContextMap extends CleanableThreadContextMap {
      * @param values the map of key-value pairs to add
      */
     <V> void putAllValues(Map<String, V> values);
-
 }

@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.test.smtp;
 
+import static org.apache.logging.log4j.util.Chars.LF;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Chars.LF;
 
 /**
  * Container for a complete SMTP message - headers and message body.

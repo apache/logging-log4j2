@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -116,10 +115,7 @@ public final class Property {
      * @param value The value.
      * @return A Property.
      */
-    public static Property createProperty(
-            final String name,
-            final String rawValue,
-            final String value) {
+    public static Property createProperty(final String name, final String rawValue, final String value) {
         if (name == null) {
             throw new IllegalArgumentException("Property name cannot be null");
         }

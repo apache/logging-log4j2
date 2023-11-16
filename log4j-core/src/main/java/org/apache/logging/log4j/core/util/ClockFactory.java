@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.time.PreciseClock;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -34,12 +33,12 @@ public final class ClockFactory {
      * implementation class. The value of this property is {@value}.
      */
     public static final String PROPERTY_NAME = "log4j.Clock";
+
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     // private static final Clock clock = createClock();
 
-    private ClockFactory() {
-    }
+    private ClockFactory() {}
 
     /**
      * Returns a {@code Clock} instance depending on the value of system
@@ -69,9 +68,9 @@ public final class ClockFactory {
 
     private static Map<String, Supplier<Clock>> aliases() {
         final Map<String, Supplier<Clock>> result = new HashMap<>();
-        result.put("SystemClock",       SystemClock::new);
+        result.put("SystemClock", SystemClock::new);
         result.put("SystemMillisClock", SystemMillisClock::new);
-        result.put("CachedClock",       CachedClock::instance);
+        result.put("CachedClock", CachedClock::instance);
         result.put("CoarseCachedClock", CoarseCachedClock::instance);
         result.put("org.apache.logging.log4j.core.util.CachedClock", CachedClock::instance);
         result.put("org.apache.logging.log4j.core.util.CoarseCachedClock", CoarseCachedClock::instance);

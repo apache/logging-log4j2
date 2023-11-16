@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.MemoryHandler;
-
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
 import org.apache.logging.log4j.perf.util.NoOpJULHandler;
 import org.openjdk.jmh.annotations.Benchmark;

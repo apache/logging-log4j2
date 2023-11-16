@@ -63,7 +63,8 @@ public class DefaultNoSqlObject implements NoSqlObject<Map<String, Object>> {
                 list.add(value.unwrap());
             }
             this.map.put(field, list);
-        }}
+        }
+    }
 
     @Override
     public Map<String, Object> unwrap() {

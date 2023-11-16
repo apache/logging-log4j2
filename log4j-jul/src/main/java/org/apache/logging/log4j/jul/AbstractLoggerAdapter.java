@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jul;
 
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -32,9 +31,9 @@ public abstract class AbstractLoggerAdapter extends org.apache.logging.log4j.spi
 
     @Override
     protected LoggerContext getContext() {
-        return getContext(LogManager.getFactory().isClassLoaderDependent()
-                ? StackLocatorUtil.getCallerClass(java.util.logging.LogManager.class)
-                : null);
+        return getContext(
+                LogManager.getFactory().isClassLoaderDependent()
+                        ? StackLocatorUtil.getCallerClass(java.util.logging.LogManager.class)
+                        : null);
     }
-
 }

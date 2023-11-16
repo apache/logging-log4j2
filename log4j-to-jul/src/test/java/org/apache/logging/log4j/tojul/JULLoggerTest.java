@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.tojul;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JULLoggerTest {
 
@@ -27,8 +27,7 @@ public class JULLoggerTest {
     public void testNotNullEffectiveLevel() {
         // Emulates the root logger found in Tomcat, with a null level
         // See: https://bz.apache.org/bugzilla/show_bug.cgi?id=66184
-        final java.util.logging.Logger julLogger = new java.util.logging.Logger("", null) {
-        };
+        final java.util.logging.Logger julLogger = new java.util.logging.Logger("", null) {};
         final JULLogger logger = new JULLogger("", julLogger);
         assertEquals(Level.INFO, logger.getLevel());
     }

@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.logging.log4j.MarkerManager;
 import org.slf4j.IMarkerFactory;
 import org.slf4j.Marker;
@@ -52,7 +51,7 @@ public class Log4jMarker implements Marker {
             throw new IllegalArgumentException();
         }
         final Marker m = factory.getMarker(marker.getName());
-        this.marker.addParents(((Log4jMarker)m).getLog4jMarker());
+        this.marker.addParents(((Log4jMarker) m).getLog4jMarker());
     }
 
     @Override

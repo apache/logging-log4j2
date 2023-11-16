@@ -20,7 +20,6 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.io.internal.InternalInputStream;
@@ -36,8 +35,13 @@ public class LoggerInputStream extends FilterInputStream {
 
     private final InternalInputStream logger;
 
-    protected LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
-                                final String fqcn, final Level level, final Marker marker) {
+    protected LoggerInputStream(
+            final InputStream in,
+            final Charset charset,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(in);
         this.logger = new InternalInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker);
     }

@@ -49,7 +49,6 @@ import java.util.Objects;
 public final class JsonReader {
 
     private enum Delimiter {
-
         OBJECT_START("{"),
 
         OBJECT_END("}"),
@@ -76,7 +75,6 @@ public final class JsonReader {
             }
             return false;
         }
-
     }
 
     private CharacterIterator it;
@@ -92,7 +90,7 @@ public final class JsonReader {
     private final StringBuilder buffer;
 
     private JsonReader() {
-         this.buffer = new StringBuilder();
+        this.buffer = new StringBuilder();
     }
 
     public static Object read(final String json) {
@@ -107,16 +105,12 @@ public final class JsonReader {
         readChar = it.first();
         final Object token = readToken();
         if (token instanceof Delimiter) {
-            final String message = String.format(
-                    "was not expecting %s at index %d",
-                    readToken, readTokenStartIndex);
+            final String message = String.format("was not expecting %s at index %d", readToken, readTokenStartIndex);
             throw new IllegalArgumentException(message);
         }
         skipWhiteSpace();
         if (it.getIndex() != it.getEndIndex()) {
-            final String message = String.format(
-                    "was not expecting input at index %d: %c",
-                    readCharIndex, readChar);
+            final String message = String.format("was not expecting input at index %d: %c", readCharIndex, readChar);
             throw new IllegalArgumentException(message);
         }
         return token;
@@ -128,7 +122,6 @@ public final class JsonReader {
         final char prevChar = readChar;
         readChar();
         switch (prevChar) {
-
             case '"':
                 readToken = readString();
                 break;
@@ -174,12 +167,9 @@ public final class JsonReader {
                 if (Character.isDigit(readChar) || readChar == '-') {
                     readToken = readNumber();
                 } else {
-                    final String message = String.format(
-                            "invalid character at index %d: %c",
-                            readCharIndex, readChar);
+                    final String message = String.format("invalid character at index %d: %c", readCharIndex, readChar);
                     throw new IllegalArgumentException(message);
                 }
-
         }
         return readToken;
     }
@@ -237,8 +227,7 @@ public final class JsonReader {
                             break;
                         default: {
                             final String message = String.format(
-                                    "was expecting an escape character at index %d: %c",
-                                    readCharIndex, readChar);
+                                    "was expecting an escape character at index %d: %c", readCharIndex, readChar);
                             throw new IllegalArgumentException(message);
                         }
                     }
@@ -271,9 +260,8 @@ public final class JsonReader {
             } else if (readChar >= 'A' && readChar <= 'F') {
                 value = (value << 4) + (readChar - 'A') + 10;
             } else {
-                final String message = String.format(
-                        "was expecting a unicode character at index %d: %c",
-                        readCharIndex, readChar);
+                final String message =
+                        String.format("was expecting a unicode character at index %d: %c", readCharIndex, readChar);
                 throw new IllegalArgumentException(message);
             }
         }
@@ -292,8 +280,7 @@ public final class JsonReader {
                     key = readObjectKey();
                     if (key == null || Delimiter.exists(key)) {
                         final String message = String.format(
-                                "was expecting an object key at index %d: %s",
-                                readTokenStartIndex, readToken);
+                                "was expecting an object key at index %d: %s", readTokenStartIndex, readToken);
                         throw new IllegalArgumentException(message);
                     }
                 } else {
@@ -310,17 +297,15 @@ public final class JsonReader {
         readToken();
         while (readToken != Delimiter.ARRAY_END) {
             if (readToken instanceof Delimiter) {
-                final String message = String.format(
-                        "was expecting an array element at index %d: %s",
-                        readTokenStartIndex, readToken);
+                final String message =
+                        String.format("was expecting an array element at index %d: %s", readTokenStartIndex, readToken);
                 throw new IllegalArgumentException(message);
             }
             array.add(readToken);
             if (readToken() == Delimiter.COMMA) {
                 if (readToken() == Delimiter.ARRAY_END) {
                     final String message = String.format(
-                            "was expecting an array element at index %d: %s",
-                            readTokenStartIndex, readToken);
+                            "was expecting an array element at index %d: %s", readTokenStartIndex, readToken);
                     throw new IllegalArgumentException(message);
                 }
             } else {
@@ -337,29 +322,24 @@ public final class JsonReader {
         } else if (readToken instanceof String) {
             return (String) readToken;
         } else {
-            final String message = String.format(
-                    "was expecting an object key at index %d: %s",
-                    readTokenStartIndex, readToken);
+            final String message =
+                    String.format("was expecting an object key at index %d: %s", readTokenStartIndex, readToken);
             throw new IllegalArgumentException(message);
         }
     }
 
-    private void expectDelimiter(
-            final Delimiter expectedDelimiter,
-            final Object actualToken) {
+    private void expectDelimiter(final Delimiter expectedDelimiter, final Object actualToken) {
         if (!expectedDelimiter.equals(actualToken)) {
             final String message = String.format(
-                    "was expecting %s at index %d: %s",
-                    expectedDelimiter, readTokenStartIndex, actualToken);
+                    "was expecting %s at index %d: %s", expectedDelimiter, readTokenStartIndex, actualToken);
             throw new IllegalArgumentException(message);
         }
     }
 
     private boolean readTrue() {
         if (readChar != 'r' || readChar() != 'u' || readChar() != 'e') {
-            final String message = String.format(
-                    "was expecting keyword 'true' at index %d: %s",
-                    readCharIndex, readChar);
+            final String message =
+                    String.format("was expecting keyword 'true' at index %d: %s", readCharIndex, readChar);
             throw new IllegalArgumentException(message);
         }
         readChar();
@@ -368,9 +348,8 @@ public final class JsonReader {
 
     private boolean readFalse() {
         if (readChar != 'a' || readChar() != 'l' || readChar() != 's' || readChar() != 'e') {
-            final String message = String.format(
-                    "was expecting keyword 'false' at index %d: %s",
-                    readCharIndex, readChar);
+            final String message =
+                    String.format("was expecting keyword 'false' at index %d: %s", readCharIndex, readChar);
             throw new IllegalArgumentException(message);
         }
         readChar();
@@ -379,9 +358,8 @@ public final class JsonReader {
 
     private Object readNull() {
         if (readChar != 'u' || readChar() != 'l' || readChar() != 'l') {
-            final String message = String.format(
-                    "was expecting keyword 'null' at index %d: %s",
-                    readCharIndex, readChar);
+            final String message =
+                    String.format("was expecting keyword 'null' at index %d: %s", readCharIndex, readChar);
             throw new IllegalArgumentException(message);
         }
         readChar();
@@ -431,7 +409,6 @@ public final class JsonReader {
                 }
             }
         }
-
     }
 
     private void bufferDigits() {
@@ -441,11 +418,8 @@ public final class JsonReader {
             bufferReadChar();
         }
         if (!found) {
-            final String message = String.format(
-                    "was expecting a digit at index %d: %c",
-                    readCharIndex, readChar);
+            final String message = String.format("was expecting a digit at index %d: %c", readCharIndex, readChar);
             throw new IllegalArgumentException(message);
         }
     }
-
 }

@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.test.appender.db.jdbc;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.appender.db.jdbc.AbstractConnectionSource;
 import org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource;
 
@@ -76,5 +75,4 @@ public class JdbcH2TestHelper {
     public static Connection getConnectionTempDir() throws SQLException {
         return DriverManager.getConnection(CONNECTION_STRING_TEMP_DIR, USER_NAME, PASSWORD);
     }
-
 }

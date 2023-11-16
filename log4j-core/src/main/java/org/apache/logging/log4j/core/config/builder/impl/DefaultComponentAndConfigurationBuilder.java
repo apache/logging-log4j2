@@ -29,19 +29,21 @@ import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 class DefaultComponentAndConfigurationBuilder<T extends ComponentBuilder<T>>
         extends DefaultComponentBuilder<T, DefaultConfigurationBuilder<? extends Configuration>> {
 
-    DefaultComponentAndConfigurationBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
-            final String type, final String value) {
+    DefaultComponentAndConfigurationBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String name,
+            final String type,
+            final String value) {
         super(builder, name, type, value);
     }
 
-    DefaultComponentAndConfigurationBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
-            final String type) {
+    DefaultComponentAndConfigurationBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String name, final String type) {
         super(builder, name, type);
     }
 
-    public DefaultComponentAndConfigurationBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String type) {
+    public DefaultComponentAndConfigurationBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String type) {
         super(builder, type);
     }
-
 }

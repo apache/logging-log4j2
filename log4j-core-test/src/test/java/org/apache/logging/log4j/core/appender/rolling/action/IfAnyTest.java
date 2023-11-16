@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
@@ -28,8 +29,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the Or composite condition.
@@ -67,7 +66,8 @@ public class IfAnyTest {
 
     @ParameterizedTest
     @ValueSource(strings = "No components provided for IfAny")
-    public void testCreateOrConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenComponentsNotSpecified(final String expectedMessage) {
+    public void testCreateOrConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenComponentsNotSpecified(
+            final String expectedMessage) {
         final PluginEntry nullEntry = null;
         final PluginType<IfAny> type = new PluginType<>(nullEntry, IfAny.class, "Dummy");
         final PluginBuilder builder = new PluginBuilder(type)
@@ -77,7 +77,7 @@ public class IfAnyTest {
         final List<StatusData> loggerStatusData = StatusLogger.getLogger().getStatusData();
 
         assertNull(asBuilt);
-        assertTrue(loggerStatusData.stream().anyMatch(e -> e.getFormattedStatus().contains(expectedMessage)));
+        assertTrue(
+                loggerStatusData.stream().anyMatch(e -> e.getFormattedStatus().contains(expectedMessage)));
     }
-
 }

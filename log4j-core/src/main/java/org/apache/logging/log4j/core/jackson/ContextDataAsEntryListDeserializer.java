@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -42,11 +41,12 @@ public class ContextDataAsEntryListDeserializer extends StdDeserializer<StringMa
     }
 
     @Override
-    public StringMap deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
-        final List<MapEntry> list = jp.readValueAs(new TypeReference<List<MapEntry>>() {
-            // empty
-        });
+    public StringMap deserialize(final JsonParser jp, final DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
+        final List<MapEntry> list = jp.readValueAs(
+                new TypeReference<List<MapEntry>>() {
+                    // empty
+                });
         final StringMap contextData = new ContextDataFactory().createContextData();
         for (final MapEntry mapEntry : list) {
             contextData.putValue(mapEntry.getKey(), mapEntry.getValue());

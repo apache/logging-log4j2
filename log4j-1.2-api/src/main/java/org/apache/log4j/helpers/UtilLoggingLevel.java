@@ -16,12 +16,11 @@
  */
 package org.apache.log4j.helpers;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Level;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * An extension of the Level class that provides support for java.util.logging Levels.
@@ -126,29 +125,29 @@ public class UtilLoggingLevel extends Level {
      */
     public static UtilLoggingLevel toLevel(final int val, final UtilLoggingLevel defaultLevel) {
         switch (val) {
-        case SEVERE_INT:
-            return SEVERE;
+            case SEVERE_INT:
+                return SEVERE;
 
-        case WARNING_INT:
-            return WARNING;
+            case WARNING_INT:
+                return WARNING;
 
-        case INFO_INT:
-            return INFO;
+            case INFO_INT:
+                return INFO;
 
-        case CONFIG_INT:
-            return CONFIG;
+            case CONFIG_INT:
+                return CONFIG;
 
-        case FINE_INT:
-            return FINE;
+            case FINE_INT:
+                return FINE;
 
-        case FINER_INT:
-            return FINER;
+            case FINER_INT:
+                return FINER;
 
-        case FINEST_INT:
-            return FINEST;
+            case FINEST_INT:
+                return FINEST;
 
-        default:
-            return defaultLevel;
+            default:
+                return defaultLevel;
         }
     }
 
@@ -233,5 +232,4 @@ public class UtilLoggingLevel extends Level {
         }
         return defaultLevel;
     }
-
 }

@@ -28,5 +28,4 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.CLASS)
 @Documented
-public @interface InternalApi {
-}
+public @interface InternalApi {}

@@ -16,13 +16,19 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -35,13 +41,6 @@ import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.util.Unbox.box;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConfigurationFactoryTest {
 
@@ -60,7 +59,8 @@ class ConfigurationFactoryTest {
         final Configuration configuration = context.getConfiguration();
         final Map<String, Appender> appenders = configuration.getAppenders();
         // these used to be separate tests
-        assertAll(() -> assertNotNull(appenders),
+        assertAll(
+                () -> assertNotNull(appenders),
                 () -> assertEquals(3, appenders.size()),
                 () -> assertNotNull(configuration.getLoggerContext()),
                 () -> assertEquals(configuration.getRootLogger(), configuration.getLoggerConfig(Strings.EMPTY)),

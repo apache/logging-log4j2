@@ -30,8 +30,8 @@ public class PluginNodeVisitor extends AbstractPluginVisitor<PluginNode> {
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-                        final StringBuilder log) {
+    public Object visit(
+            final Configuration configuration, final Node node, final LogEvent event, final StringBuilder log) {
         if (this.conversionType.isInstance(node)) {
             log.append("Node=").append(node.getName());
             return node;

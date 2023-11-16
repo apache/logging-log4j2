@@ -214,5 +214,4 @@ public class Log4j2Logger extends AbstractLogger {
     public void warn(final Throwable thrown) {
         logger.logIfEnabled(FQCN, Level.WARN, null, (Object) null, thrown);
     }
-
 }

@@ -21,7 +21,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -141,7 +140,8 @@ public class JdkMapAdapterStringMap implements StringMap {
         sortedKeys = null;
     }
 
-    private static TriConsumer<String, String, Map<String, String>> PUT_ALL = (key, value, stringStringMap) -> stringStringMap.put(key, value);
+    private static TriConsumer<String, String, Map<String, String>> PUT_ALL =
+            (key, value, stringStringMap) -> stringStringMap.put(key, value);
 
     @Override
     public void putValue(final String key, final Object value) {

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.file.attribute.FileTime;
 import java.util.List;
-
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
@@ -30,8 +31,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the FileAgeFilter class.
@@ -99,8 +98,8 @@ public class IfLastModifiedTest {
     @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
-        final IfLastModified filter = IfLastModified.createAgeCondition(Duration.parse("PT33S"), counter, counter,
-                counter);
+        final IfLastModified filter =
+                IfLastModified.createAgeCondition(Duration.parse("PT33S"), counter, counter, counter);
         filter.beforeFileTreeWalk();
         assertEquals(3, counter.getBeforeFileTreeWalkCount());
     }
@@ -113,7 +112,8 @@ public class IfLastModifiedTest {
 
     @ParameterizedTest
     @ValueSource(strings = "No age provided for IfLastModified")
-    public void testCreateAgeConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenAgeIsNotSpecified(final String expectedMessage) {
+    public void testCreateAgeConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenAgeIsNotSpecified(
+            final String expectedMessage) {
         final PluginEntry nullEntry = null;
         final PluginType<IfLastModified> type = new PluginType<>(nullEntry, IfLastModified.class, "Dummy");
         final PluginBuilder builder = new PluginBuilder(type)
@@ -123,6 +123,7 @@ public class IfLastModifiedTest {
         final List<StatusData> loggerStatusData = StatusLogger.getLogger().getStatusData();
 
         assertNull(asBuilt);
-        assertTrue(loggerStatusData.stream().anyMatch(e -> e.getFormattedStatus().contains(expectedMessage)));
+        assertTrue(
+                loggerStatusData.stream().anyMatch(e -> e.getFormattedStatus().contains(expectedMessage)));
     }
 }

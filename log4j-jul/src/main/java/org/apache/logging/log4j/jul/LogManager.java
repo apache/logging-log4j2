@@ -21,7 +21,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -49,7 +48,7 @@ public class LogManager extends java.util.logging.LogManager {
     public LogManager() {
         AbstractLoggerAdapter adapter = null;
         final String overrideAdaptorClassName =
-            PropertiesUtil.getProperties().getStringProperty(Constants.LOGGER_ADAPTOR_PROPERTY);
+                PropertiesUtil.getProperties().getStringProperty(Constants.LOGGER_ADAPTOR_PROPERTY);
         if (overrideAdaptorClassName != null) {
             try {
                 LOGGER.info("Trying to use LoggerAdaptor [{}] specified by Log4j property.", overrideAdaptorClassName);
@@ -103,7 +102,7 @@ public class LogManager extends java.util.logging.LogManager {
 
     @Override
     public Enumeration<String> getLoggerNames() {
-        return Collections.enumeration(loggerAdapter.getLoggersInContext(loggerAdapter.getContext()).keySet());
+        return Collections.enumeration(
+                loggerAdapter.getLoggersInContext(loggerAdapter.getContext()).keySet());
     }
-
 }

@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.message;
 
+import static org.apache.logging.log4j.util.Chars.LF;
+
 import java.lang.management.LockInfo;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
-
 import org.apache.logging.log4j.message.ThreadInformation;
 import org.apache.logging.log4j.util.StringBuilders;
-
-import static org.apache.logging.log4j.util.Chars.LF;
 
 /**
  * Provides information on locks and monitors in the thread dump. This class requires Java 1.6 to compile and
@@ -91,7 +90,9 @@ class ExtendedThreadInformation implements ThreadInformation {
 
         final LockInfo[] locks = threadInfo.getLockedSynchronizers();
         if (locks.length > 0) {
-            sb.append("\n\tNumber of locked synchronizers = ").append(locks.length).append(LF);
+            sb.append("\n\tNumber of locked synchronizers = ")
+                    .append(locks.length)
+                    .append(LF);
             for (final LockInfo li : locks) {
                 sb.append("\t- ");
                 formatLock(sb, li);
@@ -111,7 +112,10 @@ class ExtendedThreadInformation implements ThreadInformation {
         switch (state) {
             case BLOCKED: {
                 sb.append(" (on object monitor owned by \"");
-                sb.append(info.getLockOwnerName()).append("\" Id=").append(info.getLockOwnerId()).append(')');
+                sb.append(info.getLockOwnerName())
+                        .append("\" Id=")
+                        .append(info.getLockOwnerId())
+                        .append(')');
                 break;
             }
             case WAITING: {
@@ -126,7 +130,9 @@ class ExtendedThreadInformation implements ThreadInformation {
                     }
                     sb.append(')');
                 } else if (className.equals("java.lang.Thread") && method.equals("join")) {
-                    sb.append(" (on completion of thread ").append(info.getLockOwnerId()).append(')');
+                    sb.append(" (on completion of thread ")
+                            .append(info.getLockOwnerId())
+                            .append(')');
                 } else {
                     sb.append(" (parking for lock");
                     if (info.getLockOwnerName() != null) {
@@ -151,7 +157,9 @@ class ExtendedThreadInformation implements ThreadInformation {
                 } else if (className.equals("java.lang.Thread") && method.equals("sleep")) {
                     sb.append(" (sleeping)");
                 } else if (className.equals("java.lang.Thread") && method.equals("join")) {
-                    sb.append(" (on completion of thread ").append(info.getLockOwnerId()).append(')');
+                    sb.append(" (on completion of thread ")
+                            .append(info.getLockOwnerId())
+                            .append(')');
                 } else {
                     sb.append(" (parking for lock");
                     if (info.getLockOwnerName() != null) {

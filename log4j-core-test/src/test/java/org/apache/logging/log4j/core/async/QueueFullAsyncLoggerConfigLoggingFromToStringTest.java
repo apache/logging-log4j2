@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
@@ -23,21 +25,19 @@ import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
  */
 @SetTestProperty(key = "log4j2.enableThreadlocals", value = "true")
-@SetTestProperty(key = "log4j2.isWebapp", value= "false")
+@SetTestProperty(key = "log4j2.isWebapp", value = "false")
 @SetTestProperty(key = "log4j2.asyncLoggerConfigRingBufferSize", value = "128")
 public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFullAbstractTest {
 
     @Override
     @Test
     @LoggerContextSource
-    public void testLoggingFromToStringCausesOutOfOrderMessages(final LoggerContext ctx,
-                                                                final @Named(APPENDER_NAME) BlockingAppender blockingAppender)
-            throws Exception {
+    public void testLoggingFromToStringCausesOutOfOrderMessages(
+            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
         super.testLoggingFromToStringCausesOutOfOrderMessages(ctx, blockingAppender);
     }
 

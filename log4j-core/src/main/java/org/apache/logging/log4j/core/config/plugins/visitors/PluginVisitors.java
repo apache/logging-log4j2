@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
 import java.lang.annotation.Annotation;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -30,8 +29,7 @@ public final class PluginVisitors {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private PluginVisitors() {
-    }
+    private PluginVisitors() {}
 
     /**
      * Creates a PluginVisitor instance for the given annotation class using metadata provided by the annotation's

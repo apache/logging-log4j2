@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -136,8 +135,12 @@ public class JdbcAppenderBenchmark {
     public void tearDown() throws SQLException {
         final LoggerContext context = LoggerContext.getContext(false);
         try {
-            ((JdbcAppender) context.getConfiguration().getAppender("H2Appender")).getManager().close();
-            ((JdbcAppender) context.getConfiguration().getAppender("HSQLDBAppender")).getManager().close();
+            ((JdbcAppender) context.getConfiguration().getAppender("H2Appender"))
+                    .getManager()
+                    .close();
+            ((JdbcAppender) context.getConfiguration().getAppender("HSQLDBAppender"))
+                    .getManager()
+                    .close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             // context.reconfigure();

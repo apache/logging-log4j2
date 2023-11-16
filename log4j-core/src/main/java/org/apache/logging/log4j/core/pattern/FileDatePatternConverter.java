@@ -25,14 +25,13 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * the %d pattern in pattern layout.
  */
 @Plugin(name = "FileDatePatternConverter", category = "FileConverter")
-@ConverterKeys({ "d", "date" })
+@ConverterKeys({"d", "date"})
 @PerformanceSensitive("allocation")
 public final class FileDatePatternConverter {
     /**
      * Private constructor.
      */
-    private FileDatePatternConverter() {
-    }
+    private FileDatePatternConverter() {}
 
     /**
      * Obtains an instance of pattern converter.
@@ -42,10 +41,7 @@ public final class FileDatePatternConverter {
      */
     public static PatternConverter newInstance(final String[] options) {
         if (options == null || options.length == 0) {
-            return DatePatternConverter.newInstance(
-                new String[]{
-                    "yyyy-MM-dd"
-                });
+            return DatePatternConverter.newInstance(new String[] {"yyyy-MM-dd"});
         }
 
         return DatePatternConverter.newInstance(options);

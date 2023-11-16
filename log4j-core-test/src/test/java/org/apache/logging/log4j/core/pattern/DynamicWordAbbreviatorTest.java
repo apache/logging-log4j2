@@ -43,33 +43,26 @@ class DynamicWordAbbreviatorTest extends Assertions {
     }
 
     @ParameterizedTest(name = "[{index}] \"{0}\"")
-    @ValueSource(strings = {
-            "",
-            " ",
-            "0.0*",
-            "0,0*",
-            "1.2",
-            "1.2**",
-            "1.0*"
-    })
+    @ValueSource(strings = {"", " ", "0.0*", "0,0*", "1.2", "1.2**", "1.0*"})
     void testInvalidPatterns(final String pattern) {
         assertNull(DynamicWordAbbreviator.create(pattern));
     }
 
     @ParameterizedTest(name = "[{index}] \"{0}\" \"{1}\" \"{2}\"")
-    @CsvSource(delimiter = '|', value = {
-            "1.1*|.|.",
-            "1.1*|\\ |\\ ",
-            "1.1*|org.novice.o|o.n.o",
-            "1.1*|org.novice.|o.novice",
-            "1.1*|org......novice|o.novice",
-            "1.1*|org. . .novice|o. . .novice",
-    })
+    @CsvSource(
+            delimiter = '|',
+            value = {
+                "1.1*|.|.",
+                "1.1*|\\ |\\ ",
+                "1.1*|org.novice.o|o.n.o",
+                "1.1*|org.novice.|o.novice",
+                "1.1*|org......novice|o.novice",
+                "1.1*|org. . .novice|o. . .novice",
+            })
     void testStrangeWords(final String pattern, final String input, final String expected) {
         final DynamicWordAbbreviator abbreviator = DynamicWordAbbreviator.create(pattern);
         final StringBuilder actual = new StringBuilder();
         abbreviator.abbreviate(input, actual);
         assertEquals(expected, actual.toString());
     }
-
 }

@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.test.TestLoggerContext;
 import org.apache.logging.log4j.test.TestLoggerContextFactory;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Pavel.Sivolobtchik@uxpsystems.com on 2016-10-19.
@@ -45,8 +44,12 @@ public class LoggerAdapterTest {
 
         private final CountDownLatch startSignal;
 
-        public RunnableThreadTest(final int index, final TestLoggerAdapter adapter, final LoggerContext context,
-                final CountDownLatch startSignal, final CountDownLatch doneSignal) {
+        public RunnableThreadTest(
+                final int index,
+                final TestLoggerAdapter adapter,
+                final LoggerContext context,
+                final CountDownLatch startSignal,
+                final CountDownLatch doneSignal) {
             this.adapter = adapter;
             this.context = context;
             this.startSignal = startSignal;
@@ -65,12 +68,10 @@ public class LoggerAdapterTest {
                 resultMap = adapter.getLoggersInContext(context);
                 resultMap.put(String.valueOf(index), new TestLogger());
                 doneSignal.countDown();
-            }
-            catch (final Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     private static class TestLoggerAdapter extends AbstractLoggerAdapter<Logger> {
@@ -145,8 +146,6 @@ public class LoggerAdapterTest {
         assertEquals(0, adapter.registry.size(), "Expected 0 LoggerContexts");
     }
 
-
-
     /**
      * Testing synchronization in the getLoggersInContext() method
      */
@@ -163,10 +162,11 @@ public class LoggerAdapterTest {
         LoggerContext lastUsedContext = null;
         for (int i = 0; i < num; i++) {
             if (i % 2 == 0) {
-                //every other time create a new context
+                // every other time create a new context
                 lastUsedContext = new SimpleLoggerContext();
             }
-            final RunnableThreadTest runnable = new RunnableThreadTest(i, adapter, lastUsedContext, startSignal, doneSignal);
+            final RunnableThreadTest runnable =
+                    new RunnableThreadTest(i, adapter, lastUsedContext, startSignal, doneSignal);
             final Thread thread = new Thread(runnable);
             thread.start();
             instances[i] = runnable;
@@ -176,7 +176,7 @@ public class LoggerAdapterTest {
         doneSignal.await();
 
         for (int i = 0; i < num; i = i + 2) {
-            //maps for the same context should be the same instance
+            // maps for the same context should be the same instance
             final Map<String, Logger> resultMap1 = instances[i].getResultMap();
             final Map<String, Logger> resultMap2 = instances[i + 1].getResultMap();
             assertSame(resultMap1, resultMap2, "not the same map for instances" + i + " and " + (i + 1) + ":");

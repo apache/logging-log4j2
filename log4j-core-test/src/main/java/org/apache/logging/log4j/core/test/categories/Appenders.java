@@ -21,13 +21,22 @@ package org.apache.logging.log4j.core.test.categories;
  */
 public interface Appenders {
     interface AsyncConversant {}
+
     interface AsyncJcTools {}
+
     interface Cassandra {}
+
     interface CouchDb {}
+
     interface Jms {}
+
     interface Jpa {}
+
     interface Kafka {}
+
     interface MongoDb {}
+
     interface Smtp {}
+
     interface ZeroMq {}
 }

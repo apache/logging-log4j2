@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.script;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,8 +26,6 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -45,8 +44,12 @@ public class ScriptFile extends AbstractScript {
     private final Path filePath;
     private final boolean isWatched;
 
-
-    public ScriptFile(final String name, final Path filePath, final String language, final boolean isWatched, final String scriptText) {
+    public ScriptFile(
+            final String name,
+            final Path filePath,
+            final String language,
+            final boolean isWatched,
+            final String scriptText) {
         super(name, language, scriptText);
         this.filePath = filePath;
         this.isWatched = isWatched;
@@ -63,8 +66,7 @@ public class ScriptFile extends AbstractScript {
     @PluginFactory
     @SuppressFBWarnings(
             value = {"URLCONNECTION_SSRF_FD", "PATH_TRAVERSAL_IN"},
-            justification = "The `filePathOrUri` parameter comes from configuration."
-    )
+            justification = "The `filePathOrUri` parameter comes from configuration.")
     public static ScriptFile createScript(
             // @formatter:off
             @PluginAttribute("name") String name,
@@ -72,7 +74,7 @@ public class ScriptFile extends AbstractScript {
             @PluginAttribute("path") final String filePathOrUri,
             @PluginAttribute("isWatched") final Boolean isWatched,
             @PluginAttribute("charset") final Charset charset) {
-            // @formatter:on
+        // @formatter:on
         if (filePathOrUri == null) {
             LOGGER.error("No script path provided for ScriptFile");
             return null;
@@ -102,8 +104,12 @@ public class ScriptFile extends AbstractScript {
                 file != null ? new FileInputStream(file) : uri.toURL().openStream(), actualCharset)) {
             scriptText = IOUtils.toString(reader);
         } catch (final IOException e) {
-            LOGGER.error("{}: language={}, path={}, actualCharset={}", e.getClass().getSimpleName(),
-                    language, filePathOrUri, actualCharset);
+            LOGGER.error(
+                    "{}: language={}, path={}, actualCharset={}",
+                    e.getClass().getSimpleName(),
+                    language,
+                    filePathOrUri,
+                    actualCharset);
             return null;
         }
         final Path path = file != null ? Paths.get(file.toURI()) : Paths.get(uri);

@@ -58,7 +58,6 @@ public interface Appender extends LifeCycle {
      */
     void append(LogEvent event);
 
-
     /**
      * Gets the name of this Appender.
      *

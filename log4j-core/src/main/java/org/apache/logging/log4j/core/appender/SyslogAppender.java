@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -115,44 +114,62 @@ public class SyslogAppender extends SocketAppender {
             if (layout == null) {
                 layout = RFC5424.equalsIgnoreCase(format)
                         ? new Rfc5424Layout.Rfc5424LayoutBuilder()
-                        .setFacility(facility)
-                        .setId(id)
-                        .setEin(enterpriseNumber)
-                        .setIncludeMDC(includeMdc)
-                        .setMdcId(mdcId)
-                        .setMdcPrefix(mdcPrefix)
-                        .setEventPrefix(eventPrefix)
-                        .setIncludeNL(newLine)
-                        .setEscapeNL(escapeNL)
-                        .setAppName(appName)
-                        .setMessageId(msgId)
-                        .setExcludes(excludes)
-                        .setIncludes(includes)
-                        .setRequired(required)
-                        .setExceptionPattern(exceptionPattern)
-                        .setUseTLSMessageFormat(useTlsMessageFormat)
-                        .setLoggerFields(loggerFields)
-                        .setConfig(configuration)
-                        .build() :
+                                .setFacility(facility)
+                                .setId(id)
+                                .setEin(enterpriseNumber)
+                                .setIncludeMDC(includeMdc)
+                                .setMdcId(mdcId)
+                                .setMdcPrefix(mdcPrefix)
+                                .setEventPrefix(eventPrefix)
+                                .setIncludeNL(newLine)
+                                .setEscapeNL(escapeNL)
+                                .setAppName(appName)
+                                .setMessageId(msgId)
+                                .setExcludes(excludes)
+                                .setIncludes(includes)
+                                .setRequired(required)
+                                .setExceptionPattern(exceptionPattern)
+                                .setUseTLSMessageFormat(useTlsMessageFormat)
+                                .setLoggerFields(loggerFields)
+                                .setConfig(configuration)
+                                .build()
+                        :
                         // @formatter:off
                         SyslogLayout.newBuilder()
-                            .setFacility(facility)
-                            .setIncludeNewLine(newLine)
-                            .setEscapeNL(escapeNL)
-                            .setCharset(charsetName)
-                            .build();
-                        // @formatter:on
+                                .setFacility(facility)
+                                .setIncludeNewLine(newLine)
+                                .setEscapeNL(escapeNL)
+                                .setCharset(charsetName)
+                                .build();
+                // @formatter:on
             }
             final String name = getName();
             if (name == null) {
                 LOGGER.error("No name provided for SyslogAppender");
                 return null;
             }
-            final AbstractSocketManager manager = createSocketManager(name, protocol, getHost(), getPort(), getConnectTimeoutMillis(),
-                    sslConfiguration, getReconnectDelayMillis(), getImmediateFail(), layout, Constants.ENCODER_BYTE_BUFFER_SIZE, getSocketOptions());
+            final AbstractSocketManager manager = createSocketManager(
+                    name,
+                    protocol,
+                    getHost(),
+                    getPort(),
+                    getConnectTimeoutMillis(),
+                    sslConfiguration,
+                    getReconnectDelayMillis(),
+                    getImmediateFail(),
+                    layout,
+                    Constants.ENCODER_BYTE_BUFFER_SIZE,
+                    getSocketOptions());
 
-            return new SyslogAppender(name, layout, getFilter(), isIgnoreExceptions(), isImmediateFlush(), manager,
-                    getAdvertise() ? configuration.getAdvertiser() : null, null);
+            return new SyslogAppender(
+                    name,
+                    layout,
+                    getFilter(),
+                    isIgnoreExceptions(),
+                    isImmediateFlush(),
+                    manager,
+                    getAdvertise() ? configuration.getAdvertiser() : null,
+                    null);
         }
 
         public Facility getFacility() {
@@ -328,9 +345,15 @@ public class SyslogAppender extends SocketAppender {
 
     protected static final String RFC5424 = "RFC5424";
 
-    protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-                             final boolean ignoreExceptions, final boolean immediateFlush,
-                             final AbstractSocketManager manager, final Advertiser advertiser, final Property[] properties) {
+    protected SyslogAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final AbstractSocketManager manager,
+            final Advertiser advertiser,
+            final Property[] properties) {
         super(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser, properties);
     }
 
@@ -339,8 +362,13 @@ public class SyslogAppender extends SocketAppender {
      * {@link #SyslogAppender(String, Layout, Filter, boolean, boolean, AbstractSocketManager, Advertiser, Property[])}.
      */
     @Deprecated
-    protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final boolean ignoreExceptions, final boolean immediateFlush, final AbstractSocketManager manager,
+    protected SyslogAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final AbstractSocketManager manager,
             final Advertiser advertiser) {
         super(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser, Property.EMPTY_ARRAY);
     }
@@ -422,14 +450,17 @@ public class SyslogAppender extends SocketAppender {
 
         // @formatter:off
         return SyslogAppender.<B>newSyslogAppenderBuilder()
-        .setHost(host)
-        .setPort(port)
-        .setProtocol(EnglishEnums.valueOf(Protocol.class, protocolStr))
-        .setSslConfiguration(sslConfiguration)
-        .setConnectTimeoutMillis(connectTimeoutMillis)
-        .setReconnectDelayMillis(reconnectDelayMillis)
-        .setImmediateFail(immediateFail).setName(appName)
-        .setImmediateFlush(immediateFlush).setIgnoreExceptions(ignoreExceptions).setFilter(filter)
+                .setHost(host)
+                .setPort(port)
+                .setProtocol(EnglishEnums.valueOf(Protocol.class, protocolStr))
+                .setSslConfiguration(sslConfiguration)
+                .setConnectTimeoutMillis(connectTimeoutMillis)
+                .setReconnectDelayMillis(reconnectDelayMillis)
+                .setImmediateFail(immediateFail)
+                .setName(appName)
+                .setImmediateFlush(immediateFlush)
+                .setIgnoreExceptions(ignoreExceptions)
+                .setFilter(filter)
                 .setConfiguration(configuration)
                 .setAdvertise(advertise)
                 .setFacility(facility)
@@ -458,5 +489,4 @@ public class SyslogAppender extends SocketAppender {
     public static <B extends Builder<B>> B newSyslogAppenderBuilder() {
         return new Builder<B>().asBuilder();
     }
-
 }

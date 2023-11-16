@@ -16,8 +16,12 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -36,11 +40,6 @@ import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 import org.slf4j.spi.LoggingEventBuilder;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -99,11 +98,10 @@ public class LoggerTest {
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
         logger.debug("Debug message {}", (Object[]) null);
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
-        ((LocationAwareLogger)logger).log(null, Log4jLogger.class.getName(), LocationAwareLogger.DEBUG_INT,
-            "Debug message {}", null, null);
+        ((LocationAwareLogger) logger)
+                .log(null, Log4jLogger.class.getName(), LocationAwareLogger.DEBUG_INT, "Debug message {}", null, null);
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
     }
-
 
     @Test
     public void debugWithParms() {
@@ -179,11 +177,21 @@ public class LoggerTest {
         final LocationAwareLogger lal = (LocationAwareLogger) logger;
         lal.log(null, LoggerTest.class.getName(), LocationAwareLogger.DEBUG_INT, "Hello {}", null, expected);
         verifyThrowable(expected);
-        lal.log(null, LoggerTest.class.getName(), LocationAwareLogger.DEBUG_INT, "Hello {}", new Object[] { expected },
+        lal.log(
+                null,
+                LoggerTest.class.getName(),
+                LocationAwareLogger.DEBUG_INT,
+                "Hello {}",
+                new Object[] {expected},
                 null);
         verifyThrowable(null);
-        lal.log(null, LoggerTest.class.getName(), LocationAwareLogger.DEBUG_INT, "Hello {}",
-                new Object[] { "World!", expected }, null);
+        lal.log(
+                null,
+                LoggerTest.class.getName(),
+                LocationAwareLogger.DEBUG_INT,
+                "Hello {}",
+                new Object[] {"World!", expected},
+                null);
         verifyThrowable(expected);
     }
 
@@ -196,9 +204,7 @@ public class LoggerTest {
             final LoggingEventBuilder builder = logger.makeLoggingEventBuilder(org.slf4j.event.Level.DEBUG);
             Configurator.setRootLevel(Level.DEBUG);
             builder.log();
-            assertThat(appender.getEvents()).hasSize(1)
-                    .map(LogEvent::getLevel)
-                    .containsExactly(Level.DEBUG);
+            assertThat(appender.getEvents()).hasSize(1).map(LogEvent::getLevel).containsExactly(Level.DEBUG);
         } finally {
             Configurator.setRootLevel(oldLevel);
         }
@@ -213,7 +219,7 @@ public class LoggerTest {
     private void verify(final String name, final String expected) {
         final ListAppender listApp = getAppenderByName(name);
         final List<String> events = listApp.getMessages();
-        assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
+        assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size() == 1);
         final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
         listApp.clear();

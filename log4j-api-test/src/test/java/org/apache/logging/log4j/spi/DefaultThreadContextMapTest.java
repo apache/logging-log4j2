@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.logging.log4j.test.junit.InitializesThreadContext;
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ClearSystemProperty;
-import org.junitpioneer.jupiter.SetSystemProperty;
-
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.logging.log4j.test.junit.InitializesThreadContext;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.ClearSystemProperty;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.

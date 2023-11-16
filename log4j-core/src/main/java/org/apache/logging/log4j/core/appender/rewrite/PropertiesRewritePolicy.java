@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
@@ -38,7 +37,11 @@ import org.apache.logging.log4j.util.StringMap;
 /**
  * This policy modifies events by replacing or possibly adding keys and values to the MapMessage.
  */
-@Plugin(name = "PropertiesRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
+@Plugin(
+        name = "PropertiesRewritePolicy",
+        category = Core.CATEGORY_NAME,
+        elementType = "rewritePolicy",
+        printObject = true)
 public final class PropertiesRewritePolicy implements RewritePolicy {
 
     /**
@@ -70,8 +73,11 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
         final StringMap newContextData = ContextDataFactory.createContextData(source.getContextData());
         for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
             final Property prop = entry.getKey();
-            newContextData.putValue(prop.getName(), entry.getValue().booleanValue() ?
-                config.getStrSubstitutor().replace(prop.getValue()) : prop.getValue());
+            newContextData.putValue(
+                    prop.getName(),
+                    entry.getValue().booleanValue()
+                            ? config.getStrSubstitutor().replace(prop.getValue())
+                            : prop.getValue());
         }
 
         return new Log4jLogEvent.Builder(source).setContextData(newContextData).build();
@@ -101,8 +107,8 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
      * @return The PropertiesRewritePolicy.
      */
     @PluginFactory
-    public static PropertiesRewritePolicy createPolicy(@PluginConfiguration final Configuration config,
-                                                @PluginElement("Properties") final Property[] props) {
+    public static PropertiesRewritePolicy createPolicy(
+            @PluginConfiguration final Configuration config, @PluginElement("Properties") final Property[] props) {
         if (props == null || props.length == 0) {
             LOGGER.error("Properties must be specified for the PropertiesRewritePolicy");
             return null;

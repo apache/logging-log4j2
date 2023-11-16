@@ -21,7 +21,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -40,7 +39,8 @@ public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
 
     public LockingStringBuilderEncoder(final Charset charset, final int charBufferSize) {
         this.charset = Objects.requireNonNull(charset, "charset");
-        this.charsetEncoder = charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
+        this.charsetEncoder = charset.newEncoder()
+                .onMalformedInput(CodingErrorAction.REPLACE)
                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
         this.cachedCharBuffer = CharBuffer.wrap(new char[charBufferSize]);
     }
@@ -54,18 +54,17 @@ public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
         try {
             // This synchronized is needed to be able to call destination.getByteBuffer()
             synchronized (destination) {
-                TextEncoderHelper.encodeText(charsetEncoder, cachedCharBuffer, destination.getByteBuffer(), source,
-                    destination);
+                TextEncoderHelper.encodeText(
+                        charsetEncoder, cachedCharBuffer, destination.getByteBuffer(), source, destination);
             }
         } catch (final Exception ex) {
             logEncodeTextException(ex, source, destination);
             TextEncoderHelper.encodeTextFallBack(charset, source, destination);
         }
-
     }
 
-    private void logEncodeTextException(final Exception ex, final StringBuilder text,
-                                        final ByteBufferDestination destination) {
+    private void logEncodeTextException(
+            final Exception ex, final StringBuilder text, final ByteBufferDestination destination) {
         StatusLogger.getLogger().error("Recovering from LockingStringBuilderEncoder.encode('{}') error", text, ex);
     }
 }

@@ -20,7 +20,6 @@ import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.CharBuffer;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.io.internal.InternalReader;
@@ -36,8 +35,12 @@ public class LoggerReader extends FilterReader {
 
     private final InternalReader reader;
 
-    protected LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level,
-                           final Marker marker) {
+    protected LoggerReader(
+            final Reader reader,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(reader);
         this.reader = new InternalReader(reader, logger, fqcn == null ? FQCN : fqcn, level, marker);
     }

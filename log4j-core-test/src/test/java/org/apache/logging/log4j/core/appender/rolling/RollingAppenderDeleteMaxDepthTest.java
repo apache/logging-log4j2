@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -26,15 +29,11 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -44,7 +43,8 @@ public class RollingAppenderDeleteMaxDepthTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-maxdepth.xml";
     private static final String DIR = "target/rolling-with-delete-depth/test";
 
-    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -72,8 +72,7 @@ public class RollingAppenderDeleteMaxDepthTest {
         final List<String> expected = Arrays.asList("1", "2", "test-1.log", "test-2.log", "test-3.log");
         assertEquals(Arrays.toString(files), expected.size(), files.length);
         for (final File file : files) {
-            assertTrue("test-4.log should have been deleted",
-                    expected.contains(file.getName()));
+            assertTrue("test-4.log should have been deleted", expected.contains(file.getName()));
         }
 
         assertTrue(p1 + " should not have been deleted", Files.exists(p1));

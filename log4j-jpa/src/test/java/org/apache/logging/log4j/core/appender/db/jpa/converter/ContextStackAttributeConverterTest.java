@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import java.util.Arrays;
+import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(Appenders.Jpa.class)
 public class ContextStackAttributeConverterTest {
@@ -38,19 +37,20 @@ public class ContextStackAttributeConverterTest {
 
     @Test
     public void testConvertToDatabaseColumn01() {
-        final ThreadContext.ContextStack stack = new MutableThreadContextStack(
-                Arrays.asList("value1", "another2"));
+        final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("value1", "another2"));
 
-        assertEquals("The converted value is not correct.", "value1\nanother2",
+        assertEquals(
+                "The converted value is not correct.",
+                "value1\nanother2",
                 this.converter.convertToDatabaseColumn(stack));
     }
 
     @Test
     public void testConvertToDatabaseColumn02() {
-        final ThreadContext.ContextStack stack = new MutableThreadContextStack(
-                Arrays.asList("key1", "value2", "my3"));
+        final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("key1", "value2", "my3"));
 
-        assertEquals("The converted value is not correct.",
+        assertEquals(
+                "The converted value is not correct.",
                 "key1\nvalue2\nmy3",
                 this.converter.convertToDatabaseColumn(stack));
     }

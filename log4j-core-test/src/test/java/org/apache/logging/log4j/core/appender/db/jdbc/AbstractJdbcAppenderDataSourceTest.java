@@ -16,15 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.sql.DataSource;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.JdbcRule;
@@ -36,12 +40,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 /**
  * Abstract unit test for JdbcAppender using a {@link DataSource} configuration.
  */
@@ -49,21 +47,22 @@ public abstract class AbstractJdbcAppenderDataSourceTest extends AbstractJdbcDat
 
     @Rule
     public final RuleChain rules;
+
     private final JdbcRule jdbcRule;
 
     protected AbstractJdbcAppenderDataSourceTest(final JdbcRule jdbcRule) {
         this.rules = RuleChain.emptyRuleChain()
-            .around(new JndiRule("java:/comp/env/jdbc/TestDataSourceAppender", createMockDataSource()))
-            .around(jdbcRule)
-            .around(new LoggerContextRule(
-                "org/apache/logging/log4j/core/appender/db/jdbc/log4j2-data-source.xml"));
+                .around(new JndiRule("java:/comp/env/jdbc/TestDataSourceAppender", createMockDataSource()))
+                .around(jdbcRule)
+                .around(new LoggerContextRule("org/apache/logging/log4j/core/appender/db/jdbc/log4j2-data-source.xml"));
         this.jdbcRule = jdbcRule;
     }
 
     private DataSource createMockDataSource() {
         try {
             final DataSource dataSource = mock(DataSource.class);
-            given(dataSource.getConnection()).willAnswer(invocation -> jdbcRule.getConnectionSource().getConnection());
+            given(dataSource.getConnection())
+                    .willAnswer(invocation -> jdbcRule.getConnectionSource().getConnection());
             return dataSource;
         } catch (final SQLException e) {
             Throwables.rethrow(e);
@@ -95,14 +94,21 @@ public abstract class AbstractJdbcAppenderDataSourceTest extends AbstractJdbcDat
                 final long date = resultSet.getTimestamp("eventDate").getTime();
                 assertTrue("The date should be later than pre-logging (1).", date >= millis);
                 assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
-                assertEquals("The literal column is not correct (1).", "Literal Value of Data Source",
+                assertEquals(
+                        "The literal column is not correct (1).",
+                        "Literal Value of Data Source",
                         resultSet.getString("literalColumn"));
                 assertEquals("The level column is not correct (1).", "FATAL", resultSet.getNString("level"));
                 assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
-                assertEquals("The message column is not correct (1).", "Error from data source 02.",
+                assertEquals(
+                        "The message column is not correct (1).",
+                        "Error from data source 02.",
                         resultSet.getString("message"));
-                assertEquals("The exception column is not correct (1).", stackTrace,
-                        IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
+                assertEquals(
+                        "The exception column is not correct (1).",
+                        stackTrace,
+                        IOUtils.readStringAndClose(
+                                resultSet.getNClob("exception").getCharacterStream(), -1));
 
                 assertFalse("There should not be two rows.", resultSet.next());
             }

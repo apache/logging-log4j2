@@ -20,7 +20,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -32,14 +31,24 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 public class InternalBufferedInputStream extends BufferedInputStream {
     private static final String FQCN = InternalBufferedInputStream.class.getName();
 
-    public InternalBufferedInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
-                                        final String fqcn, final Level level, final Marker marker) {
+    public InternalBufferedInputStream(
+            final InputStream in,
+            final Charset charset,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(new InternalInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker));
     }
 
-    public InternalBufferedInputStream(final InputStream in, final Charset charset, final int size,
-                                        final ExtendedLogger logger, final String fqcn, final Level level,
-                                        final Marker marker) {
+    public InternalBufferedInputStream(
+            final InputStream in,
+            final Charset charset,
+            final int size,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(new InternalInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker), size);
     }
 

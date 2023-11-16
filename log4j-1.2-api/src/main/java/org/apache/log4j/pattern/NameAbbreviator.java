@@ -111,15 +111,13 @@ public abstract class NameAbbreviator {
         /**
          * Constructor.
          */
-        public NOPAbbreviator() {
-        }
+        public NOPAbbreviator() {}
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public void abbreviate(final int nameStart, final StringBuffer buf) {
-        }
+        public void abbreviate(final int nameStart, final StringBuffer buf) {}
     }
 
     /**
@@ -260,8 +258,7 @@ public abstract class NameAbbreviator {
                 if (trimmed.charAt(0) == '-') {
                     i++;
                 }
-                for (; (i < trimmed.length()) && (trimmed.charAt(i) >= '0') && (trimmed.charAt(i) <= '9'); i++) {
-                }
+                for (; (i < trimmed.length()) && (trimmed.charAt(i) >= '0') && (trimmed.charAt(i) <= '9'); i++) {}
             }
 
             //

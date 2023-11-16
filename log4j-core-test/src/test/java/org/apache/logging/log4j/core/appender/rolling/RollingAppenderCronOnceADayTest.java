@@ -16,12 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Calendar;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -32,14 +39,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * This test currently takes about a minute to run.
@@ -60,19 +59,16 @@ public class RollingAppenderCronOnceADayTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-      final Path src = FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG);
-      String content = new String(Files.readAllBytes(src), UTF_8);
-      final Calendar cal = Calendar.getInstance();
-      cal.add(Calendar.SECOND, CRON_DELAY);
-      remainingTime = cal.getTimeInMillis() - System.currentTimeMillis();
-      cronExpression =  String.format("%d %d %d * * ?",
-          cal.get(Calendar.SECOND),
-          cal.get(Calendar.MINUTE),
-          cal.get(Calendar.HOUR_OF_DAY));
-      content = content.replace("@CRON_EXPR@", cronExpression);
-      Files.write(FileSystems.getDefault()
-            .getPath(TARGET_TEST_CLASSES, CONFIG_TARGET), content.getBytes(UTF_8));
-      StatusLogger.getLogger().debug("Cron expression will be " + cronExpression + " in " + remainingTime + "ms");
+        final Path src = FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG);
+        String content = new String(Files.readAllBytes(src), UTF_8);
+        final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.SECOND, CRON_DELAY);
+        remainingTime = cal.getTimeInMillis() - System.currentTimeMillis();
+        cronExpression = String.format(
+                "%d %d %d * * ?", cal.get(Calendar.SECOND), cal.get(Calendar.MINUTE), cal.get(Calendar.HOUR_OF_DAY));
+        content = content.replace("@CRON_EXPR@", cronExpression);
+        Files.write(FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG_TARGET), content.getBytes(UTF_8));
+        StatusLogger.getLogger().debug("Cron expression will be " + cronExpression + " in " + remainingTime + "ms");
     }
 
     private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG_TARGET);
@@ -88,7 +84,8 @@ public class RollingAppenderCronOnceADayTest {
         assertTrue("Log file does not exist", file.exists());
         logger.debug("This is test message number 1, waiting for rolling");
 
-        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
+        final RollingFileAppender app = (RollingFileAppender)
+                loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
         assertNotNull("No triggering policy", policy);
         assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);
@@ -106,20 +103,19 @@ public class RollingAppenderCronOnceADayTest {
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
 
         for (int i = 1; i < 5; i++) {
-          logger.debug("Adding some more event {}", i);
-          Thread.sleep(1000);
+            logger.debug("Adding some more event {}", i);
+            Thread.sleep(1000);
         }
         final Matcher<File> hasGzippedFile = hasName(that(endsWith(".gz")));
         int count = 0;
         final File[] files = dir.listFiles();
         for (final File generatedFile : files) {
-          if (hasGzippedFile.matches(generatedFile)) {
-              count++;
-          }
+            if (hasGzippedFile.matches(generatedFile)) {
+                count++;
+            }
         }
 
         assertNotEquals("No compressed files found", 0, count);
-        assertEquals("Multiple files found" , 1, count);
+        assertEquals("Multiple files found", 1, count);
     }
-
 }

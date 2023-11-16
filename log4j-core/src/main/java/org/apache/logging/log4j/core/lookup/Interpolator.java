@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -32,8 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Proxies all the other {@link StrLookup}s.
@@ -75,15 +74,18 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
      * @since 2.1
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
-        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(new HashMap<String, String>()) : defaultLookup;
+        this.defaultLookup =
+                defaultLookup == null ? new PropertiesLookup(new HashMap<String, String>()) : defaultLookup;
         final PluginManager manager = new PluginManager(CATEGORY);
         manager.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
 
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
-                final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup") || JndiManager.isJndiLookupEnabled()) {
+                final Class<? extends StrLookup> clazz =
+                        entry.getValue().getPluginClass().asSubclass(StrLookup.class);
+                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup")
+                        || JndiManager.isJndiLookupEnabled()) {
                     strLookupMap.put(toRootLowerCase(entry.getKey()), ReflectionUtil.instantiate(clazz));
                 }
             } catch (final Throwable t) {
@@ -119,21 +121,22 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
             case LOOKUP_KEY_JNDI:
                 // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
                 LOGGER.warn( // LOG4J2-1582 don't print the whole stack trace (it is just a warning...)
-                        "JNDI lookup class is not available because this JRE does not support JNDI." +
-                        " JNDI string lookups will not be available, continuing configuration. Ignoring " + t);
+                        "JNDI lookup class is not available because this JRE does not support JNDI."
+                                + " JNDI string lookups will not be available, continuing configuration. Ignoring "
+                                + t);
                 break;
             case LOOKUP_KEY_JVMRUNARGS:
                 // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JmxRuntimeInputArgumentsLookup
-                LOGGER.warn(
-                        "JMX runtime input lookup class is not available because this JRE does not support JMX. " +
-                        "JMX lookups will not be available, continuing configuration. Ignoring " + t);
+                LOGGER.warn("JMX runtime input lookup class is not available because this JRE does not support JMX. "
+                        + "JMX lookups will not be available, continuing configuration. Ignoring " + t);
                 break;
             case LOOKUP_KEY_WEB:
-                LOGGER.info("Log4j appears to be running in a Servlet environment, but there's no log4j-web module " +
-                        "available. If you want better web container support, please add the log4j-web JAR to your " +
-                        "web archive or server lib directory.");
+                LOGGER.info("Log4j appears to be running in a Servlet environment, but there's no log4j-web module "
+                        + "available. If you want better web container support, please add the log4j-web JAR to your "
+                        + "web archive or server lib directory.");
                 break;
-            case LOOKUP_KEY_DOCKER: case LOOKUP_KEY_SPRING:
+            case LOOKUP_KEY_DOCKER:
+            case LOOKUP_KEY_SPRING:
                 break;
             case LOOKUP_KEY_KUBERNETES:
                 if (t instanceof NoClassDefFoundError) {
@@ -235,5 +238,4 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
         }
         return sb.toString();
     }
-
 }

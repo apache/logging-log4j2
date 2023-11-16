@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import java.util.Collections;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
@@ -30,8 +29,7 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 @Plugin(name = "EventRootObjectKeyInterceptor", category = TemplateResolverInterceptor.CATEGORY)
 public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
 
-    private static final EventRootObjectKeyInterceptor INSTANCE =
-            new EventRootObjectKeyInterceptor();
+    private static final EventRootObjectKeyInterceptor INSTANCE = new EventRootObjectKeyInterceptor();
 
     private EventRootObjectKeyInterceptor() {}
 
@@ -41,13 +39,8 @@ public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
     }
 
     @Override
-    public Object processTemplateBeforeResolverInjection(
-            final EventResolverContext context,
-            final Object node) {
+    public Object processTemplateBeforeResolverInjection(final EventResolverContext context, final Object node) {
         final String eventTemplateRootObjectKey = context.getEventTemplateRootObjectKey();
-        return eventTemplateRootObjectKey != null
-                ? Collections.singletonMap(eventTemplateRootObjectKey, node)
-                : node;
+        return eventTemplateRootObjectKey != null ? Collections.singletonMap(eventTemplateRootObjectKey, node) : node;
     }
-
 }

@@ -16,9 +16,10 @@
  */
 package org.apache.log4j.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -28,8 +29,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class SyslogAppenderTest {
 
     private static MockSyslogServer syslogServer;
@@ -38,7 +37,8 @@ public class SyslogAppenderTest {
     public static void beforeClass() throws IOException {
         initTCPTestEnvironment(null);
         System.setProperty("syslog.port", Integer.toString(syslogServer.getLocalPort()));
-        System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-syslog.xml");
+        System.setProperty(
+                ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-syslog.xml");
     }
 
     @AfterAll
@@ -61,7 +61,6 @@ public class SyslogAppenderTest {
         }
         assertThat(messages).hasSize(1);
     }
-
 
     protected static void initTCPTestEnvironment(final String messageFormat) throws IOException {
         syslogServer = MockSyslogServerFactory.createTCPSyslogServer();

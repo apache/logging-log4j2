@@ -16,10 +16,11 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertTrue;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.logging.log4j.core.test.SystemPropertyTestRule;
@@ -27,8 +28,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test configuration from Properties.
@@ -39,10 +38,11 @@ public class XmlRollingWithPropertiesTest {
 
     @ClassRule
     public static TestRule SP_RULE = RuleChain.emptyRuleChain()
-    //@formatter:off
-        .around(SystemPropertyTestRule.create("test.directory", TEST_DIR))
-        .around(SystemPropertyTestRule.create("log4j.configuration", "target/test-classes/log4j1-rolling-properties.xml"));
-    //@formatter:on
+            // @formatter:off
+            .around(SystemPropertyTestRule.create("test.directory", TEST_DIR))
+            .around(SystemPropertyTestRule.create(
+                    "log4j.configuration", "target/test-classes/log4j1-rolling-properties.xml"));
+    // @formatter:on
 
     @Test
     public void testProperties() throws Exception {
@@ -54,5 +54,4 @@ public class XmlRollingWithPropertiesTest {
         assertTrue("Log file was not created " + path, Files.exists(path));
         assertTrue("Log file is empty " + path, Files.size(path) > 0);
     }
-
 }

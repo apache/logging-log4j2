@@ -16,9 +16,12 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.util.Map;
-
 import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -28,10 +31,6 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests configuring a Syslog appender.
@@ -48,7 +47,9 @@ public class SocketAppenderConfigurationTest {
         @SuppressWarnings("resource")
         final TcpSocketManager manager = (TcpSocketManager) socketAppender.getManager();
         final String prefix = expected + ":";
-        assertTrue(manager.getName().startsWith(prefix), () -> String.format("'%s' does not start with '%s'", manager.getName(), prefix));
+        assertTrue(
+                manager.getName().startsWith(prefix),
+                () -> String.format("'%s' does not start with '%s'", manager.getName(), prefix));
         // Threshold
         final ThresholdFilter filter = (ThresholdFilter) socketAppender.getFilter();
         assertEquals(Level.DEBUG, filter.getLevel());
@@ -76,7 +77,8 @@ public class SocketAppenderConfigurationTest {
 
     @Test
     public void testPropertiesXmlLayout() throws Exception {
-        final SocketAppender socketAppender = checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket-xml-layout.properties");
+        final SocketAppender socketAppender =
+                checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket-xml-layout.properties");
         assertTrue(socketAppender.getLayout() instanceof Log4j1XmlLayout);
     }
 
@@ -84,5 +86,4 @@ public class SocketAppenderConfigurationTest {
     public void testXml() throws Exception {
         checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket.xml");
     }
-
 }

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -35,19 +36,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @UsingAnyThreadContext
 public class SyslogLayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
 
-
     private static final String line1 = "starting mdc pattern test";
     private static final String line2 = "empty mdc";
     private static final String line3 = "filled mdc";
     private static final String line4 =
-        "Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
+            "Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
@@ -78,7 +76,7 @@ public class SyslogLayoutTest {
                 .setIncludeNewLine(true)
                 .build();
         // @formatter:on
-        //ConsoleAppender appender = new ConsoleAppender("Console", layout);
+        // ConsoleAppender appender = new ConsoleAppender("Console", layout);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 

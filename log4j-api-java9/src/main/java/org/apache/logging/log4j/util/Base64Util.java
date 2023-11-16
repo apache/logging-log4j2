@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.nio.charset.Charset;
 import java.util.Base64;
 
-
 /**
  * Base64 encodes Strings. This utility is only necessary because the mechanism to do this changed in Java 8 and
  * the original method for Base64 encoding was removed in Java 9.
@@ -28,8 +27,7 @@ public final class Base64Util {
 
     private static final Base64.Encoder encoder = Base64.getEncoder();
 
-    private Base64Util() {
-    }
+    private Base64Util() {}
 
     public static String encode(final String str) {
         return str != null ? encoder.encodeToString(str.getBytes(Charset.defaultCharset())) : null;

@@ -52,8 +52,8 @@ public class TestPropertySource implements PropertySource {
     private static TestProperties getProperties(final ExtensionContext context) {
         final ExtensionContext actualContext = context != null ? context : ExtensionContextAnchor.getContext();
         if (actualContext != null) {
-            final TestProperties props = ExtensionContextAnchor.getAttribute(TestProperties.class, TestProperties.class,
-                    actualContext);
+            final TestProperties props =
+                    ExtensionContextAnchor.getAttribute(TestProperties.class, TestProperties.class, actualContext);
             if (props != null) {
                 return props;
             }
@@ -111,7 +111,6 @@ public class TestPropertySource implements PropertySource {
         public void clearProperty(final String key) {
             store.remove(key, String.class);
         }
-
     }
 
     private static class EmptyTestProperties implements TestProperties {
@@ -135,6 +134,5 @@ public class TestPropertySource implements PropertySource {
         public void clearProperty(final String key) {
             throw new UnsupportedOperationException();
         }
-
     }
 }

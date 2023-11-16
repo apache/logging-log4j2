@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.mom.jeromq;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.zeromq.SocketType;
@@ -49,8 +48,9 @@ class JeroMqTestClient implements Callable<List<String>> {
             subscriber.connect(endpoint);
             subscriber.subscribe(ZMQ.SUBSCRIPTION_ALL);
             LOGGER.info("Subscribing JeroMqTestClient to JeroMqAppender.");
-            for (int messageNum = 0; messageNum < receiveCount
-                    && !Thread.currentThread().isInterrupted(); messageNum++) {
+            for (int messageNum = 0;
+                    messageNum < receiveCount && !Thread.currentThread().isInterrupted();
+                    messageNum++) {
                 // Use trim to remove the tailing '0' character
                 final String message = subscriber.recvStr(0).trim();
                 LOGGER.debug("JeroMqTestClient received a message: {}.", message);

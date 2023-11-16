@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.test;
 
 import java.util.Objects;
 import java.util.function.Supplier;
-
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -83,5 +82,4 @@ public class SystemPropertyTestRule implements TestRule {
         // Value might be a secret...
         return "SystemPropertyTestRule [name=" + name + "]";
     }
-
 }

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -28,11 +31,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @SetSystemProperty(key = "spring.profiles.active", value = "prod")
-@SetSystemProperty(key = "log4j2.loggerContextFactory", value = "org.apache.logging.log4j.core.impl.Log4jContextFactory")
+@SetSystemProperty(
+        key = "log4j2.loggerContextFactory",
+        value = "org.apache.logging.log4j.core.impl.Log4jContextFactory")
 @SpringBootTest
 public class Log4j2SpringBootInitTest {
 
@@ -48,6 +50,7 @@ public class Log4j2SpringBootInitTest {
     @SpringBootApplication
     public static class SpringTestApplication implements ApplicationRunner {
         private final Logger LOGGER = LogManager.getLogger("org.apache.logging.log4j.core.springtest");
+
         public static void main(final String[] args) {
             SpringApplication.run(SpringTestApplication.class, args);
         }

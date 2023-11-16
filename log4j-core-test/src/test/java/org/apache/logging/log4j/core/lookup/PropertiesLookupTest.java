@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.logging.log4j.core.config.Property;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.logging.log4j.core.config.Property;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link PropertiesLookup}.
@@ -35,8 +34,8 @@ public class PropertiesLookupTest {
 
     @Test
     public void testLookupContextProperty() {
-        final StrLookup propertiesLookup = new PropertiesLookup(
-                Property.EMPTY_ARRAY, Collections.singletonMap("A", "1"));
+        final StrLookup propertiesLookup =
+                new PropertiesLookup(Property.EMPTY_ARRAY, Collections.singletonMap("A", "1"));
         assertEquals("1", propertiesLookup.lookup("A"));
         final LookupResult lookupResult = propertiesLookup.evaluate("A");
         assertEquals("1", lookupResult.value());
@@ -45,9 +44,8 @@ public class PropertiesLookupTest {
 
     @Test
     public void testLookupConfigProperty() {
-        final StrLookup propertiesLookup = new PropertiesLookup(
-                new Property[] {Property.createProperty("A", "1")},
-                Collections.emptyMap());
+        final StrLookup propertiesLookup =
+                new PropertiesLookup(new Property[] {Property.createProperty("A", "1")}, Collections.emptyMap());
         assertEquals("1", propertiesLookup.lookup("A"));
         final LookupResult lookupResult = propertiesLookup.evaluate("A");
         assertEquals("1", lookupResult.value());
@@ -57,8 +55,7 @@ public class PropertiesLookupTest {
     @Test
     public void testConfigPropertiesPreferredOverContextProperties() {
         final StrLookup propertiesLookup = new PropertiesLookup(
-                new Property[] {Property.createProperty("A", "1")},
-                Collections.singletonMap("A", "2"));
+                new Property[] {Property.createProperty("A", "1")}, Collections.singletonMap("A", "2"));
         assertEquals("1", propertiesLookup.lookup("A"));
         final LookupResult lookupResult = propertiesLookup.evaluate("A");
         assertEquals("1", lookupResult.value());

@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
@@ -27,9 +29,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class RollingDirectTimeNewDirectoryTest {
 
@@ -53,9 +52,7 @@ public class RollingDirectTimeNewDirectoryTest {
     @Test
     public void streamClosedError() throws Exception {
 
-        final Logger logger =
-                loggerContextRule.getLogger(
-                        RollingDirectTimeNewDirectoryTest.class.getName());
+        final Logger logger = loggerContextRule.getLogger(RollingDirectTimeNewDirectoryTest.class.getName());
 
         for (int i = 0; i < 1000; i++) {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
@@ -74,15 +71,13 @@ public class RollingDirectTimeNewDirectoryTest {
 
             final int minExpectedLogFolderCount = 2;
             assertTrue(
-                    "was expecting at least " + minExpectedLogFolderCount + " folders, " +
-                            "found " + logFolders.length,
+                    "was expecting at least " + minExpectedLogFolderCount + " folders, " + "found " + logFolders.length,
                     logFolders.length >= minExpectedLogFolderCount);
 
             for (File logFolder : logFolders) {
                 final File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
-                    assertTrue("Only 1 file per folder expected: got " + logFiles.length,
-                            logFiles.length <= 1);
+                    assertTrue("Only 1 file per folder expected: got " + logFiles.length, logFiles.length <= 1);
                     totalFiles += logFiles.length;
                 }
             }
@@ -91,8 +86,7 @@ public class RollingDirectTimeNewDirectoryTest {
         } catch (AssertionError error) {
             System.out.format("log directory (%s) contents:%n", DIR);
             final Iterator<File> fileIterator =
-                    FileUtils.iterateFilesAndDirs(
-                            logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
+                    FileUtils.iterateFilesAndDirs(logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
             int totalFileCount = 0;
             while (fileIterator.hasNext()) {
                 totalFileCount++;
@@ -102,7 +96,5 @@ public class RollingDirectTimeNewDirectoryTest {
             System.out.format("total file count: %d%n", totalFileCount);
             throw new AssertionError("check failure", error);
         }
-
     }
-
 }

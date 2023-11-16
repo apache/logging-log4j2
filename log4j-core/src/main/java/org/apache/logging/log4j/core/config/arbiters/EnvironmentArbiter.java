@@ -24,8 +24,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 /**
  * Condition that determines if the specified environment variable is set.
  */
-@Plugin(name = "EnvironmentArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Plugin(
+        name = "EnvironmentArbiter",
+        category = Node.CATEGORY,
+        elementType = Arbiter.ELEMENT_TYPE,
+        deferChildren = true,
+        printObject = true)
 public class EnvironmentArbiter implements Arbiter {
 
     private final String propertyName;
@@ -35,7 +39,6 @@ public class EnvironmentArbiter implements Arbiter {
         this.propertyName = propertyName;
         this.propertyValue = propertyValue;
     }
-
 
     /**
      * Returns true if either the environment variable is defined (it has any value) or the property value

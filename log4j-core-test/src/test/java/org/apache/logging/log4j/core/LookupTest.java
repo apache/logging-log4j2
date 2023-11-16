@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-lookup.xml")
 public class LookupTest {
@@ -34,7 +34,7 @@ public class LookupTest {
         assertTrue(layout instanceof PatternLayout, "Layout is not a PatternLayout");
         final String pattern = ((PatternLayout) layout).getConversionPattern();
         assertNotNull(pattern, "No conversion pattern");
-        assertTrue(pattern.contains("org.junit,org.apache.maven,org.eclipse,sun.reflect,java.lang.reflect"),
-                "No filters");
+        assertTrue(
+                pattern.contains("org.junit,org.apache.maven,org.eclipse,sun.reflect,java.lang.reflect"), "No filters");
     }
 }

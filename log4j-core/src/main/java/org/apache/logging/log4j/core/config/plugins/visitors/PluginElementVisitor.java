@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
@@ -37,8 +36,8 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-                        final StringBuilder log) {
+    public Object visit(
+            final Configuration configuration, final Node node, final LogEvent event, final StringBuilder log) {
         final String name = this.annotation.value();
         if (this.conversionType.isArray()) {
             setConversionType(this.conversionType.getComponentType());
@@ -48,8 +47,8 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
             boolean first = true;
             for (final Node child : node.getChildren()) {
                 final PluginType<?> childType = child.getType();
-                if (name.equalsIgnoreCase(childType.getElementName()) ||
-                    this.conversionType.isAssignableFrom(childType.getPluginClass())) {
+                if (name.equalsIgnoreCase(childType.getElementName())
+                        || this.conversionType.isAssignableFrom(childType.getPluginClass())) {
                     if (!first) {
                         log.append(", ");
                     }
@@ -71,9 +70,13 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
             }
             log.append('}');
             // note that we need to return an empty array instead of null if the types are correct
-            if (!values.isEmpty() && !this.conversionType.isAssignableFrom(values.get(0).getClass())) {
-                LOGGER.error("Attempted to assign attribute {} to list of type {} which is incompatible with {}.",
-                    name, values.get(0).getClass(), this.conversionType);
+            if (!values.isEmpty()
+                    && !this.conversionType.isAssignableFrom(values.get(0).getClass())) {
+                LOGGER.error(
+                        "Attempted to assign attribute {} to list of type {} which is incompatible with {}.",
+                        name,
+                        values.get(0).getClass(),
+                        this.conversionType);
                 return null;
             }
             node.getChildren().removeAll(used);
@@ -98,8 +101,8 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
         for (final Node child : children) {
             final PluginType<?> childType = child.getType();
             final boolean elementNameMatch = childType != null && name.equalsIgnoreCase(childType.getElementName());
-            final boolean isAssignableByPluginClass = childType != null &&
-                    this.conversionType.isAssignableFrom(childType.getPluginClass());
+            final boolean isAssignableByPluginClass =
+                    childType != null && this.conversionType.isAssignableFrom(childType.getPluginClass());
             if (elementNameMatch || isAssignableByPluginClass) {
                 return child;
             }

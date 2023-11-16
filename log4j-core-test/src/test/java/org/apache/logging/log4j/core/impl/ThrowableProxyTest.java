@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,14 +39,10 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.IvParameterSpec;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.convert.Base64Converter;
@@ -47,13 +52,6 @@ import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -101,11 +99,11 @@ public class ThrowableProxyTest {
 
     private boolean lastLineContains(final String text, final String containedText) {
         final String[] lines = text.split("\n");
-        final String lastLine = lines[lines.length-1];
+        final String lastLine = lines[lines.length - 1];
         return lastLine.contains(containedText);
     }
 
-    private void testIoContainer(final ObjectMapper objectMapper ) throws IOException {
+    private void testIoContainer(final ObjectMapper objectMapper) throws IOException {
         final Fixture expected = new Fixture();
         final String s = objectMapper.writeValueAsString(expected);
         final Fixture actual = objectMapper.readValue(s, Fixture.class);
@@ -154,18 +152,17 @@ public class ThrowableProxyTest {
     public void testLogStackTraceWithClassThatWillCauseSecurityException() throws IOException {
         final SecurityManager sm = System.getSecurityManager();
         try {
-            System.setSecurityManager(
-                    new SecurityManager() {
-                        @Override
-                        public void checkPermission(final Permission perm) {
-                            if (perm instanceof RuntimePermission) {
-                                // deny access to the class to trigger the security exception
-                                if ("accessClassInPackage.sun.nio.ch".equals(perm.getName())) {
-                                    throw new SecurityException(perm.toString());
-                                }
-                            }
+            System.setSecurityManager(new SecurityManager() {
+                @Override
+                public void checkPermission(final Permission perm) {
+                    if (perm instanceof RuntimePermission) {
+                        // deny access to the class to trigger the security exception
+                        if ("accessClassInPackage.sun.nio.ch".equals(perm.getName())) {
+                            throw new SecurityException(perm.toString());
                         }
-                    });
+                    }
+                }
+            });
             final BindException e = assertThrows(BindException.class, () -> {
                 ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
                 ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
@@ -181,18 +178,17 @@ public class ThrowableProxyTest {
     public void testLogStackTraceWithClassLoaderThatWithCauseSecurityException() throws Exception {
         final SecurityManager sm = System.getSecurityManager();
         try {
-            System.setSecurityManager(
-                    new SecurityManager() {
-                        @Override
-                        public void checkPermission(final Permission perm) {
-                            if (perm instanceof RuntimePermission) {
-                                // deny access to the classloader to trigger the security exception
-                                if ("getClassLoader".equals(perm.getName())) {
-                                    throw new SecurityException(perm.toString());
-                                }
-                            }
+            System.setSecurityManager(new SecurityManager() {
+                @Override
+                public void checkPermission(final Permission perm) {
+                    if (perm instanceof RuntimePermission) {
+                        // deny access to the classloader to trigger the security exception
+                        if ("getClassLoader".equals(perm.getName())) {
+                            throw new SecurityException(perm.toString());
                         }
-                    });
+                    }
+                }
+            });
             final String algorithm = "AES/CBC/PKCS5Padding";
             final Cipher ec = Cipher.getInstance(algorithm);
             final byte[] bytes = new byte[16]; // initialization vector
@@ -244,7 +240,9 @@ public class ThrowableProxyTest {
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);
 
-        assertEquals(proxy.getExtendedStackTraceAsString(Strings.EMPTY), proxy2.getExtendedStackTraceAsString(Strings.EMPTY));
+        assertEquals(
+                proxy.getExtendedStackTraceAsString(Strings.EMPTY),
+                proxy2.getExtendedStackTraceAsString(Strings.EMPTY));
     }
 
     @Test
@@ -255,24 +253,27 @@ public class ThrowableProxyTest {
 
     @Test
     public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth2() throws Exception {
-        final Throwable throwable = new RuntimeException(
-                new IllegalArgumentException("This is a test", new IOException("level 2")));
+        final Throwable throwable =
+                new RuntimeException(new IllegalArgumentException("This is a test", new IOException("level 2")));
         testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
     }
 
     @Test
     public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth3() throws Exception {
-        final Throwable throwable = new RuntimeException(new IllegalArgumentException("level 1",
-                new IOException("level 2", new IllegalStateException("level 3"))));
+        final Throwable throwable = new RuntimeException(new IllegalArgumentException(
+                "level 1", new IOException("level 2", new IllegalStateException("level 3"))));
         testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
     }
 
-    private void testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(final Throwable throwable) throws Exception {
+    private void testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(final Throwable throwable)
+            throws Exception {
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);
 
-        assertEquals(proxy.getExtendedStackTraceAsString(Strings.EMPTY), proxy2.getExtendedStackTraceAsString(Strings.EMPTY));
+        assertEquals(
+                proxy.getExtendedStackTraceAsString(Strings.EMPTY),
+                proxy2.getExtendedStackTraceAsString(Strings.EMPTY));
     }
 
     @Test
@@ -288,7 +289,8 @@ public class ThrowableProxyTest {
         // String base64 = DatatypeConverter.printBase64Binary(binary);
         // System.out.println("final String base64 = \"" + base64.replaceAll("\r\n", "\\\\r\\\\n\" +\r\n\"") + "\";");
 
-        final String base64 = "rO0ABXNyADFvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLlRocm93YWJsZVByb3h52cww1Zp7rPoCAAdJABJjb21tb25FbGVtZW50Q291bnRMAApjYXVzZVByb3h5dAAzTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvVGhyb3dhYmxlUHJveHk7WwASZXh0ZW5kZWRTdGFja1RyYWNldAA/W0xvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL0V4dGVuZGVkU3RhY2tUcmFjZUVsZW1lbnQ7TAAQbG9jYWxpemVkTWVzc2FnZXQAEkxqYXZhL2xhbmcvU3RyaW5nO0wAB21lc3NhZ2VxAH4AA0wABG5hbWVxAH4AA1sAEXN1cHByZXNzZWRQcm94aWVzdAA0W0xvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL1Rocm93YWJsZVByb3h5O3hwAAAAAHB1cgA/W0xvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkV4dGVuZGVkU3RhY2tUcmFjZUVsZW1lbnQ7ys+II6XHz7wCAAB4cAAAABhzcgA8b3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5FeHRlbmRlZFN0YWNrVHJhY2VFbGVtZW504d7Pusa2kAcCAAJMAA5leHRyYUNsYXNzSW5mb3QANkxvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL0V4dGVuZGVkQ2xhc3NJbmZvO0wAEXN0YWNrVHJhY2VFbGVtZW50dAAdTGphdmEvbGFuZy9TdGFja1RyYWNlRWxlbWVudDt4cHNyADRvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkV4dGVuZGVkQ2xhc3NJbmZvAAAAAAAAAAECAANaAAVleGFjdEwACGxvY2F0aW9ucQB+AANMAAd2ZXJzaW9ucQB+AAN4cAF0AA10ZXN0LWNsYXNzZXMvdAABP3NyABtqYXZhLmxhbmcuU3RhY2tUcmFjZUVsZW1lbnRhCcWaJjbdhQIABEkACmxpbmVOdW1iZXJMAA5kZWNsYXJpbmdDbGFzc3EAfgADTAAIZmlsZU5hbWVxAH4AA0wACm1ldGhvZE5hbWVxAH4AA3hwAAAAaHQANW9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuVGhyb3dhYmxlUHJveHlUZXN0dAAXVGhyb3dhYmxlUHJveHlUZXN0LmphdmF0ACV0ZXN0U2VyaWFsaXphdGlvbldpdGhVbmtub3duVGhyb3dhYmxlc3EAfgAIc3EAfgAMAHEAfgAPdAAIMS43LjBfNTVzcQB+ABD////+dAAkc3VuLnJlZmxlY3QuTmF0aXZlTWV0aG9kQWNjZXNzb3JJbXBscHQAB2ludm9rZTBzcQB+AAhzcQB+AAwAcQB+AA9xAH4AF3NxAH4AEP////9xAH4AGXB0AAZpbnZva2VzcQB+AAhzcQB+AAwAcQB+AA9xAH4AF3NxAH4AEP////90AChzdW4ucmVmbGVjdC5EZWxlZ2F0aW5nTWV0aG9kQWNjZXNzb3JJbXBscHEAfgAec3EAfgAIc3EAfgAMAHEAfgAPcQB+ABdzcQB+ABD/////dAAYamF2YS5sYW5nLnJlZmxlY3QuTWV0aG9kcHEAfgAec3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAAvdAApb3JnLmp1bml0LnJ1bm5lcnMubW9kZWwuRnJhbWV3b3JrTWV0aG9kJDF0ABRGcmFtZXdvcmtNZXRob2QuamF2YXQAEXJ1blJlZmxlY3RpdmVDYWxsc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAAMdAAzb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMubW9kZWwuUmVmbGVjdGl2ZUNhbGxhYmxldAAXUmVmbGVjdGl2ZUNhbGxhYmxlLmphdmF0AANydW5zcQB+AAhzcQB+AAwBdAAOanVuaXQtNC4xMS5qYXJxAH4AD3NxAH4AEAAAACx0ACdvcmcuanVuaXQucnVubmVycy5tb2RlbC5GcmFtZXdvcmtNZXRob2RxAH4ALHQAEWludm9rZUV4cGxvc2l2ZWx5c3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAARdAAyb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMuc3RhdGVtZW50cy5JbnZva2VNZXRob2R0ABFJbnZva2VNZXRob2QuamF2YXQACGV2YWx1YXRlc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAEPdAAeb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVydAARUGFyZW50UnVubmVyLmphdmF0AAdydW5MZWFmc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAABGdAAob3JnLmp1bml0LnJ1bm5lcnMuQmxvY2tKVW5pdDRDbGFzc1J1bm5lcnQAG0Jsb2NrSlVuaXQ0Q2xhc3NSdW5uZXIuamF2YXQACHJ1bkNoaWxkc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAAycQB+AE1xAH4ATnEAfgBPc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAADudAAgb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVyJDNxAH4AR3EAfgA0c3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAA/dAAgb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVyJDFxAH4AR3QACHNjaGVkdWxlc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAADscQB+AEZxAH4AR3QAC3J1bkNoaWxkcmVuc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAA1cQB+AEZxAH4AR3QACmFjY2VzcyQwMDBzcQB+AAhzcQB+AAwBdAAOanVuaXQtNC4xMS5qYXJxAH4AD3NxAH4AEAAAAOV0ACBvcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXIkMnEAfgBHcQB+AEFzcQB+AAhzcQB+AAwBdAAOanVuaXQtNC4xMS5qYXJxAH4AD3NxAH4AEAAAATVxAH4ARnEAfgBHcQB+ADRzcQB+AAhzcQB+AAwBdAAELmNwL3EAfgAPc3EAfgAQAAAAMnQAOm9yZy5lY2xpcHNlLmpkdC5pbnRlcm5hbC5qdW5pdDQucnVubmVyLkpVbml0NFRlc3RSZWZlcmVuY2V0ABhKVW5pdDRUZXN0UmVmZXJlbmNlLmphdmFxAH4ANHNxAH4ACHNxAH4ADAF0AAQuY3AvcQB+AA9zcQB+ABAAAAAmdAAzb3JnLmVjbGlwc2UuamR0LmludGVybmFsLmp1bml0LnJ1bm5lci5UZXN0RXhlY3V0aW9udAASVGVzdEV4ZWN1dGlvbi5qYXZhcQB+ADRzcQB+AAhzcQB+AAwBdAAELmNwL3EAfgAPc3EAfgAQAAAB03QANm9yZy5lY2xpcHNlLmpkdC5pbnRlcm5hbC5qdW5pdC5ydW5uZXIuUmVtb3RlVGVzdFJ1bm5lcnQAFVJlbW90ZVRlc3RSdW5uZXIuamF2YXQACHJ1blRlc3Rzc3EAfgAIc3EAfgAMAXQABC5jcC9xAH4AD3NxAH4AEAAAAqtxAH4AgnEAfgCDcQB+AIRzcQB+AAhzcQB+AAwBdAAELmNwL3EAfgAPc3EAfgAQAAABhnEAfgCCcQB+AINxAH4ANHNxAH4ACHNxAH4ADAF0AAQuY3AvcQB+AA9zcQB+ABAAAADFcQB+AIJxAH4Ag3QABG1haW50ABZPTUcgSSd2ZSBiZWVuIGRlbGV0ZWQhcQB+AJJ0AEZvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLlRocm93YWJsZVByb3h5VGVzdCREZWxldGVkRXhjZXB0aW9udXIANFtMb3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5UaHJvd2FibGVQcm94eTv67QHghaLrOQIAAHhwAAAAAA==";
+        final String base64 =
+                "rO0ABXNyADFvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLlRocm93YWJsZVByb3h52cww1Zp7rPoCAAdJABJjb21tb25FbGVtZW50Q291bnRMAApjYXVzZVByb3h5dAAzTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvVGhyb3dhYmxlUHJveHk7WwASZXh0ZW5kZWRTdGFja1RyYWNldAA/W0xvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL0V4dGVuZGVkU3RhY2tUcmFjZUVsZW1lbnQ7TAAQbG9jYWxpemVkTWVzc2FnZXQAEkxqYXZhL2xhbmcvU3RyaW5nO0wAB21lc3NhZ2VxAH4AA0wABG5hbWVxAH4AA1sAEXN1cHByZXNzZWRQcm94aWVzdAA0W0xvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL1Rocm93YWJsZVByb3h5O3hwAAAAAHB1cgA/W0xvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkV4dGVuZGVkU3RhY2tUcmFjZUVsZW1lbnQ7ys+II6XHz7wCAAB4cAAAABhzcgA8b3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5FeHRlbmRlZFN0YWNrVHJhY2VFbGVtZW504d7Pusa2kAcCAAJMAA5leHRyYUNsYXNzSW5mb3QANkxvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL0V4dGVuZGVkQ2xhc3NJbmZvO0wAEXN0YWNrVHJhY2VFbGVtZW50dAAdTGphdmEvbGFuZy9TdGFja1RyYWNlRWxlbWVudDt4cHNyADRvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkV4dGVuZGVkQ2xhc3NJbmZvAAAAAAAAAAECAANaAAVleGFjdEwACGxvY2F0aW9ucQB+AANMAAd2ZXJzaW9ucQB+AAN4cAF0AA10ZXN0LWNsYXNzZXMvdAABP3NyABtqYXZhLmxhbmcuU3RhY2tUcmFjZUVsZW1lbnRhCcWaJjbdhQIABEkACmxpbmVOdW1iZXJMAA5kZWNsYXJpbmdDbGFzc3EAfgADTAAIZmlsZU5hbWVxAH4AA0wACm1ldGhvZE5hbWVxAH4AA3hwAAAAaHQANW9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuVGhyb3dhYmxlUHJveHlUZXN0dAAXVGhyb3dhYmxlUHJveHlUZXN0LmphdmF0ACV0ZXN0U2VyaWFsaXphdGlvbldpdGhVbmtub3duVGhyb3dhYmxlc3EAfgAIc3EAfgAMAHEAfgAPdAAIMS43LjBfNTVzcQB+ABD////+dAAkc3VuLnJlZmxlY3QuTmF0aXZlTWV0aG9kQWNjZXNzb3JJbXBscHQAB2ludm9rZTBzcQB+AAhzcQB+AAwAcQB+AA9xAH4AF3NxAH4AEP////9xAH4AGXB0AAZpbnZva2VzcQB+AAhzcQB+AAwAcQB+AA9xAH4AF3NxAH4AEP////90AChzdW4ucmVmbGVjdC5EZWxlZ2F0aW5nTWV0aG9kQWNjZXNzb3JJbXBscHEAfgAec3EAfgAIc3EAfgAMAHEAfgAPcQB+ABdzcQB+ABD/////dAAYamF2YS5sYW5nLnJlZmxlY3QuTWV0aG9kcHEAfgAec3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAAvdAApb3JnLmp1bml0LnJ1bm5lcnMubW9kZWwuRnJhbWV3b3JrTWV0aG9kJDF0ABRGcmFtZXdvcmtNZXRob2QuamF2YXQAEXJ1blJlZmxlY3RpdmVDYWxsc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAAMdAAzb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMubW9kZWwuUmVmbGVjdGl2ZUNhbGxhYmxldAAXUmVmbGVjdGl2ZUNhbGxhYmxlLmphdmF0AANydW5zcQB+AAhzcQB+AAwBdAAOanVuaXQtNC4xMS5qYXJxAH4AD3NxAH4AEAAAACx0ACdvcmcuanVuaXQucnVubmVycy5tb2RlbC5GcmFtZXdvcmtNZXRob2RxAH4ALHQAEWludm9rZUV4cGxvc2l2ZWx5c3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAARdAAyb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMuc3RhdGVtZW50cy5JbnZva2VNZXRob2R0ABFJbnZva2VNZXRob2QuamF2YXQACGV2YWx1YXRlc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAEPdAAeb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVydAARUGFyZW50UnVubmVyLmphdmF0AAdydW5MZWFmc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAABGdAAob3JnLmp1bml0LnJ1bm5lcnMuQmxvY2tKVW5pdDRDbGFzc1J1bm5lcnQAG0Jsb2NrSlVuaXQ0Q2xhc3NSdW5uZXIuamF2YXQACHJ1bkNoaWxkc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAAycQB+AE1xAH4ATnEAfgBPc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAADudAAgb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVyJDNxAH4AR3EAfgA0c3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAA/dAAgb3JnLmp1bml0LnJ1bm5lcnMuUGFyZW50UnVubmVyJDFxAH4AR3QACHNjaGVkdWxlc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAADscQB+AEZxAH4AR3QAC3J1bkNoaWxkcmVuc3EAfgAIc3EAfgAMAXQADmp1bml0LTQuMTEuamFycQB+AA9zcQB+ABAAAAA1cQB+AEZxAH4AR3QACmFjY2VzcyQwMDBzcQB+AAhzcQB+AAwBdAAOanVuaXQtNC4xMS5qYXJxAH4AD3NxAH4AEAAAAOV0ACBvcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXIkMnEAfgBHcQB+AEFzcQB+AAhzcQB+AAwBdAAOanVuaXQtNC4xMS5qYXJxAH4AD3NxAH4AEAAAATVxAH4ARnEAfgBHcQB+ADRzcQB+AAhzcQB+AAwBdAAELmNwL3EAfgAPc3EAfgAQAAAAMnQAOm9yZy5lY2xpcHNlLmpkdC5pbnRlcm5hbC5qdW5pdDQucnVubmVyLkpVbml0NFRlc3RSZWZlcmVuY2V0ABhKVW5pdDRUZXN0UmVmZXJlbmNlLmphdmFxAH4ANHNxAH4ACHNxAH4ADAF0AAQuY3AvcQB+AA9zcQB+ABAAAAAmdAAzb3JnLmVjbGlwc2UuamR0LmludGVybmFsLmp1bml0LnJ1bm5lci5UZXN0RXhlY3V0aW9udAASVGVzdEV4ZWN1dGlvbi5qYXZhcQB+ADRzcQB+AAhzcQB+AAwBdAAELmNwL3EAfgAPc3EAfgAQAAAB03QANm9yZy5lY2xpcHNlLmpkdC5pbnRlcm5hbC5qdW5pdC5ydW5uZXIuUmVtb3RlVGVzdFJ1bm5lcnQAFVJlbW90ZVRlc3RSdW5uZXIuamF2YXQACHJ1blRlc3Rzc3EAfgAIc3EAfgAMAXQABC5jcC9xAH4AD3NxAH4AEAAAAqtxAH4AgnEAfgCDcQB+AIRzcQB+AAhzcQB+AAwBdAAELmNwL3EAfgAPc3EAfgAQAAABhnEAfgCCcQB+AINxAH4ANHNxAH4ACHNxAH4ADAF0AAQuY3AvcQB+AA9zcQB+ABAAAADFcQB+AIJxAH4Ag3QABG1haW50ABZPTUcgSSd2ZSBiZWVuIGRlbGV0ZWQhcQB+AJJ0AEZvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLlRocm93YWJsZVByb3h5VGVzdCREZWxldGVkRXhjZXB0aW9udXIANFtMb3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5UaHJvd2FibGVQcm94eTv67QHghaLrOQIAAHhwAAAAAA==";
 
         final byte[] binaryDecoded = Base64Converter.parseBase64Binary(base64);
         final ThrowableProxy proxy2 = deserialize(binaryDecoded);
@@ -303,8 +305,8 @@ public class ThrowableProxyTest {
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
         final String separator = " | ";
-        final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString(null,
-                PlainTextRenderer.getInstance(), " | ", Strings.EMPTY);
+        final String extendedStackTraceAsString =
+                proxy.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), " | ", Strings.EMPTY);
         assertTrue(allLinesContain(extendedStackTraceAsString, separator), extendedStackTraceAsString);
     }
 
@@ -373,8 +375,8 @@ public class ThrowableProxyTest {
         final Deque<Class<?>> stack = new ArrayDeque<>();
         final Throwable throwable = new IllegalStateException("This is a test");
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
-        final ExtendedStackTraceElement[] callerPackageData = ThrowableProxyHelper.toExtendedStackTrace(proxy, stack, map, null,
-                throwable.getStackTrace());
+        final ExtendedStackTraceElement[] callerPackageData =
+                ThrowableProxyHelper.toExtendedStackTrace(proxy, stack, map, null, throwable.getStackTrace());
         assertNotNull(callerPackageData, "No package data returned");
     }
 
@@ -388,9 +390,9 @@ public class ThrowableProxyTest {
         final Deque<Class<?>> stack = new ArrayDeque<>();
         final Map<String, ThrowableProxyHelper.CacheEntry> map = new HashMap<>();
 
-        final String runtimeExceptionThrownAtUnloadableClass_base64 = "rO0ABXNyABpqYXZhLmxhbmcuUnVudGltZUV4Y2VwdGlvbp5fBkcKNIPlAgAAeHIAE2phdmEubGFuZy5FeGNlcHRpb27Q/R8+GjscxAIAAHhyABNqYXZhLmxhbmcuVGhyb3dhYmxl1cY1Jzl3uMsDAANMAAVjYXVzZXQAFUxqYXZhL2xhbmcvVGhyb3dhYmxlO0wADWRldGFpbE1lc3NhZ2V0ABJMamF2YS9sYW5nL1N0cmluZztbAApzdGFja1RyYWNldAAeW0xqYXZhL2xhbmcvU3RhY2tUcmFjZUVsZW1lbnQ7eHBxAH4ABnB1cgAeW0xqYXZhLmxhbmcuU3RhY2tUcmFjZUVsZW1lbnQ7AkYqPDz9IjkCAAB4cAAAAAFzcgAbamF2YS5sYW5nLlN0YWNrVHJhY2VFbGVtZW50YQnFmiY23YUCAARJAApsaW5lTnVtYmVyTAAOZGVjbGFyaW5nQ2xhc3NxAH4ABEwACGZpbGVOYW1lcQB+AARMAAptZXRob2ROYW1lcQB+AAR4cAAAAAZ0ADxvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkZvcmNlTm9EZWZDbGFzc0ZvdW5kRXJyb3J0AB5Gb3JjZU5vRGVmQ2xhc3NGb3VuZEVycm9yLmphdmF0AARtYWlueA==";
-        final byte[] binaryDecoded = Base64Converter
-                .parseBase64Binary(runtimeExceptionThrownAtUnloadableClass_base64);
+        final String runtimeExceptionThrownAtUnloadableClass_base64 =
+                "rO0ABXNyABpqYXZhLmxhbmcuUnVudGltZUV4Y2VwdGlvbp5fBkcKNIPlAgAAeHIAE2phdmEubGFuZy5FeGNlcHRpb27Q/R8+GjscxAIAAHhyABNqYXZhLmxhbmcuVGhyb3dhYmxl1cY1Jzl3uMsDAANMAAVjYXVzZXQAFUxqYXZhL2xhbmcvVGhyb3dhYmxlO0wADWRldGFpbE1lc3NhZ2V0ABJMamF2YS9sYW5nL1N0cmluZztbAApzdGFja1RyYWNldAAeW0xqYXZhL2xhbmcvU3RhY2tUcmFjZUVsZW1lbnQ7eHBxAH4ABnB1cgAeW0xqYXZhLmxhbmcuU3RhY2tUcmFjZUVsZW1lbnQ7AkYqPDz9IjkCAAB4cAAAAAFzcgAbamF2YS5sYW5nLlN0YWNrVHJhY2VFbGVtZW50YQnFmiY23YUCAARJAApsaW5lTnVtYmVyTAAOZGVjbGFyaW5nQ2xhc3NxAH4ABEwACGZpbGVOYW1lcQB+AARMAAptZXRob2ROYW1lcQB+AAR4cAAAAAZ0ADxvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkZvcmNlTm9EZWZDbGFzc0ZvdW5kRXJyb3J0AB5Gb3JjZU5vRGVmQ2xhc3NGb3VuZEVycm9yLmphdmF0AARtYWlueA==";
+        final byte[] binaryDecoded = Base64Converter.parseBase64Binary(runtimeExceptionThrownAtUnloadableClass_base64);
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binaryDecoded);
         final ObjectInputStream in = new ObjectInputStream(inArr);
         final Throwable throwable = (Throwable) in.readObject();

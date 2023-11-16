@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AbstractAppenderBuilderTest {
 
@@ -28,7 +28,10 @@ public class AbstractAppenderBuilderTest {
     public void testDefaultLayoutLeak() {
         final int expected = AbstractManager.getManagerCount();
         final Configuration configuration = new DefaultConfiguration();
-        final ConsoleAppender appender = ConsoleAppender.newBuilder().setConfiguration(configuration).setName("test").build();
+        final ConsoleAppender appender = ConsoleAppender.newBuilder()
+                .setConfiguration(configuration)
+                .setName("test")
+                .build();
         configuration.addAppender(appender);
         configuration.start();
         configuration.stop();

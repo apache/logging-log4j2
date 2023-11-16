@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * This class is borrowed from <a href="https://github.com/FasterXML/jackson-core">Jackson</a>.
@@ -26,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JsonUtilsTest {
 
     @Test
-    public void testQuoteCharSequenceAsString() throws Exception
-    {
+    public void testQuoteCharSequenceAsString() throws Exception {
         final StringBuilder output = new StringBuilder();
         final StringBuilder builder = new StringBuilder();
         builder.append("foobar");
@@ -42,8 +41,7 @@ public class JsonUtilsTest {
 
     // For [JACKSON-853]
     @Test
-    public void testQuoteLongCharSequenceAsString() throws Exception
-    {
+    public void testQuoteLongCharSequenceAsString() throws Exception {
         final StringBuilder output = new StringBuilder();
         final StringBuilder input = new StringBuilder();
         final StringBuilder sb2 = new StringBuilder();
@@ -53,21 +51,18 @@ public class JsonUtilsTest {
         }
         final String exp = sb2.toString();
         JsonUtils.quoteAsString(input, output);
-        assertEquals(2*input.length(), output.length());
+        assertEquals(2 * input.length(), output.length());
         assertEquals(exp, output.toString());
-
     }
 
     // [JACKSON-884]
     @Test
-    public void testCharSequenceWithCtrlChars() throws Exception
-    {
-        final char[] input = new char[] { 0, 1, 2, 3, 4 };
+    public void testCharSequenceWithCtrlChars() throws Exception {
+        final char[] input = new char[] {0, 1, 2, 3, 4};
         final StringBuilder builder = new StringBuilder();
         builder.append(input);
         final StringBuilder output = new StringBuilder();
         JsonUtils.quoteAsString(builder, output);
         assertEquals("\\u0000\\u0001\\u0002\\u0003\\u0004", output.toString());
     }
-
 }

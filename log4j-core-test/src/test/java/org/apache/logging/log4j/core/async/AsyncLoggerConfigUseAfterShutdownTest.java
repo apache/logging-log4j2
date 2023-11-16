@@ -45,5 +45,5 @@ public class AsyncLoggerConfigUseAfterShutdownTest {
         // call the #logMessage() method to bypass the isEnabled check:
         // before the LOG4J2-639 fix this would throw a NPE
         ((AbstractLogger) log).logMessage("com.foo.Bar", Level.INFO, null, new SimpleMessage("msg"), null);
-   }
+    }
 }

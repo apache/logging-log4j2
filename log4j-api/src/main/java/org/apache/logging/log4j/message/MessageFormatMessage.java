@@ -23,7 +23,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -143,7 +142,6 @@ public class MessageFormatMessage implements Message {
         result = HASHVAL * result + (serializedParameters != null ? Arrays.hashCode(serializedParameters) : 0);
         return result;
     }
-
 
     @Override
     public String toString() {

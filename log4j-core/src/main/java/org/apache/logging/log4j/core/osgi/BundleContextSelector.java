@@ -21,7 +21,6 @@ import java.net.URI;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
@@ -40,8 +39,8 @@ import org.osgi.framework.FrameworkUtil;
 public class BundleContextSelector extends ClassLoaderContextSelector {
 
     @Override
-    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                         final boolean allContexts) {
+    public void shutdown(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
         LoggerContext ctx = null;
         Bundle bundle = null;
         if (currentContext) {
@@ -78,6 +77,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
             }
         }
     }
+
     private LoggerContext getLoggerContext(final Bundle bundle) {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
         final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
@@ -103,11 +103,13 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         if (callerClass != null) {
             return hasContext(FrameworkUtil.getBundle(callerClass));
         }
-        return ContextAnchor.THREAD_CONTEXT.get() != null && ContextAnchor.THREAD_CONTEXT.get().isStarted();
+        return ContextAnchor.THREAD_CONTEXT.get() != null
+                && ContextAnchor.THREAD_CONTEXT.get().isStarted();
     }
+
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    final URI configLocation) {
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
         if (currentContext) {
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             if (ctx != null) {
@@ -115,7 +117,8 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
             }
             return getDefault();
         }
-        // it's quite possible that the provided ClassLoader may implement BundleReference which gives us a nice shortcut
+        // it's quite possible that the provided ClassLoader may implement BundleReference which gives us a nice
+        // shortcut
         if (loader instanceof BundleReference) {
             return locateContext(((BundleReference) loader).getBundle(), configLocation);
         }
@@ -130,7 +133,10 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
     private static boolean hasContext(final Bundle bundle) {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
         final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
-        return ref != null && ref.get() != null && ref.get().get() != null && ref.get().get().isStarted();
+        return ref != null
+                && ref.get() != null
+                && ref.get().get() != null
+                && ref.get().get().isStarted();
     }
 
     private static LoggerContext locateContext(final Bundle bundle, final URI configLocation) {
@@ -138,8 +144,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
         if (ref == null) {
             final LoggerContext context = new LoggerContext(name, bundle, configLocation);
-            CONTEXT_MAP.putIfAbsent(name,
-                new AtomicReference<>(new WeakReference<>(context)));
+            CONTEXT_MAP.putIfAbsent(name, new AtomicReference<>(new WeakReference<>(context)));
             return CONTEXT_MAP.get(name).get().get();
         }
         final WeakReference<LoggerContext> r = ref.get();
@@ -154,8 +159,10 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
             LOGGER.debug("Setting bundle ({}) configuration to {}", name, configLocation);
             ctx.setConfigLocation(configLocation);
         } else if (oldConfigLocation != null && configLocation != null && !configLocation.equals(oldConfigLocation)) {
-            LOGGER.warn("locateContext called with URI [{}], but existing LoggerContext has URI [{}]",
-                configLocation, oldConfigLocation);
+            LOGGER.warn(
+                    "locateContext called with URI [{}], but existing LoggerContext has URI [{}]",
+                    configLocation,
+                    oldConfigLocation);
         }
         return ctx;
     }

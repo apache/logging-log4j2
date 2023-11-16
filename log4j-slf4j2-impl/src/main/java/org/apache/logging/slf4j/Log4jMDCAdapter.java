@@ -21,7 +21,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -121,7 +120,8 @@ public class Log4jMDCAdapter implements MDCAdapter {
         private final ThreadLocal<Map<String, Deque<String>>> tlMapOfStacks = ThreadLocal.withInitial(HashMap::new);
 
         public void pushByKey(final String key, final String value) {
-            tlMapOfStacks.get()
+            tlMapOfStacks
+                    .get()
                     .computeIfAbsent(key, ignored -> new ArrayDeque<>())
                     .push(value);
         }

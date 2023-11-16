@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StringMapMessage;
@@ -31,8 +32,6 @@ import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertEquals;
 
 public class RoutingAppender3350Test {
     private static final String CONFIG = "log4j-routing3350.xml";
@@ -56,8 +55,8 @@ public class RoutingAppender3350Test {
         logger.error(message);
         final File file = new File(LOG_FILE);
         try (final InputStream inputStream = new FileInputStream(file);
-             final InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-             final BufferedReader reader = new BufferedReader(streamReader)) {
+                final InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                final BufferedReader reader = new BufferedReader(streamReader)) {
             final String actual = reader.readLine();
             assertEquals(expected, actual);
         }

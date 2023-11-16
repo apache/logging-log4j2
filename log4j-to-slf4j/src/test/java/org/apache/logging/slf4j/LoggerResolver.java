@@ -30,50 +30,55 @@ import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ModifierSupport;
 import org.junit.platform.commons.support.ReflectionSupport;
 
-public class LoggerResolver extends TypeBasedParameterResolver<Logger> implements BeforeAllCallback, BeforeEachCallback {
+public class LoggerResolver extends TypeBasedParameterResolver<Logger>
+        implements BeforeAllCallback, BeforeEachCallback {
 
     private static final Object KEY = LoggerContextHolder.class;
 
     @Override
-    public Logger resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext).getLogger();
+    public Logger resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+            throws ParameterResolutionException {
+        return ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext)
+                .getLogger();
     }
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
-        final LoggerContextHolder holder = ExtensionContextAnchor.getAttribute(KEY,
-                LoggerContextHolder.class,
-                extensionContext);
+        final LoggerContextHolder holder =
+                ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext);
         if (holder != null) {
-            ReflectionSupport.findFields(extensionContext.getRequiredTestClass(),
-                    f -> ModifierSupport.isStatic(f) && f.getType().equals(Logger.class),
-                    HierarchyTraversalMode.TOP_DOWN).forEach(f -> {
-                try {
-                    f.setAccessible(true);
-                    f.set(null, holder.getLogger());
-                } catch (ReflectiveOperationException e) {
-                    throw new ExtensionContextException("Failed to inject field " + f, e);
-                }
-            });
+            ReflectionSupport.findFields(
+                            extensionContext.getRequiredTestClass(),
+                            f -> ModifierSupport.isStatic(f) && f.getType().equals(Logger.class),
+                            HierarchyTraversalMode.TOP_DOWN)
+                    .forEach(f -> {
+                        try {
+                            f.setAccessible(true);
+                            f.set(null, holder.getLogger());
+                        } catch (ReflectiveOperationException e) {
+                            throw new ExtensionContextException("Failed to inject field " + f, e);
+                        }
+                    });
         }
     }
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
-        final LoggerContextHolder holder = ExtensionContextAnchor.getAttribute(KEY,
-                LoggerContextHolder.class,
-                extensionContext);
+        final LoggerContextHolder holder =
+                ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext);
         if (holder != null) {
-            ReflectionSupport.findFields(extensionContext.getRequiredTestClass(),
-                    f -> ModifierSupport.isNotStatic(f) && f.getType().equals(Logger.class),
-                    HierarchyTraversalMode.TOP_DOWN).forEach(f -> {
-                try {
-                    f.setAccessible(true);
-                    f.set(extensionContext.getRequiredTestInstance(), holder.getLogger());
-                } catch (ReflectiveOperationException e) {
-                    throw new ExtensionContextException("Failed to inject field " + f, e);
-                }
-            });
+            ReflectionSupport.findFields(
+                            extensionContext.getRequiredTestClass(),
+                            f -> ModifierSupport.isNotStatic(f) && f.getType().equals(Logger.class),
+                            HierarchyTraversalMode.TOP_DOWN)
+                    .forEach(f -> {
+                        try {
+                            f.setAccessible(true);
+                            f.set(extensionContext.getRequiredTestInstance(), holder.getLogger());
+                        } catch (ReflectiveOperationException e) {
+                            throw new ExtensionContextException("Failed to inject field " + f, e);
+                        }
+                    });
         }
     }
 }

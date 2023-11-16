@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;

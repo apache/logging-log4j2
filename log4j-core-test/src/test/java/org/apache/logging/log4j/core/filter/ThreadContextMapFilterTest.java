@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreadContextMapFilterTest {
 
@@ -30,8 +30,8 @@ public class ThreadContextMapFilterTest {
     public void testFilter() {
         ThreadContext.put("userid", "testuser");
         ThreadContext.put("organization", "Apache");
-        final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("userid", "JohnDoe"),
-                                                    new KeyValuePair("organization", "Apache")};
+        final KeyValuePair[] pairs =
+                new KeyValuePair[] {new KeyValuePair("userid", "JohnDoe"), new KeyValuePair("organization", "Apache")};
         ThreadContextMapFilter filter = ThreadContextMapFilter.createFilter(pairs, "and", null, null);
         assertNotNull(filter);
         filter.start();

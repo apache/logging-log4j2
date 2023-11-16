@@ -20,19 +20,17 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
-
 /**
  * Formats a logger name.
  */
 @Plugin(name = "LoggerPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "c", "logger" })
+@ConverterKeys({"c", "logger"})
 @PerformanceSensitive("allocation")
 public final class LoggerPatternConverter extends NamePatternConverter {
     /**
      * Singleton.
      */
-    private static final LoggerPatternConverter INSTANCE =
-        new LoggerPatternConverter(null);
+    private static final LoggerPatternConverter INSTANCE = new LoggerPatternConverter(null);
 
     /**
      * Private constructor.
@@ -49,8 +47,7 @@ public final class LoggerPatternConverter extends NamePatternConverter {
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static LoggerPatternConverter newInstance(
-        final String[] options) {
+    public static LoggerPatternConverter newInstance(final String[] options) {
         if (options == null || options.length == 0) {
             return INSTANCE;
         }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -36,22 +35,26 @@ public class AsyncLoggerContext extends LoggerContext {
 
     public AsyncLoggerContext(final String name) {
         super(name);
-        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
+        loggerDisruptor =
+                new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext) {
         super(name, externalContext);
-        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
+        loggerDisruptor =
+                new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn) {
         super(name, externalContext, configLocn);
-        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
+        loggerDisruptor =
+                new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext, final String configLocn) {
         super(name, externalContext, configLocn);
-        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
+        loggerDisruptor =
+                new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     @Override

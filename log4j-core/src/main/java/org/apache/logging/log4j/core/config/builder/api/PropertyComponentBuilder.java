@@ -20,6 +20,4 @@ package org.apache.logging.log4j.core.config.builder.api;
  * Assembler for constructing Property Components.
  * @since 2.9
  */
-public interface PropertyComponentBuilder extends ComponentBuilder<PropertyComponentBuilder> {
-
-}
+public interface PropertyComponentBuilder extends ComponentBuilder<PropertyComponentBuilder> {}

@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Objects;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * PrintWriter-based logging utility for classes too low level to use {@link org.apache.logging.log4j.status.StatusLogger}.
@@ -54,8 +53,7 @@ final class LowLevelLogUtil {
 
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "Log4j prints stacktraces only to logs, which should be private."
-    )
+            justification = "Log4j prints stacktraces only to logs, which should be private.")
     public static void logException(final Throwable exception) {
         if (exception != null) {
             exception.printStackTrace(writer);
@@ -91,6 +89,5 @@ final class LowLevelLogUtil {
         LowLevelLogUtil.writer = new PrintWriter(Objects.requireNonNull(writer), true);
     }
 
-    private LowLevelLogUtil() {
-    }
+    private LowLevelLogUtil() {}
 }

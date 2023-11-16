@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,9 +28,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.sql.DataSource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,11 +44,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 /**
  * Unit tests {@link MapMessage}s for JdbcAppender using a {@link DataSource} configuration.
  */
@@ -53,11 +51,13 @@ public class JdbcAppenderMapMessageDataSourceTest extends AbstractJdbcDataSource
 
     @Rule
     public final RuleChain rules;
+
     private final JdbcRule jdbcRule;
 
     public JdbcAppenderMapMessageDataSourceTest() {
-        this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
-        // @formatter:off
+        this(new JdbcRule(
+                JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
+                // @formatter:off
                 "CREATE TABLE dsLogEntry (Id INTEGER, ColumnA VARCHAR(255), ColumnB VARCHAR(255))",
                 "DROP TABLE IF EXISTS dsLogEntry"));
         // @formatter:on
@@ -68,7 +68,8 @@ public class JdbcAppenderMapMessageDataSourceTest extends AbstractJdbcDataSource
         this.rules = RuleChain.emptyRuleChain()
                 .around(new JndiRule("java:/comp/env/jdbc/TestDataSourceAppender", createMockDataSource()))
                 .around(jdbcRule)
-                .around(new LoggerContextRule("org/apache/logging/log4j/core/appender/db/jdbc/log4j2-data-source-map-message.xml"));
+                .around(new LoggerContextRule(
+                        "org/apache/logging/log4j/core/appender/db/jdbc/log4j2-data-source-map-message.xml"));
         // @formatter:on
         this.jdbcRule = jdbcRule;
     }
@@ -86,7 +87,8 @@ public class JdbcAppenderMapMessageDataSourceTest extends AbstractJdbcDataSource
     private DataSource createMockDataSource() {
         try {
             final DataSource dataSource = mock(DataSource.class);
-            given(dataSource.getConnection()).willAnswer(invocation -> jdbcRule.getConnectionSource().getConnection());
+            given(dataSource.getConnection())
+                    .willAnswer(invocation -> jdbcRule.getConnectionSource().getConnection());
             return dataSource;
         } catch (final SQLException e) {
             Throwables.rethrow(e);
@@ -111,8 +113,8 @@ public class JdbcAppenderMapMessageDataSourceTest extends AbstractJdbcDataSource
             logger.info(mapMessage);
 
             try (final Statement statement = connection.createStatement();
-                    final ResultSet resultSet = statement
-                            .executeQuery("SELECT Id, ColumnA, ColumnB FROM dsLogEntry ORDER BY Id")) {
+                    final ResultSet resultSet =
+                            statement.executeQuery("SELECT Id, ColumnA, ColumnB FROM dsLogEntry ORDER BY Id")) {
 
                 assertTrue("There should be at least one row.", resultSet.next());
 
@@ -135,8 +137,8 @@ public class JdbcAppenderMapMessageDataSourceTest extends AbstractJdbcDataSource
             mapMessage.with("ColumnB", StringUtils.repeat('B', 1000));
             logger.info(mapMessage);
             try (final Statement statement = connection.createStatement();
-                    final ResultSet resultSet = statement
-                            .executeQuery("SELECT Id, ColumnA, ColumnB FROM dsLogEntry ORDER BY Id")) {
+                    final ResultSet resultSet =
+                            statement.executeQuery("SELECT Id, ColumnA, ColumnB FROM dsLogEntry ORDER BY Id")) {
 
                 assertTrue("There should be at least one row.", resultSet.next());
 

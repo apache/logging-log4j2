@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config.arbiters;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -26,12 +25,17 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 /**
  * Class Description goes here.
  */
-@Plugin(name = "Select", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE, deferChildren = true,
+@Plugin(
+        name = "Select",
+        category = Node.CATEGORY,
+        elementType = Arbiter.ELEMENT_TYPE,
+        deferChildren = true,
         printObject = true)
 public class SelectArbiter {
 
     public Arbiter evaluateConditions(final List<Arbiter> conditions) {
-        final Optional<Arbiter> opt = conditions.stream().filter((c) -> c instanceof DefaultArbiter)
+        final Optional<Arbiter> opt = conditions.stream()
+                .filter((c) -> c instanceof DefaultArbiter)
                 .reduce((a, b) -> {
                     throw new IllegalStateException("Multiple elements: " + a + ", " + b);
                 });

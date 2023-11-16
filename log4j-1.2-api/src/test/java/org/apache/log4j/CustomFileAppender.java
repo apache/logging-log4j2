@@ -45,5 +45,4 @@ public class CustomFileAppender extends FileAppender {
     public void setStringA(final String stringA) {
         this.stringA = stringA;
     }
-
 }

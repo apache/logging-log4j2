@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -75,8 +74,13 @@ public final class SmtpAppender extends AbstractAppender {
     /** The SMTP Manager */
     private final MailManager manager;
 
-    private SmtpAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final MailManager manager, final boolean ignoreExceptions, final Property[] properties) {
+    private SmtpAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final MailManager manager,
+            final boolean ignoreExceptions,
+            final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
@@ -279,10 +283,25 @@ public final class SmtpAppender extends AbstractAppender {
                     .setConfiguration(getConfiguration())
                     .setPattern(subject)
                     .build();
-            final FactoryData data = new FactoryData(to, cc, bcc, from, replyTo, subject, subjectSerializer,
-                    smtpProtocol, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpDebug, bufferSize,
-                    sslConfiguration, getFilter().toString());
-            final MailManagerFactory factory = ServiceLoaderUtil.loadServices(MailManagerFactory.class, MethodHandles.lookup())
+            final FactoryData data = new FactoryData(
+                    to,
+                    cc,
+                    bcc,
+                    from,
+                    replyTo,
+                    subject,
+                    subjectSerializer,
+                    smtpProtocol,
+                    smtpHost,
+                    smtpPort,
+                    smtpUsername,
+                    smtpPassword,
+                    smtpDebug,
+                    bufferSize,
+                    sslConfiguration,
+                    getFilter().toString());
+            final MailManagerFactory factory = ServiceLoaderUtil.loadServices(
+                            MailManagerFactory.class, MethodHandles.lookup())
                     .findAny()
                     .orElseGet(() -> SmtpManager.FACTORY);
             final MailManager smtpManager = AbstractManager.getManager(data.getManagerName(), factory, data);
@@ -291,7 +310,8 @@ public final class SmtpAppender extends AbstractAppender {
                 return null;
             }
 
-            return new SmtpAppender(getName(), getFilter(), getLayout(), smtpManager, isIgnoreExceptions(), getPropertyArray());
+            return new SmtpAppender(
+                    getName(), getFilter(), getLayout(), smtpManager, isIgnoreExceptions(), getPropertyArray());
         }
     }
 

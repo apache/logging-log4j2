@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.json;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -25,10 +28,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -47,7 +46,7 @@ import org.apache.logging.log4j.core.util.Patterns;
  */
 public class JsonConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
+    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
     private final List<Status> status = new ArrayList<>();
     private JsonNode root;
 
@@ -67,10 +66,12 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 }
             }
             processAttributes(rootNode, root);
-            final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
+            final StatusConfiguration statusConfig = new StatusConfiguration()
+                    .withVerboseClasses(VERBOSE_CLASSES)
                     .withStatus(getDefaultStatus());
             int monitorIntervalSeconds = 0;
-            for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
+            for (final Map.Entry<String, String> entry :
+                    rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();
                 final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
                 // TODO: this duplicates a lot of the XmlConfiguration constructor
@@ -169,7 +170,8 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                         } else {
                             LOGGER.debug("Processing {} {}[{}]", pluginType, entry.getKey(), i);
                         }
-                        final Iterator<Map.Entry<String, JsonNode>> itemIter = n.get(i).fields();
+                        final Iterator<Map.Entry<String, JsonNode>> itemIter =
+                                n.get(i).fields();
                         final List<Node> itemChildren = item.getChildren();
                         while (itemIter.hasNext()) {
                             final Map.Entry<String, JsonNode> itemEntry = itemIter.next();
@@ -184,7 +186,6 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                                     itemChildren.add(constructNode(entryName, item, array.get(j)));
                                 }
                             }
-
                         }
                         children.add(item);
                     }
@@ -204,8 +205,11 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             t = type.getElementName() + ':' + type.getPluginClass();
         }
 
-        final String p = node.getParent() == null ? "null"
-                : node.getParent().getName() == null ? LoggerConfig.ROOT : node.getParent().getName();
+        final String p = node.getParent() == null
+                ? "null"
+                : node.getParent().getName() == null
+                        ? LoggerConfig.ROOT
+                        : node.getParent().getName();
         LOGGER.debug("Returning {} with parent {} of type {}", node.getName(), p, t);
         return node;
     }

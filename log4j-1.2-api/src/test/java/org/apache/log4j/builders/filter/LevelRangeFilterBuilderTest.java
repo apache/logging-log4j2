@@ -16,12 +16,12 @@
  */
 package org.apache.log4j.builders.filter;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.StringReader;
 import java.util.Properties;
 import java.util.stream.Stream;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.spi.Filter;
 import org.apache.logging.log4j.Level;
@@ -34,8 +34,6 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class LevelRangeFilterBuilderTest {
 
@@ -147,8 +145,7 @@ public class LevelRangeFilterBuilderTest {
         public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) {
             return Stream.of(
                     Arguments.of(new TestLevelRangeFilterFromXmlBuilder()),
-                    Arguments.of(new TestLevelRangeFilterFromPropertyBuilder())
-            );
+                    Arguments.of(new TestLevelRangeFilterFromPropertyBuilder()));
         }
     }
 
@@ -160,14 +157,16 @@ public class LevelRangeFilterBuilderTest {
     private static class TestLevelRangeFilterFromXmlBuilder implements TestLevelRangeFilterBuilder {
 
         @Override
-        public LevelRangeFilter build(final Level levelMin, final Level levelMax, final Boolean acceptOnMatch) throws Exception {
+        public LevelRangeFilter build(final Level levelMin, final Level levelMax, final Boolean acceptOnMatch)
+                throws Exception {
             final LevelRangeFilterBuilder builder = new LevelRangeFilterBuilder();
             final Filter filter = builder.parse(generateTestXml(levelMin, levelMax, acceptOnMatch), null);
             final org.apache.logging.log4j.core.Filter wrappedFilter = ((FilterWrapper) filter).getFilter();
             return (LevelRangeFilter) wrappedFilter;
         }
 
-        private static Element generateTestXml(final Level levelMin, final Level levelMax, final Boolean acceptOnMatch) throws Exception {
+        private static Element generateTestXml(final Level levelMin, final Level levelMax, final Boolean acceptOnMatch)
+                throws Exception {
 
             final StringBuilder sb = new StringBuilder();
             sb.append("<filter class=\"org.apache.log4j.varia.LevelRangeFilter\">\n");
@@ -182,7 +181,8 @@ public class LevelRangeFilterBuilderTest {
             }
             sb.append("</filter>");
 
-            return DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            return DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder()
                     .parse(new InputSource(new StringReader(sb.toString())))
                     .getDocumentElement();
         }

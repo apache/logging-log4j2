@@ -28,8 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Holder<V> {
     private V value;
 
-    public Holder() {
-    }
+    public Holder() {}
 
     public Holder(final V defaultValue) {
         this.value = defaultValue;

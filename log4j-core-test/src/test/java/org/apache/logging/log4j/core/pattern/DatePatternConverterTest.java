@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.Assert.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
@@ -24,7 +26,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
@@ -36,8 +37,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class DatePatternConverterTest {
@@ -74,23 +73,25 @@ public class DatePatternConverterTest {
     /**
      * ISO8601_OFFSET_DATE_TIME_XX string literal.
      */
-    private static final String ISO8601_OFFSET_DATE_TIME_HHMM = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHMM.name();
+    private static final String ISO8601_OFFSET_DATE_TIME_HHMM =
+            FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHMM.name();
 
     /**
      * ISO8601_OFFSET_DATE_TIME_XXX string literal.
      */
-    private static final String ISO8601_OFFSET_DATE_TIME_HHCMM = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM.name();
+    private static final String ISO8601_OFFSET_DATE_TIME_HHCMM =
+            FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM.name();
 
-    private static final String[] ISO8601_FORMAT_OPTIONS = { ISO8601 };
+    private static final String[] ISO8601_FORMAT_OPTIONS = {ISO8601};
 
     @Parameterized.Parameters(name = "threadLocalEnabled={0}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{{Boolean.TRUE}, {Boolean.FALSE}});
+        return Arrays.asList(new Object[][] {{Boolean.TRUE}, {Boolean.FALSE}});
     }
 
     public DatePatternConverterTest(final Boolean threadLocalEnabled) throws Exception {
         // Setting the system property does not work: the Constant field has already been initialized...
-        //System.setProperty("log4j2.enable.threadlocals", threadLocalEnabled.toString());
+        // System.setProperty("log4j2.enable.threadlocals", threadLocalEnabled.toString());
 
         final Field field = Constants.class.getDeclaredField("ENABLE_THREADLOCALS");
         field.setAccessible(true); // make non-private
@@ -134,12 +135,14 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatDateStringBuilderIso8601BasicWithPeriod() {
-        assertDatePattern(FixedDateFormat.FixedFormat.ISO8601_BASIC_PERIOD.name(), date(2001, 1, 1), "20010201T141516.123");
+        assertDatePattern(
+                FixedDateFormat.FixedFormat.ISO8601_BASIC_PERIOD.name(), date(2001, 1, 1), "20010201T141516.123");
     }
 
     @Test
     public void testFormatDateStringBuilderIso8601WithPeriod() {
-        assertDatePattern(FixedDateFormat.FixedFormat.ISO8601_PERIOD.name(), date(2001, 1, 1), "2001-02-01T14:15:16.123");
+        assertDatePattern(
+                FixedDateFormat.FixedFormat.ISO8601_PERIOD.name(), date(2001, 1, 1), "2001-02-01T14:15:16.123");
     }
 
     @Test
@@ -197,7 +200,7 @@ public class DatePatternConverterTest {
     }
 
     private static void assertDatePattern(final String format, final Date date, final String expected) {
-        final DatePatternConverter converter = DatePatternConverter.newInstance(new String[]{format});
+        final DatePatternConverter converter = DatePatternConverter.newInstance(new String[] {format});
         final StringBuilder sb = new StringBuilder();
         converter.format(date, sb);
 
@@ -207,7 +210,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneJST() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = { ISO8601, "JST" };
+        final String[] optionsWithTimezone = {ISO8601, "JST"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
@@ -225,7 +228,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneOffsetHHCMM() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_HHCMM };
+        final String[] optionsWithTimezone = {ISO8601_OFFSET_DATE_TIME_HHCMM};
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
@@ -239,7 +242,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneOffsetHHMM() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_HHMM };
+        final String[] optionsWithTimezone = {ISO8601_OFFSET_DATE_TIME_HHMM};
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
@@ -269,7 +272,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneZ() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = { ISO8601, "Z" };
+        final String[] optionsWithTimezone = {ISO8601, "Z"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
@@ -315,7 +318,9 @@ public class DatePatternConverterTest {
 
     @Test
     public void testGetPatternReturnsDefaultForEmptyOptionsArray() {
-        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(Strings.EMPTY_ARRAY).getPattern());
+        assertEquals(
+                DEFAULT_PATTERN,
+                DatePatternConverter.newInstance(Strings.EMPTY_ARRAY).getPattern());
     }
 
     @Test
@@ -331,12 +336,14 @@ public class DatePatternConverterTest {
 
     @Test
     public void testGetPatternReturnsDefaultForSingleNullElementOptionsArray() {
-        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[1]).getPattern());
+        assertEquals(
+                DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[1]).getPattern());
     }
 
     @Test
     public void testGetPatternReturnsDefaultForTwoNullElementsOptionsArray() {
-        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[2]).getPattern());
+        assertEquals(
+                DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[2]).getPattern());
     }
 
     @Test
@@ -378,10 +385,10 @@ public class DatePatternConverterTest {
                 final String remainder = pattern.substring(foundIndex + search.length());
                 precisePattern = subPattern + "nnnnnnnnn" + "n" + remainder; // nanos too long
             }
-            preciseConverter = DatePatternConverter.newInstance(new String[] { precisePattern });
+            preciseConverter = DatePatternConverter.newInstance(new String[] {precisePattern});
             preciseConverter.format(event, preciseBuilder);
 
-            final String[] milliOptions = { pattern };
+            final String[] milliOptions = {pattern};
             DatePatternConverter.newInstance(milliOptions).format(event, milliBuilder);
             final FixedTimeZoneFormat timeZoneFormat = format.getFixedTimeZoneFormat();
             final int truncateLen = 3 + (timeZoneFormat != null ? timeZoneFormat.getLength() : 0);
@@ -394,8 +401,10 @@ public class DatePatternConverterTest {
             }
             final String expected = milliBuilder.append(tz).toString();
 
-            assertEquals("format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern,
-                    expected, preciseBuilder.toString());
+            assertEquals(
+                    "format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern,
+                    expected,
+                    preciseBuilder.toString());
             // System.out.println(preciseOptions[0] + ": " + precise);
         }
     }
@@ -412,11 +421,13 @@ public class DatePatternConverterTest {
         final StringBuilder milliBuilder = new StringBuilder();
         final LogEvent event = new MyLogEvent();
 
-        for (final String timeZone : new String[]{"PST", null}) { // Pacific Standard Time=UTC-8:00
+        for (final String timeZone : new String[] {"PST", null}) { // Pacific Standard Time=UTC-8:00
             for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
                 for (int i = 1; i <= 9; i++) {
                     final String pattern = format.getPattern();
-                    if (pattern.endsWith("n") || pattern.matches(".+n+X*") || pattern.matches(".+n+Z*")
+                    if (pattern.endsWith("n")
+                            || pattern.matches(".+n+X*")
+                            || pattern.matches(".+n+Z*")
                             || pattern.indexOf("SSS") < 0) {
                         // ignore patterns that already have precise time formats
                         // ignore patterns that do not use seconds.
@@ -426,24 +437,28 @@ public class DatePatternConverterTest {
                     milliBuilder.setLength(0);
 
                     final String precisePattern = precisePattern(pattern, i);
-                    final String[] preciseOptions = { precisePattern, timeZone };
+                    final String[] preciseOptions = {precisePattern, timeZone};
                     final DatePatternConverter preciseConverter = DatePatternConverter.newInstance(preciseOptions);
                     preciseConverter.format(event, preciseBuilder);
 
-                    final String[] milliOptions = { pattern, timeZone };
+                    final String[] milliOptions = {pattern, timeZone};
                     DatePatternConverter.newInstance(milliOptions).format(event, milliBuilder);
                     final FixedTimeZoneFormat timeZoneFormat = format.getFixedTimeZoneFormat();
                     final int truncateLen = 3 + (timeZoneFormat != null ? timeZoneFormat.getLength() : 0);
                     final String tz = timeZoneFormat != null
-                            ? milliBuilder.substring(milliBuilder.length() - timeZoneFormat.getLength(),
-                                    milliBuilder.length())
+                            ? milliBuilder.substring(
+                                    milliBuilder.length() - timeZoneFormat.getLength(), milliBuilder.length())
                             : Strings.EMPTY;
                     milliBuilder.setLength(milliBuilder.length() - truncateLen); // truncate millis
-                    final String expected = milliBuilder.append("987123456".substring(0, i)).append(tz).toString();
+                    final String expected = milliBuilder
+                            .append("987123456".substring(0, i))
+                            .append(tz)
+                            .toString();
 
                     assertEquals(
                             "format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern,
-                            expected, preciseBuilder.toString());
+                            expected,
+                            preciseBuilder.toString());
                     // System.out.println(preciseOptions[0] + ": " + precise);
                 }
             }
@@ -467,5 +482,4 @@ public class DatePatternConverterTest {
             assertEquals(format.getPattern(), converter.getPattern());
         }
     }
-
 }

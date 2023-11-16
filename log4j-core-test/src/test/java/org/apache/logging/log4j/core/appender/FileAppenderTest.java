@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -43,11 +47,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link FileAppender}.
@@ -65,7 +64,7 @@ public class FileAppenderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = { false, true })
+    @ValueSource(booleans = {false, true})
     public void testAppender(final boolean createOnDemand) throws Exception {
         final int logEventCount = 1;
         writer(false, logEventCount, "test", createOnDemand, false);
@@ -73,19 +72,20 @@ public class FileAppenderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = { false, true })
+    @ValueSource(booleans = {false, true})
     public void testLazyCreate(final boolean createOnDemand) throws Exception {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-        .withFileName(FILE_NAME).setName("test")
-            .withImmediateFlush(false)
-            .setIgnoreExceptions(false)
-            .withBufferedIo(false)
-            .withBufferSize(1)
-            .setLayout(layout)
-            .withCreateOnDemand(createOnDemand)
-            .build();
+                .withFileName(FILE_NAME)
+                .setName("test")
+                .withImmediateFlush(false)
+                .setIgnoreExceptions(false)
+                .withBufferedIo(false)
+                .withBufferSize(1)
+                .setLayout(layout)
+                .withCreateOnDemand(createOnDemand)
+                .build();
         // @formatter:on
         assertEquals(createOnDemand, appender.getManager().isCreateOnDemand());
         try {
@@ -99,25 +99,26 @@ public class FileAppenderTest {
     }
 
     private static PatternLayout createPatternLayout() {
-        return PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+        return PatternLayout.newBuilder()
+                .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = { false, true })
+    @ValueSource(booleans = {false, true})
     public void testSmallestBufferSize(final boolean createOnDemand) throws Exception {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(FILE_NAME)
-            .setName("test")
-            .withImmediateFlush(false)
-            .setIgnoreExceptions(false)
-            .withBufferedIo(false)
-            .withBufferSize(1)
-            .setLayout(layout)
-            .withCreateOnDemand(createOnDemand)
-            .build();
+                .withFileName(FILE_NAME)
+                .setName("test")
+                .withImmediateFlush(false)
+                .setIgnoreExceptions(false)
+                .withBufferedIo(false)
+                .withBufferSize(1)
+                .setLayout(layout)
+                .withCreateOnDemand(createOnDemand)
+                .build();
         // @formatter:on
         try {
             appender.start();
@@ -130,13 +131,13 @@ public class FileAppenderTest {
             for (int i = 0; i < 100; ++i) {
                 // @formatter:off
                 final LogEvent event = Log4jLogEvent.newBuilder()
-                    .setLoggerName("TestLogger")
-                    .setLoggerFqcn(FileAppenderTest.class.getName())
-                    .setLevel(Level.INFO)
-                    .setMessage(new SimpleMessage("Test"))
-                    .setThreadName(this.getClass().getSimpleName())
-                    .setTimeMillis(System.currentTimeMillis())
-                    .build();
+                        .setLoggerName("TestLogger")
+                        .setLoggerFqcn(FileAppenderTest.class.getName())
+                        .setLevel(Level.INFO)
+                        .setMessage(new SimpleMessage("Test"))
+                        .setThreadName(this.getClass().getSimpleName())
+                        .setTimeMillis(System.currentTimeMillis())
+                        .build();
                 // @formatter:on
                 appender.append(event);
                 curLen = file.length();
@@ -152,7 +153,7 @@ public class FileAppenderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = { false, true })
+    @ValueSource(booleans = {false, true})
     public void testLockingAppender(final boolean createOnDemand) throws Exception {
         final int logEventCount = 1;
         writer(true, logEventCount, "test", createOnDemand, false);
@@ -160,12 +161,13 @@ public class FileAppenderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = { false, true })
+    @ValueSource(booleans = {false, true})
     public void testMultipleAppenderThreads(final boolean createOnDemand) throws Exception {
         testMultipleLockingAppenderThreads(false, THREADS, createOnDemand);
     }
 
-    private void testMultipleLockingAppenderThreads(final boolean lock, final int threadCount, final boolean createOnDemand)
+    private void testMultipleLockingAppenderThreads(
+            final boolean lock, final int threadCount, final boolean createOnDemand)
             throws InterruptedException, Exception {
         final ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
         final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
@@ -190,13 +192,13 @@ public class FileAppenderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = { false, true })
+    @ValueSource(booleans = {false, true})
     public void testMultipleLockingAppenders(final boolean createOnDemand) throws Exception {
         testMultipleLockingAppenderThreads(true, THREADS, createOnDemand);
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = { false, true })
+    @ValueSource(booleans = {false, true})
     @Disabled
     public void testMultipleVMs(final boolean createOnDemand) throws Exception {
         final String classPath = System.getProperty("java.class.path");
@@ -205,8 +207,15 @@ public class FileAppenderTest {
         final Process[] processes = new Process[processCount];
         final ProcessBuilder[] builders = new ProcessBuilder[processCount];
         for (int index = 0; index < processCount; ++index) {
-            builders[index] = new ProcessBuilder("java", "-cp", classPath, ProcessTest.class.getName(),
-                    "Process " + index, Integer.toString(logEventCount), "true", Boolean.toString(createOnDemand));
+            builders[index] = new ProcessBuilder(
+                    "java",
+                    "-cp",
+                    classPath,
+                    ProcessTest.class.getName(),
+                    "Process " + index,
+                    Integer.toString(logEventCount),
+                    "true",
+                    Boolean.toString(createOnDemand));
         }
         for (int index = 0; index < processCount; ++index) {
             processes[index] = builders[index].start();
@@ -225,28 +234,33 @@ public class FileAppenderTest {
         verifyFile(logEventCount * processCount);
     }
 
-    private static void writer(final boolean locking, final int logEventCount, final String name, final boolean createOnDemand,
-            final boolean concurrent) throws Exception {
+    private static void writer(
+            final boolean locking,
+            final int logEventCount,
+            final String name,
+            final boolean createOnDemand,
+            final boolean concurrent)
+            throws Exception {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(FILE_NAME)
-            .setName("test")
-            .withImmediateFlush(false)
-            .setIgnoreExceptions(false)
-            .withLocking(locking)
-            .withBufferedIo(false)
-            .setLayout(layout)
-            .withCreateOnDemand(createOnDemand)
-            .build();
+                .withFileName(FILE_NAME)
+                .setName("test")
+                .withImmediateFlush(false)
+                .setIgnoreExceptions(false)
+                .withLocking(locking)
+                .withBufferedIo(false)
+                .setLayout(layout)
+                .withCreateOnDemand(createOnDemand)
+                .build();
         // @formatter:on
         assertEquals(createOnDemand, appender.getManager().isCreateOnDemand());
         try {
             appender.start();
             assertTrue(appender.isStarted(), "Appender did not start");
             final boolean exists = Files.exists(PATH);
-            final String msg = String.format("concurrent = %s, createOnDemand = %s, file exists = %s", concurrent, createOnDemand,
-                    exists);
+            final String msg = String.format(
+                    "concurrent = %s, createOnDemand = %s, file exists = %s", concurrent, createOnDemand, exists);
             // If concurrent the file might have been created (or not.)
             // Can't really test createOnDemand && concurrent.
             final boolean expectFileCreated = !createOnDemand;
@@ -267,7 +281,8 @@ public class FileAppenderTest {
                         .build();
                 // @formatter:on
                 appender.append(logEvent);
-                Thread.sleep(25); // Give up control long enough for another thread/process to occasionally do something.
+                Thread.sleep(
+                        25); // Give up control long enough for another thread/process to occasionally do something.
             }
         } finally {
             appender.stop();
@@ -277,7 +292,8 @@ public class FileAppenderTest {
 
     private void verifyFile(final int count) throws Exception {
         // String expected = "[\\w]* \\[\\s*\\] INFO TestLogger - Test$";
-        final String expected = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} \\[[^\\]]*\\] INFO TestLogger - Test";
+        final String expected =
+                "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} \\[[^\\]]*\\] INFO TestLogger - Test";
         final Pattern pattern = Pattern.compile(expected);
         int lines = 0;
         try (final BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(FILE_NAME)))) {
@@ -300,7 +316,10 @@ public class FileAppenderTest {
         private final AtomicReference<Throwable> throwableRef;
 
         public FileWriterRunnable(
-                final boolean createOnDemand, final boolean lock, final int logEventCount, final AtomicReference<Throwable> throwableRef) {
+                final boolean createOnDemand,
+                final boolean lock,
+                final int logEventCount,
+                final AtomicReference<Throwable> throwableRef) {
             this.createOnDemand = createOnDemand;
             this.lock = lock;
             this.logEventCount = logEventCount;
@@ -348,7 +367,6 @@ public class FileAppenderTest {
             } catch (final Exception e) {
                 Throwables.rethrow(e);
             }
-
         }
     }
 }

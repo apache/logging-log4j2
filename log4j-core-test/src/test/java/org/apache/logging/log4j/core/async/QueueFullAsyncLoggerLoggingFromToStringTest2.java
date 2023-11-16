@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Disabled;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
@@ -31,7 +30,8 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest2 extends QueueFullAsync
 
     @Override
     @Disabled("Causes deadlocks")
-    public void testLoggingFromToStringCausesOutOfOrderMessages(LoggerContext ctx, BlockingAppender blockingAppender) throws Exception {
+    public void testLoggingFromToStringCausesOutOfOrderMessages(LoggerContext ctx, BlockingAppender blockingAppender)
+            throws Exception {
         super.testLoggingFromToStringCausesOutOfOrderMessages(ctx, blockingAppender);
     }
 

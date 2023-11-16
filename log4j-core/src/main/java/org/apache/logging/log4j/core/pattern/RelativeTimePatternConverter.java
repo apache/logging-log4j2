@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.lang.management.ManagementFactory;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -26,7 +25,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Returns the relative time in milliseconds since JVM Startup.
  */
 @Plugin(name = "RelativeTimePatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "r", "relative" })
+@ConverterKeys({"r", "relative"})
 @PerformanceSensitive("allocation")
 public class RelativeTimePatternConverter extends LogEventPatternConverter {
     private final long startTime = ManagementFactory.getRuntimeMXBean().getStartTime();

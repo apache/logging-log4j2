@@ -87,5 +87,4 @@ public class FormattingInfoTest extends TestCase {
         field.format(2, buf);
         assertEquals("fobar", buf.toString());
     }
-
 }

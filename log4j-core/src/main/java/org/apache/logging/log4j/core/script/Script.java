@@ -42,7 +42,7 @@ public class Script extends AbstractScript {
             @PluginAttribute("name") final String name,
             @PluginAttribute(ATTR_LANGUAGE) String language,
             @PluginValue(ATTR_SCRIPT_TEXT) final String scriptText) {
-            // @formatter:on
+        // @formatter:on
         if (language == null) {
             LOGGER.error("No '{}' attribute provided for {} plugin '{}'", ATTR_LANGUAGE, PLUGIN_NAME, name);
             language = DEFAULT_LANGUAGE;
@@ -52,7 +52,6 @@ public class Script extends AbstractScript {
             return null;
         }
         return new Script(name, language, scriptText);
-
     }
 
     @Override

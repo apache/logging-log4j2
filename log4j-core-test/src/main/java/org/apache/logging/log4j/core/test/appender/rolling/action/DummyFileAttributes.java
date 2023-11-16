@@ -34,8 +34,7 @@ public class DummyFileAttributes implements BasicFileAttributes {
     public long size;
     public Object fileKey;
 
-    public DummyFileAttributes() {
-    }
+    public DummyFileAttributes() {}
 
     @Override
     public FileTime lastModifiedTime() {
@@ -81,5 +80,4 @@ public class DummyFileAttributes implements BasicFileAttributes {
     public Object fileKey() {
         return fileKey;
     }
-
 }

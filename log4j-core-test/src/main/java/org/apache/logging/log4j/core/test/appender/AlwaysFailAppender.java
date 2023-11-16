@@ -43,8 +43,8 @@ public class AlwaysFailAppender extends AbstractAppender {
 
     @PluginFactory
     public static AlwaysFailAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name) {
+            @PluginAttribute("name") @Required(message = "A name for the Appender must be specified")
+                    final String name) {
         return new AlwaysFailAppender(name);
     }
-
 }

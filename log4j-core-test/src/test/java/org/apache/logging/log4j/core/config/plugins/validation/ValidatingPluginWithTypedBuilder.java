@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.plugins.validation;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -42,7 +41,7 @@ public class ValidatingPluginWithTypedBuilder {
 
     @PluginFactory
     public static ValidatingPluginWithTypedBuilder newValidatingPlugin(
-        @Required(message = "The name given by the factory is null") final String name) {
+            @Required(message = "The name given by the factory is null") final String name) {
         return new ValidatingPluginWithTypedBuilder(name);
     }
 
@@ -51,7 +50,8 @@ public class ValidatingPluginWithTypedBuilder {
         return new Builder<>();
     }
 
-    public static class Builder<T> implements org.apache.logging.log4j.core.util.Builder<ValidatingPluginWithTypedBuilder> {
+    public static class Builder<T>
+            implements org.apache.logging.log4j.core.util.Builder<ValidatingPluginWithTypedBuilder> {
 
         @PluginBuilderAttribute
         @Required(message = "The name given by the builder is null")

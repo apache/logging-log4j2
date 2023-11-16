@@ -21,5 +21,4 @@ public interface Recycler<V> {
     V acquire();
 
     void release(V value);
-
 }

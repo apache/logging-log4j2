@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(Appenders.Jpa.class)
 public class InstantAttributeConverterTest {

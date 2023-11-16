@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core;
 
 import java.io.Serializable;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 

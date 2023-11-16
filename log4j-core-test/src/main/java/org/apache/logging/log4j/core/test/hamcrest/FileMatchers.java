@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.test.hamcrest;
 
-import java.io.File;
-
-import org.hamcrest.FeatureMatcher;
-import org.hamcrest.Matcher;
-
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.number.OrderingComparison.greaterThan;
 import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
+
+import java.io.File;
+import org.hamcrest.FeatureMatcher;
+import org.hamcrest.Matcher;
 
 /**
  * Hamcrest Matchers that operate on File objects.
@@ -123,8 +122,8 @@ public final class FileMatchers {
      * @return the Matcher.
      */
     public static Matcher<File> hasNumberOfFiles(final Matcher<Integer> matcher) {
-        return new FeatureMatcher<File, Integer>(matcher, "directory with number of files",
-            "directory with number of files") {
+        return new FeatureMatcher<File, Integer>(
+                matcher, "directory with number of files", "directory with number of files") {
             @Override
             protected Integer featureValueOf(final File actual) {
                 final File[] files = actual.listFiles();
@@ -157,7 +156,5 @@ public final class FileMatchers {
         };
     }
 
-    private FileMatchers() {
-    }
-
+    private FileMatchers() {}
 }

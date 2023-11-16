@@ -22,7 +22,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -41,5 +40,4 @@ import org.junitpioneer.jupiter.ReadsSystemProperty;
 @ExtendWith(ThreadContextMapExtension.class)
 @ReadsSystemProperty
 @ResourceLock(value = Resources.THREAD_CONTEXT, mode = ResourceAccessMode.READ)
-public @interface UsingThreadContextMap {
-}
+public @interface UsingThreadContextMap {}

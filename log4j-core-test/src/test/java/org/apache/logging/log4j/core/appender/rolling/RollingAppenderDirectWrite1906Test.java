@@ -16,12 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -34,15 +42,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 /**
  *
  */
@@ -52,7 +51,8 @@ public class RollingAppenderDirectWrite1906Test {
 
     private static final String DIR = "target/rolling-direct-1906";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -72,7 +72,7 @@ public class RollingAppenderDirectWrite1906Test {
     @Test
     public void testAppender() throws Exception {
         final int count = 100;
-        for (int i=0; i < count; ++i) {
+        for (int i = 0; i < count; ++i) {
             logger.debug("This is test message number " + i);
             Thread.sleep(50);
         }
@@ -83,7 +83,7 @@ public class RollingAppenderDirectWrite1906Test {
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
         int found = 0;
-        for (final File file: files) {
+        for (final File file : files) {
             final String actual = file.getName();
             final BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
@@ -98,7 +98,6 @@ public class RollingAppenderDirectWrite1906Test {
             reader.close();
         }
         assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
-
     }
 
     private String logFileNameError(final String expected, final String actual) {
@@ -108,15 +107,16 @@ public class RollingAppenderDirectWrite1906Test {
             sb.append(statusItem.getFormattedStatus());
             sb.append("\n");
         }
-        sb.append("Incorrect file name. Expected: ").append(expected).append(" Actual: ").append(actual);
+        sb.append("Incorrect file name. Expected: ")
+                .append(expected)
+                .append(" Actual: ")
+                .append(actual);
         return sb.toString();
     }
 
     private static class NoopStatusListener implements StatusListener {
         @Override
-        public void log(final StatusData data) {
-
-        }
+        public void log(final StatusData data) {}
 
         @Override
         public Level getStatusLevel() {
@@ -124,8 +124,6 @@ public class RollingAppenderDirectWrite1906Test {
         }
 
         @Override
-        public void close() throws IOException {
-
-        }
+        public void close() throws IOException {}
     }
 }

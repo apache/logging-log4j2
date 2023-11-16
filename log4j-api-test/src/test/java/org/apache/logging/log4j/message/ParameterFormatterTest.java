@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests {@link ParameterFormatter}.
@@ -36,19 +35,19 @@ public class ParameterFormatterTest {
 
     @ParameterizedTest
     @CsvSource({
-            "0,,false,",
-            "0,,false,aaa",
-            "0,,true,\\{}",
-            "1,0,false,{}",
-            "1,0,true,{}\\{}",
-            "1,2,true,\\\\{}",
-            "2,8:10,true,foo \\{} {}{}",
-            "2,8:10,true,foo {\\} {}{}",
-            "2,0:2,false,{}{}",
-            "3,0:2:4,false,{}{}{}",
-            "4,0:2:4:8,false,{}{}{}aa{}",
-            "4,0:2:4:10,false,{}{}{}a{]b{}",
-            "5,0:2:4:7:10,false,{}{}{}a{}b{}"
+        "0,,false,",
+        "0,,false,aaa",
+        "0,,true,\\{}",
+        "1,0,false,{}",
+        "1,0,true,{}\\{}",
+        "1,2,true,\\\\{}",
+        "2,8:10,true,foo \\{} {}{}",
+        "2,8:10,true,foo {\\} {}{}",
+        "2,0:2,false,{}{}",
+        "3,0:2:4,false,{}{}{}",
+        "4,0:2:4:8,false,{}{}{}aa{}",
+        "4,0:2:4:10,false,{}{}{}a{]b{}",
+        "5,0:2:4:7:10,false,{}{}{}a{}b{}"
     })
     public void test_pattern_analysis(
             final int placeholderCount,
@@ -58,8 +57,7 @@ public class ParameterFormatterTest {
         MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern, placeholderCount);
         assertThat(analysis.placeholderCount).isEqualTo(placeholderCount);
         if (placeholderCount > 0) {
-            final int[] placeholderCharIndices = Arrays
-                    .stream(placeholderCharIndicesString.split(":"))
+            final int[] placeholderCharIndices = Arrays.stream(placeholderCharIndicesString.split(":"))
                     .mapToInt(Integer::parseInt)
                     .toArray();
             assertThat(analysis.placeholderCharIndices).startsWith(placeholderCharIndices);
@@ -70,10 +68,7 @@ public class ParameterFormatterTest {
     @ParameterizedTest
     @MethodSource("messageFormattingTestCases")
     void assertMessageFormatting(
-            final String pattern,
-            final Object[] args,
-            final int argCount,
-            final String expectedFormattedMessage) {
+            final String pattern, final Object[] args, final int argCount, final String expectedFormattedMessage) {
         MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern, -1);
         final StringBuilder buffer = new StringBuilder();
         ParameterFormatter.formatMessage(buffer, pattern, args, argCount, analysis);
@@ -82,109 +77,44 @@ public class ParameterFormatterTest {
     }
 
     static Object[][] messageFormattingTestCases() {
-        return new Object[][]{
-                new Object[]{
-                        "Test message {}{} {}",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message ab c"
-                },
-                new Object[]{
-                        "Test message {} {} {} {} {} {}",
-                        new Object[]{"a", null, "c", null, null, null},
-                        6,
-                        "Test message a null c null null null"
-                },
-                new Object[]{
-                        "Test message {}{} {}",
-                        new Object[]{"a", "b", "c", "unnecessary", "superfluous"},
-                        5,
-                        "Test message ab c"
-                },
-                new Object[]{
-                        "Test message \\{}{} {}",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message {}a b"
-                },
-                new Object[]{
-                        "Test message {}{} {}\\",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message ab c\\"
-                },
-                new Object[]{
-                        "Test message {}{} {}\\\\",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message ab c\\"
-                },
-                new Object[]{
-                        "Test message \\\\{}{} {}",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message \\ab c"
-                },
-                new Object[]{
-                        "Test message {}{} {}",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message ab c"
-                },
-                new Object[]{
-                        "Test message {} {} {} {} {} {}",
-                        new Object[]{"a", null, "c", null, null, null},
-                        6,
-                        "Test message a null c null null null"
-                },
-                new Object[]{
-                        "Test message {}{} {}",
-                        new Object[]{"a", "b", "c", "unnecessary", "superfluous"},
-                        5,
-                        "Test message ab c"
-                },
-                new Object[]{
-                        "Test message \\{}{} {}",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message {}a b"
-                },
-                new Object[]{
-                        "Test message {}{} {}\\",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message ab c\\"
-                },
-                new Object[]{
-                        "Test message {}{} {}\\\\",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message ab c\\"
-                },
-                new Object[]{
-                        "Test message \\\\{}{} {}",
-                        new Object[]{"a", "b", "c"},
-                        3,
-                        "Test message \\ab c"
-                },
-                new Object[]{
-                        "foo \\\\\\{} {}",
-                        new Object[]{"bar"},
-                        1,
-                        "foo \\{} bar"
-                },
-                new Object[]{
-                        "missing arg {} {}",
-                        new Object[]{1, 2},
-                        1,
-                        "missing arg 1 {}"
-                },
-                new Object[]{
-                        "foo {\\} {}",
-                        new Object[]{"bar"},
-                        1,
-                        "foo {\\} bar"
-                }
+        return new Object[][] {
+            new Object[] {"Test message {}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message ab c"},
+            new Object[] {
+                "Test message {} {} {} {} {} {}",
+                new Object[] {"a", null, "c", null, null, null},
+                6,
+                "Test message a null c null null null"
+            },
+            new Object[] {
+                "Test message {}{} {}",
+                new Object[] {"a", "b", "c", "unnecessary", "superfluous"},
+                5,
+                "Test message ab c"
+            },
+            new Object[] {"Test message \\{}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message {}a b"},
+            new Object[] {"Test message {}{} {}\\", new Object[] {"a", "b", "c"}, 3, "Test message ab c\\"},
+            new Object[] {"Test message {}{} {}\\\\", new Object[] {"a", "b", "c"}, 3, "Test message ab c\\"},
+            new Object[] {"Test message \\\\{}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message \\ab c"},
+            new Object[] {"Test message {}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message ab c"},
+            new Object[] {
+                "Test message {} {} {} {} {} {}",
+                new Object[] {"a", null, "c", null, null, null},
+                6,
+                "Test message a null c null null null"
+            },
+            new Object[] {
+                "Test message {}{} {}",
+                new Object[] {"a", "b", "c", "unnecessary", "superfluous"},
+                5,
+                "Test message ab c"
+            },
+            new Object[] {"Test message \\{}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message {}a b"},
+            new Object[] {"Test message {}{} {}\\", new Object[] {"a", "b", "c"}, 3, "Test message ab c\\"},
+            new Object[] {"Test message {}{} {}\\\\", new Object[] {"a", "b", "c"}, 3, "Test message ab c\\"},
+            new Object[] {"Test message \\\\{}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message \\ab c"},
+            new Object[] {"foo \\\\\\{} {}", new Object[] {"bar"}, 1, "foo \\{} bar"},
+            new Object[] {"missing arg {} {}", new Object[] {1, 2}, 1, "missing arg 1 {}"},
+            new Object[] {"foo {\\} {}", new Object[] {"bar"}, 1, "foo {\\} bar"}
         };
     }
 
@@ -225,5 +155,4 @@ public class ParameterFormatterTest {
         final String expected = list.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(list));
         assertThat(actual).isEqualTo(expected);
     }
-
 }

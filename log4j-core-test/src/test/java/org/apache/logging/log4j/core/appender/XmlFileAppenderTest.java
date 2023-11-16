@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -30,8 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
@@ -40,8 +39,7 @@ public class XmlFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "XmlFileAppenderTest.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "XmlFileAppenderTest.xml");
     }
 
     @Test
@@ -58,7 +56,7 @@ public class XmlFileAppenderTest {
         file.delete();
 
         final String[] expect = {
-                "", // ? unsure why initial empty line...
+            "", // ? unsure why initial empty line...
             "<Event ", //
             "<Instant epochSecond=", //
             logMsg, //
@@ -66,7 +64,8 @@ public class XmlFileAppenderTest {
         };
 
         for (int i = 0; i < expect.length; i++) {
-            assertTrue("Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i),
+            assertTrue(
+                    "Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i),
                     lines.get(i).contains(expect[i]));
         }
 

@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -70,7 +69,7 @@ public class FileAppenderBenchmark {
         log4j2AsyncAppender = LogManager.getLogger("AsyncAppender");
         log4j2AsyncDisruptor = LogManager.getLogger("AsyncDisruptorAppender");
         log4j2AsyncLogger = LogManager.getLogger("AsyncLogger");
-        //log4j2MemoryLogger = LogManager.getLogger("MemoryMapped");
+        // log4j2MemoryLogger = LogManager.getLogger("MemoryMapped");
         log4j2RandomLogger = LogManager.getLogger("TestRandom");
         slf4jLogger = LoggerFactory.getLogger(FileAppenderBenchmark.class);
         slf4jAsyncLogger = LoggerFactory.getLogger("Async");
@@ -95,13 +94,13 @@ public class FileAppenderBenchmark {
     private void deleteLogFiles() {
         final File logbackFile = new File("target/testlogback.log");
         logbackFile.delete();
-        final File log4jFile = new File ("target/testlog4j.log");
+        final File log4jFile = new File("target/testlog4j.log");
         log4jFile.delete();
-        final File log4jRandomFile = new File ("target/testRandomlog4j2.log");
+        final File log4jRandomFile = new File("target/testRandomlog4j2.log");
         log4jRandomFile.delete();
-        final File log4jMemoryFile = new File ("target/testMappedlog4j2.log");
+        final File log4jMemoryFile = new File("target/testMappedlog4j2.log");
         log4jMemoryFile.delete();
-        final File log4j2File = new File ("target/testlog4j2.log");
+        final File log4j2File = new File("target/testlog4j2.log");
         log4j2File.delete();
         final File julFile = new File("target/testJulLog.log");
         julFile.delete();

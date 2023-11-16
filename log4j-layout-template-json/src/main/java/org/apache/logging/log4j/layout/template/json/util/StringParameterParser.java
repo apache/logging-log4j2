@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
 import org.apache.logging.log4j.util.Strings;
 
 public final class StringParameterParser {
@@ -41,11 +40,9 @@ public final class StringParameterParser {
             return new StringValue(string);
         }
 
-        static DoubleQuotedStringValue doubleQuotedStringValue(
-                final String doubleQuotedString) {
+        static DoubleQuotedStringValue doubleQuotedStringValue(final String doubleQuotedString) {
             return new DoubleQuotedStringValue(doubleQuotedString);
         }
-
     }
 
     public interface Value {}
@@ -60,7 +57,6 @@ public final class StringParameterParser {
         public String toString() {
             return "null";
         }
-
     }
 
     public static final class StringValue implements Value {
@@ -96,7 +92,6 @@ public final class StringParameterParser {
         public String toString() {
             return string;
         }
-
     }
 
     public static final class DoubleQuotedStringValue implements Value {
@@ -132,10 +127,12 @@ public final class StringParameterParser {
         public String toString() {
             return doubleQuotedString.replaceAll("\\\\\"", "\"");
         }
-
     }
 
-    private enum State { READING_KEY, READING_VALUE }
+    private enum State {
+        READING_KEY,
+        READING_VALUE
+    }
 
     private static final class Parser implements Callable<Map<String, Value>> {
 
@@ -207,15 +204,11 @@ public final class StringParameterParser {
             }
             key = input.substring(i, j).trim();
             if (Strings.isEmpty(key)) {
-                final String message = String.format(
-                        "failed to locate key at index %d: %s",
-                        i, input);
+                final String message = String.format("failed to locate key at index %d: %s", i, input);
                 throw new IllegalArgumentException(message);
             }
             if (map.containsKey(key)) {
-                final String message = String.format(
-                        "conflicting key at index %d: %s",
-                        i, input);
+                final String message = String.format("conflicting key at index %d: %s", i, input);
                 throw new IllegalArgumentException(message);
             }
             state = State.READING_VALUE;
@@ -244,22 +237,17 @@ public final class StringParameterParser {
             }
             if (j >= input.length()) {
                 final String message = String.format(
-                        "failed to locate the end of double-quoted content starting at index %d: %s",
-                        i, input);
+                        "failed to locate the end of double-quoted content starting at index %d: %s", i, input);
                 throw new IllegalArgumentException(message);
             }
-            final String content = input
-                    .substring(i + 1, j)
-                    .replaceAll("\\\\\"", "\"");
+            final String content = input.substring(i + 1, j).replaceAll("\\\\\"", "\"");
             final Value value = Values.doubleQuotedStringValue(content);
             map.put(key, value);
             i = j + 1;
             skipWhitespace();
             if (i < input.length()) {
                 if (input.charAt(i) != ',') {
-                    final String message = String.format(
-                            "was expecting comma at index %d: %s",
-                            i, input);
+                    final String message = String.format("was expecting comma at index %d: %s", i, input);
                     throw new IllegalArgumentException(message);
                 }
                 i++;
@@ -278,28 +266,23 @@ public final class StringParameterParser {
         }
 
         private void readStringValue() {
-            int j = input.indexOf(',', i/* + 1*/);
+            int j = input.indexOf(',', i /* + 1*/);
             if (j < 0) {
                 j = input.length();
             }
             final String content = input.substring(i, j);
             final String trimmedContent = content.trim();
-            final Value value = trimmedContent.isEmpty()
-                    ? Values.nullValue()
-                    : Values.stringValue(trimmedContent);
+            final Value value = trimmedContent.isEmpty() ? Values.nullValue() : Values.stringValue(trimmedContent);
             map.put(key, value);
             i += content.length() + 1;
         }
-
     }
 
     public static Map<String, Value> parse(final String input) {
         return parse(input, null);
     }
 
-    public static Map<String, Value> parse(
-            final String input,
-            final Set<String> allowedKeys) {
+    public static Map<String, Value> parse(final String input, final Set<String> allowedKeys) {
         if (Strings.isBlank(input)) {
             return Collections.emptyMap();
         }
@@ -308,13 +291,10 @@ public final class StringParameterParser {
         for (final String actualKey : actualKeys) {
             final boolean allowed = allowedKeys == null || allowedKeys.contains(actualKey);
             if (!allowed) {
-                final String message = String.format(
-                        "unknown key \"%s\" is found in input: %s",
-                        actualKey, input);
+                final String message = String.format("unknown key \"%s\" is found in input: %s", actualKey, input);
                 throw new IllegalArgumentException(message);
             }
         }
         return map;
     }
-
 }

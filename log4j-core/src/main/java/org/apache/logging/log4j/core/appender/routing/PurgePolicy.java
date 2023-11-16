@@ -41,5 +41,4 @@ public interface PurgePolicy {
      * @param routingAppender the routed appender for purging
      */
     void initialize(RoutingAppender routingAppender);
-
 }

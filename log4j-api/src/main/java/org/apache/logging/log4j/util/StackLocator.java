@@ -106,8 +106,7 @@ public final class StackLocator {
         return INSTANCE;
     }
 
-    private StackLocator() {
-    }
+    private StackLocator() {}
 
     // TODO: return Object.class instead of null (though it will have a null ClassLoader)
     // (MS) I believe this would work without any modifications elsewhere, but I could be wrong

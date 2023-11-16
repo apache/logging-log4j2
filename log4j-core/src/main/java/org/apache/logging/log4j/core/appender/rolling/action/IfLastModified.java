@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -100,9 +99,9 @@ public final class IfLastModified implements PathCondition {
     @PluginFactory
     public static IfLastModified createAgeCondition(
             // @formatter:off
-            @PluginAttribute("age") @Required(message="No age provided for IfLastModified") final Duration age,
+            @PluginAttribute("age") @Required(message = "No age provided for IfLastModified") final Duration age,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
-            // @formatter:on
+        // @formatter:on
         return new IfLastModified(age, nestedConditions);
     }
 

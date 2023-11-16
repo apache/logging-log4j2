@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -32,16 +35,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the ResolverUtil class.
@@ -60,11 +59,8 @@ public class ResolverUtilTest {
                         "file:/C:/Users/me/workspace/log4j2/log4j-core/target/test-classes/log4j2-config.xml",
                         "/C:/Users/me/workspace/log4j2/log4j-core/target/test-classes/log4j2-config.xml"),
                 Arguments.of(
-                        "file:///path+with+plus/file+does+not+exist.xml",
-                        "/path with plus/file does not exist.xml"),
-                Arguments.of(
-                        "http://java.sun.com/index.html#chapter1",
-                        "/index.html"),
+                        "file:///path+with+plus/file+does+not+exist.xml", "/path with plus/file does not exist.xml"),
+                Arguments.of("http://java.sun.com/index.html#chapter1", "/index.html"),
                 Arguments.of(
                         "http://www.server.com/path+with+plus/file+name+with+plus.jar!/org/junit/Test.class",
                         "/path with plus/file name with plus.jar"),
@@ -76,8 +72,7 @@ public class ResolverUtilTest {
                         "/mydirectory/myfile.txt"),
                 Arguments.of(
                         "ftp://user001:secretpassword@private.ftp-servers.example.com/my+directory/my+file.txt",
-                        "/my directory/my file.txt")
-                );
+                        "/my directory/my file.txt"));
     }
 
     @ParameterizedTest
@@ -151,14 +146,13 @@ public class ResolverUtilTest {
         compile(tmpDir, suffix);
         final File jarFile = new File(tmpDir, "customplugin" + suffix + ".jar");
         final URI jarURI = jarFile.toURI();
-        createJar(jarURI, tmpDir, new File(tmpDir,
-              "customplugin" + suffix + "/FixedString" + suffix + "Layout.class"));
+        createJar(jarURI, tmpDir, new File(tmpDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.class"));
         return URLClassLoader.newInstance(new URL[] {jarURI.toURL()});
     }
 
     static URLClassLoader compileAndCreateClassLoader(final File tmpDir, final String suffix) throws Exception {
         compile(tmpDir, suffix);
-        return URLClassLoader.newInstance(new URL[] { tmpDir.toURI().toURL() });
+        return URLClassLoader.newInstance(new URL[] {tmpDir.toURI().toURL()});
     }
 
     static void compile(final File tmpDir, final String suffix) throws Exception {
@@ -172,8 +166,8 @@ public class ResolverUtilTest {
         }
 
         final String content = new String(Files.readAllBytes(orig.toPath()))
-          .replaceAll("FixedString", "FixedString" + suffix)
-          .replaceAll("customplugin", "customplugin" + suffix);
+                .replaceAll("FixedString", "FixedString" + suffix)
+                .replaceAll("customplugin", "customplugin" + suffix);
         Files.write(f.toPath(), content.getBytes());
 
         PluginManagerPackagesTest.compile(f);
@@ -184,14 +178,12 @@ public class ResolverUtilTest {
         env.put("create", "true");
         final URI uri = URI.create("jar:file://" + jarURI.getRawPath());
         try (final FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {
-            final Path path = zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
+            final Path path =
+                    zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
             if (path.getParent() != null) {
                 Files.createDirectories(path.getParent());
             }
-            Files.copy(f.toPath(),
-                   path,
-                   StandardCopyOption.REPLACE_EXISTING );
+            Files.copy(f.toPath(), path, StandardCopyOption.REPLACE_EXISTING);
         }
     }
-
 }

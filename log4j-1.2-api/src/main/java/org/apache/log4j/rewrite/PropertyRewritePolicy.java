@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-
 import org.apache.log4j.bridge.LogEventAdapter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
@@ -42,8 +41,7 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 public class PropertyRewritePolicy implements RewritePolicy {
     private Map<String, String> properties = Collections.EMPTY_MAP;
 
-    public PropertyRewritePolicy() {
-    }
+    public PropertyRewritePolicy() {}
 
     /**
      * Set a string representing the property name/value pairs.
@@ -61,7 +59,9 @@ public class PropertyRewritePolicy implements RewritePolicy {
         final StringTokenizer pairs = new StringTokenizer(properties, ",");
         while (pairs.hasMoreTokens()) {
             final StringTokenizer entry = new StringTokenizer(pairs.nextToken(), "=");
-            newMap.put(entry.nextElement().toString().trim(), entry.nextElement().toString().trim());
+            newMap.put(
+                    entry.nextElement().toString().trim(),
+                    entry.nextElement().toString().trim());
         }
         synchronized (this) {
             this.properties = newMap;
@@ -74,8 +74,8 @@ public class PropertyRewritePolicy implements RewritePolicy {
     @Override
     public LoggingEvent rewrite(final LoggingEvent source) {
         if (!properties.isEmpty()) {
-            final Map<String, String> rewriteProps = source.getProperties() != null ? new HashMap<>(source.getProperties())
-            : new HashMap<>();
+            final Map<String, String> rewriteProps =
+                    source.getProperties() != null ? new HashMap<>(source.getProperties()) : new HashMap<>();
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 if (!rewriteProps.containsKey(entry.getKey())) {
                     rewriteProps.put(entry.getKey(), entry.getValue());
@@ -88,8 +88,11 @@ public class PropertyRewritePolicy implements RewritePolicy {
                         .build();
             } else {
                 final LocationInfo info = source.getLocationInformation();
-                final StackTraceElement element = new StackTraceElement(info.getClassName(), info.getMethodName(),
-                info.getFileName(), Integer.parseInt(info.getLineNumber()));
+                final StackTraceElement element = new StackTraceElement(
+                        info.getClassName(),
+                        info.getMethodName(),
+                        info.getFileName(),
+                        Integer.parseInt(info.getLineNumber()));
                 final Thread thread = getThread(source.getThreadName());
                 final long threadId = thread != null ? thread.getId() : 0;
                 final int threadPriority = thread != null ? thread.getPriority() : 0;

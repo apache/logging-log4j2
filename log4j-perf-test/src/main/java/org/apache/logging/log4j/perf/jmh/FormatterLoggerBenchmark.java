@@ -18,7 +18,6 @@ package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;

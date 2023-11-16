@@ -25,7 +25,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
@@ -101,7 +100,6 @@ public final class SyslogLayout extends AbstractStringLayout {
             this.escapeNL = escapeNL;
             return asBuilder();
         }
-
     }
 
     @PluginBuilderFactory
@@ -128,7 +126,8 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     private final String localHostname = NetUtils.getLocalHostname();
 
-    protected SyslogLayout(final Facility facility, final boolean includeNL, final String escapeNL, final Charset charset) {
+    protected SyslogLayout(
+            final Facility facility, final boolean includeNL, final String escapeNL, final Charset charset) {
         super(charset);
         this.facility = facility;
         this.includeNewLine = includeNL;
@@ -207,8 +206,8 @@ public final class SyslogLayout extends AbstractStringLayout {
      * @deprecated Use {@link #newBuilder()}.
      */
     @Deprecated
-    public static SyslogLayout createLayout(final Facility facility, final boolean includeNewLine,
-                                            final String escapeNL, final Charset charset) {
+    public static SyslogLayout createLayout(
+            final Facility facility, final boolean includeNewLine, final String escapeNL, final Charset charset) {
         return new SyslogLayout(facility, includeNewLine, escapeNL, charset);
     }
 

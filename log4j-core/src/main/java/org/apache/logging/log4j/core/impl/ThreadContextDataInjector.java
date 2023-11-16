@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,10 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
-
-import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -54,7 +53,10 @@ import org.apache.logging.log4j.util.StringMap;
  * @see ContextDataInjectorFactory
  * @since 2.7
  */
-@ServiceConsumer(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
+@ServiceConsumer(
+        value = ContextDataProvider.class,
+        resolution = Resolution.OPTIONAL,
+        cardinality = Cardinality.MULTIPLE)
 public class ThreadContextDataInjector {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -62,8 +64,7 @@ public class ThreadContextDataInjector {
     /**
      * ContextDataProviders loaded via OSGi.
      */
-    public static Collection<ContextDataProvider> contextDataProviders =
-            new ConcurrentLinkedDeque<>();
+    public static Collection<ContextDataProvider> contextDataProviders = new ConcurrentLinkedDeque<>();
 
     private static final List<ContextDataProvider> SERVICE_PROVIDERS = getServiceProviders();
 

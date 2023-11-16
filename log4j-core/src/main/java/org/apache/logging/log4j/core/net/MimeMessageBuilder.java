@@ -17,14 +17,12 @@
 package org.apache.logging.log4j.core.net;
 
 import java.nio.charset.StandardCharsets;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
 import org.apache.logging.log4j.core.util.Builder;
 
 /**
@@ -62,7 +60,7 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
     }
 
     public MimeMessageBuilder setRecipients(final Message.RecipientType recipientType, final String recipients)
-        throws MessagingException {
+            throws MessagingException {
         final InternetAddress[] addresses = parseAddresses(recipients);
 
         if (null != addresses) {

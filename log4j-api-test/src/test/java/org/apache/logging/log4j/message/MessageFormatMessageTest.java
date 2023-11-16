@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.util.Locale;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Locale;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.util.Constants;
 import org.assertj.core.presentation.UnicodeRepresentation;
@@ -25,10 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class MessageFormatMessageTest {
@@ -79,7 +78,8 @@ public class MessageFormatMessageTest {
         final String result = msg.getFormattedMessage();
         final char separator = Constants.JAVA_MAJOR_VERSION < 9 ? SPACE : NB_SPACE;
         final char groupingSeparator = Constants.JAVA_MAJOR_VERSION < 17 ? NB_SPACE : NARROW_NB_SPACE;
-        assertThat(result).withRepresentation(UnicodeRepresentation.UNICODE_REPRESENTATION)
+        assertThat(result)
+                .withRepresentation(UnicodeRepresentation.UNICODE_REPRESENTATION)
                 .isEqualTo("Test message 1%1$c234%1$c567%1$c890,00%2$c€", groupingSeparator, separator);
     }
 

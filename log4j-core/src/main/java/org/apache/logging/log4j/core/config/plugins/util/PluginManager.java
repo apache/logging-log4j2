@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Loads and manages all the plugins.
@@ -127,13 +126,15 @@ public class PluginManager {
      */
     public void collectPlugins(final List<String> packages) {
         if (isNotEmpty(packages) || isNotEmpty(PACKAGES)) {
-            LOGGER.warn("The use of package scanning to locate plugins is deprecated and will be removed in a future release");
+            LOGGER.warn(
+                    "The use of package scanning to locate plugins is deprecated and will be removed in a future release");
         }
         final String categoryLowerCase = toRootLowerCase(category);
         final Map<String, PluginType<?>> newPlugins = new LinkedHashMap<>();
 
         // First, iterate the Log4j2Plugin.dat files found in the main CLASSPATH
-        Map<String, List<PluginType<?>>> builtInPlugins = PluginRegistry.getInstance().loadFromMainClassLoader();
+        Map<String, List<PluginType<?>>> builtInPlugins =
+                PluginRegistry.getInstance().loadFromMainClassLoader();
         if (builtInPlugins.isEmpty()) {
             // If we didn't find any plugins above, someone must have messed with the log4j-core.jar.
             // Search the standard package in the hopes we can find our core plugins.
@@ -142,18 +143,23 @@ public class PluginManager {
         mergeByName(newPlugins, builtInPlugins.get(categoryLowerCase));
 
         // Next, iterate any Log4j2Plugin.dat files from OSGi Bundles
-        for (final Map<String, List<PluginType<?>>> pluginsByCategory : PluginRegistry.getInstance().getPluginsByCategoryByBundleId().values()) {
+        for (final Map<String, List<PluginType<?>>> pluginsByCategory :
+                PluginRegistry.getInstance().getPluginsByCategoryByBundleId().values()) {
             mergeByName(newPlugins, pluginsByCategory.get(categoryLowerCase));
         }
 
         // Next iterate any packages passed to the static addPackage method.
         for (final String pkg : PACKAGES) {
-            mergeByName(newPlugins, PluginRegistry.getInstance().loadFromPackage(pkg).get(categoryLowerCase));
+            mergeByName(
+                    newPlugins,
+                    PluginRegistry.getInstance().loadFromPackage(pkg).get(categoryLowerCase));
         }
         // Finally iterate any packages provided in the configuration (note these can be changed at runtime).
         if (packages != null) {
             for (final String pkg : packages) {
-                mergeByName(newPlugins, PluginRegistry.getInstance().loadFromPackage(pkg).get(categoryLowerCase));
+                mergeByName(
+                        newPlugins,
+                        PluginRegistry.getInstance().loadFromPackage(pkg).get(categoryLowerCase));
             }
         }
 
@@ -172,8 +178,11 @@ public class PluginManager {
             if (existing == null) {
                 newPlugins.put(key, pluginType);
             } else if (!existing.getPluginClass().equals(pluginType.getPluginClass())) {
-                LOGGER.warn("Plugin [{}] is already mapped to {}, ignoring {}",
-                    key, existing.getPluginClass(), pluginType.getPluginClass());
+                LOGGER.warn(
+                        "Plugin [{}] is already mapped to {}, ignoring {}",
+                        key,
+                        existing.getPluginClass(),
+                        pluginType.getPluginClass());
             }
         }
     }

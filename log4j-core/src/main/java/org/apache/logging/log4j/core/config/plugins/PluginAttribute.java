@@ -21,7 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor;
 import org.apache.logging.log4j.util.Strings;
 
@@ -99,5 +98,4 @@ public @interface PluginAttribute {
      * be output as a hashed value.
      */
     boolean sensitive() default false;
-
 }

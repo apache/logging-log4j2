@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitor;
@@ -28,8 +29,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 /**
@@ -54,11 +53,16 @@ public abstract class AbstractPathAction extends AbstractAction {
      * @param pathFilters an array of path filters (if more than one, they all need to accept a path before it is
      *            processed).
      */
-    protected AbstractPathAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth,
-            final PathCondition[] pathFilters, final StrSubstitutor subst) {
+    protected AbstractPathAction(
+            final String basePath,
+            final boolean followSymbolicLinks,
+            final int maxDepth,
+            final PathCondition[] pathFilters,
+            final StrSubstitutor subst) {
         this.basePathString = basePath;
-        this.options = followSymbolicLinks ? EnumSet.of(FileVisitOption.FOLLOW_LINKS)
-                : Collections.<FileVisitOption> emptySet();
+        this.options = followSymbolicLinks
+                ? EnumSet.of(FileVisitOption.FOLLOW_LINKS)
+                : Collections.<FileVisitOption>emptySet();
         this.maxDepth = maxDepth;
         this.pathConditions = Arrays.asList(Arrays.copyOf(pathFilters, pathFilters.length));
         this.subst = subst;
@@ -92,8 +96,8 @@ public abstract class AbstractPathAction extends AbstractAction {
      * @param conditions filters that determine if a file should be processed
      * @return a new {@code FileVisitor<Path>}
      */
-    protected abstract FileVisitor<Path> createFileVisitor(final Path visitorBaseDir,
-            final List<PathCondition> conditions);
+    protected abstract FileVisitor<Path> createFileVisitor(
+            final Path visitorBaseDir, final List<PathCondition> conditions);
 
     /**
      * Returns the base path from where to start scanning for files to delete. Lookups are resolved, so if the
@@ -104,8 +108,7 @@ public abstract class AbstractPathAction extends AbstractAction {
      */
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
-            justification = "The name of the accessed files is based on a configuration value."
-    )
+            justification = "The name of the accessed files is based on a configuration value.")
     public Path getBasePath() {
         return Paths.get(subst.replace(getBasePathString()));
     }

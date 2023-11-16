@@ -21,8 +21,7 @@ import java.util.function.Supplier;
 
 public final class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
-    private static final ThreadLocalRecyclerFactory INSTANCE =
-            new ThreadLocalRecyclerFactory();
+    private static final ThreadLocalRecyclerFactory INSTANCE = new ThreadLocalRecyclerFactory();
 
     private ThreadLocalRecyclerFactory() {}
 
@@ -31,10 +30,7 @@ public final class ThreadLocalRecyclerFactory implements RecyclerFactory {
     }
 
     @Override
-    public <V> Recycler<V> create(
-            final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
+    public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
         return new ThreadLocalRecycler<>(supplier, cleaner);
     }
-
 }

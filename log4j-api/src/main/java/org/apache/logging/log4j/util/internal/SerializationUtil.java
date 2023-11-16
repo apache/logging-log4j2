@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util.internal;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,8 +29,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 
@@ -38,7 +37,8 @@ import org.apache.logging.log4j.util.FilteredObjectInputStream;
  */
 public final class SerializationUtil {
 
-    private static final String DEFAULT_FILTER_CLASS= "org.apache.logging.log4j.util.internal.DefaultObjectInputFilter";
+    private static final String DEFAULT_FILTER_CLASS =
+            "org.apache.logging.log4j.util.internal.DefaultObjectInputFilter";
     private static final Method setObjectInputFilter;
     private static final Method getObjectInputFilter;
     private static final Method newObjectInputFilter;
@@ -81,16 +81,10 @@ public final class SerializationUtil {
             "java.rmi.MarshalledObject",
             "[B",
             // for MessagePatternAnalysis
-            "[I"
-    );
+            "[I");
 
     public static final List<String> REQUIRED_JAVA_PACKAGES = Arrays.asList(
-            "java.lang.",
-            "java.time",
-            "java.util.",
-            "org.apache.logging.log4j.",
-            "[Lorg.apache.logging.log4j."
-    );
+            "java.lang.", "java.time", "java.util.", "org.apache.logging.log4j.", "[Lorg.apache.logging.log4j.");
 
     public static void writeWrappedObject(final Serializable obj, final ObjectOutputStream out) throws IOException {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -103,9 +97,9 @@ public final class SerializationUtil {
 
     @SuppressFBWarnings(
             value = "OBJECT_DESERIALIZATION",
-            justification = "Object deserialization uses either Java 9 native filter or our custom filter to limit the kinds of classes deserialized.")
-    public static Object readWrappedObject(final ObjectInputStream in)
-            throws IOException, ClassNotFoundException {
+            justification =
+                    "Object deserialization uses either Java 9 native filter or our custom filter to limit the kinds of classes deserialized.")
+    public static Object readWrappedObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         assertFiltered(in);
         final byte[] data = (byte[]) in.readObject();
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
@@ -134,7 +128,8 @@ public final class SerializationUtil {
 
     public static void assertFiltered(final java.io.ObjectInputStream stream) {
         if (!(stream instanceof FilteredObjectInputStream) && setObjectInputFilter == null) {
-            throw new IllegalArgumentException("readObject requires a FilteredObjectInputStream or an ObjectInputStream that accepts an ObjectInputFilter");
+            throw new IllegalArgumentException(
+                    "readObject requires a FilteredObjectInputStream or an ObjectInputStream that accepts an ObjectInputFilter");
         }
     }
 

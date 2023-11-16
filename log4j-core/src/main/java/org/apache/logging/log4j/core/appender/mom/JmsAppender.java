@@ -19,9 +19,7 @@ package org.apache.logging.log4j.core.appender.mom;
 import java.io.Serializable;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import javax.jms.JMSException;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -43,7 +41,7 @@ import org.apache.logging.log4j.core.net.JndiManager;
  * configurations set up for the 2.0 version of the JMS appenders will still work.
  */
 @Plugin(name = "JMS", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
-@PluginAliases({ "JMSQueue", "JMSTopic" })
+@PluginAliases({"JMSQueue", "JMSTopic"})
 public class JmsAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
@@ -71,7 +69,7 @@ public class JmsAppender extends AbstractAppender {
         private String factoryBindingName;
 
         @PluginBuilderAttribute
-        @PluginAliases({ "queueBindingName", "topicBindingName" })
+        @PluginAliases({"queueBindingName", "topicBindingName"})
         @Required(message = "A javax.jms.Destination JNDI name must be specified")
         private String destinationBindingName;
 
@@ -90,8 +88,7 @@ public class JmsAppender extends AbstractAppender {
         // Programmatic access only for now.
         private JmsManager jmsManager;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         @SuppressWarnings("resource") // actualJmsManager and jndiManager are managed by the JmsAppender
         @Override
@@ -99,10 +96,16 @@ public class JmsAppender extends AbstractAppender {
             JmsManager actualJmsManager = jmsManager;
             JmsManagerConfiguration configuration = null;
             if (actualJmsManager == null) {
-                final Properties jndiProperties = JndiManager.createProperties(factoryName, providerUrl, urlPkgPrefixes,
-                        securityPrincipalName, securityCredentials, null);
-                configuration = new JmsManagerConfiguration(jndiProperties, factoryBindingName, destinationBindingName,
-                        userName, password, false, reconnectIntervalMillis);
+                final Properties jndiProperties = JndiManager.createProperties(
+                        factoryName, providerUrl, urlPkgPrefixes, securityPrincipalName, securityCredentials, null);
+                configuration = new JmsManagerConfiguration(
+                        jndiProperties,
+                        factoryBindingName,
+                        destinationBindingName,
+                        userName,
+                        password,
+                        false,
+                        reconnectIntervalMillis);
                 actualJmsManager = AbstractManager.getManager(getName(), JmsManager.FACTORY, configuration);
             }
             if (actualJmsManager == null) {
@@ -115,8 +118,8 @@ public class JmsAppender extends AbstractAppender {
                 return null;
             }
             try {
-                return new JmsAppender(getName(), getFilter(), layout, isIgnoreExceptions(), getPropertyArray(),
-                        actualJmsManager);
+                return new JmsAppender(
+                        getName(), getFilter(), layout, isIgnoreExceptions(), getPropertyArray(), actualJmsManager);
             } catch (final JMSException e) {
                 // Never happens since the ctor no longer actually throws a JMSException.
                 throw new IllegalStateException(e);
@@ -213,7 +216,6 @@ public class JmsAppender extends AbstractAppender {
                     + getLayout() + ", filter=" + getFilter() + ", ignoreExceptions=" + isIgnoreExceptions()
                     + ", jmsManager=" + jmsManager + "]";
         }
-
     }
 
     @PluginBuilderFactory
@@ -228,8 +230,14 @@ public class JmsAppender extends AbstractAppender {
      *
      * @throws JMSException not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0
      */
-    protected JmsAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, final Property[] properties, final JmsManager manager) throws JMSException {
+    protected JmsAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            final JmsManager manager)
+            throws JMSException {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
@@ -241,8 +249,13 @@ public class JmsAppender extends AbstractAppender {
      * @deprecated Use {@link #JmsAppender(String, Filter, Layout, boolean, Property[], JmsManager)}.
      */
     @Deprecated
-    protected JmsAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, final JmsManager manager) throws JMSException {
+    protected JmsAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final JmsManager manager)
+            throws JMSException {
         super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         this.manager = manager;
     }
@@ -264,5 +277,4 @@ public class JmsAppender extends AbstractAppender {
         setStopped();
         return stopped;
     }
-
 }

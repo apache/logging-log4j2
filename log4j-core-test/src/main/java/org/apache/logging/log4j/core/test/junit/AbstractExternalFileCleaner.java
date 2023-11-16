@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.rules.ExternalResource;
 
@@ -46,8 +45,12 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
     private final int maxTries;
     private final PrintStream printStream;
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
-            final PrintStream logger, final File... files) {
+    public AbstractExternalFileCleaner(
+            final boolean before,
+            final boolean after,
+            final int maxTries,
+            final PrintStream logger,
+            final File... files) {
         this.cleanBefore = before;
         this.cleanAfter = after;
         this.maxTries = maxTries;
@@ -58,8 +61,12 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
         }
     }
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
-            final PrintStream logger, final Path... files) {
+    public AbstractExternalFileCleaner(
+            final boolean before,
+            final boolean after,
+            final int maxTries,
+            final PrintStream logger,
+            final Path... files) {
         this.cleanBefore = before;
         this.cleanAfter = after;
         this.maxTries = maxTries;
@@ -67,8 +74,12 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
         this.files = new HashSet<>(Arrays.asList(files));
     }
 
-    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
-            final PrintStream logger, final String... fileNames) {
+    public AbstractExternalFileCleaner(
+            final boolean before,
+            final boolean after,
+            final int maxTries,
+            final PrintStream logger,
+            final String... fileNames) {
         this.cleanBefore = before;
         this.cleanAfter = after;
         this.maxTries = maxTries;
@@ -181,5 +192,4 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
         return getClass().getSimpleName() + " [files=" + files + ", cleanAfter=" + cleanAfter + ", cleanBefore="
                 + cleanBefore + "]";
     }
-
 }

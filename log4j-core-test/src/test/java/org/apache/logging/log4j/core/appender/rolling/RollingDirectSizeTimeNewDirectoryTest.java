@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * This test attempts to validate that logging rolls when the file size exceeds 5KB or every second.
@@ -54,7 +53,8 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     @Test
     public void streamClosedError() throws Exception {
-        ((RollingFileAppender) loggerContextRule.getAppender("RollingFile")).getManager()
+        ((RollingFileAppender) loggerContextRule.getAppender("RollingFile"))
+                .getManager()
                 .addRolloverListener(this);
         final Logger logger = loggerContextRule.getLogger(RollingDirectSizeTimeNewDirectoryTest.class);
 
@@ -67,14 +67,13 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
         }
 
         assertTrue("A time based rollover did not occur", rolloverFiles.size() > 1);
-        final int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get)).get();
+        final int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get))
+                .get();
         assertTrue("No size based rollovers occurred", maxFiles > 1);
     }
 
     @Override
-    public void rolloverTriggered(final String fileName) {
-
-    }
+    public void rolloverTriggered(final String fileName) {}
 
     @Override
     public void rolloverComplete(final String fileName) {

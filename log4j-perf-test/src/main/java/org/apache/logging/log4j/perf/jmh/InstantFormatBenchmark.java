@@ -23,7 +23,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
@@ -49,10 +48,7 @@ public class InstantFormatBenchmark {
     /**
      * Date & time format patterns supported by all formatters and produce the same output.
      */
-    @Param({
-            "HH:mm:ss.SSS",
-            "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    })
+    @Param({"HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ss.SSS"})
     public String pattern;
 
     private Formatter log4jFdf;
@@ -71,12 +67,12 @@ public class InstantFormatBenchmark {
 
     private static Instant[] createInstants() {
         final Instant loInstant = Instant.EPOCH;
-        // Capping the max. offset to a day to avoid choking at `FixedDateTime#millisSinceMidnight(long)`, which is supposed to be executed once a day in practice.
+        // Capping the max. offset to a day to avoid choking at `FixedDateTime#millisSinceMidnight(long)`, which is
+        // supposed to be executed once a day in practice.
         final Instant hiInstant = loInstant.plus(Duration.ofDays(1));
         final long maxOffsetNanos = Duration.between(loInstant, hiInstant).toNanos();
         final Random random = new Random(0);
-        return IntStream
-                .range(0, 1_000)
+        return IntStream.range(0, 1_000)
                 .mapToObj(ignored -> {
                     final long offsetNanos = (long) Math.floor(random.nextDouble() * maxOffsetNanos);
                     return loInstant.plus(offsetNanos, ChronoUnit.NANOS);
@@ -88,7 +84,6 @@ public class InstantFormatBenchmark {
     interface Formatter {
 
         void benchmark(Blackhole blackhole);
-
     }
 
     private static final class Log4jFixedDateFormat implements Formatter {
@@ -100,8 +95,7 @@ public class InstantFormatBenchmark {
         private final FixedDateFormat formatter;
 
         private Log4jFixedDateFormat(final String pattern) {
-            this.log4jInstants = Stream
-                    .of(INSTANTS)
+            this.log4jInstants = Stream.of(INSTANTS)
                     .map(instant -> {
                         final MutableInstant log4jInstant = new MutableInstant();
                         log4jInstant.initFromEpochSecond(instant.getEpochSecond(), instant.getNano());
@@ -118,7 +112,6 @@ public class InstantFormatBenchmark {
                 blackhole.consume(formatter.formatInstant(log4jInstant, buffer, 0));
             }
         }
-
     }
 
     private static final class CommonsFastDateFormat implements Formatter {
@@ -130,8 +123,7 @@ public class InstantFormatBenchmark {
         private final FastDateFormat fastDateFormat;
 
         private CommonsFastDateFormat(final String pattern) {
-            this.calendars = Arrays
-                    .stream(INSTANTS)
+            this.calendars = Arrays.stream(INSTANTS)
                     .map(instant -> {
                         final Calendar calendar = Calendar.getInstance(TIME_ZONE, LOCALE);
                         calendar.setTimeInMillis(instant.toEpochMilli());
@@ -149,7 +141,6 @@ public class InstantFormatBenchmark {
                 blackhole.consume(stringBuilder.length());
             }
         }
-
     }
 
     private static final class JavaDateTimeFormatter implements Formatter {
@@ -162,9 +153,8 @@ public class InstantFormatBenchmark {
 
         private JavaDateTimeFormatter(final String pattern) {
             this.instants = INSTANTS;
-            this.dateTimeFormatter = DateTimeFormatter
-                    .ofPattern(pattern, LOCALE)
-                    .withZone(TIME_ZONE.toZoneId());
+            this.dateTimeFormatter =
+                    DateTimeFormatter.ofPattern(pattern, LOCALE).withZone(TIME_ZONE.toZoneId());
         }
 
         @Override
@@ -175,7 +165,6 @@ public class InstantFormatBenchmark {
                 blackhole.consume(stringBuilder.length());
             }
         }
-
     }
 
     @Benchmark
@@ -192,5 +181,4 @@ public class InstantFormatBenchmark {
     public void javaDtf(final Blackhole blackhole) {
         javaDtf.benchmark(blackhole);
     }
-
 }

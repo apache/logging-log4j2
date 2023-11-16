@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.UUID;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.UuidUtil;
@@ -26,7 +25,7 @@ import org.apache.logging.log4j.core.util.UuidUtil;
  * Formats the event sequence number.
  */
 @Plugin(name = "UuidPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "u", "uuid" })
+@ConverterKeys({"u", "uuid"})
 public final class UuidPatternConverter extends LogEventPatternConverter {
 
     private final boolean isRandom;

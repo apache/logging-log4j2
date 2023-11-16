@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.tojul;
 
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
@@ -50,8 +49,8 @@ class JULLoggerContext implements LoggerContext {
     @Override
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
         if (!loggerRegistry.hasLogger(name, messageFactory)) {
-            loggerRegistry.putIfAbsent(name, messageFactory,
-                    new JULLogger(name, messageFactory, Logger.getLogger(name)));
+            loggerRegistry.putIfAbsent(
+                    name, messageFactory, new JULLogger(name, messageFactory, Logger.getLogger(name)));
         }
         return loggerRegistry.getLogger(name, messageFactory);
     }

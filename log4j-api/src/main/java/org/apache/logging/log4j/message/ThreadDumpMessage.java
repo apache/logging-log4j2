@@ -16,23 +16,22 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.apache.logging.log4j.util.Chars.LF;
+
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
-
-import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Chars.LF;
 
 /**
  * Captures information about all running Threads.
@@ -119,7 +118,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
         return null;
     }
 
-        /**
+    /**
      * Creates a ThreadDumpMessageProxy that can be serialized.
      * @return a ThreadDumpMessageProxy.
      */
@@ -127,8 +126,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
         return new ThreadDumpMessageProxy(this);
     }
 
-    private void readObject(final ObjectInputStream stream)
-        throws InvalidObjectException {
+    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }
 
@@ -172,8 +170,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
         @Override
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
             final Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
-            final Map<ThreadInformation, StackTraceElement[]> threads =
-                new HashMap<>(map.size());
+            final Map<ThreadInformation, StackTraceElement[]> threads = new HashMap<>(map.size());
             for (final Map.Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
                 threads.put(new BasicThreadInformation(entry.getKey()), entry.getValue());
             }

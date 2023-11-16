@@ -22,7 +22,6 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.async.AsyncLogger;
@@ -80,7 +79,9 @@ public class SimplePerfTest {
         printReport("Test", UPTIMES, DURATIONS, warmupCount, COUNT);
 
         final StringBuilder sb = new StringBuilder(512);
-        sb.append("Test took: ").append(testDurationNanos/(1000.0*1000.0*1000.0)).append(" sec");
+        sb.append("Test took: ")
+                .append(testDurationNanos / (1000.0 * 1000.0 * 1000.0))
+                .append(" sec");
         System.out.println(sb);
 
         final List<GarbageCollectorMXBean> gcBeans = ManagementFactory.getGarbageCollectorMXBeans();
@@ -94,8 +95,8 @@ public class SimplePerfTest {
         }
     }
 
-    private static void printReport(final String label, final long[] UPTIMES, final long[] DURATIONS,
-            final int offset, final int length) {
+    private static void printReport(
+            final String label, final long[] UPTIMES, final long[] DURATIONS, final int offset, final int length) {
         final StringBuilder sb = new StringBuilder(512);
         long total = 0;
         for (int i = offset; i < offset + length; i++) {
@@ -107,15 +108,23 @@ public class SimplePerfTest {
             System.out.println(sb);
         }
         sb.setLength(0);
-        sb.append("Average ").append(label).append(" throughput: ").append(total/length).append(" ops/s");
+        sb.append("Average ")
+                .append(label)
+                .append(" throughput: ")
+                .append(total / length)
+                .append(" ops/s");
         System.out.println(sb);
 
         sb.setLength(0);
         System.out.println(sb.append(label).append(" ran: ").append(length).append(" iterations"));
     }
 
-    private static void runTest(final Logger logger, final RuntimeMXBean runtimeMXBean, final long[] UPTIMES,
-            final long[] DURATIONS, final int index) {
+    private static void runTest(
+            final Logger logger,
+            final RuntimeMXBean runtimeMXBean,
+            final long[] UPTIMES,
+            final long[] DURATIONS,
+            final int index) {
         UPTIMES[index] = runtimeMXBean.getUptime();
         final long startNanos = System.nanoTime();
         loop(logger, ITERATIONS);
@@ -124,12 +133,12 @@ public class SimplePerfTest {
     }
 
     private static void loop(final Logger logger, final int iterations) {
-//        String[] arg7 = new String[] {"arg1", "arg2","arg3", "arg4","arg5", "arg6","arg7", };
-//        String[] arg2 = new String[] {"arg1", "arg2", };
-//
-        for (int i = 0; i < iterations; i ++) {
-//        logger.error("7 arg message {} {} {} {} {} {} {}");
-//        logger.error("7 arg message {} {} ");
+        //        String[] arg7 = new String[] {"arg1", "arg2","arg3", "arg4","arg5", "arg6","arg7", };
+        //        String[] arg2 = new String[] {"arg1", "arg2", };
+        //
+        for (int i = 0; i < iterations; i++) {
+            //        logger.error("7 arg message {} {} {} {} {} {} {}");
+            //        logger.error("7 arg message {} {} ");
 
             logger.error("simple text message");
         }

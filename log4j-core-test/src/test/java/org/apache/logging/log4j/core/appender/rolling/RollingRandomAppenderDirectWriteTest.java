@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.*;
 
+import java.io.File;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -40,7 +39,8 @@ public class RollingRandomAppenderDirectWriteTest {
 
     private static final String DIR = "target/rolling-random-direct";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -54,7 +54,7 @@ public class RollingRandomAppenderDirectWriteTest {
 
     @Test
     public void testAppender() throws Exception {
-        for (int i=0; i < 100; ++i) {
+        for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
         Thread.sleep(50);

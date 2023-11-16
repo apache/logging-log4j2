@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -43,8 +42,7 @@ public class Log4jLogEventBenchmark {
     }
 
     @Benchmark
-    public void testBaseline(final Blackhole bh) {
-    }
+    public void testBaseline(final Blackhole bh) {}
 
     @Benchmark
     public LogEvent createLogEventWithoutException() {
@@ -53,14 +51,23 @@ public class Log4jLogEventBenchmark {
 
     @Benchmark
     public LogEvent createLogEventWithoutExceptionUsingBuilder() {
-        return Log4jLogEvent.newBuilder().setLoggerName("a.b.c").setLoggerFqcn("a.b.c").setLevel(Level.INFO)
-                .setMessage(MESSAGE).build();
+        return Log4jLogEvent.newBuilder()
+                .setLoggerName("a.b.c")
+                .setLoggerFqcn("a.b.c")
+                .setLevel(Level.INFO)
+                .setMessage(MESSAGE)
+                .build();
     }
 
     @Benchmark
     public LogEvent createLogEventWithExceptionUsingBuilder() {
-        return Log4jLogEvent.newBuilder().setLoggerName("a.b.c").setLoggerFqcn("a.b.c").setLevel(Level.INFO)
-                .setMessage(MESSAGE).setThrown(ERROR).build();
+        return Log4jLogEvent.newBuilder()
+                .setLoggerName("a.b.c")
+                .setLoggerFqcn("a.b.c")
+                .setLevel(Level.INFO)
+                .setMessage(MESSAGE)
+                .setThrown(ERROR)
+                .build();
     }
 
     @Benchmark
@@ -97,8 +104,12 @@ public class Log4jLogEventBenchmark {
         private static final String FQCN = TestClass.class.getName();
 
         public StackTraceElement getEventSource(final String loggerName) {
-            final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(loggerName)
-                    .setLoggerFqcn(FQCN).setLevel(Level.INFO).setMessage(MESSAGE).build();
+            final LogEvent event = Log4jLogEvent.newBuilder()
+                    .setLoggerName(loggerName)
+                    .setLoggerFqcn(FQCN)
+                    .setLevel(Level.INFO)
+                    .setMessage(MESSAGE)
+                    .build();
             event.setIncludeLocation(true);
             return event.getSource();
         }

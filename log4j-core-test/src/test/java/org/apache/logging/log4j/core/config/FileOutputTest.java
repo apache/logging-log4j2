@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.nio.file.Path;
-
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests the possibility to redirect status logger output to a file.
@@ -42,5 +41,4 @@ public class FileOutputTest {
         // Closes the current listeners
         StatusLogger.getLogger().reset();
     }
-
 }

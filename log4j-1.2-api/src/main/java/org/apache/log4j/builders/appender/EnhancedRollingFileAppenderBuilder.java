@@ -16,11 +16,17 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -39,18 +45,10 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
 /**
  * Build a File Appender
  */
 @Plugin(name = "org.apache.log4j.rolling.RollingFileAppender", category = CATEGORY)
-
 public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender> implements AppenderBuilder<Appender> {
 
     private static final String TIME_BASED_ROLLING_POLICY = "org.apache.log4j.rolling.TimeBasedRollingPolicy";
@@ -65,16 +63,19 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
     private static final String MIN_INDEX_PARAM = "MinIndex";
     private static final String MAX_INDEX_PARAM = "MaxIndex";
 
-    public EnhancedRollingFileAppenderBuilder() {
-    }
+    public EnhancedRollingFileAppenderBuilder() {}
 
     public EnhancedRollingFileAppenderBuilder(final String prefix, final Properties properties) {
         super(prefix, properties);
     }
 
-    private void parseRollingPolicy(final Element element, final XmlConfiguration configuration,
-            final AtomicReference<String> rollingPolicyClassName, final AtomicReference<String> activeFileName,
-            final AtomicReference<String> fileNamePattern, final AtomicInteger minIndex,
+    private void parseRollingPolicy(
+            final Element element,
+            final XmlConfiguration configuration,
+            final AtomicReference<String> rollingPolicyClassName,
+            final AtomicReference<String> activeFileName,
+            final AtomicReference<String> fileNamePattern,
+            final AtomicInteger minIndex,
             final AtomicInteger maxIndex) {
         rollingPolicyClassName.set(configuration.subst(element.getAttribute("class"), getProperties()));
         forEachElement(element.getChildNodes(), currentElement -> {
@@ -119,8 +120,14 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
         forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case ROLLING_TAG:
-                    parseRollingPolicy(currentElement, configuration, rollingPolicyClassName, activeFileName,
-                            fileNamePattern, minIndex, maxIndex);
+                    parseRollingPolicy(
+                            currentElement,
+                            configuration,
+                            rollingPolicyClassName,
+                            activeFileName,
+                            fileNamePattern,
+                            minIndex,
+                            maxIndex);
                     break;
                 case TRIGGERING_TAG:
                     triggeringPolicy.set(configuration.parseTriggeringPolicy(currentElement));
@@ -155,14 +162,33 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
                     break;
             }
         });
-        return createAppender(name, layout.get(), filter.get(), fileName.get(), level.get(), immediateFlush.get(),
-                append.get(), bufferedIo.get(), bufferSize.get(), rollingPolicyClassName.get(), activeFileName.get(),
-                fileNamePattern.get(), minIndex.get(), maxIndex.get(), triggeringPolicy.get(), configuration);
+        return createAppender(
+                name,
+                layout.get(),
+                filter.get(),
+                fileName.get(),
+                level.get(),
+                immediateFlush.get(),
+                append.get(),
+                bufferedIo.get(),
+                bufferSize.get(),
+                rollingPolicyClassName.get(),
+                activeFileName.get(),
+                fileNamePattern.get(),
+                minIndex.get(),
+                maxIndex.get(),
+                triggeringPolicy.get(),
+                configuration);
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix, final String filterPrefix,
-            final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         final String level = getProperty(THRESHOLD_PARAM);
@@ -176,18 +202,44 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
         final int maxIndex = getIntegerProperty(ROLLING_TAG + "." + MAX_INDEX_PARAM, DEFAULT_MAX_INDEX);
         final String activeFileName = getProperty(ROLLING_TAG + "." + ACTIVE_FILE_PARAM);
         final String fileNamePattern = getProperty(ROLLING_TAG + "." + FILE_PATTERN_PARAM);
-        final TriggeringPolicy triggeringPolicy = configuration.parseTriggeringPolicy(props,
-                appenderPrefix + "." + TRIGGERING_TAG);
-        return createAppender(name, layout, filter, fileName, level, immediateFlush, append, bufferedIo, bufferSize,
-                rollingPolicyClassName, activeFileName, fileNamePattern, minIndex, maxIndex, triggeringPolicy,
+        final TriggeringPolicy triggeringPolicy =
+                configuration.parseTriggeringPolicy(props, appenderPrefix + "." + TRIGGERING_TAG);
+        return createAppender(
+                name,
+                layout,
+                filter,
+                fileName,
+                level,
+                immediateFlush,
+                append,
+                bufferedIo,
+                bufferSize,
+                rollingPolicyClassName,
+                activeFileName,
+                fileNamePattern,
+                minIndex,
+                maxIndex,
+                triggeringPolicy,
                 configuration);
     }
 
-    private Appender createAppender(final String name, final Layout layout, final Filter filter, final String fileName,
-            final String level, final boolean immediateFlush, final boolean append, final boolean bufferedIo,
-            final int bufferSize, final String rollingPolicyClassName, final String activeFileName,
-            final String fileNamePattern, final int minIndex, final int maxIndex,
-            final TriggeringPolicy triggeringPolicy, final Configuration configuration) {
+    private Appender createAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final String fileName,
+            final String level,
+            final boolean immediateFlush,
+            final boolean append,
+            final boolean bufferedIo,
+            final int bufferSize,
+            final String rollingPolicyClassName,
+            final String activeFileName,
+            final String fileNamePattern,
+            final int minIndex,
+            final int maxIndex,
+            final TriggeringPolicy triggeringPolicy,
+            final Configuration configuration) {
         final org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
         final boolean actualImmediateFlush = bufferedIo ? false : immediateFlush;
         final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);

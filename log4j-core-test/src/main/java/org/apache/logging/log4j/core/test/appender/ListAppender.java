@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -101,8 +100,12 @@ public class ListAppender extends AbstractAppender {
         raw = false;
     }
 
-    public ListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final boolean newline,
-                        final boolean raw) {
+    public ListAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean newline,
+            final boolean raw) {
         super(name, filter, layout, true, Property.EMPTY_ARRAY);
         this.newLine = newline;
         this.raw = raw;
@@ -212,7 +215,8 @@ public class ListAppender extends AbstractAppender {
      * Polls the messages list for it to grow to a given minimum size at most timeout timeUnits and return a copy of
      * what we have so far.
      */
-    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit) throws InterruptedException {
+    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit)
+            throws InterruptedException {
         Awaitility.waitAtMost(timeout, timeUnit).until(() -> messages.size() >= minSize);
         return getMessages();
     }
@@ -222,8 +226,12 @@ public class ListAppender extends AbstractAppender {
         return Collections.<byte[]>unmodifiableList(new ArrayList<>(data));
     }
 
-    public static ListAppender createAppender(final String name, final boolean newLine, final boolean raw,
-                                              final Layout<? extends Serializable> layout, final Filter filter) {
+    public static ListAppender createAppender(
+            final String name,
+            final boolean newLine,
+            final boolean raw,
+            final Layout<? extends Serializable> layout,
+            final Filter filter) {
         return new ListAppender(name, filter, layout, newLine, raw);
     }
 
@@ -289,7 +297,8 @@ public class ListAppender extends AbstractAppender {
      * @see org.apache.logging.log4j.core.test.junit.LoggerContextRule#getListAppender(String)
      */
     public static ListAppender getListAppender(final String name) {
-        return ((ListAppender) (LoggerContext.getContext(false)).getConfiguration().getAppender(name));
+        return ((ListAppender)
+                (LoggerContext.getContext(false)).getConfiguration().getAppender(name));
     }
 
     @Override

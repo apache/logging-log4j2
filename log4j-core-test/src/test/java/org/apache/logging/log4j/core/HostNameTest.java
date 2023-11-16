@@ -16,8 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -26,18 +30,14 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
-
 @LoggerContextSource("log4j-test2.xml")
 public class HostNameTest {
 
     private final ListAppender host;
     private final RollingFileAppender hostFile;
 
-    public HostNameTest(@Named("HostTest") final ListAppender list, @Named("HostFile") final RollingFileAppender rolling) {
+    public HostNameTest(
+            @Named("HostTest") final ListAppender list, @Named("HostFile") final RollingFileAppender rolling) {
         host = list.clear();
         hostFile = rolling;
     }
@@ -53,13 +53,16 @@ public class HostNameTest {
         assertNotNull(hostFile.getFileName(), "No Host FileAppender file name");
         expected = "target/" + NetUtils.getLocalHostname() + ".log";
         String name = hostFile.getFileName();
-        assertEquals(name,
-            expected, "Incorrect HostFile FileAppender file name - expected " + expected + " actual - " + name);
+        assertEquals(
+                name,
+                expected,
+                "Incorrect HostFile FileAppender file name - expected " + expected + " actual - " + name);
         name = hostFile.getFilePattern();
         assertNotNull(name, "No file pattern");
         expected = "target/" + NetUtils.getLocalHostname() + "-%d{MM-dd-yyyy}-%i.log";
-        assertEquals(name,
-            expected, "Incorrect HostFile FileAppender file pattern - expected " + expected + " actual - " + name);
-
+        assertEquals(
+                name,
+                expected,
+                "Incorrect HostFile FileAppender file pattern - expected " + expected + " actual - " + name);
     }
 }

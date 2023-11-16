@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.test;
 
-import java.io.Serializable;
+import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
+import static org.junit.Assert.assertThat;
 
+import java.io.Serializable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
-import static org.junit.Assert.assertThat;
 
 /**
  * Subclasses tests {@link Serializable} objects.

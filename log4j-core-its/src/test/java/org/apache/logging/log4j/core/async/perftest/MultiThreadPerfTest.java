@@ -26,8 +26,8 @@ public class MultiThreadPerfTest extends PerfTest {
     }
 
     @Override
-    public void runTestAndPrintResult(final IPerfTestRunner runner,
-            final String name, final int threadCount, final String resultFile)
+    public void runTestAndPrintResult(
+            final IPerfTestRunner runner, final String name, final int threadCount, final String resultFile)
             throws Exception {
 
         // ThreadContext.put("aKey", "mdcVal");
@@ -53,8 +53,7 @@ public class MultiThreadPerfTest extends PerfTest {
         thread1.join();
         thread2.join();
 
-        PerfTest.printf("Warmup complete in %.1f seconds%n",
-                (System.nanoTime() - t1) / (1000.0 * 1000.0 * 1000.0));
+        PerfTest.printf("Warmup complete in %.1f seconds%n", (System.nanoTime() - t1) / (1000.0 * 1000.0 * 1000.0));
         PerfTest.println("Waiting 10 seconds for buffers to drain warmup data...");
         Thread.sleep(10000);
         new File("perftest.log").delete();
@@ -69,8 +68,8 @@ public class MultiThreadPerfTest extends PerfTest {
         multiThreadedTestRun(runner, name, threadCount, resultFile);
     }
 
-    private void multiThreadedTestRun(final IPerfTestRunner runner,
-            final String name, final int threadCount, final String resultFile)
+    private void multiThreadedTestRun(
+            final IPerfTestRunner runner, final String name, final int threadCount, final String resultFile)
             throws Exception {
 
         final Histogram[] histograms = new Histogram[threadCount];
@@ -85,10 +84,9 @@ public class MultiThreadPerfTest extends PerfTest {
             threads[i] = new Thread() {
                 @Override
                 public void run() {
-//                    int latencyCount = threadCount >= 16 ? 1000000 : 5000000;
+                    //                    int latencyCount = threadCount >= 16 ? 1000000 : 5000000;
                     final int latencyCount = 5000000;
-                    final int count = PerfTest.throughput ? LINES / threadCount
-                            : latencyCount;
+                    final int count = PerfTest.throughput ? LINES / threadCount : latencyCount;
                     runTest(runner, count, "end", histogram, threadCount);
                 }
             };
@@ -103,5 +101,5 @@ public class MultiThreadPerfTest extends PerfTest {
         for (final Histogram histogram : histograms) {
             PerfTest.reportResult(resultFile, name, histogram);
         }
-}
+    }
 }

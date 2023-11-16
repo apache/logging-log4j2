@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -23,11 +28,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StructuredDataLookupTest {
 
@@ -41,7 +41,8 @@ public class StructuredDataLookupTest {
     @Test
     public void testCorrectEvent() {
         final Message msg = new StructuredDataMessage("TestId", "This is a test", "Audit");
-        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(msg).build();
+        final LogEvent event =
+                Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(msg).build();
 
         assertEquals("Audit", dataLookup.lookup(event, StructuredDataLookup.TYPE_KEY));
         assertEquals("Audit", dataLookup.lookup(event, toRootUpperCase(StructuredDataLookup.TYPE_KEY)));
@@ -57,7 +58,8 @@ public class StructuredDataLookupTest {
         assertNull(dataLookup.lookup(null));
     }
 
-    @Test void testWrongEvent() {
+    @Test
+    void testWrongEvent() {
         final LogEvent mockEvent = mock(LogEvent.class);
         // ensure message is not a StructuredDataMessage
         when(mockEvent.getMessage()).thenReturn(mock(Message.class));

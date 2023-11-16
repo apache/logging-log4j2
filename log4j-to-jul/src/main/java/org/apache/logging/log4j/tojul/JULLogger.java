@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.tojul;
 
-import java.util.logging.Logger;
+import static java.util.Objects.requireNonNull;
 
+import java.util.logging.Logger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Implementation of {@link org.apache.logging.log4j.Logger} that's backed by a {@link Logger}.
@@ -55,12 +54,14 @@ final class JULLogger extends AbstractLogger {
     }
 
     @Override
-    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+    public void logMessage(
+            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
         final java.util.logging.Level julLevel = convertLevel(level);
         if (!logger.isLoggable(julLevel)) {
             return;
         }
-        final LazyLog4jLogRecord record = new LazyLog4jLogRecord(fqcn, julLevel, message.getFormattedMessage()); // NOT getFormat()
+        final LazyLog4jLogRecord record =
+                new LazyLog4jLogRecord(fqcn, julLevel, message.getFormattedMessage()); // NOT getFormat()
         // NOT record.setParameters(message.getParameters()); BECAUSE getFormattedMessage() NOT getFormat()
         record.setLoggerName(getName());
         record.setThrown(t == null ? message.getThrowable() : t);
@@ -68,12 +69,14 @@ final class JULLogger extends AbstractLogger {
     }
 
     // Convert Level in Log4j scale to JUL scale.
-    // See getLevel() for the mapping. Note that JUL's FINEST & CONFIG are never returned because Log4j has no such levels, and
-    // that Log4j's FATAL is simply mapped to JUL's SEVERE as is Log4j's ERROR because JUL does not distinguish between ERROR and FATAL.
+    // See getLevel() for the mapping. Note that JUL's FINEST & CONFIG are never returned because Log4j has no such
+    // levels, and
+    // that Log4j's FATAL is simply mapped to JUL's SEVERE as is Log4j's ERROR because JUL does not distinguish between
+    // ERROR and FATAL.
     private java.util.logging.Level convertLevel(final Level level) {
         switch (level.getStandardLevel()) {
-            // Test in logical order of likely frequency of use
-            // Must be kept in sync with #getLevel()
+                // Test in logical order of likely frequency of use
+                // Must be kept in sync with #getLevel()
             case ALL:
                 return java.util.logging.Level.ALL;
             case TRACE:
@@ -91,10 +94,14 @@ final class JULLogger extends AbstractLogger {
             case OFF:
                 return java.util.logging.Level.OFF;
             default:
-                // This is tempting: throw new IllegalStateException("Impossible Log4j Level encountered: " + level.intLevel());
-                // But it's not a great idea, security wise. If an attacker *SOMEHOW* managed to create a Log4j Level instance
-                // with an unexpected level (through JVM de-serialization, despite readResolve() { return Level.valueOf(this.name); },
-                // or whatever other means), then we would blow up in a very unexpected place and way. Let us therefore instead just
+                // This is tempting: throw new IllegalStateException("Impossible Log4j Level encountered: " +
+                // level.intLevel());
+                // But it's not a great idea, security wise. If an attacker *SOMEHOW* managed to create a Log4j Level
+                // instance
+                // with an unexpected level (through JVM de-serialization, despite readResolve() { return
+                // Level.valueOf(this.name); },
+                // or whatever other means), then we would blow up in a very unexpected place and way. Let us therefore
+                // instead just
                 // return SEVERE for unexpected values, because that's more likely to be noticed than a FINER.
                 // Greetings, Michael Vorburger.ch <http://www.vorburger.ch>, for Google, on 2021.12.24.
                 return java.util.logging.Level.SEVERE;
@@ -130,7 +137,7 @@ final class JULLogger extends AbstractLogger {
         if (julLevel <= java.util.logging.Level.FINER.intValue()) {
             return Level.TRACE;
         }
-        if (julLevel <= java.util.logging.Level.FINE.intValue()) {  // includes FINER
+        if (julLevel <= java.util.logging.Level.FINE.intValue()) { // includes FINER
             return Level.DEBUG;
         }
         if (julLevel <= java.util.logging.Level.INFO.intValue()) { // includes CONFIG
@@ -153,7 +160,8 @@ final class JULLogger extends AbstractLogger {
         if (current.getLevel() != null) {
             return current.getLevel();
         }
-        // This is a safety fallback that is typically never reached, because usually the root Logger.getLogger("") has a Level.
+        // This is a safety fallback that is typically never reached, because usually the root Logger.getLogger("") has
+        // a Level.
         // Since JDK 8 the LogManager$RootLogger does not have a default level, just a default effective level of INFO.
         return java.util.logging.Level.INFO;
     }
@@ -195,65 +203,124 @@ final class JULLogger extends AbstractLogger {
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1) {
+    public boolean isEnabled(
+            final Level level, final Marker marker, final String message, final Object p0, final Object p1) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return isEnabledFor(level, marker);
     }
 

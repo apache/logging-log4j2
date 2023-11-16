@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.util.Objects;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -35,9 +34,8 @@ public class OsgiServiceLocator {
              * OSGI classes of any version can still be present even if Log4j2 does not run in
              * an OSGI container, hence we check if this class is in a bundle.
              */
-            final Class< ? > clazz = Class.forName("org.osgi.framework.FrameworkUtil");
-            return clazz.getMethod("getBundle", Class.class)
-                    .invoke(null, OsgiServiceLocator.class) != null;
+            final Class<?> clazz = Class.forName("org.osgi.framework.FrameworkUtil");
+            return clazz.getMethod("getBundle", Class.class).invoke(null, OsgiServiceLocator.class) != null;
         } catch (final ClassNotFoundException | NoSuchMethodException | LinkageError e) {
             return false;
         } catch (final Throwable e) {
@@ -61,9 +59,13 @@ public class OsgiServiceLocator {
             final BundleContext ctx = bundle.getBundleContext();
             if (ctx == null) {
                 if (verbose) {
-                    StatusLogger.getLogger().error(
-                            "Unable to load OSGI services: The bundle has no valid BundleContext for serviceType = {}, lookup = {}, lookupClass = {}, bundle = {}",
-                            serviceType, lookup, lookupClass, bundle);
+                    StatusLogger.getLogger()
+                            .error(
+                                    "Unable to load OSGI services: The bundle has no valid BundleContext for serviceType = {}, lookup = {}, lookupClass = {}, bundle = {}",
+                                    serviceType,
+                                    lookup,
+                                    lookupClass,
+                                    bundle);
                 }
             } else {
                 try {

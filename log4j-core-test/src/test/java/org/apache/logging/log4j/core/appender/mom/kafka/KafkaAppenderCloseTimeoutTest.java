@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.Serializer;
@@ -36,35 +35,35 @@ public class KafkaAppenderCloseTimeoutTest {
 
     private static final Serializer<byte[]> SERIALIZER = new ByteArraySerializer();
 
-    private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, SERIALIZER,
-            SERIALIZER) {
-        @Override
-        public void close() {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException ignore) {
-                // NOP
-            }
-        }
+    private static final MockProducer<byte[], byte[]> kafka =
+            new MockProducer<byte[], byte[]>(true, SERIALIZER, SERIALIZER) {
+                @Override
+                public void close() {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException ignore) {
+                        // NOP
+                    }
+                }
 
-        // @Override in version 3.3.1
-        public void close(final Duration timeout) {
-            try {
-                Thread.sleep(timeout.toMillis());
-            } catch (InterruptedException ignore) {
-                // NOP
-            }
-        }
+                // @Override in version 3.3.1
+                public void close(final Duration timeout) {
+                    try {
+                        Thread.sleep(timeout.toMillis());
+                    } catch (InterruptedException ignore) {
+                        // NOP
+                    }
+                }
 
-        // @Override in version 1.1.1
-        public void close(final long timeout, final TimeUnit timeUnit) {
-            try {
-                Thread.sleep(timeUnit.toMillis(timeout));
-            } catch (InterruptedException ignore) {
-                // NOP
-            }
-        }
-    };
+                // @Override in version 1.1.1
+                public void close(final long timeout, final TimeUnit timeUnit) {
+                    try {
+                        Thread.sleep(timeUnit.toMillis(timeout));
+                    } catch (InterruptedException ignore) {
+                        // NOP
+                    }
+                }
+            };
 
     @BeforeClass
     public static void setUpClass() throws Exception {

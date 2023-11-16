@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Filter.Result;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class CompositeFilterTest {
 
@@ -32,7 +32,7 @@ public class CompositeFilterTest {
         final Filter c = DenyAllFilter.newBuilder().setOnMatch(Result.DENY).build();
         // The three values need to be distinguishable
         assertNotEquals(a, b);
-        assertNotEquals(a,  c);
+        assertNotEquals(a, c);
         assertNotEquals(b, c);
         final Filter[] expected = new Filter[] {a, b, c};
         final CompositeFilter singleA = CompositeFilter.createFilters(new Filter[] {a});

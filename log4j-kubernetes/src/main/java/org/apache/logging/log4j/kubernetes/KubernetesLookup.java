@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.kubernetes;
 
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerStatus;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -38,7 +37,6 @@ import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
-
 
 /**
  * Retrieve various Kubernetes attributes. Supported keys are:
@@ -75,6 +73,7 @@ public class KubernetesLookup extends AbstractLookup {
         this.masterUrl = masterUrl;
         initialize();
     }
+
     private boolean initialize() {
         if (kubernetesInfo == null || (isSpringIncluded && !kubernetesInfo.isSpringActive)) {
             initLock.lock();
@@ -91,7 +90,9 @@ public class KubernetesLookup extends AbstractLookup {
                             info.masterUrl = client.getMasterUrl();
                             if (pod != null) {
                                 info.namespace = pod.getMetadata().getNamespace();
-                                namespace = client.namespaces().withName(info.namespace).get();
+                                namespace = client.namespaces()
+                                        .withName(info.namespace)
+                                        .get();
                             }
                         } else {
                             LOGGER.warn("Kubernetes is not available for access");
@@ -126,7 +127,8 @@ public class KubernetesLookup extends AbstractLookup {
                             if (containerId != null) {
                                 containerStatus = statuses.stream()
                                         .filter(cs -> cs.getContainerID().contains(containerId))
-                                        .findFirst().orElse(null);
+                                        .findFirst()
+                                        .orElse(null);
                             }
                         }
                         final String containerName;
@@ -142,8 +144,10 @@ public class KubernetesLookup extends AbstractLookup {
                         if (containers.size() == 1) {
                             container = containers.get(0);
                         } else if (containers.size() > 1 && containerName != null) {
-                            container = containers.stream().filter(c -> c.getName().equals(containerName))
-                                    .findFirst().orElse(null);
+                            container = containers.stream()
+                                    .filter(c -> c.getName().equals(containerName))
+                                    .findFirst()
+                                    .orElse(null);
                         }
                         if (container != null) {
                             info.containerName = container.getName();
@@ -255,13 +259,16 @@ public class KubernetesLookup extends AbstractLookup {
 
     private boolean isServiceAccount() {
         return Paths.get(Config.KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH).toFile().exists()
-                && Paths.get(Config.KUBERNETES_SERVICE_ACCOUNT_CA_CRT_PATH).toFile().exists();
+                && Paths.get(Config.KUBERNETES_SERVICE_ACCOUNT_CA_CRT_PATH)
+                        .toFile()
+                        .exists();
     }
 
     private boolean isSpringActive() {
-        return isSpringIncluded && LogManager.getFactory() != null
-            && LogManager.getFactory().hasContext(KubernetesLookup.class.getName(), null, false)
-            && LogManager.getContext(false).getObject(SPRING_ENVIRONMENT_KEY) != null;
+        return isSpringIncluded
+                && LogManager.getFactory() != null
+                && LogManager.getFactory().hasContext(KubernetesLookup.class.getName(), null, false)
+                && LogManager.getContext(false).getObject(SPRING_ENVIRONMENT_KEY) != null;
     }
 
     private static class KubernetesInfo {

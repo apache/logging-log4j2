@@ -20,7 +20,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.util.Lazy;
@@ -33,7 +32,8 @@ public class BasicContextSelector implements ContextSelector {
     private final Lazy<LoggerContext> defaultLoggerContext = Lazy.lazy(() -> new LoggerContext("Default"));
 
     @Override
-    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
+    public void shutdown(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
         final LoggerContext ctx = getContext(fqcn, loader, currentContext);
         if (ctx != null && ctx.isStarted()) {
             ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -52,10 +52,9 @@ public class BasicContextSelector implements ContextSelector {
         return ctx != null ? ctx : defaultLoggerContext.get();
     }
 
-
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    final URI configLocation) {
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
 
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : defaultLoggerContext.get();
@@ -79,5 +78,4 @@ public class BasicContextSelector implements ContextSelector {
     public List<LoggerContext> getLoggerContexts() {
         return Collections.singletonList(defaultLoggerContext.get());
     }
-
 }

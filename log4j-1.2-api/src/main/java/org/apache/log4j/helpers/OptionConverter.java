@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.helpers;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.net.URL;
@@ -24,7 +26,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
 import org.apache.log4j.PropertyConfigurator;
@@ -36,8 +37,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A convenience class to convert property values to specific types.
@@ -53,6 +52,7 @@ public class OptionConverter {
             this.replacement = replacement;
         }
     }
+
     static String DELIM_START = "${";
     static char DELIM_STOP = '}';
     static int DELIM_START_LEN = 2;
@@ -61,16 +61,18 @@ public class OptionConverter {
     /**
      * A Log4j 1.x level above or equal to this value is considered as OFF.
      */
-    static final int MAX_CUTOFF_LEVEL = Priority.FATAL_INT
-            + 100 * (StandardLevel.FATAL.intLevel() - StandardLevel.OFF.intLevel() - 1) + 1;
+    static final int MAX_CUTOFF_LEVEL =
+            Priority.FATAL_INT + 100 * (StandardLevel.FATAL.intLevel() - StandardLevel.OFF.intLevel() - 1) + 1;
     /**
      * A Log4j 1.x level below or equal to this value is considered as ALL.
      *
      * Log4j 2.x ALL to TRACE interval is shorter. This is {@link Priority#ALL_INT}
      * plus the difference.
      */
-    static final int MIN_CUTOFF_LEVEL = Priority.ALL_INT + Level.TRACE_INT
-            - (Priority.ALL_INT + StandardLevel.ALL.intLevel()) + StandardLevel.TRACE.intLevel();
+    static final int MIN_CUTOFF_LEVEL = Priority.ALL_INT
+            + Level.TRACE_INT
+            - (Priority.ALL_INT + StandardLevel.ALL.intLevel())
+            + StandardLevel.TRACE.intLevel();
     /**
      * Cache of currently known levels.
      */
@@ -146,21 +148,24 @@ public class OptionConverter {
             return 0;
         }
         if (v2Level <= StandardLevel.ERROR.intLevel()) {
-            return 3 - (3 * (StandardLevel.ERROR.intLevel() - v2Level))
-                    / (StandardLevel.ERROR.intLevel() - StandardLevel.FATAL.intLevel());
+            return 3
+                    - (3 * (StandardLevel.ERROR.intLevel() - v2Level))
+                            / (StandardLevel.ERROR.intLevel() - StandardLevel.FATAL.intLevel());
         }
         if (v2Level <= StandardLevel.WARN.intLevel()) {
             return 4;
         }
         if (v2Level <= StandardLevel.INFO.intLevel()) {
-            return 6 - (2 * (StandardLevel.INFO.intLevel() - v2Level))
-                    / (StandardLevel.INFO.intLevel() - StandardLevel.WARN.intLevel());
+            return 6
+                    - (2 * (StandardLevel.INFO.intLevel() - v2Level))
+                            / (StandardLevel.INFO.intLevel() - StandardLevel.WARN.intLevel());
         }
         return 7;
     }
 
     public static org.apache.logging.log4j.Level createLevel(final Priority level) {
-        final String name = toRootUpperCase(level.toString()) + "#" + level.getClass().getName();
+        final String name =
+                toRootUpperCase(level.toString()) + "#" + level.getClass().getName();
         return org.apache.logging.log4j.Level.forName(name, toLog4j2Level(level.toInt()));
     }
 
@@ -182,8 +187,8 @@ public class OptionConverter {
         return actualLevel != null ? actualLevel : Level.ERROR;
     }
 
-    public static org.apache.logging.log4j.Level convertLevel(final String level,
-            final org.apache.logging.log4j.Level defaultLevel) {
+    public static org.apache.logging.log4j.Level convertLevel(
+            final String level, final org.apache.logging.log4j.Level defaultLevel) {
         final Level actualLevel = toLevel(level, null);
         return actualLevel != null ? actualLevel.getVersion2Level() : defaultLevel;
     }
@@ -231,7 +236,6 @@ public class OptionConverter {
         }
     }
 
-
     /**
      * Very similar to <code>System.getProperty</code> except
      * that the {@link SecurityException} is hidden.
@@ -262,14 +266,14 @@ public class OptionConverter {
      * @param defaultValue The object to return in case of non-fulfillment
      * @return The created object.
      */
-    public static Object instantiateByClassName(final String className, final Class<?> superClass,
-            final Object defaultValue) {
+    public static Object instantiateByClassName(
+            final String className, final Class<?> superClass, final Object defaultValue) {
         if (className != null) {
             try {
                 final Object obj = LoaderUtil.newInstanceOf(className);
                 if (!superClass.isAssignableFrom(obj.getClass())) {
-                    LOGGER.error("A \"{}\" object is not assignable to a \"{}\" variable", className,
-                            superClass.getName());
+                    LOGGER.error(
+                            "A \"{}\" object is not assignable to a \"{}\" variable", className, superClass.getName());
                     return defaultValue;
                 }
                 return obj;
@@ -280,7 +284,8 @@ public class OptionConverter {
         return defaultValue;
     }
 
-    public static Object instantiateByKey(final Properties props, final String key, final Class superClass, final Object defaultValue) {
+    public static Object instantiateByKey(
+            final Properties props, final String key, final Class superClass, final Object defaultValue) {
 
         // Get the value of the property in string form
         final String className = findAndSubst(key, props);
@@ -308,7 +313,8 @@ public class OptionConverter {
      * @param hierarchy The {@link LoggerRepository} to act on.
      * @since 1.2.17
      */
-    static public void selectAndConfigure(final InputStream inputStream, final String clazz, final LoggerRepository hierarchy) {
+    public static void selectAndConfigure(
+            final InputStream inputStream, final String clazz, final LoggerRepository hierarchy) {
         Configurator configurator = null;
 
         if (clazz != null) {
@@ -343,7 +349,7 @@ public class OptionConverter {
      *
      * @since 1.1.4
      */
-    static public void selectAndConfigure(final URL url, String clazz, final LoggerRepository hierarchy) {
+    public static void selectAndConfigure(final URL url, String clazz, final LoggerRepository hierarchy) {
         Configurator configurator = null;
         final String filename = url.getFile();
 
@@ -431,9 +437,8 @@ public class OptionConverter {
             sbuf.append(val.substring(i, j));
             k = val.indexOf(DELIM_STOP, j);
             if (k == -1) {
-                throw new IllegalArgumentException(Strings.dquote(val)
-                        + " has no closing brace. Opening brace at position " + j
-                        + '.');
+                throw new IllegalArgumentException(
+                        Strings.dquote(val) + " has no closing brace. Opening brace at position " + j + '.');
             }
             j += DELIM_START_LEN;
             final String key = val.substring(j, k);
@@ -459,7 +464,6 @@ public class OptionConverter {
                 } else {
                     sbuf.append(replacement);
                 }
-
             }
             i = k + DELIM_STOP_LEN;
         }
@@ -598,7 +602,8 @@ public class OptionConverter {
         final String levelName = value.substring(0, hashIndex);
 
         final Level customLevel = toLevel(clazz, levelName, defaultValue);
-        if (customLevel != null && levelName.equals(customLevel.toString())
+        if (customLevel != null
+                && levelName.equals(customLevel.toString())
                 && clazz.equals(customLevel.getClass().getName())) {
             LEVELS.putIfAbsent(value, customLevel);
         }
@@ -629,7 +634,8 @@ public class OptionConverter {
 
         // Support for levels defined in Log4j2.
         if (LOG4J2_LEVEL_CLASS.equals(clazz)) {
-            final org.apache.logging.log4j.Level v2Level = org.apache.logging.log4j.Level.getLevel(toRootUpperCase(levelName));
+            final org.apache.logging.log4j.Level v2Level =
+                    org.apache.logging.log4j.Level.getLevel(toRootUpperCase(levelName));
             if (v2Level != null) {
                 return new LevelWrapper(v2Level);
             }
@@ -640,36 +646,31 @@ public class OptionConverter {
 
             // get a ref to the specified class' static method
             // toLevel(String, org.apache.log4j.Level)
-            final Class<?>[] paramTypes = new Class[] { String.class, org.apache.log4j.Level.class };
-            final java.lang.reflect.Method toLevelMethod =
-                    customLevel.getMethod("toLevel", paramTypes);
+            final Class<?>[] paramTypes = new Class[] {String.class, org.apache.log4j.Level.class};
+            final java.lang.reflect.Method toLevelMethod = customLevel.getMethod("toLevel", paramTypes);
 
             // now call the toLevel method, passing level string + default
-            final Object[] params = new Object[]{levelName, defaultValue};
+            final Object[] params = new Object[] {levelName, defaultValue};
             final Object o = toLevelMethod.invoke(null, params);
 
             return (Level) o;
         } catch (final ClassNotFoundException e) {
             LOGGER.warn("custom level class [" + clazz + "] not found.");
         } catch (final NoSuchMethodException e) {
-            LOGGER.warn("custom level class [" + clazz + "]"
-                    + " does not have a class function toLevel(String, Level)", e);
+            LOGGER.warn(
+                    "custom level class [" + clazz + "]" + " does not have a class function toLevel(String, Level)", e);
         } catch (final java.lang.reflect.InvocationTargetException e) {
             if (e.getTargetException() instanceof InterruptedException
                     || e.getTargetException() instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
-            LOGGER.warn("custom level class [" + clazz + "]"
-                    + " could not be instantiated", e);
+            LOGGER.warn("custom level class [" + clazz + "]" + " could not be instantiated", e);
         } catch (final ClassCastException e) {
-            LOGGER.warn("class [" + clazz
-                    + "] is not a subclass of org.apache.log4j.Level", e);
+            LOGGER.warn("class [" + clazz + "] is not a subclass of org.apache.log4j.Level", e);
         } catch (final IllegalAccessException e) {
-            LOGGER.warn("class [" + clazz +
-                    "] cannot be instantiated due to access restrictions", e);
+            LOGGER.warn("class [" + clazz + "] cannot be instantiated due to access restrictions", e);
         } catch (final RuntimeException e) {
-            LOGGER.warn("class [" + clazz + "], level [" + levelName +
-                    "] conversion failed.", e);
+            LOGGER.warn("class [" + clazz + "], level [" + levelName + "] conversion failed.", e);
         }
         return defaultValue;
     }
@@ -677,8 +678,7 @@ public class OptionConverter {
     /**
      * OptionConverter is a static class.
      */
-    private OptionConverter() {
-    }
+    private OptionConverter() {}
 
     private static class LevelWrapper extends Level {
 
@@ -687,6 +687,5 @@ public class OptionConverter {
         protected LevelWrapper(final org.apache.logging.log4j.Level v2Level) {
             super(toLog4j1Level(v2Level.intLevel()), v2Level.name(), toSyslogLevel(v2Level.intLevel()), v2Level);
         }
-
     }
 }

@@ -16,10 +16,16 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -35,13 +41,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
 /**
  * Build a Console Appender
  */
@@ -55,8 +54,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    public ConsoleAppenderBuilder() {
-    }
+    public ConsoleAppenderBuilder() {}
 
     public ConsoleAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
@@ -94,7 +92,10 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                                         target.set(SYSTEM_ERR);
                                         break;
                                     default:
-                                        LOGGER.warn("Invalid value \"{}\" for target parameter. Using default of {}", value, SYSTEM_OUT);
+                                        LOGGER.warn(
+                                                "Invalid value \"{}\" for target parameter. Using default of {}",
+                                                value,
+                                                SYSTEM_OUT);
                                 }
                             }
                             break;
@@ -112,12 +113,25 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                 }
             }
         });
-        return createAppender(name, layout.get(), filter.get(), level.get(), target.get(), immediateFlush.get(), follow.get(), config);
+        return createAppender(
+                name,
+                layout.get(),
+                filter.get(),
+                level.get(),
+                target.get(),
+                immediateFlush.get(),
+                follow.get(),
+                config);
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         final String level = getProperty(THRESHOLD_PARAM);
@@ -127,13 +141,20 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         return createAppender(name, layout, filter, level, target, immediateFlush, follow, configuration);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout, final Filter filter,
-            final String level, final String target, final boolean immediateFlush, final boolean follow, final T configuration) {
+    private <T extends Log4j1Configuration> Appender createAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final String level,
+            final String target,
+            final boolean immediateFlush,
+            final boolean follow,
+            final T configuration) {
         final org.apache.logging.log4j.core.Layout<?> consoleLayout = LayoutAdapter.adapt(layout);
 
         final org.apache.logging.log4j.core.Filter consoleFilter = buildFilters(level, filter);
-        final ConsoleAppender.Target consoleTarget = SYSTEM_ERR.equals(target)
-                ? ConsoleAppender.Target.SYSTEM_ERR : ConsoleAppender.Target.SYSTEM_OUT;
+        final ConsoleAppender.Target consoleTarget =
+                SYSTEM_ERR.equals(target) ? ConsoleAppender.Target.SYSTEM_ERR : ConsoleAppender.Target.SYSTEM_OUT;
         return AppenderWrapper.adapt(ConsoleAppender.newBuilder()
                 .setName(name)
                 .setTarget(consoleTarget)

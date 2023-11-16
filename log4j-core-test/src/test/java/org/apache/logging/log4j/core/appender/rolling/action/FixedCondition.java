@@ -36,6 +36,5 @@ public class FixedCondition implements PathCondition {
     }
 
     @Override
-    public void beforeFileTreeWalk() {
-    }
+    public void beforeFileTreeWalk() {}
 }

@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.web;
 
-import javax.servlet.ServletContext;
+import static org.junit.jupiter.api.Assertions.*;
 
+import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -26,8 +27,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockServletContext;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

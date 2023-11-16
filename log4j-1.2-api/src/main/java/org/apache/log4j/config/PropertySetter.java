@@ -24,7 +24,6 @@ import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Properties;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Priority;
 import org.apache.log4j.spi.ErrorHandler;
@@ -108,7 +107,6 @@ public class PropertySetter {
             // handle only properties that start with the desired prefix.
             if (key.startsWith(prefix)) {
 
-
                 // ignore key if it contains dots after the prefix
                 if (key.indexOf('.', len + 1) > 0) {
                     continue;
@@ -127,9 +125,7 @@ public class PropertySetter {
                         && OptionHandler.class.isAssignableFrom(prop.getPropertyType())
                         && prop.getWriteMethod() != null) {
                     final OptionHandler opt = (OptionHandler)
-                    OptionConverter.instantiateByKey(properties, prefix + key,
-                    prop.getPropertyType(),
-                    null);
+                            OptionConverter.instantiateByKey(properties, prefix + key, prop.getPropertyType(), null);
                     final PropertySetter setter = new PropertySetter(opt);
                     setter.setProperties(properties, prefix + key + ".");
                     try {
@@ -175,11 +171,10 @@ public class PropertySetter {
         name = Introspector.decapitalize(name);
         final PropertyDescriptor prop = getPropertyDescriptor(name);
 
-        //LOGGER.debug("---------Key: "+name+", type="+prop.getPropertyType());
+        // LOGGER.debug("---------Key: "+name+", type="+prop.getPropertyType());
 
         if (prop == null) {
-            LOGGER.warn("No such property [" + name + "] in " +
-                    obj.getClass().getName() + ".");
+            LOGGER.warn("No such property [" + name + "] in " + obj.getClass().getName() + ".");
         } else {
             try {
                 setProperty(prop, name, value);
@@ -198,8 +193,7 @@ public class PropertySetter {
      * @param value The value of the property.
      * @throws PropertySetterException if no setter is available.
      */
-    public void setProperty(PropertyDescriptor prop, String name, String value)
-            throws PropertySetterException {
+    public void setProperty(PropertyDescriptor prop, String name, String value) throws PropertySetterException {
         final Method setter = prop.getWriteMethod();
         if (setter == null) {
             throw new PropertySetterException("No setter for property [" + name + "].");
@@ -213,12 +207,10 @@ public class PropertySetter {
         try {
             arg = convertArg(value, paramTypes[0]);
         } catch (Throwable t) {
-            throw new PropertySetterException("Conversion to type [" + paramTypes[0] +
-                    "] failed. Reason: " + t);
+            throw new PropertySetterException("Conversion to type [" + paramTypes[0] + "] failed. Reason: " + t);
         }
         if (arg == null) {
-            throw new PropertySetterException(
-                    "Conversion to type [" + paramTypes[0] + "] failed.");
+            throw new PropertySetterException("Conversion to type [" + paramTypes[0] + "] failed.");
         }
         LOGGER.debug("Setting property [" + name + "] to [" + arg + "].");
         try {
@@ -233,7 +225,6 @@ public class PropertySetter {
             throw new PropertySetterException(ex);
         }
     }
-
 
     /**
      * Convert <code>val</code> a String parameter to an object of a
@@ -263,12 +254,10 @@ public class PropertySetter {
         } else if (Priority.class.isAssignableFrom(type)) {
             return org.apache.log4j.helpers.OptionConverter.toLevel(v, Log4j1Configuration.DEFAULT_LEVEL);
         } else if (ErrorHandler.class.isAssignableFrom(type)) {
-            return OptionConverter.instantiateByClassName(v,
-                    ErrorHandler.class, null);
+            return OptionConverter.instantiateByClassName(v, ErrorHandler.class, null);
         }
         return null;
     }
-
 
     protected PropertyDescriptor getPropertyDescriptor(String name) {
         if (props == null) {

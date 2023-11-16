@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.selector;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -24,15 +27,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 public final class BasicContextSelectorTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                BasicContextSelector.class.getName());
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BasicContextSelector.class.getName());
     }
 
     @AfterClass

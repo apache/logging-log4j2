@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
@@ -31,8 +32,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertTrue;
-
 @Category(AsyncLoggers.class)
 public class AsyncLoggerTestArgumentFreedOnError {
 
@@ -42,8 +41,7 @@ public class AsyncLoggerTestArgumentFreedOnError {
         System.setProperty("log4j2.enable.direct.encoders", "true");
         System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("log4j.format.msg.async", "true");
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
     }
 
     @AfterClass
@@ -60,8 +58,8 @@ public class AsyncLoggerTestArgumentFreedOnError {
         final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {
-            assertTrue("Parameter should have been garbage collected",
-                    garbageCollectionLatch.await(30, TimeUnit.SECONDS));
+            assertTrue(
+                    "Parameter should have been garbage collected", garbageCollectionLatch.await(30, TimeUnit.SECONDS));
         } finally {
             gcHelper.close();
         }

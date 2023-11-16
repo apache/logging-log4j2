@@ -21,7 +21,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-
 import org.apache.logging.log4j.core.util.Integers;
 
 public class TlsSyslogInputStreamReader extends TlsSyslogInputStreamReaderBase {
@@ -46,7 +45,7 @@ public class TlsSyslogInputStreamReader extends TlsSyslogInputStreamReaderBase {
     public String read() throws IOException {
         readMessageLength();
         readMessage();
-        final String message =  buildMessage();
+        final String message = buildMessage();
         return message;
     }
 
@@ -57,7 +56,7 @@ public class TlsSyslogInputStreamReader extends TlsSyslogInputStreamReaderBase {
 
     private void readMessage() throws IOException {
         int remainder = nextMessageLength;
-        while (remainder > 0)  {
+        while (remainder > 0) {
             final int bytesToRead = Math.min(remainder, messagePartBufferSize);
             final int n = inputStream.read(messagePartBuffer, 0, bytesToRead);
             messageBuffer.write(messagePartBuffer, 0, n);
@@ -77,7 +76,7 @@ public class TlsSyslogInputStreamReader extends TlsSyslogInputStreamReaderBase {
             if (b < 0) {
                 throw new EOFException("The stream has been closed or the end of stream has been reached");
             }
-            final byte currentByte = (byte)(b & 0xff);
+            final byte currentByte = (byte) (b & 0xff);
             if (currentByte == SPACE) {
                 position = i;
                 break;

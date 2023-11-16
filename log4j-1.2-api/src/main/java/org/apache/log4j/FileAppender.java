@@ -16,6 +16,7 @@
  */
 package org.apache.log4j;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,8 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.Writer;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorCode;
@@ -65,8 +64,7 @@ public class FileAppender extends WriterAppender {
     /**
      * The default constructor does not do anything.
      */
-    public FileAppender() {
-    }
+    public FileAppender() {}
 
     /**
      * Constructs a FileAppender and open the file designated by <code>filename</code>. The opened filename will become the
@@ -104,7 +102,13 @@ public class FileAppender extends WriterAppender {
      * file.
      * </p>
      */
-    public FileAppender(final Layout layout, final String filename, final boolean append, final boolean bufferedIO, final int bufferSize) throws IOException {
+    public FileAppender(
+            final Layout layout,
+            final String filename,
+            final boolean append,
+            final boolean bufferedIO,
+            final int bufferSize)
+            throws IOException {
         this.layout = layout;
         this.setFile(filename, append, bufferedIO, bufferSize);
     }
@@ -120,7 +124,8 @@ public class FileAppender extends WriterAppender {
             try {
                 setFile(fileName, fileAppend, bufferedIO, bufferSize);
             } catch (java.io.IOException e) {
-                errorHandler.error("setFile(" + fileName + "," + fileAppend + ") call failed.", e, ErrorCode.FILE_OPEN_FAILURE);
+                errorHandler.error(
+                        "setFile(" + fileName + "," + fileAppend + ") call failed.", e, ErrorCode.FILE_OPEN_FAILURE);
             }
         } else {
             // LogLog.error("File option not set for appender ["+name+"].");
@@ -251,9 +256,9 @@ public class FileAppender extends WriterAppender {
      */
     @SuppressFBWarnings(
             value = {"PATH_TRAVERSAL_IN", "PATH_TRAVERSAL_OUT"},
-            justification = "The file name comes from a configuration file."
-    )
-    public synchronized void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize) throws IOException {
+            justification = "The file name comes from a configuration file.")
+    public synchronized void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize)
+            throws IOException {
         LogLog.debug("setFile called: " + fileName + ", " + append);
 
         // It does not make sense to have immediate flush and bufferedIO.

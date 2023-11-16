@@ -20,5 +20,4 @@ package org.apache.logging.log4j.core.config.builder.api;
  * Assembler for constructing the root Logger Components.
  * @since 2.4
  */
-public interface RootLoggerComponentBuilder extends LoggableComponentBuilder<RootLoggerComponentBuilder> {
-}
+public interface RootLoggerComponentBuilder extends LoggableComponentBuilder<RootLoggerComponentBuilder> {}

@@ -45,10 +45,11 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
 
     @Override
     protected String[] getSupportedTypes() {
-        if (!PropertiesUtil.getProperties().getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
+        if (!PropertiesUtil.getProperties()
+                .getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
             return null;
         }
-        return new String[] { FILE_EXTENSION };
+        return new String[] {FILE_EXTENSION};
     }
 
     @Override

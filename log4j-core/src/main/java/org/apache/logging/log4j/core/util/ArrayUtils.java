@@ -130,5 +130,4 @@ public class ArrayUtils {
     public static <T> T[] remove(final T[] array, final int index) {
         return (T[]) remove((Object) array, index);
     }
-
 }

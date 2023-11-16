@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class FileAppenderBuilderTest {
 
@@ -50,8 +49,7 @@ public class FileAppenderBuilderTest {
         final StatusListener listener = new StatusListener() {
 
             @Override
-            public void close() throws IOException {
-            }
+            public void close() throws IOException {}
 
             @Override
             public void log(final StatusData data) {
@@ -68,13 +66,17 @@ public class FileAppenderBuilderTest {
             FileAppender appender = FileAppender.newBuilder().build();
             assertNull(appender);
             assertTrue(counter.getAndSet(0) > 0);
-            appender = FileAppender.newBuilder().withFileName("target/FileAppenderBuilderTest.log").build();
+            appender = FileAppender.newBuilder()
+                    .withFileName("target/FileAppenderBuilderTest.log")
+                    .build();
             assertNull(appender);
             assertTrue(counter.getAndSet(0) > 0);
             appender = FileAppender.newBuilder().setName("FILE").build();
             assertNull(appender);
             assertTrue(counter.getAndSet(0) > 0);
-            appender = FileAppender.newBuilder().setName("FILE").withFileName("target/FileAppenderBuilderTest.log")
+            appender = FileAppender.newBuilder()
+                    .setName("FILE")
+                    .withFileName("target/FileAppenderBuilderTest.log")
                     .build();
             assertNotNull(appender);
             assertTrue(counter.get() == 0);

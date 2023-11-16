@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -32,11 +36,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigErrorOnFormat {
@@ -80,7 +79,8 @@ public class AsyncLoggerConfigErrorOnFormat {
 
         @Override
         public String getFormattedMessage() {
-            throw new Error("getFormattedMessage invoked on " + Thread.currentThread().getName());
+            throw new Error(
+                    "getFormattedMessage invoked on " + Thread.currentThread().getName());
         }
 
         @Override

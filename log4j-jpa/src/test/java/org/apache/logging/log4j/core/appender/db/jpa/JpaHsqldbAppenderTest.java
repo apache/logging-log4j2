@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import static org.junit.Assert.assertNull;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.assertNull;
 
 @Category(Appenders.Jpa.class)
 public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
@@ -68,40 +67,40 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
 
     @Test
     public void testNoPersistenceUnitName() {
-        final JpaAppender appender = JpaAppender.createAppender("name", null, null, null, TestBaseEntity.class.getName(),
-                null);
+        final JpaAppender appender =
+                JpaAppender.createAppender("name", null, null, null, TestBaseEntity.class.getName(), null);
 
         assertNull("The appender should be null.", appender);
     }
 
     @Test
     public void testBadEntityClassName() {
-        final JpaAppender appender = JpaAppender.createAppender("name", null, null, null, "com.foo.Bar",
-                "jpaAppenderTestUnit");
+        final JpaAppender appender =
+                JpaAppender.createAppender("name", null, null, null, "com.foo.Bar", "jpaAppenderTestUnit");
 
         assertNull("The appender should be null.", appender);
     }
 
     @Test
     public void testNonLogEventEntity() {
-        final JpaAppender appender = JpaAppender.createAppender("name", null, null, null, Object.class.getName(),
-                "jpaAppenderTestUnit");
+        final JpaAppender appender =
+                JpaAppender.createAppender("name", null, null, null, Object.class.getName(), "jpaAppenderTestUnit");
 
         assertNull("The appender should be null.", appender);
     }
 
     @Test
     public void testBadConstructorEntity01() {
-        final JpaAppender appender = JpaAppender.createAppender("name", null, null, null,
-                BadConstructorEntity1.class.getName(), "jpaAppenderTestUnit");
+        final JpaAppender appender = JpaAppender.createAppender(
+                "name", null, null, null, BadConstructorEntity1.class.getName(), "jpaAppenderTestUnit");
 
         assertNull("The appender should be null.", appender);
     }
 
     @Test
     public void testBadConstructorEntity02() {
-        final JpaAppender appender = JpaAppender.createAppender("name", null, null, null,
-                BadConstructorEntity2.class.getName(), "jpaAppenderTestUnit");
+        final JpaAppender appender = JpaAppender.createAppender(
+                "name", null, null, null, BadConstructorEntity2.class.getName(), "jpaAppenderTestUnit");
 
         assertNull("The appender should be null.", appender);
     }

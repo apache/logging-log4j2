@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.util.stream.Stream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.stream.Stream;
 import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests ReusableObjectMessage.
@@ -72,16 +71,16 @@ public class ReusableObjectMessageTest {
 
     @Test
     public void testGetParameters_InitiallyReturnsNullObjectInLength1Array() throws Exception {
-        assertArrayEquals(new Object[]{null}, new ReusableObjectMessage().getParameters());
+        assertArrayEquals(new Object[] {null}, new ReusableObjectMessage().getParameters());
     }
 
     @Test
     public void testGetParameters_ReturnsSetObjectInParameterArrayAfterMessageSet() throws Exception {
         final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
-        assertArrayEquals(new Object[]{"abc"}, msg.getParameters());
+        assertArrayEquals(new Object[] {"abc"}, msg.getParameters());
         msg.set("def");
-        assertArrayEquals(new Object[]{"def"}, msg.getParameters());
+        assertArrayEquals(new Object[] {"def"}, msg.getParameters());
     }
 
     @Test

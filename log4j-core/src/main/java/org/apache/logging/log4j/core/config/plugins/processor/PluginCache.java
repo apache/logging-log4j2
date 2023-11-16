@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -27,14 +29,11 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-
 /**
  *
  */
 public class PluginCache {
-    private final Map<String, Map<String, PluginEntry>> categories =
-        new TreeMap<>();
+    private final Map<String, Map<String, PluginEntry>> categories = new TreeMap<>();
 
     /**
      * Returns all categories of plugins in this cache.

@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.config.composite;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -38,8 +39,6 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A Composite Configuration.
@@ -66,19 +65,22 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         super(configurations.get(0).getLoggerContext(), ConfigurationSource.COMPOSITE_SOURCE);
         rootNode = configurations.get(0).getRootNode();
         this.configurations = configurations;
-        final String mergeStrategyClassName = PropertiesUtil.getProperties().getStringProperty(MERGE_STRATEGY_PROPERTY,
-                DefaultMergeStrategy.class.getName());
+        final String mergeStrategyClassName = PropertiesUtil.getProperties()
+                .getStringProperty(MERGE_STRATEGY_PROPERTY, DefaultMergeStrategy.class.getName());
         try {
             mergeStrategy = Loader.newInstanceOf(mergeStrategyClassName);
-        } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException | InvocationTargetException |
-                InstantiationException ex) {
+        } catch (ClassNotFoundException
+                | IllegalAccessException
+                | NoSuchMethodException
+                | InvocationTargetException
+                | InstantiationException ex) {
             mergeStrategy = new DefaultMergeStrategy();
         }
         for (final AbstractConfiguration config : configurations) {
             mergeStrategy.mergeRootProperties(rootNode, config);
         }
-        final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
-                .withStatus(getDefaultStatus());
+        final StatusConfiguration statusConfig =
+                new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
         for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
             final String key = entry.getKey();
             final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
@@ -111,8 +113,10 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             watchManager.setIntervalSeconds(targetWatchManager.getIntervalSeconds());
             final Map<Source, Watcher> watchers = targetWatchManager.getConfigurationWatchers();
             for (final Map.Entry<Source, Watcher> entry : watchers.entrySet()) {
-                watchManager.watch(entry.getKey(), entry.getValue().newWatcher(this, listeners,
-                    entry.getValue().getLastModified()));
+                watchManager.watch(
+                        entry.getKey(),
+                        entry.getValue()
+                                .newWatcher(this, listeners, entry.getValue().getLastModified()));
             }
         }
         for (final AbstractConfiguration sourceConfiguration : configurations.subList(1, configurations.size())) {
@@ -133,8 +137,11 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 final WatchManager sourceWatchManager = sourceConfiguration.getWatchManager();
                 final Map<Source, Watcher> watchers = sourceWatchManager.getConfigurationWatchers();
                 for (final Map.Entry<Source, Watcher> entry : watchers.entrySet()) {
-                    watchManager.watch(entry.getKey(), entry.getValue().newWatcher(this, listeners,
-                        entry.getValue().getLastModified()));
+                    watchManager.watch(
+                            entry.getKey(),
+                            entry.getValue()
+                                    .newWatcher(
+                                            this, listeners, entry.getValue().getLastModified()));
                 }
             }
         }
@@ -150,7 +157,8 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             final URI sourceURI = source.getURI();
             Configuration currentConfig = config;
             if (sourceURI == null) {
-                LOGGER.warn("Unable to determine URI for configuration {}, changes to it will be ignored",
+                LOGGER.warn(
+                        "Unable to determine URI for configuration {}, changes to it will be ignored",
                         config.getName());
             } else {
                 currentConfig = factory.getConfiguration(getLoggerContext(), config.getName(), sourceURI);
@@ -159,7 +167,6 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 }
             }
             configs.add((AbstractConfiguration) currentConfig);
-
         }
 
         return new CompositeConfiguration(configs);
@@ -172,7 +179,11 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     }
 
     private void printNodes(final String indent, final Node node, final StringBuilder sb) {
-        sb.append(indent).append(node.getName()).append(" type: ").append(node.getType()).append("\n");
+        sb.append(indent)
+                .append(node.getName())
+                .append(" type: ")
+                .append(node.getType())
+                .append("\n");
         sb.append(indent).append(node.getAttributes().toString()).append("\n");
         for (final Node child : node.getChildren()) {
             printNodes(indent + "  ", child, sb);

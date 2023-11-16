@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -38,7 +37,11 @@ import org.apache.logging.log4j.core.util.Integers;
 /**
  * File Appender.
  */
-@Plugin(name = FileAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(
+        name = FileAppender.PLUGIN_NAME,
+        category = Core.CATEGORY_NAME,
+        elementType = Appender.ELEMENT_TYPE,
+        printObject = true)
 public final class FileAppender extends AbstractOutputStreamAppender<FileManager> {
 
     public static final String PLUGIN_NAME = "File";
@@ -96,14 +99,32 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout();
 
-            final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
-                    advertiseUri, layout, bufferSize, filePermissions, fileOwner, fileGroup, getConfiguration());
+            final FileManager manager = FileManager.getFileManager(
+                    fileName,
+                    append,
+                    locking,
+                    bufferedIo,
+                    createOnDemand,
+                    advertiseUri,
+                    layout,
+                    bufferSize,
+                    filePermissions,
+                    fileOwner,
+                    fileGroup,
+                    getConfiguration());
             if (manager == null) {
                 return null;
             }
 
-            return new FileAppender(getName(), layout, getFilter(), manager, fileName, isIgnoreExceptions(),
-                    !bufferedIo || isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null,
+            return new FileAppender(
+                    getName(),
+                    layout,
+                    getFilter(),
+                    manager,
+                    fileName,
+                    isIgnoreExceptions(),
+                    !bufferedIo || isImmediateFlush(),
+                    advertise ? getConfiguration().getAdvertiser() : null,
                     getPropertyArray());
         }
 
@@ -187,7 +208,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             this.fileGroup = fileGroup;
             return asBuilder();
         }
-
     }
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
@@ -231,16 +251,20 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             final String advertiseUri,
             final Configuration config) {
         return FileAppender.<B>newBuilder()
-        .withAdvertise(Boolean.parseBoolean(advertise))
-        .withAdvertiseUri(advertiseUri)
-        .withAppend(Booleans.parseBoolean(append, true))
-        .withBufferedIo(Booleans.parseBoolean(bufferedIo, true))
-        .withBufferSize(Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE))
-        .setConfiguration(config)
-        .withFileName(fileName).setFilter(filter).setIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
-            .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true)).setLayout(layout)
-            .withLocking(Boolean.parseBoolean(locking)).setName(name)
-            .build();
+                .withAdvertise(Boolean.parseBoolean(advertise))
+                .withAdvertiseUri(advertiseUri)
+                .withAppend(Booleans.parseBoolean(append, true))
+                .withBufferedIo(Booleans.parseBoolean(bufferedIo, true))
+                .withBufferSize(Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE))
+                .setConfiguration(config)
+                .withFileName(fileName)
+                .setFilter(filter)
+                .setIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
+                .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
+                .setLayout(layout)
+                .withLocking(Boolean.parseBoolean(locking))
+                .setName(name)
+                .build();
         // @formatter:on
     }
 
@@ -255,9 +279,16 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     private final Object advertisement;
 
-    private FileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final FileManager manager, final String filename, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
+    private FileAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final FileManager manager,
+            final String filename,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final Advertiser advertiser,
+            final Property[] properties) {
 
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {

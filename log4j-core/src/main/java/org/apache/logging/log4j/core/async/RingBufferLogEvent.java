@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import com.lmax.disruptor.EventFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
-
-import com.lmax.disruptor.EventFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -93,11 +92,22 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     private transient AsyncLogger asyncLogger;
 
-    public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
-                          final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-                          final StringMap mutableContextData, final ContextStack aContextStack, final long threadId,
-                          final String threadName, final int threadPriority, final StackTraceElement aLocation,
-                          final Clock clock, final NanoClock nanoClock) {
+    public void setValues(
+            final AsyncLogger anAsyncLogger,
+            final String aLoggerName,
+            final Marker aMarker,
+            final String theFqcn,
+            final Level aLevel,
+            final Message msg,
+            final Throwable aThrowable,
+            final StringMap mutableContextData,
+            final ContextStack aContextStack,
+            final long threadId,
+            final String threadName,
+            final int threadPriority,
+            final StackTraceElement aLocation,
+            final Clock clock,
+            final NanoClock nanoClock) {
         this.threadPriority = threadPriority;
         this.threadId = threadId;
         this.level = aLevel;
@@ -385,7 +395,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     @Override
     public long getTimeMillis() {
-        return message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : instant.getEpochMillisecond();
+        return message instanceof TimestampMessage
+                ? ((TimestampMessage) message).getTimestamp()
+                : instant.getEpochMillisecond();
     }
 
     @Override
@@ -453,7 +465,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         final Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
         initializeBuilder(builder);
         return builder.build();
-
     }
 
     /**
@@ -489,5 +500,4 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 .setInstant(instant) //
         ;
     }
-
 }

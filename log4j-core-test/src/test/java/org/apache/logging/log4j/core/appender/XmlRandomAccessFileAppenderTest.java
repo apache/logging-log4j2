@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -30,8 +31,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
@@ -40,8 +39,7 @@ public class XmlRandomAccessFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "XmlRandomAccessFileAppenderTest.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "XmlRandomAccessFileAppenderTest.xml");
     }
 
     @Test

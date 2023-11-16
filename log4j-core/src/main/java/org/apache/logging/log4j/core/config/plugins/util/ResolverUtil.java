@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,8 +37,6 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -176,8 +175,7 @@ public class ResolverUtil {
      */
     @SuppressFBWarnings(
             value = {"URLCONNECTION_SSRF_FD", "PATH_TRAVERSAL_IN"},
-            justification = "The URLs used come from the classloader."
-    )
+            justification = "The URLs used come from the classloader.")
     public void findInPackage(final Test test, String packageName) {
         packageName = packageName.replace('.', '/');
         final ClassLoader loader = getClassLoader();
@@ -195,7 +193,7 @@ public class ResolverUtil {
                 final URL url = urls.nextElement();
                 final String urlPath = extractPath(url);
 
-                LOGGER.info("Scanning for classes in '{}' matching criteria {}", urlPath , test);
+                LOGGER.info("Scanning for classes in '{}' matching criteria {}", urlPath, test);
                 // Check for a jar in a war in JBoss
                 if (VFSZIP.equals(url.getProtocol())) {
                     final String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
@@ -250,10 +248,7 @@ public class ResolverUtil {
         }
     }
 
-    @SuppressFBWarnings(
-            value = "PATH_TRAVERSAL_IN",
-            justification = "The URLs used come from the classloader."
-    )
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "The URLs used come from the classloader.")
     String extractPath(final URL url) throws UnsupportedEncodingException, URISyntaxException {
         String urlPath = url.getPath(); // same as getFile but without the Query portion
         // System.out.println(url.getProtocol() + "->" + urlPath);
@@ -289,8 +284,8 @@ public class ResolverUtil {
 
     private void loadImplementationsInBundle(final Test test, final String packageName) {
         final BundleWiring wiring = FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
-        final Collection<String> list = wiring.listResources(packageName, "*.class",
-                BundleWiring.LISTRESOURCES_RECURSE);
+        final Collection<String> list =
+                wiring.listResources(packageName, "*.class", BundleWiring.LISTRESOURCES_RECURSE);
         for (final String name : list) {
             addIfMatching(test, name);
         }
@@ -367,8 +362,11 @@ public class ResolverUtil {
                 LOGGER.error("Could not establish connection to {}", url.toString());
             }
         } catch (final IOException ex) {
-            LOGGER.error("Could not search JAR file '{}' for classes matching criteria {}, file not found",
-                url.toString(), test, ex);
+            LOGGER.error(
+                    "Could not search JAR file '{}' for classes matching criteria {}, file not found",
+                    url.toString(),
+                    test,
+                    ex);
         }
     }
 
@@ -389,8 +387,11 @@ public class ResolverUtil {
             jarStream = new JarInputStream(new FileInputStream(jarFile));
             loadImplementationsInJar(test, parent, jarFile.getPath(), jarStream);
         } catch (final IOException ex) {
-            LOGGER.error("Could not search JAR file '{}' for classes matching criteria {}, file not found", jarFile,
-                    test, ex);
+            LOGGER.error(
+                    "Could not search JAR file '{}' for classes matching criteria {}, file not found",
+                    jarFile,
+                    test,
+                    ex);
         } finally {
             close(jarStream, jarFile);
         }
@@ -421,8 +422,8 @@ public class ResolverUtil {
      * @param stream
      *        The jar InputStream
      */
-    private void loadImplementationsInJar(final Test test, final String parent, final String path,
-            final JarInputStream stream) {
+    private void loadImplementationsInJar(
+            final Test test, final String parent, final String path, final JarInputStream stream) {
 
         try {
             JarEntry entry;
@@ -434,8 +435,11 @@ public class ResolverUtil {
                 }
             }
         } catch (final IOException ioe) {
-            LOGGER.error("Could not search JAR file '{}' for classes matching criteria {} due to an IOException", path,
-                    test, ioe);
+            LOGGER.error(
+                    "Could not search JAR file '{}' for classes matching criteria {} due to an IOException",
+                    path,
+                    test,
+                    ioe);
         }
     }
 
@@ -504,5 +508,4 @@ public class ResolverUtil {
 
         boolean doesMatchResource();
     }
-
 }

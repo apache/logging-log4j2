@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.util.java9;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import org.apache.logging.log4j.util.ProcessIdUtil;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class ProcessIdUtilTest {
 

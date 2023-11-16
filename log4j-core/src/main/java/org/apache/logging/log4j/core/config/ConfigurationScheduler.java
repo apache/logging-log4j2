@@ -23,7 +23,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.util.CronExpression;
@@ -128,7 +127,6 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         return getExecutorService().schedule(command, delay, unit);
     }
 
-
     /**
      * Creates and executes an action that first based on a cron expression.
      * @param cronExpression the cron expression describing the schedule.
@@ -146,16 +144,17 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @param command The Runnable to run,
      * @return a ScheduledFuture representing the next time the command will run.
      */
-    public CronScheduledFuture<?> scheduleWithCron(final CronExpression cronExpression, final Date startDate, final Runnable command) {
+    public CronScheduledFuture<?> scheduleWithCron(
+            final CronExpression cronExpression, final Date startDate, final Runnable command) {
         final Date fireDate = cronExpression.getNextValidTimeAfter(startDate == null ? new Date() : startDate);
         final CronRunnable runnable = new CronRunnable(command, cronExpression);
         final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
         final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future, fireDate);
         runnable.setScheduledFuture(cronScheduledFuture);
-        LOGGER.debug("{} scheduled cron expression {} to fire at {}", name, cronExpression.getCronExpression(), fireDate);
+        LOGGER.debug(
+                "{} scheduled cron expression {} to fire at {}", name, cronExpression.getCronExpression(), fireDate);
         return cronScheduledFuture;
     }
-
 
     /**
      * Creates and executes a periodic action that becomes enabled first after the given initial delay, and subsequently
@@ -168,7 +167,8 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing pending completion of the task, and whose get() method will throw an
      * exception upon cancellation
      */
-    public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
+    public ScheduledFuture<?> scheduleAtFixedRate(
+            final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
         return getExecutorService().scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
@@ -182,7 +182,8 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @return a ScheduledFuture representing pending completion of the task, and whose get() method will throw an
      * exception upon cancellation
      */
-    public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay, final TimeUnit unit) {
+    public ScheduledFuture<?> scheduleWithFixedDelay(
+            final Runnable command, final long initialDelay, final long delay, final TimeUnit unit) {
         return getExecutorService().scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
@@ -197,8 +198,8 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
                     if (scheduledItems > 0) {
                         LOGGER.debug("{} starting {} threads", name, scheduledItems);
                         scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
-                        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems,
-                                Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
+                        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
+                                scheduledItems, Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
                         executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
                         executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
                         this.executorService = executor;
@@ -240,12 +241,15 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
                     }
                 }
                 runnable.run();
-            } catch(final Throwable ex) {
+            } catch (final Throwable ex) {
                 LOGGER.error("{} caught error running command", name, ex);
             } finally {
                 final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
                 final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
-                LOGGER.debug("{} Cron expression {} scheduled to fire again at {}", name, cronExpression.getCronExpression(),
+                LOGGER.debug(
+                        "{} Cron expression {} scheduled to fire again at {}",
+                        name,
+                        cronExpression.getCronExpression(),
                         fireDate);
                 scheduledFuture.reset(future, fireDate);
             }
@@ -276,5 +280,4 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         sb.append("]");
         return sb.toString();
     }
-
 }

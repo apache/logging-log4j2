@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -43,7 +42,9 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Benchmark)
 public class ParameterFormatterBenchmark {
 
-    private static final Object[] ARGS = {"arg1", "arg2", "arg3", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9", "arg10"};
+    private static final Object[] ARGS = {
+        "arg1", "arg2", "arg3", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9", "arg10"
+    };
 
     @State(Scope.Thread)
     public static class ThreadState {
@@ -55,7 +56,6 @@ public class ParameterFormatterBenchmark {
         public ThreadState() {
             analysis.placeholderCharIndices = new int[10];
         }
-
     }
 
     @Benchmark
@@ -92,5 +92,4 @@ public class ParameterFormatterBenchmark {
         ParameterFormatter.formatMessage(state.buffer, pattern, ARGS, state.analysis.placeholderCount, state.analysis);
         return state.buffer.length();
     }
-
 }

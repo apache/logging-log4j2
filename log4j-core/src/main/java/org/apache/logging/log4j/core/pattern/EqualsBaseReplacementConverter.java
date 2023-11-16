@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -41,9 +40,13 @@ public abstract class EqualsBaseReplacementConverter extends LogEventPatternConv
      * @param substitution The substitution string.
      * @param parser        The PatternParser.
      */
-    protected EqualsBaseReplacementConverter(final String name, final String style,
-                                            final List<PatternFormatter> formatters, final String testString,
-                                            final String substitution, final PatternParser parser) {
+    protected EqualsBaseReplacementConverter(
+            final String name,
+            final String style,
+            final List<PatternFormatter> formatters,
+            final String testString,
+            final String substitution,
+            final PatternParser parser) {
         super(name, style);
         this.testString = testString;
         this.substitution = substitution;

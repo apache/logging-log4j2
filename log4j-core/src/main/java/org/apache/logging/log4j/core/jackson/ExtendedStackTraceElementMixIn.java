@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import java.io.Serializable;
 import org.apache.logging.log4j.core.impl.ExtendedClassInfo;
 import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
 
@@ -30,7 +29,7 @@ import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
  * Mix-in for {@link ExtendedStackTraceElement}.
  */
 @JsonPropertyOrder({
-    //@formatter:off
+    // @formatter:off
     ExtendedStackTraceElementMixIn.ATTR_CLASS,
     ExtendedStackTraceElementMixIn.ATTR_METHOD,
     ExtendedStackTraceElementMixIn.ATTR_FILE,
@@ -38,7 +37,7 @@ import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
     ExtendedStackTraceElementMixIn.ATTR_EXACT,
     ExtendedStackTraceElementMixIn.ATTR_LOCATION,
     ExtendedStackTraceElementMixIn.ATTR_VERSION
-    //@formatter:on
+    // @formatter:on
 })
 abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
@@ -56,7 +55,7 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
     @JsonCreator
     public ExtendedStackTraceElementMixIn(
-    // @formatter:off
+            // @formatter:off
             @JsonProperty(ATTR_CLASS) final String declaringClass,
             @JsonProperty(ATTR_METHOD) final String methodName,
             @JsonProperty(ATTR_FILE) final String fileName,
@@ -64,19 +63,17 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
             @JsonProperty(ATTR_EXACT) final boolean exact,
             @JsonProperty(ATTR_LOCATION) final String location,
             @JsonProperty(ATTR_VERSION) final String version
-   // @formatter:on
-    ) {
+            // @formatter:on
+            ) {
         // empty
     }
 
     @JsonProperty(ATTR_CLASS)
     @JacksonXmlProperty(localName = ATTR_CLASS, isAttribute = true)
-
     public abstract String getClassName();
 
     @JsonProperty(ATTR_EXACT)
     @JacksonXmlProperty(localName = ATTR_EXACT, isAttribute = true)
-
     public abstract boolean getExact();
 
     @JsonIgnore
@@ -84,22 +81,18 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
     @JsonProperty(ATTR_FILE)
     @JacksonXmlProperty(localName = ATTR_FILE, isAttribute = true)
-
     public abstract String getFileName();
 
     @JsonProperty(ATTR_LINE)
     @JacksonXmlProperty(localName = ATTR_LINE, isAttribute = true)
-
     public abstract int getLineNumber();
 
     @JsonProperty(ATTR_LOCATION)
     @JacksonXmlProperty(localName = ATTR_LOCATION, isAttribute = true)
-
     public abstract String getLocation();
 
     @JsonProperty(ATTR_METHOD)
     @JacksonXmlProperty(localName = ATTR_METHOD, isAttribute = true)
-
     public abstract String getMethodName();
 
     @JsonIgnore
@@ -107,10 +100,8 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
     @JsonProperty(ATTR_VERSION)
     @JacksonXmlProperty(localName = ATTR_VERSION, isAttribute = true)
-
     public abstract String getVersion();
 
     @JsonIgnore
     public abstract boolean isNativeMethod();
-
 }

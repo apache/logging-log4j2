@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
-import javax.management.ObjectName;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import javax.management.ObjectName;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the Server class.

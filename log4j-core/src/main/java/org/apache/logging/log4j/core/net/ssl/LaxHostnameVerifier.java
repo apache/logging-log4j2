@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * An HostnameVerifier which accepts everything.
@@ -30,8 +29,7 @@ public final class LaxHostnameVerifier implements HostnameVerifier {
      */
     public static final HostnameVerifier INSTANCE = new LaxHostnameVerifier();
 
-    private LaxHostnameVerifier() {
-    }
+    private LaxHostnameVerifier() {}
 
     @Override
     @SuppressFBWarnings("WEAK_HOSTNAME_VERIFIER")

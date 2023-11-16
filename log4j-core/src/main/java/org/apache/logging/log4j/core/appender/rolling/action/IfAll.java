@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -68,8 +67,8 @@ public final class IfAll implements PathCondition {
      * @return {@code true} if all the specified conditions accept the specified path, {@code false} otherwise
      * @throws NullPointerException if any of the parameters is {@code null}
      */
-    public static boolean accept(final PathCondition[] list, final Path baseDir, final Path relativePath,
-            final BasicFileAttributes attrs) {
+    public static boolean accept(
+            final PathCondition[] list, final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
         for (final PathCondition component : list) {
             if (!component.accept(baseDir, relativePath, attrs)) {
                 return false;
@@ -107,7 +106,8 @@ public final class IfAll implements PathCondition {
      */
     @PluginFactory
     public static IfAll createAndCondition(
-            @PluginElement("PathConditions") @Required(message = "No components provided for IfAll") final PathCondition... components) {
+            @PluginElement("PathConditions") @Required(message = "No components provided for IfAll")
+                    final PathCondition... components) {
         return new IfAll(components);
     }
 

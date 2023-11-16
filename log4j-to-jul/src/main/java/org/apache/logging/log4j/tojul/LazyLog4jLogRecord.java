@@ -18,7 +18,6 @@ package org.apache.logging.log4j.tojul;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**

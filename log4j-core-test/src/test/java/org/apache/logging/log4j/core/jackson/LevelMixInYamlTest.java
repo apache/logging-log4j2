@@ -24,5 +24,4 @@ public class LevelMixInYamlTest extends LevelMixInTest {
     protected ObjectMapper newObjectMapper() {
         return new Log4jYamlObjectMapper();
     }
-
 }

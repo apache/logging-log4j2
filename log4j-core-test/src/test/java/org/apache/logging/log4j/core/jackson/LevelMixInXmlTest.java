@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -36,5 +35,4 @@ public class LevelMixInXmlTest extends LevelMixInTest {
         // Disabled: see https://github.com/FasterXML/jackson-dataformat-xml
         super.testNameOnly();
     }
-
 }

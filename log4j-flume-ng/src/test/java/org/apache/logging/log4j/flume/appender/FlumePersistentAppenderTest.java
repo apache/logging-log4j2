@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import static org.junit.Assert.fail;
+
+import com.google.common.base.Preconditions;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,11 +35,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-
-import com.google.common.base.Preconditions;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.specific.SpecificResponder;
@@ -62,8 +62,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -97,9 +95,9 @@ public class FlumePersistentAppenderTest {
         deleteFiles(file);
 
         /*
-        * Clear out all other appenders associated with this logger to ensure we're
-        * only hitting the Avro appender.
-        */
+         * Clear out all other appenders associated with this logger to ensure we're
+         * only hitting the Avro appender.
+         */
         final int primaryPort = AvailablePortFinder.getNextAvailable();
         final int altPort = AvailablePortFinder.getNextAvailable();
         System.setProperty("primaryPort", Integer.toString(primaryPort));
@@ -139,8 +137,8 @@ public class FlumePersistentAppenderTest {
         final Event event = primary.poll();
         Assert.assertNotNull(event);
         final String body = getBody(event);
-        Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-            body.endsWith("Test Log4j"));
+        Assert.assertTrue(
+                "Channel contained event, but not expected message. Received: " + body, body.endsWith("Test Log4j"));
     }
 
     @Test
@@ -168,7 +166,6 @@ public class FlumePersistentAppenderTest {
             Assert.assertTrue("Channel contained event, but not expected message " + i, fields[i]);
         }
     }
-
 
     @Test
     public void testFailover() throws InterruptedException {
@@ -234,8 +231,9 @@ public class FlumePersistentAppenderTest {
         final Event event = primary.poll();
         Assert.assertNotNull(event);
         final String body = getBody(event);
-        Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-            body.endsWith("This is a test message"));
+        Assert.assertTrue(
+                "Channel contained event, but not expected message. Received: " + body,
+                body.endsWith("This is a test message"));
     }
 
     @Test
@@ -251,7 +249,6 @@ public class FlumePersistentAppenderTest {
         writer2.start();
         writer3.start();
         writer4.start();
-
 
         final boolean[] fields = new boolean[eventsCount];
         final Thread reader1 = new ReaderThread(0, eventsCount / 4, fields);
@@ -274,9 +271,7 @@ public class FlumePersistentAppenderTest {
         reader4.join();
 
         for (int i = 0; i < eventsCount; ++i) {
-            Assert.assertTrue(
-                "Channel contained event, but not expected message " + i,
-                fields[i]);
+            Assert.assertTrue("Channel contained event, but not expected message " + i, fields[i]);
         }
     }
 
@@ -289,8 +284,7 @@ public class FlumePersistentAppenderTest {
         final Event event = primary.poll();
         Assert.assertNotNull(event);
         final String body = getBody(event);
-        Assert.assertTrue("Structured message does not contain @EID: " + body,
-            body.contains("Test@18060"));
+        Assert.assertTrue("Structured message does not contain @EID: " + body, body.contains("Test@18060"));
     }
 
     private class WriterThread extends Thread {
@@ -306,8 +300,7 @@ public class FlumePersistentAppenderTest {
         @Override
         public void run() {
             for (int i = start; i < stop; ++i) {
-                final StructuredDataMessage msg = new StructuredDataMessage(
-                    "Test", "Test Multiple " + i, "Test");
+                final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Multiple " + i, "Test");
                 msg.put("counter", Integer.toString(i));
                 EventLogger.logEvent(msg);
             }
@@ -324,6 +317,7 @@ public class FlumePersistentAppenderTest {
             this.stop = stop;
             this.fields = fields;
         }
+
         @Override
         public void run() {
 
@@ -333,8 +327,7 @@ public class FlumePersistentAppenderTest {
                     event = primary.poll();
                 }
 
-                Assert.assertNotNull("Received " + i + " events. Event "
-                    + (i + 1) + " is null", event);
+                Assert.assertNotNull("Received " + i + " events. Event " + (i + 1) + " is null", event);
                 final String value = event.getHeaders().get("counter");
                 Assert.assertNotNull("Missing counter", value);
                 final int counter = Integers.parseInt(value);
@@ -343,7 +336,6 @@ public class FlumePersistentAppenderTest {
                 } else {
                     fields[counter] = true;
                 }
-
             }
         }
     }
@@ -356,7 +348,8 @@ public class FlumePersistentAppenderTest {
             final Logger logger = LogManager.getLogger("EventLogger");
             final Marker marker = MarkerManager.getMarker("EVENT");
             logger.info(marker, "This is a test message");
-            Assert.assertTrue("Interruption status not preserved", Thread.currentThread().isInterrupted());
+            Assert.assertTrue(
+                    "Interruption status not preserved", Thread.currentThread().isInterrupted());
         });
     }
 
@@ -374,7 +367,6 @@ public class FlumePersistentAppenderTest {
         System.out.println("Time to log " + count + " events " + elapsed + "ms");
     }    */
 
-
     private String getBody(final Event event) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final InputStream is = new GZIPInputStream(new ByteArrayInputStream(event.getBody()));
@@ -383,7 +375,6 @@ public class FlumePersistentAppenderTest {
             baos.write(n);
         }
         return new String(baos.toByteArray());
-
     }
 
     private static boolean deleteFiles(final File file) {
@@ -419,8 +410,8 @@ public class FlumePersistentAppenderTest {
 
         private Server createServer(final AvroSourceProtocol protocol, final int port) throws InterruptedException {
 
-            server = new NettyServer(new SpecificResponder(AvroSourceProtocol.class, protocol),
-                    new InetSocketAddress(HOSTNAME, port));
+            server = new NettyServer(
+                    new SpecificResponder(AvroSourceProtocol.class, protocol), new InetSocketAddress(HOSTNAME, port));
 
             return server;
         }
@@ -447,7 +438,8 @@ public class FlumePersistentAppenderTest {
         @Override
         public Status append(final AvroFlumeEvent event) {
             eventQueue.add(event);
-            //System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
+            // System.out.println("Received event " + event.getHeaders().get(new
+            // org.apache.avro.util.Utf8(FlumeEvent.GUID)));
             return Status.OK;
         }
 
@@ -455,7 +447,8 @@ public class FlumePersistentAppenderTest {
         public Status appendBatch(final List<AvroFlumeEvent> events) {
             Preconditions.checkState(eventQueue.addAll(events));
             for (final AvroFlumeEvent event : events) {
-                // System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
+                // System.out.println("Received event " + event.getHeaders().get(new
+                // org.apache.avro.util.Utf8(FlumeEvent.GUID)));
             }
             return Status.OK;
         }

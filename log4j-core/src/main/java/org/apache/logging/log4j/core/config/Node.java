@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 
 /**
@@ -43,7 +42,6 @@ public class Node {
     private final Map<String, String> attributes = new HashMap<>();
     private final List<Node> children = new ArrayList<>();
     private Object object;
-
 
     /**
      * Creates a new instance of {@code Node} and initializes it
@@ -154,7 +152,8 @@ public class Node {
         if (object == null) {
             return "null";
         }
-        return type.isObjectPrintable() ? object.toString() :
-            type.getPluginClass().getName() + " with name " + name;
+        return type.isObjectPrintable()
+                ? object.toString()
+                : type.getPluginClass().getName() + " with name " + name;
     }
 }

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.impl.LocationAware;
  * Formats the class name of the site of the logging request.
  */
 @Plugin(name = "ClassNamePatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "C", "class" })
+@ConverterKeys({"C", "class"})
 public final class ClassNamePatternConverter extends NamePatternConverter implements LocationAware {
 
     private static final String NA = "?";
@@ -34,8 +34,7 @@ public final class ClassNamePatternConverter extends NamePatternConverter implem
      *
      * @param options options, may be null.
      */
-    private ClassNamePatternConverter(
-        final String[] options) {
+    private ClassNamePatternConverter(final String[] options) {
         super("Class Name", "class name", options);
     }
 

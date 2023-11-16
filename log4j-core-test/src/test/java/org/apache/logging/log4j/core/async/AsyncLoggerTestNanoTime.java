@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
@@ -34,17 +35,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
 @Category(AsyncLoggers.class)
 public class AsyncLoggerTestNanoTime {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "NanoTimeToFileTest.xml");
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "NanoTimeToFileTest.xml");
     }
 
     @AfterClass
@@ -95,5 +92,4 @@ public class AsyncLoggerTestNanoTime {
         assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);
         assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[1]);
     }
-
 }

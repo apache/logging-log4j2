@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -40,7 +39,11 @@ public class HangingAppender extends AbstractAppender {
     private final long startupDelay;
     private final long shutdownDelay;
 
-    public HangingAppender(final String name, final long delay, final long startupDelay, final long shutdownDelay,
+    public HangingAppender(
+            final String name,
+            final long delay,
+            final long startupDelay,
+            final long shutdownDelay,
             final Property[] properties) {
         super(name, null, null, true, Property.EMPTY_ARRAY);
         this.delay = delay;
@@ -59,9 +62,7 @@ public class HangingAppender extends AbstractAppender {
 
     @PluginFactory
     public static HangingAppender createAppender(
-            @PluginAttribute("name")
-            @Required(message = "No name provided for HangingAppender")
-            final String name,
+            @PluginAttribute("name") @Required(message = "No name provided for HangingAppender") final String name,
             @PluginAttribute("delay") final long delay,
             @PluginAttribute("startupDelay") final long startupDelay,
             @PluginAttribute("shutdownDelay") final long shutdownDelay,

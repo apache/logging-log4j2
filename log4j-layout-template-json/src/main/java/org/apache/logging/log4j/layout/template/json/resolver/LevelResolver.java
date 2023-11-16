@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.net.Severity;
@@ -78,16 +77,13 @@ public final class LevelResolver implements EventResolver {
 
     static {
         final int levelCount = Level.values().length;
-        final String[] severityCodeResolutionByStandardLevelOrdinal =
-                new String[levelCount + 1];
+        final String[] severityCodeResolutionByStandardLevelOrdinal = new String[levelCount + 1];
         for (final Level level : Level.values()) {
             final int standardLevelOrdinal = level.getStandardLevel().ordinal();
             final int severityCode = Severity.getSeverity(level).getCode();
-            severityCodeResolutionByStandardLevelOrdinal[standardLevelOrdinal] =
-                    String.valueOf(severityCode);
+            severityCodeResolutionByStandardLevelOrdinal[standardLevelOrdinal] = String.valueOf(severityCode);
         }
-        SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL =
-                severityCodeResolutionByStandardLevelOrdinal;
+        SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL = severityCodeResolutionByStandardLevelOrdinal;
     }
 
     private static final EventResolver SEVERITY_CODE_RESOLVER =
@@ -95,44 +91,36 @@ public final class LevelResolver implements EventResolver {
                 final int standardLevelOrdinal =
                         logEvent.getLevel().getStandardLevel().ordinal();
                 final String severityCodeResolution =
-                        SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL[
-                                standardLevelOrdinal];
+                        SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL[standardLevelOrdinal];
                 jsonWriter.writeRawString(severityCodeResolution);
             };
 
     private final EventResolver internalResolver;
 
-    LevelResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    LevelResolver(final EventResolverContext context, final TemplateResolverConfig config) {
         this.internalResolver = createResolver(context, config);
     }
 
     private static EventResolver createResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+            final EventResolverContext context, final TemplateResolverConfig config) {
         final JsonWriter jsonWriter = context.getJsonWriter();
         final String fieldName = config.getString("field");
         if ("name".equals(fieldName)) {
             return createNameResolver(jsonWriter);
         } else if ("severity".equals(fieldName)) {
-            final String severityFieldName =
-                    config.getString(new String[]{"severity", "field"});
+            final String severityFieldName = config.getString(new String[] {"severity", "field"});
             if ("keyword".equals(severityFieldName)) {
                 return createSeverityKeywordResolver(jsonWriter);
             } else if ("code".equals(severityFieldName)) {
                 return SEVERITY_CODE_RESOLVER;
             }
-            throw new IllegalArgumentException(
-                    "unknown severity field: " + config);
+            throw new IllegalArgumentException("unknown severity field: " + config);
         }
         throw new IllegalArgumentException("unknown field: " + config);
     }
 
-    private static EventResolver createNameResolver(
-            final JsonWriter contextJsonWriter) {
-        final Map<Level, String> resolutionByLevel = Arrays
-                .stream(Level.values())
+    private static EventResolver createNameResolver(final JsonWriter contextJsonWriter) {
+        final Map<Level, String> resolutionByLevel = Arrays.stream(Level.values())
                 .collect(Collectors.toMap(
                         Function.identity(),
                         (final Level level) -> contextJsonWriter.use(() -> {
@@ -151,14 +139,13 @@ public final class LevelResolver implements EventResolver {
         };
     }
 
-    private static EventResolver createSeverityKeywordResolver(
-            final JsonWriter contextJsonWriter) {
-        final Map<Level, String> resolutionByLevel = Arrays
-                .stream(Level.values())
+    private static EventResolver createSeverityKeywordResolver(final JsonWriter contextJsonWriter) {
+        final Map<Level, String> resolutionByLevel = Arrays.stream(Level.values())
                 .collect(Collectors.toMap(
                         Function.identity(),
                         (final Level level) -> contextJsonWriter.use(() -> {
-                            final String severityKeyword = Severity.getSeverity(level).name();
+                            final String severityKeyword =
+                                    Severity.getSeverity(level).name();
                             contextJsonWriter.writeString(severityKeyword);
                         })));
         return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
@@ -172,10 +159,7 @@ public final class LevelResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         internalResolver.resolve(logEvent, jsonWriter);
     }
-
 }

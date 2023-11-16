@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.validation.PluginWithGenericSubclassFoo1Builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
 
@@ -37,17 +37,19 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
     public void setUp() throws Exception {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
-        plugin = (PluginType<PluginWithGenericSubclassFoo1Builder>) manager.getPluginType("PluginWithGenericSubclassFoo1Builder");
+        plugin = (PluginType<PluginWithGenericSubclassFoo1Builder>)
+                manager.getPluginType("PluginWithGenericSubclassFoo1Builder");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", plugin);
     }
 
     @Test
     public void testNullDefaultValue() throws Exception {
-        final PluginWithGenericSubclassFoo1Builder validatingPlugin = (PluginWithGenericSubclassFoo1Builder) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
-            .build();
+        final PluginWithGenericSubclassFoo1Builder validatingPlugin =
+                (PluginWithGenericSubclassFoo1Builder) new PluginBuilder(plugin)
+                        .withConfiguration(new NullConfiguration())
+                        .withConfigurationNode(node)
+                        .build();
         assertNull(validatingPlugin);
     }
 
@@ -55,10 +57,11 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("thing", "thing1");
         node.getAttributes().put("foo1", "foo1");
-        final PluginWithGenericSubclassFoo1Builder validatingPlugin = (PluginWithGenericSubclassFoo1Builder) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
-            .build();
+        final PluginWithGenericSubclassFoo1Builder validatingPlugin =
+                (PluginWithGenericSubclassFoo1Builder) new PluginBuilder(plugin)
+                        .withConfiguration(new NullConfiguration())
+                        .withConfigurationNode(node)
+                        .build();
         assertNotNull(validatingPlugin);
         assertEquals("thing1", validatingPlugin.getThing());
         assertEquals("foo1", validatingPlugin.getFoo1());

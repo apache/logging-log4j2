@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -29,10 +32,6 @@ import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
 public class EventParameterMemoryLeakTest {
@@ -85,6 +84,7 @@ public class EventParameterMemoryLeakTest {
     private static final class ParameterObject {
         private final String value;
         private final CountDownLatch latch;
+
         ParameterObject(final String value, final CountDownLatch latch) {
             this.value = value;
             this.latch = latch;

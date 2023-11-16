@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.DoubleQuotedStringValue;
 import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.NullValue;
 import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.StringValue;
@@ -35,289 +34,261 @@ class StringParameterParserTest {
 
     @Test
     void test_empty_string() {
-        testSuccess(
-                "",
-                Collections.emptyMap());
+        testSuccess("", Collections.emptyMap());
     }
 
     @Test
     void test_blank_string() {
-        testSuccess(
-                "\t",
-                Collections.emptyMap());
+        testSuccess("\t", Collections.emptyMap());
     }
 
     @Test
     void test_simple_pair() {
-        testSuccess(
-                "a=b",
-                Collections.singletonMap("a", Values.stringValue("b")));
+        testSuccess("a=b", Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
     void test_simple_pair_with_whitespace_1() {
-        testSuccess(
-                " a=b",
-                Collections.singletonMap("a", Values.stringValue("b")));
+        testSuccess(" a=b", Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
     void test_simple_pair_with_whitespace_2() {
-        testSuccess(
-                " a =b",
-                Collections.singletonMap("a", Values.stringValue("b")));
+        testSuccess(" a =b", Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
     void test_simple_pair_with_whitespace_3() {
-        testSuccess(
-                " a = b",
-                Collections.singletonMap("a", Values.stringValue("b")));
+        testSuccess(" a = b", Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
     void test_simple_pair_with_whitespace_4() {
-        testSuccess(
-                " a = b ",
-                Collections.singletonMap("a", Values.stringValue("b")));
+        testSuccess(" a = b ", Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
     void test_null_value_1() {
-        testSuccess(
-                "a",
-                Collections.singletonMap("a", Values.nullValue()));
+        testSuccess("a", Collections.singletonMap("a", Values.nullValue()));
     }
 
     @Test
     void test_null_value_2() {
-        testSuccess(
-                "a,b=c,d=",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.nullValue());
-                    put("b", Values.stringValue("c"));
-                    put("d", Values.nullValue());
-                }});
+        testSuccess("a,b=c,d=", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.nullValue());
+                put("b", Values.stringValue("c"));
+                put("d", Values.nullValue());
+            }
+        });
     }
 
     @Test
     void test_null_value_3() {
-        testSuccess(
-                "a,b=c,d",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.nullValue());
-                    put("b", Values.stringValue("c"));
-                    put("d", Values.nullValue());
-                }});
+        testSuccess("a,b=c,d", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.nullValue());
+                put("b", Values.stringValue("c"));
+                put("d", Values.nullValue());
+            }
+        });
     }
 
     @Test
     void test_null_value_4() {
-        testSuccess(
-                "a,b=\"c,=\\\"\",d=,e=f",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.nullValue());
-                    put("b", Values.doubleQuotedStringValue("c,=\""));
-                    put("d", Values.nullValue());
-                    put("e", Values.stringValue("f"));
-                }});
+        testSuccess("a,b=\"c,=\\\"\",d=,e=f", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.nullValue());
+                put("b", Values.doubleQuotedStringValue("c,=\""));
+                put("d", Values.nullValue());
+                put("e", Values.stringValue("f"));
+            }
+        });
     }
 
     @Test
     void test_two_pairs() {
-        testSuccess(
-                "a=b,c=d",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.stringValue("b"));
-                    put("c", Values.stringValue("d"));
-                }});
+        testSuccess("a=b,c=d", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.stringValue("b"));
+                put("c", Values.stringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_01() {
-        testSuccess(
-                "a=\"b\"",
-                Collections.singletonMap("a", Values.doubleQuotedStringValue("b")));
+        testSuccess("a=\"b\"", Collections.singletonMap("a", Values.doubleQuotedStringValue("b")));
     }
 
     @Test
     void test_quoted_string_02() {
-        testSuccess(
-                "a=\"b\",c=d",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("b"));
-                    put("c", Values.stringValue("d"));
-                }});
+        testSuccess("a=\"b\",c=d", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("b"));
+                put("c", Values.stringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_03() {
-        testSuccess(
-                "a=b,c=\"d\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.stringValue("b"));
-                    put("c", Values.doubleQuotedStringValue("d"));
-                }});
+        testSuccess("a=b,c=\"d\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.stringValue("b"));
+                put("c", Values.doubleQuotedStringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_04() {
-        testSuccess(
-                "a=\"b\",c=\"d\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("b"));
-                    put("c", Values.doubleQuotedStringValue("d"));
-                }});
+        testSuccess("a=\"b\",c=\"d\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("b"));
+                put("c", Values.doubleQuotedStringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_05() {
-        testSuccess(
-                "a=\"\\\"b\"",
-                Collections.singletonMap("a", Values.doubleQuotedStringValue("\"b")));
+        testSuccess("a=\"\\\"b\"", Collections.singletonMap("a", Values.doubleQuotedStringValue("\"b")));
     }
 
     @Test
     void test_quoted_string_06() {
-        testSuccess(
-                "a=\"\\\"b\\\"\"",
-                Collections.singletonMap("a", Values.doubleQuotedStringValue("\"b\"")));
+        testSuccess("a=\"\\\"b\\\"\"", Collections.singletonMap("a", Values.doubleQuotedStringValue("\"b\"")));
     }
 
     @Test
     void test_quoted_string_07() {
-        testSuccess(
-                "a=\"\\\"b\",c=d",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b"));
-                    put("c", Values.stringValue("d"));
-                }});
+        testSuccess("a=\"\\\"b\",c=d", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b"));
+                put("c", Values.stringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_08() {
-        testSuccess(
-                "a=\"\\\"b\\\"\",c=d",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b\""));
-                    put("c", Values.stringValue("d"));
-                }});
+        testSuccess("a=\"\\\"b\\\"\",c=d", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b\""));
+                put("c", Values.stringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_09() {
-        testSuccess(
-                "a=\"\\\"b,\",c=d",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b,"));
-                    put("c", Values.stringValue("d"));
-                }});
+        testSuccess("a=\"\\\"b,\",c=d", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b,"));
+                put("c", Values.stringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_10() {
-        testSuccess(
-                "a=\"\\\"b\\\",\",c=d",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b\","));
-                    put("c", Values.stringValue("d"));
-                }});
+        testSuccess("a=\"\\\"b\\\",\",c=d", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b\","));
+                put("c", Values.stringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_11() {
-        testSuccess(
-                "a=\"\\\"b\",c=\"d\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b"));
-                    put("c", Values.doubleQuotedStringValue("d"));
-                }});
+        testSuccess("a=\"\\\"b\",c=\"d\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b"));
+                put("c", Values.doubleQuotedStringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_12() {
-        testSuccess(
-                "a=\"\\\"b\\\"\",c=\"d\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b\""));
-                    put("c", Values.doubleQuotedStringValue("d"));
-                }});
+        testSuccess("a=\"\\\"b\\\"\",c=\"d\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b\""));
+                put("c", Values.doubleQuotedStringValue("d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_13() {
-        testSuccess(
-                "a=\"\\\"b,\",c=\"\\\"d\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b,"));
-                    put("c", Values.doubleQuotedStringValue("\"d"));
-                }});
+        testSuccess("a=\"\\\"b,\",c=\"\\\"d\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b,"));
+                put("c", Values.doubleQuotedStringValue("\"d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_14() {
-        testSuccess(
-                "a=\"\\\"b\\\",\",c=\"\\\"d\\\"\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b\","));
-                    put("c", Values.doubleQuotedStringValue("\"d\""));
-                }});
+        testSuccess("a=\"\\\"b\\\",\",c=\"\\\"d\\\"\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b\","));
+                put("c", Values.doubleQuotedStringValue("\"d\""));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_15() {
-        testSuccess(
-                "a=\"\\\"b\",c=\",d\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b"));
-                    put("c", Values.doubleQuotedStringValue(",d"));
-                }});
+        testSuccess("a=\"\\\"b\",c=\",d\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b"));
+                put("c", Values.doubleQuotedStringValue(",d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_16() {
-        testSuccess(
-                "a=\"\\\"b\\\"\",c=\",d\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b\""));
-                    put("c", Values.doubleQuotedStringValue(",d"));
-                }});
+        testSuccess("a=\"\\\"b\\\"\",c=\",d\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b\""));
+                put("c", Values.doubleQuotedStringValue(",d"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_17() {
-        testSuccess(
-                "a=\"\\\"b,\",c=\"\\\"d,\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b,"));
-                    put("c", Values.doubleQuotedStringValue("\"d,"));
-                }});
+        testSuccess("a=\"\\\"b,\",c=\"\\\"d,\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b,"));
+                put("c", Values.doubleQuotedStringValue("\"d,"));
+            }
+        });
     }
 
     @Test
     void test_quoted_string_18() {
-        testSuccess(
-                "a=\"\\\"b\\\",\",c=\"\\\"d\\\",\"",
-                new LinkedHashMap<String, Value>() {{
-                    put("a", Values.doubleQuotedStringValue("\"b\","));
-                    put("c", Values.doubleQuotedStringValue("\"d\","));
-                }});
+        testSuccess("a=\"\\\"b\\\",\",c=\"\\\"d\\\",\"", new LinkedHashMap<String, Value>() {
+            {
+                put("a", Values.doubleQuotedStringValue("\"b\","));
+                put("c", Values.doubleQuotedStringValue("\"d\","));
+            }
+        });
     }
 
-    private static void testSuccess(
-            final String input,
-            final Map<String, Value> expectedMap) {
+    private static void testSuccess(final String input, final Map<String, Value> expectedMap) {
         final Map<String, Value> actualMap = StringParameterParser.parse(input);
-        Assertions
-                .assertThat(actualMap)
-                .as("input: %s", input)
-                .isEqualTo(expectedMap);
+        Assertions.assertThat(actualMap).as("input: %s", input).isEqualTo(expectedMap);
     }
 
     @Test
     void test_missing_key() {
-        Assertions
-                .assertThatThrownBy(() -> {
+        Assertions.assertThatThrownBy(() -> {
                     final String input = ",a=b";
                     StringParameterParser.parse(input);
                 })
@@ -326,8 +297,7 @@ class StringParameterParserTest {
 
     @Test
     void test_conflicting_key() {
-        Assertions
-                .assertThatThrownBy(() -> {
+        Assertions.assertThatThrownBy(() -> {
                     final String input = "a,a";
                     StringParameterParser.parse(input);
                 })
@@ -336,8 +306,7 @@ class StringParameterParserTest {
 
     @Test
     void test_prematurely_ending_quoted_string_01() {
-        Assertions
-                .assertThatThrownBy(() -> {
+        Assertions.assertThatThrownBy(() -> {
                     final String input = "a,b=\"";
                     StringParameterParser.parse(input);
                 })
@@ -346,8 +315,7 @@ class StringParameterParserTest {
 
     @Test
     void test_prematurely_ending_quoted_string_02() {
-        Assertions
-                .assertThatThrownBy(() -> {
+        Assertions.assertThatThrownBy(() -> {
                     final String input = "a,b=\"c";
                     StringParameterParser.parse(input);
                 })
@@ -356,8 +324,7 @@ class StringParameterParserTest {
 
     @Test
     void test_prematurely_ending_quoted_string_03() {
-        Assertions
-                .assertThatThrownBy(() -> {
+        Assertions.assertThatThrownBy(() -> {
                     final String input = "a,b=\",c";
                     StringParameterParser.parse(input);
                 })
@@ -366,8 +333,7 @@ class StringParameterParserTest {
 
     @Test
     void test_prematurely_ending_quoted_string_04() {
-        Assertions
-                .assertThatThrownBy(() -> {
+        Assertions.assertThatThrownBy(() -> {
                     final String input = "a,b=\",c\" x";
                     StringParameterParser.parse(input);
                 })
@@ -397,14 +363,11 @@ class StringParameterParserTest {
 
     @Test
     void test_allowedKeys() {
-        Assertions
-                .assertThatThrownBy(() -> {
+        Assertions.assertThatThrownBy(() -> {
                     final String input = "a,b";
-                    final Set<String> allowedKeys =
-                            new LinkedHashSet<>(Collections.singletonList("a"));
+                    final Set<String> allowedKeys = new LinkedHashSet<>(Collections.singletonList("a"));
                     StringParameterParser.parse(input, allowedKeys);
                 })
                 .hasMessageStartingWith("unknown key \"b\" is found in input: a,b");
     }
-
 }

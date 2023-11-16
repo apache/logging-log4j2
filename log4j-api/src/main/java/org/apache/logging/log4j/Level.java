@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import aQute.bnd.annotation.baseline.BaselineIgnore;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:

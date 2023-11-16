@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EnvironmentPropertySourceTest {
 
     private final PropertySource source = new EnvironmentPropertySource();
 
     public static Object[][] data() {
-        return new Object[][]{
+        return new Object[][] {
             {"LOG4J_CONFIGURATION_FILE", Arrays.asList("configuration", "file")},
             {"LOG4J_FOO_BAR_PROPERTY", Arrays.asList("foo", "bar", "property")},
             {"LOG4J_EXACT", Collections.singletonList("EXACT")},
@@ -41,7 +40,8 @@ public class EnvironmentPropertySourceTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testNormalFormFollowsEnvironmentVariableConventions(final CharSequence expected, final List<? extends CharSequence> tokens) {
+    public void testNormalFormFollowsEnvironmentVariableConventions(
+            final CharSequence expected, final List<? extends CharSequence> tokens) {
         assertEquals(expected, source.getNormalForm(tokens));
     }
 }

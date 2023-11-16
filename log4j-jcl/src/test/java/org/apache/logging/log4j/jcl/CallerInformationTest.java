@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.jcl;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -26,10 +27,8 @@ import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @UsingStatusListener
-@SetTestProperty(key ="log4j2.configurationFile", value="org/apache/logging/log4j/jcl/CallerInformationTest.xml")
+@SetTestProperty(key = "log4j2.configurationFile", value = "org/apache/logging/log4j/jcl/CallerInformationTest.xml")
 public class CallerInformationTest {
 
     @Test
@@ -42,9 +41,7 @@ public class CallerInformationTest {
         logger.warn("Verifying the caller class is still correct.");
         logger.error("Hopefully nobody breaks me!");
         final List<String> messages = app.getMessages();
-        assertThat(messages)
-                .hasSize(3)
-                .allMatch(c -> getClass().getName().equals(c));
+        assertThat(messages).hasSize(3).allMatch(c -> getClass().getName().equals(c));
     }
 
     @Test
@@ -59,8 +56,6 @@ public class CallerInformationTest {
         logger.warn("brains~~~");
         logger.info("Itchy. Tasty.");
         final List<String> messages = app.getMessages();
-        assertThat(messages)
-                .hasSize(5)
-                .allMatch("testMethodLogger"::equals);
+        assertThat(messages).hasSize(5).allMatch("testMethodLogger"::equals);
     }
 }

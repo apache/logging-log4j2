@@ -25,7 +25,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LifeCycle2;
@@ -79,7 +78,8 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
                         try {
                             LOGGER.error(SHUTDOWN_HOOK_MARKER, "Caught exception executing shutdown hook {}", hook, t1);
                         } catch (final Throwable t2) {
-                            System.err.println("Caught exception " + t2.getClass() + " logging exception " + t1.getClass());
+                            System.err.println(
+                                    "Caught exception " + t2.getClass() + " logging exception " + t1.getClass());
                             t1.printStackTrace();
                         }
                     }
@@ -133,13 +133,12 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
             hooks.add(new SoftReference<>(receipt));
             return receipt;
         }
-        throw new IllegalStateException("Cannot add new shutdown hook as this is not started. Current state: " +
-            state.get().name());
+        throw new IllegalStateException("Cannot add new shutdown hook as this is not started. Current state: "
+                + state.get().name());
     }
 
     @Override
-    public void initialize() {
-    }
+    public void initialize() {}
 
     /**
      * Registers the shutdown thread only if this is initialized.
@@ -212,5 +211,4 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
     public boolean isStopped() {
         return state.get() == State.STOPPED;
     }
-
 }

@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.osgi.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.linkBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,18 +38,14 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
-import static org.junit.Assert.assertEquals;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.linkBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class CoreOsgiTest {
 
     @org.ops4j.pax.exam.Configuration
     public Option[] config() {
-        return options(linkBundle("org.apache.logging.log4j.api"),
+        return options(
+                linkBundle("org.apache.logging.log4j.api"),
                 linkBundle("org.apache.logging.log4j.core"),
                 linkBundle("org.apache.logging.log4j.1.2.api").start(false),
                 // required by Pax Exam's logging

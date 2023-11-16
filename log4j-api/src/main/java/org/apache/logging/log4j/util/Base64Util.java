@@ -18,7 +18,6 @@ package org.apache.logging.log4j.util;
 
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.LoggingException;
 
 /**
@@ -47,8 +46,7 @@ public final class Base64Util {
         }
     }
 
-    private Base64Util() {
-    }
+    private Base64Util() {}
 
     /**
      * This method does not specify an encoding for the {@code str} parameter and should not be used.
@@ -58,7 +56,7 @@ public final class Base64Util {
         if (str == null) {
             return null;
         }
-        final byte [] data = str.getBytes(Charset.defaultCharset());
+        final byte[] data = str.getBytes(Charset.defaultCharset());
         if (encodeMethod != null) {
             try {
                 return (String) encodeMethod.invoke(encoder, data);

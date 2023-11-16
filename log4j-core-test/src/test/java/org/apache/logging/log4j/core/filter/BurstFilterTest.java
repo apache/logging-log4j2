@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test for <code>BurstFilter</code>.
@@ -68,7 +67,8 @@ public class BurstFilterTest {
         Thread.sleep(1500);
 
         for (int i = 0; i < 110; i++) {
-            logger.info("Waited 1.5 seconds and trying to log again, should see more than 0 and less than 100" + (i + 1));
+            logger.info(
+                    "Waited 1.5 seconds and trying to log again, should see more than 0 and less than 100" + (i + 1));
         }
 
         msgs = app.getMessages();
@@ -79,16 +79,16 @@ public class BurstFilterTest {
         filter.clear();
 
         for (int i = 0; i < 110; i++) {
-            logger.info("Waited 1.5 seconds and trying to log again, should see more than 0 and less than 100" + (i + 1));
+            logger.info(
+                    "Waited 1.5 seconds and trying to log again, should see more than 0 and less than 100" + (i + 1));
         }
         assertEquals(0, filter.getAvailable(), "");
         app.clear();
 
-
         // now log 100 debugs, they shouldn't get through because there are no available slots.
         for (int i = 0; i < 110; i++) {
-            logger.debug(
-                "TEST FAILED! Logging 110 debug messages, shouldn't see any of them because they are debugs #" + (i + 1));
+            logger.debug("TEST FAILED! Logging 110 debug messages, shouldn't see any of them because they are debugs #"
+                    + (i + 1));
         }
 
         msgs = app.getMessages();
@@ -131,6 +131,5 @@ public class BurstFilterTest {
         msgs = app.getMessages();
         assertEquals(100, msgs.size(), "Incorrect message count. Should be 100, actual " + msgs.size());
         app.clear();
-
     }
 }

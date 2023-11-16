@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertTrue;
+
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
@@ -32,8 +33,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -48,10 +47,10 @@ public class RandomRollingAppenderOnStartupTest {
     @Parameterized.Parameters(name = "{0} \u2192 {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { //
-                // @formatter:off
-                {"log4j-test5.xml"},
-                {"log4j-test5.xml"},});
-                // @formatter:on
+            // @formatter:off
+            {"log4j-test5.xml"}, {"log4j-test5.xml"},
+        });
+        // @formatter:on
     }
 
     @Rule
@@ -87,7 +86,8 @@ public class RandomRollingAppenderOnStartupTest {
                     size = Files.size(path);
                 } else {
                     final long fileSize = Files.size(path);
-                    assertTrue("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
+                    assertTrue(
+                            "Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
                             size == fileSize);
                 }
                 Files.delete(path);
@@ -101,6 +101,5 @@ public class RandomRollingAppenderOnStartupTest {
         for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
-
     }
 }

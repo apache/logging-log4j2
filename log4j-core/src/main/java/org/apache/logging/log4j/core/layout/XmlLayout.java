@@ -20,7 +20,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
@@ -65,7 +64,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
     private static final String ROOT_TAG = "Events";
 
     public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
-        implements org.apache.logging.log4j.core.util.Builder<XmlLayout> {
+            implements org.apache.logging.log4j.core.util.Builder<XmlLayout> {
 
         public Builder() {
             setCharset(StandardCharsets.UTF_8);
@@ -73,9 +72,19 @@ public final class XmlLayout extends AbstractJacksonLayout {
 
         @Override
         public XmlLayout build() {
-            return new XmlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
-                    isCompact(), getEndOfLine(), getCharset(), isIncludeStacktrace(), isStacktraceAsString(),
-                    isIncludeNullDelimiter(), isIncludeTimeMillis(), getAdditionalFields());
+            return new XmlLayout(
+                    getConfiguration(),
+                    isLocationInfo(),
+                    isProperties(),
+                    isComplete(),
+                    isCompact(),
+                    getEndOfLine(),
+                    getCharset(),
+                    isIncludeStacktrace(),
+                    isStacktraceAsString(),
+                    isIncludeNullDelimiter(),
+                    isIncludeTimeMillis(),
+                    getAdditionalFields());
         }
     }
 
@@ -83,21 +92,54 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @deprecated Use {@link #newBuilder()} instead
      */
     @Deprecated
-    protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-                        final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        this(null, locationInfo, properties, complete, compact, null, charset, includeStacktrace,
-                false, false, false, null);
+    protected XmlLayout(
+            final boolean locationInfo,
+            final boolean properties,
+            final boolean complete,
+            final boolean compact,
+            final Charset charset,
+            final boolean includeStacktrace) {
+        this(
+                null,
+                locationInfo,
+                properties,
+                complete,
+                compact,
+                null,
+                charset,
+                includeStacktrace,
+                false,
+                false,
+                false,
+                null);
     }
 
-    private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
-                      final boolean complete, final boolean compact, final String endOfLine, final Charset charset,
-                      final boolean includeStacktrace, final boolean stacktraceAsString,
-                      final boolean includeNullDelimiter, final boolean includeTimeMillis,
-                      final KeyValuePair[] additionalFields) {
-        super(config, new JacksonFactory.XML(includeStacktrace, stacktraceAsString).newWriter(
-            locationInfo, properties, compact, includeTimeMillis),
-            charset, compact, complete, false, endOfLine, null, null, includeNullDelimiter,
-            additionalFields);
+    private XmlLayout(
+            final Configuration config,
+            final boolean locationInfo,
+            final boolean properties,
+            final boolean complete,
+            final boolean compact,
+            final String endOfLine,
+            final Charset charset,
+            final boolean includeStacktrace,
+            final boolean stacktraceAsString,
+            final boolean includeNullDelimiter,
+            final boolean includeTimeMillis,
+            final KeyValuePair[] additionalFields) {
+        super(
+                config,
+                new JacksonFactory.XML(includeStacktrace, stacktraceAsString)
+                        .newWriter(locationInfo, properties, compact, includeTimeMillis),
+                charset,
+                compact,
+                complete,
+                false,
+                endOfLine,
+                null,
+                null,
+                includeNullDelimiter,
+                additionalFields);
     }
 
     /**
@@ -188,8 +230,19 @@ public final class XmlLayout extends AbstractJacksonLayout {
             final boolean compact,
             final Charset charset,
             final boolean includeStacktrace) {
-        return new XmlLayout(null, locationInfo, properties, complete, compact, null, charset, includeStacktrace, false,
-                false, false, null);
+        return new XmlLayout(
+                null,
+                locationInfo,
+                properties,
+                complete,
+                compact,
+                null,
+                charset,
+                includeStacktrace,
+                false,
+                false,
+                false,
+                null);
     }
 
     @PluginBuilderFactory
@@ -203,7 +256,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @return an XML Layout.
      */
     public static XmlLayout createDefaultLayout() {
-        return new XmlLayout(null, false, false, false, false, null, StandardCharsets.UTF_8, true, false, false,
-                false, null);
+        return new XmlLayout(
+                null, false, false, false, false, null, StandardCharsets.UTF_8, true, false, false, false, null);
     }
 }

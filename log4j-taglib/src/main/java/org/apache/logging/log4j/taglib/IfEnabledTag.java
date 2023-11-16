@@ -18,7 +18,6 @@ package org.apache.logging.log4j.taglib;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 

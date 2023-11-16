@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -30,7 +33,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,9 +40,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the ResolverUtil class for custom protocol like bundleresource, vfs, vfszip.
@@ -104,8 +103,8 @@ public class ResolverUtilCustomProtocolTest {
                 handlersFields.setAccessible(true);
             }
             @SuppressWarnings("unchecked")
-            final Hashtable<String, URLStreamHandler> handlers = (Hashtable<String, URLStreamHandler>) handlersFields
-                    .get(null);
+            final Hashtable<String, URLStreamHandler> handlers =
+                    (Hashtable<String, URLStreamHandler>) handlersFields.get(null);
             if (handlers != null) {
                 handlers.clear();
             }
@@ -164,14 +163,11 @@ public class ResolverUtilCustomProtocolTest {
                 Arguments.of(
                         "vfs:/content/test-log4k2-ear.ear/lib/test-log4j2-jar-plugins.jar/org/hypik/test/jboss/log4j2/pluginjar/",
                         "/content/test-log4k2-ear.ear/lib/test-log4j2-jar-plugins.jar/org/hypik/test/jboss/log4j2/pluginjar/"),
-                Arguments.of("vfszip:/path+with+plus/file+name+with+plus.xml",
-                        "/path+with+plus/file+name+with+plus.xml"),
-                Arguments.of("vfs:/path+with+plus/file+name+with+plus.xml",
-                        "/path+with+plus/file+name+with+plus.xml"),
-                Arguments.of("bundleresource:/some/path/some/file.properties",
-                        "/some/path/some/file.properties"),
-                Arguments.of("bundleresource:/some+path/some+file.properties",
-                        "/some+path/some+file.properties"));
+                Arguments.of(
+                        "vfszip:/path+with+plus/file+name+with+plus.xml", "/path+with+plus/file+name+with+plus.xml"),
+                Arguments.of("vfs:/path+with+plus/file+name+with+plus.xml", "/path+with+plus/file+name+with+plus.xml"),
+                Arguments.of("bundleresource:/some/path/some/file.properties", "/some/path/some/file.properties"),
+                Arguments.of("bundleresource:/some+path/some+file.properties", "/some+path/some+file.properties"));
     }
 
     @ParameterizedTest
@@ -186,11 +182,13 @@ public class ResolverUtilCustomProtocolTest {
         final File tmpDir = new File(DIR, "resolverutil3");
         try (final URLClassLoader cl = ResolverUtilTest.compileAndCreateClassLoader(tmpDir, "3")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
-            resolverUtil.setClassLoader(
-                    new SingleURLClassLoader(new URL("vfs:/" + tmpDir + "/customplugin3/"), cl));
+            resolverUtil.setClassLoader(new SingleURLClassLoader(new URL("vfs:/" + tmpDir + "/customplugin3/"), cl));
             resolverUtil.findInPackage(new PluginTest(), "customplugin3");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin3.FixedString3Layout"),
+            assertEquals(
+                    "Class not found in packages", 1, resolverUtil.getClasses().size());
+            assertEquals(
+                    "Unexpected class resolved",
+                    cl.loadClass("customplugin3.FixedString3Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
@@ -203,10 +201,12 @@ public class ResolverUtilCustomProtocolTest {
             resolverUtil.setClassLoader(
                     new SingleURLClassLoader(new URL("vfs:/" + tmpDir + "/customplugin4.jar/customplugin4/"), cl));
             resolverUtil.findInPackage(new PluginTest(), "customplugin4");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin4.FixedString4Layout"),
+            assertEquals(
+                    "Class not found in packages", 1, resolverUtil.getClasses().size());
+            assertEquals(
+                    "Unexpected class resolved",
+                    cl.loadClass("customplugin4.FixedString4Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
-
 }

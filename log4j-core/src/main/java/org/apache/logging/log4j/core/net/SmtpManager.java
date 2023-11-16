@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.Properties;
-
 import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -36,8 +36,6 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 import javax.mail.util.ByteArrayDataSource;
 import javax.net.ssl.SSLSocketFactory;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -63,9 +61,10 @@ public class SmtpManager extends MailManager {
 
     private final FactoryData data;
 
-    private static MimeMessage createMimeMessage(final FactoryData data, final Session session, final LogEvent appendEvent)
-            throws MessagingException {
-        return new MimeMessageBuilder(session).setFrom(data.getFrom())
+    private static MimeMessage createMimeMessage(
+            final FactoryData data, final Session session, final LogEvent appendEvent) throws MessagingException {
+        return new MimeMessageBuilder(session)
+                .setFrom(data.getFrom())
                 .setReplyTo(data.getReplyTo())
                 .setRecipients(Message.RecipientType.TO, data.getTo())
                 .setRecipients(Message.RecipientType.CC, data.getCc())
@@ -74,8 +73,7 @@ public class SmtpManager extends MailManager {
                 .build();
     }
 
-    protected SmtpManager(final String name, final Session session, final MimeMessage message,
-                          final FactoryData data) {
+    protected SmtpManager(final String name, final Session session, final MimeMessage message, final FactoryData data) {
         super(null, name);
         this.session = session;
         this.message = message;
@@ -90,22 +88,45 @@ public class SmtpManager extends MailManager {
 
     @Deprecated
     public static SmtpManager getSmtpManager(
-                                             final Configuration config,
-                                             final String to, final String cc, final String bcc,
-                                             final String from, final String replyTo,
-                                             final String subject, final String protocol, final String host,
-                                             final int port, final String username, final String password,
-                                             final boolean isDebug, final String filterName, final int numElements,
-                                             final SslConfiguration sslConfiguration) {
+            final Configuration config,
+            final String to,
+            final String cc,
+            final String bcc,
+            final String from,
+            final String replyTo,
+            final String subject,
+            final String protocol,
+            final String host,
+            final int port,
+            final String username,
+            final String password,
+            final boolean isDebug,
+            final String filterName,
+            final int numElements,
+            final SslConfiguration sslConfiguration) {
         final Serializer subjectSerializer = PatternLayout.newSerializerBuilder()
                 .setConfiguration(config)
                 .setPattern(subject)
                 .build();
-        final FactoryData data = new FactoryData(to, cc, bcc, from, replyTo, subject, subjectSerializer, protocol, host,
-                port, username, password, isDebug, numElements, sslConfiguration, filterName);
+        final FactoryData data = new FactoryData(
+                to,
+                cc,
+                bcc,
+                from,
+                replyTo,
+                subject,
+                subjectSerializer,
+                protocol,
+                host,
+                port,
+                username,
+                password,
+                isDebug,
+                numElements,
+                sslConfiguration,
+                filterName);
 
         return (SmtpManager) getManager(data.getManagerName(), FACTORY, data);
-
     }
 
     @Override
@@ -139,16 +160,19 @@ public class SmtpManager extends MailManager {
         return buffer.removeAll();
     }
 
-    protected byte[] formatContentToBytes(final LogEvent[] priorEvents, final LogEvent appendEvent,
-                                          final Layout<?> layout) throws IOException {
+    protected byte[] formatContentToBytes(
+            final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout) throws IOException {
         final ByteArrayOutputStream raw = new ByteArrayOutputStream();
         writeContent(priorEvents, appendEvent, layout, raw);
         return raw.toByteArray();
     }
 
-    private void writeContent(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout,
-                              final ByteArrayOutputStream out)
-        throws IOException {
+    private void writeContent(
+            final LogEvent[] priorEvents,
+            final LogEvent appendEvent,
+            final Layout<?> layout,
+            final ByteArrayOutputStream out)
+            throws IOException {
         writeHeader(layout, out);
         writeBuffer(priorEvents, appendEvent, layout, out);
         writeFooter(layout, out);
@@ -161,8 +185,9 @@ public class SmtpManager extends MailManager {
         }
     }
 
-    protected void writeBuffer(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout,
-                               final OutputStream out) throws IOException {
+    protected void writeBuffer(
+            final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout, final OutputStream out)
+            throws IOException {
         for (final LogEvent priorEvent : priorEvents) {
             final byte[] bytes = layout.toByteArray(priorEvent);
             out.write(bytes);
@@ -185,7 +210,7 @@ public class SmtpManager extends MailManager {
     }
 
     protected byte[] encodeContentToBytes(final byte[] rawBytes, final String encoding)
-        throws MessagingException, IOException {
+            throws MessagingException, IOException {
         final ByteArrayOutputStream encoded = new ByteArrayOutputStream();
         encodeContent(rawBytes, encoding, encoded);
         return encoded.toByteArray();
@@ -206,7 +231,7 @@ public class SmtpManager extends MailManager {
     }
 
     protected MimeMultipart getMimeMultipart(final byte[] encodedBytes, final InternetHeaders headers)
-        throws MessagingException {
+            throws MessagingException {
         final MimeMultipart mp = new MimeMultipart();
         final MimeBodyPart part = new MimeBodyPart(headers, encodedBytes);
         mp.addBodyPart(part);
@@ -227,9 +252,10 @@ public class SmtpManager extends MailManager {
 
     @SuppressFBWarnings(
             value = "SMTP_HEADER_INJECTION",
-            justification = "False positive, since MimeMessage#setSubject does actually escape new lines."
-    )
-    protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp, final String subject) throws MessagingException {synchronized (msg) {
+            justification = "False positive, since MimeMessage#setSubject does actually escape new lines.")
+    protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp, final String subject)
+            throws MessagingException {
+        synchronized (msg) {
             msg.setContent(mp);
             msg.setSentDate(new Date());
             msg.setSubject(subject);
@@ -284,7 +310,8 @@ public class SmtpManager extends MailManager {
                 if (sslConfiguration != null) {
                     final SSLSocketFactory sslSocketFactory = sslConfiguration.getSslSocketFactory();
                     properties.put(prefix + ".ssl.socketFactory", sslSocketFactory);
-                    properties.setProperty(prefix + ".ssl.checkserveridentity", Boolean.toString(sslConfiguration.isVerifyHostName()));
+                    properties.setProperty(
+                            prefix + ".ssl.checkserveridentity", Boolean.toString(sslConfiguration.isVerifyHostName()));
                 }
             }
 
@@ -298,7 +325,7 @@ public class SmtpManager extends MailManager {
             if (null != password && null != username) {
                 return new Authenticator() {
                     private final PasswordAuthentication passwordAuthentication =
-                        new PasswordAuthentication(username, password);
+                            new PasswordAuthentication(username, password);
 
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.test.appender;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
@@ -31,9 +30,19 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
  */
 public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppender.InMemoryManager> {
 
-    public InMemoryAppender(final String name, final Layout<? extends Serializable> layout, final CompositeFilter filters,
-                            final boolean ignoreExceptions, final boolean writeHeader) {
-        super(name, layout, filters, ignoreExceptions, true, Property.EMPTY_ARRAY,
+    public InMemoryAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final CompositeFilter filters,
+            final boolean ignoreExceptions,
+            final boolean writeHeader) {
+        super(
+                name,
+                layout,
+                filters,
+                ignoreExceptions,
+                true,
+                Property.EMPTY_ARRAY,
                 new InMemoryManager(name, layout, writeHeader));
     }
 
@@ -44,8 +53,8 @@ public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppen
 
     static class InMemoryManager extends OutputStreamManager {
 
-        public InMemoryManager(final String name, final Layout<? extends Serializable> layout,
-                final boolean writeHeader) {
+        public InMemoryManager(
+                final String name, final Layout<? extends Serializable> layout, final boolean writeHeader) {
             super(new ByteArrayOutputStream(), name, layout, writeHeader);
         }
 

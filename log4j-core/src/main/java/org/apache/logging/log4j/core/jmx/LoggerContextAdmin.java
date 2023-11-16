@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
@@ -35,13 +36,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
-
 import javax.management.MBeanNotificationInfo;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 import javax.management.ObjectName;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -53,8 +51,8 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Implementation of the {@code LoggerContextAdminMBean} interface.
  */
-public class LoggerContextAdmin extends NotificationBroadcasterSupport implements LoggerContextAdminMBean,
-        PropertyChangeListener {
+public class LoggerContextAdmin extends NotificationBroadcasterSupport
+        implements LoggerContextAdminMBean, PropertyChangeListener {
     private static final int PAGE = 4 * 1024;
     private static final int TEXT_BUFFER = 64 * 1024;
     private static final int BUFFER_SIZE = 2048;
@@ -85,7 +83,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        final String[] notifTypes = new String[] { NOTIF_TYPE_RECONFIGURED };
+        final String[] notifTypes = new String[] {NOTIF_TYPE_RECONFIGURED};
         final String name = Notification.class.getName();
         final String description = "Configuration reconfigured";
         return new MBeanNotificationInfo(notifTypes, name, description);
@@ -108,8 +106,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     @Override
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
-            justification = "The location of the configuration comes from a running configuration."
-    )
+            justification = "The location of the configuration comes from a running configuration.")
     public String getConfigLocationUri() {
         if (loggerContext.getConfigLocation() != null) {
             return String.valueOf(loggerContext.getConfigLocation());
@@ -123,8 +120,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     @Override
     @SuppressFBWarnings(
             value = {"URLCONNECTION_SSRF_FD", "PATH_TRAVERSAL_IN"},
-            justification = "This method should only be called by a secure JMX connection."
-    )
+            justification = "This method should only be called by a secure JMX connection.")
     public void setConfigLocationUri(final String configLocation) throws URISyntaxException, IOException {
         if (configLocation == null || configLocation.isEmpty()) {
             throw new IllegalArgumentException("Missing configuration location");
@@ -163,8 +159,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     @Override
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "JMX should be considered a trusted channel."
-    )
+            justification = "JMX should be considered a trusted channel.")
     public String getConfigText(final String charsetName) throws IOException {
         try {
             final ConfigurationSource source = loggerContext.getConfiguration().getConfigurationSource();

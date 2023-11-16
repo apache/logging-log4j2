@@ -34,8 +34,12 @@ import org.springframework.util.StringUtils;
 /**
  * An Aribter that uses the active Spring profile to determine if configuration should be included.
  */
-@Plugin(name = "SpringProfile", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Plugin(
+        name = "SpringProfile",
+        category = Node.CATEGORY,
+        elementType = Arbiter.ELEMENT_TYPE,
+        deferChildren = true,
+        printObject = true)
 public final class SpringProfileArbiter implements Arbiter {
 
     private final String[] profileNames;
@@ -102,8 +106,8 @@ public final class SpringProfileArbiter implements Arbiter {
         }
 
         public SpringProfileArbiter build() {
-            final String[] profileNames = StringUtils.trimArrayElements(
-                    StringUtils.commaDelimitedListToStringArray(configuration.getStrSubstitutor().replace(name)));
+            final String[] profileNames = StringUtils.trimArrayElements(StringUtils.commaDelimitedListToStringArray(
+                    configuration.getStrSubstitutor().replace(name)));
             Environment environment = null;
             if (loggerContext != null) {
                 environment = (Environment) loggerContext.getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);

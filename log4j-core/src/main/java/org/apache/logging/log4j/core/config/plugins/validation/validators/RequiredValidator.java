@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
 import java.util.Collection;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;

@@ -16,10 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
-
 /**
  * This is a dummy class and is only here to allow module-info.java to compile. It will not
  * be copied into the log4j-api module.
  */
-public interface PropertySource {
-}
+public interface PropertySource {}

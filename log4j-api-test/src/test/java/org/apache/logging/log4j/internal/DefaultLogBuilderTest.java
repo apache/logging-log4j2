@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.internal;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.test.TestLogger;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultLogBuilderTest {
 
@@ -35,15 +34,14 @@ public class DefaultLogBuilderTest {
     public void testConcurrentUsage() {
         logger1.getEntries().clear();
         logger2.getEntries().clear();
-        final List<LogBuilder> logBuilders = Arrays.asList(
-                logger1.atDebug(),
-                logger1.atInfo(),
-                logger2.atDebug(),
-                logger2.atInfo());
+        final List<LogBuilder> logBuilders =
+                Arrays.asList(logger1.atDebug(), logger1.atInfo(), logger2.atDebug(), logger2.atInfo());
         logBuilders.forEach(logBuilder -> logBuilder.log("Hello LogBuilder!"));
-        assertThat(logger1.getEntries()).hasSize(2)
+        assertThat(logger1.getEntries())
+                .hasSize(2)
                 .containsExactly(" DEBUG Hello LogBuilder!", " INFO Hello LogBuilder!");
-        assertThat(logger2.getEntries()).hasSize(2)
+        assertThat(logger2.getEntries())
+                .hasSize(2)
                 .containsExactly(" DEBUG Hello LogBuilder!", " INFO Hello LogBuilder!");
     }
 }

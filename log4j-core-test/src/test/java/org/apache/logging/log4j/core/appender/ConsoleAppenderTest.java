@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.atLeastOnce;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -34,12 +39,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.atLeastOnce;
 
 @ExtendWith(MockitoExtension.class)
 public class ConsoleAppenderTest {
@@ -81,14 +80,22 @@ public class ConsoleAppenderTest {
             }
         },
         ;
+
         abstract void systemSet(PrintStream printStream);
     }
 
-    private void testConsoleStreamManagerDoesNotClose(final PrintStream ps, final Target targetName, final SystemSetter systemSetter) {
+    private void testConsoleStreamManagerDoesNotClose(
+            final PrintStream ps, final Target targetName, final SystemSetter systemSetter) {
         try {
             systemSetter.systemSet(psMock);
-            final Layout<String> layout = PatternLayout.newBuilder().withAlwaysWriteExceptions(true).build();
-            final ConsoleAppender app = ConsoleAppender.newBuilder().setLayout(layout).setTarget(targetName).setName("Console").setIgnoreExceptions(false).build();
+            final Layout<String> layout =
+                    PatternLayout.newBuilder().withAlwaysWriteExceptions(true).build();
+            final ConsoleAppender app = ConsoleAppender.newBuilder()
+                    .setLayout(layout)
+                    .setTarget(targetName)
+                    .setName("Console")
+                    .setIgnoreExceptions(false)
+                    .build();
             app.start();
             assertTrue(app.isStarted(), "Appender did not start");
 
@@ -119,8 +126,14 @@ public class ConsoleAppenderTest {
         testFollowSystemPrintStream(System.out, Target.SYSTEM_OUT, SystemSetter.SYSTEM_OUT);
     }
 
-    private void testFollowSystemPrintStream(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
-        final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true).setIgnoreExceptions(false).setName("test").build();
+    private void testFollowSystemPrintStream(
+            final PrintStream ps, final Target target, final SystemSetter systemSetter) {
+        final ConsoleAppender app = ConsoleAppender.newBuilder()
+                .setTarget(target)
+                .setFollow(true)
+                .setIgnoreExceptions(false)
+                .setName("test")
+                .build();
         assertEquals(target, app.getTarget());
         app.start();
         try {
@@ -156,5 +169,4 @@ public class ConsoleAppenderTest {
     public void testSystemOutStreamManagerDoesNotClose() {
         testConsoleStreamManagerDoesNotClose(System.out, Target.SYSTEM_OUT, SystemSetter.SYSTEM_OUT);
     }
-
 }

@@ -30,11 +30,10 @@ import java.nio.charset.CoderResult;
  */
 public class TextEncoderHelper {
 
-    private TextEncoderHelper() {
-    }
+    private TextEncoderHelper() {}
 
-    static void encodeTextFallBack(final Charset charset, final StringBuilder text,
-            final ByteBufferDestination destination) {
+    static void encodeTextFallBack(
+            final Charset charset, final StringBuilder text, final ByteBufferDestination destination) {
         final byte[] bytes = text.toString().getBytes(charset);
         destination.writeBytes(bytes, 0, bytes.length);
     }
@@ -49,8 +48,12 @@ public class TextEncoderHelper {
      * @param text the text to convert and write to the destination
      * @param destination the destination to write the bytes to
      */
-    public static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer byteBuf,
-            final StringBuilder text, final ByteBufferDestination destination) {
+    public static void encodeText(
+            final CharsetEncoder charsetEncoder,
+            final CharBuffer charBuf,
+            final ByteBuffer byteBuf,
+            final StringBuilder text,
+            final ByteBufferDestination destination) {
         charsetEncoder.reset();
         if (text.length() > charBuf.capacity()) {
             encodeChunkedText(charsetEncoder, charBuf, byteBuf, text, destination);
@@ -71,8 +74,12 @@ public class TextEncoderHelper {
      *
      * @since 2.9
      */
-    private static void writeEncodedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final ByteBuffer byteBuf, final ByteBufferDestination destination, CoderResult result) {
+    private static void writeEncodedText(
+            final CharsetEncoder charsetEncoder,
+            final CharBuffer charBuf,
+            final ByteBuffer byteBuf,
+            final ByteBufferDestination destination,
+            CoderResult result) {
         if (!result.isUnderflow()) {
             writeChunkedEncodedText(charsetEncoder, charBuf, destination, byteBuf, result);
             return;
@@ -104,11 +111,14 @@ public class TextEncoderHelper {
      *
      * @since 2.9
      */
-    private static void writeChunkedEncodedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final ByteBufferDestination destination, ByteBuffer byteBuf, final CoderResult result) {
+    private static void writeChunkedEncodedText(
+            final CharsetEncoder charsetEncoder,
+            final CharBuffer charBuf,
+            final ByteBufferDestination destination,
+            ByteBuffer byteBuf,
+            final CoderResult result) {
         synchronized (destination) {
-            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf,
-                    result);
+            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf, result);
             flushRemainingBytes(charsetEncoder, destination, byteBuf);
         }
     }
@@ -121,8 +131,12 @@ public class TextEncoderHelper {
      *
      * @since 2.9
      */
-    private static void encodeChunkedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            ByteBuffer byteBuf, final StringBuilder text, final ByteBufferDestination destination) {
+    private static void encodeChunkedText(
+            final CharsetEncoder charsetEncoder,
+            final CharBuffer charBuf,
+            ByteBuffer byteBuf,
+            final StringBuilder text,
+            final ByteBufferDestination destination) {
 
         // LOG4J2-1874 ByteBuffer, CharBuffer and CharsetEncoder are thread-local, so no need to synchronize while
         // modifying these objects. Postpone synchronization until accessing the ByteBufferDestination.
@@ -142,8 +156,7 @@ public class TextEncoderHelper {
             return;
         }
         synchronized (destination) {
-            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
-                    result);
+            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf, result);
             while (!endOfInput) {
                 result = CoderResult.UNDERFLOW;
                 while (!endOfInput && result.isUnderflow()) {
@@ -154,8 +167,8 @@ public class TextEncoderHelper {
                     charBuf.flip();
                     result = charsetEncoder.encode(charBuf, byteBuf, endOfInput);
                 }
-                byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
-                        result);
+                byteBuf = writeAndEncodeAsMuchAsPossible(
+                        charsetEncoder, charBuf, endOfInput, destination, byteBuf, result);
             }
             flushRemainingBytes(charsetEncoder, destination, byteBuf);
         }
@@ -165,8 +178,8 @@ public class TextEncoderHelper {
      * For testing purposes only.
      */
     @Deprecated
-    public static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final ByteBufferDestination destination) {
+    public static void encodeText(
+            final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBufferDestination destination) {
         charsetEncoder.reset();
         synchronized (destination) {
             ByteBuffer byteBuf = destination.getByteBuffer();
@@ -190,9 +203,13 @@ public class TextEncoderHelper {
      *          MappedBuffer of the newly mapped region of the memory mapped file.
      * @since 2.9
      */
-    private static ByteBuffer writeAndEncodeAsMuchAsPossible(final CharsetEncoder charsetEncoder,
-            final CharBuffer charBuf, final boolean endOfInput, final ByteBufferDestination destination,
-            ByteBuffer temp, CoderResult result) {
+    private static ByteBuffer writeAndEncodeAsMuchAsPossible(
+            final CharsetEncoder charsetEncoder,
+            final CharBuffer charBuf,
+            final boolean endOfInput,
+            final ByteBufferDestination destination,
+            ByteBuffer temp,
+            CoderResult result) {
         while (true) {
             temp = drainIfByteBufferFull(destination, temp, result);
             if (!result.isOverflow()) {
@@ -215,8 +232,12 @@ public class TextEncoderHelper {
         }
     }
 
-    private static ByteBuffer encodeAsMuchAsPossible(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final boolean endOfInput, final ByteBufferDestination destination, ByteBuffer temp) {
+    private static ByteBuffer encodeAsMuchAsPossible(
+            final CharsetEncoder charsetEncoder,
+            final CharBuffer charBuf,
+            final boolean endOfInput,
+            final ByteBufferDestination destination,
+            ByteBuffer temp) {
         CoderResult result;
         do {
             result = charsetEncoder.encode(charBuf, temp, endOfInput);
@@ -242,8 +263,8 @@ public class TextEncoderHelper {
      * @param result the CoderResult from the CharsetEncoder
      * @return the ByteBuffer to encode into for the remainder of the text
      */
-    private static ByteBuffer drainIfByteBufferFull(final ByteBufferDestination destination, final ByteBuffer temp,
-            final CoderResult result) {
+    private static ByteBuffer drainIfByteBufferFull(
+            final ByteBufferDestination destination, final ByteBuffer temp, final CoderResult result) {
         if (result.isOverflow()) { // byte buffer full
             // all callers already synchronize on destination but for safety ensure we are synchronized because
             // below calls to drain() may cause destination to swap in a new ByteBuffer object
@@ -263,8 +284,8 @@ public class TextEncoderHelper {
         }
     }
 
-    private static void flushRemainingBytes(final CharsetEncoder charsetEncoder,
-            final ByteBufferDestination destination, ByteBuffer temp) {
+    private static void flushRemainingBytes(
+            final CharsetEncoder charsetEncoder, final ByteBufferDestination destination, ByteBuffer temp) {
         CoderResult result;
         do {
             // write any final bytes to the output buffer once the overall input sequence has been read

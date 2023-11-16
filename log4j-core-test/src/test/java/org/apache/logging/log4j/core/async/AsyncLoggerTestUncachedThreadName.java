@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -32,18 +33,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
 @Category(AsyncLoggers.class)
 public class AsyncLoggerTestUncachedThreadName {
 
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("AsyncLogger.ThreadNameStrategy", "UNCACHED");
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerTest.xml");
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerTest.xml");
     }
 
     @AfterClass
@@ -75,5 +72,4 @@ public class AsyncLoggerTestUncachedThreadName {
         assertTrue("line1", line1.endsWith(" INFO c.f.Bar [main]   Async logger msg "));
         assertTrue("line2", line2.endsWith(" INFO c.f.Bar [MODIFIED-THREADNAME]   Async logger msg "));
     }
-
 }

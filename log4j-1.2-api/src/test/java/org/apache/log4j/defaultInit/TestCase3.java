@@ -16,9 +16,11 @@
  */
 package org.apache.log4j.defaultInit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.util.Enumeration;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -27,11 +29,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @Disabled
-public class TestCase3  {
+public class TestCase3 {
 
     @AfterAll
     public static void tearDown() {
@@ -48,5 +47,4 @@ public class TestCase3  {
         final Appender appender = (Appender) e.nextElement();
         assertEquals(appender.getName(), "D3");
     }
-
 }

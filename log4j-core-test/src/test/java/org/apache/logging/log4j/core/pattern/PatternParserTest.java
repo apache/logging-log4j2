@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Calendar;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -37,12 +38,10 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class PatternParserTest {
 
-    static String OUTPUT_FILE   = "output/PatternParser";
-    static String WITNESS_FILE  = "witness/PatternParser";
+    static String OUTPUT_FILE = "output/PatternParser";
+    static String WITNESS_FILE = "witness/PatternParser";
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
 
@@ -107,7 +106,8 @@ public class PatternParserTest {
                 .setContextData(mdc) //
                 .setThreadName("Thread1") //
                 .setSource(elements[0])
-                .setTimeMillis(System.currentTimeMillis()).build();
+                .setTimeMillis(System.currentTimeMillis())
+                .build();
         final StringBuilder buf = new StringBuilder();
         for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
@@ -343,7 +343,8 @@ public class PatternParserTest {
         final StringMap mdc = ContextDataFactory.createContextData();
         mdc.putValue("var", "1234");
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
-            .setContextData(mdc).build();
+                .setContextData(mdc)
+                .build();
         final StringBuilder buf = new StringBuilder();
         formatters.get(0).format(event, buf);
         final String expected = " 123 ";
@@ -367,8 +368,8 @@ public class PatternParserTest {
 
     @Test
     public void testExceptionWithFilters() {
-        final List<PatternFormatter> formatters = parser
-                .parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}%n");
+        final List<PatternFormatter> formatters =
+                parser.parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}%n");
         assertNotNull(formatters);
         assertEquals(6, formatters.size());
         final PatternFormatter patternFormatter = formatters.get(4);
@@ -383,8 +384,8 @@ public class PatternParserTest {
 
     @Test
     public void testExceptionWithFiltersAndSeparator() {
-        final List<PatternFormatter> formatters = parser
-                .parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}{separator(|)}%n");
+        final List<PatternFormatter> formatters =
+                parser.parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}{separator(|)}%n");
         assertNotNull(formatters);
         assertEquals(6, formatters.size());
         final PatternFormatter patternFormatter = formatters.get(4);

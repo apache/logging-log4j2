@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
 import java.io.Writer;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -55,8 +54,13 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
                 return null;
             }
             final StringLayout stringLayout = (StringLayout) layout;
-            return new WriterAppender(getName(), stringLayout, getFilter(), getManager(target, follow, stringLayout),
-                    isIgnoreExceptions(), getPropertyArray());
+            return new WriterAppender(
+                    getName(),
+                    stringLayout,
+                    getFilter(),
+                    getManager(target, follow, stringLayout),
+                    isIgnoreExceptions(),
+                    getPropertyArray());
         }
 
         public B setFollow(final boolean shouldFollow) {
@@ -134,8 +138,13 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
      * @return The ConsoleAppender.
      */
     @PluginFactory
-    public static WriterAppender createAppender(StringLayout layout, final Filter filter, final Writer target,
-            final String name, final boolean follow, final boolean ignore) {
+    public static WriterAppender createAppender(
+            StringLayout layout,
+            final Filter filter,
+            final Writer target,
+            final String name,
+            final boolean follow,
+            final boolean ignore) {
         if (name == null) {
             LOGGER.error("No name provided for WriterAppender");
             return null;
@@ -148,8 +157,8 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
     private static WriterManager getManager(final Writer target, final boolean follow, final StringLayout layout) {
         final Writer writer = new CloseShieldWriter(target);
-        final String managerName = target.getClass().getName() + "@" + Integer.toHexString(target.hashCode()) + '.'
-                + follow;
+        final String managerName =
+                target.getClass().getName() + "@" + Integer.toHexString(target.hashCode()) + '.' + follow;
         return WriterManager.getManager(managerName, new FactoryData(writer, managerName, layout), factory);
     }
 
@@ -158,9 +167,13 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         return new Builder<B>().asBuilder();
     }
 
-    private WriterAppender(final String name, final StringLayout layout, final Filter filter,
-            final WriterManager manager, final boolean ignoreExceptions, final Property[] properties) {
+    private WriterAppender(
+            final String name,
+            final StringLayout layout,
+            final Filter filter,
+            final WriterManager manager,
+            final boolean ignoreExceptions,
+            final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, properties, manager);
     }
-
 }

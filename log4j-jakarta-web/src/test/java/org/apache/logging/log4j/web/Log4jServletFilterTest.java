@@ -16,18 +16,6 @@
  */
 package org.apache.logging.log4j.web;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
@@ -35,18 +23,34 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.reset;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @ExtendWith(MockitoExtension.class)
 public class Log4jServletFilterTest {
     @Mock(lenient = true) // because filterConfig is not used in testDestroy
     private FilterConfig filterConfig;
+
     @Mock(lenient = true) // because filterConfig is not used in testDestroy
     private ServletContext servletContext;
+
     @Mock
     private Log4jWebLifeCycle initializer;
+
     @Mock
     private ServletRequest request;
+
     @Mock
     private ServletResponse response;
+
     @Mock
     private FilterChain chain;
 
@@ -84,7 +88,8 @@ public class Log4jServletFilterTest {
         then(initializer).should().clearLoggerContext();
         reset(initializer);
 
-        given(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE)).willReturn(null);
+        given(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE))
+                .willReturn(null);
 
         this.filter.doFilter(request, response, chain);
 
@@ -102,7 +107,8 @@ public class Log4jServletFilterTest {
 
         then(initializer).should().clearLoggerContext();
 
-        given(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE)).willReturn(true);
+        given(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE))
+                .willReturn(true);
 
         this.filter.doFilter(request, response, chain);
 

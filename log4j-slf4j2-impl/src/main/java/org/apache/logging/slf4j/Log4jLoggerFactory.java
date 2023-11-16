@@ -17,7 +17,6 @@
 package org.apache.logging.slf4j;
 
 import java.util.function.Predicate;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
@@ -56,9 +55,7 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
                 ? StackLocatorUtil.getCallerClass(Log4jLoggerFactory.class, CALLER_PREDICATE)
                 : null;
         LOGGER.trace("Log4jLoggerFactory.getContext() found anchor {}", anchor);
-        return anchor == null
-                ? LogManager.getContext(false)
-                : getContext(anchor);
+        return anchor == null ? LogManager.getContext(false) : getContext(anchor);
     }
 
     Log4jMarkerFactory getMarkerFactory() {

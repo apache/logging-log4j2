@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link JmxRuntimeInputArgumentsLookup} from the command line, not a JUnit test.
@@ -53,5 +53,4 @@ public class MainInputArgumentsJmxLookupTest {
         // assertEquals("foo.txt", lookup.lookup("--file"));
         // assertEquals(null, lookup.lookup("foo.txt"));
     }
-
 }

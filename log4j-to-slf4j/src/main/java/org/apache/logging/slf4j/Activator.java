@@ -20,11 +20,12 @@ import org.apache.logging.log4j.util.ProviderActivator;
 import org.osgi.annotation.bundle.Header;
 
 @Header(name = org.osgi.framework.Constants.BUNDLE_ACTIVATOR, value = "${@class}")
-@Header(name = org.osgi.framework.Constants.BUNDLE_ACTIVATIONPOLICY, value = org.osgi.framework.Constants.ACTIVATION_LAZY)
+@Header(
+        name = org.osgi.framework.Constants.BUNDLE_ACTIVATIONPOLICY,
+        value = org.osgi.framework.Constants.ACTIVATION_LAZY)
 public class Activator extends ProviderActivator {
 
     public Activator() {
         super(new SLF4JProvider());
     }
-
 }

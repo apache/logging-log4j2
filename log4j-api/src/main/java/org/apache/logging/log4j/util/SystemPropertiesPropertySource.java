@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Properties;
-
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceProvider;
 
 /**
  * PropertySource backed by the current system properties. Other than having a
@@ -107,5 +106,4 @@ public class SystemPropertiesPropertySource implements PropertySource {
     public boolean containsProperty(final String key) {
         return getProperty(key) != null;
     }
-
 }

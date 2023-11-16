@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.test.net.mock;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -28,6 +27,7 @@ public abstract class MockSyslogServer extends Thread {
     protected static Logger LOGGER = StatusLogger.getLogger();
 
     protected List<String> messageList = new ArrayList<>();
+
     @Deprecated
     protected int port;
 

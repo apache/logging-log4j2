@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.test;
 
-import java.io.Serializable;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsInstanceOf.any;
 
+import java.io.Serializable;
 import org.apache.commons.lang3.SerializationUtils;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsInstanceOf.any;
 
 /**
  * Hamcrest Matchers for Serializable classes.
@@ -53,6 +52,5 @@ public final class SerializableMatchers {
         return serializesRoundTrip(any(Serializable.class));
     }
 
-    private SerializableMatchers() {
-    }
+    private SerializableMatchers() {}
 }

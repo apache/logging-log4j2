@@ -25,8 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "CaseConverterResolverFactory", category = TemplateResolverFactory.CATEGORY)
 public final class CaseConverterResolverFactory implements EventResolverFactory {
 
-    private static final CaseConverterResolverFactory INSTANCE =
-            new CaseConverterResolverFactory();
+    private static final CaseConverterResolverFactory INSTANCE = new CaseConverterResolverFactory();
 
     private CaseConverterResolverFactory() {}
 
@@ -41,10 +40,7 @@ public final class CaseConverterResolverFactory implements EventResolverFactory 
     }
 
     @Override
-    public CaseConverterResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public CaseConverterResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
         return new CaseConverterResolver(context, config);
     }
-
 }

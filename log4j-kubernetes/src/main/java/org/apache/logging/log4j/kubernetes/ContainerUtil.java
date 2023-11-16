@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -32,25 +31,28 @@ public class ContainerUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int MAXLENGTH = 65;
 
-/**
- * Returns the container id when running in a Docker container.
- *
- * This inspects /proc/self/cgroup looking for a Kubernetes Control Group. Once it finds one it attempts
- * to isolate just the docker container id. There doesn't appear to be a standard way to do this, but
- * it seems to be the only way to determine what the current container is in a multi-container pod. It would have
- * been much nicer if Kubernetes would just put the container id in a standard environment variable.
- *
- * @see <a href="http://stackoverflow.com/a/25729598/12916">Stackoverflow</a> for a discussion on retrieving the containerId.
- * @see <a href="https://github.com/jenkinsci/docker-workflow-plugin/blob/master/src/main/java/org/jenkinsci/plugins/docker/workflow/client/ControlGroup.java>ControlGroup</a>
- * for the original version of this. Not much is actually left but it provided good inspiration.
- */
+    /**
+     * Returns the container id when running in a Docker container.
+     *
+     * This inspects /proc/self/cgroup looking for a Kubernetes Control Group. Once it finds one it attempts
+     * to isolate just the docker container id. There doesn't appear to be a standard way to do this, but
+     * it seems to be the only way to determine what the current container is in a multi-container pod. It would have
+     * been much nicer if Kubernetes would just put the container id in a standard environment variable.
+     *
+     * @see <a href="http://stackoverflow.com/a/25729598/12916">Stackoverflow</a> for a discussion on retrieving the containerId.
+     * @see <a href="https://github.com/jenkinsci/docker-workflow-plugin/blob/master/src/main/java/org/jenkinsci/plugins/docker/workflow/client/ControlGroup.java>ControlGroup</a>
+     * for the original version of this. Not much is actually left but it provided good inspiration.
+     */
     public static String getContainerId() {
         try {
             final File file = new File("/proc/self/cgroup");
             if (file.exists()) {
                 final Path path = file.toPath();
-                final String id = Files.lines(path).map(ContainerUtil::getContainerId).filter(Objects::nonNull)
-                        .findFirst().orElse(null);
+                final String id = Files.lines(path)
+                        .map(ContainerUtil::getContainerId)
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse(null);
                 LOGGER.debug("Found container id {}", id);
                 return id;
             }

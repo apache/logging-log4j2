@@ -22,7 +22,6 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -34,18 +33,33 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  */
 public class InternalPrintStream extends PrintStream {
 
-    public InternalPrintStream(final ExtendedLogger logger, final boolean autoFlush, final Charset charset,
-                                final String fqcn, final Level level, final Marker marker)
-        throws UnsupportedEncodingException {
-        super(new InternalOutputStream(logger, level, marker, ensureNonNull(charset), fqcn),
-            autoFlush, ensureNonNull(charset).name());
+    public InternalPrintStream(
+            final ExtendedLogger logger,
+            final boolean autoFlush,
+            final Charset charset,
+            final String fqcn,
+            final Level level,
+            final Marker marker)
+            throws UnsupportedEncodingException {
+        super(
+                new InternalOutputStream(logger, level, marker, ensureNonNull(charset), fqcn),
+                autoFlush,
+                ensureNonNull(charset).name());
     }
 
-    public InternalPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
-                                final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker)
-        throws UnsupportedEncodingException {
-        super(new InternalFilterOutputStream(out, ensureNonNull(charset), logger, fqcn, level,
-            marker), autoFlush, ensureNonNull(charset).name());
+    public InternalPrintStream(
+            final OutputStream out,
+            final boolean autoFlush,
+            final Charset charset,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker)
+            throws UnsupportedEncodingException {
+        super(
+                new InternalFilterOutputStream(out, ensureNonNull(charset), logger, fqcn, level, marker),
+                autoFlush,
+                ensureNonNull(charset).name());
     }
 
     private static Charset ensureNonNull(final Charset charset) {

@@ -16,8 +16,9 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
+import java.util.List;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.ClassRule;
@@ -26,8 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.spi.CallerBoundaryAware;
 import org.slf4j.spi.LoggingEventBuilder;
-
-import static org.junit.Assert.assertEquals;
 
 public class CallerInformationTest {
 
@@ -80,7 +79,7 @@ public class CallerInformationTest {
         final ListAppender app = ctx.getListAppender("Fqcn").clear();
         final Logger logger = LoggerFactory.getLogger("FqcnLogger");
         LoggingEventBuilder loggingEventBuilder = logger.atInfo();
-        ((CallerBoundaryAware)loggingEventBuilder).setCallerBoundary("MyFqcn");
+        ((CallerBoundaryAware) loggingEventBuilder).setCallerBoundary("MyFqcn");
         loggingEventBuilder.log("A message");
         final List<String> messages = app.getMessages();
         assertEquals("Incorrect number of messages.", 1, messages.size());

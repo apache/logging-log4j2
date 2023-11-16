@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.Message;
@@ -350,7 +349,13 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     }
 
     @Override
-    public void log(final Marker marker, final String fqcn, final int level, final String message, final Object[] params, final Throwable throwable) {
+    public void log(
+            final Marker marker,
+            final String fqcn,
+            final int level,
+            final String message,
+            final Object[] params,
+            final Throwable throwable) {
         final Level log4jLevel = getLevel(level);
         final org.apache.logging.log4j.Marker log4jMarker = markerFactory.getLog4jMarker(marker);
 
@@ -395,16 +400,16 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
 
     private static Level getLevel(final int i) {
         switch (i) {
-        case TRACE_INT:
-            return Level.TRACE;
-        case DEBUG_INT:
-            return Level.DEBUG;
-        case INFO_INT:
-            return Level.INFO;
-        case WARN_INT:
-            return Level.WARN;
-        case ERROR_INT:
-            return Level.ERROR;
+            case TRACE_INT:
+                return Level.TRACE;
+            case DEBUG_INT:
+                return Level.DEBUG;
+            case INFO_INT:
+                return Level.INFO;
+            case WARN_INT:
+                return Level.WARN;
+            case ERROR_INT:
+                return Level.ERROR;
         }
         return Level.ERROR;
     }

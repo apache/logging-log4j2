@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the AbstractFilter test.
@@ -62,26 +62,27 @@ public class AbstractFilterTest {
      */
     static class ConcreteFilter extends AbstractFilter {
         Result testResult = Result.DENY;
+
         @Override
         public Result filter(final LogEvent event) {
             return testResult;
         }
 
         @Override
-        public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-                final Throwable t) {
+        public Result filter(
+                final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
             return testResult;
         }
 
         @Override
-        public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-                final Throwable t) {
+        public Result filter(
+                final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
             return testResult;
         }
 
         @Override
-        public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-                final Object... params) {
+        public Result filter(
+                final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
             return testResult;
         }
     }

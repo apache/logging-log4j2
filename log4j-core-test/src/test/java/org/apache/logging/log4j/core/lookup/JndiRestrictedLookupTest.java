@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.junit.Assert.assertNull;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNull;
 
 /**
  * JndiLookupTest
@@ -38,6 +38,5 @@ public class JndiRestrictedLookupTest {
         final StrLookup lookup = new JndiLookup();
         final String result = lookup.lookup("dns:/" + DOMAIN);
         assertNull("DNS data returend", result);
-
     }
 }

@@ -20,7 +20,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -48,8 +47,8 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     private volatile Date lastRollDate;
     private CronScheduledFuture<?> future;
 
-    private CronTriggeringPolicy(final CronExpression schedule, final boolean checkOnStartup,
-            final Configuration configuration) {
+    private CronTriggeringPolicy(
+            final CronExpression schedule, final boolean checkOnStartup, final Configuration configuration) {
         this.cronExpression = Objects.requireNonNull(schedule, "schedule");
         this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.checkOnStartup = checkOnStartup;
@@ -71,8 +70,10 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         LOGGER.debug("LastRollForFile {}, LastRegularRole {}", lastRollForFile, lastRegularRoll);
         aManager.getPatternProcessor().setPrevFileTime(lastRegularRoll.getTime());
         aManager.getPatternProcessor().setTimeBased(true);
-        if (checkOnStartup && lastRollForFile != null && lastRegularRoll != null &&
-                lastRollForFile.before(lastRegularRoll)) {
+        if (checkOnStartup
+                && lastRollForFile != null
+                && lastRegularRoll != null
+                && lastRollForFile.before(lastRegularRoll)) {
             lastRollDate = lastRollForFile;
             rollover();
         }
@@ -118,7 +119,8 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
      * @return a ScheduledTriggeringPolicy.
      */
     @PluginFactory
-    public static CronTriggeringPolicy createPolicy(@PluginConfiguration final Configuration configuration,
+    public static CronTriggeringPolicy createPolicy(
+            @PluginConfiguration final Configuration configuration,
             @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
             @PluginAttribute("schedule") final String schedule) {
         CronExpression cronExpression;

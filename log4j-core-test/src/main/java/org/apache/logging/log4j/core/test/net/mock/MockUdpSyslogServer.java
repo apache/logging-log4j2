@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.test.net.mock;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-
 import org.apache.logging.log4j.core.util.Throwables;
 
 public class MockUdpSyslogServer extends MockSyslogServer {

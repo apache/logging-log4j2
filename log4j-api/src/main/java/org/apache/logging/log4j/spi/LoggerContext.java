@@ -46,7 +46,6 @@ public interface LoggerContext {
         return getLogger(canonicalName != null ? canonicalName : cls.getName());
     }
 
-
     /**
      * Gets an ExtendedLogger using the fully qualified name of the Class as the Logger name.
      * @param cls The Class whose name should be used as the Logger name.

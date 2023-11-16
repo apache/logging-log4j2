@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.parser;
 
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,52 +25,51 @@ public class JsonLogEventParserTest extends LogEventParserTest {
 
     private JsonLogEventParser parser;
 
-    private static final String JSON = "{\n" +
-            "  \"timeMillis\" : 1493121664118,\n" +
-            "  \"instant\":{\"epochSecond\":1493121664,\"nanoOfSecond\":118000000},\n" +
-            "  \"thread\" : \"main\",\n" +
-            "  \"threadId\" : 1,\n" +
-            "  \"threadPriority\" : 5,\n" +
-            "  \"level\" : \"INFO\",\n" +
-            "  \"loggerName\" : \"HelloWorld\",\n" +
-            "  \"marker\" : {\n" +
-            "    \"name\" : \"child\",\n" +
-            "    \"parents\" : [ {\n" +
-            "      \"name\" : \"parent\",\n" +
-            "      \"parents\" : [ {\n" +
-            "        \"name\" : \"grandparent\"\n" +
-            "      } ]\n" +
-            "    } ]\n" +
-            "  },\n" +
-            "  \"message\" : \"Hello, world!\",\n" +
-            "  \"thrown\" : {\n" +
-            "    \"commonElementCount\" : 0,\n" +
-            "    \"message\" : \"error message\",\n" +
-            "    \"name\" : \"java.lang.RuntimeException\",\n" +
-            "    \"extendedStackTrace\" : [ {\n" +
-            "      \"class\" : \"logtest.Main\",\n" +
-            "      \"method\" : \"main\",\n" +
-            "      \"file\" : \"Main.java\",\n" +
-            "      \"line\" : 29,\n" +
-            "      \"exact\" : true,\n" +
-            "      \"location\" : \"classes/\",\n" +
-            "      \"version\" : \"?\"\n" +
-            "    } ]\n" +
-            "  },\n" +
-            "  \"contextStack\" : [ \"one\", \"two\" ],\n" +
-            "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",\n" +
-            "  \"endOfBatch\" : false,\n" +
-            "  \"contextMap\" : {\n" +
-            "    \"bar\" : \"BAR\",\n" +
-            "    \"foo\" : \"FOO\"\n" +
-            "  },\n" +
-            "  \"source\" : {\n" +
-            "    \"class\" : \"logtest.Main\",\n" +
-            "    \"method\" : \"main\",\n" +
-            "    \"file\" : \"Main.java\",\n" +
-            "    \"line\" : 29\n" +
-            "  }\n" +
-            "}";
+    private static final String JSON = "{\n" + "  \"timeMillis\" : 1493121664118,\n"
+            + "  \"instant\":{\"epochSecond\":1493121664,\"nanoOfSecond\":118000000},\n"
+            + "  \"thread\" : \"main\",\n"
+            + "  \"threadId\" : 1,\n"
+            + "  \"threadPriority\" : 5,\n"
+            + "  \"level\" : \"INFO\",\n"
+            + "  \"loggerName\" : \"HelloWorld\",\n"
+            + "  \"marker\" : {\n"
+            + "    \"name\" : \"child\",\n"
+            + "    \"parents\" : [ {\n"
+            + "      \"name\" : \"parent\",\n"
+            + "      \"parents\" : [ {\n"
+            + "        \"name\" : \"grandparent\"\n"
+            + "      } ]\n"
+            + "    } ]\n"
+            + "  },\n"
+            + "  \"message\" : \"Hello, world!\",\n"
+            + "  \"thrown\" : {\n"
+            + "    \"commonElementCount\" : 0,\n"
+            + "    \"message\" : \"error message\",\n"
+            + "    \"name\" : \"java.lang.RuntimeException\",\n"
+            + "    \"extendedStackTrace\" : [ {\n"
+            + "      \"class\" : \"logtest.Main\",\n"
+            + "      \"method\" : \"main\",\n"
+            + "      \"file\" : \"Main.java\",\n"
+            + "      \"line\" : 29,\n"
+            + "      \"exact\" : true,\n"
+            + "      \"location\" : \"classes/\",\n"
+            + "      \"version\" : \"?\"\n"
+            + "    } ]\n"
+            + "  },\n"
+            + "  \"contextStack\" : [ \"one\", \"two\" ],\n"
+            + "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",\n"
+            + "  \"endOfBatch\" : false,\n"
+            + "  \"contextMap\" : {\n"
+            + "    \"bar\" : \"BAR\",\n"
+            + "    \"foo\" : \"FOO\"\n"
+            + "  },\n"
+            + "  \"source\" : {\n"
+            + "    \"class\" : \"logtest.Main\",\n"
+            + "    \"method\" : \"main\",\n"
+            + "    \"file\" : \"Main.java\",\n"
+            + "    \"line\" : 29\n"
+            + "  }\n"
+            + "}";
 
     @Before
     public void setup() {
@@ -126,5 +124,4 @@ public class JsonLogEventParserTest extends LogEventParserTest {
         final LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
         assertLogEvent(logEvent);
     }
-
 }

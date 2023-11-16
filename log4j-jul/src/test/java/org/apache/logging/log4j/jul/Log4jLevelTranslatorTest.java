@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.jul;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.Level;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests that all Log4j levels are mapped to a JUL level.
@@ -43,18 +42,18 @@ public class Log4jLevelTranslatorTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                // Some JUL levels, All 8 Log4j levels
-                // @formatter:off
-                {java.util.logging.Level.OFF, Level.OFF},
-                {java.util.logging.Level.SEVERE, Level.FATAL},
-                {java.util.logging.Level.SEVERE, Level.ERROR},
-                {java.util.logging.Level.WARNING, Level.WARN},
-                {java.util.logging.Level.INFO, Level.INFO},
-                {java.util.logging.Level.FINE, Level.DEBUG},
-                {java.util.logging.Level.FINER, Level.TRACE},
-                {java.util.logging.Level.ALL, Level.ALL},
-                // @formatter:on
-                });
+            // Some JUL levels, All 8 Log4j levels
+            // @formatter:off
+            {java.util.logging.Level.OFF, Level.OFF},
+            {java.util.logging.Level.SEVERE, Level.FATAL},
+            {java.util.logging.Level.SEVERE, Level.ERROR},
+            {java.util.logging.Level.WARNING, Level.WARN},
+            {java.util.logging.Level.INFO, Level.INFO},
+            {java.util.logging.Level.FINE, Level.DEBUG},
+            {java.util.logging.Level.FINER, Level.TRACE},
+            {java.util.logging.Level.ALL, Level.ALL},
+            // @formatter:on
+        });
     }
 
     @Test
@@ -62,5 +61,4 @@ public class Log4jLevelTranslatorTest {
         final java.util.logging.Level actualLevel = LevelTranslator.toJavaLevel(log4jLevel);
         assertEquals(javaLevel, actualLevel);
     }
-
 }

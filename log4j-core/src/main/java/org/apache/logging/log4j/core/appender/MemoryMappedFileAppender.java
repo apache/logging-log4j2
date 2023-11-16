@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -39,7 +38,11 @@ import org.apache.logging.log4j.core.util.Integers;
  *
  * @since 2.1
  */
-@Plugin(name = "MemoryMappedFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(
+        name = "MemoryMappedFile",
+        category = Core.CATEGORY_NAME,
+        elementType = Appender.ELEMENT_TYPE,
+        printObject = true)
 public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender<MemoryMappedFileManager> {
 
     /**
@@ -81,14 +84,22 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
                 return null;
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout();
-            final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(fileName, append, isImmediateFlush(),
-                    actualRegionLength, advertiseURI, layout);
+            final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(
+                    fileName, append, isImmediateFlush(), actualRegionLength, advertiseURI, layout);
             if (manager == null) {
                 return null;
             }
 
-            return new MemoryMappedFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(), false,
-                    advertise ? getConfiguration().getAdvertiser() : null, getPropertyArray());
+            return new MemoryMappedFileAppender(
+                    name,
+                    layout,
+                    getFilter(),
+                    manager,
+                    fileName,
+                    isIgnoreExceptions(),
+                    false,
+                    advertise ? getConfiguration().getAdvertiser() : null,
+                    getPropertyArray());
         }
 
         public B setFileName(final String fileName) {
@@ -115,7 +126,6 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
-
     }
 
     private static final int BIT_POSITION_1GB = 30; // 2^30 ~= 1GB
@@ -126,9 +136,15 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private MemoryMappedFileAppender(final String name, final Layout<? extends Serializable> layout,
-            final Filter filter, final MemoryMappedFileManager manager, final String filename,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser,
+    private MemoryMappedFileAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final MemoryMappedFileManager manager,
+            final String filename,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final Advertiser advertiser,
             final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
@@ -206,7 +222,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             final String advertise, //
             final String advertiseURI, //
             final Configuration config) {
-            // @formatter:on
+        // @formatter:on
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
         final boolean isImmediateFlush = Booleans.parseBoolean(immediateFlush, false);
@@ -216,14 +232,18 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
         // @formatter:off
         return MemoryMappedFileAppender.<B>newBuilder()
-        .setAdvertise(isAdvertise)
-        .setAdvertiseURI(advertiseURI)
-        .setAppend(isAppend)
-        .setConfiguration(config)
-        .setFileName(fileName).setFilter(filter).setIgnoreExceptions(ignoreExceptions)
-            .withImmediateFlush(isImmediateFlush).setLayout(layout).setName(name)
-            .setRegionLength(regionLength)
-            .build();
+                .setAdvertise(isAdvertise)
+                .setAdvertiseURI(advertiseURI)
+                .setAppend(isAppend)
+                .setConfiguration(config)
+                .setFileName(fileName)
+                .setFilter(filter)
+                .setIgnoreExceptions(ignoreExceptions)
+                .withImmediateFlush(isImmediateFlush)
+                .setLayout(layout)
+                .setName(name)
+                .setRegionLength(regionLength)
+                .build();
         // @formatter:on
     }
 
@@ -237,19 +257,28 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      */
     private static int determineValidRegionLength(final String name, final int regionLength) {
         if (regionLength > MAX_REGION_LENGTH) {
-            LOGGER.info("MemoryMappedAppender[{}] Reduced region length from {} to max length: {}", name, regionLength,
+            LOGGER.info(
+                    "MemoryMappedAppender[{}] Reduced region length from {} to max length: {}",
+                    name,
+                    regionLength,
                     MAX_REGION_LENGTH);
             return MAX_REGION_LENGTH;
         }
         if (regionLength < MIN_REGION_LENGTH) {
-            LOGGER.info("MemoryMappedAppender[{}] Expanded region length from {} to min length: {}", name, regionLength,
+            LOGGER.info(
+                    "MemoryMappedAppender[{}] Expanded region length from {} to min length: {}",
+                    name,
+                    regionLength,
                     MIN_REGION_LENGTH);
             return MIN_REGION_LENGTH;
         }
         final int result = Integers.ceilingNextPowerOfTwo(regionLength);
         if (regionLength != result) {
-            LOGGER.info("MemoryMappedAppender[{}] Rounded up region length from {} to next power of two: {}", name,
-                    regionLength, result);
+            LOGGER.info(
+                    "MemoryMappedAppender[{}] Rounded up region length from {} to next power of two: {}",
+                    name,
+                    regionLength,
+                    result);
         }
         return result;
     }

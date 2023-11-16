@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.properties;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,10 +38,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.*;
 
 class PropertiesConfigurationTest {
 
@@ -124,7 +123,8 @@ class PropertiesConfigurationTest {
 
     @Test
     @LoggerContextSource("LoggerLevelAppenderTest.properties")
-    void testLoggerLevelAppender(final LoggerContext context, @Named final ListAppender first, @Named final ListAppender second) {
+    void testLoggerLevelAppender(
+            final LoggerContext context, @Named final ListAppender first, @Named final ListAppender second) {
         context.getLogger(getClass()).atInfo().log("message");
         final List<LogEvent> firstEvents = first.getEvents();
         final List<LogEvent> secondEvents = second.getEvents();
@@ -135,8 +135,11 @@ class PropertiesConfigurationTest {
     @SetSystemProperty(key = "coreProps", value = "DEBUG, first, second")
     @Test
     @LoggerContextSource("LoggerLevelSysPropsAppenderTest.properties")
-    void testLoggerLevelSysPropsAppender(final LoggerContext context, @Named final ListAppender first,
-            @Named final ListAppender second, @Named final ListAppender third) {
+    void testLoggerLevelSysPropsAppender(
+            final LoggerContext context,
+            @Named final ListAppender first,
+            @Named final ListAppender second,
+            @Named final ListAppender third) {
         context.getLogger(getClass()).atInfo().log("message");
         context.getLogger(getClass()).atDebug().log("debug message");
         context.getRootLogger().atInfo().log("test message");

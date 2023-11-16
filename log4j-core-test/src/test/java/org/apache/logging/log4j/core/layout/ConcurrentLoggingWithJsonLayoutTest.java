@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -24,15 +27,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 
 /**
  * Test for LOG4J2-1769.
@@ -42,6 +41,7 @@ import static org.junit.Assert.*;
 public class ConcurrentLoggingWithJsonLayoutTest {
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule("log4j2-json-layout.xml");
+
     private static final String PATH = "target/test-json-layout.log";
 
     @AfterClass

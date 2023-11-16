@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -30,8 +31,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -164,8 +163,12 @@ public class LogEventTest {
         private static final String FQCN = TestClass.class.getName();
 
         public StackTraceElement getEventSource(final String loggerName) {
-            final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(loggerName)
-                    .setLoggerFqcn(FQCN).setLevel(Level.INFO).setMessage(MESSAGE).build();
+            final LogEvent event = Log4jLogEvent.newBuilder()
+                    .setLoggerName(loggerName)
+                    .setLoggerFqcn(FQCN)
+                    .setLevel(Level.INFO)
+                    .setMessage(MESSAGE)
+                    .build();
             event.setIncludeLocation(true);
             return event.getSource();
         }

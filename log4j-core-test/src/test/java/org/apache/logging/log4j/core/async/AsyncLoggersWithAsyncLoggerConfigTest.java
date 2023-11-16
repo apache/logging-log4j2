@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
@@ -26,14 +27,12 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
 @Category(AsyncLoggers.class)
 public class AsyncLoggersWithAsyncLoggerConfigTest {
 
     @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("AsyncLoggersWithAsyncLoggerConfigTest.xml",
-        AsyncLoggerContextSelector.class);
+    public static LoggerContextRule context =
+            new LoggerContextRule("AsyncLoggersWithAsyncLoggerConfigTest.xml", AsyncLoggerContextSelector.class);
 
     @Test
     public void testLoggingWorks() throws Exception {

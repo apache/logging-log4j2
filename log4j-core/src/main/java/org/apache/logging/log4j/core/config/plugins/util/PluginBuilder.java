@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -115,7 +114,9 @@ public class PluginBuilder implements Builder<Object> {
         verify();
         // first try to use a builder class if one is available
         try {
-            LOGGER.debug("Building Plugin[name={}, class={}].", pluginType.getElementName(),
+            LOGGER.debug(
+                    "Building Plugin[name={}, class={}].",
+                    pluginType.getElementName(),
                     pluginType.getPluginClass().getName());
             final Builder<?> builder = createBuilder(this.clazz);
             if (builder != null) {
@@ -126,9 +127,13 @@ public class PluginBuilder implements Builder<Object> {
             LOGGER.error("Could not create plugin of type {} for element {}", this.clazz, node.getName(), e);
             return null; // no point in trying the factory method
         } catch (final Throwable t) {
-            LOGGER.error("Could not create plugin of type {} for element {}: {}",
-                    this.clazz, node.getName(),
-                    (t instanceof InvocationTargetException ? ((InvocationTargetException) t).getCause() : t).toString(), t);
+            LOGGER.error(
+                    "Could not create plugin of type {} for element {}: {}",
+                    this.clazz,
+                    node.getName(),
+                    (t instanceof InvocationTargetException ? ((InvocationTargetException) t).getCause() : t)
+                            .toString(),
+                    t);
         }
         // or fall back to factory method if no builder class is available
         try {
@@ -136,9 +141,13 @@ public class PluginBuilder implements Builder<Object> {
             final Object[] params = generateParameters(factory);
             return factory.invoke(null, params);
         } catch (final Throwable t) {
-            LOGGER.error("Unable to invoke factory method in {} for element {}: {}",
-                    this.clazz, this.node.getName(),
-                    (t instanceof InvocationTargetException ? ((InvocationTargetException) t).getCause() : t).toString(), t);
+            LOGGER.error(
+                    "Unable to invoke factory method in {} for element {}: {}",
+                    this.clazz,
+                    this.node.getName(),
+                    (t instanceof InvocationTargetException ? ((InvocationTargetException) t).getCause() : t)
+                            .toString(),
+                    t);
             return null;
         }
     }
@@ -149,11 +158,11 @@ public class PluginBuilder implements Builder<Object> {
     }
 
     private static Builder<?> createBuilder(final Class<?> clazz)
-        throws InvocationTargetException, IllegalAccessException {
+            throws InvocationTargetException, IllegalAccessException {
         for (final Method method : clazz.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(PluginBuilderFactory.class) &&
-                Modifier.isStatic(method.getModifiers()) &&
-                TypeUtil.isAssignable(Builder.class, method.getReturnType())) {
+            if (method.isAnnotationPresent(PluginBuilderFactory.class)
+                    && Modifier.isStatic(method.getModifiers())
+                    && TypeUtil.isAssignable(Builder.class, method.getReturnType())) {
                 ReflectionUtil.makeAccessible(method);
                 return (Builder<?>) method.invoke(null);
             }
@@ -173,17 +182,17 @@ public class PluginBuilder implements Builder<Object> {
                 if (a instanceof PluginAliases) {
                     continue; // already processed
                 }
-                final PluginVisitor<? extends Annotation> visitor =
-                    PluginVisitors.findVisitor(a.annotationType());
+                final PluginVisitor<? extends Annotation> visitor = PluginVisitors.findVisitor(a.annotationType());
                 if (visitor != null) {
                     final Object value = visitor.setAliases(aliases)
-                        .setAnnotation(a)
-                        .setConversionType(field.getType())
-                        .setStrSubstitutor(event == null
-                                ? configuration.getConfigurationStrSubstitutor()
-                                : configuration.getStrSubstitutor())
-                        .setMember(field)
-                        .visit(configuration, node, event, log);
+                            .setAnnotation(a)
+                            .setConversionType(field.getType())
+                            .setStrSubstitutor(
+                                    event == null
+                                            ? configuration.getConfigurationStrSubstitutor()
+                                            : configuration.getStrSubstitutor())
+                            .setMember(field)
+                            .visit(configuration, node, event, log);
                     // don't overwrite default values if the visitor gives us no value to inject
                     if (value != null) {
                         field.set(builder, value);
@@ -195,18 +204,19 @@ public class PluginBuilder implements Builder<Object> {
         log.append(log.length() == 0 ? builder.getClass().getSimpleName() + "()" : ")");
         LOGGER.debug(log.toString());
         if (!reason.isEmpty()) {
-            throw new ConfigurationException("Arguments given for element " + node.getName() + " are invalid: " + reason);
+            throw new ConfigurationException(
+                    "Arguments given for element " + node.getName() + " are invalid: " + reason);
         }
         checkForRemainingAttributes();
         verifyNodeChildrenUsed();
     }
 
-    private static String validateFields(final Builder<?> builder, final List<Field> fields) throws IllegalAccessException {
+    private static String validateFields(final Builder<?> builder, final List<Field> fields)
+            throws IllegalAccessException {
         String reason = "";
         for (final Field field : fields) {
             final Annotation[] annotations = field.getDeclaredAnnotations();
-            final Collection<ConstraintValidator<?>> validators =
-                ConstraintValidators.findValidators(annotations);
+            final Collection<ConstraintValidator<?>> validators = ConstraintValidators.findValidators(annotations);
             final Object value = field.get(builder);
             for (final ConstraintValidator<?> validator : validators) {
                 if (!validator.isValid(field.getName(), value)) {
@@ -250,8 +260,7 @@ public class PluginBuilder implements Builder<Object> {
 
     private static Method findFactoryMethod(final Class<?> clazz) {
         for (final Method method : clazz.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(PluginFactory.class) &&
-                Modifier.isStatic(method.getModifiers())) {
+            if (method.isAnnotationPresent(PluginFactory.class) && Modifier.isStatic(method.getModifiers())) {
                 ReflectionUtil.makeAccessible(method);
                 return method;
             }
@@ -272,25 +281,24 @@ public class PluginBuilder implements Builder<Object> {
                 if (a instanceof PluginAliases) {
                     continue; // already processed
                 }
-                final PluginVisitor<? extends Annotation> visitor = PluginVisitors.findVisitor(
-                    a.annotationType());
+                final PluginVisitor<? extends Annotation> visitor = PluginVisitors.findVisitor(a.annotationType());
                 if (visitor != null) {
                     final Object value = visitor.setAliases(aliases)
-                        .setAnnotation(a)
-                        .setConversionType(types[i])
-                        .setStrSubstitutor(event == null
-                                ? configuration.getConfigurationStrSubstitutor()
-                                : configuration.getStrSubstitutor())
-                        .setMember(factory)
-                        .visit(configuration, node, event, log);
+                            .setAnnotation(a)
+                            .setConversionType(types[i])
+                            .setStrSubstitutor(
+                                    event == null
+                                            ? configuration.getConfigurationStrSubstitutor()
+                                            : configuration.getStrSubstitutor())
+                            .setMember(factory)
+                            .visit(configuration, node, event, log);
                     // don't overwrite existing values if the visitor gives us no value to inject
                     if (value != null) {
                         args[i] = value;
                     }
                 }
             }
-            final Collection<ConstraintValidator<?>> validators =
-                ConstraintValidators.findValidators(annotations[i]);
+            final Collection<ConstraintValidator<?>> validators = ConstraintValidators.findValidators(annotations[i]);
             final Object value = args[i];
             final String argName = "arg[" + i + "](" + simpleName(value) + ")";
             for (final ConstraintValidator<?> validator : validators) {

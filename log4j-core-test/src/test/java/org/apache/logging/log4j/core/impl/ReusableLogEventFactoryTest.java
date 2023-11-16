@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.util.concurrent.atomic.AtomicReference;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ReusableLogEventFactory class.
@@ -75,8 +74,12 @@ public class ReusableLogEventFactoryTest {
         assertEquals(new SimpleMessage("xyz"), event2.getMessage(), "msg");
     }
 
-    private LogEvent callCreateEvent(final ReusableLogEventFactory factory, final String logger, final Level level,
-            final Message message, final Throwable thrown) {
+    private LogEvent callCreateEvent(
+            final ReusableLogEventFactory factory,
+            final String logger,
+            final Level level,
+            final Message message,
+            final Throwable thrown) {
         return factory.createEvent(logger, null, getClass().getName(), level, message, null, thrown);
     }
 
@@ -132,5 +135,4 @@ public class ReusableLogEventFactoryTest {
             ReusableLogEventFactory.release(event);
         }
     }
-
 }

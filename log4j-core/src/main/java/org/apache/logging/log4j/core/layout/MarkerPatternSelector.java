@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.layout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -38,7 +37,11 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
  */
-@Plugin(name = "MarkerPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
+@Plugin(
+        name = "MarkerPatternSelector",
+        category = Node.CATEGORY,
+        elementType = PatternSelector.ELEMENT_TYPE,
+        printObject = true)
 public class MarkerPatternSelector implements PatternSelector, LocationAware {
 
     /**
@@ -73,8 +76,8 @@ public class MarkerPatternSelector implements PatternSelector, LocationAware {
                 LOGGER.warn("No marker patterns were provided with PatternMatch");
                 return null;
             }
-            return new MarkerPatternSelector(properties, defaultPattern, alwaysWriteExceptions, disableAnsi,
-                    noConsoleNoAnsi, configuration);
+            return new MarkerPatternSelector(
+                    properties, defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, configuration);
         }
 
         public Builder setProperties(final PatternMatch[] properties) {
@@ -106,7 +109,6 @@ public class MarkerPatternSelector implements PatternSelector, LocationAware {
             this.configuration = configuration;
             return this;
         }
-
     }
 
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
@@ -125,21 +127,28 @@ public class MarkerPatternSelector implements PatternSelector, LocationAware {
      * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
      */
     @Deprecated
-    public MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
-                                 final Configuration config) {
+    public MarkerPatternSelector(
+            final PatternMatch[] properties,
+            final String defaultPattern,
+            final boolean alwaysWriteExceptions,
+            final boolean noConsoleNoAnsi,
+            final Configuration config) {
         this(properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
     }
 
-    private MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean disableAnsi,
-                                 final boolean noConsoleNoAnsi, final Configuration config) {
+    private MarkerPatternSelector(
+            final PatternMatch[] properties,
+            final String defaultPattern,
+            final boolean alwaysWriteExceptions,
+            final boolean disableAnsi,
+            final boolean noConsoleNoAnsi,
+            final Configuration config) {
         boolean needsLocation = false;
         final PatternParser parser = PatternLayout.createPatternParser(config);
         for (final PatternMatch property : properties) {
             try {
-                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions,
-                        disableAnsi, noConsoleNoAnsi);
+                final List<PatternFormatter> list =
+                        parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
                 final PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
                 formatterMap.put(property.getKey(), formatters);
                 for (int i = 0; !needsLocation && i < formatters.length; ++i) {
@@ -152,8 +161,8 @@ public class MarkerPatternSelector implements PatternSelector, LocationAware {
             }
         }
         try {
-            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi,
-                    noConsoleNoAnsi);
+            final List<PatternFormatter> list =
+                    parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
             defaultFormatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
             this.defaultPattern = defaultPattern;
             for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
@@ -228,7 +237,11 @@ public class MarkerPatternSelector implements PatternSelector, LocationAware {
             if (!first) {
                 sb.append(", ");
             }
-            sb.append("key=\"").append(entry.getKey()).append("\", pattern=\"").append(entry.getValue()).append("\"");
+            sb.append("key=\"")
+                    .append(entry.getKey())
+                    .append("\", pattern=\"")
+                    .append(entry.getValue())
+                    .append("\"");
             first = false;
         }
         if (!first) {

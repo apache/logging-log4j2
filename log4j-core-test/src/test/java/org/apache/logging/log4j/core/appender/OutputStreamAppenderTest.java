@@ -20,7 +20,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -54,7 +53,8 @@ public class OutputStreamAppenderTest {
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration config = context.getConfiguration();
         final PatternLayout layout = PatternLayout.createDefaultLayout(config);
-        final Appender appender = OutputStreamAppender.createAppender(layout, null, outputStream, outputStreamName, false, true);
+        final Appender appender =
+                OutputStreamAppender.createAppender(layout, null, outputStream, outputStreamName, false, true);
         appender.start();
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);
@@ -64,9 +64,8 @@ public class OutputStreamAppenderTest {
     public void testBuildFilter() {
         final NoMarkerFilter filter = NoMarkerFilter.newBuilder().build();
         // @formatter:off
-        final OutputStreamAppender.Builder builder = OutputStreamAppender.newBuilder()
-                .setName("test")
-                .setFilter(filter);
+        final OutputStreamAppender.Builder builder =
+                OutputStreamAppender.newBuilder().setName("test").setFilter(filter);
         // @formatter:on
         Assert.assertEquals(filter, builder.getFilter());
         final OutputStreamAppender appender = builder.build();
@@ -107,12 +106,14 @@ public class OutputStreamAppenderTest {
         final Configuration config = ctx.getConfiguration();
         // @formatter:off
         final Appender appender = FileAppender.newBuilder()
-        .withFileName("target/" + getClass().getName() + ".log")
-        .withAppend(false).setName("File").setIgnoreExceptions(false)
-            .withBufferedIo(false)
-            .withBufferSize(4000)
-            .setConfiguration(config)
-            .build();
+                .withFileName("target/" + getClass().getName() + ".log")
+                .withAppend(false)
+                .setName("File")
+                .setIgnoreExceptions(false)
+                .withBufferedIo(false)
+                .withBufferSize(4000)
+                .setConfiguration(config)
+                .build();
         // @formatter:on
         appender.start();
         config.addAppender(appender);

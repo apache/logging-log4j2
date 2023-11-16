@@ -26,7 +26,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -54,7 +53,11 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * print byte streams.
  * </p>
  */
-@Plugin(name = ConsoleAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(
+        name = ConsoleAppender.PLUGIN_NAME,
+        category = Core.CATEGORY_NAME,
+        elementType = Appender.ELEMENT_TYPE,
+        printObject = true)
 public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
     public static final String PLUGIN_NAME = "Console";
@@ -91,13 +94,18 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         public abstract Charset getDefaultCharset();
 
         protected Charset getCharset(final String property, final Charset defaultCharset) {
-            return new PropertiesUtil(PropertiesUtil.getSystemProperties()).getCharsetProperty(property, defaultCharset);
+            return new PropertiesUtil(PropertiesUtil.getSystemProperties())
+                    .getCharsetProperty(property, defaultCharset);
         }
-
     }
 
-    private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target,
+    private ConsoleAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final OutputStreamManager manager,
+            final boolean ignoreExceptions,
+            final Target target,
             final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, properties, manager);
         this.target = target;
@@ -117,7 +125,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @deprecated Deprecated in 2.7; use {@link #newBuilder()}.
      */
     @Deprecated
-    public static ConsoleAppender createAppender(Layout<? extends Serializable> layout,
+    public static ConsoleAppender createAppender(
+            Layout<? extends Serializable> layout,
             final Filter filter,
             final String targetStr,
             final String name,
@@ -133,7 +142,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = targetStr == null ? DEFAULT_TARGET : Target.valueOf(targetStr);
-        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, false, layout), ignoreExceptions, target, null);
+        return new ConsoleAppender(
+                name, layout, filter, getManager(target, isFollow, false, layout), ignoreExceptions, target, null);
     }
 
     /**
@@ -161,7 +171,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             final boolean follow,
             final boolean direct,
             final boolean ignoreExceptions) {
-            // @formatter:on
+        // @formatter:on
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;
@@ -174,13 +184,20 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             LOGGER.error("Cannot use both follow and direct on ConsoleAppender");
             return null;
         }
-        return new ConsoleAppender(name, layout, filter, getManager(target, follow, direct, layout), ignoreExceptions, target, null);
+        return new ConsoleAppender(
+                name, layout, filter, getManager(target, follow, direct, layout), ignoreExceptions, target, null);
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
-        return new ConsoleAppender("DefaultConsole-" + COUNT.incrementAndGet(), layout, null,
-                getDefaultManager(DEFAULT_TARGET, false, false, layout), true, DEFAULT_TARGET, null);
+        return new ConsoleAppender(
+                "DefaultConsole-" + COUNT.incrementAndGet(),
+                layout,
+                null,
+                getDefaultManager(DEFAULT_TARGET, false, false, layout),
+                true,
+                DEFAULT_TARGET,
+                null);
     }
 
     @PluginBuilderFactory
@@ -226,15 +243,25 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                 return null;
             }
             if (follow && direct) {
-                throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
+                throw new IllegalArgumentException(
+                        "Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout(target.getDefaultCharset());
-            return new ConsoleAppender(getName(), layout, getFilter(), getManager(target, follow, direct, layout),
-                    isIgnoreExceptions(), target, getPropertyArray());
+            return new ConsoleAppender(
+                    getName(),
+                    layout,
+                    getFilter(),
+                    getManager(target, follow, direct, layout),
+                    isIgnoreExceptions(),
+                    target,
+                    getPropertyArray());
         }
     }
 
-    private static OutputStreamManager getDefaultManager(final Target target, final boolean follow, final boolean direct,
+    private static OutputStreamManager getDefaultManager(
+            final Target target,
+            final boolean follow,
+            final boolean direct,
             final Layout<? extends Serializable> layout) {
         final OutputStream os = getOutputStream(follow, direct, target);
 
@@ -243,7 +270,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
-    private static OutputStreamManager getManager(final Target target, final boolean follow, final boolean direct,
+    private static OutputStreamManager getManager(
+            final Target target,
+            final boolean follow,
+            final boolean direct,
             final Layout<? extends Serializable> layout) {
         final OutputStream os = getOutputStream(follow, direct, target);
         final String managerName = target.name() + '.' + follow + '.' + direct;
@@ -255,11 +285,13 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         OutputStream outputStream;
         try {
             // @formatter:off
-            outputStream = target == Target.SYSTEM_OUT ?
-                direct ? new FileOutputStream(FileDescriptor.out) :
-                    (follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out) :
-                direct ? new FileOutputStream(FileDescriptor.err) :
-                    (follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err);
+            outputStream = target == Target.SYSTEM_OUT
+                    ? direct
+                            ? new FileOutputStream(FileDescriptor.out)
+                            : (follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out)
+                    : direct
+                            ? new FileOutputStream(FileDescriptor.err)
+                            : (follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err);
             // @formatter:on
             outputStream = new CloseShieldOutputStream(outputStream);
         } catch (final UnsupportedEncodingException ex) { // should never happen
@@ -279,7 +311,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final NoSuchMethodException nsme) {
             LOGGER.warn("{} is missing the proper constructor", JANSI_CLASS);
         } catch (final Exception ex) {
-            LOGGER.warn("Unable to instantiate {} due to {}", JANSI_CLASS, clean(Throwables.getRootCause(ex).toString()).trim());
+            LOGGER.warn(
+                    "Unable to instantiate {} due to {}",
+                    JANSI_CLASS,
+                    clean(Throwables.getRootCause(ex).toString()).trim());
         }
         return outputStream;
     }
@@ -292,8 +327,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * An implementation of OutputStream that redirects to the current System.err.
      */
     private static class SystemErrStream extends OutputStream {
-        public SystemErrStream() {
-        }
+        public SystemErrStream() {}
 
         @Override
         public void close() {
@@ -325,8 +359,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * An implementation of OutputStream that redirects to the current System.out.
      */
     private static class SystemOutStream extends OutputStream {
-        public SystemOutStream() {
-        }
+        public SystemOutStream() {}
 
         @Override
         public void close() {
@@ -397,5 +430,4 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     public Target getTarget() {
         return target;
     }
-
 }

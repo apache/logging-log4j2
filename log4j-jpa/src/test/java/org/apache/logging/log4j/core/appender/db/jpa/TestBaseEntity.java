@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.util.Date;
 import java.util.Map;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -30,7 +29,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -51,8 +49,7 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
 
     private long id = 0L;
 
-    public TestBaseEntity() {
-    }
+    public TestBaseEntity() {}
 
     public TestBaseEntity(final LogEvent wrappedEvent) {
         super(wrappedEvent);

@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
@@ -55,7 +54,8 @@ final class StackTraceElementResolverContext
     }
 
     @Override
-    public List<? extends TemplateResolverInterceptor<StackTraceElement, StackTraceElementResolverContext>> getResolverInterceptors() {
+    public List<? extends TemplateResolverInterceptor<StackTraceElement, StackTraceElementResolverContext>>
+            getResolverInterceptors() {
         return Collections.emptyList();
     }
 
@@ -85,14 +85,12 @@ final class StackTraceElementResolverContext
             // Do nothing.
         }
 
-        Builder setResolverFactoryByName(
-                final Map<String, StackTraceElementResolverFactory> resolverFactoryByName) {
+        Builder setResolverFactoryByName(final Map<String, StackTraceElementResolverFactory> resolverFactoryByName) {
             this.resolverFactoryByName = resolverFactoryByName;
             return this;
         }
 
-        Builder setSubstitutor(
-                final StackTraceElementResolverStringSubstitutor substitutor) {
+        Builder setSubstitutor(final StackTraceElementResolverStringSubstitutor substitutor) {
             this.substitutor = substitutor;
             return this;
         }
@@ -115,7 +113,5 @@ final class StackTraceElementResolverContext
             Objects.requireNonNull(substitutor, "substitutor");
             Objects.requireNonNull(jsonWriter, "jsonWriter");
         }
-
     }
-
 }

@@ -16,22 +16,22 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.time.LocalTime;
-
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @CleanUpDirectories(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.DIR)
 public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
     public static final String DIR = "target/rolling-random-direct-switch-director";
+
     @Test
-    @LoggerContextSource(value= "log4j-rolling-random-direct-switch-director.xml", timeout = 10)
+    @LoggerContextSource(value = "log4j-rolling-random-direct-switch-director.xml", timeout = 10)
     public void testAppender(final LoggerContext context) throws Exception {
         final Logger logger = context.getLogger(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.class.getName());
         final LocalTime start = LocalTime.now();

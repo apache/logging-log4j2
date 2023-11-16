@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
+import static org.junit.Assert.assertFalse;
 
+import java.io.File;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertFalse;
 
 /**
  *
@@ -36,7 +35,8 @@ public class RollingRandomAppenderDirectWriteWithFilenameTest {
 
     private static final String DIR = "target/random-1833";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);

@@ -40,10 +40,7 @@ public final class MapResolverFactory implements EventResolverFactory {
     }
 
     @Override
-    public MapResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public MapResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
         return new MapResolver(context, config);
     }
-
 }

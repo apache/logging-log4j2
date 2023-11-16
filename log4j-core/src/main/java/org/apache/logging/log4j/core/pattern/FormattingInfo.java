@@ -26,12 +26,12 @@ public final class FormattingInfo {
     /**
      * Array of spaces.
      */
-    private static final char[] SPACES = new char[] { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
+    private static final char[] SPACES = new char[] {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
 
     /**
      * Array of zeros.
      */
-    private static final char[] ZEROS = new char[] { '0', '0', '0', '0', '0', '0', '0', '0' };
+    private static final char[] ZEROS = new char[] {'0', '0', '0', '0', '0', '0', '0', '0'};
 
     /**
      * Default instance.
@@ -80,7 +80,8 @@ public final class FormattingInfo {
      * @param leftTruncate
      *            truncates to the left if true
      */
-    public FormattingInfo(final boolean leftAlign, final int minLength, final int maxLength, final boolean leftTruncate) {
+    public FormattingInfo(
+            final boolean leftAlign, final int minLength, final int maxLength, final boolean leftTruncate) {
         this(leftAlign, minLength, maxLength, leftTruncate, false);
     }
 
@@ -98,7 +99,12 @@ public final class FormattingInfo {
      * @param zeroPad
      *            use zero-padding instead of whitespace-padding
      */
-    public FormattingInfo(final boolean leftAlign, final int minLength, final int maxLength, final boolean leftTruncate, final boolean zeroPad) {
+    public FormattingInfo(
+            final boolean leftAlign,
+            final int minLength,
+            final int maxLength,
+            final boolean leftTruncate,
+            final boolean zeroPad) {
         this.leftAlign = leftAlign;
         this.minLength = minLength;
         this.maxLength = maxLength;
@@ -188,7 +194,7 @@ public final class FormattingInfo {
             } else {
                 int padLength = minLength - rawLength;
 
-                final char[] paddingArray= zeroPad ? ZEROS : SPACES;
+                final char[] paddingArray = zeroPad ? ZEROS : SPACES;
 
                 for (; padLength > paddingArray.length; padLength -= paddingArray.length) {
                     buffer.insert(fieldStart, paddingArray);
@@ -221,5 +227,4 @@ public final class FormattingInfo {
         sb.append(']');
         return sb.toString();
     }
-
 }

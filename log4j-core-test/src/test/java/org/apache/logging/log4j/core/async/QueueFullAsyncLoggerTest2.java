@@ -16,10 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
-
 
 /**
  * Needs to be a separate class since {@link org.apache.logging.log4j.core.util.Constants#FORMAT_MESSAGES_IN_BACKGROUND}

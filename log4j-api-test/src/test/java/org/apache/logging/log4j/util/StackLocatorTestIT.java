@@ -18,13 +18,11 @@ package org.apache.logging.log4j.util;
 
 import java.security.Permission;
 import java.util.Deque;
-
 import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
 
 /**
  * Tests https://github.com/apache/logging-log4j2/pull/1214.
@@ -40,25 +38,25 @@ import org.junit.jupiter.api.parallel.ResourceLock;
  */
 @ResourceLock("java.lang.SecurityManager")
 public class StackLocatorTestIT {
-  @Rule
-  public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
+    @Rule
+    public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
-  /**
-   * Always throws a SecurityException for any reques to create a new SecurityManager
-   */
-  private static class TestSecurityManager extends SecurityManager {
-    @Override
-    public void checkPermission(final Permission permission) {
-      if ("createSecurityManager".equals(permission.getName())) {
-        throw new SecurityException();
-      }
+    /**
+     * Always throws a SecurityException for any reques to create a new SecurityManager
+     */
+    private static class TestSecurityManager extends SecurityManager {
+        @Override
+        public void checkPermission(final Permission permission) {
+            if ("createSecurityManager".equals(permission.getName())) {
+                throw new SecurityException();
+            }
+        }
     }
-  }
 
-  @Test
-  public void testGetCurrentStacktraceSlowPath() {
-    final StackLocator stackLocator = StackLocator.getInstance();
-    final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
-    Assertions.assertSame(StackLocator.class, classes.getFirst());
-  }
+    @Test
+    public void testGetCurrentStacktraceSlowPath() {
+        final StackLocator stackLocator = StackLocator.getInstance();
+        final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
+        Assertions.assertSame(StackLocator.class, classes.getFirst());
+    }
 }

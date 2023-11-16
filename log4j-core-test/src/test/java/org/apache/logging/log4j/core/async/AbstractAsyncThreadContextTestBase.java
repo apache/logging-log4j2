@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.waitAtMost;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,15 +46,12 @@ import org.apache.logging.log4j.util.Unbox;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.waitAtMost;
-
 @UsingStatusListener
 @UsingTestProperties
 @ResourceLock(value = Resources.THREAD_CONTEXT)
 public abstract class AbstractAsyncThreadContextTestBase {
 
-    private final static int LINE_COUNT = 130;
+    private static final int LINE_COUNT = 130;
 
     private static TestProperties props;
 
@@ -64,7 +63,9 @@ public abstract class AbstractAsyncThreadContextTestBase {
     }
 
     enum Mode {
-        ALL_ASYNC, MIXED, BOTH_ALL_ASYNC_AND_MIXED;
+        ALL_ASYNC,
+        MIXED,
+        BOTH_ALL_ASYNC_AND_MIXED;
 
         void initSelector() {
             final ContextSelector selector;
@@ -86,7 +87,9 @@ public abstract class AbstractAsyncThreadContextTestBase {
     }
 
     enum ContextImpl {
-        WEBAPP, GARBAGE_FREE, COPY_ON_WRITE;
+        WEBAPP,
+        GARBAGE_FREE,
+        COPY_ON_WRITE;
 
         void init() {
             final String PACKAGE = "org.apache.logging.log4j.spi.";
@@ -116,7 +119,8 @@ public abstract class AbstractAsyncThreadContextTestBase {
         if (contextImpl == ContextImpl.WEBAPP) {
             assertThat(ThreadContext.getThreadContextMap()).isNull();
         } else {
-            assertThat(ThreadContext.getThreadContextMap()).isNotNull()
+            assertThat(ThreadContext.getThreadContextMap())
+                    .isNotNull()
                     .extracting(o -> o.getClass().getSimpleName())
                     .isEqualTo(contextImpl.implClassSimpleName());
         }
@@ -128,10 +132,10 @@ public abstract class AbstractAsyncThreadContextTestBase {
         props.setProperty("logging.path", testLoggingPath.toString());
         init(contextImpl, asyncMode);
         final Path[] files = new Path[] {
-                testLoggingPath.resolve("AsyncLoggerTest.log"),
-                testLoggingPath.resolve("SynchronousContextTest.log"),
-                testLoggingPath.resolve("AsyncLoggerAndAsyncAppenderTest.log"),
-                testLoggingPath.resolve("AsyncAppenderContextTest.log"),
+            testLoggingPath.resolve("AsyncLoggerTest.log"),
+            testLoggingPath.resolve("SynchronousContextTest.log"),
+            testLoggingPath.resolve("AsyncLoggerAndAsyncAppenderTest.log"),
+            testLoggingPath.resolve("AsyncAppenderContextTest.log"),
         };
 
         ThreadContext.push("stackvalue");
@@ -176,7 +180,9 @@ public abstract class AbstractAsyncThreadContextTestBase {
 
     private static String contextMap() {
         final ReadOnlyThreadContextMap impl = ThreadContext.getThreadContextMap();
-        return impl == null ? ContextImpl.WEBAPP.implClassSimpleName() : impl.getClass().getSimpleName();
+        return impl == null
+                ? ContextImpl.WEBAPP.implClassSimpleName()
+                : impl.getClass().getSimpleName();
     }
 
     private void checkResult(final Path file, final String loggerContextName, final ContextImpl contextImpl)
@@ -187,10 +193,13 @@ public abstract class AbstractAsyncThreadContextTestBase {
             for (int i = 0; i < LINE_COUNT; i++) {
                 final String line = reader.readLine();
                 if ((i & 1) == 1) {
-                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2, count=" + i + "} "
-                            + contextDesc + " i=" + i;
+                    expect =
+                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2, count="
+                                    + i + "} " + contextDesc + " i=" + i;
                 } else {
-                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} " + contextDesc + " i=" + i;
+                    expect =
+                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} "
+                                    + contextDesc + " i=" + i;
                 }
                 assertThat(line).as("Log file '%s'", file.getFileName()).isEqualTo(expect);
             }

@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
-import java.util.concurrent.BlockingQueue;
-
 import com.conversantmedia.util.concurrent.SpinPolicy;
+import java.util.concurrent.BlockingQueue;
 import org.apache.logging.log4j.core.async.DisruptorBlockingQueueFactory;
 
 public class RunConversant extends AbstractRunQueue {
 
     @Override
     BlockingQueue<String> createQueue(final int capacity) {
-        return DisruptorBlockingQueueFactory.<String>createFactory(SpinPolicy.SPINNING).create(capacity);
+        return DisruptorBlockingQueueFactory.<String>createFactory(SpinPolicy.SPINNING)
+                .create(capacity);
     }
 }

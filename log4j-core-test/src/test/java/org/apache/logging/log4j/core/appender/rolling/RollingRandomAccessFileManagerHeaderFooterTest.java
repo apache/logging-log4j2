@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -29,10 +32,6 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -63,7 +62,7 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created: " + dir, dir.exists() );
+        assertTrue("Directory not created: " + dir, dir.exists());
         assertTrue("Directory empty: " + dir, dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
         assertNotNull(files);

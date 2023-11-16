@@ -34,13 +34,13 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 abstract class StackTraceElementMixIn {
     @JsonCreator
     StackTraceElementMixIn(
-    // @formatter:off
+            // @formatter:off
             @JsonProperty(StackTraceElementConstants.ATTR_CLASS) final String declaringClass,
             @JsonProperty(StackTraceElementConstants.ATTR_METHOD) final String methodName,
             @JsonProperty(StackTraceElementConstants.ATTR_FILE) final String fileName,
             @JsonProperty(StackTraceElementConstants.ATTR_LINE) final int lineNumber)
-    // @formatter:on
-    {
+                // @formatter:on
+            {
         // empty
     }
 
@@ -59,5 +59,4 @@ abstract class StackTraceElementMixIn {
     @JsonProperty(StackTraceElementConstants.ATTR_METHOD)
     @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_METHOD, isAttribute = true)
     abstract String getMethodName();
-
 }

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,14 +30,16 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
-
 /**
  * Rewrites log event levels for a given logger name.
  *
  * @since 2.4
  */
-@Plugin(name = "LoggerNameLevelRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
+@Plugin(
+        name = "LoggerNameLevelRewritePolicy",
+        category = Core.CATEGORY_NAME,
+        elementType = "rewritePolicy",
+        printObject = true)
 public class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     /**
@@ -54,7 +57,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
             // @formatter:off
             @PluginAttribute("logger") final String loggerNamePrefix,
             @PluginElement("KeyValuePair") final KeyValuePair[] levelPairs) {
-            // @formatter:on
+        // @formatter:on
         final Map<Level, Level> newMap = new HashMap<>(levelPairs.length);
         for (final KeyValuePair keyValuePair : levelPairs) {
             newMap.put(getLevel(keyValuePair.getKey()), getLevel(keyValuePair.getValue()));
@@ -85,8 +88,8 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
         if (newLevel == null || newLevel == sourceLevel) {
             return event;
         }
-        final LogEvent result = new Log4jLogEvent.Builder(event).setLevel(newLevel).build();
+        final LogEvent result =
+                new Log4jLogEvent.Builder(event).setLevel(newLevel).build();
         return result;
     }
-
 }

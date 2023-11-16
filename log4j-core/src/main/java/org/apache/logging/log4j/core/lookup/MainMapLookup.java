@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.lookup;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
@@ -91,5 +90,4 @@ public class MainMapLookup extends MapLookup {
     public String lookup(final String key) {
         return MAIN_SINGLETON.getMap().get(key);
     }
-
 }

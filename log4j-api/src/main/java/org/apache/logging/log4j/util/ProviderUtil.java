@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.baseline.BaselineIgnore;
+import aQute.bnd.annotation.spi.ServiceConsumer;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
@@ -25,12 +30,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.baseline.BaselineIgnore;
-import aQute.bnd.annotation.spi.ServiceConsumer;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -94,8 +93,7 @@ public final class ProviderUtil {
      */
     @SuppressFBWarnings(
             value = "URLCONNECTION_SSRF_FD",
-            justification = "Uses a fixed URL that ends in 'META-INF/log4j-provider.properties'."
-    )
+            justification = "Uses a fixed URL that ends in 'META-INF/log4j-provider.properties'.")
     static void loadProvider(final URL url, final ClassLoader cl) {
         try {
             final Properties props = PropertiesUtil.loadClose(url.openStream(), url);

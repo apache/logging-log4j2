@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import java.io.IOException;
 import org.apache.logging.log4j.MarkerManager.Log4jMarker;
 import org.junit.Assert;
 import org.junit.Before;

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.parser;
 
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,52 +25,52 @@ public class XmlLogEventParserTest extends LogEventParserTest {
 
     private XmlLogEventParser parser;
 
-    private static final String XML = "<Event xmlns=\"http://logging.apache.org/log4j/2.0/events\"\n" +
-            "       timeMillis=\"1493121664118\"\n" +
-            "       level=\"INFO\"\n" +
-            "       loggerName=\"HelloWorld\"\n" +
-            "       endOfBatch=\"false\"\n" +
-            "       thread=\"main\"\n" +
-            "       loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\"\n" +
-            "       threadId=\"1\"\n" +
-            "       threadPriority=\"5\">\n" +
-            "  <Instant epochSecond=\"1493121664\" nanoOfSecond=\"118000000\"/>\n" +
-            "  <Marker name=\"child\">\n" +
-            "    <Parents>\n" +
-            "      <Marker name=\"parent\">\n" +
-            "        <Parents>\n" +
-            "          <Marker name=\"grandparent\"/>\n" +
-            "        </Parents>\n" +
-            "      </Marker>\n" +
-            "    </Parents>\n" +
-            "  </Marker>\n" +
-            "  <Message>Hello, world!</Message>\n" +
-            "  <ContextMap>\n" +
-            "    <item key=\"bar\" value=\"BAR\"/>\n" +
-            "    <item key=\"foo\" value=\"FOO\"/>\n" +
-            "  </ContextMap>\n" +
-            "  <ContextStack>\n" +
-            "    <ContextStackItem>one</ContextStackItem>\n" +
-            "    <ContextStackItem>two</ContextStackItem>\n" +
-            "  </ContextStack>\n" +
-            "  <Source\n" +
-            "      class=\"logtest.Main\"\n" +
-            "      method=\"main\"\n" +
-            "      file=\"Main.java\"\n" +
-            "      line=\"29\"/>\n" +
-            "  <Thrown commonElementCount=\"0\" message=\"error message\" name=\"java.lang.RuntimeException\">\n" +
-            "    <ExtendedStackTrace>\n" +
-            "      <ExtendedStackTraceItem\n" +
-            "          class=\"logtest.Main\"\n" +
-            "          method=\"main\"\n" +
-            "          file=\"Main.java\"\n" +
-            "          line=\"29\"\n" +
-            "          exact=\"true\"\n" +
-            "          location=\"classes/\"\n" +
-            "          version=\"?\"/>\n" +
-            "    </ExtendedStackTrace>\n" +
-            "  </Thrown>\n" +
-            "</Event>";
+    private static final String XML =
+            "<Event xmlns=\"http://logging.apache.org/log4j/2.0/events\"\n" + "       timeMillis=\"1493121664118\"\n"
+                    + "       level=\"INFO\"\n"
+                    + "       loggerName=\"HelloWorld\"\n"
+                    + "       endOfBatch=\"false\"\n"
+                    + "       thread=\"main\"\n"
+                    + "       loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\"\n"
+                    + "       threadId=\"1\"\n"
+                    + "       threadPriority=\"5\">\n"
+                    + "  <Instant epochSecond=\"1493121664\" nanoOfSecond=\"118000000\"/>\n"
+                    + "  <Marker name=\"child\">\n"
+                    + "    <Parents>\n"
+                    + "      <Marker name=\"parent\">\n"
+                    + "        <Parents>\n"
+                    + "          <Marker name=\"grandparent\"/>\n"
+                    + "        </Parents>\n"
+                    + "      </Marker>\n"
+                    + "    </Parents>\n"
+                    + "  </Marker>\n"
+                    + "  <Message>Hello, world!</Message>\n"
+                    + "  <ContextMap>\n"
+                    + "    <item key=\"bar\" value=\"BAR\"/>\n"
+                    + "    <item key=\"foo\" value=\"FOO\"/>\n"
+                    + "  </ContextMap>\n"
+                    + "  <ContextStack>\n"
+                    + "    <ContextStackItem>one</ContextStackItem>\n"
+                    + "    <ContextStackItem>two</ContextStackItem>\n"
+                    + "  </ContextStack>\n"
+                    + "  <Source\n"
+                    + "      class=\"logtest.Main\"\n"
+                    + "      method=\"main\"\n"
+                    + "      file=\"Main.java\"\n"
+                    + "      line=\"29\"/>\n"
+                    + "  <Thrown commonElementCount=\"0\" message=\"error message\" name=\"java.lang.RuntimeException\">\n"
+                    + "    <ExtendedStackTrace>\n"
+                    + "      <ExtendedStackTraceItem\n"
+                    + "          class=\"logtest.Main\"\n"
+                    + "          method=\"main\"\n"
+                    + "          file=\"Main.java\"\n"
+                    + "          line=\"29\"\n"
+                    + "          exact=\"true\"\n"
+                    + "          location=\"classes/\"\n"
+                    + "          version=\"?\"/>\n"
+                    + "    </ExtendedStackTrace>\n"
+                    + "  </Thrown>\n"
+                    + "</Event>";
 
     @Before
     public void setup() {
@@ -126,5 +125,4 @@ public class XmlLogEventParserTest extends LogEventParserTest {
         final LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
         assertLogEvent(logEvent);
     }
-
 }

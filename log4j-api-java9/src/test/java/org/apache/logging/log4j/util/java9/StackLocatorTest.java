@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.util.java9;
 
-import java.util.Deque;
-import java.util.Stack;
-
-import org.apache.logging.log4j.util.StackLocator;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.util.Deque;
+import java.util.Stack;
+import org.apache.logging.log4j.util.StackLocator;
+import org.junit.jupiter.api.Test;
 
 public class StackLocatorTest {
 
@@ -99,7 +98,6 @@ public class StackLocatorTest {
         private StackTraceElement foo() {
             return new Bar().bar(); // <--- testCalcLocation() line
         }
-
     }
 
     private final class Bar {
@@ -111,7 +109,6 @@ public class StackLocatorTest {
         private StackTraceElement baz() {
             return quux();
         }
-
     }
 
     private StackTraceElement quux() {
@@ -158,5 +155,4 @@ public class StackLocatorTest {
             return stackLocator.getCallerClass(ClassLocator.class);
         }
     }
-
 }

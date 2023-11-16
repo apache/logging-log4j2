@@ -66,8 +66,9 @@ public class AsyncQueueFullPolicyFactory {
      */
     public static AsyncQueueFullPolicy create() {
         final String router = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME_ASYNC_EVENT_ROUTER);
-        if (router == null || isRouterSelected(
-                router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
+        if (router == null
+                || isRouterSelected(
+                        router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
             return new DefaultAsyncQueueFullPolicy();
         }
         if (isRouterSelected(
@@ -81,9 +82,10 @@ public class AsyncQueueFullPolicyFactory {
             final String propertyValue,
             final Class<? extends AsyncQueueFullPolicy> policy,
             final String shortPropertyValue) {
-        return propertyValue != null && (shortPropertyValue.equalsIgnoreCase(propertyValue)
-                || policy.getName().equals(propertyValue)
-                || policy.getSimpleName().equals(propertyValue));
+        return propertyValue != null
+                && (shortPropertyValue.equalsIgnoreCase(propertyValue)
+                        || policy.getName().equals(propertyValue)
+                        || policy.getSimpleName().equals(propertyValue));
     }
 
     private static AsyncQueueFullPolicy createCustomRouter(final String router) {

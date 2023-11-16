@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.util.datetime;
 
+import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.DEFAULT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -26,7 +33,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.util.Strings;
@@ -37,13 +43,6 @@ import org.junit.jupiter.api.parallel.Resources;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.DefaultLocale;
-
-import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.DEFAULT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests {@link FixedDateFormat}.
@@ -63,7 +62,7 @@ public class FixedDateFormatTest {
 
     @Test
     public void testConstructorDisallowsNullTimeZone() {
-        assertThrows(NullPointerException.class, () ->new FixedDateFormat(FixedFormat.ABSOLUTE, null));
+        assertThrows(NullPointerException.class, () -> new FixedDateFormat(FixedFormat.ABSOLUTE, null));
     }
 
     @Test
@@ -102,7 +101,7 @@ public class FixedDateFormatTest {
     @Test
     public void testCreateIfSupported_nonNullIfNameMatches() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
-            final String[] options = { format.name() };
+            final String[] options = {format.name()};
             assertNotNull(FixedDateFormat.createIfSupported(options), format.name());
         }
     }
@@ -110,7 +109,7 @@ public class FixedDateFormatTest {
     @Test
     public void testCreateIfSupported_nonNullIfPatternMatches() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
-            final String[] options = { format.getPattern() };
+            final String[] options = {format.getPattern()};
             assertNotNull(FixedDateFormat.createIfSupported(options), format.name());
         }
     }
@@ -142,51 +141,51 @@ public class FixedDateFormatTest {
         final FixedDateFormat fixedUtc = FixedDateFormat.create(DEFAULT, TimeZone.getTimeZone("UTC"));
 
         final String[][] expectedDstAndNoDst = {
-                // US/Central, UTC
-                { "2017-03-11 18:00:00,000", "2017-03-12 00:00:00,000" }, //
-                { "2017-03-11 19:00:00,000", "2017-03-12 01:00:00,000" }, //
-                { "2017-03-11 20:00:00,000", "2017-03-12 02:00:00,000" }, //
-                { "2017-03-11 21:00:00,000", "2017-03-12 03:00:00,000" }, //
-                { "2017-03-11 22:00:00,000", "2017-03-12 04:00:00,000" }, //
-                { "2017-03-11 23:00:00,000", "2017-03-12 05:00:00,000" }, //
-                { "2017-03-12 00:00:00,000", "2017-03-12 06:00:00,000" }, //
-                { "2017-03-12 01:00:00,000", "2017-03-12 07:00:00,000" }, //
-                { "2017-03-12 03:00:00,000", "2017-03-12 08:00:00,000" }, //  DST jump at 2am US central time
-                { "2017-03-12 04:00:00,000", "2017-03-12 09:00:00,000" }, //
-                { "2017-03-12 05:00:00,000", "2017-03-12 10:00:00,000" }, //
-                { "2017-03-12 06:00:00,000", "2017-03-12 11:00:00,000" }, //
-                { "2017-03-12 07:00:00,000", "2017-03-12 12:00:00,000" }, //
-                { "2017-03-12 08:00:00,000", "2017-03-12 13:00:00,000" }, //
-                { "2017-03-12 09:00:00,000", "2017-03-12 14:00:00,000" }, //
-                { "2017-03-12 10:00:00,000", "2017-03-12 15:00:00,000" }, //
-                { "2017-03-12 11:00:00,000", "2017-03-12 16:00:00,000" }, //
-                { "2017-03-12 12:00:00,000", "2017-03-12 17:00:00,000" }, //
-                { "2017-03-12 13:00:00,000", "2017-03-12 18:00:00,000" }, //
-                { "2017-03-12 14:00:00,000", "2017-03-12 19:00:00,000" }, //
-                { "2017-03-12 15:00:00,000", "2017-03-12 20:00:00,000" }, //
-                { "2017-03-12 16:00:00,000", "2017-03-12 21:00:00,000" }, //
-                { "2017-03-12 17:00:00,000", "2017-03-12 22:00:00,000" }, //
-                { "2017-03-12 18:00:00,000", "2017-03-12 23:00:00,000" }, // 24
-                { "2017-03-12 19:00:00,000", "2017-03-13 00:00:00,000" }, //
-                { "2017-03-12 20:00:00,000", "2017-03-13 01:00:00,000" }, //
-                { "2017-03-12 21:00:00,000", "2017-03-13 02:00:00,000" }, //
-                { "2017-03-12 22:00:00,000", "2017-03-13 03:00:00,000" }, //
-                { "2017-03-12 23:00:00,000", "2017-03-13 04:00:00,000" }, //
-                { "2017-03-13 00:00:00,000", "2017-03-13 05:00:00,000" }, //
-                { "2017-03-13 01:00:00,000", "2017-03-13 06:00:00,000" }, //
-                { "2017-03-13 02:00:00,000", "2017-03-13 07:00:00,000" }, //
-                { "2017-03-13 03:00:00,000", "2017-03-13 08:00:00,000" }, //
-                { "2017-03-13 04:00:00,000", "2017-03-13 09:00:00,000" }, //
-                { "2017-03-13 05:00:00,000", "2017-03-13 10:00:00,000" }, //
-                { "2017-03-13 06:00:00,000", "2017-03-13 11:00:00,000" }, //
+            // US/Central, UTC
+            {"2017-03-11 18:00:00,000", "2017-03-12 00:00:00,000"}, //
+            {"2017-03-11 19:00:00,000", "2017-03-12 01:00:00,000"}, //
+            {"2017-03-11 20:00:00,000", "2017-03-12 02:00:00,000"}, //
+            {"2017-03-11 21:00:00,000", "2017-03-12 03:00:00,000"}, //
+            {"2017-03-11 22:00:00,000", "2017-03-12 04:00:00,000"}, //
+            {"2017-03-11 23:00:00,000", "2017-03-12 05:00:00,000"}, //
+            {"2017-03-12 00:00:00,000", "2017-03-12 06:00:00,000"}, //
+            {"2017-03-12 01:00:00,000", "2017-03-12 07:00:00,000"}, //
+            {"2017-03-12 03:00:00,000", "2017-03-12 08:00:00,000"}, //  DST jump at 2am US central time
+            {"2017-03-12 04:00:00,000", "2017-03-12 09:00:00,000"}, //
+            {"2017-03-12 05:00:00,000", "2017-03-12 10:00:00,000"}, //
+            {"2017-03-12 06:00:00,000", "2017-03-12 11:00:00,000"}, //
+            {"2017-03-12 07:00:00,000", "2017-03-12 12:00:00,000"}, //
+            {"2017-03-12 08:00:00,000", "2017-03-12 13:00:00,000"}, //
+            {"2017-03-12 09:00:00,000", "2017-03-12 14:00:00,000"}, //
+            {"2017-03-12 10:00:00,000", "2017-03-12 15:00:00,000"}, //
+            {"2017-03-12 11:00:00,000", "2017-03-12 16:00:00,000"}, //
+            {"2017-03-12 12:00:00,000", "2017-03-12 17:00:00,000"}, //
+            {"2017-03-12 13:00:00,000", "2017-03-12 18:00:00,000"}, //
+            {"2017-03-12 14:00:00,000", "2017-03-12 19:00:00,000"}, //
+            {"2017-03-12 15:00:00,000", "2017-03-12 20:00:00,000"}, //
+            {"2017-03-12 16:00:00,000", "2017-03-12 21:00:00,000"}, //
+            {"2017-03-12 17:00:00,000", "2017-03-12 22:00:00,000"}, //
+            {"2017-03-12 18:00:00,000", "2017-03-12 23:00:00,000"}, // 24
+            {"2017-03-12 19:00:00,000", "2017-03-13 00:00:00,000"}, //
+            {"2017-03-12 20:00:00,000", "2017-03-13 01:00:00,000"}, //
+            {"2017-03-12 21:00:00,000", "2017-03-13 02:00:00,000"}, //
+            {"2017-03-12 22:00:00,000", "2017-03-13 03:00:00,000"}, //
+            {"2017-03-12 23:00:00,000", "2017-03-13 04:00:00,000"}, //
+            {"2017-03-13 00:00:00,000", "2017-03-13 05:00:00,000"}, //
+            {"2017-03-13 01:00:00,000", "2017-03-13 06:00:00,000"}, //
+            {"2017-03-13 02:00:00,000", "2017-03-13 07:00:00,000"}, //
+            {"2017-03-13 03:00:00,000", "2017-03-13 08:00:00,000"}, //
+            {"2017-03-13 04:00:00,000", "2017-03-13 09:00:00,000"}, //
+            {"2017-03-13 05:00:00,000", "2017-03-13 10:00:00,000"}, //
+            {"2017-03-13 06:00:00,000", "2017-03-13 11:00:00,000"}, //
         };
 
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
             assertEquals(expectedDstAndNoDst[i][0], usCentral.format(date), "SimpleDateFormat TZ=US Central");
             assertEquals(expectedDstAndNoDst[i][1], utc.format(date), "SimpleDateFormat TZ=UTC");
-            assertEquals(expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()),
-                    "FixedDateFormat TZ=US Central");
+            assertEquals(
+                    expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()), "FixedDateFormat TZ=US Central");
             assertEquals(expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()), "FixedDateFormat TZ=UTC");
             calendar.add(Calendar.HOUR_OF_DAY, 1);
         }
@@ -207,52 +206,53 @@ public class FixedDateFormatTest {
         final FixedDateFormat fixedUtc = FixedDateFormat.create(DEFAULT, TimeZone.getTimeZone("UTC"));
 
         final String[][] expectedDstAndNoDst = {
-                // US/Central, UTC
-                { "2017-11-04 19:00:00,000", "2017-11-05 00:00:00,000" }, //
-                { "2017-11-04 20:00:00,000", "2017-11-05 01:00:00,000" }, //
-                { "2017-11-04 21:00:00,000", "2017-11-05 02:00:00,000" }, //
-                { "2017-11-04 22:00:00,000", "2017-11-05 03:00:00,000" }, //
-                { "2017-11-04 23:00:00,000", "2017-11-05 04:00:00,000" }, //
-                { "2017-11-05 00:00:00,000", "2017-11-05 05:00:00,000" }, //
-                { "2017-11-05 01:00:00,000", "2017-11-05 06:00:00,000" }, //  DST jump at 2am US central time
-                { "2017-11-05 01:00:00,000", "2017-11-05 07:00:00,000" }, //
-                { "2017-11-05 02:00:00,000", "2017-11-05 08:00:00,000" }, //
-                { "2017-11-05 03:00:00,000", "2017-11-05 09:00:00,000" }, //
-                { "2017-11-05 04:00:00,000", "2017-11-05 10:00:00,000" }, //
-                { "2017-11-05 05:00:00,000", "2017-11-05 11:00:00,000" }, //
-                { "2017-11-05 06:00:00,000", "2017-11-05 12:00:00,000" }, //
-                { "2017-11-05 07:00:00,000", "2017-11-05 13:00:00,000" }, //
-                { "2017-11-05 08:00:00,000", "2017-11-05 14:00:00,000" }, //
-                { "2017-11-05 09:00:00,000", "2017-11-05 15:00:00,000" }, //
-                { "2017-11-05 10:00:00,000", "2017-11-05 16:00:00,000" }, //
-                { "2017-11-05 11:00:00,000", "2017-11-05 17:00:00,000" }, //
-                { "2017-11-05 12:00:00,000", "2017-11-05 18:00:00,000" }, //
-                { "2017-11-05 13:00:00,000", "2017-11-05 19:00:00,000" }, //
-                { "2017-11-05 14:00:00,000", "2017-11-05 20:00:00,000" }, //
-                { "2017-11-05 15:00:00,000", "2017-11-05 21:00:00,000" }, //
-                { "2017-11-05 16:00:00,000", "2017-11-05 22:00:00,000" }, //
-                { "2017-11-05 17:00:00,000", "2017-11-05 23:00:00,000" }, // 24
-                { "2017-11-05 18:00:00,000", "2017-11-06 00:00:00,000" }, //
-                { "2017-11-05 19:00:00,000", "2017-11-06 01:00:00,000" }, //
-                { "2017-11-05 20:00:00,000", "2017-11-06 02:00:00,000" }, //
-                { "2017-11-05 21:00:00,000", "2017-11-06 03:00:00,000" }, //
-                { "2017-11-05 22:00:00,000", "2017-11-06 04:00:00,000" }, //
-                { "2017-11-05 23:00:00,000", "2017-11-06 05:00:00,000" }, //
-                { "2017-11-06 00:00:00,000", "2017-11-06 06:00:00,000" }, //
-                { "2017-11-06 01:00:00,000", "2017-11-06 07:00:00,000" }, //
-                { "2017-11-06 02:00:00,000", "2017-11-06 08:00:00,000" }, //
-                { "2017-11-06 03:00:00,000", "2017-11-06 09:00:00,000" }, //
-                { "2017-11-06 04:00:00,000", "2017-11-06 10:00:00,000" }, //
-                { "2017-11-06 05:00:00,000", "2017-11-06 11:00:00,000" }, //
+            // US/Central, UTC
+            {"2017-11-04 19:00:00,000", "2017-11-05 00:00:00,000"}, //
+            {"2017-11-04 20:00:00,000", "2017-11-05 01:00:00,000"}, //
+            {"2017-11-04 21:00:00,000", "2017-11-05 02:00:00,000"}, //
+            {"2017-11-04 22:00:00,000", "2017-11-05 03:00:00,000"}, //
+            {"2017-11-04 23:00:00,000", "2017-11-05 04:00:00,000"}, //
+            {"2017-11-05 00:00:00,000", "2017-11-05 05:00:00,000"}, //
+            {"2017-11-05 01:00:00,000", "2017-11-05 06:00:00,000"}, //  DST jump at 2am US central time
+            {"2017-11-05 01:00:00,000", "2017-11-05 07:00:00,000"}, //
+            {"2017-11-05 02:00:00,000", "2017-11-05 08:00:00,000"}, //
+            {"2017-11-05 03:00:00,000", "2017-11-05 09:00:00,000"}, //
+            {"2017-11-05 04:00:00,000", "2017-11-05 10:00:00,000"}, //
+            {"2017-11-05 05:00:00,000", "2017-11-05 11:00:00,000"}, //
+            {"2017-11-05 06:00:00,000", "2017-11-05 12:00:00,000"}, //
+            {"2017-11-05 07:00:00,000", "2017-11-05 13:00:00,000"}, //
+            {"2017-11-05 08:00:00,000", "2017-11-05 14:00:00,000"}, //
+            {"2017-11-05 09:00:00,000", "2017-11-05 15:00:00,000"}, //
+            {"2017-11-05 10:00:00,000", "2017-11-05 16:00:00,000"}, //
+            {"2017-11-05 11:00:00,000", "2017-11-05 17:00:00,000"}, //
+            {"2017-11-05 12:00:00,000", "2017-11-05 18:00:00,000"}, //
+            {"2017-11-05 13:00:00,000", "2017-11-05 19:00:00,000"}, //
+            {"2017-11-05 14:00:00,000", "2017-11-05 20:00:00,000"}, //
+            {"2017-11-05 15:00:00,000", "2017-11-05 21:00:00,000"}, //
+            {"2017-11-05 16:00:00,000", "2017-11-05 22:00:00,000"}, //
+            {"2017-11-05 17:00:00,000", "2017-11-05 23:00:00,000"}, // 24
+            {"2017-11-05 18:00:00,000", "2017-11-06 00:00:00,000"}, //
+            {"2017-11-05 19:00:00,000", "2017-11-06 01:00:00,000"}, //
+            {"2017-11-05 20:00:00,000", "2017-11-06 02:00:00,000"}, //
+            {"2017-11-05 21:00:00,000", "2017-11-06 03:00:00,000"}, //
+            {"2017-11-05 22:00:00,000", "2017-11-06 04:00:00,000"}, //
+            {"2017-11-05 23:00:00,000", "2017-11-06 05:00:00,000"}, //
+            {"2017-11-06 00:00:00,000", "2017-11-06 06:00:00,000"}, //
+            {"2017-11-06 01:00:00,000", "2017-11-06 07:00:00,000"}, //
+            {"2017-11-06 02:00:00,000", "2017-11-06 08:00:00,000"}, //
+            {"2017-11-06 03:00:00,000", "2017-11-06 09:00:00,000"}, //
+            {"2017-11-06 04:00:00,000", "2017-11-06 10:00:00,000"}, //
+            {"2017-11-06 05:00:00,000", "2017-11-06 11:00:00,000"}, //
         };
 
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
-            //System.out.println(usCentral.format(date) + ", Fixed: " + fixedUsCentral.format(date.getTime()) + ", utc: " + utc.format(date));
+            // System.out.println(usCentral.format(date) + ", Fixed: " + fixedUsCentral.format(date.getTime()) + ", utc:
+            // " + utc.format(date));
             assertEquals(expectedDstAndNoDst[i][0], usCentral.format(date), "SimpleDateFormat TZ=US Central");
             assertEquals(expectedDstAndNoDst[i][1], utc.format(date), "SimpleDateFormat TZ=UTC");
-            assertEquals(expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()),
-                    "FixedDateFormat TZ=US Central");
+            assertEquals(
+                    expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()), "FixedDateFormat TZ=US Central");
             assertEquals(expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()), "FixedDateFormat TZ=US Central");
             calendar.add(Calendar.HOUR_OF_DAY, 1);
         }
@@ -396,7 +396,10 @@ public class FixedDateFormatTest {
         final char[] buffer = new char[128];
         for (final FixedFormat format : FixedFormat.values()) {
             final String pattern = format.getPattern();
-            if (pattern.endsWith("n") || pattern.matches(".+n+X*") || pattern.matches(".+n+Z*") || format.getFixedTimeZoneFormat() != null) {
+            if (pattern.endsWith("n")
+                    || pattern.matches(".+n+X*")
+                    || pattern.matches(".+n+Z*")
+                    || format.getFixedTimeZoneFormat() != null) {
                 continue; // cannot compile precise timestamp formats with SimpleDateFormat
             }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(pattern, Locale.getDefault());

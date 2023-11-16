@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.osgi;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
@@ -44,7 +43,9 @@ import org.osgi.framework.wiring.BundleWiring;
  * OSGi BundleActivator.
  */
 @Header(name = org.osgi.framework.Constants.BUNDLE_ACTIVATOR, value = "${@class}")
-@Header(name = org.osgi.framework.Constants.BUNDLE_ACTIVATIONPOLICY, value = org.osgi.framework.Constants.ACTIVATION_LAZY)
+@Header(
+        name = org.osgi.framework.Constants.BUNDLE_ACTIVATIONPOLICY,
+        value = org.osgi.framework.Constants.ACTIVATION_LAZY)
 public final class Activator extends ProviderActivator implements SynchronousBundleListener {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -87,8 +88,8 @@ public final class Activator extends ProviderActivator implements SynchronousBun
         // LOG4J2-920: don't scan system bundle for plugins
         if (bundle.getState() == Bundle.ACTIVE && bundleId != 0) {
             LOGGER.trace("Scanning bundle [{}, id=%d] for plugins.", bundle.getSymbolicName(), bundleId);
-            PluginRegistry.getInstance().loadFromBundle(bundleId,
-                    bundle.adapt(BundleWiring.class).getClassLoader());
+            PluginRegistry.getInstance()
+                    .loadFromBundle(bundleId, bundle.adapt(BundleWiring.class).getClassLoader());
         }
     }
 
@@ -122,7 +123,7 @@ public final class Activator extends ProviderActivator implements SynchronousBun
     @Override
     public void bundleChanged(final BundleEvent event) {
         switch (event.getType()) {
-            // FIXME: STARTING instead of STARTED?
+                // FIXME: STARTING instead of STARTED?
             case BundleEvent.STARTED:
                 scanBundleForPlugins(event.getBundle());
                 break;

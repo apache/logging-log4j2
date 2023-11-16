@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
@@ -25,8 +27,6 @@ import org.apache.logging.log4j.core.config.plugins.validation.HostAndPort;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @StatusLoggerLevel("FATAL")
 public class ValidHostValidatorTest {
@@ -68,8 +68,8 @@ public class ValidHostValidatorTest {
 
     private HostAndPort buildPlugin() {
         return (HostAndPort) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
-            .build();
+                .withConfiguration(new NullConfiguration())
+                .withConfigurationNode(node)
+                .build();
     }
 }

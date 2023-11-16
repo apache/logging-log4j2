@@ -20,7 +20,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -55,7 +54,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
     static final String CONTENT_TYPE = "application/yaml";
 
     public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
-        implements org.apache.logging.log4j.core.util.Builder<YamlLayout> {
+            implements org.apache.logging.log4j.core.util.Builder<YamlLayout> {
 
         public Builder() {
             setCharset(StandardCharsets.UTF_8);
@@ -65,10 +64,22 @@ public final class YamlLayout extends AbstractJacksonLayout {
         public YamlLayout build() {
             final String headerPattern = toStringOrNull(getHeader());
             final String footerPattern = toStringOrNull(getFooter());
-            return new YamlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
-                    isCompact(), getEventEol(), getEndOfLine(), headerPattern, footerPattern, getCharset(),
-                    isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter(),
-                    isIncludeTimeMillis(), getAdditionalFields());
+            return new YamlLayout(
+                    getConfiguration(),
+                    isLocationInfo(),
+                    isProperties(),
+                    isComplete(),
+                    isCompact(),
+                    getEventEol(),
+                    getEndOfLine(),
+                    headerPattern,
+                    footerPattern,
+                    getCharset(),
+                    isIncludeStacktrace(),
+                    isStacktraceAsString(),
+                    isIncludeNullDelimiter(),
+                    isIncludeTimeMillis(),
+                    getAdditionalFields());
         }
     }
 
@@ -76,27 +87,74 @@ public final class YamlLayout extends AbstractJacksonLayout {
      * @deprecated Use {@link #newBuilder()} instead
      */
     @Deprecated
-    protected YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
-            final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
-            final String footerPattern, final Charset charset, final boolean includeStacktrace) {
-        super(config, new JacksonFactory.YAML(includeStacktrace, false).newWriter(locationInfo, properties, compact),
-                charset, compact, complete, eventEol, null,
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
-                false, null);
+    protected YamlLayout(
+            final Configuration config,
+            final boolean locationInfo,
+            final boolean properties,
+            final boolean complete,
+            final boolean compact,
+            final boolean eventEol,
+            final String headerPattern,
+            final String footerPattern,
+            final Charset charset,
+            final boolean includeStacktrace) {
+        super(
+                config,
+                new JacksonFactory.YAML(includeStacktrace, false).newWriter(locationInfo, properties, compact),
+                charset,
+                compact,
+                complete,
+                eventEol,
+                null,
+                PatternLayout.newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setPattern(headerPattern)
+                        .setDefaultPattern(DEFAULT_HEADER)
+                        .build(),
+                PatternLayout.newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setPattern(footerPattern)
+                        .setDefaultPattern(DEFAULT_FOOTER)
+                        .build(),
+                false,
+                null);
     }
 
-    private YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
-                       final boolean complete, final boolean compact, final boolean eventEol, final String endOfLine,
-                       final String headerPattern, final String footerPattern, final Charset charset,
-                       final boolean includeStacktrace, final boolean stacktraceAsString,
-                       final boolean includeNullDelimiter, final boolean includeTimeMillis,
-                       final KeyValuePair[] additionalFields) {
-        super(config, new JacksonFactory.YAML(includeStacktrace, stacktraceAsString)
+    private YamlLayout(
+            final Configuration config,
+            final boolean locationInfo,
+            final boolean properties,
+            final boolean complete,
+            final boolean compact,
+            final boolean eventEol,
+            final String endOfLine,
+            final String headerPattern,
+            final String footerPattern,
+            final Charset charset,
+            final boolean includeStacktrace,
+            final boolean stacktraceAsString,
+            final boolean includeNullDelimiter,
+            final boolean includeTimeMillis,
+            final KeyValuePair[] additionalFields) {
+        super(
+                config,
+                new JacksonFactory.YAML(includeStacktrace, stacktraceAsString)
                         .newWriter(locationInfo, properties, compact, includeTimeMillis),
-                charset, compact, complete, eventEol, endOfLine,
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
+                charset,
+                compact,
+                complete,
+                eventEol,
+                endOfLine,
+                PatternLayout.newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setPattern(headerPattern)
+                        .setDefaultPattern(DEFAULT_HEADER)
+                        .build(),
+                PatternLayout.newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setPattern(footerPattern)
+                        .setDefaultPattern(DEFAULT_FOOTER)
+                        .build(),
                 includeNullDelimiter,
                 additionalFields);
     }
@@ -185,8 +243,22 @@ public final class YamlLayout extends AbstractJacksonLayout {
             final String footerPattern,
             final Charset charset,
             final boolean includeStacktrace) {
-        return new YamlLayout(config, locationInfo, properties, false, false, true, null, headerPattern, footerPattern,
-                charset, includeStacktrace, false, false, false, null);
+        return new YamlLayout(
+                config,
+                locationInfo,
+                properties,
+                false,
+                false,
+                true,
+                null,
+                headerPattern,
+                footerPattern,
+                charset,
+                includeStacktrace,
+                false,
+                false,
+                false,
+                null);
     }
 
     @PluginBuilderFactory
@@ -200,7 +272,21 @@ public final class YamlLayout extends AbstractJacksonLayout {
      * @return A YAML Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, null, DEFAULT_HEADER,
-                DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, false, null);
+        return new YamlLayout(
+                new DefaultConfiguration(),
+                false,
+                false,
+                false,
+                false,
+                false,
+                null,
+                DEFAULT_HEADER,
+                DEFAULT_FOOTER,
+                StandardCharsets.UTF_8,
+                true,
+                false,
+                false,
+                false,
+                null);
     }
 }

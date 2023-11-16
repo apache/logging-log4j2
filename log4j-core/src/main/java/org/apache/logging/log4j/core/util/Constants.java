@@ -56,8 +56,8 @@ public final class Constants {
     /**
      * Supports user request LOG4J2-898 to have the option to format a message in the background thread.
      */
-    public static final boolean FORMAT_MESSAGES_IN_BACKGROUND = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j.format.msg.async", false);
+    public static final boolean FORMAT_MESSAGES_IN_BACKGROUND =
+            PropertiesUtil.getProperties().getBooleanProperty("log4j.format.msg.async", false);
 
     /**
      * LOG4J2-3198 property which used to globally opt out of lookups in pattern layout message text, however
@@ -69,8 +69,8 @@ public final class Constants {
      * @deprecated no longer used, lookups are only used when {@code %m{lookups}} is specified
      */
     @Deprecated
-    public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.formatMsgNoLookups", true);
+    public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS =
+            PropertiesUtil.getProperties().getBooleanProperty("log4j2.formatMsgNoLookups", true);
 
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
@@ -100,10 +100,10 @@ public final class Constants {
      *
      * @since 2.6
      */
-    public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.enable.direct.encoders", true); // enable GC-free text encoding by default
-            // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
-            //AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
+    public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties()
+            .getBooleanProperty("log4j2.enable.direct.encoders", true); // enable GC-free text encoding by default
+    // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
+    // AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
 
     /**
      * Initial StringBuilder size used in RingBuffer LogEvents to store the contents of reusable Messages.
@@ -144,7 +144,6 @@ public final class Constants {
      */
     public static final int ENCODER_BYTE_BUFFER_SIZE = size("log4j.encoder.byteBufferSize", 8 * 1024);
 
-
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
     }
@@ -152,6 +151,5 @@ public final class Constants {
     /**
      * Prevent class instantiation.
      */
-    private Constants() {
-    }
+    private Constants() {}
 }

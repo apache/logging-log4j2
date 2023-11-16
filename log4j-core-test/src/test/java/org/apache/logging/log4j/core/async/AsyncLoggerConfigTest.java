@@ -16,10 +16,18 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -36,15 +44,6 @@ import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @Tag("AsyncLoggers")
 @UsingStatusListener
@@ -81,7 +80,8 @@ public class AsyncLoggerConfigTest {
     @Test
     public void testIncludeLocationDefaultsToFalse() {
         final Configuration configuration = new NullConfiguration();
-        final LoggerConfig rootLoggerConfig = RootLogger.newAsyncRootBuilder().withConfig(configuration).build();
+        final LoggerConfig rootLoggerConfig =
+                RootLogger.newAsyncRootBuilder().withConfig(configuration).build();
         assertFalse(rootLoggerConfig.isIncludeLocation(), "Include location should default to false for async loggers");
 
         final LoggerConfig loggerConfig = AsyncLoggerConfig.newAsyncBuilder()
@@ -105,7 +105,8 @@ public class AsyncLoggerConfigTest {
         when(appender.isStarted()).thenReturn(true);
         when(appender.getName()).thenReturn("test");
         config.addAppender(appender, null, null);
-        final AsyncLoggerConfigDisruptor disruptor = (AsyncLoggerConfigDisruptor) configuration.getAsyncLoggerConfigDelegate();
+        final AsyncLoggerConfigDisruptor disruptor =
+                (AsyncLoggerConfigDisruptor) configuration.getAsyncLoggerConfigDelegate();
         disruptor.start();
         try {
             config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);

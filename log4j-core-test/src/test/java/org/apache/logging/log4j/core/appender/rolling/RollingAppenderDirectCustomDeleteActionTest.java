@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  *
@@ -39,7 +38,8 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
     private static final String CONFIG = "log4j-rolling-direct-with-custom-delete.xml";
     private static final String DIR = "target/rolling-direct-with-delete/test";
 
-    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -50,7 +50,7 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
     public void testAppender() throws Exception {
         final Logger logger = loggerContextRule.getLogger();
         final RollingFileAppender app = loggerContextRule.getAppender("RollingFile");
-        assertNotNull(app,"No RollingFileAppender");
+        assertNotNull(app, "No RollingFileAppender");
         app.getManager().addRolloverListener(this);
         // Trigger the rollover
         for (int i = 0; i < 10; ++i) {
@@ -66,7 +66,9 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
         final File[] files = dir.listFiles();
         assertNotNull(files, "No fiels");
         System.out.println(files[0].getName());
-        final long count = Arrays.stream(files).filter((f) -> f.getName().endsWith("test-4.log")).count();
+        final long count = Arrays.stream(files)
+                .filter((f) -> f.getName().endsWith("test-4.log"))
+                .count();
         assertTrue("Deleted file was not created", fileFound);
         assertEquals("File count expected: 0, actual: " + count, 0, count);
     }
@@ -88,7 +90,5 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
     }
 
     @Override
-    public void rolloverComplete(final String fileName) {
-
-    }
+    public void rolloverComplete(final String fileName) {}
 }

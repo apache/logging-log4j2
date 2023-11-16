@@ -16,23 +16,23 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.test.TestLoggerContext;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProviderUtilTest {
 
     @Test
     public void complexTest() throws Exception {
         final File file = new File("target/classes");
-        final ClassLoader classLoader = new URLClassLoader(new URL[] {file.toURI().toURL()});
+        final ClassLoader classLoader =
+                new URLClassLoader(new URL[] {file.toURI().toURL()});
         final Worker worker = new Worker();
         worker.setContextClassLoader(classLoader);
         worker.start();

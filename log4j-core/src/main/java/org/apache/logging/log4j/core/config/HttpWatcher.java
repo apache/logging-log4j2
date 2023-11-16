@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
@@ -52,8 +51,11 @@ public class HttpWatcher extends AbstractWatcher {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
 
-    public HttpWatcher(final Configuration configuration, final Reconfigurable reconfigurable,
-        final List<ConfigurationListener> configurationListeners, final long lastModifiedMillis) {
+    public HttpWatcher(
+            final Configuration configuration,
+            final Reconfigurable reconfigurable,
+            final List<ConfigurationListener> configurationListeners,
+            final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
         sslConfiguration = SslConfigurationFactory.getSslConfiguration();
         this.lastModifiedMillis = lastModifiedMillis;
@@ -71,9 +73,10 @@ public class HttpWatcher extends AbstractWatcher {
 
     @Override
     public void watching(final Source source) {
-        if (!source.getURI().getScheme().equals(HTTP) && !source.getURI().getScheme().equals(HTTPS)) {
-            throw new IllegalArgumentException(
-                "HttpWatcher requires a url using the HTTP or HTTPS protocol, not " + source.getURI().getScheme());
+        if (!source.getURI().getScheme().equals(HTTP)
+                && !source.getURI().getScheme().equals(HTTPS)) {
+            throw new IllegalArgumentException("HttpWatcher requires a url using the HTTP or HTTPS protocol, not "
+                    + source.getURI().getScheme());
         }
         try {
             url = source.getURI().toURL();
@@ -85,8 +88,10 @@ public class HttpWatcher extends AbstractWatcher {
     }
 
     @Override
-    public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners,
-        final long lastModifiedMillis) {
+    public Watcher newWatcher(
+            final Reconfigurable reconfigurable,
+            final List<ConfigurationListener> listeners,
+            final long lastModifiedMillis) {
         final HttpWatcher watcher = new HttpWatcher(getConfiguration(), reconfigurable, listeners, lastModifiedMillis);
         if (getSource() != null) {
             watcher.watching(getSource());
@@ -124,7 +129,7 @@ public class HttpWatcher extends AbstractWatcher {
                     return false;
                 }
             }
-        } catch(final URISyntaxException ex) {
+        } catch (final URISyntaxException ex) {
             LOGGER.error("Bad configuration URL: {}, {}", url.toString(), ex.getMessage());
             return false;
         }

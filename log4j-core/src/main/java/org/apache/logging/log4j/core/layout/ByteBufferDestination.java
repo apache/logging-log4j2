@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.ByteBuffer;
-
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
 /**

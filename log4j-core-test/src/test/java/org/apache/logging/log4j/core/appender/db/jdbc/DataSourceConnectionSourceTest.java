@@ -16,11 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 import org.apache.logging.log4j.core.test.junit.JndiRule;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
@@ -29,34 +34,24 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 @RunWith(Parameterized.class)
 public class DataSourceConnectionSourceTest extends AbstractJdbcDataSourceTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[][] data() {
-        return new Object[][]{
-            {"java:/comp/env/jdbc/Logging01"},
-            {"java:/comp/env/jdbc/Logging02"}
-        };
+        return new Object[][] {{"java:/comp/env/jdbc/Logging01"}, {"java:/comp/env/jdbc/Logging02"}};
     }
 
     private static final String CONFIG = "log4j-fatalOnly.xml";
 
     @Rule
     public final RuleChain rules;
+
     private final DataSource dataSource = mock(DataSource.class);
     private final String jndiURL;
 
     public DataSourceConnectionSourceTest(final String jndiURL) {
-        this.rules = RuleChain.outerRule(new JndiRule(jndiURL, dataSource))
-            .around(new LoggerContextRule(CONFIG));
+        this.rules = RuleChain.outerRule(new JndiRule(jndiURL, dataSource)).around(new LoggerContextRule(CONFIG));
         this.jndiURL = jndiURL;
     }
 
@@ -91,8 +86,10 @@ public class DataSourceConnectionSourceTest extends AbstractJdbcDataSourceTest {
             DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource(jndiURL);
 
             assertNotNull("The connection source should not be null.", source);
-            assertEquals("The toString value is not correct.",
-                    "dataSource{ name=" + jndiURL + ", value=" + dataSource + " }", source.toString());
+            assertEquals(
+                    "The toString value is not correct.",
+                    "dataSource{ name=" + jndiURL + ", value=" + dataSource + " }",
+                    source.toString());
             assertSame("The connection is not correct (1).", connection1, source.getConnection());
             assertSame("The connection is not correct (2).", connection2, source.getConnection());
 
@@ -101,5 +98,4 @@ public class DataSourceConnectionSourceTest extends AbstractJdbcDataSourceTest {
             assertNull("The connection source should be null now.", source);
         }
     }
-
 }

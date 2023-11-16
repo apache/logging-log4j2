@@ -63,8 +63,8 @@ public class Duration implements Serializable, Comparable<Duration> {
     /**
      * The pattern for parsing.
      */
-    private static final Pattern PATTERN = Pattern.compile("P?(?:([0-9]+)D)?"
-            + "(T?(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9]+)?S)?)?", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN = Pattern.compile(
+            "P?(?:([0-9]+)D)?" + "(T?(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9]+)?S)?)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of seconds in the duration.
@@ -130,7 +130,8 @@ public class Duration implements Serializable, Comparable<Duration> {
                     try {
                         return create(daysAsSecs, hoursAsSecs, minsAsSecs, seconds);
                     } catch (final ArithmeticException ex) {
-                        throw new IllegalArgumentException("Text cannot be parsed to a Duration (overflow) " + text, ex);
+                        throw new IllegalArgumentException(
+                                "Text cannot be parsed to a Duration (overflow) " + text, ex);
                     }
                 }
             }
@@ -138,8 +139,8 @@ public class Duration implements Serializable, Comparable<Duration> {
         throw new IllegalArgumentException("Text cannot be parsed to a Duration: " + text);
     }
 
-    private static long parseNumber(final CharSequence text, final String parsed, final int multiplier,
-            final String errorText) {
+    private static long parseNumber(
+            final CharSequence text, final String parsed, final int multiplier, final String errorText) {
         // regex limits to [0-9]+
         if (parsed == null) {
             return 0;
@@ -148,12 +149,13 @@ public class Duration implements Serializable, Comparable<Duration> {
             final long val = Long.parseLong(parsed);
             return val * multiplier;
         } catch (final Exception ex) {
-            throw new IllegalArgumentException("Text cannot be parsed to a Duration: " + errorText + " (in " + text
-                    + ")", ex);
+            throw new IllegalArgumentException(
+                    "Text cannot be parsed to a Duration: " + errorText + " (in " + text + ")", ex);
         }
     }
 
-    private static Duration create(final long daysAsSecs, final long hoursAsSecs, final long minsAsSecs, final long secs) {
+    private static Duration create(
+            final long daysAsSecs, final long hoursAsSecs, final long minsAsSecs, final long secs) {
         return create(daysAsSecs + hoursAsSecs + minsAsSecs + secs);
     }
 

@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PropertySourceCamelCaseTest {
 
     public static Object[][] data() {
-        return new Object[][]{
+        return new Object[][] {
             {"", Collections.singletonList("")},
             {"foo", Collections.singletonList("foo")},
             {"fooBar", Arrays.asList("foo", "bar")},

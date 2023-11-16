@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.CountDownLatch;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.CountDownLatch;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,18 +32,15 @@ import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
-@SetTestProperty(key = Constants.LOG4J_CONTEXT_SELECTOR, value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+@SetTestProperty(
+        key = Constants.LOG4J_CONTEXT_SELECTOR,
+        value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
 @SetTestProperty(key = "log4j2.asyncLoggerRingBufferSize", value = "128")
 @SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
-@SetTestProperty(key = "log4j2.asyncQueueFullPolicy", value="Discard")
+@SetTestProperty(key = "log4j2.asyncQueueFullPolicy", value = "Discard")
 public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
     @Override
@@ -51,10 +51,10 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
     }
 
     @Test
-    @Timeout(value = 15 , unit = SECONDS)
+    @Timeout(value = 15, unit = SECONDS)
     @LoggerContextSource
-    public void discardedMessagesShouldBeGarbageCollected(final LoggerContext ctx,
-                                                           final @Named(APPENDER_NAME) BlockingAppender blockingAppender)
+    public void discardedMessagesShouldBeGarbageCollected(
+            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender)
             throws InterruptedException {
         checkConfig(ctx);
         final Logger logger = ctx.getLogger(getClass());

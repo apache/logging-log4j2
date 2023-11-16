@@ -106,9 +106,7 @@ public interface StrLookup {
      */
     default LookupResult evaluate(String key) {
         final String value = lookup(key);
-        return value == null
-                ? null
-                : new DefaultLookupResult(value);
+        return value == null ? null : new DefaultLookupResult(value);
     }
 
     /**
@@ -117,8 +115,6 @@ public interface StrLookup {
      */
     default LookupResult evaluate(LogEvent event, String key) {
         final String value = lookup(event, key);
-        return value == null
-                ? null
-                : new DefaultLookupResult(value);
+        return value == null ? null : new DefaultLookupResult(value);
     }
 }

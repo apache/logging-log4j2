@@ -27,6 +27,5 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 public class FakePlugin {
 
     @Plugin(name = "Nested", category = "Test")
-    public static class Nested {
-    }
+    public static class Nested {}
 }

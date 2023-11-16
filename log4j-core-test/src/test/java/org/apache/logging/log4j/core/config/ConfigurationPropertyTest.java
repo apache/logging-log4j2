@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 
 @Tag("functional")
 public class ConfigurationPropertyTest {
@@ -39,6 +38,7 @@ public class ConfigurationPropertyTest {
         System.clearProperty("log4j2.configurationFile");
         System.clearProperty("log4j.configurationFile");
     }
+
     @Test
     public void testInitializeFromSystemProperty() {
         System.setProperty("log4j2.configurationFile", "src/test/resources/log4j-list.xml");

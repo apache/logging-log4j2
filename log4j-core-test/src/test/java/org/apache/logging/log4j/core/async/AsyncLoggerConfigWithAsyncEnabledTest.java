@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -29,10 +32,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigWithAsyncEnabledTest {
@@ -67,7 +66,8 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
         reader.close();
         file.delete();
 
-        final String expected = "Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!";
+        final String expected =
+                "Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!";
         assertThat(line1, containsString(expected));
         assertThat(line2, containsString(expected));
     }

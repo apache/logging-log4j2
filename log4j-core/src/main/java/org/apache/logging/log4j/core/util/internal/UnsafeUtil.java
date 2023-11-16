@@ -21,7 +21,6 @@ import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -33,6 +32,7 @@ public class UnsafeUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static Method cleanerMethod;
     private static Method cleanMethod;
+
     static {
         try {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {

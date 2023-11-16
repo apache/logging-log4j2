@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -58,12 +57,12 @@ import org.openjdk.jmh.annotations.Warmup;
 @State(Scope.Benchmark)
 public class SortedArrayVsHashMapBenchmark {
 
-    //@Param({"1", "2", "5", "11", "23", "47", "95", "191", "383"})
-    //@Param({"1", "5", "50", "500"})
-    @Param({ "5",  "500"})
+    // @Param({"1", "2", "5", "11", "23", "47", "95", "191", "383"})
+    // @Param({"1", "5", "50", "500"})
+    @Param({"5", "500"})
     public int count;
 
-    //@Param({"5", "50"})
+    // @Param({"5", "50"})
     @Param({"20"})
     public int length;
 

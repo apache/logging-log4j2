@@ -26,14 +26,13 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @Plugin(name = "ThreadIdPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "T", "tid", "threadId" })
+@ConverterKeys({"T", "tid", "threadId"})
 @PerformanceSensitive("allocation")
 public final class ThreadIdPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final ThreadIdPatternConverter INSTANCE =
-        new ThreadIdPatternConverter();
+    private static final ThreadIdPatternConverter INSTANCE = new ThreadIdPatternConverter();
 
     /**
      * Private constructor.
@@ -48,8 +47,7 @@ public final class ThreadIdPatternConverter extends LogEventPatternConverter {
      * @param options options, currently ignored, may be null.
      * @return instance of ThreadPatternConverter.
      */
-    public static ThreadIdPatternConverter newInstance(
-        final String[] options) {
+    public static ThreadIdPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 

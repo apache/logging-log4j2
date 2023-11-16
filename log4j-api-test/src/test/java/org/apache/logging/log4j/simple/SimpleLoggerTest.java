@@ -28,7 +28,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 public class SimpleLoggerTest {
 
     @RegisterExtension
-    public static final LoggerContextFactoryExtension EXTENSION = new LoggerContextFactoryExtension(SimpleLoggerContextFactory.INSTANCE);
+    public static final LoggerContextFactoryExtension EXTENSION =
+            new LoggerContextFactoryExtension(SimpleLoggerContextFactory.INSTANCE);
 
     private final Logger logger = LogManager.getLogger("TestError");
 
@@ -60,6 +61,6 @@ public class SimpleLoggerTest {
      */
     @Test
     public void testMessageWithShortArray() {
-        logger.error("Logging with a size 1 Object[] {} {}", new Object[] { "only one param" });
+        logger.error("Logging with a size 1 Object[] {} {}", new Object[] {"only one param"});
     }
 }

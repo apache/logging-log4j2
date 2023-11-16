@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.util.Deque;
 import java.util.Stack;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor;
 import org.junit.platform.engine.support.hierarchical.ThrowableCollector;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * Tests {@link StackLocatorUtil}.
@@ -43,8 +42,8 @@ public class StackLocatorUtilTest {
                     .getMethod("getCallerClass", int.class)
                     .invoke(null, i + StackLocator.JDK_7U25_OFFSET);
             final Class<?> actual = StackLocatorUtil.getCallerClass(i);
-            final Class<?> fallbackActual = Class.forName(
-                StackLocatorUtil.getStackTraceElement(i).getClassName());
+            final Class<?> fallbackActual =
+                    Class.forName(StackLocatorUtil.getStackTraceElement(i).getClassName());
             assertSame(expected, actual);
             assertSame(expected, fallbackActual);
         }
@@ -88,7 +87,7 @@ public class StackLocatorUtilTest {
     public void testTopElementInStackTrace() {
         final StackLocator stackLocator = StackLocator.getInstance();
         final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
-        //Removing private class in "PrivateSecurityManagerStackTraceUtil"
+        // Removing private class in "PrivateSecurityManagerStackTraceUtil"
         classes.removeFirst();
         assertSame(PrivateSecurityManagerStackTraceUtil.class, classes.getFirst());
     }
@@ -96,7 +95,8 @@ public class StackLocatorUtilTest {
     @Test
     public void testGetCallerClassViaName() throws Exception {
         final Class<?> expected = TestMethodTestDescriptor.class;
-        final Class<?> actual = StackLocatorUtil.getCallerClass("org.junit.platform.engine.support.hierarchical.ThrowableCollector");
+        final Class<?> actual =
+                StackLocatorUtil.getCallerClass("org.junit.platform.engine.support.hierarchical.ThrowableCollector");
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
         assertSame(expected, actual);
@@ -118,5 +118,4 @@ public class StackLocatorUtilTest {
         assertNotNull(clazz, "Could note locate class");
         assertEquals(this.getClass(), clazz, "Incorrect class");
     }
-
 }

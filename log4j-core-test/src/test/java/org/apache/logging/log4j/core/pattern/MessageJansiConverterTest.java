@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -27,13 +28,11 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @LoggerContextSource("log4j-message-ansi.xml")
 public class MessageJansiConverterTest {
 
-    private static final String EXPECTED = "\u001B[31;1mWarning!\u001B[m Pants on \u001B[31mfire!\u001B[m"
-            + Strings.LINE_SEPARATOR;
+    private static final String EXPECTED =
+            "\u001B[31;1mWarning!\u001B[m Pants on \u001B[31mfire!\u001B[m" + Strings.LINE_SEPARATOR;
 
     private Logger logger;
     private ListAppender app;
@@ -53,7 +52,8 @@ public class MessageJansiConverterTest {
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
         assertTrue(
-                msgs.get(0).endsWith(EXPECTED), "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
+                msgs.get(0).endsWith(EXPECTED),
+                "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
         // System.out.println(msgs.get(0));
     }
 }

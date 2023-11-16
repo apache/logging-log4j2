@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -28,9 +30,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -60,7 +59,7 @@ public class RollingAppenderUncompressedTest {
 
     @Test
     public void testAppender() throws Exception {
-        for (int i=0; i < 100; ++i) {
+        for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
         final File dir = new File(DIR);
@@ -77,5 +76,4 @@ public class RollingAppenderUncompressedTest {
         }
         assertTrue("No archived files found", found);
     }
-
 }

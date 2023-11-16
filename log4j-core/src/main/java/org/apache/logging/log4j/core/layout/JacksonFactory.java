@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.stream.XMLStreamException;
-
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.core.util.MinimalPrettyPrinter;
@@ -29,6 +24,9 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
+import java.util.HashSet;
+import java.util.Set;
+import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.JsonConstants;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
@@ -46,7 +44,11 @@ abstract class JacksonFactory {
         private final boolean stacktraceAsString;
         private final boolean objectMessageAsJsonObject;
 
-        public JSON(final boolean encodeThreadContextAsList, final boolean includeStacktrace, final boolean stacktraceAsString, final boolean objectMessageAsJsonObject) {
+        public JSON(
+                final boolean encodeThreadContextAsList,
+                final boolean includeStacktrace,
+                final boolean stacktraceAsString,
+                final boolean objectMessageAsJsonObject) {
             this.encodeThreadContextAsList = encodeThreadContextAsList;
             this.includeStacktrace = includeStacktrace;
             this.stacktraceAsString = stacktraceAsString;
@@ -85,14 +87,14 @@ abstract class JacksonFactory {
 
         @Override
         protected ObjectMapper newObjectMapper() {
-            return new Log4jJsonObjectMapper(encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject);
+            return new Log4jJsonObjectMapper(
+                    encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject);
         }
 
         @Override
         protected PrettyPrinter newPrettyPrinter() {
             return new DefaultPrettyPrinter();
         }
-
     }
 
     static class XML extends JacksonFactory {
@@ -101,7 +103,6 @@ abstract class JacksonFactory {
 
         private final boolean includeStacktrace;
         private final boolean stacktraceAsString;
-
 
         public XML(final boolean includeStacktrace, final boolean stacktraceAsString) {
             this.includeStacktrace = includeStacktrace;
@@ -154,7 +155,6 @@ abstract class JacksonFactory {
 
         private final boolean includeStacktrace;
         private final boolean stacktraceAsString;
-
 
         public YAML(final boolean includeStacktrace, final boolean stacktraceAsString) {
             this.includeStacktrace = includeStacktrace;
@@ -233,31 +233,30 @@ abstract class JacksonFactory {
         public DefaultXmlPrettyPrinter createInstance() {
             return new Log4jXmlPrettyPrinter(XML.DEFAULT_INDENT);
         }
-
     }
 
-    abstract protected String getPropertyNameForTimeMillis();
+    protected abstract String getPropertyNameForTimeMillis();
 
-    abstract protected String getPropertyNameForInstant();
+    protected abstract String getPropertyNameForInstant();
 
-    abstract protected String getPropertNameForContextMap();
+    protected abstract String getPropertNameForContextMap();
 
-    abstract protected String getPropertNameForSource();
+    protected abstract String getPropertNameForSource();
 
-    abstract protected String getPropertNameForNanoTime();
+    protected abstract String getPropertNameForNanoTime();
 
-    abstract protected PrettyPrinter newCompactPrinter();
+    protected abstract PrettyPrinter newCompactPrinter();
 
-    abstract protected ObjectMapper newObjectMapper();
+    protected abstract ObjectMapper newObjectMapper();
 
-    abstract protected PrettyPrinter newPrettyPrinter();
+    protected abstract PrettyPrinter newPrettyPrinter();
 
     ObjectWriter newWriter(final boolean locationInfo, final boolean properties, final boolean compact) {
         return newWriter(locationInfo, properties, compact, false);
     }
 
-    ObjectWriter newWriter(final boolean locationInfo, final boolean properties, final boolean compact,
-            final boolean includeMillis) {
+    ObjectWriter newWriter(
+            final boolean locationInfo, final boolean properties, final boolean compact, final boolean includeMillis) {
         final SimpleFilterProvider filters = new SimpleFilterProvider();
         final Set<String> except = new HashSet<>(3);
         if (!locationInfo) {
@@ -273,8 +272,8 @@ abstract class JacksonFactory {
         }
         except.add(this.getPropertNameForNanoTime());
         filters.addFilter(Log4jLogEvent.class.getName(), SimpleBeanPropertyFilter.serializeAllExcept(except));
-        final ObjectWriter writer = this.newObjectMapper().writer(compact ? this.newCompactPrinter() : this.newPrettyPrinter());
+        final ObjectWriter writer =
+                this.newObjectMapper().writer(compact ? this.newCompactPrinter() : this.newPrettyPrinter());
         return writer.with(filters);
     }
-
 }

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 import org.apache.logging.log4j.core.test.junit.JdbcRule;
 
 /**
@@ -28,21 +27,20 @@ import org.apache.logging.log4j.core.test.junit.JdbcRule;
 public class JdbcAppenderHsqldbFactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
 
     public JdbcAppenderHsqldbFactoryMethodTest() {
-        super(new JdbcRule(
-                new AbstractConnectionSource() {
-                    @Override
-                    public Connection getConnection() throws SQLException {
-                        return JdbcAppenderHsqldbFactoryMethodTest.getConnection();
-                    }
-                },
-                "CREATE TABLE fmLogEntry (" +
-                    "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), " +
-                    "logger VARCHAR(255), message VARCHAR(1024), exception CLOB, anotherDate TIMESTAMP" +
-                    ")",
-                "DROP TABLE IF EXISTS fmLogEntry"
-            ),
-            "hsqldb"
-        );
+        super(
+                new JdbcRule(
+                        new AbstractConnectionSource() {
+                            @Override
+                            public Connection getConnection() throws SQLException {
+                                return JdbcAppenderHsqldbFactoryMethodTest.getConnection();
+                            }
+                        },
+                        "CREATE TABLE fmLogEntry ("
+                                + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), "
+                                + "logger VARCHAR(255), message VARCHAR(1024), exception CLOB, anotherDate TIMESTAMP"
+                                + ")",
+                        "DROP TABLE IF EXISTS fmLogEntry"),
+                "hsqldb");
     }
 
     public static Connection getConnection() throws SQLException {

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,10 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Objects;
-
 import javax.net.ssl.HttpsURLConnection;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -50,12 +48,17 @@ public class HttpURLConnectionManager extends HttpManager {
     private final SslConfiguration sslConfiguration;
     private final boolean verifyHostname;
 
-    public HttpURLConnectionManager(final Configuration configuration, final LoggerContext loggerContext, final String name,
-                                    final URL url, final String method, final int connectTimeoutMillis,
-                                    final int readTimeoutMillis,
-                                    final Property[] headers,
-                                    final SslConfiguration sslConfiguration,
-                                    final boolean verifyHostname) {
+    public HttpURLConnectionManager(
+            final Configuration configuration,
+            final LoggerContext loggerContext,
+            final String name,
+            final URL url,
+            final String method,
+            final int connectTimeoutMillis,
+            final int readTimeoutMillis,
+            final Property[] headers,
+            final SslConfiguration sslConfiguration,
+            final boolean verifyHostname) {
         super(configuration, loggerContext, name);
         this.url = url;
         if (!(url.getProtocol().equalsIgnoreCase("http") || url.getProtocol().equalsIgnoreCase("https"))) {
@@ -76,8 +79,7 @@ public class HttpURLConnectionManager extends HttpManager {
     @Override
     @SuppressFBWarnings(
             value = "URLCONNECTION_SSRF_FD",
-            justification = "This connection URL is specified in a configuration file."
-    )
+            justification = "This connection URL is specified in a configuration file.")
     public void send(final Layout<?> layout, final LogEvent event) throws IOException {
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setAllowUserInteraction(false);
@@ -94,7 +96,8 @@ public class HttpURLConnectionManager extends HttpManager {
             urlConnection.setRequestProperty("Content-Type", layout.getContentType());
         }
         for (final Property header : headers) {
-            urlConnection.setRequestProperty(header.getName(), header.evaluate(getConfiguration().getStrSubstitutor()));
+            urlConnection.setRequestProperty(
+                    header.getName(), header.evaluate(getConfiguration().getStrSubstitutor()));
         }
         if (sslConfiguration != null) {
             ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
@@ -137,5 +140,4 @@ public class HttpURLConnectionManager extends HttpManager {
             }
         }
     }
-
 }

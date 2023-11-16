@@ -29,7 +29,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * within the property bundle when this pattern converter has the option set.
  */
 @Plugin(name = "Log4j1MdcPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "properties" })
+@ConverterKeys({"properties"})
 public final class Log4j1MdcPatternConverter extends LogEventPatternConverter {
     /**
      * Name of property to output.
@@ -79,5 +79,6 @@ public final class Log4j1MdcPatternConverter extends LogEventPatternConverter {
         }
     }
 
-    private static TriConsumer<String, Object, StringBuilder> APPEND_EACH = (key, value, toAppendTo) -> toAppendTo.append('{').append(key).append(',').append(value).append('}');
+    private static TriConsumer<String, Object, StringBuilder> APPEND_EACH = (key, value, toAppendTo) ->
+            toAppendTo.append('{').append(key).append(',').append(value).append('}');
 }

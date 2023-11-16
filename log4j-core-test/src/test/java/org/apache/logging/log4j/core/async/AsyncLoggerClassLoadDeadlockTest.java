@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 /**
  * Test class loading deadlock condition from the LOG4J2-1457
@@ -41,7 +41,7 @@ public class AsyncLoggerClassLoadDeadlockTest {
 
     @Test(timeout = 30000)
     public void testClassLoaderDeadlock() throws Exception {
-        //touch the class so static init will be called
+        // touch the class so static init will be called
         final AsyncLoggerClassLoadDeadlock temp = new AsyncLoggerClassLoadDeadlock();
         assertNotNull(temp);
     }

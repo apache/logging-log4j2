@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -34,14 +36,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
 public class StyleConverterTest {
 
     private static final String EXPECTED =
-        "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest"
-        + Strings.LINE_SEPARATOR;
+            "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest"
+                    + Strings.LINE_SEPARATOR;
 
     @BeforeAll
     public static void beforeClass() {
@@ -57,7 +56,8 @@ public class StyleConverterTest {
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
-        assertTrue(msgs.get(0).endsWith(EXPECTED),
+        assertTrue(
+                msgs.get(0).endsWith(EXPECTED),
                 "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
     }
 
@@ -69,7 +69,7 @@ public class StyleConverterTest {
     @ParameterizedTest
     @MethodSource("org.apache.logging.log4j.core.pattern.HighlightConverterTest#colors")
     public void testHighlightConverterCompatibility(final String color, final String escape) {
-        final StyleConverter converter = StyleConverter.newInstance(null, new String[] { "Hello!", color });
+        final StyleConverter converter = StyleConverter.newInstance(null, new String[] {"Hello!", color});
         final StringBuilder sb = new StringBuilder();
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).build();
         converter.format(event, sb);
@@ -79,8 +79,8 @@ public class StyleConverterTest {
     @ParameterizedTest
     @MethodSource("org.apache.logging.log4j.core.pattern.HighlightConverterTest#colors")
     public void testLegacyCommaSeparator(final String color, final String escape) {
-        final StyleConverter converter = StyleConverter.newInstance(null,
-                new String[] { "Hello!", color.replaceAll("\\s+", ",") });
+        final StyleConverter converter =
+                StyleConverter.newInstance(null, new String[] {"Hello!", color.replaceAll("\\s+", ",")});
         final StringBuilder sb = new StringBuilder();
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).build();
         converter.format(event, sb);
@@ -90,13 +90,14 @@ public class StyleConverterTest {
     @Test
     @UsingStatusListener
     public void testNoAnsiNoWarnings(final ListStatusListener listener) {
-        StyleConverter converter = StyleConverter.newInstance(null, new String[] { "", "disableAnsi=true" });
+        StyleConverter converter = StyleConverter.newInstance(null, new String[] {"", "disableAnsi=true"});
         assertThat(converter).isNotNull();
-        converter = StyleConverter.newInstance(null, new String[] { "", "noConsoleNoAnsi=true" });
+        converter = StyleConverter.newInstance(null, new String[] {"", "noConsoleNoAnsi=true"});
         assertThat(converter).isNotNull();
-        converter = StyleConverter.newInstance(null, new String[] { "", "INVALID_STYLE" });
+        converter = StyleConverter.newInstance(null, new String[] {"", "INVALID_STYLE"});
         assertThat(converter).isNotNull();
-        assertThat(listener.findStatusData(Level.WARN)).hasSize(1)
+        assertThat(listener.findStatusData(Level.WARN))
+                .hasSize(1)
                 .extracting(data -> data.getMessage().getFormattedMessage())
                 .containsExactly("The style attribute INVALID_STYLE is incorrect.");
     }

@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class IfFileNameTest {
 
@@ -40,9 +39,11 @@ public class IfFileNameTest {
     @Test
     public void testGetSyntaxAndPattern() {
         assertEquals("glob:path", IfFileName.createNameCondition("path", null).getSyntaxAndPattern());
-        assertEquals("glob:path", IfFileName.createNameCondition("glob:path", null).getSyntaxAndPattern());
+        assertEquals(
+                "glob:path", IfFileName.createNameCondition("glob:path", null).getSyntaxAndPattern());
         assertEquals("regex:bar", IfFileName.createNameCondition(null, "bar").getSyntaxAndPattern());
-        assertEquals("regex:bar", IfFileName.createNameCondition(null, "regex:bar").getSyntaxAndPattern());
+        assertEquals(
+                "regex:bar", IfFileName.createNameCondition(null, "regex:bar").getSyntaxAndPattern());
     }
 
     @Test

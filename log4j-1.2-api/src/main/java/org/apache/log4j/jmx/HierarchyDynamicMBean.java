@@ -18,7 +18,6 @@ package org.apache.log4j.jmx;
 
 import java.lang.reflect.Constructor;
 import java.util.Vector;
-
 import javax.management.Attribute;
 import javax.management.AttributeNotFoundException;
 import javax.management.InvalidAttributeValueException;
@@ -40,7 +39,6 @@ import javax.management.NotificationListener;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.management.RuntimeOperationsException;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
@@ -50,7 +48,8 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerRepository;
 
-public class HierarchyDynamicMBean extends AbstractDynamicMBean implements HierarchyEventListener, NotificationBroadcaster {
+public class HierarchyDynamicMBean extends AbstractDynamicMBean
+        implements HierarchyEventListener, NotificationBroadcaster {
 
     static final String ADD_APPENDER = "addAppender.";
     static final String THRESHOLD = "threshold";
@@ -95,11 +94,15 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean implements Hiera
                 nfs.enableType(ADD_APPENDER + logger.getName());
                 log.debug("---Adding logger [" + name + "] as listener.");
                 nbs.addNotificationListener(loggerMBean, nfs, null);
-                vAttributes.add(new MBeanAttributeInfo("logger=" + name, "javax.management.ObjectName", "The " + name + " logger.", true, true, // this makes
-                                                                                                                                                // the object
-                    // clickable
-                    false));
-
+                vAttributes.add(new MBeanAttributeInfo(
+                        "logger=" + name,
+                        "javax.management.ObjectName",
+                        "The " + name + " logger.",
+                        true,
+                        true, // this makes
+                        // the object
+                        // clickable
+                        false));
             }
 
         } catch (final JMException e) {
@@ -121,29 +124,38 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean implements Hiera
     }
 
     @Override
-    public void addNotificationListener(final NotificationListener listener, final NotificationFilter filter, final java.lang.Object handback) {
+    public void addNotificationListener(
+            final NotificationListener listener, final NotificationFilter filter, final java.lang.Object handback) {
         nbs.addNotificationListener(listener, filter, handback);
     }
 
     private void buildDynamicMBeanInfo() {
         final Constructor[] constructors = this.getClass().getConstructors();
-        dConstructors[0] = new MBeanConstructorInfo("HierarchyDynamicMBean(): Constructs a HierarchyDynamicMBean instance", constructors[0]);
+        dConstructors[0] = new MBeanConstructorInfo(
+                "HierarchyDynamicMBean(): Constructs a HierarchyDynamicMBean instance", constructors[0]);
 
-        vAttributes.add(new MBeanAttributeInfo(THRESHOLD, "java.lang.String", "The \"threshold\" state of the hiearchy.", true, true, false));
+        vAttributes.add(new MBeanAttributeInfo(
+                THRESHOLD, "java.lang.String", "The \"threshold\" state of the hiearchy.", true, true, false));
 
         final MBeanParameterInfo[] params = new MBeanParameterInfo[1];
         params[0] = new MBeanParameterInfo("name", "java.lang.String", "Create a logger MBean");
-        dOperations[0] = new MBeanOperationInfo("addLoggerMBean", "addLoggerMBean(): add a loggerMBean", params, "javax.management.ObjectName",
-            MBeanOperationInfo.ACTION);
+        dOperations[0] = new MBeanOperationInfo(
+                "addLoggerMBean",
+                "addLoggerMBean(): add a loggerMBean",
+                params,
+                "javax.management.ObjectName",
+                MBeanOperationInfo.ACTION);
     }
 
     @Override
-    public Object getAttribute(final String attributeName) throws AttributeNotFoundException, MBeanException, ReflectionException {
+    public Object getAttribute(final String attributeName)
+            throws AttributeNotFoundException, MBeanException, ReflectionException {
 
         // Check attributeName is not null to avoid NullPointerException later on
         if (attributeName == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Attribute name cannot be null"),
-                "Cannot invoke a getter of " + dClassName + " with null attribute name");
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Attribute name cannot be null"),
+                    "Cannot invoke a getter of " + dClassName + " with null attribute name");
         }
 
         log.debug("Called getAttribute with [" + attributeName + "].");
@@ -168,7 +180,6 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean implements Hiera
 
         // If attributeName has not been recognized throw an AttributeNotFoundException
         throw (new AttributeNotFoundException("Cannot find " + attributeName + " attribute in " + dClassName));
-
     }
 
     @Override
@@ -183,7 +194,8 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean implements Hiera
         final MBeanAttributeInfo[] attribs = new MBeanAttributeInfo[vAttributes.size()];
         vAttributes.toArray(attribs);
 
-        return new MBeanInfo(dClassName, dDescription, attribs, dConstructors, dOperations, new MBeanNotificationInfo[0]);
+        return new MBeanInfo(
+                dClassName, dDescription, attribs, dConstructors, dOperations, new MBeanNotificationInfo[0]);
     }
 
     @Override
@@ -192,20 +204,23 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean implements Hiera
     }
 
     @Override
-    public Object invoke(final String operationName, final Object params[], final String signature[]) throws MBeanException, ReflectionException {
+    public Object invoke(final String operationName, final Object params[], final String signature[])
+            throws MBeanException, ReflectionException {
 
         if (operationName == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Operation name cannot be null"),
-                "Cannot invoke a null operation in " + dClassName);
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Operation name cannot be null"),
+                    "Cannot invoke a null operation in " + dClassName);
         }
         // Check for a recognized operation name and call the corresponding operation
 
         if (operationName.equals("addLoggerMBean")) {
             return addLoggerMBean((String) params[0]);
         } else {
-            throw new ReflectionException(new NoSuchMethodException(operationName), "Cannot find the operation " + operationName + " in " + dClassName);
+            throw new ReflectionException(
+                    new NoSuchMethodException(operationName),
+                    "Cannot find the operation " + operationName + " in " + dClassName);
         }
-
     }
 
     @Override
@@ -227,25 +242,27 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean implements Hiera
     }
 
     @Override
-    public void setAttribute(final Attribute attribute) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
+    public void setAttribute(final Attribute attribute)
+            throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
 
         // Check attribute is not null to avoid NullPointerException later on
         if (attribute == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Attribute cannot be null"),
-                "Cannot invoke a setter of " + dClassName + " with null attribute");
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Attribute cannot be null"),
+                    "Cannot invoke a setter of " + dClassName + " with null attribute");
         }
         final String name = attribute.getName();
         final Object value = attribute.getValue();
 
         if (name == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Attribute name cannot be null"),
-                "Cannot invoke the setter of " + dClassName + " with null attribute name");
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Attribute name cannot be null"),
+                    "Cannot invoke the setter of " + dClassName + " with null attribute name");
         }
 
         if (name.equals(THRESHOLD)) {
             final Level l = OptionConverter.toLevel((String) value, hierarchy.getThreshold());
             hierarchy.setThreshold(l);
         }
-
     }
 }

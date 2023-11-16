@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.Date;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @UsingStatusListener
 public class JdbcAppenderColumnMappingPropertiesTest {
@@ -47,8 +46,8 @@ public class JdbcAppenderColumnMappingPropertiesTest {
         final URL configLocation = JdbcAppenderColumnMappingPropertiesTest.class.getResource(
                 "JdbcAppenderColumnMappingPropertiesTest.properties");
         assertThat(configLocation).isNotNull();
-        final Configuration config = PropertiesConfigurationFactory.getInstance()
-                .getConfiguration(null, null, configLocation.toURI());
+        final Configuration config =
+                PropertiesConfigurationFactory.getInstance().getConfiguration(null, null, configLocation.toURI());
         assertThat(config).isNotNull();
         config.initialize();
         final Appender appender = config.getAppender("Jdbc");

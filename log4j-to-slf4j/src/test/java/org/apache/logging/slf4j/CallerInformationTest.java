@@ -16,15 +16,14 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
 
 @UsingStatusListener
 @LoggerContextSource

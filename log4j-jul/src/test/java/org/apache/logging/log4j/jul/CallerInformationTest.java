@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.jul;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class CallerInformationTest {
 

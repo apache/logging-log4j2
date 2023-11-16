@@ -37,6 +37,7 @@ public class SLF4JLogger extends AbstractLogger {
      */
     private static final boolean LAZY_LEVEL_CHECK = "ch.qos.logback.classic.LoggerContext"
             .equals(LoggerFactory.getILoggerFactory().getClass().getName());
+
     private static final ThreadLocal<SLF4JLogBuilder> logBuilder = ThreadLocal.withInitial(SLF4JLogBuilder::new);
 
     private final org.slf4j.Logger logger;
@@ -56,17 +57,17 @@ public class SLF4JLogger extends AbstractLogger {
 
     private int convertLevel(final Level level) {
         switch (level.getStandardLevel()) {
-            case DEBUG :
+            case DEBUG:
                 return LocationAwareLogger.DEBUG_INT;
-            case TRACE :
+            case TRACE:
                 return LocationAwareLogger.TRACE_INT;
-            case INFO :
+            case INFO:
                 return LocationAwareLogger.INFO_INT;
-            case WARN :
+            case WARN:
                 return LocationAwareLogger.WARN_INT;
-            case ERROR :
+            case ERROR:
                 return LocationAwareLogger.ERROR_INT;
-            default :
+            default:
                 return LocationAwareLogger.ERROR_INT;
         }
     }
@@ -148,65 +149,124 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1) {
+    public boolean isEnabled(
+            final Level level, final Marker marker, final String message, final Object p0, final Object p1) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return isEnabledFor(level, marker);
     }
 
@@ -218,24 +278,24 @@ public class SLF4JLogger extends AbstractLogger {
     private boolean isEnabledFor(final Level level, final Marker marker) {
         final org.slf4j.Marker slf4jMarker = getMarker(marker);
         switch (level.getStandardLevel()) {
-            case DEBUG :
+            case DEBUG:
                 return logger.isDebugEnabled(slf4jMarker);
-            case TRACE :
+            case TRACE:
                 return logger.isTraceEnabled(slf4jMarker);
-            case INFO :
+            case INFO:
                 return logger.isInfoEnabled(slf4jMarker);
-            case WARN :
+            case WARN:
                 return logger.isWarnEnabled(slf4jMarker);
-            case ERROR :
+            case ERROR:
                 return logger.isErrorEnabled(slf4jMarker);
-            default :
+            default:
                 return logger.isErrorEnabled(slf4jMarker);
-
         }
     }
 
     @Override
-    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+    public void logMessage(
+            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
         final org.slf4j.Marker slf4jMarker = getMarker(marker);
         final String formattedMessage = message.getFormattedMessage();
         if (locationAwareLogger != null) {
@@ -245,22 +305,22 @@ public class SLF4JLogger extends AbstractLogger {
             locationAwareLogger.log(slf4jMarker, fqcn, convertLevel(level), formattedMessage, null, t);
         } else {
             switch (level.getStandardLevel()) {
-                case DEBUG :
+                case DEBUG:
                     logger.debug(slf4jMarker, formattedMessage, t);
                     break;
-                case TRACE :
+                case TRACE:
                     logger.trace(slf4jMarker, formattedMessage, t);
                     break;
-                case INFO :
+                case INFO:
                     logger.info(slf4jMarker, formattedMessage, t);
                     break;
-                case WARN :
+                case WARN:
                     logger.warn(slf4jMarker, formattedMessage, t);
                     break;
-                case ERROR :
+                case ERROR:
                     logger.error(slf4jMarker, formattedMessage, t);
                     break;
-                default :
+                default:
                     logger.error(slf4jMarker, formattedMessage, t);
                     break;
             }
@@ -305,7 +365,8 @@ public class SLF4JLogger extends AbstractLogger {
     @Override
     protected LogBuilder getLogBuilder(final Level level) {
         final SLF4JLogBuilder builder = logBuilder.get();
-        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder.reset(this, level)
+        return Constants.ENABLE_THREADLOCALS && !builder.isInUse()
+                ? builder.reset(this, level)
                 : new SLF4JLogBuilder(this, level);
     }
 

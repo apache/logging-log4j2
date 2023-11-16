@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -33,8 +32,8 @@ public class ConsoleAppenderHighlightLayoutMain {
 
     public static void main(final String[] args) {
         System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
-        try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
-                "target/test-classes/log4j2-console-highlight.xml")) {
+        try (final LoggerContext ctx = Configurator.initialize(
+                ConsoleAppenderAnsiMessagesMain.class.getName(), "target/test-classes/log4j2-console-highlight.xml")) {
             LOG.fatal("Fatal message.");
             LOG.error("Error message.");
             LOG.warn("Warning message.");
@@ -44,5 +43,4 @@ public class ConsoleAppenderHighlightLayoutMain {
             LOG.error("Error message.", new IOException("test"));
         }
     }
-
 }

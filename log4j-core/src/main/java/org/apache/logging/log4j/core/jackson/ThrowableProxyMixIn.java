@@ -75,5 +75,4 @@ abstract class ThrowableProxyMixIn {
 
     @JsonIgnore
     public abstract Throwable getThrowable();
-
 }

@@ -25,7 +25,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -263,7 +262,6 @@ public class SimpleSmtpServer implements Runnable {
         final SimpleSmtpServer server = new SimpleSmtpServer(port);
         final Thread t = new Thread(server);
 
-
         // Block until the server socket is created
         synchronized (server) {
             t.start();
@@ -275,5 +273,4 @@ public class SimpleSmtpServer implements Runnable {
         }
         return server;
     }
-
 }

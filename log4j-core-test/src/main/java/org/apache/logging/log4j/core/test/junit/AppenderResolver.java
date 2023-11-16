@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
+import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getParameterLoggerContext;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -23,24 +25,23 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getParameterLoggerContext;
-
 class AppenderResolver implements ParameterResolver {
     @Override
-    public boolean supportsParameter(
-            final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
-        return Appender.class.isAssignableFrom(parameterContext.getParameter().getType()) && parameterContext
-                .isAnnotated(Named.class);
+    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
+            throws ParameterResolutionException {
+        return Appender.class.isAssignableFrom(parameterContext.getParameter().getType())
+                && parameterContext.isAnnotated(Named.class);
     }
 
     @Override
-    public Object resolveParameter(
-            final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
+    public Object resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
+            throws ParameterResolutionException {
         final LoggerContext loggerContext = getParameterLoggerContext(parameterContext, extensionContext);
         if (loggerContext == null) {
             throw new ParameterResolutionException("No LoggerContext defined");
         }
-        final String name = parameterContext.findAnnotation(Named.class)
+        final String name = parameterContext
+                .findAnnotation(Named.class)
                 .map(Named::value)
                 .map(s -> s.isEmpty() ? parameterContext.getParameter().getName() : s)
                 .orElseThrow(() -> new ParameterResolutionException("No @Named present after checking earlier"));

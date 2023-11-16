@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.plugins.validation;
 
 import java.net.InetSocketAddress;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -39,15 +38,13 @@ public final class HostAndPort {
 
     @PluginFactory
     public static HostAndPort createPlugin(
-        @ValidHost(message = "Unit test (host)") @PluginAttribute("host") final String host,
-        @ValidPort(message = "Unit test (port)") @PluginAttribute("port") final int port) {
+            @ValidHost(message = "Unit test (host)") @PluginAttribute("host") final String host,
+            @ValidPort(message = "Unit test (port)") @PluginAttribute("port") final int port) {
         return new HostAndPort(new InetSocketAddress(host, port));
     }
 
     @Override
     public String toString() {
-        return "HostAndPort{" +
-            "address=" + address +
-            '}';
+        return "HostAndPort{" + "address=" + address + '}';
     }
 }

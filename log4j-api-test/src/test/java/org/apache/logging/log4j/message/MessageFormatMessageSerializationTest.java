@@ -18,7 +18,6 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.test.AbstractSerializationTest;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -30,7 +29,7 @@ public class MessageFormatMessageSerializationTest extends AbstractSerialization
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{
+        return Arrays.asList(new Object[][] {
             {new MessageFormatMessage("Test")},
             {new MessageFormatMessage("Test {0} {1}", "message", "test")},
             {new MessageFormatMessage("{0}{1}{2}", 3, '.', 14L)}

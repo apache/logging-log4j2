@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import java.io.IOException;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
@@ -41,15 +40,15 @@ public class JacksonIssue429MyNamesTest {
     static class MyStackTraceElementDeserializer extends StdScalarDeserializer<StackTraceElement> {
         private static final long serialVersionUID = 1L;
 
-        public final static MyStackTraceElementDeserializer instance = new MyStackTraceElementDeserializer();
+        public static final MyStackTraceElementDeserializer instance = new MyStackTraceElementDeserializer();
 
         public MyStackTraceElementDeserializer() {
             super(StackTraceElement.class);
         }
 
         @Override
-        public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
-                JsonProcessingException {
+        public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt)
+                throws IOException, JsonProcessingException {
             JsonToken t = jp.getCurrentToken();
             // Must get an Object
             if (t == JsonToken.START_OBJECT) {
@@ -66,8 +65,8 @@ public class JacksonIssue429MyNamesTest {
                         if (t.isNumeric()) {
                             lineNumber = jp.getIntValue();
                         } else {
-                            throw JsonMappingException.from(jp, "Non-numeric token (" + t
-                                    + ") for property 'lineNumber'");
+                            throw JsonMappingException.from(
+                                    jp, "Non-numeric token (" + t + ") for property 'lineNumber'");
                         }
                     } else if ("method".equals(propName)) {
                         methodName = jp.getText();
@@ -84,14 +83,14 @@ public class JacksonIssue429MyNamesTest {
     }
 
     static class StackTraceBean {
-        public final static int NUM = 13;
+        public static final int NUM = 13;
 
         @JsonProperty("Location")
         @JsonDeserialize(using = MyStackTraceElementDeserializer.class)
         private StackTraceElement location;
     }
 
-    private final static ObjectMapper SHARED_MAPPER = new ObjectMapper();
+    private static final ObjectMapper SHARED_MAPPER = new ObjectMapper();
 
     private final ObjectMapper MAPPER = objectMapper();
 
@@ -106,10 +105,10 @@ public class JacksonIssue429MyNamesTest {
     @Test
     public void testStackTraceElementWithCustom() throws Exception {
         // first, via bean that contains StackTraceElement
-        final StackTraceBean bean = MAPPER
-                .readValue(
-                        aposToQuotes("{'Location':{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':13}}"),
-                        StackTraceBean.class);
+        final StackTraceBean bean = MAPPER.readValue(
+                aposToQuotes(
+                        "{'Location':{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':13}}"),
+                StackTraceBean.class);
         Assert.assertNotNull(bean);
         Assert.assertNotNull(bean.location);
         Assert.assertEquals(StackTraceBean.NUM, bean.location.getLineNumber());

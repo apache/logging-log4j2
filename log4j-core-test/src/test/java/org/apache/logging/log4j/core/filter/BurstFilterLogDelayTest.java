@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.concurrent.Delayed;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+
+import java.util.concurrent.Delayed;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for <code>BurstFilter</code>.
@@ -33,12 +32,13 @@ public class BurstFilterLogDelayTest {
     @Test
     public void testCompareToOverflow() {
         // no overflow, but close
-        final Delayed d1 = BurstFilter.createLogDelay(Long.MAX_VALUE - TimeUnit.SECONDS.toNanos(10) - System.nanoTime());
+        final Delayed d1 =
+                BurstFilter.createLogDelay(Long.MAX_VALUE - TimeUnit.SECONDS.toNanos(10) - System.nanoTime());
 
         // Overflow
-        final Delayed d2 = BurstFilter.createLogDelay(Long.MAX_VALUE + TimeUnit.SECONDS.toNanos(10) - System.nanoTime());
+        final Delayed d2 =
+                BurstFilter.createLogDelay(Long.MAX_VALUE + TimeUnit.SECONDS.toNanos(10) - System.nanoTime());
 
         assertThat(d2, is(greaterThan(d1)));
     }
-
 }

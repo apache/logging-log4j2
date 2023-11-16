@@ -49,5 +49,4 @@ public class LevelCodec implements Codec<Level> {
     public Class<Level> getEncoderClass() {
         return Level.class;
     }
-
 }

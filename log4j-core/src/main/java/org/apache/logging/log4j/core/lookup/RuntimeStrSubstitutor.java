@@ -24,8 +24,7 @@ import java.util.Properties;
  */
 public final class RuntimeStrSubstitutor extends StrSubstitutor {
 
-    public RuntimeStrSubstitutor() {
-    }
+    public RuntimeStrSubstitutor() {}
 
     public RuntimeStrSubstitutor(final Map<String, String> valueMap) {
         super(valueMap);

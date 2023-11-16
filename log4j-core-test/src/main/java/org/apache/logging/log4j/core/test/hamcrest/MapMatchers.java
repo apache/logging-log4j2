@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.test.hamcrest;
 
-import java.util.Map;
+import static org.hamcrest.core.IsEqual.equalTo;
 
+import java.util.Map;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-
-import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Hamcrest Matchers for Maps.
@@ -57,6 +56,5 @@ public final class MapMatchers {
         return hasSize(equalTo(size));
     }
 
-    private MapMatchers() {
-    }
+    private MapMatchers() {}
 }

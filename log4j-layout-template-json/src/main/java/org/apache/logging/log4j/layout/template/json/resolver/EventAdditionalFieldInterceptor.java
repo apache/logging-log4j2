@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
@@ -30,8 +29,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 @Plugin(name = "EventAdditionalFieldInterceptor", category = TemplateResolverInterceptor.CATEGORY)
 public class EventAdditionalFieldInterceptor implements EventResolverInterceptor {
 
-    private static final EventAdditionalFieldInterceptor INSTANCE =
-            new EventAdditionalFieldInterceptor();
+    private static final EventAdditionalFieldInterceptor INSTANCE = new EventAdditionalFieldInterceptor();
 
     private EventAdditionalFieldInterceptor() {}
 
@@ -41,13 +39,10 @@ public class EventAdditionalFieldInterceptor implements EventResolverInterceptor
     }
 
     @Override
-    public Object processTemplateBeforeResolverInjection(
-            final EventResolverContext context,
-            final Object node) {
+    public Object processTemplateBeforeResolverInjection(final EventResolverContext context, final Object node) {
 
         // Short-circuit if there are no additional fields.
-        final EventTemplateAdditionalField[] additionalFields =
-                context.getEventTemplateAdditionalFields();
+        final EventTemplateAdditionalField[] additionalFields = context.getEventTemplateAdditionalFields();
         if (additionalFields.length == 0) {
             return node;
         }
@@ -55,7 +50,8 @@ public class EventAdditionalFieldInterceptor implements EventResolverInterceptor
         // Check that the root is an object node.
         final Map<String, Object> objectNode;
         try {
-            @SuppressWarnings("unchecked") final Map<String, Object> map = (Map<String, Object>) node;
+            @SuppressWarnings("unchecked")
+            final Map<String, Object> map = (Map<String, Object>) node;
             objectNode = map;
         } catch (final ClassCastException error) {
             final String message = String.format(
@@ -68,23 +64,20 @@ public class EventAdditionalFieldInterceptor implements EventResolverInterceptor
         for (final EventTemplateAdditionalField additionalField : additionalFields) {
             final String additionalFieldKey = additionalField.getKey();
             final Object additionalFieldValue;
-            final EventTemplateAdditionalField.Format additionalFieldFormat =
-                    additionalField.getFormat();
+            final EventTemplateAdditionalField.Format additionalFieldFormat = additionalField.getFormat();
             if (EventTemplateAdditionalField.Format.STRING.equals(additionalFieldFormat)) {
                 additionalFieldValue = additionalField.getValue();
             } else if (EventTemplateAdditionalField.Format.JSON.equals(additionalFieldFormat)) {
                 try {
                     additionalFieldValue = JsonReader.read(additionalField.getValue());
                 } catch (final Exception error) {
-                    final String message = String.format(
-                            "failed reading JSON provided by additional field: %s",
-                            additionalFieldKey);
+                    final String message =
+                            String.format("failed reading JSON provided by additional field: %s", additionalFieldKey);
                     throw new IllegalArgumentException(message, error);
                 }
             } else {
                 final String message = String.format(
-                        "unknown format %s for additional field: %s",
-                        additionalFieldKey, additionalFieldFormat);
+                        "unknown format %s for additional field: %s", additionalFieldKey, additionalFieldFormat);
                 throw new IllegalArgumentException(message);
             }
             objectNode.put(additionalFieldKey, additionalFieldValue);
@@ -92,7 +85,5 @@ public class EventAdditionalFieldInterceptor implements EventResolverInterceptor
 
         // Return the modified node.
         return node;
-
     }
-
 }

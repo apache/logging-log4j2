@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -101,8 +100,8 @@ public class Log4jMarkerFactory implements IMarkerFactory {
         return convertMarker(original, new ArrayList<Marker>());
     }
 
-    private static org.apache.logging.log4j.Marker convertMarker(final Marker original,
-                                                                 final Collection<Marker> visited) {
+    private static org.apache.logging.log4j.Marker convertMarker(
+            final Marker original, final Collection<Marker> visited) {
         final org.apache.logging.log4j.Marker marker = MarkerManager.getMarker(original.getName());
         if (original.hasReferences()) {
             final Iterator<Marker> it = original.iterator();
@@ -149,6 +148,4 @@ public class Log4jMarkerFactory implements IMarkerFactory {
         LOGGER.warn("Log4j does not support detached Markers. Returned Marker [{}] will be unchanged.", name);
         return getMarker(name);
     }
-
-
 }

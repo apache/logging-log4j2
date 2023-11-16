@@ -20,7 +20,6 @@ import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LogEvent;
 
-
 /**
  * Binds a Log4j 1.x RewritePolicy to Log4j 2.
  */
@@ -45,5 +44,4 @@ public class RewritePolicyAdapter implements org.apache.logging.log4j.core.appen
     public RewritePolicy getPolicy() {
         return this.policy;
     }
-
 }

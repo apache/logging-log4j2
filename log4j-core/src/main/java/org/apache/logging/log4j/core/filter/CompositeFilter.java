@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -181,8 +180,8 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object... params) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, params);
@@ -208,8 +207,8 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object p0) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, p0);
@@ -236,8 +235,13 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, p0, p1);
@@ -265,8 +269,14 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, p0, p1, p2);
@@ -295,8 +305,15 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3);
@@ -326,8 +343,15 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
@@ -359,9 +383,17 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5);
@@ -393,9 +425,18 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6);
@@ -428,9 +469,18 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
@@ -465,10 +515,20 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6, p7, p8);
@@ -503,10 +563,21 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
@@ -533,8 +604,8 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-            final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, t);
@@ -561,8 +632,8 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return the Result.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-            final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, t);
@@ -620,5 +691,4 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     public static CompositeFilter createFilters(@PluginElement("Filters") final Filter[] filters) {
         return new CompositeFilter(filters);
     }
-
 }

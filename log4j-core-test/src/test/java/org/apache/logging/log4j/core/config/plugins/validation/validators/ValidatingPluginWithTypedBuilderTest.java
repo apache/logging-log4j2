@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.validation.ValidatingPluginWithTypedBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidatingPluginWithTypedBuilderTest {
 
@@ -37,8 +37,8 @@ public class ValidatingPluginWithTypedBuilderTest {
     public void setUp() throws Exception {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
-        plugin = (PluginType<ValidatingPluginWithTypedBuilder>) manager
-                .getPluginType("ValidatingPluginWithTypedBuilder");
+        plugin = (PluginType<ValidatingPluginWithTypedBuilder>)
+                manager.getPluginType("ValidatingPluginWithTypedBuilder");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", plugin);
     }
@@ -46,10 +46,11 @@ public class ValidatingPluginWithTypedBuilderTest {
     @Test
     public void testNullDefaultValue() throws Exception {
         // @formatter:off
-        final ValidatingPluginWithTypedBuilder validatingPlugin = (ValidatingPluginWithTypedBuilder)
-                new PluginBuilder(plugin).
-                withConfiguration(new NullConfiguration()).
-                withConfigurationNode(node).build();
+        final ValidatingPluginWithTypedBuilder validatingPlugin =
+                (ValidatingPluginWithTypedBuilder) new PluginBuilder(plugin)
+                        .withConfiguration(new NullConfiguration())
+                        .withConfigurationNode(node)
+                        .build();
         // @formatter:on
         assertNull(validatingPlugin);
     }
@@ -58,10 +59,11 @@ public class ValidatingPluginWithTypedBuilderTest {
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
         // @formatter:off
-        final ValidatingPluginWithTypedBuilder validatingPlugin = (ValidatingPluginWithTypedBuilder)
-                new PluginBuilder(plugin).
-                withConfiguration(new NullConfiguration()).
-                withConfigurationNode(node).build();
+        final ValidatingPluginWithTypedBuilder validatingPlugin =
+                (ValidatingPluginWithTypedBuilder) new PluginBuilder(plugin)
+                        .withConfiguration(new NullConfiguration())
+                        .withConfigurationNode(node)
+                        .build();
         // @formatter:on
         assertNotNull(validatingPlugin);
         assertEquals("foo", validatingPlugin.getName());

@@ -16,13 +16,19 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
@@ -45,13 +51,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the YamlLayout class.
@@ -80,8 +79,8 @@ public class YamlLayoutTest {
 
     private void checkAt(final String expected, final int lineIndex, final List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
-        assertTrue("Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine),
-                trimedLine.equals(expected));
+        assertTrue(
+                "Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine), trimedLine.equals(expected));
     }
 
     private void checkContains(final String expected, final List<String> list) {
@@ -96,13 +95,13 @@ public class YamlLayoutTest {
 
     private void checkMapEntry(final String key, final String value, final boolean compact, final String str) {
         // "name":"value"
-        //final String expected = String.format("- key: \"%s\"\n  value: \"%s\"", key, value);
+        // final String expected = String.format("- key: \"%s\"\n  value: \"%s\"", key, value);
         final String expected = String.format("%s: \"%s\"", key, value);
         assertTrue("Cannot find " + expected + " in " + str, str.contains(expected));
     }
 
-    private void checkProperty(final String key, final String value, final boolean compact, final String str,
-            final boolean isValue) {
+    private void checkProperty(
+            final String key, final String value, final boolean compact, final String str, final boolean isValue) {
         final String propSep = this.toPropertySeparator(compact, isValue);
         // {"key":"MDC.B","value":"B_Value"}
         final String expected = String.format("%s%s\"%s\"", key, propSep, value);
@@ -114,13 +113,20 @@ public class YamlLayoutTest {
         assertTrue(str, str.contains(name + propSep));
     }
 
-    private void checkPropertyNameAbsent(final String name, final boolean compact, final String str, final boolean isValue) {
+    private void checkPropertyNameAbsent(
+            final String name, final boolean compact, final String str, final boolean isValue) {
         final String propSep = this.toPropertySeparator(compact, isValue);
         assertFalse(str, str.contains(name + propSep));
     }
 
-    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol,
-            final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace) throws Exception {
+    private void testAllFeatures(
+            final boolean includeSource,
+            final boolean compact,
+            final boolean eventEol,
+            final boolean includeContext,
+            final boolean contextMapAslist,
+            final boolean includeStacktrace)
+            throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
                 .setLocationInfo(includeSource)
@@ -134,7 +140,8 @@ public class YamlLayoutTest {
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace,false).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace, false)
+                .readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext, includeStacktrace);
         if (includeContext) {
             this.checkMapEntry("MDC.A", "A_Value", compact, str);
@@ -298,7 +305,8 @@ public class YamlLayoutTest {
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("M")) //
                 .setThreadName("threadName") //
-                .setTimeMillis(1).build();
+                .setTimeMillis(1)
+                .build();
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("loggerName: \"a.B\""));
         final Log4jLogEvent actual = new Log4jYamlObjectMapper(false, true, false).readValue(str, Log4jLogEvent.class);
@@ -313,8 +321,8 @@ public class YamlLayoutTest {
                 .setProperties(false)
                 .setIncludeStacktrace(false)
                 .setAdditionalFields(new KeyValuePair[] {
-                    new KeyValuePair("KEY1", "VALUE1"),
-                    new KeyValuePair("KEY2", "${java:runtime}"), })
+                    new KeyValuePair("KEY1", "VALUE1"), new KeyValuePair("KEY2", "${java:runtime}"),
+                })
                 .setCharset(StandardCharsets.UTF_8)
                 .setConfiguration(ctx.getConfiguration())
                 .build();
@@ -374,18 +382,16 @@ public class YamlLayoutTest {
 
     @Test
     public void testIncludeNullDelimiterTrue() throws Exception {
-        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
-                .setIncludeNullDelimiter(true)
-                .build();
+        final AbstractJacksonLayout layout =
+                YamlLayout.newBuilder().setIncludeNullDelimiter(true).build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertTrue(str.endsWith("\0"));
     }
 
     @Test
     public void testIncludeNullDelimiterFalse() throws Exception {
-        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
-                .setIncludeNullDelimiter(false)
-                .build();
+        final AbstractJacksonLayout layout =
+                YamlLayout.newBuilder().setIncludeNullDelimiter(false).build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertFalse(str.endsWith("\0"));
     }

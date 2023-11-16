@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+import java.io.IOException;
 import org.apache.logging.log4j.core.util.Integers;
 
 /**
@@ -44,8 +43,8 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
     }
 
     @Override
-    public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
+    public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
         JsonToken t = jp.getCurrentToken();
         // Must get an Object
         if (t == JsonToken.START_OBJECT) {
@@ -71,7 +70,8 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
                             try {
                                 lineNumber = Integers.parseInt(jp.getText());
                             } catch (final NumberFormatException e) {
-                                throw JsonMappingException.from(jp, "Non-numeric token (" + t + ") for property 'line'", e);
+                                throw JsonMappingException.from(
+                                        jp, "Non-numeric token (" + t + ") for property 'line'", e);
                             }
                         }
                         break;

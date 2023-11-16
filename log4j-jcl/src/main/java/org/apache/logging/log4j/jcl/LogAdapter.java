@@ -37,9 +37,9 @@ public class LogAdapter extends AbstractLoggerAdapter<Log> {
 
     @Override
     protected LoggerContext getContext() {
-        return getContext(LogManager.getFactory().isClassLoaderDependent()
-                ? StackLocatorUtil.getCallerClass(LogFactory.class)
-                : null);
+        return getContext(
+                LogManager.getFactory().isClassLoaderDependent()
+                        ? StackLocatorUtil.getCallerClass(LogFactory.class)
+                        : null);
     }
-
 }

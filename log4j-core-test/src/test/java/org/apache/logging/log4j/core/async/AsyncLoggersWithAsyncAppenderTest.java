@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -30,10 +31,10 @@ import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @Tag("AsyncLoggers")
-@SetTestProperty(key = Constants.LOG4J_CONTEXT_SELECTOR, value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+@SetTestProperty(
+        key = Constants.LOG4J_CONTEXT_SELECTOR,
+        value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
 @UsingStatusListener
 public class AsyncLoggersWithAsyncAppenderTest {
 

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
@@ -57,8 +56,7 @@ public final class ThreadContextStackResolver implements EventResolver {
     private final Pattern itemPattern;
 
     ThreadContextStackResolver(final TemplateResolverConfig config) {
-        this.itemPattern = Optional
-                .ofNullable(config.getString("pattern"))
+        this.itemPattern = Optional.ofNullable(config.getString("pattern"))
                 .map(Pattern::compile)
                 .orElse(null);
     }
@@ -74,9 +72,7 @@ public final class ThreadContextStackResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         final ThreadContext.ContextStack contextStack = logEvent.getContextStack();
         if (contextStack.getDepth() == 0) {
             jsonWriter.writeNull();
@@ -85,8 +81,7 @@ public final class ThreadContextStackResolver implements EventResolver {
         boolean arrayStarted = false;
         for (final String contextStackItem : contextStack.asList()) {
             final boolean matched =
-                    itemPattern == null ||
-                            itemPattern.matcher(contextStackItem).matches();
+                    itemPattern == null || itemPattern.matcher(contextStackItem).matches();
             if (matched) {
                 if (arrayStarted) {
                     jsonWriter.writeSeparator();
@@ -103,5 +98,4 @@ public final class ThreadContextStackResolver implements EventResolver {
             jsonWriter.writeNull();
         }
     }
-
 }

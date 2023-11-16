@@ -16,10 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
-
 
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.

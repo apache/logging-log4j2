@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
@@ -55,8 +54,14 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * @param port The target port number.
      * @param bufferSize The buffer size.
      */
-    public AbstractSocketManager(final String name, final OutputStream os, final InetAddress inetAddress,
-            final String host, final int port, final Layout<? extends Serializable> layout, final boolean writeHeader,
+    public AbstractSocketManager(
+            final String name,
+            final OutputStream os,
+            final InetAddress inetAddress,
+            final String host,
+            final int port,
+            final Layout<? extends Serializable> layout,
+            final boolean writeHeader,
             final int bufferSize) {
         super(os, name, layout, writeHeader, bufferSize);
         this.inetAddress = inetAddress;

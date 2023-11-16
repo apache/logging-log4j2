@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -26,18 +30,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @Category(AsyncLoggers.class)
 public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
+        System.setProperty(
+                ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "AsyncWaitStrategyIncorrectFactoryConfigGlobalLoggerTest.xml");
     }
 
@@ -47,18 +47,21 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
-
     @Test
     public void testIncorrectConfigWaitStrategyFactory() throws Exception {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         assertThat("context is AsyncLoggerContext", context instanceof AsyncLoggerContext);
 
-        final AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
+                context.getConfiguration().getAsyncWaitStrategyFactory();
         assertNull(asyncWaitStrategyFactory);
 
         final AsyncLogger logger = (AsyncLogger) context.getRootLogger();
         final AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
-        assertEquals(TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
-        assertThat("waitstrategy is TimeoutBlockingWaitStrategy", delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
+        assertEquals(
+                TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
+        assertThat(
+                "waitstrategy is TimeoutBlockingWaitStrategy",
+                delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
     }
 }

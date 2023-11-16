@@ -16,20 +16,18 @@
  */
 package org.apache.logging.log4j.jul;
 
+import static java.util.logging.Level.INFO;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.*;
+
 import java.util.List;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static java.util.logging.Level.INFO;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
 
 public class BracketInNotInterpolatedMessageTest {
 
@@ -47,11 +45,12 @@ public class BracketInNotInterpolatedMessageTest {
     public void noInterpolation() {
         final Logger logger = Logger.getLogger("Test");
         logger.info("{raw}");
-        logger.log(new LogRecord(INFO, "{raw}"));// should lead to the same as previous but was not the case LOG4J2-1251
-        final List<LogEvent> events = ListAppender.getListAppender("TestAppender").getEvents();
+        logger.log(
+                new LogRecord(INFO, "{raw}")); // should lead to the same as previous but was not the case LOG4J2-1251
+        final List<LogEvent> events =
+                ListAppender.getListAppender("TestAppender").getEvents();
         assertThat(events, hasSize(2));
         assertEquals("{raw}", events.get(0).getMessage().getFormattedMessage());
         assertEquals("{raw}", events.get(1).getMessage().getFormattedMessage());
     }
-
 }

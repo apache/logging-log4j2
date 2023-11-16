@@ -19,9 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
 import javax.net.ssl.SSLServerSocketFactory;
-
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
 import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
 import org.apache.logging.log4j.core.net.SocketOptions;
@@ -59,7 +57,6 @@ public class SecureSocketAppenderSocketOptionsTest {
         } catch (IOException | StoreConfigurationException e) {
             throw new IllegalStateException(e);
         }
-
     }
 
     @ClassRule
@@ -75,7 +72,7 @@ public class SecureSocketAppenderSocketOptionsTest {
     public static void initServerSocketFactory() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = KeyStoreConfiguration.createKeyStoreConfiguration(
                 TestConstants.KEYSTORE_FILE, // file
-                TestConstants.KEYSTORE_PWD(),  // password
+                TestConstants.KEYSTORE_PWD(), // password
                 null, // passwordEnvironmentVariable
                 null, // passwordFile
                 null, // key store type
@@ -111,7 +108,8 @@ public class SecureSocketAppenderSocketOptionsTest {
         Assert.assertEquals(null, socketOptions.isOobInline());
         Assert.assertEquals(false, socketOptions.isReuseAddress());
         Assert.assertEquals(false, socketOptions.isTcpNoDelay());
-        Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(),
+        Assert.assertEquals(
+                Rfc1349TrafficClass.IPTOS_LOWCOST.value(),
                 socketOptions.getActualTrafficClass().intValue());
         Assert.assertEquals(10000, socketOptions.getReceiveBufferSize().intValue());
         Assert.assertEquals(8000, socketOptions.getSendBufferSize().intValue());
@@ -130,7 +128,9 @@ public class SecureSocketAppenderSocketOptionsTest {
 
     @Test
     public void testSocketTrafficClass() throws IOException {
-        Assume.assumeTrue("Run only on Java 7", System.getProperty("java.specification.version").equals("1.7"));
+        Assume.assumeTrue(
+                "Run only on Java 7",
+                System.getProperty("java.specification.version").equals("1.7"));
         Assume.assumeFalse("Do not run on Travis CI", "true".equals(System.getenv("TRAVIS")));
         final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
         final TcpSocketManager manager = (TcpSocketManager) appender.getManager();

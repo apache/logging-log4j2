@@ -41,5 +41,4 @@ public class MarkerLookup extends AbstractLookup {
     public String lookup(final String key) {
         return MarkerManager.exists(key) ? key : null;
     }
-
 }

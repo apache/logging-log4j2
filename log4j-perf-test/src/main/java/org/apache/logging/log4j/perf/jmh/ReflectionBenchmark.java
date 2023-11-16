@@ -19,7 +19,6 @@ package org.apache.logging.log4j.perf.jmh;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
-
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -69,8 +68,7 @@ public class ReflectionBenchmark {
     }
 
     @Benchmark
-    public void baseline() {
-    }
+    public void baseline() {}
 
     @Benchmark
     public String test01_getCallerClassNameFromStackTrace() {
@@ -86,7 +84,6 @@ public class ReflectionBenchmark {
     public String test03_getCallerClassNameReflectively() {
         return StackLocatorUtil.getCallerClass(3).getName();
     }
-
 
     @Benchmark
     public Class<?> test05_getStackTraceClassForClassName() throws ClassNotFoundException {
@@ -109,11 +106,11 @@ public class ReflectionBenchmark {
     }
 
     @Benchmark
-    public Message test10_getMessageUsingReflection(final RandomInteger rng) throws NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException, InstantiationException {
-        final Constructor<? extends Message> constructor = StringFormattedMessage.class.getConstructor(String.class,
-                Object[].class);
-        return constructor.newInstance("Hello %i", new Object[] { rng.random });
+    public Message test10_getMessageUsingReflection(final RandomInteger rng)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        final Constructor<? extends Message> constructor =
+                StringFormattedMessage.class.getConstructor(String.class, Object[].class);
+        return constructor.newInstance("Hello %i", new Object[] {rng.random});
     }
 
     @Benchmark
@@ -131,7 +128,6 @@ public class ReflectionBenchmark {
     public Class<?>[] test12_getClassContextViaSecurityManager(final ClassContextManager classContextManager) {
         return classContextManager.getClassContext();
     }
-
 
     @Benchmark
     public Class<?> reflectionUtilGetClass() {
@@ -170,5 +166,4 @@ public class ReflectionBenchmark {
             return StackLocatorUtil.calcLocation(MethodLocator.class.getName()).getMethodName();
         }
     }
-
 }

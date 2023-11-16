@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import static org.junit.Assert.fail;
+
+import com.google.common.base.Preconditions;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,11 +33,8 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-
-import com.google.common.base.Preconditions;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.specific.SpecificResponder;
@@ -57,8 +57,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -92,9 +90,9 @@ public class FlumeEmbeddedAgentTest {
         deleteFiles(file);
 
         /*
-        * Clear out all other appenders associated with this logger to ensure we're
-        * only hitting the Avro appender.
-        */
+         * Clear out all other appenders associated with this logger to ensure we're
+         * only hitting the Avro appender.
+         */
         final int primaryPort = AvailablePortFinder.getNextAvailable();
         final int altPort = AvailablePortFinder.getNextAvailable();
         System.setProperty("primaryPort", Integer.toString(primaryPort));
@@ -134,8 +132,8 @@ public class FlumeEmbeddedAgentTest {
         final Event event = primary.poll();
         Assert.assertNotNull(event);
         final String body = getBody(event);
-        Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-            body.endsWith("Test Log4j"));
+        Assert.assertTrue(
+                "Channel contained event, but not expected message. Received: " + body, body.endsWith("Test Log4j"));
     }
 
     @Test
@@ -150,11 +148,10 @@ public class FlumeEmbeddedAgentTest {
             Assert.assertNotNull(event);
             final String body = getBody(event);
             final String expected = "Test Multiple " + i;
-            Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith(expected));
+            Assert.assertTrue(
+                    "Channel contained event, but not expected message. Received: " + body, body.endsWith(expected));
         }
     }
-
 
     @Test
     public void testFailover() throws InterruptedException, IOException {
@@ -169,15 +166,14 @@ public class FlumeEmbeddedAgentTest {
             Assert.assertNotNull(event);
             final String body = getBody(event);
             final String expected = "Test Primary " + i;
-            Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith(expected));
+            Assert.assertTrue(
+                    "Channel contained event, but not expected message. Received: " + body, body.endsWith(expected));
         }
 
         // Give the AvroSink time to receive notification and notify the channel.
         Thread.sleep(500);
 
         primary.stop();
-
 
         for (int i = 0; i < 10; ++i) {
             final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Alternate " + i, "Test");
@@ -189,12 +185,12 @@ public class FlumeEmbeddedAgentTest {
             final String body = getBody(event);
             final String expected = "Test Alternate " + i;
             /* When running in Gump Flume consistently returns the last event from the primary channel after
-               the failover, which fails this test */
-            Assert.assertTrue("Channel contained event, but not expected message. Expected: " + expected +
-                " Received: " + body, body.endsWith(expected));
+            the failover, which fails this test */
+            Assert.assertTrue(
+                    "Channel contained event, but not expected message. Expected: " + expected + " Received: " + body,
+                    body.endsWith(expected));
         }
     }
-
 
     private String getBody(final Event event) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -204,7 +200,6 @@ public class FlumeEmbeddedAgentTest {
             baos.write(n);
         }
         return new String(baos.toByteArray());
-
     }
 
     private static boolean deleteFiles(final File file) {
@@ -239,8 +234,8 @@ public class FlumeEmbeddedAgentTest {
 
         private Server createServer(final AvroSourceProtocol protocol, final int port) throws InterruptedException {
 
-            server = new NettyServer(new SpecificResponder(AvroSourceProtocol.class, protocol),
-                    new InetSocketAddress(HOSTNAME, port));
+            server = new NettyServer(
+                    new SpecificResponder(AvroSourceProtocol.class, protocol), new InetSocketAddress(HOSTNAME, port));
 
             return server;
         }

@@ -35,8 +35,8 @@ public class CopyOnWriteOpenHashMapThreadContextMap extends CopyOnWriteSortedArr
 
     @Override
     protected StringMap createStringMap() {
-        return new OpenHashStringMap<>(PropertiesUtil.getProperties().getIntegerProperty(
-                PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
+        return new OpenHashStringMap<>(PropertiesUtil.getProperties()
+                .getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
     @Override

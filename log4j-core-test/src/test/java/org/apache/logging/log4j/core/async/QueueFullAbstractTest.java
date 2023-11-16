@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.lmax.disruptor.dsl.Disruptor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,8 +28,6 @@ import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
-
-import com.lmax.disruptor.dsl.Disruptor;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -44,10 +46,6 @@ import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.Timeout.ThreadMode;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests queue full scenarios abstract superclass.
@@ -101,7 +99,8 @@ public abstract class QueueFullAbstractTest {
         @Override
         public String toString() {
             for (int i = 0; i < count; i++) {
-                LOGGER.info("DomainObject logging message {}. Ring buffer capacity was {}, countdown latch was {}.",
+                LOGGER.info(
+                        "DomainObject logging message {}. Ring buffer capacity was {}, countdown latch was {}.",
                         i,
                         asyncRemainingCapacity(innerLogger),
                         unlocker.countDownLatch.getCount());
@@ -114,9 +113,8 @@ public abstract class QueueFullAbstractTest {
 
     private ListStatusListener statusListener;
 
-    protected void testNormalQueueFullKeepsMessagesInOrder(final LoggerContext ctx,
-                                                           final BlockingAppender blockingAppender)
-            throws Exception {
+    protected void testNormalQueueFullKeepsMessagesInOrder(
+            final LoggerContext ctx, final BlockingAppender blockingAppender) throws Exception {
         checkConfig(ctx);
         final Logger logger = ctx.getLogger(getClass());
 
@@ -127,14 +125,13 @@ public abstract class QueueFullAbstractTest {
         unlocker.join();
     }
 
-    protected void checkConfig(final LoggerContext ctx) throws Exception {
-    }
+    protected void checkConfig(final LoggerContext ctx) throws Exception {}
 
-    protected static void asyncTest(final Logger logger,
-                                    final Unlocker unlocker,
-                                    final BlockingAppender blockingAppender) {
+    protected static void asyncTest(
+            final Logger logger, final Unlocker unlocker, final BlockingAppender blockingAppender) {
         for (int i = 0; i < MESSAGE_COUNT; i++) {
-            LOGGER.info("Test logging message {}. Ring buffer capacity was {}, countdown latch was {}.",
+            LOGGER.info(
+                    "Test logging message {}. Ring buffer capacity was {}, countdown latch was {}.",
                     i,
                     asyncRemainingCapacity(logger),
                     unlocker.countDownLatch.getCount());
@@ -142,13 +139,16 @@ public abstract class QueueFullAbstractTest {
             final String param = "I'm innocent";
             logger.info("Logging innocent object #{}: {}", i, param);
         }
-        LOGGER.info("Waiting for message delivery: blockingAppender.logEvents.count={}.",
+        LOGGER.info(
+                "Waiting for message delivery: blockingAppender.logEvents.count={}.",
                 blockingAppender.logEvents.size());
         while (blockingAppender.logEvents.size() < MESSAGE_COUNT) {
             Thread.yield();
         }
-        LOGGER.info("All {} message have been delivered: blockingAppender.logEvents.count={}.",
-                MESSAGE_COUNT, blockingAppender.logEvents.size());
+        LOGGER.info(
+                "All {} message have been delivered: blockingAppender.logEvents.count={}.",
+                MESSAGE_COUNT,
+                blockingAppender.logEvents.size());
 
         final Stack<String> actual = transform(blockingAppender.logEvents);
         for (int i = 0; i < MESSAGE_COUNT; i++) {
@@ -157,9 +157,8 @@ public abstract class QueueFullAbstractTest {
         assertThat(actual).isEmpty();
     }
 
-    public void testLoggingFromToStringCausesOutOfOrderMessages(final LoggerContext ctx,
-                                                                final BlockingAppender blockingAppender)
-            throws Exception {
+    public void testLoggingFromToStringCausesOutOfOrderMessages(
+            final LoggerContext ctx, final BlockingAppender blockingAppender) throws Exception {
         checkConfig(ctx);
         // Non-reusable messages will call `toString()` on the main thread and block it.
         final Logger logger = ctx.getLogger(this.getClass());
@@ -171,11 +170,10 @@ public abstract class QueueFullAbstractTest {
         unlocker.join();
     }
 
-    void asyncRecursiveTest(final Logger logger,
-                            final Unlocker unlocker,
-                            final BlockingAppender blockingAppender) {
+    void asyncRecursiveTest(final Logger logger, final Unlocker unlocker, final BlockingAppender blockingAppender) {
         for (int i = 0; i < 1; i++) {
-            LOGGER.info("Test logging message {}. Ring buffer capacity was {}, countdown latch was {}.",
+            LOGGER.info(
+                    "Test logging message {}. Ring buffer capacity was {}, countdown latch was {}.",
                     i,
                     asyncRemainingCapacity(logger),
                     unlocker.countDownLatch.getCount());
@@ -184,32 +182,36 @@ public abstract class QueueFullAbstractTest {
             logger.info("Logging naughty object #{}: {}", i, obj);
         }
 
-        LOGGER.info("Waiting for message delivery: blockingAppender.logEvents.count={}.", blockingAppender.logEvents.size());
+        LOGGER.info(
+                "Waiting for message delivery: blockingAppender.logEvents.count={}.",
+                blockingAppender.logEvents.size());
         while (blockingAppender.logEvents.size() < MESSAGE_COUNT) {
             Thread.yield();
         }
-        LOGGER.info("All {} messages have been delivered: blockingAppender.logEvents.count={}.",
-                MESSAGE_COUNT, blockingAppender.logEvents.size());
+        LOGGER.info(
+                "All {} messages have been delivered: blockingAppender.logEvents.count={}.",
+                MESSAGE_COUNT,
+                blockingAppender.logEvents.size());
 
-        final StatusData mostRecentStatusData = statusListener.findStatusData(Level.WARN)
+        final StatusData mostRecentStatusData = statusListener
+                .findStatusData(Level.WARN)
                 .reduce((ignored, data) -> data)
                 .orElse(null);
         assertThat(mostRecentStatusData).isNotNull();
         assertThat(mostRecentStatusData.getLevel()).isEqualTo(Level.WARN);
-        assertThat(mostRecentStatusData.getFormattedStatus()).contains(
-                "Log4j2 logged an event out of order to prevent deadlock caused by domain " +
-                        "objects logging from their toString method when the async queue is full");
+        assertThat(mostRecentStatusData.getFormattedStatus())
+                .contains("Log4j2 logged an event out of order to prevent deadlock caused by domain "
+                        + "objects logging from their toString method when the async queue is full");
 
         final List<String> actual = blockingAppender.logEvents.stream()
                 .map(e -> e.getMessage().getFormattedMessage())
                 .collect(Collectors.toList());
         final String[] expected = new String[MESSAGE_COUNT];
         for (int i = 0; i < MESSAGE_COUNT - 1; i++) {
-            expected[i]  = "Logging in toString() #" + i;
+            expected[i] = "Logging in toString() #" + i;
         }
         expected[MESSAGE_COUNT - 1] = "Logging naughty object #0: Who's bad?!";
-        assertThat(actual).hasSize(MESSAGE_COUNT)
-                .contains(expected);
+        assertThat(actual).hasSize(MESSAGE_COUNT).contains(expected);
     }
 
     static Stack<String> transform(final List<LogEvent> logEvents) {
@@ -227,7 +229,10 @@ public abstract class QueueFullAbstractTest {
         if (logger instanceof AsyncLogger) {
             try {
                 final Field f = field(AsyncLogger.class, "loggerDisruptor");
-                return ((AsyncLoggerDisruptor) f.get(logger)).getDisruptor().getRingBuffer().remainingCapacity();
+                return ((AsyncLoggerDisruptor) f.get(logger))
+                        .getDisruptor()
+                        .getRingBuffer()
+                        .remainingCapacity();
             } catch (final Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -235,8 +240,12 @@ public abstract class QueueFullAbstractTest {
             final LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
             if (loggerConfig instanceof AsyncLoggerConfig) {
                 try {
-                    final Object delegate = field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
-                    return ((Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor").get(delegate)).getRingBuffer().remainingCapacity();
+                    final Object delegate =
+                            field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
+                    return ((Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor")
+                                    .get(delegate))
+                            .getRingBuffer()
+                            .remainingCapacity();
                 } catch (final Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -263,7 +272,8 @@ public abstract class QueueFullAbstractTest {
         assertThat(config).isNotNull();
         assertThat(config.getRootLogger()).isNotInstanceOf(AsyncLoggerConfig.class);
 
-        final Collection<Appender> appenders = config.getRootLogger().getAppenders().values();
+        final Collection<Appender> appenders =
+                config.getRootLogger().getAppenders().values();
         assertThat(appenders).hasSize(1).allMatch(AsyncAppender.class::isInstance);
     }
 

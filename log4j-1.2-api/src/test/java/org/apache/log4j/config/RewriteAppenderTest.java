@@ -16,9 +16,12 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -33,10 +36,6 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Test RewriteAppender
  */
@@ -44,7 +43,8 @@ public class RewriteAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-rewrite.xml");
+        System.setProperty(
+                ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-rewrite.xml");
     }
 
     @After
@@ -73,7 +73,8 @@ public class RewriteAppenderTest {
         assertTrue("No events", events != null && events.size() > 0);
         assertNotNull("No properties in the event", events.get(0).getProperties());
         assertTrue("Key was not inserted", events.get(0).getProperties().containsKey("key2"));
-        assertEquals("Key value is incorrect", "Log4j", events.get(0).getProperties().get("key2"));
+        assertEquals(
+                "Key value is incorrect", "Log4j", events.get(0).getProperties().get("key2"));
         assertTrue("Timestamp is before point of logging", events.get(0).getTimeStamp() >= logTime);
     }
 }

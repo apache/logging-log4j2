@@ -19,5 +19,4 @@ package org.apache.logging.log4j.message;
 class ObjectMapMessage extends MapMessage<ObjectMapMessage, Object> {
 
     private static final long serialVersionUID = 1L;
-
 }

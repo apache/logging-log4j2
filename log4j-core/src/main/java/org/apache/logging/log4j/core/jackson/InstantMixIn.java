@@ -30,16 +30,15 @@ import org.apache.logging.log4j.core.time.Instant;
  * </p>
  * @see Marker
  */
-@JsonIgnoreProperties({ "epochMillisecond", "nanoOfMillisecond" })
+@JsonIgnoreProperties({"epochMillisecond", "nanoOfMillisecond"})
 abstract class InstantMixIn {
 
     @JsonCreator
     InstantMixIn(
             // @formatter:off
-            @JsonProperty("epochSecond") final long epochSecond,
-            @JsonProperty("nanoOfSecond") final int nanoOfSecond)
-            // @formatter:on
-    {
+            @JsonProperty("epochSecond") final long epochSecond, @JsonProperty("nanoOfSecond") final int nanoOfSecond)
+                // @formatter:on
+            {
         // empty
     }
 

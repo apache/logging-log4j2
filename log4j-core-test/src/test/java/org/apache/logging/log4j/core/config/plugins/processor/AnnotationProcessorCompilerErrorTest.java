@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config.plugins.processor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.apache.logging.log4j.core.test.Compiler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -28,7 +27,9 @@ import org.junitpioneer.jupiter.Issue;
 @Issue("LOG4J2-3609")
 // only enabled for explicit testing of what may be a javac bug
 // mvn test -Dtest=AnnotationProcessorCompilerErrorTest'#'testMissingExternalAnnotationIsSupported
-@EnabledIfSystemProperty(named = "test", matches = "AnnotationProcessorCompilerErrorTest#testMissingExternalAnnotationIsSupported")
+@EnabledIfSystemProperty(
+        named = "test",
+        matches = "AnnotationProcessorCompilerErrorTest#testMissingExternalAnnotationIsSupported")
 class AnnotationProcessorCompilerErrorTest {
     @Test
     void testMissingExternalAnnotationIsSupported() throws Exception {
@@ -55,7 +56,14 @@ class AnnotationProcessorCompilerErrorTest {
         final Path myAnnotation = sourceDirectory.resolve("MyAnnotation.java");
         Files.move(originalAnnotation, myAnnotation);
         try {
-            Compiler.compile(myAnnotation.toFile(), "-d", annotationDirectory.toString(), "-processorpath", processorDirectory.toString(), "-processor", "MyAnnotationProcessor");
+            Compiler.compile(
+                    myAnnotation.toFile(),
+                    "-d",
+                    annotationDirectory.toString(),
+                    "-processorpath",
+                    processorDirectory.toString(),
+                    "-processor",
+                    "MyAnnotationProcessor");
         } finally {
             Files.move(myAnnotation, originalAnnotation);
         }
@@ -66,7 +74,16 @@ class AnnotationProcessorCompilerErrorTest {
         final Path myAnnotatedClass = sourceDirectory.resolve("MyAnnotatedClass.java");
         Files.move(originalAnnotatedClass, myAnnotatedClass);
         try {
-            Compiler.compile(myAnnotatedClass.toFile(), "-d", coreDirectory.toString(), "-cp", annotationDirectory.toString(), "-processorpath", processorDirectory.toString(), "-processor", "MyAnnotationProcessor");
+            Compiler.compile(
+                    myAnnotatedClass.toFile(),
+                    "-d",
+                    coreDirectory.toString(),
+                    "-cp",
+                    annotationDirectory.toString(),
+                    "-processorpath",
+                    processorDirectory.toString(),
+                    "-processor",
+                    "MyAnnotationProcessor");
         } finally {
             Files.move(myAnnotatedClass, originalAnnotatedClass);
         }
@@ -78,7 +95,16 @@ class AnnotationProcessorCompilerErrorTest {
         final Path mySubclass = sourceDirectory.resolve("MyEmptySubClass.java");
         Files.move(originalSubclass, mySubclass);
         try {
-            Compiler.compile(mySubclass.toFile(), "-d", bugDirectory.toString(), "-cp", coreDirectory.toString(), "-processorpath", processorDirectory.toString(), "-processor", "MyAnnotationProcessor");
+            Compiler.compile(
+                    mySubclass.toFile(),
+                    "-d",
+                    bugDirectory.toString(),
+                    "-cp",
+                    coreDirectory.toString(),
+                    "-processorpath",
+                    processorDirectory.toString(),
+                    "-processor",
+                    "MyAnnotationProcessor");
         } finally {
             Files.move(mySubclass, originalSubclass);
         }

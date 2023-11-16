@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.InputStream;
 import java.util.Properties;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,12 +32,6 @@ import org.junit.jupiter.api.parallel.Resources;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SystemStubsExtension.class)
 @ResourceLock(value = Resources.SYSTEM_PROPERTIES)
@@ -66,7 +65,6 @@ public class PropertiesUtilOrderTest {
         public boolean containsProperty(final String key) {
             return getProperty(key) != null;
         }
-
     }
 
     public static class NullPropertySource implements PropertySource {
@@ -75,7 +73,6 @@ public class PropertiesUtilOrderTest {
         public int getPriority() {
             return Integer.MIN_VALUE;
         }
-
     }
 
     private final Properties properties = new Properties();
@@ -153,7 +150,8 @@ public class PropertiesUtilOrderTest {
     }
 
     @Test
-    public void testLegacySystemPropertyHasHigherPriorityThanEnv(final EnvironmentVariables env, final SystemProperties sysProps) {
+    public void testLegacySystemPropertyHasHigherPriorityThanEnv(
+            final EnvironmentVariables env, final SystemProperties sysProps) {
         env.set("LOG4J_CONFIGURATION_FILE", "env");
         final PropertiesUtil util = new PropertiesUtil(properties);
 

@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tests that process ID succeeds.
@@ -42,10 +42,9 @@ public class RepeatPatternConverterTest {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("Hello")).build();
+                .setMessage(new SimpleMessage("Hello"))
+                .build();
         converter.format(event, sb);
         assertEquals(expected, sb.toString());
     }
-
-
 }

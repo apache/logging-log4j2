@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.jpl;
 
-import java.lang.System.Logger;
-
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import java.lang.System.Logger;
 
 /**
  * @since 2.14

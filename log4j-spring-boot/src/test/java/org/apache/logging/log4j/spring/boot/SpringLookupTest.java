@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.env.MockEnvironment;
 
-import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Test SpringLookup.
  */

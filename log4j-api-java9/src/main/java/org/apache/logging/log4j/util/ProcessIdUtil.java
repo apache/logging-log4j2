@@ -23,7 +23,7 @@ public class ProcessIdUtil {
     public static String getProcessId() {
         try {
             return Long.toString(ProcessHandle.current().pid());
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             return DEFAULT_PROCESSID;
         }
     }

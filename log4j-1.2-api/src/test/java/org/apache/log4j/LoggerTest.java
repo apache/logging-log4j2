@@ -16,10 +16,16 @@
  */
 package org.apache.log4j;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -32,13 +38,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Used for internal unit testing the Logger class.
@@ -86,35 +85,35 @@ public class LoggerTest {
     /**
      * Add an appender and see if it can be retrieved.
      *  Skipping this test as the Appender interface isn't compatible with legacy Log4j.
-    public void testAppender1() {
-        logger = Logger.getLogger("test");
-        a1 = new ListAppender("testAppender1");
-        logger.addAppender(a1);
-
-        Enumeration enumeration = logger.getAllAppenders();
-        Appender aHat = (Appender) enumeration.nextElement();
-        assertEquals(a1, aHat);
-    } */
+     * public void testAppender1() {
+     * logger = Logger.getLogger("test");
+     * a1 = new ListAppender("testAppender1");
+     * logger.addAppender(a1);
+     *
+     * Enumeration enumeration = logger.getAllAppenders();
+     * Appender aHat = (Appender) enumeration.nextElement();
+     * assertEquals(a1, aHat);
+     * } */
 
     /**
      * Add an appender X, Y, remove X and check if Y is the only
      * remaining appender.
      * Skipping this test as the Appender interface isn't compatible with legacy Log4j.
-    public void testAppender2() {
-        a1 = new FileAppender();
-        a1.setName("testAppender2.1");
-        a2 = new FileAppender();
-        a2.setName("testAppender2.2");
-
-        logger = Logger.getLogger("test");
-        logger.addAppender(a1);
-        logger.addAppender(a2);
-        logger.removeAppender("testAppender2.1");
-        Enumeration enumeration = logger.getAllAppenders();
-        Appender aHat = (Appender) enumeration.nextElement();
-        assertEquals(a2, aHat);
-        assertTrue(!enumeration.hasMoreElements());
-    }  */
+     * public void testAppender2() {
+     * a1 = new FileAppender();
+     * a1.setName("testAppender2.1");
+     * a2 = new FileAppender();
+     * a2.setName("testAppender2.2");
+     *
+     * logger = Logger.getLogger("test");
+     * logger.addAppender(a1);
+     * logger.addAppender(a2);
+     * logger.removeAppender("testAppender2.1");
+     * Enumeration enumeration = logger.getAllAppenders();
+     * Appender aHat = (Appender) enumeration.nextElement();
+     * assertEquals(a2, aHat);
+     * assertTrue(!enumeration.hasMoreElements());
+     * }  */
 
     /**
      * Test if logger a.b inherits its appender from a.
@@ -181,7 +180,8 @@ public class LoggerTest {
         } finally {
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).removeAppender(ca1);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).removeAppender(ca2);
-        }}
+        }
+    }
 
     /**
      * Test additivity flag.
@@ -232,7 +232,8 @@ public class LoggerTest {
             ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(caRoot);
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).removeAppender(caA);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).removeAppender(caABC);
-        }}
+        }
+    }
 
     /* Don't support getLoggerRepository
     public void testDisable1() {
@@ -470,7 +471,8 @@ public class LoggerTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testLog() {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d %C %L %m").build();
+        final PatternLayout layout =
+                PatternLayout.newBuilder().withPattern("%d %C %L %m").build();
         final ListAppender appender = new ListAppender("List", null, layout, false, false);
         appender.start();
         final Logger root = Logger.getRootLogger();

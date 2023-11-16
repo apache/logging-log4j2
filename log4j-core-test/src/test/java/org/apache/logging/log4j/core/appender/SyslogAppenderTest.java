@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat.LEGACY_BSD;
+import static org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat.SYSLOG;
+
 import java.io.IOException;
 import java.net.SocketException;
-
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
@@ -27,9 +29,6 @@ import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat.LEGACY_BSD;
-import static org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat.SYSLOG;
 
 public abstract class SyslogAppenderTest extends SyslogAppenderTestBase {
 
@@ -110,34 +109,34 @@ public abstract class SyslogAppenderTest extends SyslogAppenderTestBase {
         initRootLogger(appender);
     }
 
-    protected SyslogAppender createAppender(final Protocol protocol, final TlsSyslogMessageFormat format,
-            final int port) {
+    protected SyslogAppender createAppender(
+            final Protocol protocol, final TlsSyslogMessageFormat format, final int port) {
         return newSyslogAppenderBuilder(protocol, format, includeNewLine, port).build();
     }
 
-    protected Builder<?> newSyslogAppenderBuilder(final Protocol protocol, final TlsSyslogMessageFormat format,
-            final boolean newLine, final int port) {
+    protected Builder<?> newSyslogAppenderBuilder(
+            final Protocol protocol, final TlsSyslogMessageFormat format, final boolean newLine, final int port) {
         // @formatter:off
         return SyslogAppender.newSyslogAppenderBuilder()
-            .setHost("localhost")
-            .setPort(port)
-            .setProtocol(protocol)
-            .setReconnectDelayMillis(-1)
-            .setImmediateFail(true)
-            .setName("Test")
-            .setImmediateFlush(true)
-            .setIgnoreExceptions(false)
-            .setFacility(Facility.LOCAL0)
-            .setId("Audit")
-            .setEnterpriseNumber("18060")
-            .setIncludeMdc(true)
-            .setMdcId("RequestContext")
-            .setNewLine(includeNewLine)
-            .setAppName("TestApp")
-            .setMsgId("Test")
-            .setIncludes("ipAddress,loginId")
-            .setFormat(format == SYSLOG ? SyslogAppender.RFC5424 : null)
-            .setAdvertise(false);
+                .setHost("localhost")
+                .setPort(port)
+                .setProtocol(protocol)
+                .setReconnectDelayMillis(-1)
+                .setImmediateFail(true)
+                .setName("Test")
+                .setImmediateFlush(true)
+                .setIgnoreExceptions(false)
+                .setFacility(Facility.LOCAL0)
+                .setId("Audit")
+                .setEnterpriseNumber("18060")
+                .setIncludeMdc(true)
+                .setMdcId("RequestContext")
+                .setNewLine(includeNewLine)
+                .setAppName("TestApp")
+                .setMsgId("Test")
+                .setIncludes("ipAddress,loginId")
+                .setFormat(format == SYSLOG ? SyslogAppender.RFC5424 : null)
+                .setAdvertise(false);
         // @formatter:on
     }
 }

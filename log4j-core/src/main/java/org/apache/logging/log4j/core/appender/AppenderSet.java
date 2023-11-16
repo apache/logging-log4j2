@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -65,8 +64,8 @@ public class AppenderSet {
             for (final Node childNode : children) {
                 final String key = childNode.getAttributes().get("name");
                 if (key == null) {
-                    LOGGER.error("The attribute 'name' is missing from the node {} in AppenderSet {}",
-                            childNode, children);
+                    LOGGER.error(
+                            "The attribute 'name' is missing from the node {} in AppenderSet {}", childNode, children);
                 } else {
                     map.put(key, childNode);
                 }
@@ -96,7 +95,6 @@ public class AppenderSet {
         public String toString() {
             return getClass().getName() + " [node=" + node + ", configuration=" + configuration + "]";
         }
-
     }
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();

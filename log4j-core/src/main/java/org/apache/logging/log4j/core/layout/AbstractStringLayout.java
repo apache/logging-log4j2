@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -83,7 +82,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             this.headerSerializer = headerSerializer;
             return asBuilder();
         }
-
     }
 
     @Override
@@ -115,8 +113,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      */
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
-    protected static final int MAX_STRING_BUILDER_SIZE = Math.max(DEFAULT_STRING_BUILDER_SIZE,
-            size("log4j.layoutStringBuilder.maxSize", 2 * 1024));
+    protected static final int MAX_STRING_BUILDER_SIZE =
+            Math.max(DEFAULT_STRING_BUILDER_SIZE, size("log4j.layoutStringBuilder.maxSize", 2 * 1024));
 
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
@@ -185,8 +183,11 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      * @param headerSerializer the header bytes serializer
      * @param footerSerializer the footer bytes serializer
      */
-    protected AbstractStringLayout(final Configuration config, final Charset aCharset,
-            final Serializer headerSerializer, final Serializer footerSerializer) {
+    protected AbstractStringLayout(
+            final Configuration config,
+            final Charset aCharset,
+            final Serializer headerSerializer,
+            final Serializer footerSerializer) {
         super(config, null, null);
         this.headerSerializer = headerSerializer;
         this.footerSerializer = footerSerializer;
@@ -278,8 +279,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             level = AbstractConfiguration.getDefaultLevel();
         }
         // Using "" for the FQCN, does it matter?
-        final LogEvent logEvent = getLogEventFactory().createEvent(loggerName, null, Strings.EMPTY,
-                level, null, null, null);
+        final LogEvent logEvent =
+                getLogEventFactory().createEvent(loggerName, null, Strings.EMPTY, level, null, null, null);
         return serializer.toSerializable(logEvent);
     }
 
@@ -293,5 +294,4 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     public byte[] toByteArray(final LogEvent event) {
         return getBytes(toSerializable(event));
     }
-
 }

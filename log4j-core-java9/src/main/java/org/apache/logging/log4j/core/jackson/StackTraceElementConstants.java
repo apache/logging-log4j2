@@ -28,5 +28,4 @@ public class StackTraceElementConstants {
     public static final String ATTR_FILE = "file";
     public static final String ATTR_LINE = "line";
     public static final String ATTR_METHOD = "method";
-
 }

@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.async;
 
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
-
 
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
  */
 @SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
-public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2 extends QueueFullAsyncLoggerConfigLoggingFromToStringTest {
+public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2
+        extends QueueFullAsyncLoggerConfigLoggingFromToStringTest {
 
     @Override
     protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {

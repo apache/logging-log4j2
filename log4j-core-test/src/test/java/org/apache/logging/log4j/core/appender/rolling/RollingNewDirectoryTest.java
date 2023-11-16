@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests
@@ -36,7 +35,8 @@ public class RollingNewDirectoryTest {
 
     private static final String DIR = "target/rolling-new-directory";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -47,7 +47,6 @@ public class RollingNewDirectoryTest {
     public void setUp() throws Exception {
         this.logger = loggerContextRule.getLogger(RollingNewDirectoryTest.class.getName());
     }
-
 
     @Test
     public void streamClosedError() throws Exception {

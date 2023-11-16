@@ -30,5 +30,4 @@ public interface LookupResult {
     default boolean isLookupEvaluationAllowedInValue() {
         return false;
     }
-
 }

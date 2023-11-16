@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -24,17 +26,15 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 public class CronTriggeringPolicyTest {
 
     private static final String CRON_EXPRESSION = "0 0 0 * * ?";
 
     private NullConfiguration configuration;
 
-     // TODO Need a CleanRegexFiles("testcmd.\\.log\\..*");
-     //@Rule
-     //public CleanFiles cleanFiles = new CleanFiles("testcmd1.log", "testcmd2.log", "testcmd3.log");
+    // TODO Need a CleanRegexFiles("testcmd.\\.log\\..*");
+    // @Rule
+    // public CleanFiles cleanFiles = new CleanFiles("testcmd1.log", "testcmd2.log", "testcmd3.log");
 
     @BeforeEach
     public void before() {
@@ -51,13 +51,14 @@ public class CronTriggeringPolicyTest {
 
     private void testBuilder() {
         // @formatter:off
-        final RollingFileAppender raf = RollingFileAppender.newBuilder().setName("test1")
-            .withFileName("target/testcmd1.log")
-            .withFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
-            .withPolicy(createPolicy())
-            .withStrategy(createStrategy())
-            .setConfiguration(configuration)
-            .build();
+        final RollingFileAppender raf = RollingFileAppender.newBuilder()
+                .setName("test1")
+                .withFileName("target/testcmd1.log")
+                .withFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
+                .withPolicy(createPolicy())
+                .withStrategy(createStrategy())
+                .setConfiguration(configuration)
+                .build();
         // @formatter:on
         assertNotNull(raf);
     }
@@ -86,16 +87,16 @@ public class CronTriggeringPolicyTest {
     @Test
     public void testRollingRandomAccessFileAppender() {
         // @formatter:off
-        RollingRandomAccessFileAppender.newBuilder().setName("test2")
-            .withFileName("target/testcmd2.log")
-            .withFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
-            .withPolicy(createPolicy())
-            .withStrategy(createStrategy())
-            .setConfiguration(configuration)
-            .build();
+        RollingRandomAccessFileAppender.newBuilder()
+                .setName("test2")
+                .withFileName("target/testcmd2.log")
+                .withFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
+                .withPolicy(createPolicy())
+                .withStrategy(createStrategy())
+                .setConfiguration(configuration)
+                .build();
         // @formatter:on
     }
-
 
     /**
      * Tests LOG4J2-1474 CronTriggeringPolicy raise exception and fail to rollover log file when evaluateOnStartup is
@@ -111,9 +112,22 @@ public class CronTriggeringPolicyTest {
         final CronTriggeringPolicy triggerPolicy = createPolicy();
         final DefaultRolloverStrategy rolloverStrategy = createStrategy();
 
-        try (final RollingFileManager fileManager = RollingFileManager.getFileManager("target/testcmd3.log",
-                "target/testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
-                PatternLayout.createDefaultLayout(), 0, true, false, null, null, null, configuration)) {
+        try (final RollingFileManager fileManager = RollingFileManager.getFileManager(
+                "target/testcmd3.log",
+                "target/testcmd3.log.%d{yyyy-MM-dd}",
+                true,
+                true,
+                triggerPolicy,
+                rolloverStrategy,
+                null,
+                PatternLayout.createDefaultLayout(),
+                0,
+                true,
+                false,
+                null,
+                null,
+                null,
+                configuration)) {
             // trigger rollover
             fileManager.initialize();
             fileManager.rollover();

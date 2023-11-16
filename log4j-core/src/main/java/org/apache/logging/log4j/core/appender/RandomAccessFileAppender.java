@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -37,7 +36,11 @@ import org.apache.logging.log4j.core.util.Integers;
 /**
  * File Appender.
  */
-@Plugin(name = "RandomAccessFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(
+        name = "RandomAccessFile",
+        category = Core.CATEGORY_NAME,
+        elementType = Appender.ELEMENT_TYPE,
+        printObject = true)
 public final class RandomAccessFileAppender extends AbstractOutputStreamAppender<RandomAccessFileManager> {
 
     /**
@@ -79,14 +82,22 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout();
             final boolean immediateFlush = isImmediateFlush();
-            final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(fileName, append,
-                    immediateFlush, getBufferSize(), advertiseURI, layout, null);
+            final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
+                    fileName, append, immediateFlush, getBufferSize(), advertiseURI, layout, null);
             if (manager == null) {
                 return null;
             }
 
-            return new RandomAccessFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(),
-                    immediateFlush, advertise ? getConfiguration().getAdvertiser() : null, getPropertyArray());
+            return new RandomAccessFileAppender(
+                    name,
+                    layout,
+                    getFilter(),
+                    manager,
+                    fileName,
+                    isIgnoreExceptions(),
+                    immediateFlush,
+                    advertise ? getConfiguration().getAdvertiser() : null,
+                    getPropertyArray());
         }
 
         public B setFileName(final String fileName) {
@@ -108,22 +119,26 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
-
     }
 
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private RandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
-            final Filter filter, final RandomAccessFileManager manager, final String filename,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser,
+    private RandomAccessFileAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final RandomAccessFileManager manager,
+            final String filename,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final Advertiser advertiser,
             final Property[] properties) {
 
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
-            final Map<String, String> configuration = new HashMap<>(
-                    layout.getContentFormat());
+            final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
@@ -207,14 +222,18 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         final int bufferSize = Integers.parseInt(bufferSizeStr, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
         return RandomAccessFileAppender.<B>newBuilder()
-        .setAdvertise(isAdvertise)
-        .setAdvertiseURI(advertiseURI)
-        .setAppend(isAppend)
-        .withBufferSize(bufferSize)
-        .setConfiguration(configuration)
-        .setFileName(fileName).setFilter(filter).setIgnoreExceptions(ignoreExceptions)
-            .withImmediateFlush(isFlush).setLayout(layout).setName(name)
-            .build();
+                .setAdvertise(isAdvertise)
+                .setAdvertiseURI(advertiseURI)
+                .setAppend(isAppend)
+                .withBufferSize(bufferSize)
+                .setConfiguration(configuration)
+                .setFileName(fileName)
+                .setFilter(filter)
+                .setIgnoreExceptions(ignoreExceptions)
+                .withImmediateFlush(isFlush)
+                .setLayout(layout)
+                .setName(name)
+                .build();
     }
 
     /**
@@ -225,5 +244,4 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
-
 }

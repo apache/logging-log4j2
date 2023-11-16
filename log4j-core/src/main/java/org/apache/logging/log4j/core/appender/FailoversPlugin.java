@@ -35,8 +35,7 @@ public final class FailoversPlugin {
     /**
      * Prevent instantiation.
      */
-    private FailoversPlugin() {
-    }
+    private FailoversPlugin() {}
 
     /**
      * Returns the appender references.

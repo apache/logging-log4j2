@@ -60,5 +60,4 @@ public final class RootLogger extends Logger {
             super.setLevel(level);
         }
     }
-
 }

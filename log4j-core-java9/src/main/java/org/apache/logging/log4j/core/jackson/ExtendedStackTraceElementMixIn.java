@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import java.io.Serializable;
 import org.apache.logging.log4j.core.impl.ExtendedClassInfo;
 import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
 
@@ -30,7 +29,7 @@ import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
  * Mix-in for {@link ExtendedStackTraceElement}.
  */
 @JsonPropertyOrder({
-    //@formatter:off
+    // @formatter:off
     ExtendedStackTraceElementMixIn.ATTR_CLASS_LOADER_NAME,
     ExtendedStackTraceElementMixIn.ATTR_MODULE,
     ExtendedStackTraceElementMixIn.ATTR_MODULE_VERSION,
@@ -41,7 +40,7 @@ import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
     ExtendedStackTraceElementMixIn.ATTR_EXACT,
     ExtendedStackTraceElementMixIn.ATTR_LOCATION,
     ExtendedStackTraceElementMixIn.ATTR_VERSION
-    //@formatter:on
+    // @formatter:on
 })
 abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
@@ -59,7 +58,7 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
     @JsonCreator
     public ExtendedStackTraceElementMixIn(
-    // @formatter:off
+            // @formatter:off
             @JsonProperty(ATTR_CLASS_LOADER_NAME) final String classLoaderName,
             @JsonProperty(ATTR_MODULE) final String moduleName,
             @JsonProperty(ATTR_MODULE_VERSION) final String moduleVersion,
@@ -70,8 +69,8 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
             @JsonProperty(ATTR_EXACT) final boolean exact,
             @JsonProperty(ATTR_LOCATION) final String location,
             @JsonProperty(ATTR_VERSION) final String version
-   // @formatter:on
-    ) {
+            // @formatter:on
+            ) {
         // empty
     }
 
@@ -123,5 +122,4 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
     @JsonIgnore
     public abstract boolean isNativeMethod();
-
 }

@@ -28,5 +28,4 @@ public class MarkerMixInYamlTest extends MarkerMixInTest {
     protected ObjectMapper newObjectMapper() {
         return new Log4jYamlObjectMapper();
     }
-
 }

@@ -16,12 +16,13 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.function.Consumer;
-import java.util.stream.Stream;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.CloseableThreadContext;
 import org.apache.logging.log4j.CloseableThreadContext.Instance;
 import org.apache.logging.log4j.LogBuilder;
@@ -34,8 +35,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @UsingStatusListener
 @LoggerContextSource
 public class LogBuilderTest {
@@ -43,7 +42,7 @@ public class LogBuilderTest {
     private static final CharSequence CHAR_SEQUENCE = "CharSequence";
     private static final String STRING = "String";
     private static final Message MESSAGE = new SimpleMessage();
-    private static final Object[] P = { "p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9" };
+    private static final Object[] P = {"p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9"};
     private static final Object OBJECT = "Object";
 
     // Log4j objects
@@ -65,9 +64,13 @@ public class LogBuilderTest {
     }
 
     static Stream<Consumer<LogBuilder>> logBuilderMethods() {
-        return Stream.of(logBuilder -> logBuilder.log(), logBuilder -> logBuilder.log(CHAR_SEQUENCE),
-                logBuilder -> logBuilder.log(MESSAGE), logBuilder -> logBuilder.log(OBJECT),
-                logBuilder -> logBuilder.log(STRING), logBuilder -> logBuilder.log(STRING, P[0]),
+        return Stream.of(
+                logBuilder -> logBuilder.log(),
+                logBuilder -> logBuilder.log(CHAR_SEQUENCE),
+                logBuilder -> logBuilder.log(MESSAGE),
+                logBuilder -> logBuilder.log(OBJECT),
+                logBuilder -> logBuilder.log(STRING),
+                logBuilder -> logBuilder.log(STRING, P[0]),
                 logBuilder -> logBuilder.log(STRING, P[0], P[1]),
                 logBuilder -> logBuilder.log(STRING, P[0], P[1], P[2]),
                 logBuilder -> logBuilder.log(STRING, P[0], P[1], P[2], P[3]),
@@ -77,7 +80,8 @@ public class LogBuilderTest {
                 logBuilder -> logBuilder.log(STRING, P[0], P[1], P[2], P[3], P[4], P[5], P[6], P[7]),
                 logBuilder -> logBuilder.log(STRING, P[0], P[1], P[2], P[3], P[4], P[5], P[6], P[7], P[8]),
                 logBuilder -> logBuilder.log(STRING, P[0], P[1], P[2], P[3], P[4], P[5], P[6], P[7], P[8], P[9]),
-                logBuilder -> logBuilder.log(STRING, P), logBuilder -> logBuilder.log(STRING, () -> OBJECT),
+                logBuilder -> logBuilder.log(STRING, P),
+                logBuilder -> logBuilder.log(STRING, () -> OBJECT),
                 logBuilder -> logBuilder.log(() -> MESSAGE));
     }
 

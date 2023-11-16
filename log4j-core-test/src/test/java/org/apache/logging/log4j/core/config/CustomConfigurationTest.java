@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Path;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
@@ -35,9 +37,6 @@ import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @UsingStatusListener
 public class CustomConfigurationTest {
@@ -75,16 +74,15 @@ public class CustomConfigurationTest {
         appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
-        final AppenderRef[] refs = new AppenderRef[]{ref};
+        final AppenderRef[] refs = new AppenderRef[] {ref};
 
-        final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "org.apache.logging.log4j",
-                "true", refs, null, config, null);
+        final LoggerConfig loggerConfig = LoggerConfig.createLogger(
+                false, Level.INFO, "org.apache.logging.log4j", "true", refs, null, config, null);
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);
         ctx.updateLoggers();
         final Logger logger = ctx.getLogger(CustomConfigurationTest.class);
         logger.info("This is a test");
-        assertThat(logFile).exists()
-                .isNotEmptyFile();
+        assertThat(logFile).exists().isNotEmptyFile();
     }
 }

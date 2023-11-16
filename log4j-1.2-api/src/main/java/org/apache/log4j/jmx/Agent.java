@@ -18,12 +18,10 @@ package org.apache.log4j.jmx;
 
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
-
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
-
 import org.apache.log4j.Logger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -95,8 +93,7 @@ public class Agent {
      * @deprecated
      */
     @Deprecated
-    public Agent() {
-    }
+    public Agent() {}
 
     /**
      * Starts instance of HtmlAdapterServer.

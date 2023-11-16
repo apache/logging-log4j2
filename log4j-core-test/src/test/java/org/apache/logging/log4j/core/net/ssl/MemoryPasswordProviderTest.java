@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Arrays;
+import org.junit.jupiter.api.Test;
 
 public class MemoryPasswordProviderTest {
     @Test

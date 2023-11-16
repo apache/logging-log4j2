@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.assertEquals;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -36,8 +37,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link AbstractCsvLayout}.
@@ -69,8 +68,8 @@ public class CsvLogEventLayoutTest {
 
     @Test
     public void testCustomCharset() {
-        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(null, "Excel", null, null, null, null, null,
-                null, StandardCharsets.UTF_16, null, null);
+        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(
+                null, "Excel", null, null, null, null, null, null, StandardCharsets.UTF_16, null, null);
         assertEquals("text/csv; charset=UTF-16", layout.getContentType());
     }
 
@@ -78,8 +77,8 @@ public class CsvLogEventLayoutTest {
     public void testHeaderFooter() {
         final String header = "# Header";
         final String footer = "# Footer ";
-        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(ctx.getConfiguration(), "Excel", null, null,
-                null, null, null, null, null, header, footer);
+        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(
+                ctx.getConfiguration(), "Excel", null, null, null, null, null, null, null, header, footer);
         testLayout(CSVFormat.DEFAULT, layout, header, footer);
     }
 
@@ -99,7 +98,8 @@ public class CsvLogEventLayoutTest {
         testLayout(format, CsvLogEventLayout.createLayout(format), null, null);
     }
 
-    private void testLayout(final CSVFormat format, final AbstractCsvLayout layout, final String header, final String footer) {
+    private void testLayout(
+            final CSVFormat format, final AbstractCsvLayout layout, final String header, final String footer) {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);

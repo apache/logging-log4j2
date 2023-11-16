@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.smtp;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SmtpAppender;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
@@ -28,10 +32,6 @@ import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SmtpManagerTest {
 
@@ -61,13 +61,18 @@ public class SmtpManagerTest {
 
         final LogEvent[] bufferedEvents = smtpManager.removeAllBufferedEvents();
         assertThat("unexpected number of buffered events", bufferedEvents.length, is(1));
-        assertThat("expected the immutable version of the event to be buffered", bufferedEvents[0].getMessage(), is(instanceOf(MementoMessage.class)));
+        assertThat(
+                "expected the immutable version of the event to be buffered",
+                bufferedEvents[0].getMessage(),
+                is(instanceOf(MementoMessage.class)));
     }
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
     public void testAdd_WhereLog4jLogEventWithReusableMessage() {
-        final LogEvent event = new Log4jLogEvent.Builder().setMessage(getReusableMessage("test message")).build();
+        final LogEvent event = new Log4jLogEvent.Builder()
+                .setMessage(getReusableMessage("test message"))
+                .build();
         testAdd(event);
     }
 
@@ -82,7 +87,22 @@ public class SmtpManagerTest {
     @Test
     public void testAdd_WhereRingBufferLogEvent() {
         final RingBufferLogEvent event = new RingBufferLogEvent();
-        event.setValues(null, null, null, null, null, getReusableMessage("test message"), null, null, null, 0, null, 0, null, ClockFactory.getClock(), new DummyNanoClock());
+        event.setValues(
+                null,
+                null,
+                null,
+                null,
+                null,
+                getReusableMessage("test message"),
+                null,
+                null,
+                null,
+                0,
+                null,
+                0,
+                null,
+                ClockFactory.getClock(),
+                new DummyNanoClock());
         testAdd(event);
     }
 

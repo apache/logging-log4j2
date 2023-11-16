@@ -25,8 +25,7 @@ import java.nio.charset.Charset;
  */
 public final class StringEncoder {
 
-    private StringEncoder() {
-    }
+    private StringEncoder() {}
 
     /**
      * Converts a String to a byte[].
@@ -69,7 +68,8 @@ public final class StringEncoder {
      * @deprecated No longer necessary given better performance in Java 8
      */
     @Deprecated
-    public static int encodeIsoChars(final CharSequence charArray, int charIndex, final byte[] byteArray, int byteIndex, final int length) {
+    public static int encodeIsoChars(
+            final CharSequence charArray, int charIndex, final byte[] byteArray, int byteIndex, final int length) {
         int i = 0;
         for (; i < length; i++) {
             final char c = charArray.charAt(charIndex++);
@@ -88,7 +88,8 @@ public final class StringEncoder {
      * @deprecated No longer necessary given better performance in Java 8
      */
     @Deprecated
-    public static int encodeString(final CharSequence charArray, final int charOffset, final int charLength, final byte[] byteArray) {
+    public static int encodeString(
+            final CharSequence charArray, final int charOffset, final int charLength, final byte[] byteArray) {
         int byteOffset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
@@ -100,7 +101,8 @@ public final class StringEncoder {
             byteOffset += done;
             if (done != length) {
                 final char c = charArray.charAt(currentCharOffset++);
-                if ((Character.isHighSurrogate(c)) && (currentCharOffset < charDoneIndex)
+                if ((Character.isHighSurrogate(c))
+                        && (currentCharOffset < charDoneIndex)
                         && (Character.isLowSurrogate(charArray.charAt(currentCharOffset)))) {
                     if (currentCharLength > byteArray.length) {
                         charDoneIndex++;

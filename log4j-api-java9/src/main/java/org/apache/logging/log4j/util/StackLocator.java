@@ -25,18 +25,17 @@ import java.util.function.Predicate;
  */
 public final class StackLocator {
 
-    private final static StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+    private static final StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
-    private final static StackWalker STACK_WALKER = StackWalker.getInstance();
+    private static final StackWalker STACK_WALKER = StackWalker.getInstance();
 
-    private final static StackLocator INSTANCE = new StackLocator();
+    private static final StackLocator INSTANCE = new StackLocator();
 
     public static StackLocator getInstance() {
         return INSTANCE;
     }
 
-    private StackLocator() {
-    }
+    private StackLocator() {}
 
     public Class<?> getCallerClass(final Class<?> sentinelClass, final Predicate<Class<?>> callerPredicate) {
         if (sentinelClass == null) {
@@ -45,13 +44,13 @@ public final class StackLocator {
         if (callerPredicate == null) {
             throw new IllegalArgumentException("callerPredicate cannot be null");
         }
-        return WALKER.walk(s -> s
-                        .map(StackWalker.StackFrame::getDeclaringClass)
-                        // Skip until the sentinel class is found
-                        .dropWhile(clazz -> !sentinelClass.equals(clazz))
-                        // Skip until the predicate evaluates to true, also ignoring recurrences of the sentinel
-                        .dropWhile(clazz -> sentinelClass.equals(clazz) || !callerPredicate.test(clazz))
-                        .findFirst().orElse(null));
+        return WALKER.walk(s -> s.map(StackWalker.StackFrame::getDeclaringClass)
+                // Skip until the sentinel class is found
+                .dropWhile(clazz -> !sentinelClass.equals(clazz))
+                // Skip until the predicate evaluates to true, also ignoring recurrences of the sentinel
+                .dropWhile(clazz -> sentinelClass.equals(clazz) || !callerPredicate.test(clazz))
+                .findFirst()
+                .orElse(null));
     }
 
     public Class<?> getCallerClass(final String fqcn) {
@@ -59,23 +58,26 @@ public final class StackLocator {
     }
 
     public Class<?> getCallerClass(final String fqcn, final String pkg) {
-        return WALKER.walk(s -> s
-                .dropWhile(f -> !f.getClassName().equals(fqcn))
-                .dropWhile(f -> f.getClassName().equals(fqcn))
-                .dropWhile(f -> !f.getClassName().startsWith(pkg))
-                .findFirst())
+        return WALKER.walk(s -> s.dropWhile(f -> !f.getClassName().equals(fqcn))
+                        .dropWhile(f -> f.getClassName().equals(fqcn))
+                        .dropWhile(f -> !f.getClassName().startsWith(pkg))
+                        .findFirst())
                 .map(StackWalker.StackFrame::getDeclaringClass)
                 .orElse(null);
     }
 
     public Class<?> getCallerClass(final Class<?> anchor) {
         return WALKER.walk(s -> s.dropWhile(f -> !f.getDeclaringClass().equals(anchor))
-                     .dropWhile(f -> f.getDeclaringClass().equals(anchor)).findFirst())
-                     .map(StackWalker.StackFrame::getDeclaringClass).orElse(null);
+                        .dropWhile(f -> f.getDeclaringClass().equals(anchor))
+                        .findFirst())
+                .map(StackWalker.StackFrame::getDeclaringClass)
+                .orElse(null);
     }
 
     public Class<?> getCallerClass(final int depth) {
-        return WALKER.walk(s -> s.skip(depth).findFirst()).map(StackWalker.StackFrame::getDeclaringClass).orElse(null);
+        return WALKER.walk(s -> s.skip(depth).findFirst())
+                .map(StackWalker.StackFrame::getDeclaringClass)
+                .orElse(null);
     }
 
     public Deque<Class<?>> getCurrentStackTrace() {
@@ -91,14 +93,19 @@ public final class StackLocator {
     }
 
     public StackTraceElement calcLocation(final String fqcnOfLogger) {
-        return STACK_WALKER.walk(
-                s -> s.dropWhile(f -> !f.getClassName().equals(fqcnOfLogger)) // drop the top frames until we reach the logger
-                      .dropWhile(f -> f.getClassName().equals(fqcnOfLogger)) // drop the logger frames
-                      .findFirst()).map(StackWalker.StackFrame::toStackTraceElement).orElse(null);
+        return STACK_WALKER
+                .walk(s -> s.dropWhile(f ->
+                                !f.getClassName().equals(fqcnOfLogger)) // drop the top frames until we reach the logger
+                        .dropWhile(f -> f.getClassName().equals(fqcnOfLogger)) // drop the logger frames
+                        .findFirst())
+                .map(StackWalker.StackFrame::toStackTraceElement)
+                .orElse(null);
     }
 
     public StackTraceElement getStackTraceElement(final int depth) {
-        return STACK_WALKER.walk(s -> s.skip(depth).findFirst())
-                .map(StackWalker.StackFrame::toStackTraceElement).orElse(null);
+        return STACK_WALKER
+                .walk(s -> s.skip(depth).findFirst())
+                .map(StackWalker.StackFrame::toStackTraceElement)
+                .orElse(null);
     }
 }

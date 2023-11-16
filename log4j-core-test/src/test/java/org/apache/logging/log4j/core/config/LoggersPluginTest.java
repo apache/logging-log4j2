@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests LoggersPlugin.
@@ -37,7 +37,7 @@ public class LoggersPluginTest {
         final Logger logger = LogManager.getLogger();
         logger.info("Test");
         final StatusData data = StatusLogger.getLogger().getStatusData().get(0);
-        //System.out.println(data.getFormattedStatus());
+        // System.out.println(data.getFormattedStatus());
 
         assertEquals(Level.ERROR, data.getLevel());
         assertTrue(data.getMessage().getFormattedMessage().contains("multiple root loggers"));

@@ -16,5 +16,4 @@
  */
 package org.apache.logging.log4j.test;
 
-public class Service1 implements Service {
-}
+public class Service1 implements Service {}

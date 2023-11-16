@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,8 +30,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the AsyncAppender (LOG4J2-1080) event routing logic:
@@ -90,7 +89,7 @@ public class AsyncAppenderQueueFullPolicyTest {
                     try {
                         Thread.sleep(10L);
                     } catch (final InterruptedException ignored) {
-                        //ignored
+                        // ignored
                     }
                 }
                 blockingAppender.running = false;
@@ -104,6 +103,7 @@ public class AsyncAppenderQueueFullPolicyTest {
 
     public static class CountingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy {
         AtomicLong queueFull = new AtomicLong();
+
         @Override
         public EventRoute getRoute(final long backgroundThreadId, final Level level) {
             queueFull.incrementAndGet();

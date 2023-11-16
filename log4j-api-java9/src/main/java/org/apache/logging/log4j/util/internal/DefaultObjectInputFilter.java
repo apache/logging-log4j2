@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.util.internal;
 
-import java.io.ObjectInputFilter;
-
 import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_CLASSES;
 import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_PACKAGES;
+
+import java.io.ObjectInputFilter;
 
 public class DefaultObjectInputFilter implements ObjectInputFilter {
 
@@ -41,7 +41,6 @@ public class DefaultObjectInputFilter implements ObjectInputFilter {
     public static DefaultObjectInputFilter newInstance(final ObjectInputFilter filter) {
         return new DefaultObjectInputFilter(filter);
     }
-
 
     @Override
     public Status checkInput(final FilterInfo filterInfo) {

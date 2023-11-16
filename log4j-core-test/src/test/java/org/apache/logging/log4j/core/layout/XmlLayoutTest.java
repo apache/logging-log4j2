@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.*;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -47,8 +48,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests {@link XmlLayout}.
@@ -101,7 +100,11 @@ public class XmlLayoutTest {
         assertTrue(str, str.contains(String.format("<item key=\"%s\" value=\"%s\"/>", key, value)));
     }
 
-    private void checkElementName(final String name, final boolean compact, final String str, final boolean withAttributes,
+    private void checkElementName(
+            final String name,
+            final boolean compact,
+            final String str,
+            final boolean withAttributes,
             final boolean withChildren) {
         // simple checks, don't try to be too smart here, we're just looking for the names and basic shape.
         // start
@@ -126,8 +129,12 @@ public class XmlLayoutTest {
      * @throws JsonParseException
      * @throws JsonMappingException
      */
-    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext, final boolean includeStacktrace) throws IOException,
-            JsonParseException, JsonMappingException {
+    private void testAllFeatures(
+            final boolean includeSource,
+            final boolean compact,
+            final boolean includeContext,
+            final boolean includeStacktrace)
+            throws IOException, JsonParseException, JsonMappingException {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final XmlLayout layout = XmlLayout.newBuilder()
                 .setLocationInfo(includeSource)
@@ -164,7 +171,7 @@ public class XmlLayoutTest {
         }
         //
         // make sure the names we want are used
-        //this.checkAttributeName("timeMillis", compact, str);
+        // this.checkAttributeName("timeMillis", compact, str);
         this.checkElementName("Instant", compact, str, true, false);
         this.checkAttributeName("epochSecond", compact, str);
         this.checkAttributeName("nanoOfSecond", compact, str);
@@ -303,7 +310,8 @@ public class XmlLayoutTest {
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("M")) //
                 .setThreadName("threadName") //
-                .setTimeMillis(1).build();
+                .setTimeMillis(1)
+                .build();
         final String str = layout.toSerializable(event);
         assertTrue(str, str.contains("loggerName=\"a.B\""));
     }
@@ -315,8 +323,8 @@ public class XmlLayoutTest {
                 .setProperties(false)
                 .setIncludeStacktrace(false)
                 .setAdditionalFields(new KeyValuePair[] {
-                    new KeyValuePair("KEY1", "VALUE1"),
-                    new KeyValuePair("KEY2", "${java:runtime}"), })
+                    new KeyValuePair("KEY1", "VALUE1"), new KeyValuePair("KEY2", "${java:runtime}"),
+                })
                 .setCharset(StandardCharsets.UTF_8)
                 .setConfiguration(ctx.getConfiguration())
                 .build();

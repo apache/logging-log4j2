@@ -19,7 +19,6 @@ package org.apache.logging.log4j.spi;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.Properties;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -66,15 +65,18 @@ public class Provider {
         versions = null;
     }
 
-    public Provider(final Integer priority, final String versions,
-                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
+    public Provider(
+            final Integer priority,
+            final String versions,
+            final Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
         this(priority, versions, loggerContextFactoryClass, null);
     }
 
-
-    public Provider(final Integer priority, final String versions,
-                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass,
-                    final Class<? extends ThreadContextMap> threadContextMapClass) {
+    public Provider(
+            final Integer priority,
+            final String versions,
+            final Class<? extends LoggerContextFactory> loggerContextFactoryClass,
+            final Class<? extends ThreadContextMap> threadContextMapClass) {
         this.url = null;
         this.classLoader = null;
         this.priority = priority;
@@ -236,7 +238,9 @@ public class Provider {
         if (className != null ? !className.equals(provider.className) : provider.className != null) {
             return false;
         }
-        if (loggerContextFactoryClass != null ? !loggerContextFactoryClass.equals(provider.loggerContextFactoryClass) : provider.loggerContextFactoryClass != null) {
+        if (loggerContextFactoryClass != null
+                ? !loggerContextFactoryClass.equals(provider.loggerContextFactoryClass)
+                : provider.loggerContextFactoryClass != null) {
             return false;
         }
         return versions != null ? versions.equals(provider.versions) : provider.versions == null;

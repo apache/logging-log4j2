@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.test;
 
-import java.util.Map;
-
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.util.Timer;
-
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Map;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.util.Timer;
 
 public class ThreadContextUtilityClass {
 
@@ -57,12 +56,10 @@ public class ThreadContextUtilityClass {
         System.out.println(complete.toString());
     }
 
-
     public static void testGetContextReturnsEmptyMapIfEmpty() {
         ThreadContext.clearMap();
         assertTrue(ThreadContext.getContext().isEmpty());
     }
-
 
     public static void testGetContextReturnsMutableCopy() {
         ThreadContext.clearMap();
@@ -91,7 +88,6 @@ public class ThreadContextUtilityClass {
         assertTrue(ThreadContext.getImmutableContext().isEmpty());
     }
 
-
     public static void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
         ThreadContext.clearMap();
         ThreadContext.put("key", "val");
@@ -109,7 +105,6 @@ public class ThreadContextUtilityClass {
         ThreadContext.clearStack();
         assertTrue(ThreadContext.getImmutableStack().asList().isEmpty());
     }
-
 
     public static void testPut() {
         ThreadContext.clearMap();

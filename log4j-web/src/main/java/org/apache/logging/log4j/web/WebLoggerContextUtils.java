@@ -20,9 +20,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
@@ -36,8 +34,7 @@ import org.apache.logging.log4j.core.impl.ContextAnchor;
  * @since 2.0.1
  */
 public final class WebLoggerContextUtils {
-    private WebLoggerContextUtils() {
-    }
+    private WebLoggerContextUtils() {}
 
     private static final Lock WEB_SUPPORT_LOOKUP = new ReentrantLock();
     private static final String SERVLET_CONTEXT = "__SERVLET_CONTEXT__";
@@ -65,7 +62,7 @@ public final class WebLoggerContextUtils {
         final LoggerContext loggerContext = getWebLoggerContext(servletContext);
         if (loggerContext == null) {
             throw new IllegalStateException(
-                "No LoggerContext found in ServletContext attribute " + Log4jWebSupport.CONTEXT_ATTRIBUTE);
+                    "No LoggerContext found in ServletContext attribute " + Log4jWebSupport.CONTEXT_ATTRIBUTE);
         }
         return loggerContext;
     }
@@ -81,8 +78,8 @@ public final class WebLoggerContextUtils {
     public static Log4jWebLifeCycle getWebLifeCycle(final ServletContext servletContext) {
         WEB_SUPPORT_LOOKUP.lock();
         try {
-            Log4jWebLifeCycle webLifeCycle = (Log4jWebLifeCycle) servletContext.getAttribute(
-                Log4jWebSupport.SUPPORT_ATTRIBUTE);
+            Log4jWebLifeCycle webLifeCycle =
+                    (Log4jWebLifeCycle) servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE);
             if (webLifeCycle == null) {
                 webLifeCycle = Log4jWebInitializerImpl.initialize(servletContext);
             }

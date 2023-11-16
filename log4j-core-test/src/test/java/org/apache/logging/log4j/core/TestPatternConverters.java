@@ -26,8 +26,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * useful in tests.
  */
 public final class TestPatternConverters {
-    private TestPatternConverters() {
-    }
+    private TestPatternConverters() {}
 
     @Plugin(name = "TestParametersPatternConverter", category = "Converter")
     @ConverterKeys("testparameters")
@@ -74,5 +73,4 @@ public final class TestPatternConverters {
             toAppendTo.append(event.getMessage().getFormat());
         }
     }
-
 }

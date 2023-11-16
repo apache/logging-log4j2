@@ -28,5 +28,4 @@ public class MarkerMixInJsonTest extends MarkerMixInTest {
     protected ObjectMapper newObjectMapper() {
         return new Log4jJsonObjectMapper();
     }
-
 }

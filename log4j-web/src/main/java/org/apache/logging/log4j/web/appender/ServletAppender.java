@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.web.appender;
 
 import java.io.Serializable;
-
 import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -78,7 +76,6 @@ public final class ServletAppender extends AbstractAppender {
         public void setLogThrowables(final boolean logThrowables) {
             this.logThrowables = logThrowables;
         }
-
     }
 
     @PluginBuilderFactory
@@ -89,8 +86,13 @@ public final class ServletAppender extends AbstractAppender {
     private final ServletContext servletContext;
     private final boolean logThrowables;
 
-    private ServletAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables) {
+    private ServletAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final ServletContext servletContext,
+            final boolean ignoreExceptions,
+            final boolean logThrowables) {
         super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         this.servletContext = servletContext;
         this.logThrowables = logThrowables;
@@ -117,12 +119,18 @@ public final class ServletAppender extends AbstractAppender {
      * @deprecated Use {@link #newBuilder()}.
      */
     @Deprecated
-    public static ServletAppender createAppender(final Layout<? extends Serializable> layout, final Filter filter,
-            final String name, final boolean ignoreExceptions) {
+    public static ServletAppender createAppender(
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String name,
+            final boolean ignoreExceptions) {
         // @formatter:off
-        return newBuilder().setFilter(filter).setIgnoreExceptions(ignoreExceptions).setLayout(layout).setName(name)
+        return newBuilder()
+                .setFilter(filter)
+                .setIgnoreExceptions(ignoreExceptions)
+                .setLayout(layout)
+                .setName(name)
                 .build();
         // @formatter:on
     }
-
 }

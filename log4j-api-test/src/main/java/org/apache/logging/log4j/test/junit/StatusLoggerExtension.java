@@ -23,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
@@ -59,43 +58,47 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         // `beforeAll` methods and extensions.
         final ListStatusListenerHolder holder = new ListStatusListenerHolder(context, null);
         ExtensionContextAnchor.setAttribute(KEY, holder, context);
-        ReflectionSupport.findFields(context.getRequiredTestClass(),
-                f -> ModifierSupport.isStatic(f) && f.getType().equals(ListStatusListener.class),
-                HierarchyTraversalMode.TOP_DOWN).forEach(f -> {
-            try {
-                f.setAccessible(true);
-                f.set(null, holder.getStatusListener());
-            } catch (final ReflectiveOperationException e) {
-                throw new ExtensionContextException("Failed to inject field.", e);
-            }
-        });
+        ReflectionSupport.findFields(
+                        context.getRequiredTestClass(),
+                        f -> ModifierSupport.isStatic(f) && f.getType().equals(ListStatusListener.class),
+                        HierarchyTraversalMode.TOP_DOWN)
+                .forEach(f -> {
+                    try {
+                        f.setAccessible(true);
+                        f.set(null, holder.getStatusListener());
+                    } catch (final ReflectiveOperationException e) {
+                        throw new ExtensionContextException("Failed to inject field.", e);
+                    }
+                });
     }
 
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
         // Retrieves the per-class status listener
-        final ListStatusListenerHolder parentHolder = ExtensionContextAnchor.getAttribute(KEY,
-                ListStatusListenerHolder.class, context);
+        final ListStatusListenerHolder parentHolder =
+                ExtensionContextAnchor.getAttribute(KEY, ListStatusListenerHolder.class, context);
         final ListStatusListener parent = parentHolder != null ? parentHolder.getStatusListener() : null;
         final ListStatusListenerHolder holder = new ListStatusListenerHolder(context, parent);
         ExtensionContextAnchor.setAttribute(KEY, holder, context);
-        ReflectionSupport.findFields(context.getRequiredTestClass(),
-                f -> ModifierSupport.isNotStatic(f) && f.getType().equals(ListStatusListener.class),
-                HierarchyTraversalMode.TOP_DOWN).forEach(f -> {
-            try {
-                f.setAccessible(true);
-                f.set(context.getRequiredTestInstance(), holder.getStatusListener());
-            } catch (final ReflectiveOperationException e) {
-                throw new ExtensionContextException("Failed to inject field.", e);
-            }
-        });
+        ReflectionSupport.findFields(
+                        context.getRequiredTestClass(),
+                        f -> ModifierSupport.isNotStatic(f) && f.getType().equals(ListStatusListener.class),
+                        HierarchyTraversalMode.TOP_DOWN)
+                .forEach(f -> {
+                    try {
+                        f.setAccessible(true);
+                        f.set(context.getRequiredTestInstance(), holder.getStatusListener());
+                    } catch (final ReflectiveOperationException e) {
+                        throw new ExtensionContextException("Failed to inject field.", e);
+                    }
+                });
     }
 
     @Override
-    public void handleTestExecutionException(final ExtensionContext context, final Throwable throwable) throws Throwable {
-        final ListStatusListenerHolder holder = ExtensionContextAnchor.getAttribute(KEY,
-                ListStatusListenerHolder.class,
-                context);
+    public void handleTestExecutionException(final ExtensionContext context, final Throwable throwable)
+            throws Throwable {
+        final ListStatusListenerHolder holder =
+                ExtensionContextAnchor.getAttribute(KEY, ListStatusListenerHolder.class, context);
         if (holder != null) {
             holder.handleException(context, throwable);
         }
@@ -103,10 +106,11 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
     }
 
     @Override
-    public ListStatusListener resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
+    public ListStatusListener resolveParameter(
+            final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        final ListStatusListenerHolder holder = ExtensionContextAnchor.getAttribute(KEY, ListStatusListenerHolder.class,
-                extensionContext);
+        final ListStatusListenerHolder holder =
+                ExtensionContextAnchor.getAttribute(KEY, ListStatusListenerHolder.class, extensionContext);
         return holder.getStatusListener();
     }
 
@@ -131,7 +135,8 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         }
 
         public void handleException(final ExtensionContext context, final Throwable throwable) {
-            final Logger logger = new SimpleLogger("StatusLoggerExtension",
+            final Logger logger = new SimpleLogger(
+                    "StatusLoggerExtension",
                     Level.ALL,
                     false,
                     false,

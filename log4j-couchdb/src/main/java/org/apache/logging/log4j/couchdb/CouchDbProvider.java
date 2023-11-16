@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.couchdb;
 
-import java.lang.reflect.Method;
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
+import java.lang.reflect.Method;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -31,8 +32,6 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * The Apache CouchDB implementation of {@link NoSqlProvider}.
@@ -111,10 +110,14 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
                             + properties.getConnectionTimeout() + ", socketTimeout=" + properties.getSocketTimeout();
                 } else {
                     if (object == null) {
-                        LOGGER.error("The factory method [{}.{}()] returned null.", factoryClassName, factoryMethodName);
+                        LOGGER.error(
+                                "The factory method [{}.{}()] returned null.", factoryClassName, factoryMethodName);
                     } else {
-                        LOGGER.error("The factory method [{}.{}()] returned an unsupported type [{}].", factoryClassName,
-                                factoryMethodName, object.getClass().getName());
+                        LOGGER.error(
+                                "The factory method [{}.{}()] returned an unsupported type [{}].",
+                                factoryClassName,
+                                factoryMethodName,
+                                object.getClass().getName());
                     }
                     return null;
                 }
@@ -122,12 +125,15 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
                 LOGGER.error("The factory class [{}] could not be loaded.", factoryClassName, e);
                 return null;
             } catch (final NoSuchMethodException e) {
-                LOGGER.error("The factory class [{}] does not have a no-arg method named [{}].", factoryClassName,
-                        factoryMethodName, e);
+                LOGGER.error(
+                        "The factory class [{}] does not have a no-arg method named [{}].",
+                        factoryClassName,
+                        factoryMethodName,
+                        e);
                 return null;
             } catch (final Exception e) {
-                LOGGER.error("The factory method [{}.{}()] could not be invoked.", factoryClassName, factoryMethodName,
-                        e);
+                LOGGER.error(
+                        "The factory method [{}.{}()] could not be invoked.", factoryClassName, factoryMethodName, e);
                 return null;
             }
         } else if (Strings.isNotEmpty(databaseName)) {

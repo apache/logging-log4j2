@@ -16,6 +16,8 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.junit.After;
@@ -23,8 +25,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -38,7 +38,6 @@ public class MarkerTest {
     @BeforeClass
     public static void startup() {
         markerFactory = ((Log4jLoggerFactory) org.slf4j.LoggerFactory.getILoggerFactory()).getMarkerFactory();
-
     }
 
     @Before
@@ -58,10 +57,16 @@ public class MarkerTest {
         final Marker log4jMarker = MarkerManager.getMarker(childMakerName);
 
         assertTrue("Incorrect Marker class", slf4jMarker instanceof Log4jMarker);
-        assertTrue(String.format("%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
-                childMakerName, parentMarkerName, log4jMarker, log4jParent), log4jMarker.isInstanceOf(log4jParent));
-        assertTrue(String.format("%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
-                childMakerName, parentMarkerName, slf4jMarker, slf4jParent), slf4jMarker.contains(slf4jParent));
+        assertTrue(
+                String.format(
+                        "%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
+                        childMakerName, parentMarkerName, log4jMarker, log4jParent),
+                log4jMarker.isInstanceOf(log4jParent));
+        assertTrue(
+                String.format(
+                        "%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
+                        childMakerName, parentMarkerName, slf4jMarker, slf4jParent),
+                slf4jMarker.contains(slf4jParent));
     }
 
     @Test
@@ -100,10 +105,16 @@ public class MarkerTest {
         slf4jMarker.add(slf4jParent);
         final Marker log4jParent = MarkerManager.getMarker(parentMakerName);
         final Marker log4jMarker = MarkerManager.getMarker(childMarkerName);
-        assertTrue(String.format("%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
-                childMarkerName, parentMakerName, log4jMarker, log4jParent), log4jMarker.isInstanceOf(log4jParent));
-        assertTrue(String.format("%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
-                childMarkerName, parentMakerName, slf4jMarker, slf4jParent), slf4jMarker.contains(slf4jParent));
+        assertTrue(
+                String.format(
+                        "%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
+                        childMarkerName, parentMakerName, log4jMarker, log4jParent),
+                log4jMarker.isInstanceOf(log4jParent));
+        assertTrue(
+                String.format(
+                        "%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
+                        childMarkerName, parentMakerName, slf4jMarker, slf4jParent),
+                slf4jMarker.contains(slf4jParent));
     }
 
     @Test
@@ -182,5 +193,4 @@ public class MarkerTest {
         Assert.assertFalse(log4jSlf4jParent.remove(nullMarker));
         Assert.assertFalse(log4jSlf4jMarker.remove(nullMarker));
     }
-
 }

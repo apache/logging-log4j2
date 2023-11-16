@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.nosql;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -46,7 +45,11 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         private final NoSqlProvider<?> provider;
         private final KeyValuePair[] additionalFields;
 
-        protected FactoryData(final Configuration configuration, final int bufferSize, final NoSqlProvider<?> provider, final KeyValuePair[] additionalFields) {
+        protected FactoryData(
+                final Configuration configuration,
+                final int bufferSize,
+                final NoSqlProvider<?> provider,
+                final KeyValuePair[] additionalFields) {
             super(configuration, bufferSize, null); // no layout
             this.provider = Objects.requireNonNull(provider, "provider");
             this.additionalFields = additionalFields; // null OK
@@ -56,12 +59,14 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     /**
      * Creates managers.
      */
-    private static final class NoSQLDatabaseManagerFactory implements ManagerFactory<NoSqlDatabaseManager<?>, FactoryData> {
+    private static final class NoSQLDatabaseManagerFactory
+            implements ManagerFactory<NoSqlDatabaseManager<?>, FactoryData> {
         @Override
         @SuppressWarnings("unchecked")
         public NoSqlDatabaseManager<?> createManager(final String name, final FactoryData data) {
             Objects.requireNonNull(data, "data");
-            return new NoSqlDatabaseManager(name, data.getBufferSize(), data.provider, data.additionalFields, data.getConfiguration());
+            return new NoSqlDatabaseManager(
+                    name, data.getBufferSize(), data.provider, data.additionalFields, data.getConfiguration());
         }
     }
 
@@ -77,7 +82,8 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
      * @deprecated Use {@link #getNoSqlDatabaseManager(String, int, NoSqlProvider, KeyValuePair[], Configuration)}.
      */
     @Deprecated
-    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(final String name, final int bufferSize, final NoSqlProvider<?> provider) {
+    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(
+            final String name, final int bufferSize, final NoSqlProvider<?> provider) {
         return AbstractDatabaseManager.getManager(name, new FactoryData(null, bufferSize, provider, null), FACTORY);
     }
 
@@ -91,9 +97,14 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
      * @param configuration TODO
      * @return a new or existing NoSQL manager as applicable.
      */
-    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(final String name, final int bufferSize, final NoSqlProvider<?> provider,
-        final KeyValuePair[] additionalFields, final Configuration configuration) {
-        return AbstractDatabaseManager.getManager(name, new FactoryData(configuration, bufferSize, provider, additionalFields), FACTORY);
+    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(
+            final String name,
+            final int bufferSize,
+            final NoSqlProvider<?> provider,
+            final KeyValuePair[] additionalFields,
+            final Configuration configuration) {
+        return AbstractDatabaseManager.getManager(
+                name, new FactoryData(configuration, bufferSize, provider, additionalFields), FACTORY);
     }
 
     private final NoSqlProvider<NoSqlConnection<W, ? extends NoSqlObject<W>>> provider;
@@ -102,8 +113,12 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
 
     private final KeyValuePair[] additionalFields;
 
-    private NoSqlDatabaseManager(final String name, final int bufferSize, final NoSqlProvider<NoSqlConnection<W, ? extends NoSqlObject<W>>> provider,
-        final KeyValuePair[] additionalFields, final Configuration configuration) {
+    private NoSqlDatabaseManager(
+            final String name,
+            final int bufferSize,
+            final NoSqlProvider<NoSqlConnection<W, ? extends NoSqlObject<W>>> provider,
+            final KeyValuePair[] additionalFields,
+            final Configuration configuration) {
         super(name, bufferSize, null, configuration);
         this.provider = provider;
         this.additionalFields = additionalFields;
@@ -164,7 +179,9 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         if (additionalFields != null) {
             final NoSqlObject<W> object = connection.createObject();
             final StrSubstitutor strSubstitutor = getStrSubstitutor();
-            Stream.of(additionalFields).forEach(f -> object.set(f.getKey(), strSubstitutor != null ? strSubstitutor.replace(f.getValue()) : f.getValue()));
+            Stream.of(additionalFields)
+                    .forEach(f -> object.set(
+                            f.getKey(), strSubstitutor != null ? strSubstitutor.replace(f.getValue()) : f.getValue()));
             entity.set("additionalFields", object);
         }
     }
@@ -172,7 +189,9 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     private void setFields(final LogEvent event, final NoSqlObject<W> entity) {
         entity.set("level", event.getLevel());
         entity.set("loggerName", event.getLoggerName());
-        entity.set("message", event.getMessage() == null ? null : event.getMessage().getFormattedMessage());
+        entity.set(
+                "message",
+                event.getMessage() == null ? null : event.getMessage().getFormattedMessage());
 
         final StackTraceElement source = event.getSource();
         if (source == null) {
@@ -253,7 +272,8 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     @Override
     protected void writeInternal(final LogEvent event, final Serializable serializable) {
         if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {
-            throw new AppenderLoggingException("Cannot write logging event; NoSQL manager not connected to the database.");
+            throw new AppenderLoggingException(
+                    "Cannot write logging event; NoSQL manager not connected to the database.");
         }
 
         final NoSqlObject<W> entity = this.connection.createObject();

@@ -22,7 +22,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -43,6 +42,7 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
      * instead of three times.
      */
     private final ThreadLocal<Object[]> threadLocal = new ThreadLocal<>();
+
     private final Charset charset;
     private final int charBufferSize;
     private final int byteBufferSize;
@@ -75,10 +75,11 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
         Object[] threadLocalState = threadLocal.get();
         if (threadLocalState == null) {
             threadLocalState = new Object[] {
-                    charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
-                            .onUnmappableCharacter(CodingErrorAction.REPLACE),
-                    CharBuffer.allocate(charBufferSize),
-                    ByteBuffer.allocate(byteBufferSize)
+                charset.newEncoder()
+                        .onMalformedInput(CodingErrorAction.REPLACE)
+                        .onUnmappableCharacter(CodingErrorAction.REPLACE),
+                CharBuffer.allocate(charBufferSize),
+                ByteBuffer.allocate(byteBufferSize)
             };
             threadLocal.set(threadLocalState);
         } else {
@@ -92,5 +93,4 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
     private static void logEncodeTextException(final Exception ex, final StringBuilder text) {
         StatusLogger.getLogger().error("Recovering from StringBuilderEncoder.encode('{}') error: {}", text, ex, ex);
     }
-
 }

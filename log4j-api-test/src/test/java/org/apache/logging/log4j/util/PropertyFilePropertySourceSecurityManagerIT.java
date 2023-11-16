@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.FilePermission;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.PropertyPermission;
-
 import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test related to https://issues.apache.org/jira/browse/LOG4J2-2274.

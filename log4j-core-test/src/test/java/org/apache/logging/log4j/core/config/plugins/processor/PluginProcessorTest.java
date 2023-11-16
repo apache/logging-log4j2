@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+import static org.junit.Assert.*;
+
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class PluginProcessorTest {
@@ -40,7 +39,7 @@ public class PluginProcessorTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         final Enumeration<URL> resources =
-            PluginProcessor.class.getClassLoader().getResources(PluginProcessor.PLUGIN_CACHE_FILE);
+                PluginProcessor.class.getClassLoader().getResources(PluginProcessor.PLUGIN_CACHE_FILE);
         pluginCache.loadCacheFiles(resources);
     }
 

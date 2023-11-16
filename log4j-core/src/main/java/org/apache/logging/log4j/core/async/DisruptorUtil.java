@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.WaitStrategy;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
@@ -45,36 +44,38 @@ final class DisruptorUtil {
      * especially when the number of application threads vastly outnumbered the number of cores.
      * CPU utilization is significantly reduced by restricting access to the enqueue operation.
      */
-    static final boolean ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
-            .getBooleanProperty("AsyncLogger.SynchronizeEnqueueWhenQueueFull", true);
+    static final boolean ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL =
+            PropertiesUtil.getProperties().getBooleanProperty("AsyncLogger.SynchronizeEnqueueWhenQueueFull", true);
+
     static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
             .getBooleanProperty("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", true);
 
-    private DisruptorUtil() {
-    }
+    private DisruptorUtil() {}
 
-    static WaitStrategy createWaitStrategy(final String propertyName,
-                                           final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
+    static WaitStrategy createWaitStrategy(
+            final String propertyName, final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
 
         if (asyncWaitStrategyFactory == null) {
             LOGGER.debug("No AsyncWaitStrategyFactory was configured in the configuration, using default factory...");
             return new DefaultAsyncWaitStrategyFactory(propertyName).createWaitStrategy();
         }
 
-        LOGGER.debug("Using configured AsyncWaitStrategyFactory {}", asyncWaitStrategyFactory.getClass().getName());
+        LOGGER.debug(
+                "Using configured AsyncWaitStrategyFactory {}",
+                asyncWaitStrategyFactory.getClass().getName());
         return asyncWaitStrategyFactory.createWaitStrategy();
     }
 
     static int calculateRingBufferSize(final String propertyName) {
         int ringBufferSize = Constants.ENABLE_THREADLOCALS ? RINGBUFFER_NO_GC_DEFAULT_SIZE : RINGBUFFER_DEFAULT_SIZE;
-        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
-                String.valueOf(ringBufferSize));
+        final String userPreferredRBSize =
+                PropertiesUtil.getProperties().getStringProperty(propertyName, String.valueOf(ringBufferSize));
         try {
             int size = Integers.parseInt(userPreferredRBSize);
             if (size < RINGBUFFER_MIN_SIZE) {
                 size = RINGBUFFER_MIN_SIZE;
-                LOGGER.warn("Invalid RingBufferSize {}, using minimum size {}.", userPreferredRBSize,
-                        RINGBUFFER_MIN_SIZE);
+                LOGGER.warn(
+                        "Invalid RingBufferSize {}, using minimum size {}.", userPreferredRBSize, RINGBUFFER_MIN_SIZE);
             }
             ringBufferSize = size;
         } catch (final Exception ex) {
@@ -117,8 +118,8 @@ final class DisruptorUtil {
         try {
             return result.get();
         } catch (final Exception ex) {
-            final String msg = "Could not obtain executor thread Id. "
-                    + "Giving up to avoid the risk of application deadlock.";
+            final String msg =
+                    "Could not obtain executor thread Id. " + "Giving up to avoid the risk of application deadlock.";
             throw new IllegalStateException(msg, ex);
         }
     }

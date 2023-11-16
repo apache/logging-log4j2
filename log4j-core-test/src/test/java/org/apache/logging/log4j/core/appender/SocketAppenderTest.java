@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,9 +37,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
@@ -54,11 +58,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -128,12 +127,15 @@ public class SocketAppenderTest {
             throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-            .setHost("localhost")
-            .setPort(tcpTestServer.getLocalPort())
-            .setReconnectDelayMillis(-1).setName("test")
-            .setImmediateFail(false)
-            .setBufferSize(bufferSize).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-            .build();
+                .setHost("localhost")
+                .setPort(tcpTestServer.getLocalPort())
+                .setReconnectDelayMillis(-1)
+                .setName("test")
+                .setImmediateFail(false)
+                .setBufferSize(bufferSize)
+                .setLayout((Layout<? extends Serializable>)
+                        JsonLayout.newBuilder().setProperties(true).build())
+                .build();
         // @formatter:on
         appender.start();
         Assert.assertEquals(bufferSize, appender.getManager().getByteBuffer().capacity());
@@ -175,10 +177,13 @@ public class SocketAppenderTest {
     public void testDefaultProtocol() throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-            .setPort(tcpServer.getLocalPort())
-            .setReconnectDelayMillis(-1).setName("test")
-            .setImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-            .build();
+                .setPort(tcpServer.getLocalPort())
+                .setReconnectDelayMillis(-1)
+                .setName("test")
+                .setImmediateFail(false)
+                .setLayout((Layout<? extends Serializable>)
+                        JsonLayout.newBuilder().setProperties(true).build())
+                .build();
         // @formatter:on
         assertNotNull(appender);
         appender.stop();
@@ -194,11 +199,14 @@ public class SocketAppenderTest {
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-            .setProtocol(Protocol.UDP)
-            .setPort(tcpServer.getLocalPort())
-            .setReconnectDelayMillis(-1).setName("test")
-            .setImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-            .build();
+                .setProtocol(Protocol.UDP)
+                .setPort(tcpServer.getLocalPort())
+                .setReconnectDelayMillis(-1)
+                .setName("test")
+                .setImmediateFail(false)
+                .setLayout((Layout<? extends Serializable>)
+                        JsonLayout.newBuilder().setProperties(true).build())
+                .build();
         // @formatter:on
         appender.start();
 
@@ -218,11 +226,14 @@ public class SocketAppenderTest {
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-            .setHost("localhost")
-            .setPort(DYN_PORT)
-            .setReconnectDelayMillis(100).setName("test")
-            .setImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-            .build();
+                .setHost("localhost")
+                .setPort(DYN_PORT)
+                .setReconnectDelayMillis(100)
+                .setName("test")
+                .setImmediateFail(false)
+                .setLayout((Layout<? extends Serializable>)
+                        JsonLayout.newBuilder().setProperties(true).build())
+                .build();
         // @formatter:on
         appender.start();
         // set appender on root and set level to debug
@@ -247,11 +258,15 @@ public class SocketAppenderTest {
     public void testTcpAppenderNoWait() throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-            .setHost("localhost")
-            .setPort(ERROR_PORT)
-            .setReconnectDelayMillis(100).setName("test")
-            .setImmediateFail(false).setIgnoreExceptions(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-            .build();
+                .setHost("localhost")
+                .setPort(ERROR_PORT)
+                .setReconnectDelayMillis(100)
+                .setName("test")
+                .setImmediateFail(false)
+                .setIgnoreExceptions(false)
+                .setLayout((Layout<? extends Serializable>)
+                        JsonLayout.newBuilder().setProperties(true).build())
+                .build();
         // @formatter:on
         appender.start();
         // set appender on root and set level to debug
@@ -373,7 +388,8 @@ public class SocketAppenderTest {
                     if (socket != null) {
                         final InputStream is = socket.getInputStream();
                         while (!shutdown) {
-                            final MappingIterator<LogEvent> mappingIterator = objectMapper.readerFor(Log4jLogEvent.class).readValues(is);
+                            final MappingIterator<LogEvent> mappingIterator =
+                                    objectMapper.readerFor(Log4jLogEvent.class).readValues(is);
                             while (mappingIterator.hasNextValue()) {
                                 queue.add(mappingIterator.nextValue());
                                 ++count;
@@ -398,5 +414,4 @@ public class SocketAppenderTest {
             return count;
         }
     }
-
 }

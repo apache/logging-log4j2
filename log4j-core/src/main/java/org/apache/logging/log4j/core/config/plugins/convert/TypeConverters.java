@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.convert;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -31,8 +34,6 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Duration;
@@ -41,8 +42,6 @@ import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Collection of basic TypeConverter implementations. May be used to register additional TypeConverters or find
@@ -202,7 +201,6 @@ public final class TypeConverters {
                 default:
                     return LoaderUtil.loadClass(s);
             }
-
         }
     }
 
@@ -245,8 +243,7 @@ public final class TypeConverters {
         @Override
         @SuppressFBWarnings(
                 value = "PATH_TRAVERSAL_IN",
-                justification = "The name of the accessed file is based on a configuration value."
-        )
+                justification = "The name of the accessed file is based on a configuration value.")
         public File convert(final String s) {
             return new File(s);
         }
@@ -316,8 +313,7 @@ public final class TypeConverters {
         @Override
         @SuppressFBWarnings(
                 value = "PATH_TRAVERSAL_IN",
-                justification = "The name of the accessed file is based on a configuration value."
-        )
+                justification = "The name of the accessed file is based on a configuration value.")
         public Path convert(final String s) throws Exception {
             return Paths.get(s);
         }
@@ -420,7 +416,8 @@ public final class TypeConverters {
      */
     public static <T> T convert(final String s, final Class<? extends T> clazz, final Object defaultValue) {
         @SuppressWarnings("unchecked")
-        final TypeConverter<T> converter = (TypeConverter<T>) TypeConverterRegistry.getInstance().findCompatibleConverter(clazz);
+        final TypeConverter<T> converter =
+                (TypeConverter<T>) TypeConverterRegistry.getInstance().findCompatibleConverter(clazz);
         if (s == null) {
             // don't debug print here, resulting output is hard to understand
             // LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
@@ -429,8 +426,12 @@ public final class TypeConverters {
         try {
             return converter.convert(s);
         } catch (final Exception e) {
-            LOGGER.warn("Error while converting string [{}] to type [{}]. Using default value [{}].", s, clazz,
-                    defaultValue, e);
+            LOGGER.warn(
+                    "Error while converting string [{}] to type [{}]. Using default value [{}].",
+                    s,
+                    clazz,
+                    defaultValue,
+                    e);
             return parseDefaultValue(converter, defaultValue);
         }
     }
@@ -452,5 +453,4 @@ public final class TypeConverters {
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
 }

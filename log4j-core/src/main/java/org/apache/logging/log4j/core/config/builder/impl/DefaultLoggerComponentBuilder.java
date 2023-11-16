@@ -33,8 +33,8 @@ class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuil
      * @param name
      * @param level
      */
-    public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
-            final String level) {
+    public DefaultLoggerComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String name, final String level) {
         super(builder, name, "Logger");
         if (level != null) {
             addAttribute("level", level);
@@ -48,8 +48,11 @@ class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuil
      * @param level
      * @param includeLocation
      */
-    public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
-            final String level, final boolean includeLocation) {
+    public DefaultLoggerComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String name,
+            final String level,
+            final boolean includeLocation) {
         super(builder, name, "Logger");
         if (level != null) {
             addAttribute("level", level);
@@ -64,8 +67,11 @@ class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuil
      * @param level
      * @param type
      */
-    public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
-            final String level, final String type) {
+    public DefaultLoggerComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String name,
+            final String level,
+            final String type) {
         super(builder, name, type);
         if (level != null) {
             addAttribute("level", level);
@@ -80,8 +86,12 @@ class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuil
      * @param type
      * @param includeLocation
      */
-    public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
-            final String level, final String type, final boolean includeLocation) {
+    public DefaultLoggerComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String name,
+            final String level,
+            final String type,
+            final boolean includeLocation) {
         super(builder, name, type);
         if (level != null) {
             addAttribute("level", level);

@@ -17,7 +17,6 @@
 package org.apache.log4j.defaultInit;
 
 import java.util.Enumeration;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -29,30 +28,28 @@ import org.junit.Ignore;
 @Ignore
 public class TestCase2 extends TestCase {
 
-  public TestCase2(final String name) {
-    super(name);
-  }
+    public TestCase2(final String name) {
+        super(name);
+    }
 
-  public void setUp() {
-  }
+    public void setUp() {}
 
-  public void tearDown() {
-    LogManager.shutdown();
-  }
+    public void tearDown() {
+        LogManager.shutdown();
+    }
 
-  public void xmlTest() {
-      final Logger root = Logger.getRootLogger();
-      final boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
-    assertTrue(rootIsConfigured);
-      final Enumeration e = root.getAllAppenders();
-      final Appender appender = (Appender) e.nextElement();
-    assertEquals(appender.getName(), "D1");
-  }
+    public void xmlTest() {
+        final Logger root = Logger.getRootLogger();
+        final boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
+        assertTrue(rootIsConfigured);
+        final Enumeration e = root.getAllAppenders();
+        final Appender appender = (Appender) e.nextElement();
+        assertEquals(appender.getName(), "D1");
+    }
 
-  public static Test suite() {
-      final TestSuite suite = new TestSuite();
-    suite.addTest(new TestCase2("xmlTest"));
-    return suite;
-  }
-
+    public static Test suite() {
+        final TestSuite suite = new TestSuite();
+        suite.addTest(new TestCase2("xmlTest"));
+        return suite;
+    }
 }

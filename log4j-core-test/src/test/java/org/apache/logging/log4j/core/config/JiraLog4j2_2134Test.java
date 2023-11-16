@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.Serializable;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import java.io.Serializable;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,8 +31,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 @Tag("yaml")
 @LoggerContextSource("log4j2-2134.yml")
 public class JiraLog4j2_2134Test {
@@ -42,20 +41,25 @@ public class JiraLog4j2_2134Test {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
         final PatternLayout layout = PatternLayout.newBuilder()
-        // @formatter:off
+                // @formatter:off
                 .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .withConfiguration(config)
                 .build();
         final Layout<? extends Serializable> layout1 = layout;
         // @formatter:on
-        final Appender appender = FileAppender.newBuilder().withFileName("target/test.log").setLayout(layout1)
-        .setConfiguration(config).withBufferSize(4000).setName("File").build();
+        final Appender appender = FileAppender.newBuilder()
+                .withFileName("target/test.log")
+                .setLayout(layout1)
+                .setConfiguration(config)
+                .withBufferSize(4000)
+                .setName("File")
+                .build();
         // appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
-        final AppenderRef[] refs = new AppenderRef[] { ref };
-        final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "testlog4j2refresh", "true", refs,
-                null, config, null);
+        final AppenderRef[] refs = new AppenderRef[] {ref};
+        final LoggerConfig loggerConfig =
+                LoggerConfig.createLogger(false, Level.INFO, "testlog4j2refresh", "true", refs, null, config, null);
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("testlog4j2refresh", loggerConfig);
         ctx.stop();
@@ -101,16 +105,28 @@ public class JiraLog4j2_2134Test {
         final Logger log = LogManager.getLogger(this.getClass());
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
-        final PatternLayout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, config, null,
-                null, false, false, null, null);
-        final Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true", "false",
-                "false", "4000", layout, null, "false", null, config);
+        final PatternLayout layout = PatternLayout.createLayout(
+                PatternLayout.SIMPLE_CONVERSION_PATTERN, null, config, null, null, false, false, null, null);
+        final Appender appender = FileAppender.createAppender(
+                "target/test.log",
+                "false",
+                "false",
+                "File",
+                "true",
+                "false",
+                "false",
+                "4000",
+                layout,
+                null,
+                "false",
+                null,
+                config);
         appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
-        final AppenderRef[] refs = new AppenderRef[] { ref };
-        final LoggerConfig loggerConfig = LoggerConfig.createLogger("false", Level.INFO, "testlog4j2refresh", "true", refs,
-                null, config, null);
+        final AppenderRef[] refs = new AppenderRef[] {ref};
+        final LoggerConfig loggerConfig =
+                LoggerConfig.createLogger("false", Level.INFO, "testlog4j2refresh", "true", refs, null, config, null);
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("testlog4j2refresh", loggerConfig);
         ctx.stop();

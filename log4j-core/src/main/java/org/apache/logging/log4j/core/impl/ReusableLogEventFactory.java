@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -54,9 +53,14 @@ public class ReusableLogEventFactory implements LogEventFactory, LocationAwareLo
      * @return The LogEvent.
      */
     @Override
-    public LogEvent createEvent(final String loggerName, final Marker marker,
-        final String fqcn, final Level level, final Message message,
-        final List<Property> properties, final Throwable t) {
+    public LogEvent createEvent(
+            final String loggerName,
+            final Marker marker,
+            final String fqcn,
+            final Level level,
+            final Message message,
+            final List<Property> properties,
+            final Throwable t) {
         return createEvent(loggerName, marker, fqcn, null, level, message, properties, t);
     }
 
@@ -74,9 +78,15 @@ public class ReusableLogEventFactory implements LogEventFactory, LocationAwareLo
      * @return The LogEvent.
      */
     @Override
-    public LogEvent createEvent(final String loggerName, final Marker marker, final String fqcn,
-                                final StackTraceElement location, final Level level, final Message message,
-                                final List<Property> properties, final Throwable t) {
+    public LogEvent createEvent(
+            final String loggerName,
+            final Marker marker,
+            final String fqcn,
+            final StackTraceElement location,
+            final Level level,
+            final Message message,
+            final List<Property> properties,
+            final Throwable t) {
         final MutableLogEvent result = getOrCreateMutableLogEvent();
         result.reserved = true;
         // No need to clear here, values are cleared in release when reserved is set to false.
@@ -91,7 +101,8 @@ public class ReusableLogEventFactory implements LogEventFactory, LocationAwareLo
         result.setThrown(t);
         result.setSource(location);
         result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));
-        result.setContextStack(ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack());// mutable copy
+        result.setContextStack(
+                ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack()); // mutable copy
 
         if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
             result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call

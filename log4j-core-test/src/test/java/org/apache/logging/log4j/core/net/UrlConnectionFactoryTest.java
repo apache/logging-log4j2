@@ -16,6 +16,19 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import com.sun.management.UnixOperatingSystemMXBean;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,12 +40,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Enumeration;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.sun.management.UnixOperatingSystemMXBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -46,19 +56,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the UrlConnectionFactory
@@ -121,18 +118,18 @@ public class UrlConnectionFactoryTest {
         is.close();
         final long lastModified = source.getLastModified();
         int result = verifyNotModified(uri, lastModified);
-        assertEquals(SC_NOT_MODIFIED, result,"File was modified");
+        assertEquals(SC_NOT_MODIFIED, result, "File was modified");
         final File file = new File("target/classes/log4j2-config.xml");
         if (!file.setLastModified(System.currentTimeMillis())) {
             fail("Unable to set last modified time");
         }
         result = verifyNotModified(uri, lastModified);
-        assertEquals(SC_OK, result,"File was not modified");
+        assertEquals(SC_OK, result, "File was not modified");
     }
 
     private int verifyNotModified(final URI uri, final long lastModifiedMillis) throws Exception {
-        final HttpURLConnection urlConnection = UrlConnectionFactory.createConnection(uri.toURL(),
-                lastModifiedMillis, null, null);
+        final HttpURLConnection urlConnection =
+                UrlConnectionFactory.createConnection(uri.toURL(), lastModifiedMillis, null, null);
         urlConnection.connect();
 
         try {
@@ -173,8 +170,8 @@ public class UrlConnectionFactoryTest {
         private static final long serialVersionUID = -2885158530511450659L;
 
         @Override
-        protected void doGet(final HttpServletRequest request,
-                final HttpServletResponse response) throws ServletException, IOException {
+        protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
+                throws ServletException, IOException {
             final Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
             if (headers == null) {
                 response.sendError(SC_UNAUTHORIZED, "No Auth header");

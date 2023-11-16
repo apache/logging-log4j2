@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.IOException;
 
-
 /**
  * The Action interface should be implemented by any class that performs
  * file system actions for RollingFileAppenders after the close of

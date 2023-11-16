@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
@@ -41,13 +40,16 @@ public final class HttpInputStreamUtil {
     private static final int OK = 200;
     private static final int BUF_SIZE = 1024;
 
-    public static Result getInputStream(final LastModifiedSource source,
-            final AuthorizationProvider authorizationProvider) {
+    public static Result getInputStream(
+            final LastModifiedSource source, final AuthorizationProvider authorizationProvider) {
         final Result result = new Result();
         try {
             final long lastModified = source.getLastModified();
-            final HttpURLConnection connection = UrlConnectionFactory.createConnection(source.getURI().toURL(),
-                    lastModified, SslConfigurationFactory.getSslConfiguration(), authorizationProvider);
+            final HttpURLConnection connection = UrlConnectionFactory.createConnection(
+                    source.getURI().toURL(),
+                    lastModified,
+                    SslConfigurationFactory.getSslConfiguration(),
+                    authorizationProvider);
             connection.connect();
             try {
                 final int code = connection.getResponseCode();
@@ -65,18 +67,21 @@ public final class HttpInputStreamUtil {
                     case OK: {
                         try (final InputStream is = connection.getInputStream()) {
                             source.setLastModified(connection.getLastModified());
-                            LOGGER.debug("Content was modified for {}. previous lastModified: {}, new lastModified: {}",
-                                    source.toString(), lastModified, connection.getLastModified());
+                            LOGGER.debug(
+                                    "Content was modified for {}. previous lastModified: {}, new lastModified: {}",
+                                    source.toString(),
+                                    lastModified,
+                                    connection.getLastModified());
                             result.status = Status.SUCCESS;
                             result.inputStream = new ByteArrayInputStream(readStream(is));
                             return result;
                         } catch (final IOException e) {
                             try (final InputStream es = connection.getErrorStream()) {
-                                LOGGER.info("Error accessing configuration at {}: {}", source.toString(),
-                                        readStream(es));
+                                LOGGER.info(
+                                        "Error accessing configuration at {}: {}", source.toString(), readStream(es));
                             } catch (final IOException ioe) {
-                                LOGGER.error("Error accessing configuration at {}: {}", source.toString(),
-                                        e.getMessage());
+                                LOGGER.error(
+                                        "Error accessing configuration at {}: {}", source.toString(), e.getMessage());
                             }
                             throw new ConfigurationException("Unable to access " + source.toString(), e);
                         }
@@ -117,8 +122,7 @@ public final class HttpInputStreamUtil {
         private InputStream inputStream;
         private Status status;
 
-        public Result() {
-        }
+        public Result() {}
 
         public Result(final Status status) {
             this.status = status;

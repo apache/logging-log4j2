@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
@@ -33,8 +32,8 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-                        final StringBuilder log) {
+    public Object visit(
+            final Configuration configuration, final Node node, final LogEvent event, final StringBuilder log) {
         final String name = this.annotation.value();
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);

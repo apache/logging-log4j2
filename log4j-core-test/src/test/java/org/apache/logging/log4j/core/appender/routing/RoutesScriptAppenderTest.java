@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -39,9 +41,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 @RunWith(Parameterized.class)
 @Category(Scripts.Groovy.class) // technically only half of these tests require groovy
 public class RoutesScriptAppenderTest {
@@ -50,10 +49,10 @@ public class RoutesScriptAppenderTest {
     public static Object[][] getParameters() {
         // @formatter:off
         return new Object[][] {
-            { "log4j-routing-routes-script-groovy.xml", false },
-            { "log4j-routing-routes-script-javascript.xml", false },
-            { "log4j-routing-script-staticvars-javascript.xml", true },
-            { "log4j-routing-script-staticvars-groovy.xml", true },
+            {"log4j-routing-routes-script-groovy.xml", false},
+            {"log4j-routing-routes-script-javascript.xml", false},
+            {"log4j-routing-script-staticvars-javascript.xml", true},
+            {"log4j-routing-script-staticvars-groovy.xml", true},
         };
         // @formatter:on
     }
@@ -81,6 +80,7 @@ public class RoutesScriptAppenderTest {
             assertEquals("HEXDUMP", map.get("MarkerName"));
         }
     }
+
     private ListAppender getListAppender() {
         final String key = "Service2";
         final RoutingAppender routingAppender = getRoutingAppender();
@@ -115,7 +115,9 @@ public class RoutesScriptAppenderTest {
     @Test
     public void testListAppenderPresence() {
         // No appender until an event is routed, even thought we initialized the default route on startup.
-        Assert.assertNull("No appender control generated", getRoutingAppender().getAppenders().get("Service2"));
+        Assert.assertNull(
+                "No appender control generated",
+                getRoutingAppender().getAppenders().get("Service2"));
     }
 
     @Test
@@ -138,8 +140,8 @@ public class RoutesScriptAppenderTest {
         final Routes routes = routingAppender.getRoutes();
         Assert.assertNotNull(routes);
         Assert.assertNotNull(routes.getPatternScript());
-        final LogEvent logEvent = DefaultLogEventFactory.getInstance().createEvent("", null, "", Level.ERROR, null,
-                null, null);
+        final LogEvent logEvent =
+                DefaultLogEventFactory.getInstance().createEvent("", null, "", Level.ERROR, null, null, null);
         assertEquals("Service2", routes.getPattern(logEvent, new ConcurrentHashMap<>()));
     }
 

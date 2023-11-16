@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -62,8 +61,14 @@ public final class FailoverAppender extends AbstractAppender {
 
     private volatile long nextCheckNanos;
 
-    private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
-            final int intervalMillis, final Configuration config, final boolean ignoreExceptions,
+    private FailoverAppender(
+            final String name,
+            final Filter filter,
+            final String primary,
+            final String[] failovers,
+            final int intervalMillis,
+            final Configuration config,
+            final boolean ignoreExceptions,
             final Property[] properties) {
         super(name, filter, null, ignoreExceptions, properties);
         this.primaryRef = primary;
@@ -129,8 +134,8 @@ public final class FailoverAppender extends AbstractAppender {
     }
 
     private void failover(final LogEvent event, final Exception ex) {
-        final RuntimeException re = ex != null ?
-                (ex instanceof LoggingException ? (LoggingException) ex : new LoggingException(ex)) : null;
+        final RuntimeException re =
+                ex != null ? (ex instanceof LoggingException ? (LoggingException) ex : new LoggingException(ex)) : null;
         boolean written = false;
         Exception failoverException = null;
         for (final AppenderControl control : failoverAppenders) {
@@ -186,7 +191,8 @@ public final class FailoverAppender extends AbstractAppender {
             @PluginAttribute("primary") final String primary,
             @PluginElement("Failovers") final String[] failovers,
             @PluginAliases("retryInterval") // deprecated
-            @PluginAttribute("retryIntervalSeconds") final String retryIntervalSeconds,
+                    @PluginAttribute("retryIntervalSeconds")
+                    final String retryIntervalSeconds,
             @PluginConfiguration final Configuration config,
             @PluginElement("Filter") final Filter filter,
             @PluginAttribute("ignoreExceptions") final String ignore) {
@@ -214,6 +220,7 @@ public final class FailoverAppender extends AbstractAppender {
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
-        return new FailoverAppender(name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions, null);
+        return new FailoverAppender(
+                name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions, null);
     }
 }

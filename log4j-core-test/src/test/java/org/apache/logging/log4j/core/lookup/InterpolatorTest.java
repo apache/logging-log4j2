@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -33,10 +36,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests {@link Interpolator}.
@@ -51,22 +50,23 @@ public class InterpolatorTest {
     private static final String TEST_CONTEXT_NAME = "app-1";
 
     @ClassRule
-    public final static RuleChain RULES = RuleChain.outerRule(new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            System.setProperty(TESTKEY, TESTVAL);
-            System.setProperty(TESTKEY2, TESTVAL);
-            System.setProperty("log4j2.enableJndiLookup", "true");
-        }
+    public static final RuleChain RULES = RuleChain.outerRule(new ExternalResource() {
+                @Override
+                protected void before() throws Throwable {
+                    System.setProperty(TESTKEY, TESTVAL);
+                    System.setProperty(TESTKEY2, TESTVAL);
+                    System.setProperty("log4j2.enableJndiLookup", "true");
+                }
 
-        @Override
-        protected void after() {
-            System.clearProperty(TESTKEY);
-            System.clearProperty(TESTKEY2);
-            System.clearProperty("log4j2.enableJndiLookup");
-        }
-    }).around(new JndiRule(
-        JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME));
+                @Override
+                protected void after() {
+                    System.clearProperty(TESTKEY);
+                    System.clearProperty(TESTKEY2);
+                    System.clearProperty("log4j2.enableJndiLookup");
+                }
+            })
+            .around(new JndiRule(
+                    JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME));
 
     @Test
     public void testGetDefaultLookup() {
@@ -157,9 +157,7 @@ public class InterpolatorTest {
                 .setLevel(Level.INFO)
                 .setMessage(new StringMapMessage(map))
                 .build();
-        assertNull(
-                interpolator.lookup(event, "key"),
-                "Values without a map prefix should not match MapMessages");
+        assertNull(interpolator.lookup(event, "key"), "Values without a map prefix should not match MapMessages");
     }
 
     @Test

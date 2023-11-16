@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -27,20 +28,16 @@ import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
-
 class JsonLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
-    private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout
-            .newBuilder()
+    private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
             .setEventTemplateUri("classpath:JsonLayout.json")
             .build();
 
-    private static final JsonLayout JSON_LAYOUT = JsonLayout
-            .newBuilder()
+    private static final JsonLayout JSON_LAYOUT = JsonLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
             .setProperties(true)
             .build();
@@ -66,11 +63,13 @@ class JsonLayoutTest {
     private static void test(final LogEvent logEvent) {
         final Map<String, Object> jsonTemplateLayoutMap = renderUsingJsonTemplateLayout(logEvent);
         final Map<String, Object> jsonLayoutMap = renderUsingJsonLayout(logEvent);
-        // `JsonLayout` blindly serializes the `Throwable` as a POJO, this is, to say the least, quite wrong, and I ain't going to try to emulate this behaviour in `JsonTemplateLayout`.
+        // `JsonLayout` blindly serializes the `Throwable` as a POJO, this is, to say the least, quite wrong, and I
+        // ain't going to try to emulate this behaviour in `JsonTemplateLayout`.
         // Hence, discarding the "thrown" field.
         jsonTemplateLayoutMap.remove("thrown");
         jsonLayoutMap.remove("thrown");
-        // When the log event doesn't have any MDC, `JsonLayout` still emits an empty `contextMap` field, whereas `JsonTemplateLayout` totally skips it.
+        // When the log event doesn't have any MDC, `JsonLayout` still emits an empty `contextMap` field, whereas
+        // `JsonTemplateLayout` totally skips it.
         // Removing `contextMap` field to avoid discrepancies when there is no MDC to render.
         if (logEvent.getContextData().isEmpty()) {
             jsonLayoutMap.remove("contextMap");
@@ -78,14 +77,11 @@ class JsonLayoutTest {
         Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(jsonLayoutMap);
     }
 
-    private static Map<String, Object> renderUsingJsonTemplateLayout(
-            final LogEvent logEvent) {
+    private static Map<String, Object> renderUsingJsonTemplateLayout(final LogEvent logEvent) {
         return serializeUsingLayout(logEvent, JSON_TEMPLATE_LAYOUT);
     }
 
-    private static Map<String, Object> renderUsingJsonLayout(
-            final LogEvent logEvent) {
+    private static Map<String, Object> renderUsingJsonLayout(final LogEvent logEvent) {
         return serializeUsingLayout(logEvent, JSON_LAYOUT);
     }
-
 }

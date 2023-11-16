@@ -51,7 +51,8 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
      * Private constructor to prevent instantiation
      */
     private StaticLoggerBinder() {
-        loggerFactory = new Log4jLoggerFactory((Log4jMarkerFactory) StaticMarkerBinder.getSingleton().getMarkerFactory());
+        loggerFactory = new Log4jLoggerFactory(
+                (Log4jMarkerFactory) StaticMarkerBinder.getSingleton().getMarkerFactory());
     }
 
     /**

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.util.Strings;
 
-
 /**
  * Utility class for transforming strings.
  */
@@ -30,8 +29,7 @@ public final class Transform {
     private static final String CDATA_EMBEDED_END = CDATA_END + CDATA_PSEUDO_END + CDATA_START;
     private static final int CDATA_END_LEN = CDATA_END.length();
 
-    private Transform() {
-    }
+    private Transform() {}
 
     /**
      * This method takes a string which may contain HTML tags (ie,
@@ -47,15 +45,15 @@ public final class Transform {
         // if so, return what was sent in.
 
         if (Strings.isEmpty(input)
-            || (input.indexOf('"') == -1 &&
-            input.indexOf('&') == -1 &&
-            input.indexOf('<') == -1 &&
-            input.indexOf('>') == -1)) {
+                || (input.indexOf('"') == -1
+                        && input.indexOf('&') == -1
+                        && input.indexOf('<') == -1
+                        && input.indexOf('>') == -1)) {
             return input;
         }
 
-        //Use a StringBuilder in lieu of String concatenation -- it is
-        //much more efficient this way.
+        // Use a StringBuilder in lieu of String concatenation -- it is
+        // much more efficient this way.
 
         final StringBuilder buf = new StringBuilder(input.length() + 6);
 
@@ -66,21 +64,21 @@ public final class Transform {
                 buf.append(ch);
             } else
                 switch (ch) {
-                case '<':
-                    buf.append("&lt;");
-                    break;
-                case '>':
-                    buf.append("&gt;");
-                    break;
-                case '&':
-                    buf.append("&amp;");
-                    break;
-                case '"':
-                    buf.append("&quot;");
-                    break;
-                default:
-                    buf.append(ch);
-                    break;
+                    case '<':
+                        buf.append("&lt;");
+                        break;
+                    case '>':
+                        buf.append("&gt;");
+                        break;
+                    case '&':
+                        buf.append("&amp;");
+                        break;
+                    case '"':
+                        buf.append("&quot;");
+                        break;
+                    default:
+                        buf.append(ch);
+                        break;
                 }
         }
         return buf.toString();
@@ -131,14 +129,14 @@ public final class Transform {
         // TODO: escaped Unicode chars.
 
         if (Strings.isEmpty(input)
-            || (input.indexOf('"') == -1 &&
-            input.indexOf('\\') == -1 &&
-            input.indexOf('/') == -1 &&
-            input.indexOf('\b') == -1 &&
-            input.indexOf('\f') == -1 &&
-            input.indexOf('\n') == -1 &&
-            input.indexOf('\r') == -1 &&
-            input.indexOf('\t') == -1)) {
+                || (input.indexOf('"') == -1
+                        && input.indexOf('\\') == -1
+                        && input.indexOf('/') == -1
+                        && input.indexOf('\b') == -1
+                        && input.indexOf('\f') == -1
+                        && input.indexOf('\n') == -1
+                        && input.indexOf('\r') == -1
+                        && input.indexOf('\t') == -1)) {
             return input;
         }
 
@@ -149,40 +147,40 @@ public final class Transform {
             final char ch = input.charAt(i);
             final String escBs = "\\";
             switch (ch) {
-            case '"':
-                buf.append(escBs);
-                buf.append(ch);
-                break;
-            case '\\':
-                buf.append(escBs);
-                buf.append(ch);
-                break;
-            case '/':
-                buf.append(escBs);
-                buf.append(ch);
-                break;
-            case '\b':
-                buf.append(escBs);
-                buf.append('b');
-                break;
-            case '\f':
-                buf.append(escBs);
-                buf.append('f');
-                break;
-            case '\n':
-                buf.append(escBs);
-                buf.append('n');
-                break;
-            case '\r':
-                buf.append(escBs);
-                buf.append('r');
-                break;
-            case '\t':
-                buf.append(escBs);
-                buf.append('t');
-                break;
-            default:
-                buf.append(ch);
+                case '"':
+                    buf.append(escBs);
+                    buf.append(ch);
+                    break;
+                case '\\':
+                    buf.append(escBs);
+                    buf.append(ch);
+                    break;
+                case '/':
+                    buf.append(escBs);
+                    buf.append(ch);
+                    break;
+                case '\b':
+                    buf.append(escBs);
+                    buf.append('b');
+                    break;
+                case '\f':
+                    buf.append(escBs);
+                    buf.append('f');
+                    break;
+                case '\n':
+                    buf.append(escBs);
+                    buf.append('n');
+                    break;
+                case '\r':
+                    buf.append(escBs);
+                    buf.append('r');
+                    break;
+                case '\t':
+                    buf.append(escBs);
+                    buf.append('t');
+                    break;
+                default:
+                    buf.append(ch);
             }
         }
         return buf.toString();

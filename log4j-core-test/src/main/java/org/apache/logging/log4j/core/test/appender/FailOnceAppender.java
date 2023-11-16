@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.test.appender;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
@@ -73,15 +72,13 @@ public class FailOnceAppender extends AbstractAppender {
 
     @PluginFactory
     public static FailOnceAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name,
-        @PluginAttribute("throwableClassName") final String throwableClassName) {
+            @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name,
+            @PluginAttribute("throwableClassName") final String throwableClassName) {
         final Supplier<Throwable> throwableSupplier = createThrowableSupplier(name, throwableClassName);
         return new FailOnceAppender(name, throwableSupplier);
     }
 
-    private static Supplier<Throwable> createThrowableSupplier(
-            final String name,
-            final String throwableClassName) {
+    private static Supplier<Throwable> createThrowableSupplier(final String name, final String throwableClassName) {
 
         // Fallback to LoggingException if none is given.
         final String message = String.format("failing on purpose for appender '%s'", name);
@@ -91,17 +88,22 @@ public class FailOnceAppender extends AbstractAppender {
 
         // Check against the expected exception classes.
         switch (throwableClassName) {
-            case ThrowableClassName.RUNTIME_EXCEPTION: return () -> new RuntimeException(message);
-            case ThrowableClassName.EXCEPTION: return () -> new Exception(message);
-            case ThrowableClassName.ERROR: return () -> new Error(message);
-            case ThrowableClassName.THROWABLE: return () -> new Throwable(message);
-            case ThrowableClassName.THREAD_DEATH: return () -> {
-                stopCurrentThread();
-                throw new IllegalStateException("should not have reached here");
-            };
-            default: throw new IllegalArgumentException("unknown throwable class name: " + throwableClassName);
+            case ThrowableClassName.RUNTIME_EXCEPTION:
+                return () -> new RuntimeException(message);
+            case ThrowableClassName.EXCEPTION:
+                return () -> new Exception(message);
+            case ThrowableClassName.ERROR:
+                return () -> new Error(message);
+            case ThrowableClassName.THROWABLE:
+                return () -> new Throwable(message);
+            case ThrowableClassName.THREAD_DEATH:
+                return () -> {
+                    stopCurrentThread();
+                    throw new IllegalStateException("should not have reached here");
+                };
+            default:
+                throw new IllegalArgumentException("unknown throwable class name: " + throwableClassName);
         }
-
     }
 
     @SuppressWarnings("deprecation")
@@ -109,7 +111,8 @@ public class FailOnceAppender extends AbstractAppender {
         Thread.currentThread().stop();
     }
 
-    public enum ThrowableClassName {;
+    public enum ThrowableClassName {
+        ;
 
         public static final String RUNTIME_EXCEPTION = "RuntimeException";
 
@@ -122,7 +125,5 @@ public class FailOnceAppender extends AbstractAppender {
         public static final String THROWABLE = "Throwable";
 
         public static final String THREAD_DEATH = "ThreadDeath";
-
     }
-
 }

@@ -16,8 +16,9 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
+import java.util.List;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.util.Strings;
@@ -29,8 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -55,7 +54,7 @@ public class OptionalTest {
     private void verify(final String name, final String expected) {
         final ListAppender listApp = CTX.getListAppender(name);
         final List<String> events = listApp.getMessages();
-        assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
+        assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size() == 1);
         final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
         listApp.clear();

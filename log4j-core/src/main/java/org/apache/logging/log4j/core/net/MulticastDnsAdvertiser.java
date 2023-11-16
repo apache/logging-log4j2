@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -136,7 +135,10 @@ public class MulticastDnsAdvertiser implements Advertiser {
     private static Object createJmDnsVersion1() {
         try {
             return LoaderUtil.newInstanceOf(jmDNSClass);
-        } catch (final InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (final InstantiationException
+                | IllegalAccessException
+                | NoSuchMethodException
+                | InvocationTargetException e) {
             LOGGER.warn("Unable to instantiate JMDNS", e);
         }
         return null;
@@ -154,14 +156,15 @@ public class MulticastDnsAdvertiser implements Advertiser {
         return null;
     }
 
-    private static Object buildServiceInfoVersion1(final String zone, final int port, final String name,
-            final Map<String, String> properties) {
+    private static Object buildServiceInfoVersion1(
+            final String zone, final int port, final String name, final Map<String, String> properties) {
         // version 1 uses a hashtable
         @SuppressWarnings("UseOfObsoleteCollectionType")
         final Hashtable<String, String> hashtableProperties = new Hashtable<>(properties);
         try {
-            return serviceInfoClass.getConstructor(String.class, String.class, int.class, int.class, int.class,
-                    Hashtable.class).newInstance(zone, name, port, 0, 0, hashtableProperties);
+            return serviceInfoClass
+                    .getConstructor(String.class, String.class, int.class, int.class, int.class, Hashtable.class)
+                    .newInstance(zone, name, port, 0, 0, hashtableProperties);
         } catch (final IllegalAccessException | InstantiationException | InvocationTargetException e) {
             LOGGER.warn("Unable to construct ServiceInfo instance", e);
         } catch (final NoSuchMethodException e) {
@@ -170,8 +173,8 @@ public class MulticastDnsAdvertiser implements Advertiser {
         return null;
     }
 
-    private static Object buildServiceInfoVersion3(final String zone, final int port, final String name,
-            final Map<String, String> properties) {
+    private static Object buildServiceInfoVersion3(
+            final String zone, final int port, final String name, final Map<String, String> properties) {
         try {
             return serviceInfoClass
                     // zone/type display name port weight priority properties

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.nogc;
 
 import java.nio.ByteBuffer;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;

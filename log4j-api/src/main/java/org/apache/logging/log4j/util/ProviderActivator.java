@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.util;
 
 import java.util.Hashtable;
-
 import org.apache.logging.log4j.spi.Provider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -51,5 +50,4 @@ public abstract class ProviderActivator implements BundleActivator {
             providerRegistration.unregister();
         }
     }
-
 }

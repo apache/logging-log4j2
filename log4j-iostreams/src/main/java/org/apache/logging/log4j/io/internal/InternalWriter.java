@@ -18,7 +18,6 @@ package org.apache.logging.log4j.io.internal;
 
 import java.io.IOException;
 import java.io.Writer;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.io.CharStreamLogger;

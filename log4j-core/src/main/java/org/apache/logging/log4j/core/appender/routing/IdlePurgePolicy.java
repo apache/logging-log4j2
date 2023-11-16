@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
@@ -32,8 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Policy is purging appenders that were not in use specified time in minutes
@@ -96,7 +95,6 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
                 }
             }
         }
-
     }
 
     @Override
@@ -132,10 +130,10 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
      */
     @PluginFactory
     public static PurgePolicy createPurgePolicy(
-        @PluginAttribute("timeToLive") final String timeToLive,
-        @PluginAttribute("checkInterval") final String checkInterval,
-        @PluginAttribute("timeUnit") final String timeUnit,
-        @PluginConfiguration final Configuration configuration) {
+            @PluginAttribute("timeToLive") final String timeToLive,
+            @PluginAttribute("checkInterval") final String checkInterval,
+            @PluginAttribute("timeUnit") final String timeUnit,
+            @PluginConfiguration final Configuration configuration) {
 
         if (timeToLive == null) {
             LOGGER.error("A timeToLive value is required");
@@ -177,5 +175,4 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     public String toString() {
         return "timeToLive=" + timeToLive;
     }
-
 }

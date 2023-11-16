@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -34,8 +35,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @Tag("AsyncLoggers")
 @UsingTestProperties
 @UsingStatusListener
@@ -48,8 +47,7 @@ public class AsyncLoggerThreadContextTest {
 
     @BeforeAll
     public static void beforeClass() {
-        props.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
+        props.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
     }
 
     @Test
@@ -71,5 +69,4 @@ public class AsyncLoggerThreadContextTest {
         Files.delete(file);
         assertThat(line1).contains(msg, "mapvalue", "stackvalue");
     }
-
 }

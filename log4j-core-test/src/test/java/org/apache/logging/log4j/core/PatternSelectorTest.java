@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -26,8 +27,6 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "bsh, Javascript")
 @LoggerContextSource("log4j-patternSelector.xml")
@@ -43,10 +42,14 @@ public class PatternSelectorTest {
         logger.traceExit();
         final List<String> messages = app.getMessages();
         assertNotNull(messages, "No Messages");
-        assertEquals(3, messages.size(),
+        assertEquals(
+                3,
+                messages.size(),
                 "Incorrect number of messages. Expected 3, Actual " + messages.size() + ": " + messages);
-        final String expect = String.format("[TRACE] TestMarkerPatternSelector ====== "
-                + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:%d Enter ======%n", CURRENT_LINE + 5);
+        final String expect = String.format(
+                "[TRACE] TestMarkerPatternSelector ====== "
+                        + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:%d Enter ======%n",
+                CURRENT_LINE + 5);
         assertEquals(expect, messages.get(0));
         assertEquals("[INFO ] TestMarkerPatternSelector Hello World" + Strings.LINE_SEPARATOR, messages.get(1));
         app.clear();
@@ -62,13 +65,19 @@ public class PatternSelectorTest {
         logger.traceExit();
         final List<String> messages = app.getMessages();
         assertNotNull(messages, "No Messages");
-        assertEquals(4, messages.size(),
+        assertEquals(
+                4,
+                messages.size(),
                 "Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages);
-        String expect = String.format("[TRACE] TestScriptPatternSelector ====== "
-                + "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:%d Enter ======%n", CURRENT_LINE + 23);
+        String expect = String.format(
+                "[TRACE] TestScriptPatternSelector ====== "
+                        + "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:%d Enter ======%n",
+                CURRENT_LINE + 23);
         assertEquals(expect, messages.get(0));
-        expect = String.format("[INFO ] TestScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector.%d "
-                + "Hello World%n", CURRENT_LINE + 24);
+        expect = String.format(
+                "[INFO ] TestScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector.%d "
+                        + "Hello World%n",
+                CURRENT_LINE + 24);
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] NoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));
         app.clear();
@@ -84,13 +93,19 @@ public class PatternSelectorTest {
         logger.traceExit();
         final List<String> messages = app.getMessages();
         assertNotNull(messages, "No Messages");
-        assertEquals(4, messages.size(),
+        assertEquals(
+                4,
+                messages.size(),
                 "Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages);
-        String expect = String.format("[TRACE] TestJavaScriptPatternSelector ====== "
-                + "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:%d Enter ======%n", CURRENT_LINE + 45);
+        String expect = String.format(
+                "[TRACE] TestJavaScriptPatternSelector ====== "
+                        + "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:%d Enter ======%n",
+                CURRENT_LINE + 45);
         assertEquals(expect, messages.get(0));
-        expect = String.format("[INFO ] TestJavaScriptPatternSelector "
-                + "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector.%d Hello World%n", CURRENT_LINE + 46);
+        expect = String.format(
+                "[INFO ] TestJavaScriptPatternSelector "
+                        + "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector.%d Hello World%n",
+                CURRENT_LINE + 46);
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] JavascriptNoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));
         app.clear();

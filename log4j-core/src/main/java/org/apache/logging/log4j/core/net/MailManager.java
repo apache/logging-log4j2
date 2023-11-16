@@ -36,9 +36,19 @@ public abstract class MailManager extends AbstractManager {
      *
      * @return smtp manager name
      */
-    static String createManagerName(final String to, final String cc, final String bcc, final String from,
-            final String replyTo, final String subject, final String smtpProtocol, final String smtpHost,
-            final int smtpPort, final String smtpUsername, final boolean smtpDebug, final String filterName) {
+    static String createManagerName(
+            final String to,
+            final String cc,
+            final String bcc,
+            final String from,
+            final String replyTo,
+            final String subject,
+            final String smtpProtocol,
+            final String smtpHost,
+            final int smtpPort,
+            final String smtpUsername,
+            final boolean smtpDebug,
+            final String filterName) {
 
         final StringBuilder sb = new StringBuilder();
 
@@ -66,7 +76,12 @@ public abstract class MailManager extends AbstractManager {
             sb.append(subject);
         }
         sb.append(':');
-        sb.append(smtpProtocol).append(':').append(smtpHost).append(':').append(smtpPort).append(':');
+        sb.append(smtpProtocol)
+                .append(':')
+                .append(smtpHost)
+                .append(':')
+                .append(smtpPort)
+                .append(':');
         if (smtpUsername != null) {
             sb.append(smtpUsername);
         }
@@ -95,11 +110,22 @@ public abstract class MailManager extends AbstractManager {
         private final String filterName;
         private final String managerName;
 
-
-
-        public FactoryData(final String to, final String cc, final String bcc, final String from, final String replyTo, final String subject,
-                final Serializer subjectSerializer, final String smtpProtocol, final String smtpHost, final int smtpPort, final String smtpUsername,
-                final String smtpPassword, final boolean smtpDebug, final int bufferSize, final SslConfiguration sslConfiguration,
+        public FactoryData(
+                final String to,
+                final String cc,
+                final String bcc,
+                final String from,
+                final String replyTo,
+                final String subject,
+                final Serializer subjectSerializer,
+                final String smtpProtocol,
+                final String smtpHost,
+                final int smtpPort,
+                final String smtpUsername,
+                final String smtpPassword,
+                final boolean smtpDebug,
+                final int bufferSize,
+                final SslConfiguration sslConfiguration,
                 final String filterName) {
             this.to = to;
             this.cc = cc;
@@ -117,8 +143,19 @@ public abstract class MailManager extends AbstractManager {
             this.bufferSize = bufferSize;
             this.sslConfiguration = sslConfiguration;
             this.filterName = filterName;
-            this.managerName = createManagerName(to, cc, bcc, from, replyTo, subject, smtpProtocol, smtpHost, smtpPort,
-                    smtpUsername, smtpDebug, filterName);
+            this.managerName = createManagerName(
+                    to,
+                    cc,
+                    bcc,
+                    from,
+                    replyTo,
+                    subject,
+                    smtpProtocol,
+                    smtpHost,
+                    smtpPort,
+                    smtpUsername,
+                    smtpDebug,
+                    filterName);
         }
 
         public String getTo() {

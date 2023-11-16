@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.async;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Core;
@@ -81,10 +80,17 @@ public class AsyncLoggerConfig extends LoggerConfig {
         @Override
         public LoggerConfig build() {
             final String name = getLoggerName().equals(ROOT) ? Strings.EMPTY : getLoggerName();
-            final LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
-                    getConfig());
-            return new AsyncLoggerConfig(name, container.refs,getFilter(), container.level, isAdditivity(),
-                    getProperties(), getConfig(), includeLocation(getIncludeLocation()));
+            final LevelAndRefs container =
+                    LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(), getConfig());
+            return new AsyncLoggerConfig(
+                    name,
+                    container.refs,
+                    getFilter(),
+                    container.level,
+                    isAdditivity(),
+                    getProperties(),
+                    getConfig(),
+                    includeLocation(getIncludeLocation()));
         }
     }
 
@@ -97,13 +103,16 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
     private final AsyncLoggerConfigDelegate delegate;
 
-    protected AsyncLoggerConfig(final String name,
-            final List<AppenderRef> appenders, final Filter filter,
-            final Level level, final boolean additive,
-            final Property[] properties, final Configuration config,
+    protected AsyncLoggerConfig(
+            final String name,
+            final List<AppenderRef> appenders,
+            final Filter filter,
+            final Level level,
+            final boolean additive,
+            final Property[] properties,
+            final Configuration config,
             final boolean includeLocation) {
-        super(name, appenders, filter, level, additive, properties, config,
-                includeLocation);
+        super(name, appenders, filter, level, additive, properties, config, includeLocation);
         delegate = config.getAsyncLoggerConfigDelegate();
         delegate.setLogEventFactory(getLogEventFactory());
     }
@@ -116,8 +125,9 @@ public class AsyncLoggerConfig extends LoggerConfig {
     @Override
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         // See LOG4J2-2301
-        if (predicate == LoggerConfigPredicate.ALL &&
-                ASYNC_LOGGER_ENTERED.get() == Boolean.FALSE &&
+        if (predicate == LoggerConfigPredicate.ALL
+                && ASYNC_LOGGER_ENTERED.get() == Boolean.FALSE
+                &&
                 // Optimization: AsyncLoggerConfig is identical to LoggerConfig
                 // when no appenders are present. Avoid splitting for synchronous
                 // and asynchronous execution paths until encountering an
@@ -255,16 +265,14 @@ public class AsyncLoggerConfig extends LoggerConfig {
         try {
             level = Level.toLevel(levelName, Level.ERROR);
         } catch (final Exception ex) {
-            LOGGER.error(
-                    "Invalid Log level specified: {}. Defaulting to Error",
-                    levelName);
+            LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", levelName);
             level = Level.ERROR;
         }
         final String name = loggerName.equals(LoggerConfig.ROOT) ? Strings.EMPTY : loggerName;
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
-        return new AsyncLoggerConfig(name, appenderRefs, filter, level,
-                additive, properties, config, includeLocation(includeLocation));
+        return new AsyncLoggerConfig(
+                name, appenderRefs, filter, level, additive, properties, config, includeLocation(includeLocation));
     }
 
     /**
@@ -285,14 +293,22 @@ public class AsyncLoggerConfig extends LoggerConfig {
     public static LoggerConfig createLogger(
             @PluginAttribute(value = "additivity", defaultBoolean = true) final boolean additivity,
             @PluginAttribute("level") final Level level,
-            @Required(message = "Loggers cannot be configured without a name") @PluginAttribute("name") final String loggerName,
+            @Required(message = "Loggers cannot be configured without a name") @PluginAttribute("name")
+                    final String loggerName,
             @PluginAttribute("includeLocation") final String includeLocation,
             @PluginElement("AppenderRef") final AppenderRef[] refs,
             @PluginElement("Properties") final Property[] properties,
             @PluginConfiguration final Configuration config,
             @PluginElement("Filter") final Filter filter) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
-        return new AsyncLoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
+        return new AsyncLoggerConfig(
+                name,
+                Arrays.asList(refs),
+                filter,
+                level,
+                additivity,
+                properties,
+                config,
                 includeLocation(includeLocation));
     }
 
@@ -316,10 +332,16 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
             @Override
             public LoggerConfig build() {
-                final LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
-                        getConfig());
-                return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, getFilter(), container.level,
-                        isAdditivity(), getProperties(), getConfig(),
+                final LevelAndRefs container =
+                        LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(), getConfig());
+                return new AsyncLoggerConfig(
+                        LogManager.ROOT_LOGGER_NAME,
+                        container.refs,
+                        getFilter(),
+                        container.level,
+                        isAdditivity(),
+                        getProperties(),
+                        getConfig(),
                         AsyncLoggerConfig.includeLocation(getIncludeLocation()));
             }
         }
@@ -345,8 +367,14 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 level = Level.ERROR;
             }
             final boolean additive = Booleans.parseBoolean(additivity, true);
-            return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME,
-                    appenderRefs, filter, level, additive, properties, config,
+            return new AsyncLoggerConfig(
+                    LogManager.ROOT_LOGGER_NAME,
+                    appenderRefs,
+                    filter,
+                    level,
+                    additive,
+                    properties,
+                    config,
                     AsyncLoggerConfig.includeLocation(includeLocation));
         }
 
@@ -365,8 +393,15 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final List<AppenderRef> appenderRefs = Arrays.asList(refs);
             final Level actualLevel = level == null ? Level.ERROR : level;
             final boolean additive = Booleans.parseBoolean(additivity, true);
-            return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, actualLevel, additive,
-                    properties, config, AsyncLoggerConfig.includeLocation(includeLocation));
+            return new AsyncLoggerConfig(
+                    LogManager.ROOT_LOGGER_NAME,
+                    appenderRefs,
+                    filter,
+                    actualLevel,
+                    additive,
+                    properties,
+                    config,
+                    AsyncLoggerConfig.includeLocation(includeLocation));
         }
     }
 }

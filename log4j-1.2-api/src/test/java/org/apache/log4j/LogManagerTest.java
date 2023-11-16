@@ -16,14 +16,13 @@
  */
 package org.apache.log4j;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link LogManager}.
@@ -33,7 +32,9 @@ public class LogManagerTest {
     private static final String SIMPLE_NAME = LogManagerTest.class.getSimpleName();
 
     List<String> getCurrentLoggerNames() {
-        return Collections.list((Enumeration<Logger>) LogManager.getCurrentLoggers()).stream().map(Logger::getName).collect(Collectors.toList());
+        return Collections.list((Enumeration<Logger>) LogManager.getCurrentLoggers()).stream()
+                .map(Logger::getName)
+                .collect(Collectors.toList());
     }
 
     @Test

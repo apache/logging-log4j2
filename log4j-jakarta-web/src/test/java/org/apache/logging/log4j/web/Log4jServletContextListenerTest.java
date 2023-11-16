@@ -16,11 +16,18 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.util.concurrent.atomic.AtomicReference;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.AdditionalAnswers.answerVoid;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.doAnswer;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
-
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,15 +38,6 @@ import org.mockito.Mock;
 import org.mockito.Mock.Strictness;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.AdditionalAnswers.answerVoid;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.doAnswer;
-
 @ExtendWith(MockitoExtension.class)
 public class Log4jServletContextListenerTest {
     /* event and servletContext are marked lenient because they aren't used in the
@@ -47,8 +45,10 @@ public class Log4jServletContextListenerTest {
      */
     @Mock(strictness = Strictness.LENIENT)
     private ServletContextEvent event;
+
     @Mock(strictness = Strictness.LENIENT)
     private ServletContext servletContext;
+
     @Mock
     private Log4jWebLifeCycle initializer;
 
@@ -62,13 +62,11 @@ public class Log4jServletContextListenerTest {
         doAnswer(answerVoid((k, v) -> count.set(v)))
                 .when(servletContext)
                 .setAttribute(eq(Log4jServletContextListener.START_COUNT_ATTR), any());
-        doAnswer(__ -> count.get())
-                .when(servletContext)
-                .getAttribute(Log4jServletContextListener.START_COUNT_ATTR);
+        doAnswer(__ -> count.get()).when(servletContext).getAttribute(Log4jServletContextListener.START_COUNT_ATTR);
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 1, 2, 3 })
+    @ValueSource(ints = {1, 2, 3})
     public void testInitAndDestroy(final int listenerCount) throws Exception {
         final Log4jServletContextListener[] listeners = new Log4jServletContextListener[listenerCount];
         for (int idx = 0; idx < listenerCount; idx++) {
@@ -102,7 +100,9 @@ public class Log4jServletContextListenerTest {
         willThrow(new IllegalStateException(Strings.EMPTY)).given(initializer).start();
         final Log4jServletContextListener listener = new Log4jServletContextListener();
 
-        assertThrows(RuntimeException.class, () -> listener.contextInitialized(this.event),
+        assertThrows(
+                RuntimeException.class,
+                () -> listener.contextInitialized(this.event),
                 "Failed to initialize Log4j properly.");
     }
 

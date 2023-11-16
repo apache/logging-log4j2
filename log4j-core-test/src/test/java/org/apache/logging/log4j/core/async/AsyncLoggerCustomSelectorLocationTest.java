@@ -16,13 +16,17 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -37,11 +41,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 @Category(AsyncLoggers.class)
 public class AsyncLoggerCustomSelectorLocationTest {
 
@@ -49,10 +48,9 @@ public class AsyncLoggerCustomSelectorLocationTest {
     public static void beforeClass() {
         final File file = new File("target", "AsyncLoggerCustomSelectorLocationTest.log");
         file.delete();
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                CustomAsyncContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerCustomSelectorLocationTest.xml");
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, CustomAsyncContextSelector.class.getName());
+        System.setProperty(
+                ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerCustomSelectorLocationTest.xml");
     }
 
     @AfterClass
@@ -87,13 +85,15 @@ public class AsyncLoggerCustomSelectorLocationTest {
 
     public static final class CustomAsyncContextSelector implements ContextSelector {
         private static final LoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");
+
         @Override
         public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
             return CONTEXT;
         }
 
         @Override
-        public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
+        public LoggerContext getContext(
+                final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
             return CONTEXT;
         }
 

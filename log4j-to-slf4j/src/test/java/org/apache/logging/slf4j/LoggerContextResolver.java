@@ -16,12 +16,11 @@
  */
 package org.apache.logging.slf4j;
 
-import java.net.URL;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import java.net.URL;
 import org.apache.logging.log4j.test.junit.ExtensionContextAnchor;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -37,7 +36,8 @@ import org.junit.platform.commons.support.ModifierSupport;
 import org.junit.platform.commons.support.ReflectionSupport;
 import org.slf4j.LoggerFactory;
 
-class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> implements BeforeAllCallback, BeforeEachCallback {
+class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext>
+        implements BeforeAllCallback, BeforeEachCallback {
 
     private static final Object KEY = LoggerContextHolder.class;
 
@@ -45,34 +45,34 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
-            final LoggerContextHolder holder = ExtensionContextAnchor.getAttribute(KEY,
-                    LoggerContextHolder.class,
-                    extensionContext);
+            final LoggerContextHolder holder =
+                    ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext);
             if (holder == null) {
                 throw new IllegalStateException(
-                        "Specified @LoggerContextSource but no LoggerContext found for test class " + testClass.getCanonicalName());
+                        "Specified @LoggerContextSource but no LoggerContext found for test class "
+                                + testClass.getCanonicalName());
             }
-
         }
         AnnotationSupport.findAnnotation(extensionContext.getRequiredTestMethod(), LoggerContextSource.class)
                 .ifPresent(source -> {
                     final LoggerContextHolder holder = new LoggerContextHolder(source, extensionContext);
                     ExtensionContextAnchor.setAttribute(KEY, holder, extensionContext);
                 });
-        final LoggerContextHolder holder = ExtensionContextAnchor.getAttribute(KEY,
-                LoggerContextHolder.class,
-                extensionContext);
+        final LoggerContextHolder holder =
+                ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext);
         if (holder != null) {
-            ReflectionSupport.findFields(extensionContext.getRequiredTestClass(),
-                    f -> ModifierSupport.isNotStatic(f) && f.getType().equals(LoggerContext.class),
-                    HierarchyTraversalMode.TOP_DOWN).forEach(f -> {
-                try {
-                    f.setAccessible(true);
-                    f.set(extensionContext.getRequiredTestInstance(), holder.getLoggerContext());
-                } catch (ReflectiveOperationException e) {
-                    throw new ExtensionContextException("Failed to inject field " + f, e);
-                }
-            });
+            ReflectionSupport.findFields(
+                            extensionContext.getRequiredTestClass(),
+                            f -> ModifierSupport.isNotStatic(f) && f.getType().equals(LoggerContext.class),
+                            HierarchyTraversalMode.TOP_DOWN)
+                    .forEach(f -> {
+                        try {
+                            f.setAccessible(true);
+                            f.set(extensionContext.getRequiredTestInstance(), holder.getLoggerContext());
+                        } catch (ReflectiveOperationException e) {
+                            throw new ExtensionContextException("Failed to inject field " + f, e);
+                        }
+                    });
         }
     }
 
@@ -83,28 +83,29 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             final LoggerContextHolder holder = new LoggerContextHolder(testSource, extensionContext);
             ExtensionContextAnchor.setAttribute(KEY, holder, extensionContext);
         });
-        final LoggerContextHolder holder = ExtensionContextAnchor.getAttribute(KEY,
-                LoggerContextHolder.class,
-                extensionContext);
+        final LoggerContextHolder holder =
+                ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext);
         if (holder != null) {
-            ReflectionSupport.findFields(extensionContext.getRequiredTestClass(),
-                    f -> ModifierSupport.isStatic(f) && f.getType().equals(LoggerContext.class),
-                    HierarchyTraversalMode.TOP_DOWN).forEach(f -> {
-                try {
-                    f.setAccessible(true);
-                    f.set(null, holder.getLoggerContext());
-                } catch (ReflectiveOperationException e) {
-                    throw new ExtensionContextException("Failed to inject field " + f, e);
-                }
-            });
+            ReflectionSupport.findFields(
+                            extensionContext.getRequiredTestClass(),
+                            f -> ModifierSupport.isStatic(f) && f.getType().equals(LoggerContext.class),
+                            HierarchyTraversalMode.TOP_DOWN)
+                    .forEach(f -> {
+                        try {
+                            f.setAccessible(true);
+                            f.set(null, holder.getLoggerContext());
+                        } catch (ReflectiveOperationException e) {
+                            throw new ExtensionContextException("Failed to inject field " + f, e);
+                        }
+                    });
         }
     }
 
     @Override
-    public LoggerContext resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return ExtensionContextAnchor.getAttribute(KEY,
-                LoggerContextHolder.class,
-                extensionContext).getLoggerContext();
+    public LoggerContext resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+            throws ParameterResolutionException {
+        return ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext)
+                .getLoggerContext();
     }
 
     static final class LoggerContextHolder implements Store.CloseableResource {
@@ -125,10 +126,10 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             } catch (final JoranException e) {
                 throw new ExtensionContextException("Failed to initialize Logback logger context for " + clazz, e);
             }
-
         }
 
-        private static URL getConfigLocation(final LoggerContextSource source, final ExtensionContext extensionContext) {
+        private static URL getConfigLocation(
+                final LoggerContextSource source, final ExtensionContext extensionContext) {
             final String value = source.value();
             Class<?> clazz = extensionContext.getRequiredTestClass();
             URL url = null;

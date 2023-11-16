@@ -16,18 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-import javax.persistence.PersistenceException;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import javax.persistence.PersistenceException;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;

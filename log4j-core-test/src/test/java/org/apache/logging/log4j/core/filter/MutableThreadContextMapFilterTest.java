@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,7 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
@@ -33,8 +34,6 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junitpioneer.jupiter.RetryingTest;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test for simple App.
@@ -72,7 +71,8 @@ public class MutableThreadContextMapFilterTest implements MutableThreadContextMa
         final Appender app = loggerContext.getConfiguration().getAppender("List");
         assertNotNull(app);
         assertTrue(app instanceof ListAppender);
-        final MutableThreadContextMapFilter filter = (MutableThreadContextMapFilter) loggerContext.getConfiguration().getFilter();
+        final MutableThreadContextMapFilter filter =
+                (MutableThreadContextMapFilter) loggerContext.getConfiguration().getFilter();
         assertNotNull(filter);
         filter.registerListener(this);
         final Logger logger = loggerContext.getLogger("Test");

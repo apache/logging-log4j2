@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +26,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
@@ -43,8 +44,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -79,8 +78,7 @@ public class SerializedLayoutTest {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
-    private static final String body =
-        "<log4j:message><![CDATA[empty mdc]]></log4j:message>\r";
+    private static final String body = "<log4j:message><![CDATA[empty mdc]]></log4j:message>\r";
 
     private static final String[] expected = {
         "Logger=root Level=DEBUG Message=starting mdc pattern test",
@@ -89,7 +87,6 @@ public class SerializedLayoutTest {
         "Logger=root Level=ERROR Message=finished mdc pattern test",
         "Logger=root Level=ERROR Message=Throwing an exception"
     };
-
 
     /**
      * Test case for MDC conversion pattern.
@@ -136,8 +133,8 @@ public class SerializedLayoutTest {
         int i = 0;
         for (final byte[] item : data) {
             final ByteArrayInputStream bais = new ByteArrayInputStream(item);
-            final ObjectInputStream ois = useObjectInputStream ? new ObjectInputStream(bais) :
-                    new FilteredObjectInputStream(bais);
+            final ObjectInputStream ois =
+                    useObjectInputStream ? new ObjectInputStream(bais) : new FilteredObjectInputStream(bais);
             LogEvent event;
             try {
                 event = (LogEvent) ois.readObject();
@@ -177,8 +174,8 @@ public class SerializedLayoutTest {
         testSerialization();
         final File file = new File(DAT_PATH);
         final FileInputStream fis = new FileInputStream(file);
-        try (final ObjectInputStream ois = useObjectInputStream ? new ObjectInputStream(fis) :
-                new FilteredObjectInputStream(fis)) {
+        try (final ObjectInputStream ois =
+                useObjectInputStream ? new ObjectInputStream(fis) : new FilteredObjectInputStream(fis)) {
             final LogEvent event = (LogEvent) ois.readObject();
             assertNotNull(event);
         }

@@ -29,12 +29,9 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
     }
 
     @Override
-    public <V> Recycler<V> create(
-            final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
+    public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
         @SuppressWarnings("unchecked")
         final Queue<V> queue = (Queue<V>) queueSupplier.get();
         return new QueueingRecycler<>(supplier, cleaner, queue);
     }
-
 }

@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -114,17 +112,19 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
                 break;
             }
 
-            stackTrace.add(
-                    StackTraceElementAttributeConverter.convertString(line.trim().substring(3).trim())
-            );
+            stackTrace.add(StackTraceElementAttributeConverter.convertString(
+                    line.trim().substring(3).trim()));
         }
 
-        return this.getThrowable(throwableClassName, message, cause,
-                stackTrace.toArray(EMPTY_STACK_TRACE_ELEMENT_ARRAY));
+        return this.getThrowable(
+                throwableClassName, message, cause, stackTrace.toArray(EMPTY_STACK_TRACE_ELEMENT_ARRAY));
     }
 
-    private Throwable getThrowable(final String throwableClassName, final String message, final Throwable cause,
-                                   final StackTraceElement[] stackTrace) {
+    private Throwable getThrowable(
+            final String throwableClassName,
+            final String message,
+            final Throwable cause,
+            final StackTraceElement[] stackTrace) {
         try {
             @SuppressWarnings("unchecked")
             final Class<Throwable> throwableClass = (Class<Throwable>) LoaderUtil.loadClass(throwableClassName);
@@ -186,15 +186,14 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private Throwable getThrowable(final Class<Throwable> throwableClass, final String message, final Throwable cause) {
         try {
             @SuppressWarnings("unchecked")
-            final
-            Constructor<Throwable>[] constructors = (Constructor<Throwable>[]) throwableClass.getConstructors();
+            final Constructor<Throwable>[] constructors = (Constructor<Throwable>[]) throwableClass.getConstructors();
             for (final Constructor<Throwable> constructor : constructors) {
                 final Class<?>[] parameterTypes = constructor.getParameterTypes();
                 if (parameterTypes.length == 2) {
                     if (String.class == parameterTypes[0] && Throwable.class.isAssignableFrom(parameterTypes[1])) {
                         return constructor.newInstance(message, cause);
-                    } else if (String.class == parameterTypes[1] &&
-                            Throwable.class.isAssignableFrom(parameterTypes[0])) {
+                    } else if (String.class == parameterTypes[1]
+                            && Throwable.class.isAssignableFrom(parameterTypes[0])) {
                         return constructor.newInstance(cause, message);
                     }
                 }
@@ -208,8 +207,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private Throwable getThrowable(final Class<Throwable> throwableClass, final Throwable cause) {
         try {
             @SuppressWarnings("unchecked")
-            final
-            Constructor<Throwable>[] constructors = (Constructor<Throwable>[]) throwableClass.getConstructors();
+            final Constructor<Throwable>[] constructors = (Constructor<Throwable>[]) throwableClass.getConstructors();
             for (final Constructor<Throwable> constructor : constructors) {
                 final Class<?>[] parameterTypes = constructor.getParameterTypes();
                 if (parameterTypes.length == 1 && Throwable.class.isAssignableFrom(parameterTypes[0])) {

@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PropertiesUtilTest {
 
@@ -55,7 +54,8 @@ public class PropertiesUtilTest {
         assertEquals(4, parts.size());
         assertHasAllProperties(parts.get("a"));
         assertHasAllProperties(parts.get("b"));
-        assertHasAllProperties(PropertiesUtil.partitionOnCommonPrefixes(parts.get("c")).get("1"));
+        assertHasAllProperties(
+                PropertiesUtil.partitionOnCommonPrefixes(parts.get("c")).get("1"));
         assertHasAllProperties(parts.get("dd"));
     }
 
@@ -65,7 +65,6 @@ public class PropertiesUtilTest {
         assertEquals("2", properties.getProperty("2"));
         assertEquals("3", properties.getProperty("3"));
     }
-
 
     @Test
     public void testGetCharsetProperty() {
@@ -122,19 +121,19 @@ public class PropertiesUtilTest {
     }
 
     private static final String[][] data = {
-            { null, "org.apache.logging.log4j.level" },
-            { null, "Log4jAnotherProperty" },
-            { null, "log4j2.catalinaBase" },
-            { "ok", "log4j2.configurationFile" },
-            { "ok", "log4j2.defaultStatusLevel" },
-            { "ok", "log4j2.newLevel" },
-            { "ok", "log4j2.asyncLoggerTimeout" },
-            { "ok", "log4j2.asyncLoggerConfigRingBufferSize" },
-            { "ok", "log4j2.disableThreadContext" },
-            { "ok", "log4j2.disableThreadContextStack" },
-            { "ok", "log4j2.disableThreadContextMap" },
-            { "ok", "log4j2.isThreadContextMapInheritable" }
-            };
+        {null, "org.apache.logging.log4j.level"},
+        {null, "Log4jAnotherProperty"},
+        {null, "log4j2.catalinaBase"},
+        {"ok", "log4j2.configurationFile"},
+        {"ok", "log4j2.defaultStatusLevel"},
+        {"ok", "log4j2.newLevel"},
+        {"ok", "log4j2.asyncLoggerTimeout"},
+        {"ok", "log4j2.asyncLoggerConfigRingBufferSize"},
+        {"ok", "log4j2.disableThreadContext"},
+        {"ok", "log4j2.disableThreadContextStack"},
+        {"ok", "log4j2.disableThreadContextMap"},
+        {"ok", "log4j2.isThreadContextMapInheritable"}
+    };
 
     /**
      * LOG4J2-3413: Log4j should only resolve properties that start with a 'log4j'

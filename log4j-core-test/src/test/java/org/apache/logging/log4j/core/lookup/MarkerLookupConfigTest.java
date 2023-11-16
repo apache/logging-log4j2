@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,9 +30,6 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link MarkerLookup} with a configuration file.
@@ -69,7 +68,8 @@ public class MarkerLookupConfigTest {
             assertFalse(log.contains(PERFORMANCE_LOG));
         }
         {
-            final String log = FileUtils.readFileToString(new File("target/logs/performance.log"), StandardCharsets.UTF_8);
+            final String log =
+                    FileUtils.readFileToString(new File("target/logs/performance.log"), StandardCharsets.UTF_8);
             assertFalse(log.contains(SQL_LOG));
             assertFalse(log.contains(PAYLOAD_LOG));
             assertTrue(log.contains(PERFORMANCE_LOG));

@@ -24,7 +24,6 @@ import java.rmi.MarshalledObject;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -100,8 +99,7 @@ public class Log4jLogEvent implements LogEvent {
         private boolean endOfBatch = false;
         private long nanoTime;
 
-        public Builder() {
-        }
+        public Builder() {}
 
         public Builder(final LogEvent other) {
             Objects.requireNonNull(other);
@@ -144,7 +142,6 @@ public class Log4jLogEvent implements LogEvent {
                         this.contextData.clear();
                     }
                     this.contextData.putAll(other.getContextData());
-
                 }
                 this.thrownProxy = other.getThrownProxy();
                 this.source = other.getSource();
@@ -264,9 +261,23 @@ public class Log4jLogEvent implements LogEvent {
         @Override
         public Log4jLogEvent build() {
             initTimeFields();
-            final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFqcn, level, message, thrown,
-                    thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source,
-                    instant.getEpochMillisecond(), instant.getNanoOfMillisecond(), nanoTime);
+            final Log4jLogEvent result = new Log4jLogEvent(
+                    loggerName,
+                    marker,
+                    loggerFqcn,
+                    level,
+                    message,
+                    thrown,
+                    thrownProxy,
+                    contextData,
+                    contextStack,
+                    threadId,
+                    threadName,
+                    threadPriority,
+                    source,
+                    instant.getEpochMillisecond(),
+                    instant.getNanoOfMillisecond(),
+                    nanoTime);
             result.setIncludeLocation(includeLocation);
             result.setEndOfBatch(endOfBatch);
             return result;
@@ -288,58 +299,69 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     public Log4jLogEvent() {
-        this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, 0, null,
-                0, null, CLOCK, nanoClock.nanoTime());
+        this(
+                Strings.EMPTY,
+                null,
+                Strings.EMPTY,
+                null,
+                null,
+                (Throwable) null,
+                null,
+                null,
+                null,
+                0,
+                null,
+                0,
+                null,
+                CLOCK,
+                nanoClock.nanoTime());
     }
 
     /**
-    *
-    * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
-    */
-   @Deprecated
-   public Log4jLogEvent(final long timestamp) {
-       this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, 0, null,
-               0, null, timestamp, 0, nanoClock.nanoTime());
-   }
+     *
+     * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
+     */
+    @Deprecated
+    public Log4jLogEvent(final long timestamp) {
+        this(
+                Strings.EMPTY,
+                null,
+                Strings.EMPTY,
+                null,
+                null,
+                (Throwable) null,
+                null,
+                null,
+                null,
+                0,
+                null,
+                0,
+                null,
+                timestamp,
+                0,
+                nanoClock.nanoTime());
+    }
 
-   /**
-    * Constructor.
-    * @param loggerName The name of the Logger.
-    * @param marker The Marker or null.
-    * @param loggerFQCN The fully qualified class name of the caller.
-    * @param level The logging Level.
-    * @param message The Message.
-    * @param t A Throwable or null.
-    * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
-    */
-   @Deprecated
-   public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                        final Message message, final Throwable t) {
-       this(loggerName, marker, loggerFQCN, level, message, null, t);
-   }
-
-   /**
-    * Constructor.
-    * @param loggerName The name of the Logger.
-    * @param marker The Marker or null.
-    * @param loggerFQCN The fully qualified class name of the caller.
-    * @param level The logging Level.
-    * @param message The Message.
-    * @param properties the properties to be merged with ThreadContext key-value pairs into the event's ReadOnlyStringMap.
-    * @param t A Throwable or null.
-    */
-   // This constructor is called from LogEventFactories.
-   public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                        final Message message, final List<Property> properties, final Throwable t) {
-       this(loggerName, marker, loggerFQCN, level, message, t, null, createContextData(properties),
-           ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
-           0, // thread id
-           null, // thread name
-           0, // thread priority
-           null, // StackTraceElement source
-           CLOCK, //
-           nanoClock.nanoTime());
-   }
+    /**
+     * Constructor.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param loggerFQCN The fully qualified class name of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param t A Throwable or null.
+     * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
+     */
+    @Deprecated
+    public Log4jLogEvent(
+            final String loggerName,
+            final Marker marker,
+            final String loggerFQCN,
+            final Level level,
+            final Message message,
+            final Throwable t) {
+        this(loggerName, marker, loggerFQCN, level, message, null, t);
+    }
 
     /**
      * Constructor.
@@ -352,69 +374,165 @@ public class Log4jLogEvent implements LogEvent {
      * @param t A Throwable or null.
      */
     // This constructor is called from LogEventFactories.
-    public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN,
-        final StackTraceElement source, final Level level, final Message message, final List<Property> properties,
-        final Throwable t) {
-        this(loggerName, marker, loggerFQCN, level, message, t, null, createContextData(properties),
-            ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
-            0, // thread id
-            null, // thread name
-            0, // thread priority
-            source, // StackTraceElement source
-            CLOCK, //
-            nanoClock.nanoTime());
+    public Log4jLogEvent(
+            final String loggerName,
+            final Marker marker,
+            final String loggerFQCN,
+            final Level level,
+            final Message message,
+            final List<Property> properties,
+            final Throwable t) {
+        this(
+                loggerName,
+                marker,
+                loggerFQCN,
+                level,
+                message,
+                t,
+                null,
+                createContextData(properties),
+                ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
+                0, // thread id
+                null, // thread name
+                0, // thread priority
+                null, // StackTraceElement source
+                CLOCK, //
+                nanoClock.nanoTime());
     }
 
-   /**
-    * Constructor.
-    * @param loggerName The name of the Logger.
-    * @param marker The Marker or null.
-    * @param loggerFQCN The fully qualified class name of the caller.
-    * @param level The logging Level.
-    * @param message The Message.
-    * @param t A Throwable or null.
-    * @param mdc The mapped diagnostic context.
-    * @param ndc the nested diagnostic context.
-    * @param threadName The name of the thread.
-    * @param location The locations of the caller.
-    * @param timestampMillis The timestamp of the event.
-    * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
-    */
-   @Deprecated
-   public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                        final Message message, final Throwable t, final Map<String, String> mdc,
-                        final ThreadContext.ContextStack ndc, final String threadName,
-                        final StackTraceElement location, final long timestampMillis) {
-       this(loggerName, marker, loggerFQCN, level, message, t, null, createContextData(mdc), ndc, 0,
-               threadName, 0, location, timestampMillis, 0, nanoClock.nanoTime());
-   }
+    /**
+     * Constructor.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param loggerFQCN The fully qualified class name of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param properties the properties to be merged with ThreadContext key-value pairs into the event's ReadOnlyStringMap.
+     * @param t A Throwable or null.
+     */
+    // This constructor is called from LogEventFactories.
+    public Log4jLogEvent(
+            final String loggerName,
+            final Marker marker,
+            final String loggerFQCN,
+            final StackTraceElement source,
+            final Level level,
+            final Message message,
+            final List<Property> properties,
+            final Throwable t) {
+        this(
+                loggerName,
+                marker,
+                loggerFQCN,
+                level,
+                message,
+                t,
+                null,
+                createContextData(properties),
+                ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
+                0, // thread id
+                null, // thread name
+                0, // thread priority
+                source, // StackTraceElement source
+                CLOCK, //
+                nanoClock.nanoTime());
+    }
 
-   /**
-    * Create a new LogEvent.
-    * @param loggerName The name of the Logger.
-    * @param marker The Marker or null.
-    * @param loggerFQCN The fully qualified class name of the caller.
-    * @param level The logging Level.
-    * @param message The Message.
-    * @param thrown A Throwable or null.
-    * @param thrownProxy A ThrowableProxy or null.
-    * @param mdc The mapped diagnostic context.
-    * @param ndc the nested diagnostic context.
-    * @param threadName The name of the thread.
-    * @param location The locations of the caller.
-    * @param timestamp The timestamp of the event.
-    * @return a new LogEvent
-    * @deprecated use {@link Log4jLogEvent.Builder} instead. This method will be removed in an upcoming release.
-    */
+    /**
+     * Constructor.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param loggerFQCN The fully qualified class name of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param t A Throwable or null.
+     * @param mdc The mapped diagnostic context.
+     * @param ndc the nested diagnostic context.
+     * @param threadName The name of the thread.
+     * @param location The locations of the caller.
+     * @param timestampMillis The timestamp of the event.
+     * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
+     */
     @Deprecated
-    public static Log4jLogEvent createEvent(final String loggerName, final Marker marker, final String loggerFQCN,
-                                            final Level level, final Message message, final Throwable thrown,
-                                            final ThrowableProxy thrownProxy,
-                                            final Map<String, String> mdc, final ThreadContext.ContextStack ndc,
-                                            final String threadName, final StackTraceElement location,
-                                            final long timestamp) {
-        final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown,
-                thrownProxy, createContextData(mdc), ndc, 0, threadName, 0, location, timestamp, 0, nanoClock.nanoTime());
+    public Log4jLogEvent(
+            final String loggerName,
+            final Marker marker,
+            final String loggerFQCN,
+            final Level level,
+            final Message message,
+            final Throwable t,
+            final Map<String, String> mdc,
+            final ThreadContext.ContextStack ndc,
+            final String threadName,
+            final StackTraceElement location,
+            final long timestampMillis) {
+        this(
+                loggerName,
+                marker,
+                loggerFQCN,
+                level,
+                message,
+                t,
+                null,
+                createContextData(mdc),
+                ndc,
+                0,
+                threadName,
+                0,
+                location,
+                timestampMillis,
+                0,
+                nanoClock.nanoTime());
+    }
+
+    /**
+     * Create a new LogEvent.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param loggerFQCN The fully qualified class name of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param thrown A Throwable or null.
+     * @param thrownProxy A ThrowableProxy or null.
+     * @param mdc The mapped diagnostic context.
+     * @param ndc the nested diagnostic context.
+     * @param threadName The name of the thread.
+     * @param location The locations of the caller.
+     * @param timestamp The timestamp of the event.
+     * @return a new LogEvent
+     * @deprecated use {@link Log4jLogEvent.Builder} instead. This method will be removed in an upcoming release.
+     */
+    @Deprecated
+    public static Log4jLogEvent createEvent(
+            final String loggerName,
+            final Marker marker,
+            final String loggerFQCN,
+            final Level level,
+            final Message message,
+            final Throwable thrown,
+            final ThrowableProxy thrownProxy,
+            final Map<String, String> mdc,
+            final ThreadContext.ContextStack ndc,
+            final String threadName,
+            final StackTraceElement location,
+            final long timestamp) {
+        final Log4jLogEvent result = new Log4jLogEvent(
+                loggerName,
+                marker,
+                loggerFQCN,
+                level,
+                message,
+                thrown,
+                thrownProxy,
+                createContextData(mdc),
+                ndc,
+                0,
+                threadName,
+                0,
+                location,
+                timestamp,
+                0,
+                nanoClock.nanoTime());
         return result;
     }
 
@@ -438,34 +556,96 @@ public class Log4jLogEvent implements LogEvent {
      * @param nanoTime The value of the running Java Virtual Machine's high-resolution time source when the event was
      *          created.
      */
-    private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-            final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
-            final StringMap contextData, final ThreadContext.ContextStack contextStack, final long threadId,
-            final String threadName, final int threadPriority, final StackTraceElement source,
-            final long timestampMillis, final int nanoOfMillisecond, final long nanoTime) {
-        this(loggerName, marker, loggerFQCN, level, message, thrown, thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, nanoTime);
-        final long millis = message instanceof TimestampMessage
-                ? ((TimestampMessage) message).getTimestamp()
-                : timestampMillis;
+    private Log4jLogEvent(
+            final String loggerName,
+            final Marker marker,
+            final String loggerFQCN,
+            final Level level,
+            final Message message,
+            final Throwable thrown,
+            final ThrowableProxy thrownProxy,
+            final StringMap contextData,
+            final ThreadContext.ContextStack contextStack,
+            final long threadId,
+            final String threadName,
+            final int threadPriority,
+            final StackTraceElement source,
+            final long timestampMillis,
+            final int nanoOfMillisecond,
+            final long nanoTime) {
+        this(
+                loggerName,
+                marker,
+                loggerFQCN,
+                level,
+                message,
+                thrown,
+                thrownProxy,
+                contextData,
+                contextStack,
+                threadId,
+                threadName,
+                threadPriority,
+                source,
+                nanoTime);
+        final long millis =
+                message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : timestampMillis;
         instant.initFromEpochMilli(millis, nanoOfMillisecond);
     }
-    private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                          final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
-                          final StringMap contextData, final ThreadContext.ContextStack contextStack, final long threadId,
-                          final String threadName, final int threadPriority, final StackTraceElement source,
-                          final Clock clock, final long nanoTime) {
-        this(loggerName, marker, loggerFQCN, level, message, thrown, thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, nanoTime);
+
+    private Log4jLogEvent(
+            final String loggerName,
+            final Marker marker,
+            final String loggerFQCN,
+            final Level level,
+            final Message message,
+            final Throwable thrown,
+            final ThrowableProxy thrownProxy,
+            final StringMap contextData,
+            final ThreadContext.ContextStack contextStack,
+            final long threadId,
+            final String threadName,
+            final int threadPriority,
+            final StackTraceElement source,
+            final Clock clock,
+            final long nanoTime) {
+        this(
+                loggerName,
+                marker,
+                loggerFQCN,
+                level,
+                message,
+                thrown,
+                thrownProxy,
+                contextData,
+                contextStack,
+                threadId,
+                threadName,
+                threadPriority,
+                source,
+                nanoTime);
         if (message instanceof TimestampMessage) {
             instant.initFromEpochMilli(((TimestampMessage) message).getTimestamp(), 0);
         } else {
             instant.initFrom(clock);
         }
     }
-    private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                          final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
-                          final StringMap contextData, final ThreadContext.ContextStack contextStack, final long threadId,
-                          final String threadName, final int threadPriority, final StackTraceElement source,
-                          final long nanoTime) {
+
+    private Log4jLogEvent(
+            final String loggerName,
+            final Marker marker,
+            final String loggerFQCN,
+            final Level level,
+            final Message message,
+            final Throwable thrown,
+            final ThrowableProxy thrownProxy,
+            final StringMap contextData,
+            final ThreadContext.ContextStack contextStack,
+            final long threadId,
+            final String threadName,
+            final int threadPriority,
+            final StackTraceElement source,
+            final long nanoTime) {
         this.loggerName = loggerName;
         this.marker = marker;
         this.loggerFqcn = loggerFQCN;
@@ -518,7 +698,10 @@ public class Log4jLogEvent implements LogEvent {
      */
     public static void setNanoClock(final NanoClock nanoClock) {
         Log4jLogEvent.nanoClock = Objects.requireNonNull(nanoClock, "NanoClock must be non-null");
-        StatusLogger.getLogger().trace("Using {} for nanosecond timestamps.", nanoClock.getClass().getSimpleName());
+        StatusLogger.getLogger()
+                .trace(
+                        "Using {} for nanosecond timestamps.",
+                        nanoClock.getClass().getSimpleName());
     }
 
     /**
@@ -633,7 +816,6 @@ public class Log4jLogEvent implements LogEvent {
         }
         return thrownProxy;
     }
-
 
     /**
      * Returns the Marker associated with the event, or null.
@@ -770,10 +952,22 @@ public class Log4jLogEvent implements LogEvent {
         Objects.requireNonNull(event, "Event cannot be null");
         if (event instanceof LogEventProxy) {
             final LogEventProxy proxy = (LogEventProxy) event;
-            final Log4jLogEvent result = new Log4jLogEvent(proxy.loggerName, proxy.marker,
-                    proxy.loggerFQCN, proxy.level, proxy.message,
-                    proxy.thrown, proxy.thrownProxy, proxy.contextData, proxy.contextStack, proxy.threadId,
-                    proxy.threadName, proxy.threadPriority, proxy.source, proxy.timeMillis, proxy.nanoOfMillisecond,
+            final Log4jLogEvent result = new Log4jLogEvent(
+                    proxy.loggerName,
+                    proxy.marker,
+                    proxy.loggerFQCN,
+                    proxy.level,
+                    proxy.message,
+                    proxy.thrown,
+                    proxy.thrownProxy,
+                    proxy.contextData,
+                    proxy.contextStack,
+                    proxy.threadId,
+                    proxy.threadName,
+                    proxy.threadPriority,
+                    proxy.source,
+                    proxy.timeMillis,
+                    proxy.nanoOfMillisecond,
                     proxy.nanoTime);
             result.setEndOfBatch(proxy.isEndOfBatch);
             result.setIncludeLocation(proxy.isLocationRequired);
@@ -915,19 +1109,24 @@ public class Log4jLogEvent implements LogEvent {
         private MarshalledObject<Message> marshalledMessage;
         /** since 2.8 */
         private String messageString;
+
         private final long timeMillis;
         /** since 2.11 */
         private final int nanoOfMillisecond;
+
         private final transient Throwable thrown;
         private final ThrowableProxy thrownProxy;
         /** @since 2.7 */
         private final StringMap contextData;
+
         private final ThreadContext.ContextStack contextStack;
         /** @since 2.6 */
         private final long threadId;
+
         private final String threadName;
         /** @since 2.6 */
         private final int threadPriority;
+
         private final StackTraceElement source;
         private final boolean isLocationRequired;
         private final boolean isEndOfBatch;
@@ -939,9 +1138,8 @@ public class Log4jLogEvent implements LogEvent {
             this.marker = event.marker;
             this.level = event.level;
             this.loggerName = event.loggerName;
-            this.message = event.message instanceof ReusableMessage
-                    ? memento((ReusableMessage) event.message)
-                    : event.message;
+            this.message =
+                    event.message instanceof ReusableMessage ? memento((ReusableMessage) event.message) : event.message;
             this.timeMillis = event.instant.getEpochMillisecond();
             this.nanoOfMillisecond = event.instant.getNanoOfMillisecond();
             this.thrown = event.thrown;
@@ -964,16 +1162,15 @@ public class Log4jLogEvent implements LogEvent {
             this.loggerName = event.getLoggerName();
 
             final Message temp = event.getMessage();
-            message = temp instanceof ReusableMessage
-                    ? memento((ReusableMessage) temp)
-                    : temp;
+            message = temp instanceof ReusableMessage ? memento((ReusableMessage) temp) : temp;
             this.timeMillis = event.getInstant().getEpochMillisecond();
             this.nanoOfMillisecond = event.getInstant().getNanoOfMillisecond();
             this.thrown = event.getThrown();
             this.thrownProxy = event.getThrownProxy();
             this.contextData = memento(event.getContextData());
             this.contextStack = event.getContextStack();
-            this.source = includeLocation ? event.getSource()
+            this.source = includeLocation
+                    ? event.getSource()
                     : event instanceof MutableLogEvent ? ((MutableLogEvent) event).source : null;
             this.threadId = event.getThreadId();
             this.threadName = event.getThreadName();
@@ -1012,9 +1209,23 @@ public class Log4jLogEvent implements LogEvent {
          * @return Log4jLogEvent.
          */
         protected Object readResolve() {
-            final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message(), thrown,
-                    thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, timeMillis,
-                    nanoOfMillisecond, nanoTime);
+            final Log4jLogEvent result = new Log4jLogEvent(
+                    loggerName,
+                    marker,
+                    loggerFQCN,
+                    level,
+                    message(),
+                    thrown,
+                    thrownProxy,
+                    contextData,
+                    contextStack,
+                    threadId,
+                    threadName,
+                    threadPriority,
+                    source,
+                    timeMillis,
+                    nanoOfMillisecond,
+                    nanoTime);
             result.setEndOfBatch(isEndOfBatch);
             result.setIncludeLocation(isLocationRequired);
             return result;

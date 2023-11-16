@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jLogEventTest;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -38,8 +39,6 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests a "complete" JSON file.
@@ -87,22 +86,24 @@ public class JsonCompleteFileAppenderTest {
         final List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
 
         final String[] expected = {
-                "[", // equals
-                "{", // equals
-                "  \"instant\" : {", //
-                "    \"epochSecond\" : 1234567,", //
-                "    \"nanoOfSecond\" : 890000000", //
-                "  },", //
-                "  \"thread\" : \"main\",", //
-                "  \"level\" : \"INFO\",", //
-                "  \"loggerName\" : \"com.foo.Bar\",", //
-                "  \"message\" : \"Message flushed with immediate flush=true\",", //
-                "  \"endOfBatch\" : false,", //
-                "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",", //
+            "[", // equals
+            "{", // equals
+            "  \"instant\" : {", //
+            "    \"epochSecond\" : 1234567,", //
+            "    \"nanoOfSecond\" : 890000000", //
+            "  },", //
+            "  \"thread\" : \"main\",", //
+            "  \"level\" : \"INFO\",", //
+            "  \"loggerName\" : \"com.foo.Bar\",", //
+            "  \"message\" : \"Message flushed with immediate flush=true\",", //
+            "  \"endOfBatch\" : false,", //
+            "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",", //
         };
         for (int i = 0; i < expected.length; i++) {
             final String line = lines.get(i);
-            assertTrue("line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']', line.contains(expected[i]));
+            assertTrue(
+                    "line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']',
+                    line.contains(expected[i]));
         }
         final String location = "testFlushAtEndOfBatch";
         assertTrue("no location", !lines.get(0).contains(location));

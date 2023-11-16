@@ -16,8 +16,9 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -27,8 +28,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 // Config from `log4j-core` test jar.
 @LoggerContextSource("log4j2-config.xml")
@@ -61,7 +60,7 @@ public class Log4jEventBuilderTest {
         logger.atDebug().log("{}-{}", "a", "b");
         logger.atDebug().addArgument("a").log("{}-{}", "b");
         logger.atDebug().log("{}-{}", new Object[] {"a", "b"});
-        assertThat(appender.getEvents()).hasSize(4)
-        .allMatch(event -> "a-b".equals(event.getMessage().getFormattedMessage()));
+        assertThat(appender.getEvents()).hasSize(4).allMatch(event -> "a-b"
+                .equals(event.getMessage().getFormattedMessage()));
     }
 }

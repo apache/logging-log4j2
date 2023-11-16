@@ -20,7 +20,6 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -32,8 +31,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "log4j", category = StrLookup.CATEGORY)
 public class Log4jLookup extends AbstractConfigurationAwareLookup {
 
-    public final static String KEY_CONFIG_LOCATION = "configLocation";
-    public final static String KEY_CONFIG_PARENT_LOCATION = "configParentLocation";
+    public static final String KEY_CONFIG_LOCATION = "configLocation";
+    public static final String KEY_CONFIG_PARENT_LOCATION = "configParentLocation";
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 

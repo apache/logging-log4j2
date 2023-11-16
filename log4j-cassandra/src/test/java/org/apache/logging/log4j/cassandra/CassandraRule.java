@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.cassandra;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
+import com.datastax.driver.core.SocketOptions;
+import io.netty.channel.socket.ServerSocketChannel;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
@@ -25,11 +32,6 @@ import java.security.Permission;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
-
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.SocketOptions;
-import io.netty.channel.socket.ServerSocketChannel;
 import org.apache.cassandra.service.CassandraDaemon;
 import org.apache.cassandra.service.NativeTransportService;
 import org.apache.cassandra.transport.Server;
@@ -40,9 +42,6 @@ import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.rules.ExternalResource;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * JUnit rule to set up and tear down a Cassandra database instance.
@@ -92,8 +91,8 @@ public class CassandraRule extends ExternalResource {
                 .build();
 
         try (final Session session = cluster.connect()) {
-            session.execute("CREATE KEYSPACE " + keyspace + " WITH REPLICATION = " +
-                "{ 'class': 'SimpleStrategy', 'replication_factor': 2 };");
+            session.execute("CREATE KEYSPACE " + keyspace + " WITH REPLICATION = "
+                    + "{ 'class': 'SimpleStrategy', 'replication_factor': 2 };");
         }
         try (final Session session = connect()) {
             session.execute(tableDdl);
@@ -172,8 +171,7 @@ public class CassandraRule extends ExternalResource {
                     final Field trackerField = Server.class.getDeclaredField("connectionTracker");
                     trackerField.setAccessible(true);
                     final ConnectionTracker connectionTracker = (ConnectionTracker) trackerField.get(server);
-                    final ServerSocketChannel serverChannel = connectionTracker.allChannels
-                            .stream()
+                    final ServerSocketChannel serverChannel = connectionTracker.allChannels.stream()
                             .filter(ServerSocketChannel.class::isInstance)
                             .map(ServerSocketChannel.class::cast)
                             .findFirst()

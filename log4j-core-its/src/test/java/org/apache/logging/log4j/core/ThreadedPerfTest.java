@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.test.categories.PerformanceTests;
@@ -32,7 +31,8 @@ import org.junit.experimental.categories.Category;
 @Category(PerformanceTests.class)
 public class ThreadedPerfTest {
 
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(ThreadedPerfTest.class.getName());
+    private static final org.apache.logging.log4j.Logger logger =
+            LogManager.getLogger(ThreadedPerfTest.class.getName());
     private volatile Level lvl = Level.DEBUG;
     private static final int LOOP_CNT = 10000000;
     private static final int THREADS = 10;
@@ -43,7 +43,7 @@ public class ThreadedPerfTest {
         final Runnable runnable = new DebugDisabledRunnable();
         final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
         timer.start();
-        for (int i=0; i < THREADS; ++i) {
+        for (int i = 0; i < THREADS; ++i) {
             pool.execute(runnable);
         }
         pool.shutdown();
@@ -57,7 +57,7 @@ public class ThreadedPerfTest {
         final Runnable runnable = new DebugLoggerRunnable();
         final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
         timer.start();
-        for (int i=0; i < THREADS; ++i) {
+        for (int i = 0; i < THREADS; ++i) {
             pool.execute(runnable);
         }
         pool.shutdown();
@@ -68,16 +68,16 @@ public class ThreadedPerfTest {
     public static class DebugDisabledRunnable implements Runnable {
         @Override
         public void run() {
-            for (int i=0; i < LOOP_CNT; ++i) {
+            for (int i = 0; i < LOOP_CNT; ++i) {
                 logger.isDebugEnabled();
             }
         }
     }
 
-     public static class DebugLoggerRunnable implements Runnable {
+    public static class DebugLoggerRunnable implements Runnable {
         @Override
         public void run() {
-            for (int i=0; i < LOOP_CNT; ++i) {
+            for (int i = 0; i < LOOP_CNT; ++i) {
                 logger.debug("This is a test");
             }
         }

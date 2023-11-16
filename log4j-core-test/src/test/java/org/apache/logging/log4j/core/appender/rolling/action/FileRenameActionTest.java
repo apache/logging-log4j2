@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.File;
-import java.io.PrintStream;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.PrintStream;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 public class FileRenameActionTest {
 
@@ -82,7 +81,6 @@ public class FileRenameActionTest {
         assertFalse(file.exists(), "Old file still exists");
     }
 
-
     @Test
     public void testNoParent() throws Exception {
         final File file = new File("fileRename.log");
@@ -99,5 +97,4 @@ public class FileRenameActionTest {
         assertTrue(dest.exists(), "Renamed file does not exist");
         assertFalse(file.exists(), "Old file exists");
     }
-
 }

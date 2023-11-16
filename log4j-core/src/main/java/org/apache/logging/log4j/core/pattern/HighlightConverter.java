@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Highlight pattern converter. Formats the result of a pattern using a color appropriate for the Level in the LogEvent.
@@ -72,11 +71,11 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * disable ANSI output if no console is detected, specify option <code>noConsoleNoAnsi=true</code> e.g..
  * </p>
  * <pre>
-  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=DEFAULT, noConsoleNoAnsi=true}
-  * </pre>
+ * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=DEFAULT, noConsoleNoAnsi=true}
+ * </pre>
  */
 @Plugin(name = "highlight", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "highlight" })
+@ConverterKeys({"highlight"})
 @PerformanceSensitive("allocation")
 public final class HighlightConverter extends LogEventPatternConverter implements AnsiConverter {
 
@@ -149,8 +148,8 @@ public final class HighlightConverter extends LogEventPatternConverter implement
             return DEFAULT_STYLES;
         }
         // Feels like a hack. Should String[] options change to a Map<String,String>?
-        final Map<String, String> styles = AnsiEscape.createMap(options[1], new String[]{STYLE_KEY, DISABLE_ANSI_KEY,
-                NO_CONSOLE_NO_ANSI_KEY});
+        final Map<String, String> styles =
+                AnsiEscape.createMap(options[1], new String[] {STYLE_KEY, DISABLE_ANSI_KEY, NO_CONSOLE_NO_ANSI_KEY});
         final Map<String, String> levelStyles = new HashMap<>(DEFAULT_STYLES);
         for (final Map.Entry<String, String> entry : styles.entrySet()) {
             final String key = toRootUpperCase(entry.getKey());
@@ -158,8 +157,8 @@ public final class HighlightConverter extends LogEventPatternConverter implement
             if (STYLE_KEY.equalsIgnoreCase(key)) {
                 final Map<String, String> enumMap = STYLES.get(toRootUpperCase(value));
                 if (enumMap == null) {
-                    LOGGER.error("Unknown level style: " + value + ". Use one of " +
-                        Arrays.toString(STYLES.keySet().toArray()));
+                    LOGGER.error("Unknown level style: " + value + ". Use one of "
+                            + Arrays.toString(STYLES.keySet().toArray()));
                 } else {
                     levelStyles.putAll(enumMap);
                 }
@@ -217,7 +216,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      * @param noAnsi
      *            If true, do not output ANSI escape codes.
      */
-    private HighlightConverter(final List<PatternFormatter> patternFormatters, final Map<String, String> levelStyles, final boolean noAnsi) {
+    private HighlightConverter(
+            final List<PatternFormatter> patternFormatters,
+            final Map<String, String> levelStyles,
+            final boolean noAnsi) {
         super("style", "style");
         this.patternFormatters = patternFormatters;
         this.levelStyles = levelStyles;
@@ -264,11 +266,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
     @Override
     public boolean handlesThrowable() {
         for (final PatternFormatter formatter : patternFormatters) {
-            if (formatter .handlesThrowable()) {
+            if (formatter.handlesThrowable()) {
                 return true;
             }
         }
         return false;
     }
-
 }

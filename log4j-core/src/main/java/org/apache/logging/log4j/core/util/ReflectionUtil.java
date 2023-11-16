@@ -30,8 +30,7 @@ import java.util.Objects;
  * @since 2.1
  */
 public final class ReflectionUtil {
-    private ReflectionUtil() {
-    }
+    private ReflectionUtil() {}
 
     /**
      * Indicates whether or not a {@link Member} is both public and is contained in a public class.
@@ -43,7 +42,8 @@ public final class ReflectionUtil {
      */
     public static <T extends AccessibleObject & Member> boolean isAccessible(final T member) {
         Objects.requireNonNull(member, "No member provided");
-        return Modifier.isPublic(member.getModifiers()) && Modifier.isPublic(member.getDeclaringClass().getModifiers());
+        return Modifier.isPublic(member.getModifiers())
+                && Modifier.isPublic(member.getDeclaringClass().getModifiers());
     }
 
     /**

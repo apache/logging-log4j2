@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.Properties;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
@@ -26,9 +28,6 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SslConfigurationFactoryTest {
 
@@ -84,7 +83,7 @@ public class SslConfigurationFactoryTest {
     }
 
     static Stream<Arguments> windowsKeystoreConfigs() {
-        final String[] emptyOrNull = { "", null };
+        final String[] emptyOrNull = {"", null};
         final Stream.Builder<Arguments> builder = Stream.builder();
         for (final String location : emptyOrNull) {
             for (final String password : emptyOrNull) {

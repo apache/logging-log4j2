@@ -32,9 +32,7 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
  */
 public final class ExceptionRootCauseResolver extends ExceptionResolver {
 
-    ExceptionRootCauseResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    ExceptionRootCauseResolver(final EventResolverContext context, final TemplateResolverConfig config) {
         super(context, config);
     }
 
@@ -47,5 +45,4 @@ public final class ExceptionRootCauseResolver extends ExceptionResolver {
         final Throwable thrown = logEvent.getThrown();
         return thrown != null ? Throwables.getRootCause(thrown) : null;
     }
-
 }

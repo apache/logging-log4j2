@@ -84,9 +84,7 @@ public class SecurityManagerTestRule implements TestRule {
             private void before() {
                 securityManagerBefore = System.getSecurityManager();
                 System.setSecurityManager(securityManager);
-
             }
         };
     }
-
 }

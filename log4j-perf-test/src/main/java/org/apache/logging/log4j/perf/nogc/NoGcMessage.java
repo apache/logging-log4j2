@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.nogc;
 
 import java.util.Arrays;
-
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -36,8 +35,7 @@ public class NoGcMessage implements Message {
 
     private final ThreadLocal<InternalState> state = new ThreadLocal<>();
 
-    public NoGcMessage() {
-    }
+    public NoGcMessage() {}
 
     private InternalState getState() {
         InternalState result = state.get();

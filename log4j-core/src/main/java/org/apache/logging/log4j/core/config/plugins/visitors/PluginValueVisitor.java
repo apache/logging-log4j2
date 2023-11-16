@@ -32,25 +32,26 @@ public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-            final StringBuilder log) {
+    public Object visit(
+            final Configuration configuration, final Node node, final LogEvent event, final StringBuilder log) {
         final String name = this.annotation.value();
         final String elementValue = node.getValue();
         final String attributeValue = node.getAttributes().get(name);
         String rawValue = null; // if neither is specified, return null (LOG4J2-1313)
         if (Strings.isNotEmpty(elementValue)) {
             if (Strings.isNotEmpty(attributeValue)) {
-                LOGGER.error("Configuration contains {} with both attribute value ({}) AND element" +
-                                " value ({}). Please specify only one value. Using the element value.",
-                        node.getName(), attributeValue, elementValue);
+                LOGGER.error(
+                        "Configuration contains {} with both attribute value ({}) AND element"
+                                + " value ({}). Please specify only one value. Using the element value.",
+                        node.getName(),
+                        attributeValue,
+                        elementValue);
             }
             rawValue = elementValue;
         } else {
             rawValue = removeAttributeValue(node.getAttributes(), name);
         }
-        final String value = this.annotation.substitute()
-                ? this.substitutor.replace(event, rawValue)
-                : rawValue;
+        final String value = this.annotation.substitute() ? this.substitutor.replace(event, rawValue) : rawValue;
         StringBuilders.appendKeyDqValue(log, name, value);
         return value;
     }

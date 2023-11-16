@@ -16,14 +16,16 @@
  */
 package org.apache.logging.log4j.cassandra;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
@@ -37,9 +39,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 /**
  * Integration test for CassandraAppender.
  */
@@ -51,17 +50,16 @@ public class CassandraAppenderIT {
         Assume.assumeFalse(SystemUtils.OS_ARCH.equalsIgnoreCase("aarch64"));
     }
 
-    private static final String DDL = "CREATE TABLE logs (" +
-        "id timeuuid PRIMARY KEY," +
-        "timeid timeuuid," +
-        "message text," +
-        "level text," +
-        "marker text," +
-        "logger text," +
-        "timestamp timestamp," +
-        "mdc map<text,text>," +
-        "ndc list<text>" +
-        ")";
+    private static final String DDL = "CREATE TABLE logs (" + "id timeuuid PRIMARY KEY,"
+            + "timeid timeuuid,"
+            + "message text,"
+            + "level text,"
+            + "marker text,"
+            + "logger text,"
+            + "timestamp timestamp,"
+            + "mdc map<text,text>,"
+            + "ndc list<text>"
+            + ")";
 
     private static final LoggerContextRule CTX = new LoggerContextRule("CassandraAppenderTest.xml");
     private static final CassandraRule CASSANDRA = new CassandraRule("test", DDL);

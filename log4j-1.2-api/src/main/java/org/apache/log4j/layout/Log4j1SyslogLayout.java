@@ -16,12 +16,13 @@
  */
 package org.apache.log4j.layout;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -38,8 +39,6 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.util.Chars;
 
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-
 /**
  * Port of the layout used by SyslogAppender in Log4j 1.x. Provided for
  * compatibility with existing Log4j 1 configurations.
@@ -47,7 +46,7 @@ import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
  * Originally developed by Ceki G&uuml;lc&uuml; and Anders Kristensen.
  */
 @Plugin(name = "Log4j1SyslogLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
-public final class Log4j1SyslogLayout  extends AbstractStringLayout {
+public final class Log4j1SyslogLayout extends AbstractStringLayout {
 
     /**
      * Builds a SyslogLayout.
@@ -88,7 +87,8 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
                 LOGGER.error("Log4j1SyslogLayout: the message layout must be a StringLayout.");
                 return null;
             }
-            return new Log4j1SyslogLayout(facility, facilityPrinting, header, (StringLayout) messageLayout, getCharset());
+            return new Log4j1SyslogLayout(
+                    facility, facilityPrinting, header, (StringLayout) messageLayout, getCharset());
         }
 
         public Facility getFacility() {
@@ -147,11 +147,15 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
      * Date format used if header = true.
      */
     private static final String[] dateFormatOptions = {"MMM dd HH:mm:ss", null, "en"};
-    private final LogEventPatternConverter dateConverter =  DatePatternConverter.newInstance(dateFormatOptions);
 
+    private final LogEventPatternConverter dateConverter = DatePatternConverter.newInstance(dateFormatOptions);
 
-    private Log4j1SyslogLayout(final Facility facility, final boolean facilityPrinting, final boolean header,
-            final StringLayout messageLayout, final Charset charset) {
+    private Log4j1SyslogLayout(
+            final Facility facility,
+            final boolean facilityPrinting,
+            final boolean header,
+            final StringLayout messageLayout,
+            final Charset charset) {
         super(charset);
         this.facility = facility;
         this.facilityPrinting = facilityPrinting;
@@ -169,7 +173,8 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
     public String toSerializable(final LogEvent event) {
         // The messageLayout also uses the thread-bound StringBuilder,
         // so we generate the message first
-        final String message = messageLayout != null ? messageLayout.toSerializable(event)
+        final String message = messageLayout != null
+                ? messageLayout.toSerializable(event)
                 : event.getMessage().getFormattedMessage();
         final StringBuilder buf = getStringBuilder();
 
@@ -191,7 +196,8 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
         }
 
         if (facilityPrinting) {
-            buf.append(facility != null ? toRootLowerCase(facility.name()) : "user").append(':');
+            buf.append(facility != null ? toRootLowerCase(facility.name()) : "user")
+                    .append(':');
         }
 
         buf.append(message);
@@ -218,11 +224,10 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
         result.put("formatType", "logfilepatternreceiver");
         result.put("dateFormat", dateFormatOptions[0]);
         if (header) {
-        result.put("format", "<LEVEL>TIMESTAMP PROP(HOSTNAME) MESSAGE");
+            result.put("format", "<LEVEL>TIMESTAMP PROP(HOSTNAME) MESSAGE");
         } else {
             result.put("format", "<LEVEL>MESSAGE");
         }
         return result;
     }
-
 }

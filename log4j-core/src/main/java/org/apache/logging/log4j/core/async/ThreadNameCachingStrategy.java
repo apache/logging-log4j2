@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
@@ -55,13 +54,20 @@ public enum ThreadNameCachingStrategy { // LOG4J2-467
     public static ThreadNameCachingStrategy create() {
         final String name = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ThreadNameStrategy");
         try {
-            final ThreadNameCachingStrategy result = name != null ? ThreadNameCachingStrategy.valueOf(name) : DEFAULT_STRATEGY;
-            LOGGER.debug("AsyncLogger.ThreadNameStrategy={} (user specified {}, default is {})",
-                         result.name(), name, DEFAULT_STRATEGY.name());
+            final ThreadNameCachingStrategy result =
+                    name != null ? ThreadNameCachingStrategy.valueOf(name) : DEFAULT_STRATEGY;
+            LOGGER.debug(
+                    "AsyncLogger.ThreadNameStrategy={} (user specified {}, default is {})",
+                    result.name(),
+                    name,
+                    DEFAULT_STRATEGY.name());
             return result;
         } catch (final Exception ex) {
-            LOGGER.debug("Using AsyncLogger.ThreadNameStrategy.{}: '{}' not valid: {}",
-                         DEFAULT_STRATEGY.name(), name, ex.toString());
+            LOGGER.debug(
+                    "Using AsyncLogger.ThreadNameStrategy.{}: '{}' not valid: {}",
+                    DEFAULT_STRATEGY.name(),
+                    name,
+                    ex.toString());
             return DEFAULT_STRATEGY;
         }
     }

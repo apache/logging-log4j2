@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
@@ -35,8 +34,7 @@ public final class TemplateResolvers {
 
     private static final String RESOLVER_FIELD_NAME = "$resolver";
 
-    private static abstract class UnresolvableTemplateResolver
-            implements TemplateResolver<Object> {
+    private abstract static class UnresolvableTemplateResolver implements TemplateResolver<Object> {
 
         @Override
         public final boolean isResolvable() {
@@ -47,52 +45,42 @@ public final class TemplateResolvers {
         public final boolean isResolvable(final Object value) {
             return false;
         }
-
     }
 
-    private static final TemplateResolver<?> EMPTY_ARRAY_RESOLVER =
-            new EmptyArrayResolver();
+    private static final TemplateResolver<?> EMPTY_ARRAY_RESOLVER = new EmptyArrayResolver();
 
-    private static final class EmptyArrayResolver
-            extends UnresolvableTemplateResolver {
+    private static final class EmptyArrayResolver extends UnresolvableTemplateResolver {
 
         @Override
         public void resolve(final Object value, final JsonWriter jsonWriter) {
             jsonWriter.writeArrayStart();
             jsonWriter.writeArrayEnd();
         }
-
     }
 
-    private static final TemplateResolver<?> EMPTY_OBJECT_RESOLVER =
-            new EmptyObjectResolver();
+    private static final TemplateResolver<?> EMPTY_OBJECT_RESOLVER = new EmptyObjectResolver();
 
-    private static final class EmptyObjectResolver
-            extends UnresolvableTemplateResolver {
+    private static final class EmptyObjectResolver extends UnresolvableTemplateResolver {
 
         @Override
         public void resolve(final Object value, final JsonWriter jsonWriter) {
             jsonWriter.writeObjectStart();
             jsonWriter.writeObjectEnd();
         }
-
     }
 
     private static final TemplateResolver<?> NULL_RESOLVER = new NullResolver();
 
-    private static final class NullResolver
-            extends UnresolvableTemplateResolver {
+    private static final class NullResolver extends UnresolvableTemplateResolver {
 
         @Override
         public void resolve(final Object value, final JsonWriter jsonWriter) {
             jsonWriter.writeNull();
         }
-
     }
 
     public static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofTemplate(
-            final C context,
-            final String template) {
+            final C context, final String template) {
 
         // Check arguments.
         Objects.requireNonNull(context, "context");
@@ -108,25 +96,19 @@ public final class TemplateResolvers {
         }
 
         // Perform contextual interception.
-        final List<? extends TemplateResolverInterceptor<V, C>> interceptors =
-                context.getResolverInterceptors();
+        final List<? extends TemplateResolverInterceptor<V, C>> interceptors = context.getResolverInterceptors();
         // noinspection ForLoopReplaceableByForEach
-        for (int interceptorIndex = 0;
-             interceptorIndex < interceptors.size();
-             interceptorIndex++) {
-            final TemplateResolverInterceptor<V, C> interceptor =
-                    interceptors.get(interceptorIndex);
+        for (int interceptorIndex = 0; interceptorIndex < interceptors.size(); interceptorIndex++) {
+            final TemplateResolverInterceptor<V, C> interceptor = interceptors.get(interceptorIndex);
             node = interceptor.processTemplateBeforeResolverInjection(context, node);
         }
 
         // Resolve the template.
         return ofObject(context, node);
-
     }
 
     static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofObject(
-            final C context,
-            final Object object) {
+            final C context, final Object object) {
         if (object == null) {
             @SuppressWarnings("unchecked")
             final TemplateResolver<V> nullResolver = (TemplateResolver<V>) NULL_RESOLVER;
@@ -150,24 +132,20 @@ public final class TemplateResolvers {
             return ofBoolean(value);
         } else {
             final String message = String.format(
-                    "invalid JSON node type (class=%s)",
-                    object.getClass().getName());
+                    "invalid JSON node type (class=%s)", object.getClass().getName());
             throw new IllegalArgumentException(message);
         }
     }
 
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofList(
-            final C context,
-            final List<Object> list) {
+            final C context, final List<Object> list) {
 
         // Create resolver for each child.
-        final List<TemplateResolver<V>> itemResolvers = list
-                .stream()
+        final List<TemplateResolver<V>> itemResolvers = list.stream()
                 .map(item -> {
                     final TemplateResolver<V> itemResolver = ofObject(context, item);
                     if (itemResolver.isFlattening()) {
-                        throw new IllegalArgumentException(
-                                "flattening resolvers are not allowed in lists");
+                        throw new IllegalArgumentException("flattening resolvers are not allowed in lists");
                     }
                     return itemResolver;
                 })
@@ -176,14 +154,12 @@ public final class TemplateResolvers {
         // Short-circuit if the array is empty.
         if (itemResolvers.isEmpty()) {
             @SuppressWarnings("unchecked")
-            final TemplateResolver<V> emptyArrayResolver =
-                    (TemplateResolver<V>) EMPTY_ARRAY_RESOLVER;
+            final TemplateResolver<V> emptyArrayResolver = (TemplateResolver<V>) EMPTY_ARRAY_RESOLVER;
             return emptyArrayResolver;
         }
 
         // Create a parent resolver collecting each child resolver execution.
         return new ArrayResolver<>(itemResolvers);
-
     }
 
     private static final class ArrayResolver<V> implements TemplateResolver<V> {
@@ -197,24 +173,19 @@ public final class TemplateResolvers {
         @Override
         public void resolve(final V value, final JsonWriter jsonWriter) {
             jsonWriter.writeArrayStart();
-            for (int itemResolverIndex = 0;
-                 itemResolverIndex < itemResolvers.size();
-                 itemResolverIndex++) {
+            for (int itemResolverIndex = 0; itemResolverIndex < itemResolvers.size(); itemResolverIndex++) {
                 if (itemResolverIndex > 0) {
                     jsonWriter.writeSeparator();
                 }
-                final TemplateResolver<V> itemResolver =
-                        itemResolvers.get(itemResolverIndex);
+                final TemplateResolver<V> itemResolver = itemResolvers.get(itemResolverIndex);
                 itemResolver.resolve(value, jsonWriter);
             }
             jsonWriter.writeArrayEnd();
         }
-
     }
 
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofMap(
-            final C context,
-            final Map<String, Object> map) {
+            final C context, final Map<String, Object> map) {
 
         // Check if this is a resolver request.
         if (map.containsKey(RESOLVER_FIELD_NAME)) {
@@ -222,26 +193,22 @@ public final class TemplateResolvers {
         }
 
         // Collect field resolver contexts.
-        final List<FieldResolverContext<V>> fieldResolverContexts =
-                populateFieldResolverMethods(context, map);
+        final List<FieldResolverContext<V>> fieldResolverContexts = populateFieldResolverMethods(context, map);
 
         // Short-circuit if the object is empty.
         final int fieldCount = fieldResolverContexts.size();
         if (fieldCount == 0) {
             @SuppressWarnings("unchecked")
-            final TemplateResolver<V> emptyObjectResolver =
-                    (TemplateResolver<V>) EMPTY_OBJECT_RESOLVER;
+            final TemplateResolver<V> emptyObjectResolver = (TemplateResolver<V>) EMPTY_OBJECT_RESOLVER;
             return emptyObjectResolver;
         }
 
         // Create the resolver.
         return new MapResolver<>(fieldResolverContexts);
-
     }
 
-    private static <V, C extends TemplateResolverContext<V, C>> List<FieldResolverContext<V>> populateFieldResolverMethods(
-            final C context,
-            final Map<String, Object> map) {
+    private static <V, C extends TemplateResolverContext<V, C>>
+            List<FieldResolverContext<V>> populateFieldResolverMethods(final C context, final Map<String, Object> map) {
 
         // Create resolver for each object field.
         final List<String> fieldNames = new ArrayList<>();
@@ -256,8 +223,7 @@ public final class TemplateResolvers {
         });
 
         // Prepare field names to avoid escape and truncation costs at runtime.
-        final List<String> fieldPrefixes = fieldNames
-                .stream()
+        final List<String> fieldPrefixes = fieldNames.stream()
                 .map(fieldName -> {
                     try (final JsonWriter jsonWriter = context.getJsonWriter()) {
                         jsonWriter.writeString(fieldName);
@@ -269,8 +235,7 @@ public final class TemplateResolvers {
 
         // Collect field resolver contexts.
         final int fieldCount = fieldNames.size();
-        return IntStream
-                .range(0, fieldCount)
+        return IntStream.range(0, fieldCount)
                 .mapToObj(fieldIndex -> {
                     final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
                     final FieldResolverMethod<V> fieldResolverMethod;
@@ -284,7 +249,6 @@ public final class TemplateResolvers {
                     return new FieldResolverContext<>(fieldResolver, fieldResolverMethod);
                 })
                 .collect(Collectors.toList());
-
     }
 
     private static final class FieldResolverContext<V> {
@@ -297,14 +261,12 @@ public final class TemplateResolvers {
             this.resolver = resolver;
             this.resolverMethod = resolverMethod;
         }
-
     }
 
     @FunctionalInterface
     private interface FieldResolverMethod<V> {
 
         boolean resolve(V value, JsonWriter jsonWriter, boolean succeedingEntry);
-
     }
 
     private static final class FlatteningFieldResolverMethod<V> implements FieldResolverMethod<V> {
@@ -326,7 +288,6 @@ public final class TemplateResolvers {
             fieldResolver.resolve(value, jsonWriter, succeedingEntry);
             return jsonWriterStringBuilder.length() > initLength;
         }
-
     }
 
     private static final class PrefixedFieldResolverMethod<V> implements FieldResolverMethod<V> {
@@ -353,7 +314,6 @@ public final class TemplateResolvers {
             fieldResolver.resolve(value, jsonWriter, succeedingEntry);
             return true;
         }
-
     }
 
     private static final class MapResolver<V> implements TemplateResolver<V> {
@@ -406,19 +366,18 @@ public final class TemplateResolvers {
                     continue;
                 }
                 final boolean succeedingEntry = resolvedFieldCount > 0;
-                final boolean resolved = fieldResolverContext.resolverMethod.resolve(value, jsonWriter, succeedingEntry);
+                final boolean resolved =
+                        fieldResolverContext.resolverMethod.resolve(value, jsonWriter, succeedingEntry);
                 if (resolved) {
                     resolvedFieldCount++;
                 }
             }
             jsonWriter.writeObjectEnd();
         }
-
     }
 
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofResolver(
-            final C context,
-            final Map<String, Object> configMap) {
+            final C context, final Map<String, Object> configMap) {
 
         // Check arguments.
         Objects.requireNonNull(context, "context");
@@ -427,8 +386,7 @@ public final class TemplateResolvers {
         // Extract the resolver name.
         final Object resolverNameObject = configMap.get(RESOLVER_FIELD_NAME);
         if (!(resolverNameObject instanceof String)) {
-            throw new IllegalArgumentException(
-                    "invalid resolver name: " + resolverNameObject);
+            throw new IllegalArgumentException("invalid resolver name: " + resolverNameObject);
         }
         final String resolverName = (String) resolverNameObject;
 
@@ -440,12 +398,10 @@ public final class TemplateResolvers {
         }
         final TemplateResolverConfig resolverConfig = new TemplateResolverConfig(configMap);
         return resolverFactory.create(context, resolverConfig);
-
     }
 
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofString(
-            final C context,
-            final String fieldValue) {
+            final C context, final String fieldValue) {
 
         // Check if substitution is needed.
         final boolean substitutionNeeded = fieldValue.contains("${");
@@ -459,14 +415,12 @@ public final class TemplateResolvers {
                 final String replacedText = substitutor.replace(null, fieldValue);
                 if (replacedText == null) {
                     @SuppressWarnings("unchecked")
-                    final TemplateResolver<V> resolver =
-                            (TemplateResolver<V>) NULL_RESOLVER;
+                    final TemplateResolver<V> resolver = (TemplateResolver<V>) NULL_RESOLVER;
                     return resolver;
                 } else {
                     // Prepare the escaped replacement first.
                     final String escapedReplacedText =
-                            contextJsonWriter.use(() ->
-                                    contextJsonWriter.writeString(replacedText));
+                            contextJsonWriter.use(() -> contextJsonWriter.writeString(replacedText));
                     // Create a resolver dedicated to the escaped replacement.
                     return new RawStringResolver<>(escapedReplacedText);
                 }
@@ -482,24 +436,19 @@ public final class TemplateResolvers {
 
         // Write the field value as is.
         else {
-            final String escapedFieldValue =
-                    contextJsonWriter.use(() ->
-                            contextJsonWriter.writeString(fieldValue));
+            final String escapedFieldValue = contextJsonWriter.use(() -> contextJsonWriter.writeString(fieldValue));
             return new RawStringResolver<>(escapedFieldValue);
         }
-
     }
 
-    private static final class SubstitutingStringResolver<V>
-            implements TemplateResolver<V> {
+    private static final class SubstitutingStringResolver<V> implements TemplateResolver<V> {
 
         private final TemplateResolverStringSubstitutor<V> substitutor;
 
         private final String string;
 
         private SubstitutingStringResolver(
-                final TemplateResolverStringSubstitutor<V> substitutor,
-                final String string) {
+                final TemplateResolverStringSubstitutor<V> substitutor, final String string) {
             this.substitutor = substitutor;
             this.string = string;
         }
@@ -509,11 +458,9 @@ public final class TemplateResolvers {
             final String replacedString = substitutor.replace(value, string);
             jsonWriter.writeString(replacedString);
         }
-
     }
 
-    private static final class RawStringResolver<V>
-            implements TemplateResolver<V> {
+    private static final class RawStringResolver<V> implements TemplateResolver<V> {
 
         private final String rawString;
 
@@ -525,15 +472,13 @@ public final class TemplateResolvers {
         public void resolve(final V ignored, final JsonWriter jsonWriter) {
             jsonWriter.writeRawString(rawString);
         }
-
     }
 
     private static <V> TemplateResolver<V> ofNumber(final Number number) {
         return new NumberResolver<>(number);
     }
 
-    private static final class NumberResolver<V>
-            implements TemplateResolver<V> {
+    private static final class NumberResolver<V> implements TemplateResolver<V> {
 
         private final String numberString;
 
@@ -545,15 +490,13 @@ public final class TemplateResolvers {
         public void resolve(final V ignored, final JsonWriter jsonWriter) {
             jsonWriter.writeRawString(numberString);
         }
-
     }
 
     private static <V> TemplateResolver<V> ofBoolean(final boolean value) {
         return new BooleanResolver<>(value);
     }
 
-    private static final class BooleanResolver<V>
-            implements TemplateResolver<V> {
+    private static final class BooleanResolver<V> implements TemplateResolver<V> {
 
         private final boolean value;
 
@@ -565,7 +508,5 @@ public final class TemplateResolvers {
         public void resolve(final V ignored, final JsonWriter jsonWriter) {
             jsonWriter.writeBoolean(value);
         }
-
     }
-
 }

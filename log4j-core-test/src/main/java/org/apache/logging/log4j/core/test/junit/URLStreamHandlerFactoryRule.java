@@ -21,7 +21,6 @@ import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import java.util.Hashtable;
-
 import org.junit.Assert;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -56,9 +55,8 @@ public class URLStreamHandlerFactoryRule implements TestRule {
                 handlersFields.setAccessible(true);
             }
             @SuppressWarnings("unchecked")
-            final
-            Hashtable<String, URLStreamHandler> handlers = (Hashtable<String, URLStreamHandler>) handlersFields
-                    .get(null);
+            final Hashtable<String, URLStreamHandler> handlers =
+                    (Hashtable<String, URLStreamHandler>) handlersFields.get(null);
             if (handlers != null) {
                 handlers.clear();
             }
@@ -82,9 +80,11 @@ public class URLStreamHandlerFactoryRule implements TestRule {
                         break;
                     }
                 }
-                Assert.assertNotNull("java.net URL does not declare a java.net.URLStreamHandlerFactory field",
-                        factoryField);
-                Assert.assertEquals("java.net.URL declares multiple java.net.URLStreamHandlerFactory fields.", 1,
+                Assert.assertNotNull(
+                        "java.net URL does not declare a java.net.URLStreamHandlerFactory field", factoryField);
+                Assert.assertEquals(
+                        "java.net.URL declares multiple java.net.URLStreamHandlerFactory fields.",
+                        1,
                         matches); // FIXME There is a break in the loop so always 0 or 1
                 URL.setURLStreamHandlerFactory(newURLStreamHandlerFactory);
                 try {

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.perf.jmh;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.perf.util.StackDriver;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -50,9 +49,9 @@ import org.openjdk.jmh.infra.Blackhole;
 public class StackWalkBenchmark {
 
     private static final StackDriver stackDriver = new StackDriver();
-    private final static ThreadLocal<String> FQCN = new ThreadLocal<>();
-    private final static FqcnCallerLocator LOCATOR = new FqcnCallerLocator();
-    private final static StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+    private static final ThreadLocal<String> FQCN = new ThreadLocal<>();
+    private static final FqcnCallerLocator LOCATOR = new FqcnCallerLocator();
+    private static final StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
     @Param({"10", "20", "50"})
     private int initialDepth;
@@ -61,7 +60,7 @@ public class StackWalkBenchmark {
     private int callDepth;
 
     @Benchmark
-    public void throwableSearch(final Blackhole bh)  {
+    public void throwableSearch(final Blackhole bh) {
 
         stackDriver.deepCall(initialDepth, callDepth, fqcn -> {
             final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
@@ -72,7 +71,7 @@ public class StackWalkBenchmark {
                     found = true;
                     continue;
                 }
-                if (found  && !fqcn.equals(className)) {
+                if (found && !fqcn.equals(className)) {
                     return stackTrace[i];
                 }
             }
@@ -82,8 +81,8 @@ public class StackWalkBenchmark {
 
     @Benchmark
     public void stackWalkerWalk(final Blackhole bh) {
-        stackDriver.deepCall(initialDepth, callDepth, fqcn -> walker.walk(
-                s -> s.dropWhile(f -> !f.getClassName().equals(fqcn)) // drop the top frames until we reach the logger
+        stackDriver.deepCall(initialDepth, callDepth, fqcn -> walker.walk(s -> s.dropWhile(
+                                f -> !f.getClassName().equals(fqcn)) // drop the top frames until we reach the logger
                         .dropWhile(f -> f.getClassName().equals(fqcn)) // drop the logger frames
                         .findFirst())
                 .get()
@@ -91,7 +90,7 @@ public class StackWalkBenchmark {
     }
 
     @Benchmark
-    public void stackWalkerArray(final Blackhole bh)  {
+    public void stackWalkerArray(final Blackhole bh) {
 
         stackDriver.deepCall(initialDepth, callDepth, fqcn -> {
             FQCN.set(fqcn);
@@ -103,7 +102,7 @@ public class StackWalkBenchmark {
     }
 
     @Benchmark
-    public void baseline(final Blackhole bh)  {
+    public void baseline(final Blackhole bh) {
 
         stackDriver.deepCall(initialDepth, callDepth, fqcn -> null);
     }
@@ -115,7 +114,7 @@ public class StackWalkBenchmark {
             final String fqcn = FQCN.get();
             boolean foundFqcn = false;
             final Object[] frames = stackFrameStream.toArray();
-            for (int i = 0; i < frames.length ; ++i) {
+            for (int i = 0; i < frames.length; ++i) {
                 final String className = ((StackWalker.StackFrame) frames[i]).getClassName();
                 if (!foundFqcn) {
                     // Skip frames until we find the FQCN
@@ -129,5 +128,4 @@ public class StackWalkBenchmark {
             return null;
         }
     }
-
 }

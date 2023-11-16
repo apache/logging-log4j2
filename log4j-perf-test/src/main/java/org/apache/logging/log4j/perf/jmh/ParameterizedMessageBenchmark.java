@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -41,7 +40,7 @@ import org.openjdk.jmh.annotations.State;
 //
 @State(Scope.Benchmark)
 public class ParameterizedMessageBenchmark {
-    private static final Object[] ARGS = { "arg1", "arg2" };
+    private static final Object[] ARGS = {"arg1", "arg2"};
 
     @State(Scope.Thread)
     public static class ThreadState {
@@ -53,15 +52,15 @@ public class ParameterizedMessageBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String classicGetFormattedMsg() {
         return new org.apache.logging.log4j.perf.nogc.ParameterizedMessage(
-                "pattern {} with {} two parameters and some text", ARGS).getFormattedMessage();
+                        "pattern {} with {} two parameters and some text", ARGS)
+                .getFormattedMessage();
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String refactoredGetFormattedMsg() {
-        return new ParameterizedMessage("pattern {} with {} two parameters and some text", ARGS).
-                getFormattedMessage();
+        return new ParameterizedMessage("pattern {} with {} two parameters and some text", ARGS).getFormattedMessage();
     }
 
     @Benchmark
@@ -69,8 +68,7 @@ public class ParameterizedMessageBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int refactoredFormatTo(final ThreadState state) {
         state.buffer.setLength(0);
-        new ParameterizedMessage("pattern {} with {} two parameters and some text", ARGS).
-                formatTo(state.buffer);
+        new ParameterizedMessage("pattern {} with {} two parameters and some text", ARGS).formatTo(state.buffer);
         return state.buffer.length();
     }
 }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -29,8 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "loggers", category = Node.CATEGORY)
 public final class LoggersPlugin {
 
-    private LoggersPlugin() {
-    }
+    private LoggersPlugin() {}
 
     /**
      * Create a Loggers object to contain all the Loggers.
@@ -46,7 +44,8 @@ public final class LoggersPlugin {
             if (logger != null) {
                 if (logger.getName().isEmpty()) {
                     if (root != null) {
-                        throw new IllegalStateException("Configuration has multiple root loggers. There can be only one.");
+                        throw new IllegalStateException(
+                                "Configuration has multiple root loggers. There can be only one.");
                     }
                     root = logger;
                 }

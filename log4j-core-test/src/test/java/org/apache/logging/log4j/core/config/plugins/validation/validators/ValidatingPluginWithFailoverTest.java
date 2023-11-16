@@ -16,9 +16,13 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyCollectionOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.FailoverAppender;
@@ -34,11 +38,6 @@ import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyCollectionOf;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ValidatingPluginWithFailoverTest {
 
@@ -70,9 +69,9 @@ public class ValidatingPluginWithFailoverTest {
     public void testDoesNotLog_NoParameterThatMatchesElement_message() {
         final StoringStatusListener listener = new StoringStatusListener();
         // @formatter:off
-        final PluginBuilder builder = new PluginBuilder(plugin).
-                withConfiguration(new NullConfiguration()).
-                withConfigurationNode(node);
+        final PluginBuilder builder = new PluginBuilder(plugin)
+                .withConfiguration(new NullConfiguration())
+                .withConfigurationNode(node);
         // @formatter:on
         StatusLogger.getLogger().registerListener(listener);
 
@@ -85,6 +84,7 @@ public class ValidatingPluginWithFailoverTest {
 
     private static class StoringStatusListener implements StatusListener {
         private final List<StatusData> logs = new ArrayList<>();
+
         @Override
         public void log(final StatusData data) {
             logs.add(data);

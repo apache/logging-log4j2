@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**

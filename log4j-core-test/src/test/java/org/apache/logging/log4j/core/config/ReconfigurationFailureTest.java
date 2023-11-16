@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.net.URI;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Performs reconfiguration against bad configurations.
@@ -52,10 +51,9 @@ public class ReconfigurationFailureTest {
 
         final URI original = loggerContext.getConfigLocation();
         final URI nonExistant = new File("target/file.does.not.exist.xml").toURI();
-       loggerContext.setConfigLocation(nonExistant);
-       assertEquals(original, loggerContext.getConfigLocation(), "URI after failure is not the original");
+        loggerContext.setConfigLocation(nonExistant);
+        assertEquals(original, loggerContext.getConfigLocation(), "URI after failure is not the original");
     }
-
 
     @Test
     public void setInvalidXML() throws Exception {
@@ -74,7 +72,4 @@ public class ReconfigurationFailureTest {
         loggerContext.setConfigLocation(nonExistant);
         assertEquals(original, loggerContext.getConfigLocation(), "URI after failure is not the original");
     }
-
-
-
 }

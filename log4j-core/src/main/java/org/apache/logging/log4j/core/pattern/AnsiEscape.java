@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Converts text into ANSI escape sequences.
@@ -484,12 +483,12 @@ public enum AnsiEscape {
                     hexColor = trimmedName.substring(3);
                 }
                 if (hexColor != null) {
-                    sb.append(Integer.valueOf(hexColor.substring(1, 3), 16));//r
+                    sb.append(Integer.valueOf(hexColor.substring(1, 3), 16)); // r
                     sb.append(SEPARATOR.getCode());
-                    sb.append(Integer.valueOf(hexColor.substring(3, 5), 16));//g
+                    sb.append(Integer.valueOf(hexColor.substring(3, 5), 16)); // g
                     sb.append(SEPARATOR.getCode());
-                    sb.append(Integer.valueOf(hexColor.substring(5, 7), 16));//b
-                    //no separator at the end
+                    sb.append(Integer.valueOf(hexColor.substring(5, 7), 16)); // b
+                    // no separator at the end
                 } else {
                     final AnsiEscape escape = EnglishEnums.valueOf(AnsiEscape.class, trimmedName);
                     sb.append(escape.getCode());
@@ -501,5 +500,4 @@ public enum AnsiEscape {
         sb.append(AnsiEscape.SUFFIX.getCode());
         return sb.toString();
     }
-
 }

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.DirectoryStream;
@@ -24,7 +27,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -32,17 +34,15 @@ import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 /**
  * Tests that zero-padding in rolled files works correctly.
  */
 @UsingStatusListener
 public class RolloverWithPaddingTest {
 
-    private static final String[] EXPECTED_FILES = { "rollingtest.log", "test-001.log", "test-002.log", "test-003.log",
-            "test-004.log", "test-005.log" };
+    private static final String[] EXPECTED_FILES = {
+        "rollingtest.log", "test-001.log", "test-002.log", "test-003.log", "test-004.log", "test-005.log"
+    };
     private static final byte[] NOT_EMPTY_CONTENT = "Not empty".getBytes();
 
     @TempLoggingDir
@@ -90,8 +90,7 @@ public class RolloverWithPaddingTest {
 
     private static List<String> sortedLogFiles(final Path loggingPath) throws IOException {
         try (final DirectoryStream<Path> stream = Files.newDirectoryStream(loggingPath)) {
-            return StreamSupport
-                    .stream(stream.spliterator(), false)
+            return StreamSupport.stream(stream.spliterator(), false)
                     .map(p -> p.getFileName().toString())
                     .sorted()
                     .collect(Collectors.toList());

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -26,16 +29,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test for LOG4J2-1769, kind of.
@@ -89,10 +88,11 @@ public class ConcurrentLoggingWithGelfLayoutTest {
         // simple test to ensure content is not corrupted
         if (Files.exists(PATH)) {
             try (final Stream<String> lines = Files.lines(PATH, Charset.defaultCharset())) {
-                lines.forEach(line -> assertThat(line,
-                        both(startsWith("{\"version\":\"1.1\",\"host\":\"myself\",\"timestamp\":")).and(endsWith("\"}"))));
+                lines.forEach(line -> assertThat(
+                        line,
+                        both(startsWith("{\"version\":\"1.1\",\"host\":\"myself\",\"timestamp\":"))
+                                .and(endsWith("\"}"))));
             }
         }
     }
-
 }

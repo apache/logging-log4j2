@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
@@ -27,12 +29,9 @@ import java.nio.file.attribute.FileTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the SortingVisitor class.
@@ -41,6 +40,7 @@ public class SortingVisitorTest {
 
     @TempDir
     Path base;
+
     private Path aaa;
     private Path bbb;
     private Path ccc;
@@ -98,7 +98,8 @@ public class SortingVisitorTest {
     public void testIOException() {
         final SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
         final IOException exception = new IOException();
-        assertSame(exception,
+        assertSame(
+                exception,
                 assertThrows(IOException.class, () -> visitor.visitFileFailed(Paths.get("doesNotExist"), exception)));
     }
 }

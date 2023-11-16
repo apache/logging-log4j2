@@ -31,8 +31,6 @@ public class LogbackSubstitution {
     private static final String LOGBACK_CONFIG = "logback-subst.xml";
     private final XLogger xLogger = XLoggerFactory.getXLogger(LogbackSubstitution.class);
 
-
-
     @BeforeClass
     public static void setupClass() {
         System.setProperty(LOGBACK_CONF, LOGBACK_CONFIG);

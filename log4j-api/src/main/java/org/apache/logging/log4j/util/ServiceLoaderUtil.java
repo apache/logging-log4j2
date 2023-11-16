@@ -33,7 +33,6 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -45,8 +44,7 @@ public final class ServiceLoaderUtil {
 
     private static final int MAX_BROKEN_SERVICES = 8;
 
-    private ServiceLoaderUtil() {
-    }
+    private ServiceLoaderUtil() {}
 
     /**
      * Retrieves the available services from the caller's classloader.
@@ -78,15 +76,15 @@ public final class ServiceLoaderUtil {
         return loadServices(serviceType, lookup, useTccl, true);
     }
 
-    static <T> Stream<T> loadServices(final Class<T> serviceType, final Lookup lookup, final boolean useTccl,
-            final boolean verbose) {
+    static <T> Stream<T> loadServices(
+            final Class<T> serviceType, final Lookup lookup, final boolean useTccl, final boolean verbose) {
         final ClassLoader classLoader = lookup.lookupClass().getClassLoader();
         Stream<T> services = loadClassloaderServices(serviceType, lookup, classLoader, verbose);
         if (useTccl) {
             final ClassLoader contextClassLoader = LoaderUtil.getThreadContextClassLoader();
             if (contextClassLoader != classLoader) {
-                services = Stream.concat(services,
-                        loadClassloaderServices(serviceType, lookup, contextClassLoader, verbose));
+                services = Stream.concat(
+                        services, loadClassloaderServices(serviceType, lookup, contextClassLoader, verbose));
             }
         }
         if (OsgiServiceLocator.isAvailable()) {
@@ -97,33 +95,38 @@ public final class ServiceLoaderUtil {
         return services.filter(service -> classes.add(service.getClass()));
     }
 
-    static <T> Stream<T> loadClassloaderServices(final Class<T> serviceType, final Lookup lookup,
-            final ClassLoader classLoader, final boolean verbose) {
+    static <T> Stream<T> loadClassloaderServices(
+            final Class<T> serviceType, final Lookup lookup, final ClassLoader classLoader, final boolean verbose) {
         return StreamSupport.stream(new ServiceLoaderSpliterator<T>(serviceType, lookup, classLoader, verbose), false);
     }
 
-    static <T> Iterable<T> callServiceLoader(final Lookup lookup, final Class<T> serviceType, final ClassLoader classLoader,
-            final boolean verbose) {
+    static <T> Iterable<T> callServiceLoader(
+            final Lookup lookup, final Class<T> serviceType, final ClassLoader classLoader, final boolean verbose) {
         try {
             // Creates a lambda in the caller's domain that calls `ServiceLoader`
-            final MethodHandle loadHandle = lookup.findStatic(ServiceLoader.class, "load",
+            final MethodHandle loadHandle = lookup.findStatic(
+                    ServiceLoader.class,
+                    "load",
                     MethodType.methodType(ServiceLoader.class, Class.class, ClassLoader.class));
-            final CallSite callSite = LambdaMetafactory.metafactory(lookup,
+            final CallSite callSite = LambdaMetafactory.metafactory(
+                    lookup,
                     "run",
                     MethodType.methodType(PrivilegedAction.class, Class.class, ClassLoader.class),
                     MethodType.methodType(Object.class),
                     loadHandle,
                     MethodType.methodType(ServiceLoader.class));
-            final PrivilegedAction<ServiceLoader<T>> action = (PrivilegedAction<ServiceLoader<T>>) callSite
-                    .getTarget()//
-                    .bindTo(serviceType)
-                    .bindTo(classLoader)
-                    .invoke();
+            final PrivilegedAction<ServiceLoader<T>> action = (PrivilegedAction<ServiceLoader<T>>)
+                    callSite.getTarget() //
+                            .bindTo(serviceType)
+                            .bindTo(classLoader)
+                            .invoke();
             final ServiceLoader<T> serviceLoader;
             if (System.getSecurityManager() == null) {
                 serviceLoader = action.run();
             } else {
-                final MethodHandle privilegedHandle = lookup.findStatic(AccessController.class, "doPrivileged",
+                final MethodHandle privilegedHandle = lookup.findStatic(
+                        AccessController.class,
+                        "doPrivileged",
                         MethodType.methodType(Object.class, PrivilegedAction.class));
                 serviceLoader = (ServiceLoader<T>) privilegedHandle.invoke(action);
             }
@@ -142,9 +145,10 @@ public final class ServiceLoaderUtil {
         private final Logger logger;
         private final String serviceName;
 
-        public ServiceLoaderSpliterator(final Class<S> serviceType, final Lookup lookup, final ClassLoader classLoader,
-                final boolean verbose) {
-            this.serviceIterator = callServiceLoader(lookup, serviceType, classLoader, verbose).iterator();
+        public ServiceLoaderSpliterator(
+                final Class<S> serviceType, final Lookup lookup, final ClassLoader classLoader, final boolean verbose) {
+            this.serviceIterator =
+                    callServiceLoader(lookup, serviceType, classLoader, verbose).iterator();
             this.logger = verbose ? StatusLogger.getLogger() : null;
             this.serviceName = serviceType.toString();
         }
@@ -186,6 +190,5 @@ public final class ServiceLoaderUtil {
         public int characteristics() {
             return NONNULL | IMMUTABLE;
         }
-
     }
 }

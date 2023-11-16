@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.test.ThreadContextUtilityClass;
 import org.apache.logging.log4j.test.junit.InitializesThreadContext;
@@ -24,11 +29,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link ThreadContext}.
@@ -59,7 +59,6 @@ public class ThreadContextInheritanceTest {
     }
 
     @Test
-
     @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
     @InitializesThreadContext
     public void testInheritanceSwitchedOn() throws Exception {

@@ -16,6 +16,7 @@
  */
 package org.apache.log4j;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -29,8 +30,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -146,7 +145,7 @@ public class PropertyConfigurator implements Configurator {
      */
     private static final String RESET_KEY = "log4j.reset";
 
-    static final private String INTERNAL_ROOT_NAME = "root";
+    private static final String INTERNAL_ROOT_NAME = "root";
 
     /**
      * Reads configuration options from an InputStream.
@@ -154,7 +153,8 @@ public class PropertyConfigurator implements Configurator {
      * @param inputStream The input stream
      */
     public static void configure(final InputStream inputStream) {
-        new PropertyConfigurator().doConfigure(inputStream, LogManager.getLoggerRepository(), StackLocatorUtil.getCallerClassLoader(2));
+        new PropertyConfigurator()
+                .doConfigure(inputStream, LogManager.getLoggerRepository(), StackLocatorUtil.getCallerClassLoader(2));
     }
 
     /**
@@ -165,7 +165,8 @@ public class PropertyConfigurator implements Configurator {
      * @param properties The properties
      */
     public static void configure(final Properties properties) {
-        new PropertyConfigurator().doConfigure(properties, LogManager.getLoggerRepository(), StackLocatorUtil.getCallerClassLoader(2));
+        new PropertyConfigurator()
+                .doConfigure(properties, LogManager.getLoggerRepository(), StackLocatorUtil.getCallerClassLoader(2));
     }
 
     /**
@@ -174,7 +175,8 @@ public class PropertyConfigurator implements Configurator {
      * @param fileName The configuration file.
      */
     public static void configure(final String fileName) {
-        new PropertyConfigurator().doConfigure(fileName, LogManager.getLoggerRepository(), StackLocatorUtil.getCallerClassLoader(2));
+        new PropertyConfigurator()
+                .doConfigure(fileName, LogManager.getLoggerRepository(), StackLocatorUtil.getCallerClassLoader(2));
     }
 
     /**
@@ -183,7 +185,8 @@ public class PropertyConfigurator implements Configurator {
      * @param configURL The configuration URL
      */
     public static void configure(final URL configURL) {
-        new PropertyConfigurator().doConfigure(configURL, LogManager.getLoggerRepository(), StackLocatorUtil.getCallerClassLoader(2));
+        new PropertyConfigurator()
+                .doConfigure(configURL, LogManager.getLoggerRepository(), StackLocatorUtil.getCallerClassLoader(2));
     }
 
     /**
@@ -240,7 +243,8 @@ public class PropertyConfigurator implements Configurator {
         final String factoryClassName = OptionConverter.findAndSubst(LOGGER_FACTORY_KEY, properties);
         if (factoryClassName != null) {
             LogLog.debug("Setting category factory to [" + factoryClassName + "].");
-            loggerFactory = (LoggerFactory) OptionConverter.instantiateByClassName(factoryClassName, LoggerFactory.class, loggerFactory);
+            loggerFactory = (LoggerFactory)
+                    OptionConverter.instantiateByClassName(factoryClassName, LoggerFactory.class, loggerFactory);
             PropertySetter.setProperties(loggerFactory, properties, FACTORY_PREFIX + ".");
         }
     }
@@ -275,7 +279,8 @@ public class PropertyConfigurator implements Configurator {
         doConfigure(inputStream, loggerRepository, StackLocatorUtil.getCallerClassLoader(2));
     }
 
-    Configuration doConfigure(final InputStream inputStream, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
+    Configuration doConfigure(
+            final InputStream inputStream, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
         return doConfigure(loadProperties(inputStream), loggerRepository, classLoader);
     }
 
@@ -299,41 +304,43 @@ public class PropertyConfigurator implements Configurator {
      * @param properties The properties
      * @param loggerRepository The hierarchy
      */
-    Configuration doConfigure(final Properties properties, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
-        final PropertiesConfiguration configuration = new PropertiesConfiguration(LogManager.getContext(classLoader), properties);
+    Configuration doConfigure(
+            final Properties properties, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
+        final PropertiesConfiguration configuration =
+                new PropertiesConfiguration(LogManager.getContext(classLoader), properties);
         configuration.doConfigure();
 
         repository = loggerRepository;
-//      String value = properties.getProperty(LogLog.DEBUG_KEY);
-//      if (value == null) {
-//          value = properties.getProperty("log4j.configDebug");
-//          if (value != null) {
-//              LogLog.warn("[log4j.configDebug] is deprecated. Use [log4j.debug] instead.");
-//          }
-//      }
-//
-//      if (value != null) {
-//          LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
-//      }
-//
-//      //
-//      // if log4j.reset=true then
-//      // reset hierarchy
-//      final String reset = properties.getProperty(RESET_KEY);
-//      if (reset != null && OptionConverter.toBoolean(reset, false)) {
-//          hierarchy.resetConfiguration();
-//      }
-//
-//      final String thresholdStr = OptionConverter.findAndSubst(THRESHOLD_PREFIX, properties);
-//      if (thresholdStr != null) {
-//          hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr, (Level) Level.ALL));
-//          LogLog.debug("Hierarchy threshold set to [" + hierarchy.getThreshold() + "].");
-//      }
-//
-//      configureRootCategory(properties, hierarchy);
-//      configureLoggerFactory(properties);
-//      parseCatsAndRenderers(properties, hierarchy);
-//
+        //      String value = properties.getProperty(LogLog.DEBUG_KEY);
+        //      if (value == null) {
+        //          value = properties.getProperty("log4j.configDebug");
+        //          if (value != null) {
+        //              LogLog.warn("[log4j.configDebug] is deprecated. Use [log4j.debug] instead.");
+        //          }
+        //      }
+        //
+        //      if (value != null) {
+        //          LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
+        //      }
+        //
+        //      //
+        //      // if log4j.reset=true then
+        //      // reset hierarchy
+        //      final String reset = properties.getProperty(RESET_KEY);
+        //      if (reset != null && OptionConverter.toBoolean(reset, false)) {
+        //          hierarchy.resetConfiguration();
+        //      }
+        //
+        //      final String thresholdStr = OptionConverter.findAndSubst(THRESHOLD_PREFIX, properties);
+        //      if (thresholdStr != null) {
+        //          hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr, (Level) Level.ALL));
+        //          LogLog.debug("Hierarchy threshold set to [" + hierarchy.getThreshold() + "].");
+        //      }
+        //
+        //      configureRootCategory(properties, hierarchy);
+        //      configureLoggerFactory(properties);
+        //      parseCatsAndRenderers(properties, hierarchy);
+        //
         // We don't want to hold references to appenders preventing their
         // garbage collection.
         registry.clear();
@@ -357,11 +364,9 @@ public class PropertyConfigurator implements Configurator {
      * @param fileName The configuration file
      * @param loggerRepository The hierarchy
      */
-    @SuppressFBWarnings(
-            value = "PATH_TRAVERSAL_IN",
-            justification = "The filename comes from a system property."
-    )
-    Configuration doConfigure(final String fileName, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "The filename comes from a system property.")
+    Configuration doConfigure(
+            final String fileName, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
         try (final InputStream inputStream = Files.newInputStream(Paths.get(fileName))) {
             return doConfigure(inputStream, loggerRepository, classLoader);
         } catch (final Exception e) {
@@ -397,7 +402,6 @@ public class PropertyConfigurator implements Configurator {
             LogLog.error("Ignoring configuration file [" + url + "].");
             return null;
         }
-
     }
 
     private Properties loadProperties(final InputStream inputStream) {
@@ -439,7 +443,8 @@ public class PropertyConfigurator implements Configurator {
         final String prefix = APPENDER_PREFIX + appenderName;
         final String layoutPrefix = prefix + ".layout";
 
-        appender = (Appender) OptionConverter.instantiateByKey(properties, prefix, org.apache.log4j.Appender.class, null);
+        appender =
+                (Appender) OptionConverter.instantiateByKey(properties, prefix, org.apache.log4j.Appender.class, null);
         if (appender == null) {
             LogLog.error("Could not instantiate appender named \"" + appenderName + "\".");
             return null;
@@ -448,7 +453,8 @@ public class PropertyConfigurator implements Configurator {
 
         if (appender instanceof OptionHandler) {
             if (appender.requiresLayout()) {
-                final Layout layout = (Layout) OptionConverter.instantiateByKey(properties, layoutPrefix, Layout.class, null);
+                final Layout layout =
+                        (Layout) OptionConverter.instantiateByKey(properties, layoutPrefix, Layout.class, null);
                 if (layout != null) {
                     appender.setLayout(layout);
                     LogLog.debug("Parsing layout options for \"" + appenderName + "\".");
@@ -460,14 +466,18 @@ public class PropertyConfigurator implements Configurator {
             final String errorHandlerPrefix = prefix + ".errorhandler";
             final String errorHandlerClass = OptionConverter.findAndSubst(errorHandlerPrefix, properties);
             if (errorHandlerClass != null) {
-                final ErrorHandler eh = (ErrorHandler) OptionConverter.instantiateByKey(properties, errorHandlerPrefix, ErrorHandler.class, null);
+                final ErrorHandler eh = (ErrorHandler)
+                        OptionConverter.instantiateByKey(properties, errorHandlerPrefix, ErrorHandler.class, null);
                 if (eh != null) {
                     appender.setErrorHandler(eh);
                     LogLog.debug("Parsing errorhandler options for \"" + appenderName + "\".");
                     parseErrorHandler(eh, errorHandlerPrefix, properties, repository);
                     final Properties edited = new Properties();
-                    final String[] keys = new String[] {errorHandlerPrefix + "." + ROOT_REF, errorHandlerPrefix + "." + LOGGER_REF,
-                        errorHandlerPrefix + "." + APPENDER_REF_TAG};
+                    final String[] keys = new String[] {
+                        errorHandlerPrefix + "." + ROOT_REF,
+                        errorHandlerPrefix + "." + LOGGER_REF,
+                        errorHandlerPrefix + "." + APPENDER_REF_TAG
+                    };
                     for (final Object element : properties.entrySet()) {
                         final Map.Entry entry = (Map.Entry) element;
                         int i = 0;
@@ -483,7 +493,6 @@ public class PropertyConfigurator implements Configurator {
                     PropertySetter.setProperties(eh, edited, errorHandlerPrefix + ".");
                     LogLog.debug("End of errorhandler parsing for \"" + appenderName + "\".");
                 }
-
             }
             // configureOptionHandler((OptionHandler) appender, prefix + ".", props);
             PropertySetter.setProperties(appender, properties, prefix + ".");
@@ -532,7 +541,8 @@ public class PropertyConfigurator implements Configurator {
             final String key = (String) g.nextElement();
             final String clazz = properties.getProperty(key);
             if (clazz != null) {
-                LogLog.debug("Filter key: [" + key + "] class: [" + properties.getProperty(key) + "] props: " + filters.get(key));
+                LogLog.debug("Filter key: [" + key + "] class: [" + properties.getProperty(key) + "] props: "
+                        + filters.get(key));
                 final Filter filter = (Filter) OptionConverter.instantiateByClassName(clazz, Filter.class, null);
                 if (filter != null) {
                     final PropertySetter propSetter = new PropertySetter(filter);
@@ -543,7 +553,8 @@ public class PropertyConfigurator implements Configurator {
                         propSetter.setProperty(kv.key, kv.value);
                     }
                     propSetter.activate();
-                    LogLog.debug("Adding filter of type [" + filter.getClass() + "] to appender named [" + appender.getName() + "].");
+                    LogLog.debug("Adding filter of type [" + filter.getClass() + "] to appender named ["
+                            + appender.getName() + "].");
                     head = FilterAdapter.addFilter(head, filter);
                 }
             } else {
@@ -556,7 +567,12 @@ public class PropertyConfigurator implements Configurator {
     /**
      * This method must work for the root category as well.
      */
-    void parseCategory(final Properties properties, final Logger logger, final String optionKey, final String loggerName, final String value) {
+    void parseCategory(
+            final Properties properties,
+            final Logger logger,
+            final String optionKey,
+            final String loggerName,
+            final String value) {
 
         LogLog.debug("Parsing for [" + loggerName + "] with value=[" + value + "].");
         // We must skip over ',' but not white space
@@ -636,31 +652,36 @@ public class PropertyConfigurator implements Configurator {
                 }
             } else if (key.equals(THROWABLE_RENDERER_PREFIX)) {
                 if (loggerRepository instanceof ThrowableRendererSupport) {
-                    final ThrowableRenderer tr = (ThrowableRenderer) OptionConverter.instantiateByKey(properties, THROWABLE_RENDERER_PREFIX,
-                        org.apache.log4j.spi.ThrowableRenderer.class, null);
+                    final ThrowableRenderer tr = (ThrowableRenderer) OptionConverter.instantiateByKey(
+                            properties, THROWABLE_RENDERER_PREFIX, org.apache.log4j.spi.ThrowableRenderer.class, null);
                     if (tr == null) {
                         LogLog.error("Could not instantiate throwableRenderer.");
                     } else {
                         final PropertySetter setter = new PropertySetter(tr);
                         setter.setProperties(properties, THROWABLE_RENDERER_PREFIX + ".");
                         ((ThrowableRendererSupport) loggerRepository).setThrowableRenderer(tr);
-
                     }
                 }
             }
         }
     }
 
-    private void parseErrorHandler(final ErrorHandler errorHandler, final String errorHandlerPrefix, final Properties props,
-        final LoggerRepository loggerRepository) {
+    private void parseErrorHandler(
+            final ErrorHandler errorHandler,
+            final String errorHandlerPrefix,
+            final Properties props,
+            final LoggerRepository loggerRepository) {
         if (errorHandler != null && loggerRepository != null) {
-            final boolean rootRef = OptionConverter.toBoolean(OptionConverter.findAndSubst(errorHandlerPrefix + ROOT_REF, props), false);
+            final boolean rootRef = OptionConverter.toBoolean(
+                    OptionConverter.findAndSubst(errorHandlerPrefix + ROOT_REF, props), false);
             if (rootRef) {
                 errorHandler.setLogger(loggerRepository.getRootLogger());
             }
             final String loggerName = OptionConverter.findAndSubst(errorHandlerPrefix + LOGGER_REF, props);
             if (loggerName != null) {
-                final Logger logger = loggerFactory == null ? loggerRepository.getLogger(loggerName) : loggerRepository.getLogger(loggerName, loggerFactory);
+                final Logger logger = loggerFactory == null
+                        ? loggerRepository.getLogger(loggerName)
+                        : loggerRepository.getLogger(loggerName, loggerFactory);
                 errorHandler.setLogger(logger);
             }
             final String appenderName = OptionConverter.findAndSubst(errorHandlerPrefix + APPENDER_REF_TAG, props);

@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,15 +30,12 @@ import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigTest2 {
 
     @Test
     public void testConsecutiveReconfigure() throws Exception {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerConfigTest2.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest2.xml");
         final File file = new File("target", "AsyncLoggerConfigTest2.log");
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
 
@@ -63,5 +61,4 @@ public class AsyncLoggerConfigTest2 {
         assertTrue("line1 " + line1, line1.contains(msg));
         assertTrue("line2 " + line2, line2.contains(msg2));
     }
-
 }

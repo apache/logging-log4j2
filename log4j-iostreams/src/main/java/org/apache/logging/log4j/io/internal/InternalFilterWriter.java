@@ -19,7 +19,6 @@ package org.apache.logging.log4j.io.internal;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.io.CharStreamLogger;
@@ -35,8 +34,8 @@ public class InternalFilterWriter extends FilterWriter {
     private final CharStreamLogger logger;
     private final String fqcn;
 
-    public InternalFilterWriter(final Writer out, final ExtendedLogger logger, final String fqcn, final Level level,
-                                 final Marker marker) {
+    public InternalFilterWriter(
+            final Writer out, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
         super(out);
         this.logger = new CharStreamLogger(logger, level, marker);
         this.fqcn = fqcn;

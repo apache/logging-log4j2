@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.test.junit;
 
 import java.lang.reflect.Type;
-
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -34,7 +33,8 @@ public abstract class TypeBasedParameterResolver<T> implements ParameterResolver
     @Override
     public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        return this.supportedParameterType.equals(parameterContext.getParameter().getParameterizedType());
+        return this.supportedParameterType.equals(
+                parameterContext.getParameter().getParameterizedType());
     }
 
     @Override

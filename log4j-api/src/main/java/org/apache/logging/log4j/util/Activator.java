@@ -20,7 +20,6 @@ import java.net.URL;
 import java.security.Permission;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
@@ -74,7 +73,10 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
             checkPermission(new AdaptPermission(BundleWiring.class.getName(), bundle, AdaptPermission.ADAPT));
             final BundleContext bundleContext = bundle.getBundleContext();
             if (bundleContext == null) {
-                LOGGER.debug("Bundle {} has no context (state={}), skipping loading provider", bundle.getSymbolicName(), toStateString(bundle.getState()));
+                LOGGER.debug(
+                        "Bundle {} has no context (state={}), skipping loading provider",
+                        bundle.getSymbolicName(),
+                        toStateString(bundle.getState()));
             } else {
                 loadProvider(bundleContext, bundle.adapt(BundleWiring.class));
             }
@@ -87,27 +89,28 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
 
     private String toStateString(final int state) {
         switch (state) {
-        case Bundle.UNINSTALLED:
-            return "UNINSTALLED";
-        case Bundle.INSTALLED:
-            return "INSTALLED";
-        case Bundle.RESOLVED:
-            return "RESOLVED";
-        case Bundle.STARTING:
-            return "STARTING";
-        case Bundle.STOPPING:
-            return "STOPPING";
-        case Bundle.ACTIVE:
-            return "ACTIVE";
-        default:
-            return Integer.toString(state);
+            case Bundle.UNINSTALLED:
+                return "UNINSTALLED";
+            case Bundle.INSTALLED:
+                return "INSTALLED";
+            case Bundle.RESOLVED:
+                return "RESOLVED";
+            case Bundle.STARTING:
+                return "STARTING";
+            case Bundle.STOPPING:
+                return "STOPPING";
+            case Bundle.ACTIVE:
+                return "ACTIVE";
+            default:
+                return Integer.toString(state);
         }
     }
 
     private void loadProvider(final BundleContext bundleContext, final BundleWiring bundleWiring) {
         final String filter = "(APIVersion>=2.6.0)";
         try {
-            final Collection<ServiceReference<Provider>> serviceReferences = bundleContext.getServiceReferences(Provider.class, filter);
+            final Collection<ServiceReference<Provider>> serviceReferences =
+                    bundleContext.getServiceReferences(Provider.class, filter);
             Provider maxProvider = null;
             for (final ServiceReference<Provider> serviceReference : serviceReferences) {
                 final Provider provider = bundleContext.getService(serviceReference);
@@ -169,5 +172,4 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
                 break;
         }
     }
-
 }

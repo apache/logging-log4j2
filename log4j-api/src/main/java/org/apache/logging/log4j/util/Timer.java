@@ -24,33 +24,35 @@ import java.text.DecimalFormat;
  * so long as all the timer methods are called on the same thread in which it was started. Calling start on
  * multiple threads will cause the times to be aggregated.
  */
-public class Timer implements Serializable, StringBuilderFormattable
-{
+public class Timer implements Serializable, StringBuilderFormattable {
     private static final long serialVersionUID = 9175191792439630013L;
 
-    private final String name;        // The timer's name
+    private final String name; // The timer's name
+
     public enum Status {
-        Started, Stopped, Paused
+        Started,
+        Stopped,
+        Paused
     }
+
     private Status status; // The timer's status
-    private long elapsedTime;         // The elapsed time
+    private long elapsedTime; // The elapsed time
     private final int iterations;
     private static long NANO_PER_SECOND = 1000000000L;
     private static long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
     private static long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
     private ThreadLocal<Long> startTime = new ThreadLocal<Long>() {
-            @Override protected Long initialValue() {
-                return 0L;
-            }
+        @Override
+        protected Long initialValue() {
+            return 0L;
+        }
     };
-
 
     /**
      * Constructor.
      * @param name the timer name.
      */
-    public Timer(final String name)
-    {
+    public Timer(final String name) {
         this(name, 0);
     }
 
@@ -59,8 +61,7 @@ public class Timer implements Serializable, StringBuilderFormattable
      *
      * @param name the timer name.
      */
-    public Timer(final String name, final int iterations)
-    {
+    public Timer(final String name, final int iterations) {
         this.name = name;
         status = Status.Stopped;
         this.iterations = (iterations > 0) ? iterations : 0;
@@ -69,8 +70,7 @@ public class Timer implements Serializable, StringBuilderFormattable
     /**
      * Start the timer.
      */
-    public synchronized void start()
-    {
+    public synchronized void start() {
         startTime.set(System.nanoTime());
         elapsedTime = 0;
         status = Status.Started;
@@ -87,8 +87,7 @@ public class Timer implements Serializable, StringBuilderFormattable
     /**
      * Stop the timer.
      */
-    public synchronized String stop()
-    {
+    public synchronized String stop() {
         elapsedTime += System.nanoTime() - startTime.get();
         startTime.set(0L);
         status = Status.Stopped;
@@ -98,8 +97,7 @@ public class Timer implements Serializable, StringBuilderFormattable
     /**
      * Pause the timer.
      */
-    public synchronized void pause()
-    {
+    public synchronized void pause() {
         elapsedTime += System.nanoTime() - startTime.get();
         startTime.set(0L);
         status = Status.Paused;
@@ -108,8 +106,7 @@ public class Timer implements Serializable, StringBuilderFormattable
     /**
      * Resume the timer.
      */
-    public synchronized void resume()
-    {
+    public synchronized void resume() {
         startTime.set(System.nanoTime());
         status = Status.Started;
     }
@@ -118,8 +115,7 @@ public class Timer implements Serializable, StringBuilderFormattable
      * Accessor for the name.
      * @return the timer's name.
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -128,8 +124,7 @@ public class Timer implements Serializable, StringBuilderFormattable
      *
      * @return the elapsed time.
      */
-    public long getElapsedTime()
-    {
+    public long getElapsedTime() {
         return elapsedTime / 1000000;
     }
 
@@ -138,8 +133,7 @@ public class Timer implements Serializable, StringBuilderFormattable
      *
      * @return the elapsed time.
      */
-    public long getElapsedNanoTime()
-    {
+    public long getElapsedNanoTime() {
         return elapsedTime;
     }
 
@@ -148,8 +142,7 @@ public class Timer implements Serializable, StringBuilderFormattable
      * Resume).
      * @return the string representing the last operation performed.
      */
-    public Status getStatus()
-    {
+    public Status getStatus() {
         return status;
     }
 
@@ -157,8 +150,7 @@ public class Timer implements Serializable, StringBuilderFormattable
      * Returns the String representation of the timer based upon its current state
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder result = new StringBuilder();
         formatTo(result);
         return result.toString();
@@ -278,5 +270,4 @@ public class Timer implements Serializable, StringBuilderFormattable
         result = 29 * result + (int) (elapsedTime ^ (elapsedTime >>> 32));
         return result;
     }
-
 }

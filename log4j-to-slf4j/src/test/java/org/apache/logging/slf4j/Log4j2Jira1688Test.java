@@ -16,13 +16,12 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests LOG4J2-1688 Multiple loggings of arguments are setting these arguments to null.
@@ -66,5 +65,4 @@ public class Log4j2Jira1688Test {
         }
         return args;
     }
-
 }

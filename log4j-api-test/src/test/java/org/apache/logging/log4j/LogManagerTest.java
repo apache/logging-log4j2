@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.Closeable;
 import java.io.IOException;
-
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ResourceLock(value = "log4j2.LoggerContextFactory", mode = ResourceAccessMode.READ)
 public class LogManagerTest {
@@ -42,11 +41,11 @@ public class LogManagerTest {
     }
 
     static class StaticInner {
-        final static Logger LOGGER = LogManager.getLogger();
+        static final Logger LOGGER = LogManager.getLogger();
     }
 
     static class StaticInnerByClass {
-        final static Logger LOGGER = LogManager.getLogger(StaticInnerByClass.class);
+        static final Logger LOGGER = LogManager.getLogger(StaticInnerByClass.class);
     }
 
     @Test

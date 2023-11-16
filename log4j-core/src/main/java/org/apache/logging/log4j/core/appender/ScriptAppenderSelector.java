@@ -18,9 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
 import java.util.Objects;
-
 import javax.script.Bindings;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -37,7 +35,11 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
 
-@Plugin(name = "ScriptAppenderSelector", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(
+        name = "ScriptAppenderSelector",
+        category = Core.CATEGORY_NAME,
+        elementType = Appender.ELEMENT_TYPE,
+        printObject = true)
 public class ScriptAppenderSelector extends AbstractAppender {
 
     /**
@@ -88,8 +90,12 @@ public class ScriptAppenderSelector extends AbstractAppender {
                 return null;
             }
             final Bindings bindings = scriptManager.createBindings(script);
-            LOGGER.debug("ScriptAppenderSelector '{}' executing {} '{}': {}", name, script.getLanguage(),
-                    script.getName(), script.getScriptText());
+            LOGGER.debug(
+                    "ScriptAppenderSelector '{}' executing {} '{}': {}",
+                    name,
+                    script.getLanguage(),
+                    script.getName(),
+                    script.getScriptText());
             final Object object = scriptManager.execute(script.getName(), bindings);
             final String actualAppenderName = Objects.toString(object, null);
             LOGGER.debug("ScriptAppenderSelector '{}' selected '{}'", name, actualAppenderName);
@@ -131,7 +137,6 @@ public class ScriptAppenderSelector extends AbstractAppender {
             this.script = script;
             return this;
         }
-
     }
 
     @PluginBuilderFactory
@@ -139,7 +144,10 @@ public class ScriptAppenderSelector extends AbstractAppender {
         return new Builder();
     }
 
-    private ScriptAppenderSelector(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+    private ScriptAppenderSelector(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
             final Property[] properties) {
         super(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
@@ -148,5 +156,4 @@ public class ScriptAppenderSelector extends AbstractAppender {
     public void append(final LogEvent event) {
         // Do nothing: This appender is only used to discover and build another appender
     }
-
 }

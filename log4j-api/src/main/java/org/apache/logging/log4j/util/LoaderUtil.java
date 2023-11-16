@@ -65,10 +65,13 @@ public final class LoaderUtil {
             } catch (final SecurityException ignored) {
                 try {
                     // let's see if we can obtain that permission
-                    AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                        AccessController.checkPermission(GET_CLASS_LOADER);
-                        return null;
-                    }, null, GET_CLASS_LOADER);
+                    AccessController.doPrivileged(
+                            (PrivilegedAction<Void>) () -> {
+                                AccessController.checkPermission(GET_CLASS_LOADER);
+                                return null;
+                            },
+                            null,
+                            GET_CLASS_LOADER);
                     getClassLoaderDisabled = false;
                 } catch (final SecurityException ignore) {
                     // no chance
@@ -81,8 +84,7 @@ public final class LoaderUtil {
         }
     }
 
-    private LoaderUtil() {
-    }
+    private LoaderUtil() {}
 
     /**
      * Returns the ClassLoader to use.
@@ -304,8 +306,9 @@ public final class LoaderUtil {
      * @throws InvocationTargetException   if an exception is thrown by the constructor
      * @since 2.1
      */
-    public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
-            InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public static <T> T newInstanceOf(final String className)
+            throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException,
+                    NoSuchMethodException {
         final Class<T> clazz = Cast.cast(loadClass(className));
         return newInstanceOf(clazz);
     }
@@ -405,8 +408,9 @@ public final class LoaderUtil {
      * @throws InvocationTargetException   if there was an exception whilst constructing the class
      * @since 2.1
      */
-    public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz) throws ClassNotFoundException,
-            InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+    public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
+            throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException,
+                    NoSuchMethodException {
         return newInstanceOf(loadClass(className).asSubclass(clazz));
     }
 
@@ -466,9 +470,10 @@ public final class LoaderUtil {
     static Collection<UrlResource> findUrlResources(final String resource, final boolean useTccl) {
         // @formatter:off
         final ClassLoader[] candidates = {
-                useTccl ? getThreadContextClassLoader() : null,
-                LoaderUtil.class.getClassLoader(),
-                GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()};
+            useTccl ? getThreadContextClassLoader() : null,
+            LoaderUtil.class.getClassLoader(),
+            GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()
+        };
         // @formatter:on
         final Collection<UrlResource> resources = new LinkedHashSet<>();
         for (final ClassLoader cl : candidates) {

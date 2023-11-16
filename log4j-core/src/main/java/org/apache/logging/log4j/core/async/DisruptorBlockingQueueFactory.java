@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.BlockingQueue;
-
 import com.conversantmedia.util.concurrent.DisruptorBlockingQueue;
 import com.conversantmedia.util.concurrent.SpinPolicy;
+import java.util.concurrent.BlockingQueue;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -46,8 +45,7 @@ public class DisruptorBlockingQueueFactory<E> implements BlockingQueueFactory<E>
 
     @PluginFactory
     public static <E> DisruptorBlockingQueueFactory<E> createFactory(
-        @PluginAttribute(value = "SpinPolicy", defaultString = "WAITING") final SpinPolicy spinPolicy
-    ) {
+            @PluginAttribute(value = "SpinPolicy", defaultString = "WAITING") final SpinPolicy spinPolicy) {
         return new DisruptorBlockingQueueFactory<>(spinPolicy);
     }
 }

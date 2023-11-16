@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -31,10 +34,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  * LOG4J2-1699.
  */
@@ -44,8 +43,8 @@ public class RollingAppenderSizeCompressPermissionsTest {
 
     private static final String DIR = "target/rollingpermissions1";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule
-            .createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -85,19 +84,17 @@ public class RollingAppenderSizeCompressPermissionsTest {
             if (ext != null) {
                 if (file.getName().startsWith("test1")) {
                     gzippedFiles1++;
-                    assertEquals("rw-------",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertEquals(
+                            "rw-------", PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
                 } else {
                     gzippedFiles2++;
-                    assertEquals("r--r--r--",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertEquals(
+                            "r--r--r--", PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
                 }
             } else if (file.getName().startsWith("test1")) {
-                assertEquals("rw-------",
-                        PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                assertEquals("rw-------", PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
             } else {
-                assertEquals("rwx------",
-                        PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                assertEquals("rwx------", PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
             }
         }
         assertTrue("Files not rolled : " + files.length, files.length > 2);
