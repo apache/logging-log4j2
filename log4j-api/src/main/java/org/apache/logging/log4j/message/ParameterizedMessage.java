@@ -242,7 +242,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     /**
      * Returns the number of argument placeholders.
-     * @param pattern the message pattern to be analyzed
+     * @param messagePattern the message pattern to be analyzed
      */
     public static int countArgumentPlaceholders(final String messagePattern) {
         return ParameterFormatter.countArgumentPlaceholders(messagePattern);
