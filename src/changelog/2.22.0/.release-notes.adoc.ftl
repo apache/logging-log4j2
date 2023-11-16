@@ -20,6 +20,6 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This releases contains ...
+This releases contains bug fixes addressing issues in the JPMS & OSGi infrastructure overhauled in `2.21.0`, dependency updates, and some other minor fixes and improvements.
 
 <#include "../.changelog.adoc.ftl">
