@@ -2128,6 +2128,14 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
+    <td><a name="log4j2.configurationAuthorizationEncoding"/>log4j2.configurationAuthorizationEncoding</td>
+    <td>LOG4J_CONFIGURATION_AUTHORIZATION_ENCODING</td>
+    <td>UTF-8</td>
+    <td>
+      The encoding used in Basic Authentication (cf. <a href="https://datatracker.ietf.org/doc/html/rfc7617">RFC 7617</a>).
+    </td>
+  </tr>
+  <tr>
     <td><a name="configurationAuthorizationProvider"/>log4j2.Configuration.authorizationProvider
       <br />
       (<a name="log4j.configurationAuthorizationProvider"/>log4j.configurationAuthorizationProvider

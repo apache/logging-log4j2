@@ -66,7 +66,8 @@ the alternatives may be used in any configuration location.
 |----------|---------|---------|---------|
 | log4j2.configurationUserName | log4j2.config.username | logging.auth.username | User name for basic authentication |
 | log4j2.configurationPassword | log4j2.config.password | logging.auth.password | Password for basic authentication |
-| log4j2.authorizationProvider | log4j2.config.authorizationProvider | logging.auth.authorizationProvider | Class used to create HTTP Authorization header |
+| log4j2.configurationAuthorizationEncoding | | logging.auth.encoding | Encoding for basic authentication (defaults to UTF-8) |
+| log4j2.configurationAuthorizationProvider | log4j2.config.authorizationProvider | logging.auth.authorizationProvider | Class used to create HTTP Authorization header |
 
 ```
 log4j2.configurationUserName=guest

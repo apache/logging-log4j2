@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.net.URLConnection;
+import java.nio.charset.Charset;
+import java.util.Base64;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Base64Util;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -34,6 +37,11 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
     public static final String CONFIG_USER_NAME = "log4j2.configurationUserName";
     public static final String CONFIG_PASSWORD = "log4j2.configurationPassword";
     public static final String PASSWORD_DECRYPTOR = "log4j2.passwordDecryptor";
+    /*
+     * Properties used to specify the encoding in HTTP Basic Authentication
+     */
+    private static final String BASIC_AUTH_ENCODING = "log4j2.configurationAuthorizationEncoding";
+    private static final String SPRING_BASIC_AUTH_ENCODING = "logging.auth.encoding";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -46,6 +54,11 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
                 props.getStringProperty(PREFIXES, AUTH_PASSWORD, () -> props.getStringProperty(CONFIG_PASSWORD));
         final String decryptor = props.getStringProperty(
                 PREFIXES, AUTH_PASSWORD_DECRYPTOR, () -> props.getStringProperty(PASSWORD_DECRYPTOR));
+        // Password encoding
+        Charset passwordCharset = props.getCharsetProperty(BASIC_AUTH_ENCODING);
+        if (passwordCharset == null) {
+            props.getCharsetProperty(SPRING_BASIC_AUTH_ENCODING, UTF_8);
+        }
         if (decryptor != null) {
             try {
                 final Object obj = LoaderUtil.newInstanceOf(decryptor);
@@ -57,7 +70,13 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
             }
         }
         if (userName != null && password != null) {
-            authString = "Basic " + Base64Util.encode(userName + ":" + password);
+            /*
+             * https://datatracker.ietf.org/doc/html/rfc7617#appendix-B
+             *
+             * If the user didn't specify a charset to use, we fallback to UTF-8
+             */
+            authString = "Basic "
+                    + Base64.getEncoder().encodeToString((userName + ":" + password).getBytes(passwordCharset));
         }
     }
 
