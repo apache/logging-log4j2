@@ -36,7 +36,7 @@ This VDR is accessible through the following URL: https://logging.apache.org/cyc
 SBOM generation is streamlined by `logging-parent`, see https://logging.apache.org/logging-parent/latest/#cyclonedx-sbom[its website] for details.
 
 
-[#release-notes-2-22-0-Changed]
+[#release-notes-2-22-0-changed]
 === Changed
 
 * Change the order of evaluation of `FormattedMessage` formatters. Messages are evaluated using `java.util.Format` only if they don't comply to the `java.text.MessageFormat` or `ParameterizedMessage` format. (https://github.com/apache/logging-log4j2/issues/1223[1223])
@@ -53,12 +53,12 @@ SBOM generation is streamlined by `logging-parent`, see https://logging.apache.o
 * Update `org.springframework:spring-framework-bom` to version `5.3.31` (https://github.com/apache/logging-log4j2/pull/1973[1973])
 * Update `org.zeromq:jeromq` to version `0.5.4` (https://github.com/apache/logging-log4j2/pull/1878[1878])
 
-[#release-notes-2-22-0-Removed]
+[#release-notes-2-22-0-removed]
 === Removed
 
 * Removed unused `FastDateParser` which was causing unnecessary heap overhead (https://issues.apache.org/jira/browse/LOG4J2-3672[LOG4J2-3672], https://github.com/apache/logging-log4j2/pull/1848[1848])
 
-[#release-notes-2-22-0-Fixed]
+[#release-notes-2-22-0-fixed]
 === Fixed
 
 * Fix MDC pattern converter causing issues for `%notEmpty` (https://github.com/apache/logging-log4j2/issues/1922[1922])

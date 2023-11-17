@@ -92,7 +92,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-9-0-Added]
+[#release-notes-2-9-0-added]
 === Added
 
 * The JMS Appender should use a JMS MapMessage for a Log4j MapMessage. (https://issues.apache.org/jira/browse/LOG4J2-1294[LOG4J2-1294])
@@ -119,7 +119,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Public API for parsing the output from JsonLayout/XmlLayout/YamlLayout into a LogEvent. (https://issues.apache.org/jira/browse/LOG4J2-1986[LOG4J2-1986])
 * Support printing multiple StructuredData elements in RFC5424Layout. (https://issues.apache.org/jira/browse/LOG4J2-2008[LOG4J2-2008])
 
-[#release-notes-2-9-0-Changed]
+[#release-notes-2-9-0-changed]
 === Changed
 
 * Allow for bufferSize=0 in SMTP appender. (https://issues.apache.org/jira/browse/LOG4J2-1071[LOG4J2-1071])
@@ -160,7 +160,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Use a class' canonical name instead of name to create its logger name. (https://issues.apache.org/jira/browse/LOG4J2-2023[LOG4J2-2023])
 * Update SLF4J from 1.7.24 to 1.7.25.
 
-[#release-notes-2-9-0-Fixed]
+[#release-notes-2-9-0-fixed]
 === Fixed
 
 * SocketAppender will lose several events after re-connection to server. (https://issues.apache.org/jira/browse/LOG4J2-1311[LOG4J2-1311])

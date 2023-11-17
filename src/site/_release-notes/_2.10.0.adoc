@@ -106,7 +106,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-10-0-Added]
+[#release-notes-2-10-0-added]
 === Added
 
 * Allow filtering of line breaks in layout pattern. (https://issues.apache.org/jira/browse/LOG4J2-1203[LOG4J2-1203])
@@ -124,7 +124,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Provide a native Log4j 2 implementation of Eclipse Jetty's org.eclipse.jetty.util.log.Logger. (https://issues.apache.org/jira/browse/LOG4J2-2114[LOG4J2-2114])
 * Properly escape newlines and other control characters in JSON. (https://issues.apache.org/jira/browse/LOG4J2-2120[LOG4J2-2120])
 
-[#release-notes-2-10-0-Changed]
+[#release-notes-2-10-0-changed]
 === Changed
 
 * Update classes in org.apache.logging.log4j.core.net.ssl in APIs from String to a PasswordProvider producing char[] for passwords. (https://issues.apache.org/jira/browse/LOG4J2-1896[LOG4J2-1896])
@@ -140,7 +140,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Update Apache Kafka kafka-clients from 0.11.0.1 to 1.0.0. (https://issues.apache.org/jira/browse/LOG4J2-2096[LOG4J2-2096])
 * Jackson dependencies for 2.9.2 incorrectly bring in jackson-annotations 2.9.0 instead of 2.9.2. (https://issues.apache.org/jira/browse/LOG4J2-2117[LOG4J2-2117])
 
-[#release-notes-2-10-0-Fixed]
+[#release-notes-2-10-0-fixed]
 === Fixed
 
 * Nested pattern layout options broken. (https://issues.apache.org/jira/browse/LOG4J2-1216[LOG4J2-1216])

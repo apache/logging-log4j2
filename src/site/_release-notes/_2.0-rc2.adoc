@@ -39,7 +39,7 @@
 Release date:: 2014-06-21
 
 
-[#release-notes-2-0-rc2-Added]
+[#release-notes-2-0-rc2-added]
 === Added
 
 * Add support for configuration via YAML. (https://issues.apache.org/jira/browse/LOG4J2-427[LOG4J2-427])
@@ -56,7 +56,7 @@ Release date:: 2014-06-21
 * Made RollingFileAppender buffer size configurable. (https://issues.apache.org/jira/browse/LOG4J2-674[LOG4J2-674])
 * RollingFile and RollingRandomAccessFile now write the layout footer before rollover. (https://issues.apache.org/jira/browse/LOG4J2-675[LOG4J2-675])
 
-[#release-notes-2-0-rc2-Changed]
+[#release-notes-2-0-rc2-changed]
 === Changed
 
 * Refactor Log4jLogEvent to lazily create ThrowableProxy. (https://issues.apache.org/jira/browse/LOG4J2-250[LOG4J2-250])
@@ -80,7 +80,7 @@ Release date:: 2014-06-21
 * Merge the TLS Syslog appender into the Syslog appender. (https://issues.apache.org/jira/browse/LOG4J2-646[LOG4J2-646])
 * Upgrade to Flume 1.5.0. (https://issues.apache.org/jira/browse/LOG4J2-647[LOG4J2-647])
 
-[#release-notes-2-0-rc2-Fixed]
+[#release-notes-2-0-rc2-fixed]
 === Fixed
 
 * Improved documentation regarding log4j status logger. (https://issues.apache.org/jira/browse/LOG4J2-141[LOG4J2-141])

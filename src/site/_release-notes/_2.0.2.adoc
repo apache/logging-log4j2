@@ -48,13 +48,13 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-0-2-Changed]
+[#release-notes-2-0-2-changed]
 === Changed
 
 * Allow Log4jContextFactory subclasses to specify a custom ContextSelector. (https://issues.apache.org/jira/browse/LOG4J2-730[LOG4J2-730])
 * Update Apache Flume to 1.5.0.1 from 1.5.0. (https://issues.apache.org/jira/browse/LOG4J2-775[LOG4J2-775])
 
-[#release-notes-2-0-2-Fixed]
+[#release-notes-2-0-2-fixed]
 === Fixed
 
 * Resolved race condition that caused log file rotation to fail with error: "Unable to create directory ..." (https://issues.apache.org/jira/browse/LOG4J2-679[LOG4J2-679])

@@ -93,7 +93,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-9-1-Changed]
+[#release-notes-2-9-1-changed]
 === Changed
 
 * Use a class' canonical name instead of name to create its logger name. (https://issues.apache.org/jira/browse/LOG4J2-2023[LOG4J2-2023])
@@ -104,7 +104,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Update Cassandra driver from 3.1.0 to 3.1.4. (https://issues.apache.org/jira/browse/LOG4J2-2047[LOG4J2-2047])
 * Update Apache Kafka Client from 0.11.0.0 to 0.11.0.1. (https://issues.apache.org/jira/browse/LOG4J2-2049[LOG4J2-2049])
 
-[#release-notes-2-9-1-Fixed]
+[#release-notes-2-9-1-fixed]
 === Fixed
 
 * Prevent ConcurrentModificationException with AsyncLoggerConfig. (https://issues.apache.org/jira/browse/LOG4J2-1914[LOG4J2-1914])

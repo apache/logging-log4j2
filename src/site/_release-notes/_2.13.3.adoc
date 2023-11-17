@@ -53,7 +53,7 @@ Log4j 2.3 was the last release that supported Java 6 and Log4j 2.11.2 is the las
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-13-3-Fixed]
+[#release-notes-2-13-3-fixed]
 === Fixed
 
 * Fix NullPointerException in ThreadContextDataInjector. (https://issues.apache.org/jira/browse/LOG4J2-2838[LOG4J2-2838])

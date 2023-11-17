@@ -54,7 +54,7 @@ Java 7 is no longer supported by the Log4j team.
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-17-1-Fixed]
+[#release-notes-2-17-1-fixed]
 === Fixed
 
 * Fix NPE when input is null in StrSubstitutor.replace(String, Properties).

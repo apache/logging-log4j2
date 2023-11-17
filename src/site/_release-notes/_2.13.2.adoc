@@ -53,13 +53,13 @@ Log4j 2.3 was the last release that supported Java 6 and Log4j 2.11.2 is the las
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-13-2-Added]
+[#release-notes-2-13-2-added]
 === Added
 
 * Provide a Log4j implementation of System.Logger. (https://issues.apache.org/jira/browse/LOG4J2-1360[LOG4J2-1360])
 * Added EventLookup to retrieve fields from the log event. (https://issues.apache.org/jira/browse/LOG4J2-2807[LOG4J2-2807])
 
-[#release-notes-2-13-2-Changed]
+[#release-notes-2-13-2-changed]
 === Changed
 
 * Allow the file extension in the file pattern to be modified during reconfiguration. (https://issues.apache.org/jira/browse/LOG4J2-2457[LOG4J2-2457])
@@ -70,7 +70,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Allow Spring Lookup to return default and active profiles. (https://issues.apache.org/jira/browse/LOG4J2-2818[LOG4J2-2818])
 * Add support for specifying an SSL configuration for SmtpAppender. (https://issues.apache.org/jira/browse/LOG4J2-2819[LOG4J2-2819])
 
-[#release-notes-2-13-2-Fixed]
+[#release-notes-2-13-2-fixed]
 === Fixed
 
 * Add option to restore printing timeMillis in the JsonLayout. (https://issues.apache.org/jira/browse/LOG4J2-2588[LOG4J2-2588])

@@ -55,7 +55,7 @@ Java 6 and Java 7 are no longer supported by the Log4j team.
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-18-0-Added]
+[#release-notes-2-18-0-added]
 === Added
 
 * Add support for Jakarta Mail API in the SMTP appender. (https://issues.apache.org/jira/browse/LOG4J2-3362[LOG4J2-3362])
@@ -66,7 +66,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Add MutableThreadContextMapFilter. (https://issues.apache.org/jira/browse/LOG4J2-3495[LOG4J2-3495])
 * Add support for 24 colors in highlighting (https://issues.apache.org/jira/browse/LOG4J2-3538[LOG4J2-3538])
 
-[#release-notes-2-18-0-Changed]
+[#release-notes-2-18-0-changed]
 === Changed
 
 * Improves ServiceLoader support on servlet containers. (https://issues.apache.org/jira/browse/LOG4J2-3427[LOG4J2-3427])
@@ -76,7 +76,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Move perf tests to log4j-core-its (https://issues.apache.org/jira/browse/LOG4J2-3516[LOG4J2-3516])
 * Upgrade the Flume Appender to Flume 1.10.0 (https://issues.apache.org/jira/browse/LOG4J2-3536[LOG4J2-3536])
 
-[#release-notes-2-18-0-Fixed]
+[#release-notes-2-18-0-fixed]
 === Fixed
 
 * Fix minor typo #792.
