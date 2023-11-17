@@ -18,7 +18,7 @@
 [#release-notes-2-22-0]
 == 2.22.0
 
-Release date:: 2023-11-16
+Release date:: 2023-11-17
 
 :cyclonedx-sbom-link: https://cyclonedx.org/capabilities/sbom/[CycloneDX Software Bill of Materials (SBOM)]
 :cyclonedx-vdr-link: https://cyclonedx.org/capabilities/vdr[CycloneDX Vulnerability Disclosure Report (VDR)]
