@@ -48,16 +48,19 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-0-1-Added]
 === Added
 
 * Added documentation for Custom Levels and Custom Loggers. (https://issues.apache.org/jira/browse/LOG4J2-710[LOG4J2-710])
 * Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets. (https://issues.apache.org/jira/browse/LOG4J2-725[LOG4J2-725])
 
+[#release-notes-2-0-1-Changed]
 === Changed
 
 * Update to LMAX Disruptor 3.3.0 from 3.2.1. (https://issues.apache.org/jira/browse/LOG4J2-732[LOG4J2-732])
 * Update to latest Jackson jars from the 2.4.1.X line. (https://issues.apache.org/jira/browse/LOG4J2-733[LOG4J2-733])
 
+[#release-notes-2-0-1-Fixed]
 === Fixed
 
 * Fixed ClassLoader issues in loading Log4j providers in an OSGi environment. (https://issues.apache.org/jira/browse/LOG4J2-373[LOG4J2-373])

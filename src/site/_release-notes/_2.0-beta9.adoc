@@ -39,6 +39,7 @@
 Release date:: 2013-09-14
 
 
+[#release-notes-2-0-beta9-Added]
 === Added
 
 * Added FAQ page to the site. (https://issues.apache.org/jira/browse/LOG4J2-253[LOG4J2-253])
@@ -55,6 +56,7 @@ Release date:: 2013-09-14
 * [Pattern Layout] Customize level names to lower-case. (https://issues.apache.org/jira/browse/LOG4J2-384[LOG4J2-384])
 * Allow the default file rollover strategy to define the compression level. (https://issues.apache.org/jira/browse/LOG4J2-399[LOG4J2-399])
 
+[#release-notes-2-0-beta9-Changed]
 === Changed
 
 * Changed the (relatively new) PatternLayout configuration attribute "suppressExceptions" to "alwaysWriteExceptions" to more correctly indicate what it does. As such, the meaning of this attribute has reversed (previous "true"s should become "false"s, and vice versa). Since this was an undocumented attribute up until now, it's unlikely this change will affect any users.
@@ -74,6 +76,7 @@ Release date:: 2013-09-14
 * Update Java Mail dependency to 1.5.0 from 1.4.7. (https://issues.apache.org/jira/browse/LOG4J2-388[LOG4J2-388])
 * Update HSQLDB dependency to 2.3.0 from 2.2.9. (https://issues.apache.org/jira/browse/LOG4J2-390[LOG4J2-390])
 
+[#release-notes-2-0-beta9-Fixed]
 === Fixed
 
 * The slf4j-ext jar is now an optional dependency of the SLF4J bridge. (https://issues.apache.org/jira/browse/LOG4J2-165[LOG4J2-165])

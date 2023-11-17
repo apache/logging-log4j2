@@ -55,6 +55,7 @@ Java 6 and Java 7 are no longer supported by the Log4j team.
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-20-0-Added]
 === Added
 
 * Add support for timezones in `RollingFileAppender` date pattern (https://issues.apache.org/jira/browse/LOG4J2-1631[LOG4J2-1631])
@@ -63,6 +64,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Removes internal field that leaked into public API. (https://issues.apache.org/jira/browse/LOG4J2-3615[LOG4J2-3615])
 * Add a `LogBuilder#logAndGet()` method to emulate the `Logger#traceEntry` method. (https://issues.apache.org/jira/browse/LOG4J2-3645[LOG4J2-3645])
 
+[#release-notes-2-20-0-Changed]
 === Changed
 
 * Simplify site generation (https://github.com/apache/logging-log4j2/pull/1166[1166])
@@ -74,10 +76,12 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Replace `maven-changes-plugin` with a custom changelog implementation (https://issues.apache.org/jira/browse/LOG4J2-3628[LOG4J2-3628])
 * Moved `log4j-api` and `log4j-core` artifacts with classifier `tests` to `log4j-api-test` and `log4j-core-test` respectively. (https://issues.apache.org/jira/browse/LOG4J2-3650[LOG4J2-3650])
 
+[#release-notes-2-20-0-Deprecated]
 === Deprecated
 
 * Deprecate support for package scanning for plugins (https://issues.apache.org/jira/browse/LOG4J2-3644[LOG4J2-3644])
 
+[#release-notes-2-20-0-Fixed]
 === Fixed
 
 * Copy programmatically supplied location even if `includeLocation="false"`. (https://github.com/apache/logging-log4j2/pull/1197[1197])

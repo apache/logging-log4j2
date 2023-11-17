@@ -39,14 +39,17 @@
 Release date:: 2012-09-18
 
 
+[#release-notes-2-0-beta1-Added]
 === Added
 
 * Added AsynchAppender.
 
+[#release-notes-2-0-beta1-Changed]
 === Changed
 
 * Update the versions of SLF4J and Logback.
 
+[#release-notes-2-0-beta1-Fixed]
 === Fixed
 
 * Created web module to allow web applications to include the Log4j context listener in WEB-INF/lib even if Log4j is in the container's class path. Allow locating the LoggerContext to include the ClassLoader. Updated the Loader utility to always choose the child ClassLoader. Verified in Jboss 5 and Tomcat.

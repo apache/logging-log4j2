@@ -57,12 +57,14 @@ Log4j 2.12.1 is the last release to support Java 7.
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-14-0-Added]
 === Added
 
 * Create module log4j-mongodb4 to use new major version 4 MongoDB driver. (https://issues.apache.org/jira/browse/LOG4J2-2848[LOG4J2-2848])
 * More flexible configuration of the Disruptor WaitStrategy. (https://issues.apache.org/jira/browse/LOG4J2-2858[LOG4J2-2858])
 * Add JsonTemplateLayout. (https://issues.apache.org/jira/browse/LOG4J2-2957[LOG4J2-2957])
 
+[#release-notes-2-14-0-Changed]
 === Changed
 
 * Add date pattern support for HTML layout. (https://issues.apache.org/jira/browse/LOG4J2-2889[LOG4J2-2889])
@@ -80,10 +82,12 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Update tests hsqldb 2.5.0 -> 2.5.1.
 * Update tests junit:junit 4.12 -> 4.13.
 
+[#release-notes-2-14-0-Removed]
 === Removed
 
 * Drop log4j-mongodb2 module. (https://issues.apache.org/jira/browse/LOG4J2-2851[LOG4J2-2851])
 
+[#release-notes-2-14-0-Fixed]
 === Fixed
 
 * Javadoc link in ThreadContext description was incorrect. (https://issues.apache.org/jira/browse/LOG4J2-2822[LOG4J2-2822])

@@ -39,6 +39,7 @@
 Release date:: 2013-07-10
 
 
+[#release-notes-2-0-beta8-Changed]
 === Changed
 
 * Include arbitrary message fields in RFC-5424 structured data. (https://issues.apache.org/jira/browse/LOG4J2-168[LOG4J2-168])
@@ -56,6 +57,7 @@ Release date:: 2013-07-10
 * Add printf methods to Logger API. (https://issues.apache.org/jira/browse/LOG4J2-301[LOG4J2-301])
 * Update NoSQL dependencies: lightcouch 0.0.6 from 0.0.5, mongodb 2.11.2 from 2.11.1. (https://issues.apache.org/jira/browse/LOG4J2-386[LOG4J2-386])
 
+[#release-notes-2-0-beta8-Fixed]
 === Fixed
 
 * Fix NullPointerException (regression due to fix for LOG4J2-228) (https://issues.apache.org/jira/browse/LOG4J2-139[LOG4J2-139])

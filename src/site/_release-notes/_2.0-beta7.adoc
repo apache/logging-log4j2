@@ -39,12 +39,14 @@
 Release date:: 2013-06-01
 
 
+[#release-notes-2-0-beta7-Added]
 === Added
 
 * Break up core into multiple osgi jars. (https://issues.apache.org/jira/browse/LOG4J2-10[LOG4J2-10])
 * New JDBC, JPA, and NoSQL database Appenders. (https://issues.apache.org/jira/browse/LOG4J2-229[LOG4J2-229])
 * Provide configuration information (location, content type, content if possible) via a registered Advertiser. (https://issues.apache.org/jira/browse/LOG4J2-251[LOG4J2-251])
 
+[#release-notes-2-0-beta7-Changed]
 === Changed
 
 * Improve ThreadContext performance with copy-on-write map and stack. (https://issues.apache.org/jira/browse/LOG4J2-154[LOG4J2-154])
@@ -53,6 +55,7 @@ Release date:: 2013-06-01
 * Add support for interceptors in the embedded Flume Appender. (https://issues.apache.org/jira/browse/LOG4J2-262[LOG4J2-262])
 * Method name changes in interface org.apache.logging.log4j.spi.ThreadContextMap: getContext() to getCopy(), get() to getImmutableMapOrNull().
 
+[#release-notes-2-0-beta7-Fixed]
 === Fixed
 
 * Remove LoggerContext when LoggerContext is stopped. (https://issues.apache.org/jira/browse/LOG4J2-223[LOG4J2-223])

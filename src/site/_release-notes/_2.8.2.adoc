@@ -76,6 +76,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-8-2-Added]
 === Added
 
 * Add support for appending common suffix to each line of extended and root throwable stack trace. (https://issues.apache.org/jira/browse/LOG4J2-1838[LOG4J2-1838])
@@ -83,11 +84,13 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Add JSON encoding support to EncodingPatternConverter %encode{}. (https://issues.apache.org/jira/browse/LOG4J2-1848[LOG4J2-1848])
 * Add support for filtering input in TcpSocketServer and UdpSocketServer. (https://issues.apache.org/jira/browse/LOG4J2-1863[LOG4J2-1863])
 
+[#release-notes-2-8-2-Changed]
 === Changed
 
 * Move integration tests to their own module to speed up build. (https://issues.apache.org/jira/browse/LOG4J2-1827[LOG4J2-1827])
 * Update Jackson from 2.8.6 to 2.8.7. (https://issues.apache.org/jira/browse/LOG4J2-1856[LOG4J2-1856])
 
+[#release-notes-2-8-2-Fixed]
 === Fixed
 
 * Log4j 2.8 can lose exceptions when a security manager is present. (https://issues.apache.org/jira/browse/LOG4J2-1820[LOG4J2-1820])

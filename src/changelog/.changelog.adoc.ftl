@@ -17,6 +17,7 @@
 <#if entriesByType?size gt 0>
 <#list entriesByType as entryType, entries>
 
+[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}-${entryType?capitalize}]
 === ${entryType?capitalize}
 
 <#list entries as entry>

@@ -39,10 +39,12 @@
 Release date:: 2012-07-29
 
 
+[#release-notes-2-0-alpha1-Added]
 === Added
 
 * Added ability to filter on the AppenderRef by adding either a level or a filter. (https://issues.apache.org/jira/browse/LOG4J2-60[LOG4J2-60])
 
+[#release-notes-2-0-alpha1-Fixed]
 === Fixed
 
 * Make sure all application facing log methods use their own FQCN. This patch resolves a unit test failure for the %C pattern when using the Category logger. (https://issues.apache.org/jira/browse/LOG4J2-50[LOG4J2-50])

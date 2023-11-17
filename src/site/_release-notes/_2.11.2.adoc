@@ -102,6 +102,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-11-2-Added]
 === Added
 
 * PatternLayout %date conversion pattern should render time zone designator for ISO-ISO8601. (https://issues.apache.org/jira/browse/LOG4J2-1246[LOG4J2-1246])
@@ -109,6 +110,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Let JDBC PoolingDriverConnectionSource with Apache Commons DBCP configure a PoolableConnectionFactory. (https://issues.apache.org/jira/browse/LOG4J2-2505[LOG4J2-2505])
 * Allow a JDBC Appender to truncate strings to match a table's metadata column length limit. (https://issues.apache.org/jira/browse/LOG4J2-2509[LOG4J2-2509])
 
+[#release-notes-2-11-2-Changed]
 === Changed
 
 * Switch from CLIRR to RevAPI for detecting API changes. (https://issues.apache.org/jira/browse/LOG4J2-1576[LOG4J2-1576])
@@ -124,6 +126,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Allow all Appenders to optionally carry a Property array. (https://issues.apache.org/jira/browse/LOG4J2-2491[LOG4J2-2491])
 * Update MongoDB driver from 3.8.2 to 3.9.0 for log4j-mongodb3 module. (https://issues.apache.org/jira/browse/LOG4J2-2503[LOG4J2-2503])
 
+[#release-notes-2-11-2-Fixed]
 === Fixed
 
 * Logging with a lambda expression with a method call that also logs would cause logs within method call to reference line num and method name of the parent method. (https://issues.apache.org/jira/browse/LOG4J2-1570[LOG4J2-1570])
