@@ -55,26 +55,26 @@ Java 6 and Java 7 are no longer supported by the Log4j team.
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-19-0-Added]
+[#release-notes-2-19-0-added]
 === Added
 
 * Add implementation of SLF4J2 fluent API. (https://issues.apache.org/jira/browse/LOG4J2-2975[LOG4J2-2975])
 * Add support for SLF4J2 stack-valued MDC. (https://issues.apache.org/jira/browse/LOG4J2-3583[LOG4J2-3583])
 
-[#release-notes-2-19-0-Changed]
+[#release-notes-2-19-0-changed]
 === Changed
 
 * Add getExplicitLevel method to LoggerConfig. (https://issues.apache.org/jira/browse/LOG4J2-3572[LOG4J2-3572])
 * Allow PropertySources to be added. (https://issues.apache.org/jira/browse/LOG4J2-3588[LOG4J2-3588])
 * Allow Plugins to be injected with the LoggerContext reference. (https://issues.apache.org/jira/browse/LOG4J2-3589[LOG4J2-3589])
 
-[#release-notes-2-19-0-Removed]
+[#release-notes-2-19-0-removed]
 === Removed
 
 * Removed build page in favor of a single build instructions file. (https://issues.apache.org/jira/browse/LOG4J2-3573[LOG4J2-3573])
 * Remove SLF4J 1.8.x binding. (https://issues.apache.org/jira/browse/LOG4J2-3590[LOG4J2-3590])
 
-[#release-notes-2-19-0-Fixed]
+[#release-notes-2-19-0-fixed]
 === Fixed
 
 * Add correct manifest entries for OSGi to log4j-jcl (https://issues.apache.org/jira/browse/LOG4J2-3545[LOG4J2-3545])

@@ -77,7 +77,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-6-2-Added]
+[#release-notes-2-6-2-added]
 === Added
 
 * Add "direct" option to ConsoleAppender for increased performance. (https://issues.apache.org/jira/browse/LOG4J2-1395[LOG4J2-1395])
@@ -85,14 +85,14 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * (GC) ParameterFormatter now avoids calling toString() on auto-boxed primitive message parameters. (https://issues.apache.org/jira/browse/LOG4J2-1415[LOG4J2-1415])
 * (GC) ObjectMessage and ReusableObjectMessage now avoid calling toString() on auto-boxed primitive parameters. (https://issues.apache.org/jira/browse/LOG4J2-1437[LOG4J2-1437])
 
-[#release-notes-2-6-2-Changed]
+[#release-notes-2-6-2-changed]
 === Changed
 
 * Update Jackson from 2.7.4 to 2.7.5. (https://issues.apache.org/jira/browse/LOG4J2-1432[LOG4J2-1432])
 * Update Jansi from 1.11 to 1.13. (https://issues.apache.org/jira/browse/LOG4J2-1433[LOG4J2-1433])
 * Update Apache Commons Compress from 1.11 to 1.12. (https://issues.apache.org/jira/browse/LOG4J2-1444[LOG4J2-1444])
 
-[#release-notes-2-6-2-Fixed]
+[#release-notes-2-6-2-fixed]
 === Fixed
 
 * CronTriggeringPolicy was not properly setting the prevFileTime value for the PatternProcessor so file dates and times on rolled files were incorrect. (https://issues.apache.org/jira/browse/LOG4J2-1250[LOG4J2-1250])

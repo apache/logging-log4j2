@@ -65,7 +65,7 @@ Java 7 is no longer supported by the Log4j team.
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-16-0-Fixed]
+[#release-notes-2-16-0-fixed]
 === Fixed
 
 * Disable JNDI by default. Require log4j2.enableJndi to be set to true to allow JNDI. (https://issues.apache.org/jira/browse/LOG4J2-3208[LOG4J2-3208])

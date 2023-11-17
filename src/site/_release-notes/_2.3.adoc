@@ -52,13 +52,13 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-3-Added]
+[#release-notes-2-3-added]
 === Added
 
 * Truncate from the end of text format modifier. (https://issues.apache.org/jira/browse/LOG4J2-926[LOG4J2-926])
 * PatternLayout %highlight to support noConsoleNoAnsi like %style. (https://issues.apache.org/jira/browse/LOG4J2-984[LOG4J2-984])
 
-[#release-notes-2-3-Changed]
+[#release-notes-2-3-changed]
 === Changed
 
 * Update Jackson from 2.5.1 to 2.5.3. (https://issues.apache.org/jira/browse/LOG4J2-1004[LOG4J2-1004])
@@ -69,7 +69,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Move UTF-8 constant from Charsets to Constants class. Remove Charsets class. (https://issues.apache.org/jira/browse/LOG4J2-995[LOG4J2-995])
 * Make org.apache.logging.log4j.core.Logger#updateConfiguration protected. (https://issues.apache.org/jira/browse/LOG4J2-998[LOG4J2-998])
 
-[#release-notes-2-3-Fixed]
+[#release-notes-2-3-fixed]
 === Fixed
 
 * JUL Logger.throwing is mis-mapped to ERROR when it should be TRACE. (https://issues.apache.org/jira/browse/LOG4J2-1003[LOG4J2-1003])

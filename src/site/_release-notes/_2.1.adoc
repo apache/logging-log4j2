@@ -50,7 +50,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-1-Added]
+[#release-notes-2-1-added]
 === Added
 
 * Implement a GELF layout. (https://issues.apache.org/jira/browse/LOG4J2-428[LOG4J2-428])
@@ -70,7 +70,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Documentation: add sections on the JUL Adapter, IO Streams and NoSQL Appenders to the Maven and Ivy page. (https://issues.apache.org/jira/browse/LOG4J2-856[LOG4J2-856])
 * Add ShutdownCallbackRegistry interface for customizable shutdown callback handling. This is particularly useful for application servers that wish to integrate with Log4j 2. (https://issues.apache.org/jira/browse/LOG4J2-868[LOG4J2-868])
 
-[#release-notes-2-1-Changed]
+[#release-notes-2-1-changed]
 === Changed
 
 * Incomplete documentation for JSONLayout. (https://issues.apache.org/jira/browse/LOG4J2-766[LOG4J2-766])
@@ -86,7 +86,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Add 2.1.0 to compatible versions in Log4j API ProviderUtil and update Log4jAPIVersion to 2.1.0 in core META-INF/log4j-provider.properties. (https://issues.apache.org/jira/browse/LOG4J2-845[LOG4J2-845])
 * FlumeAppender: maxDelay not in seconds, but milliseconds. Add time scale to some settings, for example maxDelayMillis instead of maxDelay. The old names are aliased for compatibility. (https://issues.apache.org/jira/browse/LOG4J2-867[LOG4J2-867])
 
-[#release-notes-2-1-Fixed]
+[#release-notes-2-1-fixed]
 === Fixed
 
 * FlumePersistentManager now handles LockConflictExceptions in Berkeley Db when sending a batch. (https://issues.apache.org/jira/browse/LOG4J2-391[LOG4J2-391])

@@ -66,7 +66,7 @@ Log4j 2.3 was the last release that supported Java 6 and Log4j 2.11.2 is the las
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-13-0-Added]
+[#release-notes-2-13-0-added]
 === Added
 
 * Add builder pattern to Logger interface. (https://issues.apache.org/jira/browse/LOG4J2-2639[LOG4J2-2639])
@@ -76,13 +76,13 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Add ThreadContext.putIfNotNull method. (https://issues.apache.org/jira/browse/LOG4J2-2732[LOG4J2-2732])
 * Add experimental support for Log4j 1 configuration files. (https://issues.apache.org/jira/browse/LOG4J2-63[LOG4J2-63])
 
-[#release-notes-2-13-0-Changed]
+[#release-notes-2-13-0-changed]
 === Changed
 
 * Update Jackson to 2.9.10. (https://issues.apache.org/jira/browse/LOG4J2-2701[LOG4J2-2701])
 * Allow message portion of GELF layout to be formatted using a PatternLayout. Allow ThreadContext attributes to be explicitly included or excluded in the GelfLayout. (https://issues.apache.org/jira/browse/LOG4J2-2709[LOG4J2-2709])
 
-[#release-notes-2-13-0-Fixed]
+[#release-notes-2-13-0-fixed]
 === Fixed
 
 * Prevent recursive calls to java.util.LogManager.getLogger(). (https://issues.apache.org/jira/browse/LOG4J2-2058[LOG4J2-2058])

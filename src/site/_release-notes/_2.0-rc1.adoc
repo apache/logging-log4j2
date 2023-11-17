@@ -39,7 +39,7 @@
 Release date:: 2014-02-16
 
 
-[#release-notes-2-0-rc1-Added]
+[#release-notes-2-0-rc1-added]
 === Added
 
 * Configure FileAppender buffer size. (https://issues.apache.org/jira/browse/LOG4J2-401[LOG4J2-401])
@@ -53,7 +53,7 @@ Release date:: 2014-02-16
 * Documentation fix: The attribute of Route to refer to an appender is "ref" not "AppenderRef". (https://issues.apache.org/jira/browse/LOG4J2-482[LOG4J2-482])
 * (JMX) JMX Client GUI should dynamically update when LoggerContext MBeans are registered/unregistered in MBean server. (https://issues.apache.org/jira/browse/LOG4J2-530[LOG4J2-530])
 
-[#release-notes-2-0-rc1-Changed]
+[#release-notes-2-0-rc1-changed]
 === Changed
 
 * PatternLayout option to not output ANSI escape codes if no Console is available. (https://issues.apache.org/jira/browse/LOG4J2-413[LOG4J2-413])
@@ -65,12 +65,12 @@ Release date:: 2014-02-16
 * Resource leak in Flume appender when it cannot create a BerkeleyDB db. (https://issues.apache.org/jira/browse/LOG4J2-532[LOG4J2-532])
 * Renamed the org.apache.logging.log4j.core.appender.db.nosql.couch package to org.apache.logging.log4j.core.appender.db.nosql.couchdb.
 
-[#release-notes-2-0-rc1-Removed]
+[#release-notes-2-0-rc1-removed]
 === Removed
 
 * Removed the DataSourceConnectionSource and the <DriverManager> plugin for the JDBC Appender. It is not safe to use. Please use the DataSource or factory connection sources backed by a connection pool.
 
-[#release-notes-2-0-rc1-Fixed]
+[#release-notes-2-0-rc1-fixed]
 === Fixed
 
 * Resolved memory leak by releasing reference to ThreadLocal when AsyncLogger is stopped. (https://issues.apache.org/jira/browse/LOG4J2-323[LOG4J2-323])

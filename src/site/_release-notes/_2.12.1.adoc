@@ -60,7 +60,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
-[#release-notes-2-12-1-Changed]
+[#release-notes-2-12-1-changed]
 === Changed
 
 * Make Log4j Core optional for Log4j 1.2 API. (https://issues.apache.org/jira/browse/LOG4J2-2556[LOG4J2-2556])
@@ -68,7 +68,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Improve exception messages in the JDBC appender. (https://issues.apache.org/jira/browse/LOG4J2-2657[LOG4J2-2657])
 * Retry when JDBC throws a java.sql.SQLTransactionRollbackException in commitAndClose(). (https://issues.apache.org/jira/browse/LOG4J2-2660[LOG4J2-2660])
 
-[#release-notes-2-12-1-Fixed]
+[#release-notes-2-12-1-fixed]
 === Fixed
 
 * Allow file renames to work when files are missing from the sequence. (https://issues.apache.org/jira/browse/LOG4J2-1946[LOG4J2-1946])
