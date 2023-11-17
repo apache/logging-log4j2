@@ -50,6 +50,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-4-Added]
 === Added
 
 * Add a way to route messages based on the %marker in Layout for RoutingAppender. (https://issues.apache.org/jira/browse/LOG4J2-1015[LOG4J2-1015])
@@ -72,6 +73,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * New module for Liquibase integration. (https://issues.apache.org/jira/browse/LOG4J2-767[LOG4J2-767])
 * Add ConfigurationBuilder for programmatic configuration. (https://issues.apache.org/jira/browse/LOG4J2-952[LOG4J2-952])
 
+[#release-notes-2-4-Changed]
 === Changed
 
 * Pass log event when interpolating logger properties. (https://issues.apache.org/jira/browse/LOG4J2-1010[LOG4J2-1010])
@@ -99,10 +101,12 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * log4j-web-2.1 should work around a bug in JBOSS EAP 6.2. (https://issues.apache.org/jira/browse/LOG4J2-890[LOG4J2-890])
 * Fix FindBugs DM_DEFAULT_ENCODING bug in SimpleLogger.logMessage() and simplify code. (https://issues.apache.org/jira/browse/LOG4J2-959[LOG4J2-959])
 
+[#release-notes-2-4-Removed]
 === Removed
 
 * Removed experimental interface LevelLogger which got committed to master by mistake.
 
+[#release-notes-2-4-Fixed]
 === Fixed
 
 * ZipCompressAction leaves files open until GC when an IO error takes place. (https://issues.apache.org/jira/browse/LOG4J2-1019[LOG4J2-1019])

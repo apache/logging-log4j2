@@ -76,11 +76,13 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-8-1-Added]
 === Added
 
 * [core] Add and implement LogEvent.toImmutable(). (https://issues.apache.org/jira/browse/LOG4J2-1807[LOG4J2-1807])
 * Remove deprecation on MessageSupplier lambda functions in Logger API. (https://issues.apache.org/jira/browse/LOG4J2-1823[LOG4J2-1823])
 
+[#release-notes-2-8-1-Changed]
 === Changed
 
 * Update to use Logback 1.1.10 and then Logback 1.2 for tests. (https://issues.apache.org/jira/browse/LOG4J2-1810[LOG4J2-1810])
@@ -88,6 +90,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Update Jackson from 2.8.5 to 2.8.6. (https://issues.apache.org/jira/browse/LOG4J2-1819[LOG4J2-1819])
 * Update SLF4J to 1.7.24. (https://issues.apache.org/jira/browse/LOG4J2-1822[LOG4J2-1822])
 
+[#release-notes-2-8-1-Fixed]
 === Fixed
 
 * Fix ClassNotFoundException org.apache.logging.log4j.core.util.ExecutorServices in OSGi tests. (https://issues.apache.org/jira/browse/LOG4J2-1753[LOG4J2-1753])

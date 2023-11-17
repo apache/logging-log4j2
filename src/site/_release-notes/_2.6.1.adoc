@@ -77,16 +77,19 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-6-1-Added]
 === Added
 
 * Added documentation about plugin builders compared to factories. (https://issues.apache.org/jira/browse/LOG4J2-1411[LOG4J2-1411])
 
+[#release-notes-2-6-1-Changed]
 === Changed
 
 * (GC) CSV layouts should not create a new CSVPrinter for each log event. Requires Apache Commons CSV 1.4. (https://issues.apache.org/jira/browse/LOG4J2-1385[LOG4J2-1385])
 * Update liquibase-core from 3.4.2 to 3.5.1. (https://issues.apache.org/jira/browse/LOG4J2-1398[LOG4J2-1398])
 * Update Apache Commons CSV from 1.3 to 1.4. (https://issues.apache.org/jira/browse/LOG4J2-1399[LOG4J2-1399])
 
+[#release-notes-2-6-1-Fixed]
 === Fixed
 
 * Changed RenameAction to use java.nio to better report rename failures. (https://issues.apache.org/jira/browse/LOG4J2-1032[LOG4J2-1032])

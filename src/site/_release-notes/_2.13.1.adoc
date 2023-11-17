@@ -53,10 +53,12 @@ Log4j 2.3 was the last release that supported Java 6 and Log4j 2.11.2 is the las
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-13-1-Added]
 === Added
 
 * Implement ISO8601_PERIOD_MICROS fixed date format matching ISO8601_PERIOD with support for microsecond precision. (https://issues.apache.org/jira/browse/LOG4J2-2748[LOG4J2-2748])
 
+[#release-notes-2-13-1-Changed]
 === Changed
 
 * Update log4j-slf4j18-impl slf4j version to 1.8.0-beta4 from 1.8.0-alpha2. (https://issues.apache.org/jira/browse/LOG4J2-2745[LOG4J2-2745])
@@ -65,6 +67,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Use LinkedBlockingQueue instead of synchronized collection in StatusConfiguration. (https://issues.apache.org/jira/browse/LOG4J2-2782[LOG4J2-2782])
 * Conditionally perform status logging calculations in PluginRegistry. (https://issues.apache.org/jira/browse/LOG4J2-2789[LOG4J2-2789])
 
+[#release-notes-2-13-1-Fixed]
 === Fixed
 
 * Rollover fails when file matches pattern but index is too large. (https://issues.apache.org/jira/browse/LOG4J2-2039[LOG4J2-2039])

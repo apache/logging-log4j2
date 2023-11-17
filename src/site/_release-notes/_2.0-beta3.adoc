@@ -39,11 +39,13 @@
 Release date:: 2012-11-11
 
 
+[#release-notes-2-0-beta3-Added]
 === Added
 
 * Added PropertiesRewritePolicy and ability to define properties on a Logger. (https://issues.apache.org/jira/browse/LOG4J2-28[LOG4J2-28])
 * Added ability to configure from an InputSource. (https://issues.apache.org/jira/browse/LOG4J2-55[LOG4J2-55])
 
+[#release-notes-2-0-beta3-Changed]
 === Changed
 
 * Created combined jar to combine API and Core contents for users who only want the Log4j implementation.
@@ -52,6 +54,7 @@ Release date:: 2012-11-11
 * Add ThreadContext.push(String format, Object... args) (https://issues.apache.org/jira/browse/LOG4J2-85[LOG4J2-85])
 * Build pdf of user's guide. (https://issues.apache.org/jira/browse/LOG4J2-87[LOG4J2-87])
 
+[#release-notes-2-0-beta3-Fixed]
 === Fixed
 
 * Avoid NPE when duplicate LoggerContextFactorys are present. Allow factories to specify a weight to allow real implementations to outrank test implementations. Provide a simple default LoggerContextFactory.

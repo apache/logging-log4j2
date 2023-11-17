@@ -78,6 +78,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-6-Added]
 === Added
 
 * Document dependencies for layouts. (https://issues.apache.org/jira/browse/LOG4J2-1011[LOG4J2-1011])
@@ -111,6 +112,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Support merging configurations to for a composite configuration. (https://issues.apache.org/jira/browse/LOG4J2-494[LOG4J2-494])
 * Pattern to drop first N package parts. (https://issues.apache.org/jira/browse/LOG4J2-621[LOG4J2-621])
 
+[#release-notes-2-6-Changed]
 === Changed
 
 * org.apache.logging.log4j.core.LoggerContext#updateLoggers should call firePropertyChangeEvent. (https://issues.apache.org/jira/browse/LOG4J2-1206[LOG4J2-1206])
@@ -148,6 +150,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Update Apache Commons CSV from 1.2 to 1.3. (https://issues.apache.org/jira/browse/LOG4J2-1384[LOG4J2-1384])
 * Update Google java-allocation-instrumenter from 3.0 to 3.0.1. (https://issues.apache.org/jira/browse/LOG4J2-1388[LOG4J2-1388])
 
+[#release-notes-2-6-Fixed]
 === Fixed
 
 * Add a Log4jLookup class to help write log files relative to log4j2.xml. (https://issues.apache.org/jira/browse/LOG4J2-1050[LOG4J2-1050])

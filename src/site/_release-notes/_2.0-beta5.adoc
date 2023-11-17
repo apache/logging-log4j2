@@ -39,6 +39,7 @@
 Release date:: 2013-04-20
 
 
+[#release-notes-2-0-beta5-Added]
 === Added
 
 * Added FlumePersistentManager which writes to BerkeleyDB and then writes to Flume asynchronously.
@@ -49,6 +50,7 @@ Release date:: 2013-04-20
 * Add tag library. (https://issues.apache.org/jira/browse/LOG4J2-187[LOG4J2-187])
 * Add JMX support. (https://issues.apache.org/jira/browse/LOG4J2-207[LOG4J2-207])
 
+[#release-notes-2-0-beta5-Changed]
 === Changed
 
 * Allow Logger and LoggerContext to be subclassed. (https://issues.apache.org/jira/browse/LOG4J2-151[LOG4J2-151])
@@ -59,6 +61,7 @@ Release date:: 2013-04-20
 * Move async subproject into core. (https://issues.apache.org/jira/browse/LOG4J2-208[LOG4J2-208])
 * Async documentation update. (https://issues.apache.org/jira/browse/LOG4J2-214[LOG4J2-214])
 
+[#release-notes-2-0-beta5-Fixed]
 === Fixed
 
 * Add Fragment-Host to MANIFEST.MF for log4j-core. (https://issues.apache.org/jira/browse/LOG4J2-159[LOG4J2-159])

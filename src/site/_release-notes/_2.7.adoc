@@ -79,6 +79,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-7-Added]
 === Added
 
 * Users can now inject context data from other sources than ThreadContext. Values can be any Object, not just Strings. (https://issues.apache.org/jira/browse/LOG4J2-1010[LOG4J2-1010])
@@ -112,6 +113,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Add a ScriptAppenderSelector to create an Appender specified by a Script. (https://issues.apache.org/jira/browse/LOG4J2-1597[LOG4J2-1597])
 * Add a Builder to ServletAppender and deprecate factory method. (https://issues.apache.org/jira/browse/LOG4J2-1609[LOG4J2-1609])
 
+[#release-notes-2-7-Changed]
 === Changed
 
 * Updated Jackson from 2.7.5 to 2.8.0. (https://issues.apache.org/jira/browse/LOG4J2-1458[LOG4J2-1458])
@@ -132,6 +134,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Improve error messages for TcpSocketServer and UdpSocketServer. (https://issues.apache.org/jira/browse/LOG4J2-1605[LOG4J2-1605])
 * Update Apache Commons Compress from 1.12 to 1.13. (https://issues.apache.org/jira/browse/LOG4J2-1757[LOG4J2-1757])
 
+[#release-notes-2-7-Fixed]
 === Fixed
 
 * When starting on Google App Engine, Interpolator now suppresses the NoClassDefFoundError stack trace for the jvmrunargs lookup. (https://issues.apache.org/jira/browse/LOG4J2-1051[LOG4J2-1051])

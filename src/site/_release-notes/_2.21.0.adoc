@@ -44,12 +44,14 @@ All packages marked as private in the Javadoc are not exported.
 The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j-to-jul` and `log4j-to-slf4j`) have been changed to adhere to the same convention as the OSGi bundle names.
 
 
+[#release-notes-2-21-0-Added]
 === Added
 
 * Added marker parent support to `JsonTemplateLayout` (https://github.com/apache/logging-log4j2/pull/1381[1381])
 * Added https://facebook.github.io/zstd/[ZStandard compression] support (https://github.com/apache/logging-log4j2/issues/1508[1508], https://github.com/apache/logging-log4j2/pull/1514[1514])
 * Added a warning for incorrect syntax of highlighting styles (https://github.com/apache/logging-log4j2/issues/1545[1545], https://github.com/apache/logging-log4j2/pull/1637[1637])
 
+[#release-notes-2-21-0-Changed]
 === Changed
 
 * Open `FileExtension` methods to allow their usage in custom ``RolloverStrategy``s (https://github.com/apache/logging-log4j2/issues/1365[1365], https://github.com/apache/logging-log4j2/pull/1683[1683])
@@ -78,10 +80,12 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 * Update Tomcat JULI to version 10.0.27 (https://github.com/apache/logging-log4j2/issues/1591[1591])
 * Update Woodstox to version https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION[6.5.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
 
+[#release-notes-2-21-0-Removed]
 === Removed
 
 * Moved `log4j-jmx-gui` to https://github.com/apache/logging-log4j-jmx-gui/actions[its own repository] along with its own release cycle
 
+[#release-notes-2-21-0-Fixed]
 === Fixed
 
 * Added validation to rolling file manager path conditions (https://github.com/apache/logging-log4j2/issues/1231[1231])

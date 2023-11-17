@@ -61,6 +61,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-12-0-Added]
 === Added
 
 * Allow custom end-of-line with JsonLayout. (https://issues.apache.org/jira/browse/LOG4J2-2337[LOG4J2-2337])
@@ -73,6 +74,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Add and use method org.apache.logging.log4j.message.MapMessage.toKey(String) for simpler subclasses. (https://issues.apache.org/jira/browse/LOG4J2-2634[LOG4J2-2634])
 * Add support for reconfiguration via HTTP(S), Docker, and Spring Cloud Configuration. (https://issues.apache.org/jira/browse/LOG4J2-913[LOG4J2-913])
 
+[#release-notes-2-12-0-Changed]
 === Changed
 
 * Update Jackson from 2.9.7 to 2.9.8. (https://issues.apache.org/jira/browse/LOG4J2-2570[LOG4J2-2570])
@@ -81,6 +83,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Refactor several AsyncLogger methods below the 35 byte threshold for inlining. (https://issues.apache.org/jira/browse/LOG4J2-2634[LOG4J2-2634])
 * Update tests from H2 1.4.197 to 1.4.199.
 
+[#release-notes-2-12-0-Fixed]
 === Fixed
 
 * FailoverAppender was failing with ERROR appender Failover has no parameter that matches element Failovers. (https://issues.apache.org/jira/browse/LOG4J2-1103[LOG4J2-1103])

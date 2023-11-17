@@ -129,6 +129,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-11-0-Added]
 === Added
 
 * Added support for precise (micro and nanosecond) timestamps when running on Java 9. A limited number of precise %d date formats are supported with PatternLayout. POTENTIAL BREAKING CHANGE: The XML, JSON and YAML formats have changed: they no longer have the "timeMillis" attribute and instead have an "Instant" element with "epochSecond" and "nanoOfSecond" attributes. (https://issues.apache.org/jira/browse/LOG4J2-1883[LOG4J2-1883])
@@ -147,6 +148,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Add debug logging to org.apache.logging.log4j.mongodb.MongoDbConnection. (https://issues.apache.org/jira/browse/LOG4J2-2208[LOG4J2-2208])
 * Add API to enable iterating over message parameters without creating temporary objects. (https://issues.apache.org/jira/browse/LOG4J2-2253[LOG4J2-2253])
 
+[#release-notes-2-11-0-Changed]
 === Changed
 
 * Removed unnecessary threadlocal StringBuilder field from MdcPatternConverter. (https://issues.apache.org/jira/browse/LOG4J2-2127[LOG4J2-2127])
@@ -181,6 +183,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Update JAnsi from 1.16 to 1.17. (https://issues.apache.org/jira/browse/LOG4J2-2264[LOG4J2-2264])
 * Documentation fix in manual page for custom configurations. (https://issues.apache.org/jira/browse/LOG4J2-2273[LOG4J2-2273])
 
+[#release-notes-2-11-0-Fixed]
 === Fixed
 
 * Revert OSGi API version to 4.3.1. (https://issues.apache.org/jira/browse/LOG4J2-1976[LOG4J2-1976])

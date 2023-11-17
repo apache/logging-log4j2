@@ -52,6 +52,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-4-1-Added]
 === Added
 
 * Add possibility to set shutdown timeout on AsyncAppender. (https://issues.apache.org/jira/browse/LOG4J2-1020[LOG4J2-1020])
@@ -60,6 +61,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Add %notEmpty to PatternLayout to avoid output of patterns where all variables are empty. (https://issues.apache.org/jira/browse/LOG4J2-1146[LOG4J2-1146])
 * Add %equalsIgnoreCase to PatternLayout to test and replace patterns with strings. (https://issues.apache.org/jira/browse/LOG4J2-1147[LOG4J2-1147])
 
+[#release-notes-2-4-1-Changed]
 === Changed
 
 * Update MongoDB driver from 2.13.3 to 3.0.4. (https://issues.apache.org/jira/browse/LOG4J2-1040[LOG4J2-1040])
@@ -71,6 +73,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Performance improvement: backport Java 8 fast ISO-8859-1 String to byte[] encoder to AbstractStringLayout. (https://issues.apache.org/jira/browse/LOG4J2-1151[LOG4J2-1151])
 * Performance improvement when converting Strings to byte[] arrays. (https://issues.apache.org/jira/browse/LOG4J2-935[LOG4J2-935])
 
+[#release-notes-2-4-1-Fixed]
 === Fixed
 
 * Fixed Log4jLookup. (https://issues.apache.org/jira/browse/LOG4J2-1050[LOG4J2-1050])

@@ -30,6 +30,7 @@ The build requires JDK 11 and generates reproducible binaries.
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, get support, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-21-1-Fixed]
 === Fixed
 
 * Fixes the Apache Commons Logging (JCL) bridge: `log4j-jcl`. (https://github.com/apache/logging-log4j2/issues/1865[1865])

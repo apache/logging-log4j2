@@ -98,6 +98,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-11-1-Changed]
 === Changed
 
 * Allow composite configuration for context parameter. (https://issues.apache.org/jira/browse/LOG4J2-1721[LOG4J2-1721])
@@ -114,6 +115,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Update optional Apache Commons DBCP from 2.2.0 to 2.4.0. (https://issues.apache.org/jira/browse/LOG4J2-2386[LOG4J2-2386])
 * Log4j 2.0 ERROR "Could not search jar" with JBoss EAP 6.2. (https://issues.apache.org/jira/browse/LOG4J2-548[LOG4J2-548])
 
+[#release-notes-2-11-1-Fixed]
 === Fixed
 
 * Curly braces in parameters are not treated as placeholders. (https://issues.apache.org/jira/browse/LOG4J2-2032[LOG4J2-2032])

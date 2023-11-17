@@ -54,6 +54,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-5-Added]
 === Added
 
 * Add support for JSR 223 scripts in filters and the PatternSelector. (https://issues.apache.org/jira/browse/LOG4J2-1136[LOG4J2-1136])
@@ -65,6 +66,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Added system property to allow users to control whether messages should be formatted in the background. (https://issues.apache.org/jira/browse/LOG4J2-898[LOG4J2-898])
 * Allow rollover to occur at any time. Add CronTriggeringPolicy. (https://issues.apache.org/jira/browse/LOG4J2-89[LOG4J2-89])
 
+[#release-notes-2-5-Changed]
 === Changed
 
 * Update Jackson from 2.6.2 to 2.6.3. (https://issues.apache.org/jira/browse/LOG4J2-1174[LOG4J2-1174])
@@ -72,6 +74,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Update kafka-clients from 0.8.2.2 to 0.9.0.0. (https://issues.apache.org/jira/browse/LOG4J2-1207[LOG4J2-1207])
 * Add PurgePolicy and IdlePurgePolicy to RoutingAppender. (https://issues.apache.org/jira/browse/LOG4J2-649[LOG4J2-649])
 
+[#release-notes-2-5-Fixed]
 === Fixed
 
 * Performance improvement when gathering location information. (https://issues.apache.org/jira/browse/LOG4J2-1029[LOG4J2-1029])

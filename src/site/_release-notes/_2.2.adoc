@@ -51,6 +51,7 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
 
+[#release-notes-2-2-Added]
 === Added
 
 * Specify the SyslogAppender connect timeout value as part of the configuration. The SyslogAppender takes a new parameter connectTimeoutMillis. (https://issues.apache.org/jira/browse/LOG4J2-895[LOG4J2-895])
@@ -58,6 +59,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * HTML layout should not use attribute minimalization for hr noshade. (https://issues.apache.org/jira/browse/LOG4J2-933[LOG4J2-933])
 * Allow JSON layout to create one compact log record per line. (https://issues.apache.org/jira/browse/LOG4J2-941[LOG4J2-941])
 
+[#release-notes-2-2-Changed]
 === Changed
 
 * Update Jackson from 2.4.2 to 2.4.3. (https://issues.apache.org/jira/browse/LOG4J2-881[LOG4J2-881])
@@ -72,6 +74,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Documentation: clarify system properties to control status logger, improve troubleshooting FAQ entry. (https://issues.apache.org/jira/browse/LOG4J2-955[LOG4J2-955])
 * Update from Jackson 2.5.0 to 2.5.1. (https://issues.apache.org/jira/browse/LOG4J2-958[LOG4J2-958])
 
+[#release-notes-2-2-Fixed]
 === Fixed
 
 * ThrowableProxy throws NoClassDefFoundError. (https://issues.apache.org/jira/browse/LOG4J2-834[LOG4J2-834])
