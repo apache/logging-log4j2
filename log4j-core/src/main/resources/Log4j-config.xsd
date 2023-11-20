@@ -650,7 +650,6 @@
          <element name="Kafka" type="tns:KafkaAppenderType" minOccurs="0" />
          <element name="Rewrite" type="tns:RewriteAppenderType" minOccurs="0" />
          <element name="Routing" type="tns:RoutingAppenderType" minOccurs="0" />
-         <element name="SMTP" type="tns:SMTPAppenderType" minOccurs="0" />
          <element name="File" type="tns:FileAppenderType" minOccurs="0" />
          <element name="MemoryMappedFile" type="tns:MemoryMappedFileAppenderType" minOccurs="0" />
          <element name="RandomAccessFile" type="tns:RandomAccessFileAppenderType" minOccurs="0" />
@@ -913,14 +912,6 @@
                   </complexType>
                </element>
             </sequence>
-            <anyAttribute processContents="lax" />
-         </extension>
-      </complexContent>
-   </complexType>
-
-   <complexType name="SMTPAppenderType">
-      <complexContent>
-         <extension base="tns:AbstractAppenderType">
             <anyAttribute processContents="lax" />
          </extension>
       </complexContent>

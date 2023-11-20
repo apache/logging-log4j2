@@ -61,6 +61,13 @@ public interface Layout extends Encoder<LogEvent> {
     byte[] toByteArray(LogEvent event);
 
     /**
+     * Returns the character set used for encoding log events.
+     */
+    default Charset getCharset() {
+        return StandardCharsets.UTF_8;
+    }
+
+    /**
      * Serializes the log event into a String.
      *
      * @param event The Logging Event.
