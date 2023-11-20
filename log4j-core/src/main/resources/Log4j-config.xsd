@@ -647,9 +647,6 @@
          <element name="Console" type="tns:ConsoleAppenderType" minOccurs="0" />
          <element name="Flume" type="tns:FlumeAppenderType" minOccurs="0" />
          <element name="JeroMQ" type="tns:JeroMQAppenderType" minOccurs="0" />
-         <element name="JMS" type="tns:JMSAppenderType" minOccurs="0" />
-         <element name="JMSQueue" type="tns:JMSAppenderType" minOccurs="0" />
-         <element name="JMSTopic" type="tns:JMSAppenderType" minOccurs="0" />
          <element name="Kafka" type="tns:KafkaAppenderType" minOccurs="0" />
          <element name="Rewrite" type="tns:RewriteAppenderType" minOccurs="0" />
          <element name="Routing" type="tns:RoutingAppenderType" minOccurs="0" />
@@ -832,14 +829,6 @@
    </complexType>
 
    <complexType name="JeroMQAppenderType">
-      <complexContent>
-         <extension base="tns:AbstractAppenderType">
-            <anyAttribute processContents="lax" />
-         </extension>
-      </complexContent>
-   </complexType>
-
-   <complexType name="JMSAppenderType">
       <complexContent>
          <extension base="tns:AbstractAppenderType">
             <anyAttribute processContents="lax" />

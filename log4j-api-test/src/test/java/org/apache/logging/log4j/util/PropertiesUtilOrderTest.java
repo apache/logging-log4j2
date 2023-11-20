@@ -90,7 +90,6 @@ public class PropertiesUtilOrderTest {
         env.set("log4j2.*.Configuration.statusLoggerLevel", "ERROR");
         env.set("log4j2.*.StatusLogger.entries", "200");
         env.set("log4j2.my-app.StatusLogger.entries", "500");
-        sysProps.set("log4j2.*.JNDI.enableJMS", "false");
         sysProps.set("log4j2.my-app.Configuration.mergeStrategy", "org.apache.CustomMergeStrategy");
         sysProps.set("log4j2.*.Web.isWebApp", "true");
         PropertiesUtil.getProperties().reload();
@@ -102,14 +101,10 @@ public class PropertiesUtilOrderTest {
         assertTrue(contextProperties.hasProperty(TestProperty.CONFIG_TEST1));
         // Context environment properties should override system-wide environment definition.
         assertEquals("500", contextProperties.getStringProperty(LoggingSystemProperty.STATUS_MAX_ENTRIES));
-        // System property value should be recognized.
-        assertEquals("false", util.getStringProperty(TestProperty.JNDI_JMS, "true"));
         // Context system property should override Context property from file.
         assertEquals("org.apache.CustomMergeStrategy", contextProperties.getStringProperty(TestProperty.CONFIG_MERGE_STRATEGY));
         // Recognize system-wide environment variable.
         assertEquals("200", util.getStringProperty(LoggingSystemProperty.STATUS_MAX_ENTRIES));
-        // Context properties in file should override system-wide system property.
-        assertEquals("true", contextProperties.getStringProperty(TestProperty.JNDI_JMS, "false"));
         // System-wide system property should be used when no other value is available.
         assertEquals("true", contextProperties.getStringProperty(LoggingSystemProperty.IS_WEBAPP));
         // Context property in file should override system-wide property in file.

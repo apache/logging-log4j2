@@ -709,7 +709,7 @@ JMX notifications.
 |NBSP
 |System/Application
 |false
-|When true, the use of JNDI the JmsAppender is enabled if the log4j-jndi and log4j-jms jars are present on the
+|When true, the use of JNDI the JMS Appender is enabled if the log4j-jndi and log4j-jms jars are present on the
 classpath.
 
 |JNDI

@@ -79,7 +79,6 @@ files must have a file extension of either ".properties" or ".xml".
 ### Appenders
 
 * JDBCAppender (cannot be mapped to Log4j 2's JdbcAppender)
-* JMSAppender 
 * SMTPAppender
 * SocketAppender (Requires the use of the SerializedLayout which is a security risk)
 * SocketHubAppender (Requires the use of the SerializedLayout which is a securiy risk)

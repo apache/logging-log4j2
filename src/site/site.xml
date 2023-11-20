@@ -165,7 +165,6 @@
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
-        <item name="JMS" href="/manual/appenders.html#JMSAppender"/>
         <item name="JPA" href="/manual/appenders.html#JPAAppender"/>
         <item name="HTTP" href="/manual/appenders.html#HttpAppender"/>
         <item name="Kafka" href="/manual/appenders.html#KafkaAppender"/>
@@ -301,7 +300,7 @@
       <item name="Log4j 2.x - Latest release for Java 8" href="http://logging.apache.org/log4j/2.x/"/>
     </menu>
 
-    <menu name="Components" inherit="top" img="img/glyphicons/cog.png">
+    <menu name="Internal Components" inherit="top" img="img/glyphicons/layers.png">
       <item name="API" href="log4j-api.html"/>
       <item name="Implementation" href="log4j-core.html"/>
       <item name="Commons Logging Bridge" href="log4j-jcl.html"/>
@@ -313,9 +312,7 @@
       <item name="JDBC Appender" href="log4j-jdbc-dbcp2.html"/>
       <item name="ZeroMQ Appender" href="log4j-jeromq.html"/>
       <item name="Apache Flume Appender" href="log4j-flume-ng.html"/>
-      <item name="JMS Appender" href="log4j-jms.html"/>
       <item name="Tag Library" href="log4j-taglib.html"/>
-      <item name="JMX GUI" href="log4j-jmx-gui.html"/>
       <item name="Web Application Support" href="log4j-web.html"/>
       <item name="Jakarta Web Application Support" href="log4j-jakarta-web.html"/>
       <item name="Application Server Integration" href="log4j-appserver.html"/>
@@ -329,6 +326,13 @@
       <item name="Log4j Spring Boot" href="log4j-spring-boot.html"/>
       <item name="Spring Cloud Config Client" href="log4j-spring-cloud-config-client.html"/>
       <item name="Log4j Transformation Tools" href="log4j-transform"/>
+    </menu>
+
+    <menu name="External Components" img="img/glyphicons/link.png">
+      <item name="Log4j Jakarta EE" href="/log4j/jakarta"/>
+      <item name="Log4j JMX GUI" href="/log4j/jmx-gui"/>
+      <item name="Log4j Tools" href="/log4j/tools"/>
+      <item name="Log4j Transformation Tools" href="/log4j/transform"/>
     </menu>
 
     <menu name="Project Information" img="img/glyphicons/info.png">

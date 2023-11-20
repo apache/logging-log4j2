@@ -343,7 +343,7 @@ to print to multiple destinations. In log4j speak, an output destination
 is called an
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html[`Appender`].
 Currently, appenders exist for the console, files, remote socket
-servers, Apache Flume, JMS, remote UNIX Syslog daemons, and various
+servers, Apache Flume, remote UNIX Syslog daemons, and various
 database APIs. See the section on link:appenders.html[Appenders] for
 more details on the various types available. More than one Appender can
 be attached to a Logger.

@@ -247,7 +247,6 @@
     <module>log4j-jdbc</module>
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-jeromq</module>
-    <module>log4j-jms</module>
     <module>log4j-jndi</module>
     <module>log4j-jndi-test</module>
     <module>log4j-jpa</module>
@@ -448,12 +447,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jeromq</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jms</artifactId>
         <version>${project.version}</version>
       </dependency>
 

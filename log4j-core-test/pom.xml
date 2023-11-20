@@ -106,11 +106,6 @@
       <artifactId>commons-compress</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- JNDI and JMS tests -->
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
     <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
     <dependency>
       <groupId>com.conversantmedia</groupId>

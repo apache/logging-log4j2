@@ -38,13 +38,6 @@
     <maven.test.skip>true</maven.test.skip>
   </properties>
   <dependencies>
-    <!-- Used for JMS appenders (needs an implementation of course) -->
-    <dependency>
-      <groupId>javax.jms</groupId>
-      <artifactId>javax.jms-api</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
     <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
     <dependency>
       <groupId>com.conversantmedia</groupId>
@@ -144,23 +137,6 @@
       <artifactId>log4j-layout-jackson-xml</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- JPA, JNDI and JMS tests -->
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-broker</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.geronimo.specs</groupId>
-          <artifactId>geronimo-jms_1.1_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
@@ -223,8 +199,7 @@
           <excludes>
             <exclude>**/ForceNoDefClassFoundError.*</exclude>
           </excludes>
-          <groups>org.apache.logging.log4j.core.test.categories.PerformanceTests,
-            org.apache.logging.log4j.core.test.categories.Appenders$Jms</groups>
+          <groups>org.apache.logging.log4j.core.test.categories.PerformanceTests</groups>
         </configuration>
       </plugin>
       <plugin>

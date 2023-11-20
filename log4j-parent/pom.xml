@@ -96,7 +96,6 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>5.18.2</activemq.version>
     <angus-activation.version>2.0.1</angus-activation.version>
     <angus-mail.version>2.0.2</angus-mail.version>
     <assertj.version>3.24.2</assertj.version>
@@ -137,7 +136,6 @@
     <javax-activation.version>1.2.0</javax-activation.version>
     <javax-inject.version>1</javax-inject.version>
     <javax-jaxb.version>2.3.1</javax-jaxb.version>
-    <javax-jms.version>2.0.1</javax-jms.version>
     <javax-mail.version>1.6.2</javax-mail.version>
     <javax-persistence.version>2.2</javax-persistence.version>
     <javax-servlet.version>4.0.1</javax-servlet.version>
@@ -308,13 +306,6 @@
         <version>${spring-framework.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-
-
-      <dependency>
-        <groupId>org.apache.activemq</groupId>
-        <artifactId>activemq-broker</artifactId>
-        <version>${activemq.version}</version>
       </dependency>
 
       <dependency>
@@ -713,12 +704,6 @@
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
         <version>${javax-inject.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.jms</groupId>
-        <artifactId>javax.jms-api</artifactId>
-        <version>${javax-jms.version}</version>
       </dependency>
 
       <dependency>

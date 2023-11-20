@@ -540,9 +540,6 @@ You need to use a version of the Kafka client library matching the Kafka server 
 |SMTP Appender
 |an implementation of `javax.mail`
 
-|JMS Appender
-|a JMS broker like http://activemq.apache.org/[Apache ActiveMQ]
-
 |Windows console color support
 |http://jansi.fusesource.org/[Jansi]
 

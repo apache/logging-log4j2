@@ -24,7 +24,6 @@ public interface Appenders {
     interface AsyncJcTools {}
     interface Cassandra {}
     interface CouchDb {}
-    interface Jms {}
     interface Jpa {}
     interface Kafka {}
     interface MongoDb {}
