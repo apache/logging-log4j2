@@ -230,10 +230,6 @@ The module info definition may be modified in the future to export these only to
 |org.apache.logging.log4j.appserver
 |Automatic Module
 
-|log4j-couchdb
-|org.apache.logging.log4j.couchdb
-|Automatic Module
-
 |log4j-docker
 |org.apache.logging.log4j.docker
 |Automatic Module
@@ -523,9 +519,6 @@ You need to use a version of the Kafka client library matching the Kafka server 
 |NoSQL Appender with MongoDB provider
 |MongoDB Java Client driver and Log4j MongoDB library
 
-|NoSQL Appender with Apache CouchDB provider
-|LightCouch CouchDB client library and Log4j CouchDB library
-
 |Bzip2, Deflate, Pack200, and XZ compression on rollover
 |http://commons.apache.org/proper/commons-compress/[Apache Commons Compress].
 In addition, XZ requires http://tukaani.org/xz/java.html[XZ for Java].
@@ -541,10 +534,6 @@ dependencies. This only requires the Log4j API. Including Log4j Core provides op
 |log4j-api-scala[[log4j-api-scala]]
 |The Log4j link:manual/scala-api.html[Scala API] requires Scala runtime
 library and reflection in addition to the Log4j API.
-
-|log4j-couchdb[[log4j-couchdb]]
-|The Log4j link:log4j-couchdb/index.html[CouchDB] module depends on the
-http://www.lightcouch.org/[LightCouch] CouchDB client library.
 
 |log4j-docker
 |link:log4j-docker/index.html[Log4j Docker Support] requires

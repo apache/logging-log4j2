@@ -1393,7 +1393,7 @@ Here is a sample MemoryMappedFile configuration:
 
 The NoSQLAppender writes log events to a NoSQL database using an
 internal lightweight provider interface. Provider implementations
-currently exist for MongoDB and Apache CouchDB, and writing a custom
+currently exist for MongoDB, and writing a custom
 provider is quite simple.
 
 .NoSQLAppender Parameters
@@ -1421,12 +1421,12 @@ connections to the chosen NoSQL database.
 |=======================================================================
 
 You specify which NoSQL provider to use by specifying the appropriate
-configuration element within the `<NoSql>` element. The types currently
-supported are `<MongoDb>` and `<CouchDb>`. To create your own custom
+configuration element within the `<NoSql>` element. The only type currently
+supported is `<MongoDb>`. To create your own custom
 provider, read the JavaDoc for the `NoSQLProvider`, `NoSQLConnection`,
 and `NoSQLObject` classes and the documentation about creating Log4j
-plugins. We recommend you review the source code for the MongoDB and
-CouchDB providers as a guide for creating your own provider.
+plugins. We recommend you review the source code for the MongoDB
+providers as a guide for creating your own provider.
 
 The following example demonstrates how log events are persisted in NoSQL
 databases if represented in a JSON format:
@@ -1667,69 +1667,6 @@ provider:
   <Loggers>
     <Root level="ALL">
       <AppenderRef ref="MongoDbAppender" />
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#NoSQLAppenderCouchDB]
-== NoSQLAppenderCouchDB
-
-This section details specializations of the
-link:#NoSQLAppender[NoSQLAppender] provider for CouchDB. The
-NoSQLAppender writes log events to a NoSQL database using an internal
-lightweight provider interface.
-
-.CouchDB Provider Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|factoryClassName |Class |To provide a connection to the CouchDB
-database, you can use this attribute and `factoryMethodName` to specify
-a class and static method to get the connection from. The method must
-return a `org.lightcouch.CouchDbClient` or a
-`org.lightcouch.CouchDbProperties`. If you use the factory method for
-providing a connection, you must not specify the `databaseName`,
-`protocol`, `server`, `port`, `username`, or `password` attributes.
-
-|factoryMethodName |Method |See the documentation for attribute
-`factoryClassName`.
-
-|databaseName |String |If you do not specify a `factoryClassName` and
-`factoryMethodName` for providing a CouchDB connection, you must specify
-a CouchDB database name using this attribute. You must also specify a
-`username` and `password`. You can optionally also specify a `protocol`
-(defaults to http), `server` (defaults to localhost), and a `port`
-(defaults to 80 for http and 443 for https).
-
-|protocol |String |Must either be "http" or "https." See the
-documentation for attribute `databaseName`.
-
-|server |String |See the documentation for attribute `databaseName`.
-
-|port |int |See the documentation for attribute `databaseName`.
-
-|username |String |See the documentation for attributes `databaseName`.
-
-|password |String |See the documentation for attributes `databaseName`.
-|=======================================================================
-
-Here are a few sample configurations for the NoSQLAppender and CouchDB
-provider:
-
-[source,prettyprint,linenums,lang-xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <CouchDb databaseName="applicationDb" protocol="https" server="couch.example.org"
-               username="loggingUser" password="abc123" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
     </Root>
   </Loggers>
 </Configuration>

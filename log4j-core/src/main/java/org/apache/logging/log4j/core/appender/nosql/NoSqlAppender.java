@@ -34,7 +34,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  * implementations of {@link NoSqlObject}, {@link NoSqlConnection}, and {@link NoSqlProvider} to "know" how to write
  * events to the chosen NoSQL database.
  * <p>
- * For examples on how to write your own NoSQL provider, see the simple source code for the MongoDB and CouchDB
+ * For examples on how to write your own NoSQL provider, see the simple source code for the MongoDB
  * providers.
  * </p>
  *

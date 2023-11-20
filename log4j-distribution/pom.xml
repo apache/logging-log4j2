@@ -130,30 +130,6 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    <!-- log4j-couchdb -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-couchdb</artifactId>
-      <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpcore</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-couchdb</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpcore</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <!-- log4j-csv -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
