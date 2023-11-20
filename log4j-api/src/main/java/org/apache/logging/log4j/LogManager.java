@@ -103,8 +103,8 @@ public class LogManager {
                 }
 
                 if (factories.isEmpty()) {
-                    LOGGER.error("Log4j2 could not find a logging implementation. "
-                            + "Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
+                    LOGGER.error(
+                            "Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
                     factory = SimpleLoggerContextFactory.INSTANCE;
                 } else if (factories.size() == 1) {
                     factory = factories.get(factories.lastKey());
@@ -120,8 +120,8 @@ public class LogManager {
                     LOGGER.warn(sb.toString());
                 }
             } else {
-                LOGGER.error("Log4j2 could not find a logging implementation. "
-                        + "Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
+                LOGGER.error(
+                        "Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
                 factory = SimpleLoggerContextFactory.INSTANCE;
             }
         }
@@ -157,7 +157,7 @@ public class LogManager {
         try {
             return factory.getContext(FQCN, null, null, true);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(FQCN, null, null, true);
         }
     }
@@ -176,7 +176,7 @@ public class LogManager {
         try {
             return factory.getContext(FQCN, null, null, currentContext, null, null);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(FQCN, null, null, currentContext, null, null);
         }
     }
@@ -196,7 +196,7 @@ public class LogManager {
         try {
             return factory.getContext(FQCN, loader, null, currentContext);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(FQCN, loader, null, currentContext);
         }
     }
@@ -218,7 +218,7 @@ public class LogManager {
         try {
             return factory.getContext(FQCN, loader, externalContext, currentContext);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(FQCN, loader, externalContext, currentContext);
         }
     }
@@ -240,7 +240,7 @@ public class LogManager {
         try {
             return factory.getContext(FQCN, loader, null, currentContext, configLocation, null);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(
                     FQCN, loader, null, currentContext, configLocation, null);
         }
@@ -267,7 +267,7 @@ public class LogManager {
         try {
             return factory.getContext(FQCN, loader, externalContext, currentContext, configLocation, null);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(
                     FQCN, loader, externalContext, currentContext, configLocation, null);
         }
@@ -296,7 +296,7 @@ public class LogManager {
         try {
             return factory.getContext(FQCN, loader, externalContext, currentContext, configLocation, name);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(
                     FQCN, loader, externalContext, currentContext, configLocation, name);
         }
@@ -316,7 +316,7 @@ public class LogManager {
         try {
             return factory.getContext(fqcn, null, null, currentContext);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(fqcn, null, null, currentContext);
         }
     }
@@ -338,7 +338,7 @@ public class LogManager {
         try {
             return factory.getContext(fqcn, loader, null, currentContext);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(fqcn, loader, null, currentContext);
         }
     }
@@ -366,7 +366,7 @@ public class LogManager {
         try {
             return factory.getContext(fqcn, loader, null, currentContext, configLocation, name);
         } catch (final IllegalStateException ex) {
-            LOGGER.warn(ex.getMessage() + " Using SimpleLogger");
+            LOGGER.warn("{} Using SimpleLogger", ex.getMessage());
             return SimpleLoggerContextFactory.INSTANCE.getContext(fqcn, loader, null, currentContext);
         }
     }

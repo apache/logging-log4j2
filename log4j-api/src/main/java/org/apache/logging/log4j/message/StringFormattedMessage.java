@@ -120,7 +120,7 @@ public class StringFormattedMessage implements Message {
         try {
             return String.format(locale, msgPattern, args);
         } catch (final IllegalFormatException ife) {
-            LOGGER.error("Unable to format msg: " + msgPattern, ife);
+            LOGGER.error("Unable to format msg: {}", msgPattern, ife);
             return msgPattern;
         }
     }
