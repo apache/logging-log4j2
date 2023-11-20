@@ -50,6 +50,6 @@ public class TagLevelTest {
 
     @Test
     public void testGetLevel() throws Exception {
-        assertEquals(level, cls.newInstance().getLevel());
+        assertEquals(level, cls.getDeclaredConstructor().newInstance().getLevel());
     }
 }

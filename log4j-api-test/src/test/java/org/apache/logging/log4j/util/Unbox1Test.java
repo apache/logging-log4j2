@@ -87,10 +87,10 @@ public class Unbox1Test {
     public void testBoxDouble() {
         assertEquals("3.14", Unbox.box(3.14).toString());
         assertEquals(
-                new Double(Double.MAX_VALUE).toString(),
+                Double.valueOf(Double.MAX_VALUE).toString(),
                 Unbox.box(Double.MAX_VALUE).toString());
         assertEquals(
-                new Double(Double.MIN_VALUE).toString(),
+                Double.valueOf(Double.MIN_VALUE).toString(),
                 Unbox.box(Double.MIN_VALUE).toString());
     }
 
@@ -98,10 +98,10 @@ public class Unbox1Test {
     public void testBoxFloat() {
         assertEquals("3.14", Unbox.box(3.14F).toString());
         assertEquals(
-                new Float(Float.MAX_VALUE).toString(),
+                Float.valueOf(Float.MAX_VALUE).toString(),
                 Unbox.box(Float.MAX_VALUE).toString());
         assertEquals(
-                new Float(Float.MIN_VALUE).toString(),
+                Float.valueOf(Float.MIN_VALUE).toString(),
                 Unbox.box(Float.MIN_VALUE).toString());
     }
 
@@ -113,10 +113,10 @@ public class Unbox1Test {
         assertEquals("-1", Unbox.box(-1).toString());
         assertEquals("-128", Unbox.box(-128).toString());
         assertEquals(
-                new Integer(Integer.MAX_VALUE).toString(),
+                Integer.valueOf(Integer.MAX_VALUE).toString(),
                 Unbox.box(Integer.MAX_VALUE).toString());
         assertEquals(
-                new Integer(Integer.MIN_VALUE).toString(),
+                Integer.valueOf(Integer.MIN_VALUE).toString(),
                 Unbox.box(Integer.MIN_VALUE).toString());
     }
 
@@ -128,9 +128,11 @@ public class Unbox1Test {
         assertEquals("-1", Unbox.box(-1L).toString());
         assertEquals("-128", Unbox.box(-128L).toString());
         assertEquals(
-                new Long(Long.MAX_VALUE).toString(), Unbox.box(Long.MAX_VALUE).toString());
+                Long.valueOf(Long.MAX_VALUE).toString(),
+                Unbox.box(Long.MAX_VALUE).toString());
         assertEquals(
-                new Long(Long.MIN_VALUE).toString(), Unbox.box(Long.MIN_VALUE).toString());
+                Long.valueOf(Long.MIN_VALUE).toString(),
+                Unbox.box(Long.MIN_VALUE).toString());
     }
 
     @Test
@@ -141,10 +143,10 @@ public class Unbox1Test {
         assertEquals("-1", Unbox.box((short) -1).toString());
         assertEquals("-128", Unbox.box((short) -128).toString());
         assertEquals(
-                new Short(Short.MAX_VALUE).toString(),
+                Short.valueOf(Short.MAX_VALUE).toString(),
                 Unbox.box(Short.MAX_VALUE).toString());
         assertEquals(
-                new Short(Short.MIN_VALUE).toString(),
+                Short.valueOf(Short.MIN_VALUE).toString(),
                 Unbox.box(Short.MIN_VALUE).toString());
     }
 
