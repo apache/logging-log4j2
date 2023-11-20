@@ -290,7 +290,6 @@ public class Log4jBridgeHandlerTest {
         assertLogLevel("log4j.Log4jBridgeHandlerTest.propagate2.nested.deeplyNested", java.util.logging.Level.INFO);
         // these are set in logging.properties but not in log4j2.xml:
         assertLogLevel("log4j.Log4jBridgeHandlerTest.propagate2.nested", null);
-        assertLogLevel("javax.mail", null);
         // these should not exist:
         assertLogLevel("log4j.Log4jBridgeHandlerTest", null);
         assertLogLevel("log4j.Log4jBridgeHandlerTest.propagate1.nested", null);

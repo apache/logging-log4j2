@@ -537,9 +537,6 @@ the exact list of JAR files needed for these features.
 You need to use a version of the Kafka client library matching the Kafka server used.
 ====
 
-|SMTP Appender
-|an implementation of `javax.mail`
-
 |Windows console color support
 |http://jansi.fusesource.org/[Jansi]
 

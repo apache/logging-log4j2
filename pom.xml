@@ -270,7 +270,6 @@
     <module>log4j-script</module>
     <module>log4j-slf4j2-impl</module>
     <module>log4j-slf4j-impl</module>
-    <module>log4j-smtp</module>
     <module>log4j-spring-boot</module>
     <module>log4j-spring-cloud-config</module>
     <module>log4j-taglib</module>
@@ -567,12 +566,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-smtp</artifactId>
         <version>${project.version}</version>
       </dependency>
 
