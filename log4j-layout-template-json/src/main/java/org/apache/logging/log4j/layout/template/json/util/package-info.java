@@ -14,4 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Export
+@Version("3.0.0")
 package org.apache.logging.log4j.layout.template.json.util;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;
