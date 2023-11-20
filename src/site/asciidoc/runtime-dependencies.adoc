@@ -660,12 +660,6 @@ API. See the link:log4j-web/dependencies.html#Dependency_Tree[Dependency
 Tree] for the exact list of JAR files needed. Note that this works with
 the Servlet 2.5 API as well as the Servlet 3.x API.
 
-|log4j-jakarta-smtp[[log4j-jakarta-smtp]]
-a|The Log4j Simple Mail Transfer Protocol (SMTP) Appender, version for Jakarta EE 9 module has 2 external runtime dependencies for the `jakarta.activation-api` and `jakarta.mail-api`.
-
-. `org.eclipse.angus:angus-activation`
-. `org.eclipse.angus:jakarta.mail`
-
 |log4j-jakarta-web[[log4j-jakarta-web]]
 |The Log4j Jakarta-Web[[log4j-jakarta-web]] module for Jakarta EE 9+ web servlet containers requires the Servlet API and `log4j-core`.
 

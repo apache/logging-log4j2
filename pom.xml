@@ -241,7 +241,6 @@
     <module>log4j-flume-ng</module>
     <module>log4j-gctests</module>
     <module>log4j-iostreams</module>
-    <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
     <module>log4j-jcl</module>
     <module>log4j-jdbc</module>
@@ -410,12 +409,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-iostreams</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jakarta-smtp</artifactId>
         <version>${project.version}</version>
       </dependency>
 

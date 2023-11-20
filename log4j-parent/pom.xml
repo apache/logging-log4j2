@@ -129,7 +129,6 @@
     <jackson-bom.version>2.15.2</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
     <jakarta-activation.version>2.1.2</jakarta-activation.version>
-    <jakarta-mail.version>2.1.2</jakarta-mail.version>
     <!-- BOM with Jakarta EE 9 APIs: -->
     <jakartaee-bom.version>9.1.0</jakartaee-bom.version>
     <!-- No BOM for Java EE 8 APIs, so we list them separately: -->
@@ -660,18 +659,6 @@
         <groupId>jakarta.activation</groupId>
         <artifactId>jakarta.activation-api</artifactId>
         <version>${jakarta-activation.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.angus</groupId>
-        <artifactId>jakarta.mail</artifactId>
-        <version>${angus-mail.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>jakarta.mail</groupId>
-        <artifactId>jakarta.mail-api</artifactId>
-        <version>${jakarta-mail.version}</version>
       </dependency>
 
       <dependency>
