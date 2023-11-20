@@ -77,7 +77,7 @@ public interface Filter extends LifeCycle {
          *
          * @param name The Result enum name, case-insensitive. If null, returns, defaultResult
          * @param defaultResult the Result to return if name is null
-         * @return a Result enum value or null if name is null
+         * @return a Result enum value ({@code defaultResult} if name is null)
          */
         public static Result toResult(final String name, final Result defaultResult) {
             return EnglishEnums.valueOf(Result.class, name, defaultResult);
