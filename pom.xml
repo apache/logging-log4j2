@@ -231,7 +231,6 @@
     <module>log4j-api</module>
     <module>log4j-api-test</module>
     <module>log4j-appserver</module>
-    <module>log4j-cassandra</module>
     <module>log4j-core</module>
     <module>log4j-core-its</module>
     <module>log4j-core-test</module>
@@ -357,12 +356,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-appserver</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-cassandra</artifactId>
         <version>${project.version}</version>
       </dependency>
 

@@ -107,18 +107,6 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    <!-- log4j-cassandra -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-cassandra</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-cassandra</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
     <!-- log4j-core -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

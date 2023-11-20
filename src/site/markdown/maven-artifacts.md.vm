@@ -230,12 +230,6 @@ If your configuration uses the NoSQL MongoDB appender, then add the following.
 
 #dependencies(['log4j-mongodb'])
 
-$h3 Cassandra
-
-If your configuration uses the Cassandra appender, then add the following.
-
-#dependencies(['log4j-cassandra'])
-
 $h3 IO Streams
 
 Log4j IO Streams allow applications to have data that is written to an OutputStream

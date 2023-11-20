@@ -100,8 +100,6 @@
     <assertj.version>3.24.2</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <cassandra.version>3.11.16</cassandra.version>
-    <cassandra-driver.version>3.11.5</cassandra-driver.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-compress.version>1.22</commons-compress.version>
     <commons-csv.version>1.9.0</commons-csv.version>
@@ -314,52 +312,6 @@
         <groupId>org.mongodb</groupId>
         <artifactId>bson</artifactId>
         <version>${mongodb.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.cassandra</groupId>
-        <artifactId>cassandra-all</artifactId>
-        <version>${cassandra.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.datastax.cassandra</groupId>
-        <artifactId>cassandra-driver-core</artifactId>
-        <version>${cassandra-driver.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.cassandra</groupId>
-        <artifactId>cassandra-thrift</artifactId>
-        <version>${cassandra.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>

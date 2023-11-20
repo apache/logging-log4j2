@@ -230,10 +230,6 @@ The module info definition may be modified in the future to export these only to
 |org.apache.logging.log4j.appserver
 |Automatic Module
 
-|log4j-cassandra
-|org.apache.logging.log4j.cassandra
-|Automatic Module
-
 |log4j-couchdb
 |org.apache.logging.log4j.couchdb
 |Automatic Module
@@ -530,9 +526,6 @@ You need to use a version of the Kafka client library matching the Kafka server 
 |NoSQL Appender with Apache CouchDB provider
 |LightCouch CouchDB client library and Log4j CouchDB library
 
-|Cassandra Appender
-|Datastax Cassandra driver and Log4j Cassandra library
-
 |Bzip2, Deflate, Pack200, and XZ compression on rollover
 |http://commons.apache.org/proper/commons-compress/[Apache Commons Compress].
 In addition, XZ requires http://tukaani.org/xz/java.html[XZ for Java].
@@ -548,11 +541,6 @@ dependencies. This only requires the Log4j API. Including Log4j Core provides op
 |log4j-api-scala[[log4j-api-scala]]
 |The Log4j link:manual/scala-api.html[Scala API] requires Scala runtime
 library and reflection in addition to the Log4j API.
-
-|log4j-cassandra[[log4j-cassandra]]
-|The Log4j link:log4j-cassandra/index.html[Cassandra] module depends on the
-http://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html[Datastax
-Cassandra driver].
 
 |log4j-couchdb[[log4j-couchdb]]
 |The Log4j link:log4j-couchdb/index.html[CouchDB] module depends on the
