@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.db;
 import java.io.Flushable;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
@@ -68,7 +67,6 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
         public Layout getLayout() {
             return layout;
         }
-
     }
 
     /**
@@ -83,8 +81,8 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param <T> The concrete {@link AbstractFactoryData} type.
      * @return a new or existing manager of the specified type and name.
      */
-    protected static <M extends AbstractDatabaseManager, T extends AbstractFactoryData> M getManager(final String name, final T data,
-        final ManagerFactory<M, T> factory) {
+    protected static <M extends AbstractDatabaseManager, T extends AbstractFactoryData> M getManager(
+            final String name, final T data, final ManagerFactory<M, T> factory) {
         return AbstractManager.getManager(name, factory, data);
     }
 
@@ -103,7 +101,8 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param bufferSize The size of the log event buffer.
      * @param configuration My configuration.
      */
-    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout layout, final Configuration configuration) {
+    protected AbstractDatabaseManager(
+            final String name, final int bufferSize, final Layout layout, final Configuration configuration) {
         // null configuration allowed for backward compatibility.
         // TODO should super track Configuration instead of LoggerContext?
         super(configuration != null ? configuration.getLoggerContext() : null, name);

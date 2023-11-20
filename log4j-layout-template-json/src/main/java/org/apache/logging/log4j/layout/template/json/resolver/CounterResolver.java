@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.spi.Recycler;
@@ -84,28 +83,22 @@ public class CounterResolver implements EventResolver {
 
     private final Consumer<JsonWriter> delegate;
 
-    public CounterResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public CounterResolver(final EventResolverContext context, final TemplateResolverConfig config) {
         this.delegate = createDelegate(context, config);
     }
 
     private static Consumer<JsonWriter> createDelegate(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+            final EventResolverContext context, final TemplateResolverConfig config) {
         final BigInteger start = readStart(config);
         final boolean overflowing = config.getBoolean("overflowing", true);
         final boolean stringified = config.getBoolean("stringified", false);
         if (stringified) {
-            final Recycler<StringBuilder> stringBuilderRecycler =
-                    createStringBuilderRecycler(context);
+            final Recycler<StringBuilder> stringBuilderRecycler = createStringBuilderRecycler(context);
             return overflowing
                     ? createStringifiedLongResolver(start, stringBuilderRecycler)
                     : createStringifiedBigIntegerResolver(start, stringBuilderRecycler);
         } else {
-            return overflowing
-                    ? createLongResolver(start)
-                    : createBigIntegerResolver(start);
+            return overflowing ? createLongResolver(start) : createBigIntegerResolver(start);
         }
     }
 
@@ -119,8 +112,7 @@ public class CounterResolver implements EventResolver {
             return (BigInteger) start;
         } else {
             final Class<?> clazz = start.getClass();
-            final String message = String.format(
-                    "could not read start of type %s: %s", clazz, config);
+            final String message = String.format("could not read start of type %s: %s", clazz, config);
             throw new IllegalArgumentException(message);
         }
     }
@@ -142,23 +134,14 @@ public class CounterResolver implements EventResolver {
         };
     }
 
-    private static Recycler<StringBuilder> createStringBuilderRecycler(
-            final EventResolverContext context) {
-        return context
-                .getConfiguration()
-                .getRecyclerFactory()
-                .create(
-                        StringBuilder::new,
-                        stringBuilder -> {
-                            final int maxLength =
-                                    context.getJsonWriter().getMaxStringLength();
-                            trimStringBuilder(stringBuilder, maxLength);
-                        });
+    private static Recycler<StringBuilder> createStringBuilderRecycler(final EventResolverContext context) {
+        return context.getConfiguration().getRecyclerFactory().create(StringBuilder::new, stringBuilder -> {
+            final int maxLength = context.getJsonWriter().getMaxStringLength();
+            trimStringBuilder(stringBuilder, maxLength);
+        });
     }
 
-    private static void trimStringBuilder(
-            final StringBuilder stringBuilder,
-            final int maxLength) {
+    private static void trimStringBuilder(final StringBuilder stringBuilder, final int maxLength) {
         if (stringBuilder.length() > maxLength) {
             stringBuilder.setLength(maxLength);
             stringBuilder.trimToSize();
@@ -167,8 +150,7 @@ public class CounterResolver implements EventResolver {
     }
 
     private static Consumer<JsonWriter> createStringifiedLongResolver(
-            final BigInteger start,
-            final Recycler<StringBuilder> stringBuilderRecycler) {
+            final BigInteger start, final Recycler<StringBuilder> stringBuilderRecycler) {
         final long effectiveStart = start.longValue();
         final AtomicLong counter = new AtomicLong(effectiveStart);
         return (jsonWriter) -> {
@@ -184,8 +166,7 @@ public class CounterResolver implements EventResolver {
     }
 
     private static Consumer<JsonWriter> createStringifiedBigIntegerResolver(
-            final BigInteger start,
-            final Recycler<StringBuilder> stringBuilderRecycler) {
+            final BigInteger start, final Recycler<StringBuilder> stringBuilderRecycler) {
         final AtomicBigInteger counter = new AtomicBigInteger(start);
         return jsonWriter -> {
             final BigInteger number = counter.getAndIncrement();
@@ -224,16 +205,13 @@ public class CounterResolver implements EventResolver {
          * Management for Efficient Compare-and-Swap Operations</a> and showed
          * great results in benchmarks.
          */
-        private boolean compareAndSetWithBackOff(
-                final BigInteger prevNumber,
-                final BigInteger nextNumber) {
+        private boolean compareAndSetWithBackOff(final BigInteger prevNumber, final BigInteger nextNumber) {
             if (lastNumber.compareAndSet(prevNumber, nextNumber)) {
                 return true;
             }
             LockSupport.parkNanos(1); // back-off
             return false;
         }
-
     }
 
     static String getName() {
@@ -244,5 +222,4 @@ public class CounterResolver implements EventResolver {
     public void resolve(final LogEvent ignored, final JsonWriter jsonWriter) {
         delegate.accept(jsonWriter);
     }
-
 }

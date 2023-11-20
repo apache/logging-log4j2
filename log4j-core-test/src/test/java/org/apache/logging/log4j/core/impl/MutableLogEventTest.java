@@ -16,8 +16,17 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.util.Arrays;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -32,16 +41,6 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the MutableLogEvent class.
@@ -77,7 +76,7 @@ public class MutableLogEventTest {
 
     @Test
     public void testInitFromCopiesAllFields() {
-//        private ThrowableProxy thrownProxy;
+        //        private ThrowableProxy thrownProxy;
         final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
                 .setContextData(CONTEXT_DATA) //
                 .setContextStack(STACK) //
@@ -90,7 +89,9 @@ public class MutableLogEventTest {
                 .setMessage(new SimpleMessage("msg in a bottle")) //
                 .setNanoTime(1234567) //
                 .setSource(new StackTraceElement("myclass", "mymethod", "myfile", 123)) //
-                .setThreadId(100).setThreadName("threadname").setThreadPriority(10) //
+                .setThreadId(100)
+                .setThreadName("threadname")
+                .setThreadPriority(10) //
                 .setThrown(new RuntimeException("run")) //
                 .setTimeMillis(987654321)
                 .build();
@@ -130,7 +131,9 @@ public class MutableLogEventTest {
                 .setMessage(message) //
                 .setNanoTime(1234567) //
                 .setSource(new StackTraceElement("myclass", "mymethod", "myfile", 123)) //
-                .setThreadId(100).setThreadName("threadname").setThreadPriority(10) //
+                .setThreadId(100)
+                .setThreadName("threadname")
+                .setThreadPriority(10) //
                 .setThrown(new RuntimeException("run")) //
                 .setTimeMillis(987654321)
                 .build();
@@ -149,7 +152,8 @@ public class MutableLogEventTest {
         assertEquals("msg in a bottle", eventMementoMessage.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, eventMementoMessage.getParameters(), "parameters");
 
-        final Message log4JLogEventMessage = new Log4jLogEvent.Builder(mutable).build().getMessage();
+        final Message log4JLogEventMessage =
+                new Log4jLogEvent.Builder(mutable).build().getMessage();
         assertEquals("msg in a {}", log4JLogEventMessage.getFormat(), "format");
         assertEquals("msg in a bottle", log4JLogEventMessage.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, log4JLogEventMessage.getParameters(), "parameters");
@@ -171,7 +175,8 @@ public class MutableLogEventTest {
                 .setMessage(message)
                 .setNanoTime(1234567)
                 .setSource(new StackTraceElement("myclass", "mymethod", "myfile", 123))
-                .setThreadId(100).setThreadName("threadname")
+                .setThreadId(100)
+                .setThreadName("threadname")
                 .setThreadPriority(10)
                 .setThrown(new RuntimeException("run"))
                 .setTimeMillis(987654321)
@@ -271,5 +276,4 @@ public class MutableLogEventTest {
         assertNotNull(mutable.getThreadName(), "tname");
         assertNotEquals(0, mutable.getThreadPriority(), "tpriority");
     }
-
 }

@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("Log4j1MdcPatternConverter")
-@ConverterKeys({ "properties" })
+@ConverterKeys({"properties"})
 public final class Log4j1MdcPatternConverter extends LogEventPatternConverter {
     /**
      * Name of property to output.
@@ -81,5 +81,6 @@ public final class Log4j1MdcPatternConverter extends LogEventPatternConverter {
         }
     }
 
-    private static TriConsumer<String, Object, StringBuilder> APPEND_EACH = (key, value, toAppendTo) -> toAppendTo.append('{').append(key).append(',').append(value).append('}');
+    private static TriConsumer<String, Object, StringBuilder> APPEND_EACH = (key, value, toAppendTo) ->
+            toAppendTo.append('{').append(key).append(',').append(value).append('}');
 }

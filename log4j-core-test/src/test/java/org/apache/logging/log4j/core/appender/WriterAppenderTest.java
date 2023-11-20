@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.io.OutputStreamWriter;
@@ -23,7 +26,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -32,9 +34,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 
 /**
  * Tests {@link WriterAppender}.
@@ -114,6 +113,9 @@ public class WriterAppenderTest {
     @Test
     public void testBuilder() {
         // This should compile
-        WriterAppender.newBuilder().setTarget(new StringWriter()).setName("testWriterAppender").build();
+        WriterAppender.newBuilder()
+                .setTarget(new StringWriter())
+                .setName("testWriterAppender")
+                .build();
     }
 }

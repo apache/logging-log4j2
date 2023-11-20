@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.nio.charset.Charset;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.charset.Charset;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ConsoleAppenderBuilderTest {
 
@@ -41,10 +40,12 @@ public class ConsoleAppenderBuilderTest {
      */
     @Test
     public void testDefaultLayoutDefaultCharset() {
-        final ConsoleAppender appender = ConsoleAppender.newBuilder().setName("test").build();
+        final ConsoleAppender appender =
+                ConsoleAppender.newBuilder().setName("test").build();
         final PatternLayout layout = (PatternLayout) appender.getLayout();
         final String charsetName = System.getProperty("sun.stdout.encoding");
-        final String expectedName = charsetName != null ? charsetName : Charset.defaultCharset().name();
+        final String expectedName =
+                charsetName != null ? charsetName : Charset.defaultCharset().name();
         assertEquals(expectedName, layout.getCharset().name());
     }
 
@@ -53,7 +54,8 @@ public class ConsoleAppenderBuilderTest {
      */
     @Test
     public void testSetNullErrorHandlerIsNotAllowed() {
-        final ConsoleAppender appender = ConsoleAppender.newBuilder().setName("test").build();
+        final ConsoleAppender appender =
+                ConsoleAppender.newBuilder().setName("test").build();
         final ErrorHandler handler = appender.getHandler();
         assertNotNull(handler);
         // This could likely be allowed to throw, but we're just testing that

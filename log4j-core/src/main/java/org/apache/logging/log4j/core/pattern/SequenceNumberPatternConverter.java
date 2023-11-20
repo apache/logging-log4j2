@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -28,7 +27,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace("Converter")
 @Plugin("SequenceNumberPatternConverter")
-@ConverterKeys({ "sn", "sequenceNumber" })
+@ConverterKeys({"sn", "sequenceNumber"})
 @PerformanceSensitive("allocation")
 public final class SequenceNumberPatternConverter extends LogEventPatternConverter {
 
@@ -37,8 +36,7 @@ public final class SequenceNumberPatternConverter extends LogEventPatternConvert
     /**
      * Singleton.
      */
-    private static final SequenceNumberPatternConverter INSTANCE =
-        new SequenceNumberPatternConverter();
+    private static final SequenceNumberPatternConverter INSTANCE = new SequenceNumberPatternConverter();
 
     /**
      * Private constructor.

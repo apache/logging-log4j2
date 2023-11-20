@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -29,8 +28,7 @@ import org.apache.logging.log4j.util.TriConsumer;
 public class FactoryTestStringMap implements IndexedStringMap {
     int initialCapacity;
 
-    public FactoryTestStringMap() {
-    }
+    public FactoryTestStringMap() {}
 
     public FactoryTestStringMap(final int initialCapacity) {
         this.initialCapacity = initialCapacity;

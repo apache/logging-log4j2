@@ -18,7 +18,6 @@ package org.apache.log4j.varia;
 
 import java.io.InterruptedIOException;
 import java.util.Vector;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.LogLog;
@@ -83,7 +82,8 @@ public class FallbackErrorHandler implements ErrorHandler {
             for (int i = 0; i < loggers.size(); i++) {
                 final Logger l = (Logger) loggers.elementAt(i);
                 LogLog.debug("FB: Searching for [" + primary.getName() + "] in logger [" + l.getName() + "].");
-                LogLog.debug("FB: Replacing [" + primary.getName() + "] by [" + backup.getName() + "] in logger [" + l.getName() + "].");
+                LogLog.debug("FB: Replacing [" + primary.getName() + "] by [" + backup.getName() + "] in logger ["
+                        + l.getName() + "].");
                 l.removeAppender(primary);
                 LogLog.debug("FB: Adding appender [" + backup.getName() + "] to logger " + l.getName());
                 l.addAppender(backup);
@@ -121,5 +121,4 @@ public class FallbackErrorHandler implements ErrorHandler {
         }
         loggers.addElement(logger);
     }
-
 }

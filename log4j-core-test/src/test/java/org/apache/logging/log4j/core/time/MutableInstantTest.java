@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.time;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MutableInstantTest {
 
@@ -217,7 +216,6 @@ class MutableInstantTest {
 
         assertEquals(instant.hashCode(), instant2.hashCode());
 
-
         instant2.initFromEpochMilli(123456, 789013);
         assertNotEquals(instant.hashCode(), instant2.hashCode());
     }
@@ -237,10 +235,8 @@ class MutableInstantTest {
         final java.time.Instant javaInstant = java.time.Instant.parse("2020-05-10T22:09:04.123456789Z");
         final MutableInstant log4jInstant = new MutableInstant();
         log4jInstant.initFromEpochSecond(javaInstant.getEpochSecond(), javaInstant.getNano());
-        final DateTimeFormatter formatter = DateTimeFormatter
-        .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
-        .withZone(ZoneId.of("UTC"));
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
+                .withZone(ZoneId.of("UTC"));
         assertEquals(formatter.format(javaInstant), formatter.format(log4jInstant));
     }
-
 }

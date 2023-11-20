@@ -16,26 +16,25 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -70,11 +69,11 @@ public class ThrowableProxyTest {
 
     private boolean lastLineContains(final String text, final String containedText) {
         final String[] lines = text.split("\n");
-        final String lastLine = lines[lines.length-1];
+        final String lastLine = lines[lines.length - 1];
         return lastLine.contains(containedText);
     }
 
-    private void testIoContainer(final ObjectMapper objectMapper ) throws IOException {
+    private void testIoContainer(final ObjectMapper objectMapper) throws IOException {
         final Fixture expected = new Fixture();
         final String s = objectMapper.writeValueAsString(expected);
         final Fixture actual = objectMapper.readValue(s, Fixture.class);
@@ -115,8 +114,8 @@ public class ThrowableProxyTest {
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
         final String separator = " | ";
-        final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString(null,
-                PlainTextRenderer.getInstance(), " | ", Strings.EMPTY);
+        final String extendedStackTraceAsString =
+                proxy.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), " | ", Strings.EMPTY);
         assertTrue(allLinesContain(extendedStackTraceAsString, separator), extendedStackTraceAsString);
     }
 
@@ -185,8 +184,8 @@ public class ThrowableProxyTest {
         final Deque<Class<?>> stack = new ArrayDeque<>();
         final Throwable throwable = new IllegalStateException("This is a test");
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
-        final ExtendedStackTraceElement[] callerPackageData = ThrowableProxyHelper.toExtendedStackTrace(proxy, stack, map, null,
-                throwable.getStackTrace());
+        final ExtendedStackTraceElement[] callerPackageData =
+                ThrowableProxyHelper.toExtendedStackTrace(proxy, stack, map, null, throwable.getStackTrace());
         assertNotNull(callerPackageData, "No package data returned");
     }
 

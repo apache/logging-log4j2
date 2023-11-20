@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.plugins.di.resolver;
 
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
@@ -35,7 +34,8 @@ public class PluginNamespaceFactoryResolver implements FactoryResolver<PluginNam
     }
 
     @Override
-    public Supplier<PluginNamespace> getFactory(final ResolvableKey<PluginNamespace> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<PluginNamespace> getFactory(
+            final ResolvableKey<PluginNamespace> resolvableKey, final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getKey().getNamespace();
         return () -> instanceFactory.getInstance(PluginRegistry.class).getNamespace(namespace);
     }

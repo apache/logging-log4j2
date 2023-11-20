@@ -42,10 +42,7 @@ public final class TimestampResolverFactory implements EventResolverFactory {
     }
 
     @Override
-    public TimestampResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public TimestampResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
         return new TimestampResolver(config);
     }
-
 }

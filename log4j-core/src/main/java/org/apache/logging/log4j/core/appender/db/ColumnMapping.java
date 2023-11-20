@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.util.Date;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -37,8 +38,6 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A configuration element for specifying a database column name mapping.
@@ -86,25 +85,29 @@ public class ColumnMapping {
         public ColumnMapping build() {
             if (pattern != null) {
                 layout = PatternLayout.newBuilder()
-                    .setPattern(pattern)
-                    .setConfiguration(configuration)
-                    .setAlwaysWriteExceptions(false)
-                    .build();
+                        .setPattern(pattern)
+                        .setConfiguration(configuration)
+                        .setAlwaysWriteExceptions(false)
+                        .build();
             }
             if (!(layout == null
-                || literal == null
-                || Date.class.isAssignableFrom(type)
-                || ReadOnlyStringMap.class.isAssignableFrom(type)
-                || ThreadContextMap.class.isAssignableFrom(type)
-                || ThreadContextStack.class.isAssignableFrom(type))) {
-                LOGGER.error("No 'layout' or 'literal' value specified and type ({}) is not compatible with ThreadContextMap, ThreadContextStack, or java.util.Date for the mapping {}", type, this);
+                    || literal == null
+                    || Date.class.isAssignableFrom(type)
+                    || ReadOnlyStringMap.class.isAssignableFrom(type)
+                    || ThreadContextMap.class.isAssignableFrom(type)
+                    || ThreadContextStack.class.isAssignableFrom(type))) {
+                LOGGER.error(
+                        "No 'layout' or 'literal' value specified and type ({}) is not compatible with ThreadContextMap, ThreadContextStack, or java.util.Date for the mapping {}",
+                        type,
+                        this);
                 return null;
             }
             if (literal != null && parameter != null) {
                 LOGGER.error("Only one of 'literal' or 'parameter' can be set on the column mapping {}", this);
                 return null;
             }
-            return new ColumnMapping(name, source, layout, literal, parameter, type, () -> typeConverterFactory.getTypeConverter(type));
+            return new ColumnMapping(
+                    name, source, layout, literal, parameter, type, () -> typeConverterFactory.getTypeConverter(type));
         }
 
         public Builder setConfiguration(final Configuration configuration) {
@@ -151,7 +154,7 @@ public class ColumnMapping {
          * @return this.
          */
         public Builder setParameter(final String parameter) {
-            this.parameter= parameter;
+            this.parameter = parameter;
             return this;
         }
 
@@ -223,8 +226,13 @@ public class ColumnMapping {
     private final Supplier<TypeConverter<?>> typeConverter;
 
     private ColumnMapping(
-            final String name, final String source, final StringLayout layout, final String literalValue,
-            final String parameter, final Class<?> type, final Supplier<TypeConverter<?>> typeConverter) {
+            final String name,
+            final String source,
+            final StringLayout layout,
+            final String literalValue,
+            final String parameter,
+            final Class<?> type,
+            final Supplier<TypeConverter<?>> typeConverter) {
         this.name = name;
         this.nameKey = toKey(name);
         this.source = source;
@@ -272,5 +280,4 @@ public class ColumnMapping {
         return "ColumnMapping [name=" + name + ", source=" + source + ", literalValue=" + literalValue + ", parameter="
                 + parameter + ", type=" + type + ", layout=" + layout + "]";
     }
-
 }

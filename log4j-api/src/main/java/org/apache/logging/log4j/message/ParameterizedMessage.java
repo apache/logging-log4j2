@@ -18,7 +18,6 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 import java.util.Objects;
-
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Recycler;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -66,9 +65,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      */
     public static final String ERROR_SUFFIX = ParameterFormatter.ERROR_SUFFIX;
 
-    private static final Recycler<StringBuilder> STRING_BUILDER_RECYCLER = LoggingSystem.getRecyclerFactory().create(
-            () -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE),
-            stringBuilder -> {
+    private static final Recycler<StringBuilder> STRING_BUILDER_RECYCLER = LoggingSystem.getRecyclerFactory()
+            .create(() -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE), stringBuilder -> {
                 StringBuilders.trimToMaxSize(stringBuilder, DEFAULT_STRING_BUILDER_SIZE);
                 stringBuilder.setLength(0);
             });
@@ -116,7 +114,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param arg The parameter.
      */
     public ParameterizedMessage(final String messagePattern, final Object arg) {
-        this(messagePattern, new Object[]{arg});
+        this(messagePattern, new Object[] {arg});
     }
 
     /**
@@ -126,7 +124,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param arg1 The second parameter.
      */
     public ParameterizedMessage(final String messagePattern, final Object arg0, final Object arg1) {
-        this(messagePattern, new Object[]{arg0, arg1});
+        this(messagePattern, new Object[] {arg0, arg1});
     }
 
     private void init(final String messagePattern) {
@@ -296,7 +294,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     @Override
     public String toString() {
-        return "ParameterizedMessage[messagePattern=" + messagePattern + ", stringArgs=" +
-                Arrays.toString(argArray) + ", throwable=" + throwable + ']';
+        return "ParameterizedMessage[messagePattern=" + messagePattern + ", stringArgs=" + Arrays.toString(argArray)
+                + ", throwable=" + throwable + ']';
     }
 }

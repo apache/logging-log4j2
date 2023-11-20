@@ -51,16 +51,16 @@ public final class ScriptFilter extends AbstractFilter {
     private final Script script;
     private final Configuration configuration;
 
-    private ScriptFilter(final Script script, final Configuration configuration, final Result onMatch,
-                         final Result onMismatch) {
+    private ScriptFilter(
+            final Script script, final Configuration configuration, final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
         this.script = script;
         this.configuration = configuration;
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-                         final Object... params) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         final ScriptBindings bindings = ScriptManagerImpl.createBindings();
         bindings.put("logger", logger);
         bindings.put("level", level);
@@ -75,13 +75,13 @@ public final class ScriptFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-                         final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         final ScriptBindings bindings = ScriptManagerImpl.createBindings();
         bindings.put("logger", logger);
         bindings.put("level", level);
         bindings.put("marker", marker);
-        bindings.put("message", msg instanceof String ? new SimpleMessage((String)msg) : new ObjectMessage(msg));
+        bindings.put("message", msg instanceof String ? new SimpleMessage((String) msg) : new ObjectMessage(msg));
         bindings.put("parameters", null);
         bindings.put("throwable", t);
         bindings.putAll(configuration.getProperties());
@@ -91,8 +91,8 @@ public final class ScriptFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-                         final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         final ScriptBindings bindings = ScriptManagerImpl.createBindings();
         bindings.put("logger", logger);
         bindings.put("level", level);
@@ -139,7 +139,8 @@ public final class ScriptFilter extends AbstractFilter {
             @PluginConfiguration final Configuration configuration) {
 
         if (script == null) {
-            AbstractLifeCycle.LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
+            AbstractLifeCycle.LOGGER.error(
+                    "A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
             return null;
         }
         if (configuration.getScriptManager() == null) {
@@ -157,8 +158,6 @@ public final class ScriptFilter extends AbstractFilter {
             }
         }
 
-
         return new ScriptFilter(script, configuration, onMatch, onMismatch);
     }
-
 }

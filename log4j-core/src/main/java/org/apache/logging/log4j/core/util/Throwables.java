@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
@@ -25,15 +26,12 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * Helps with Throwable objects.
  */
 public final class Throwables {
 
-    private Throwables() {
-    }
+    private Throwables() {}
 
     /**
      * Returns the deepest cause of the given {@code throwable}.
@@ -61,7 +59,6 @@ public final class Throwables {
             advanceSlowPointer = !advanceSlowPointer; // only advance every other iteration
         }
         return parent;
-
     }
 
     /**
@@ -72,8 +69,7 @@ public final class Throwables {
      */
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "Log4j prints stacktraces only to logs, which should be private."
-    )
+            justification = "Log4j prints stacktraces only to logs, which should be private.")
     public static List<String> toStringList(final Throwable throwable) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);

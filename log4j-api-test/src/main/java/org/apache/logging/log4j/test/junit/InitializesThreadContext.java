@@ -22,7 +22,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
@@ -32,10 +31,9 @@ import org.junit.jupiter.api.parallel.ResourceLock;
  * Marks a test class that initializes the {@link ThreadContext} class;
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 @Inherited
 @ExtendWith(ThreadContextInitializer.class)
 @ResourceLock(value = Resources.THREAD_CONTEXT, mode = ResourceAccessMode.READ_WRITE)
-public @interface InitializesThreadContext {
-}
+public @interface InitializesThreadContext {}

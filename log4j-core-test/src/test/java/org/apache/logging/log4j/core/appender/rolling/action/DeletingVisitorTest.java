@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.NoSuchFileException;
@@ -26,10 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code DeletingVisitor} class.
@@ -42,8 +41,8 @@ public class DeletingVisitorTest {
     static class DeletingVisitorHelper extends DeletingVisitor {
         List<Path> deleted = new ArrayList<>();
 
-        public DeletingVisitorHelper(final Path basePath, final List<? extends PathCondition> pathFilters,
-                final boolean testMode) {
+        public DeletingVisitorHelper(
+                final Path basePath, final List<? extends PathCondition> pathFilters, final boolean testMode) {
             super(basePath, pathFilters, testMode);
         }
 
@@ -57,7 +56,8 @@ public class DeletingVisitorTest {
     public void testAcceptedFilesAreDeleted() throws IOException {
         final Path base = Paths.get("/a/b/c");
         final FixedCondition ACCEPT_ALL = new FixedCondition(true);
-        final DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Collections.singletonList(ACCEPT_ALL), false);
+        final DeletingVisitorHelper visitor =
+                new DeletingVisitorHelper(base, Collections.singletonList(ACCEPT_ALL), false);
 
         final Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
@@ -68,7 +68,8 @@ public class DeletingVisitorTest {
     public void testRejectedFilesAreNotDeleted() throws IOException {
         final Path base = Paths.get("/a/b/c");
         final FixedCondition REJECT_ALL = new FixedCondition(false);
-        final DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Collections.singletonList(REJECT_ALL), false);
+        final DeletingVisitorHelper visitor =
+                new DeletingVisitorHelper(base, Collections.singletonList(REJECT_ALL), false);
 
         final Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
@@ -125,8 +126,7 @@ public class DeletingVisitorTest {
             }
 
             @Override
-            public void beforeFileTreeWalk() {
-            }
+            public void beforeFileTreeWalk() {}
         };
         final Path base = Paths.get("/a/b/c");
         final DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Collections.singletonList(filter), false);

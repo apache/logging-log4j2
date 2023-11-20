@@ -29,5 +29,4 @@ public class Version {
         }
         return String.format("%s %s", pkg.getSpecificationTitle(), pkg.getSpecificationVersion());
     }
-
 }

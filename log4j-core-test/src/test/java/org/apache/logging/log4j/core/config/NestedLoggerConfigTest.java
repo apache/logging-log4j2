@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.Assert.assertEquals;
+
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
-import com.google.common.collect.ImmutableList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for LoggerConfig hierarchies.
@@ -69,7 +68,8 @@ public class NestedLoggerConfigTest {
 
     private Configuration loadConfiguration(final String resourcePath) throws IOException {
         try (final InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
-            final Configuration configuration = new XmlConfiguration(new LoggerContext("test"), new ConfigurationSource(in));
+            final Configuration configuration =
+                    new XmlConfiguration(new LoggerContext("test"), new ConfigurationSource(in));
             configuration.initialize();
             configuration.start();
             return configuration;

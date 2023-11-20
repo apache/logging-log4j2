@@ -16,16 +16,15 @@
  */
 package org.apache.log4j;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Defines the minimum set of levels recognized by the system, that is
@@ -111,7 +110,10 @@ public class Level extends Priority implements Serializable {
         this(level, levelStr, syslogEquivalent, null);
     }
 
-    protected Level(final int level, final String levelStr, final int syslogEquivalent,
+    protected Level(
+            final int level,
+            final String levelStr,
+            final int syslogEquivalent,
             final org.apache.logging.log4j.Level version2Equivalent) {
         super(level, levelStr, syslogEquivalent);
         this.version2Level = version2Equivalent != null ? version2Equivalent : OptionConverter.createLevel(this);
@@ -184,24 +186,24 @@ public class Level extends Priority implements Serializable {
         }
         final String s = toRootUpperCase(sArg);
         switch (s) {
-        case "ALL":
-            return Level.ALL;
-        case "DEBUG":
-            return Level.DEBUG;
-        case "INFO":
-            return Level.INFO;
-        case "WARN":
-            return Level.WARN;
-        case "ERROR":
-            return Level.ERROR;
-        case "FATAL":
-            return Level.FATAL;
-        case "OFF":
-            return Level.OFF;
-        case "TRACE":
-            return Level.TRACE;
-        default:
-            return defaultLevel;
+            case "ALL":
+                return Level.ALL;
+            case "DEBUG":
+                return Level.DEBUG;
+            case "INFO":
+                return Level.INFO;
+            case "WARN":
+                return Level.WARN;
+            case "ERROR":
+                return Level.ERROR;
+            case "FATAL":
+                return Level.FATAL;
+            case "OFF":
+                return Level.OFF;
+            case "TRACE":
+                return Level.TRACE;
+            default:
+                return defaultLevel;
         }
     }
 
@@ -254,5 +256,4 @@ public class Level extends Priority implements Serializable {
         //
         return this;
     }
-
 }

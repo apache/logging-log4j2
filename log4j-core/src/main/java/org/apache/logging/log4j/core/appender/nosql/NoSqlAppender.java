@@ -75,8 +75,8 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
             final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSize
                     + ", provider=" + provider + " }";
-            final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSize, provider, additionalFields,
-                getConfiguration());
+            final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(
+                    managerName, bufferSize, provider, additionalFields, getConfiguration());
             if (manager == null) {
                 return null;
             }
@@ -117,8 +117,13 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
     private final String description;
 
-    private NoSqlAppender(final String name, final Filter filter, final Layout layout,
-            final boolean ignoreExceptions, final Property[] properties, final NoSqlDatabaseManager<?> manager) {
+    private NoSqlAppender(
+            final String name,
+            final Filter filter,
+            final Layout layout,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            final NoSqlDatabaseManager<?> manager) {
         super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }

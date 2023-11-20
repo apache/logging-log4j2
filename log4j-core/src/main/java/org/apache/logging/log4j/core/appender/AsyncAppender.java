@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TransferQueue;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -74,10 +73,19 @@ public final class AsyncAppender extends AbstractAppender {
     private AsyncAppenderEventDispatcher dispatcher;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
 
-    private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
-                          final String errorRef, final int queueSize, final boolean blocking, final boolean ignoreExceptions,
-                          final long shutdownTimeout, final Configuration config, final boolean includeLocation,
-                          final BlockingQueueFactory blockingQueueFactory, final Property[] properties) {
+    private AsyncAppender(
+            final String name,
+            final Filter filter,
+            final AppenderRef[] appenderRefs,
+            final String errorRef,
+            final int queueSize,
+            final boolean blocking,
+            final boolean ignoreExceptions,
+            final long shutdownTimeout,
+            final Configuration config,
+            final boolean includeLocation,
+            final BlockingQueueFactory blockingQueueFactory,
+            final Property[] properties) {
         super(name, filter, null, ignoreExceptions, properties);
         this.queue = blockingQueueFactory.create(queueSize);
         this.queueSize = queueSize;
@@ -110,8 +118,7 @@ public final class AsyncAppender extends AbstractAppender {
             }
         }
         if (appenders.size() > 0) {
-            dispatcher = new AsyncAppenderEventDispatcher(
-                    getName(), errorAppender, appenders, queue);
+            dispatcher = new AsyncAppenderEventDispatcher(getName(), errorAppender, appenders, queue);
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
@@ -136,8 +143,10 @@ public final class AsyncAppender extends AbstractAppender {
         LOGGER.trace("AsyncAppender stopped. Queue has {} events.", queue.size());
 
         if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {
-            LOGGER.trace("AsyncAppender: {} discarded {} events.", asyncQueueFullPolicy,
-                DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
+            LOGGER.trace(
+                    "AsyncAppender: {} discarded {} events.",
+                    asyncQueueFullPolicy,
+                    DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
         setStopped();
         return true;
@@ -175,8 +184,8 @@ public final class AsyncAppender extends AbstractAppender {
 
     private boolean transfer(final LogEvent memento) {
         return queue instanceof TransferQueue
-            ? ((TransferQueue<LogEvent>) queue).tryTransfer(memento)
-            : queue.offer(memento);
+                ? ((TransferQueue<LogEvent>) queue).tryTransfer(memento)
+                : queue.offer(memento);
     }
 
     /**
@@ -220,8 +229,7 @@ public final class AsyncAppender extends AbstractAppender {
     private boolean handleInterruptedException(final LogEvent memento) {
         final boolean appendSuccessful = queue.offer(memento);
         if (!appendSuccessful) {
-            LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
-                getName());
+            LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}", getName());
         }
         // set the interrupted flag again.
         Thread.currentThread().interrupt();
@@ -327,8 +335,19 @@ public final class AsyncAppender extends AbstractAppender {
 
         @Override
         public AsyncAppender build() {
-            return new AsyncAppender(name, getFilter(), appenderRefs, errorRef, bufferSize, blocking, ignoreExceptions,
-                shutdownTimeout, configuration, includeLocation, blockingQueueFactory, getPropertyArray());
+            return new AsyncAppender(
+                    name,
+                    getFilter(),
+                    appenderRefs,
+                    errorRef,
+                    bufferSize,
+                    blocking,
+                    ignoreExceptions,
+                    shutdownTimeout,
+                    configuration,
+                    includeLocation,
+                    blockingQueueFactory,
+                    getPropertyArray());
         }
     }
 
@@ -391,5 +410,4 @@ public final class AsyncAppender extends AbstractAppender {
     public int getQueueSize() {
         return queue.size();
     }
-
 }

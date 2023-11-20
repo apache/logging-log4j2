@@ -21,7 +21,4 @@ import java.util.Map;
 /**
  * Container for javax.script.Bindings.
  */
-public interface ScriptBindings extends Map<String, Object> {
-
-
-}
+public interface ScriptBindings extends Map<String, Object> {}

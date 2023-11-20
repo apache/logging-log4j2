@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  *
@@ -63,7 +62,9 @@ public class RollingAppenderCustomDeleteActionTest {
             }
             if (files.length == 3) {
                 for (final File file : files) {
-                    assertTrue(Arrays.asList("test-1.log", "test-2.log", "test-3.log").contains(file.getName()),
+                    assertTrue(
+                            Arrays.asList("test-1.log", "test-2.log", "test-3.log")
+                                    .contains(file.getName()),
                             "test-4.log should have been deleted");
                 }
                 return; // test succeeded

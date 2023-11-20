@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -27,8 +29,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @LoggerContextSource("log4j-routing-lookup.xml")
 @UsingThreadContextMap
 public class RoutingAppenderKeyLookupEvaluationTest {
@@ -38,9 +38,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
     private final LoggerContext context;
     private final ListAppender app;
 
-    public RoutingAppenderKeyLookupEvaluationTest(
-            final LoggerContext context,
-            @Named("List") final ListAppender app) {
+    public RoutingAppenderKeyLookupEvaluationTest(final LoggerContext context, @Named("List") final ListAppender app) {
         this.context = context;
         this.app = app.clear();
     }

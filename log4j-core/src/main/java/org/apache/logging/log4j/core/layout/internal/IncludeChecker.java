@@ -27,6 +27,7 @@ public class IncludeChecker implements ListChecker {
     public IncludeChecker(final List<String> list) {
         this.list = list;
     }
+
     @Override
     public boolean check(final String key) {
         return list.contains(key);

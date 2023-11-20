@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
@@ -99,9 +98,7 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
             dispatch(event);
             eventCount++;
         }
-        LOGGER.trace(
-                "{} has processed the last {} remaining event(s).",
-                getName(), eventCount);
+        LOGGER.trace("{} has processed the last {} remaining event(s).", getName(), eventCount);
     }
 
     /**
@@ -121,9 +118,7 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
             } catch (final Throwable error) {
                 // If no appender is successful, the error appender will get it.
                 // It is okay to simply log it here.
-                LOGGER.trace(
-                        "{} has failed to call appender {}",
-                        getName(), control.getAppenderName(), error);
+                LOGGER.trace("{} has failed to call appender {}", getName(), control.getAppenderName(), error);
             }
         }
 
@@ -136,10 +131,11 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
                 // we can do about it.
                 LOGGER.trace(
                         "{} has failed to call the error appender {}",
-                        getName(), errorAppender.getAppenderName(), error);
+                        getName(),
+                        errorAppender.getAppenderName(),
+                        error);
             }
         }
-
     }
 
     void stop(final long timeoutMillis) throws InterruptedException {
@@ -153,7 +149,8 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
         // There is a slight chance that the thread is not started yet, wait for
         // it to run. Otherwise, interrupt+join might block.
         // noinspection StatementWithEmptyBody
-        while (Thread.State.NEW.equals(getState()));
+        while (Thread.State.NEW.equals(getState()))
+            ;
 
         // Enqueue the stop event, if there is sufficient room; otherwise,
         // fallback to interruption. (We should avoid interrupting the thread if
@@ -169,7 +166,5 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
 
         // Wait for the completion.
         join(timeoutMillis);
-
     }
-
 }

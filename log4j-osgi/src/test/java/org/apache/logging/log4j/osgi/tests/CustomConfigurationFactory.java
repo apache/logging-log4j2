@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.osgi.tests;
 
 import java.net.URI;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -50,7 +49,8 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+    public Configuration getConfiguration(
+            final LoggerContext loggerContext, final String name, final URI configLocation) {
         return new CustomConfiguration(loggerContext);
     }
 

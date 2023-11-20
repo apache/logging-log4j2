@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.util.Unbox;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;

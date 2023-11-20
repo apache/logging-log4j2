@@ -52,7 +52,6 @@ public class ClassArbiter implements Arbiter {
         @PluginBuilderAttribute(ATTR_CLASS_NAME)
         private String className;
 
-
         /**
          * Sets the Class name.
          * @param className the class name.
@@ -70,6 +69,5 @@ public class ClassArbiter implements Arbiter {
         public ClassArbiter build() {
             return new ClassArbiter(className);
         }
-
     }
 }

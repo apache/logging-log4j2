@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -62,16 +61,21 @@ public class ThreadContextMapFilter extends MapFilter {
     private final boolean useMap;
 
     public ThreadContextMapFilter(
-            final Map<String, List<String>> pairs, final boolean oper, final Result onMatch,
-            final Result onMismatch, final ContextDataInjector injector) {
+            final Map<String, List<String>> pairs,
+            final boolean oper,
+            final Result onMatch,
+            final Result onMismatch,
+            final ContextDataInjector injector) {
         super(pairs, oper, onMatch, onMismatch);
         // ContextDataFactory looks up a property. The Spring PropertySource may log which will cause recursion.
         // By initializing the ContextDataFactory here recursion will be prevented.
         final StringMap map = ContextDataFactory.createContextData();
-        LOGGER.debug("Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
+        LOGGER.debug(
+                "Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
                 map.size());
         if (pairs.size() == 1) {
-            final Iterator<Map.Entry<String, List<String>>> iter = pairs.entrySet().iterator();
+            final Iterator<Map.Entry<String, List<String>>> iter =
+                    pairs.entrySet().iterator();
             final Map.Entry<String, List<String>> entry = iter.next();
             if (entry.getValue().size() == 1) {
                 this.key = entry.getKey();
@@ -91,20 +95,20 @@ public class ThreadContextMapFilter extends MapFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-                         final Object... params) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-                         final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-                         final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return filter();
     }
 
@@ -139,71 +143,143 @@ public class ThreadContextMapFilter extends MapFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object p0) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return filter();
     }
 
@@ -260,9 +336,8 @@ public class ThreadContextMapFilter extends MapFilter {
                 return null;
             }
             final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
-            final ContextDataInjector injector = contextDataInjector != null
-                    ? contextDataInjector
-                    : ContextDataInjectorFactory.createInjector();
+            final ContextDataInjector injector =
+                    contextDataInjector != null ? contextDataInjector : ContextDataInjectorFactory.createInjector();
             return new ThreadContextMapFilter(map, isAnd, getOnMatch(), getOnMismatch(), injector);
         }
     }
@@ -271,5 +346,4 @@ public class ThreadContextMapFilter extends MapFilter {
     public static Builder newBuilder() {
         return new Builder();
     }
-
 }

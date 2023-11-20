@@ -19,7 +19,4 @@ package org.apache.logging.log4j.core;
 /**
  * Validate Log4j Properties specific to a LoggerContext.
  */
-public class LoggerContextPropertiesTest {
-
-
-}
+public class LoggerContextPropertiesTest {}

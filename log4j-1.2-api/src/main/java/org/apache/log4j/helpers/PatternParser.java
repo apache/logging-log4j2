@@ -21,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
@@ -127,84 +126,81 @@ public class PatternParser {
         while (i < patternLength) {
             c = pattern.charAt(i++);
             switch (state) {
-            case LITERAL_STATE:
-                // In literal state, the last char is always a literal.
-                if (i == patternLength) {
-                    currentLiteral.append(c);
-                    continue;
-                }
-                if (c == ESCAPE_CHAR) {
-                    // peek at the next char.
-                    switch (pattern.charAt(i)) {
-                    case ESCAPE_CHAR:
+                case LITERAL_STATE:
+                    // In literal state, the last char is always a literal.
+                    if (i == patternLength) {
                         currentLiteral.append(c);
-                        i++; // move pointer
-                        break;
-                    case 'n':
-                        currentLiteral.append(Layout.LINE_SEP);
-                        i++; // move pointer
-                        break;
-                    default:
-                        if (currentLiteral.length() != 0) {
-                            addToList(new LiteralPatternConverter(currentLiteral.toString()));
-                            // LogLog.debug("Parsed LITERAL converter: \""
-                            // +currentLiteral+"\".");
-                        }
-                        currentLiteral.setLength(0);
-                        currentLiteral.append(c); // append %
-                        state = CONVERTER_STATE;
-                        formattingInfo.reset();
+                        continue;
                     }
-                } else {
+                    if (c == ESCAPE_CHAR) {
+                        // peek at the next char.
+                        switch (pattern.charAt(i)) {
+                            case ESCAPE_CHAR:
+                                currentLiteral.append(c);
+                                i++; // move pointer
+                                break;
+                            case 'n':
+                                currentLiteral.append(Layout.LINE_SEP);
+                                i++; // move pointer
+                                break;
+                            default:
+                                if (currentLiteral.length() != 0) {
+                                    addToList(new LiteralPatternConverter(currentLiteral.toString()));
+                                    // LogLog.debug("Parsed LITERAL converter: \""
+                                    // +currentLiteral+"\".");
+                                }
+                                currentLiteral.setLength(0);
+                                currentLiteral.append(c); // append %
+                                state = CONVERTER_STATE;
+                                formattingInfo.reset();
+                        }
+                    } else {
+                        currentLiteral.append(c);
+                    }
+                    break;
+                case CONVERTER_STATE:
                     currentLiteral.append(c);
-                }
-                break;
-            case CONVERTER_STATE:
-                currentLiteral.append(c);
-                switch (c) {
-                case '-':
-                    formattingInfo.leftAlign = true;
+                    switch (c) {
+                        case '-':
+                            formattingInfo.leftAlign = true;
+                            break;
+                        case '.':
+                            state = DOT_STATE;
+                            break;
+                        default:
+                            if (c >= '0' && c <= '9') {
+                                formattingInfo.min = c - '0';
+                                state = MIN_STATE;
+                            } else finalizeConverter(c);
+                    } // switch
                     break;
-                case '.':
-                    state = DOT_STATE;
-                    break;
-                default:
-                    if (c >= '0' && c <= '9') {
-                        formattingInfo.min = c - '0';
-                        state = MIN_STATE;
-                    } else
+                case MIN_STATE:
+                    currentLiteral.append(c);
+                    if (c >= '0' && c <= '9') formattingInfo.min = formattingInfo.min * 10 + (c - '0');
+                    else if (c == '.') state = DOT_STATE;
+                    else {
                         finalizeConverter(c);
-                } // switch
-                break;
-            case MIN_STATE:
-                currentLiteral.append(c);
-                if (c >= '0' && c <= '9')
-                    formattingInfo.min = formattingInfo.min * 10 + (c - '0');
-                else if (c == '.')
-                    state = DOT_STATE;
-                else {
-                    finalizeConverter(c);
-                }
-                break;
-            case DOT_STATE:
-                currentLiteral.append(c);
-                if (c >= '0' && c <= '9') {
-                    formattingInfo.max = c - '0';
-                    state = MAX_STATE;
-                } else {
-                    LogLog.error("Error occured in position " + i + ".\n Was expecting digit, instead got char \"" + c + "\".");
-                    state = LITERAL_STATE;
-                }
-                break;
-            case MAX_STATE:
-                currentLiteral.append(c);
-                if (c >= '0' && c <= '9')
-                    formattingInfo.max = formattingInfo.max * 10 + (c - '0');
-                else {
-                    finalizeConverter(c);
-                    state = LITERAL_STATE;
-                }
-                break;
+                    }
+                    break;
+                case DOT_STATE:
+                    currentLiteral.append(c);
+                    if (c >= '0' && c <= '9') {
+                        formattingInfo.max = c - '0';
+                        state = MAX_STATE;
+                    } else {
+                        LogLog.error("Error occured in position " + i + ".\n Was expecting digit, instead got char \""
+                                + c + "\".");
+                        state = LITERAL_STATE;
+                    }
+                    break;
+                case MAX_STATE:
+                    currentLiteral.append(c);
+                    if (c >= '0' && c <= '9') formattingInfo.max = formattingInfo.max * 10 + (c - '0');
+                    else {
+                        finalizeConverter(c);
+                        state = LITERAL_STATE;
+                    }
+                    break;
             } // switch
         } // while
         if (currentLiteral.length() != 0) {
@@ -217,112 +213,112 @@ public class PatternParser {
     protected void finalizeConverter(char c) {
         PatternConverter pc = null;
         switch (c) {
-        case 'c':
-            pc = new CategoryPatternConverter(formattingInfo, extractPrecisionOption());
-            // LogLog.debug("CATEGORY converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 'C':
-            pc = new ClassNamePatternConverter(formattingInfo, extractPrecisionOption());
-            // LogLog.debug("CLASS_NAME converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 'd':
-            String dateFormatStr = AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT;
-            DateFormat df;
-            final String dOpt = extractOption();
-            if (dOpt != null)
-                dateFormatStr = dOpt;
+            case 'c':
+                pc = new CategoryPatternConverter(formattingInfo, extractPrecisionOption());
+                // LogLog.debug("CATEGORY converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 'C':
+                pc = new ClassNamePatternConverter(formattingInfo, extractPrecisionOption());
+                // LogLog.debug("CLASS_NAME converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 'd':
+                String dateFormatStr = AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT;
+                DateFormat df;
+                final String dOpt = extractOption();
+                if (dOpt != null) dateFormatStr = dOpt;
 
-            if (dateFormatStr.equalsIgnoreCase(AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT))
-                df = new ISO8601DateFormat();
-            else if (dateFormatStr.equalsIgnoreCase(AbsoluteTimeDateFormat.ABS_TIME_DATE_FORMAT))
-                df = new AbsoluteTimeDateFormat();
-            else if (dateFormatStr.equalsIgnoreCase(AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT))
-                df = new DateTimeDateFormat();
-            else {
-                try {
-                    df = new SimpleDateFormat(dateFormatStr);
-                } catch (IllegalArgumentException e) {
-                    LogLog.error("Could not instantiate SimpleDateFormat with " + dateFormatStr, e);
-                    df = (DateFormat) OptionConverter.instantiateByClassName("org.apache.log4j.helpers.ISO8601DateFormat", DateFormat.class, null);
+                if (dateFormatStr.equalsIgnoreCase(AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT))
+                    df = new ISO8601DateFormat();
+                else if (dateFormatStr.equalsIgnoreCase(AbsoluteTimeDateFormat.ABS_TIME_DATE_FORMAT))
+                    df = new AbsoluteTimeDateFormat();
+                else if (dateFormatStr.equalsIgnoreCase(AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT))
+                    df = new DateTimeDateFormat();
+                else {
+                    try {
+                        df = new SimpleDateFormat(dateFormatStr);
+                    } catch (IllegalArgumentException e) {
+                        LogLog.error("Could not instantiate SimpleDateFormat with " + dateFormatStr, e);
+                        df = (DateFormat) OptionConverter.instantiateByClassName(
+                                "org.apache.log4j.helpers.ISO8601DateFormat", DateFormat.class, null);
+                    }
                 }
-            }
-            pc = new DatePatternConverter(formattingInfo, df);
-            // LogLog.debug("DATE converter {"+dateFormatStr+"}.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 'F':
-            pc = new LocationPatternConverter(formattingInfo, FILE_LOCATION_CONVERTER);
-            // LogLog.debug("File name converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 'l':
-            pc = new LocationPatternConverter(formattingInfo, FULL_LOCATION_CONVERTER);
-            // LogLog.debug("Location converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 'L':
-            pc = new LocationPatternConverter(formattingInfo, LINE_LOCATION_CONVERTER);
-            // LogLog.debug("LINE NUMBER converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 'm':
-            pc = new BasicPatternConverter(formattingInfo, MESSAGE_CONVERTER);
-            // LogLog.debug("MESSAGE converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 'M':
-            pc = new LocationPatternConverter(formattingInfo, METHOD_LOCATION_CONVERTER);
-            // LogLog.debug("METHOD converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 'p':
-            pc = new BasicPatternConverter(formattingInfo, LEVEL_CONVERTER);
-            // LogLog.debug("LEVEL converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 'r':
-            pc = new BasicPatternConverter(formattingInfo, RELATIVE_TIME_CONVERTER);
-            // LogLog.debug("RELATIVE time converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        case 't':
-            pc = new BasicPatternConverter(formattingInfo, THREAD_CONVERTER);
-            // LogLog.debug("THREAD converter.");
-            // formattingInfo.dump();
-            currentLiteral.setLength(0);
-            break;
-        /*
-         * case 'u': if(i < patternLength) { char cNext = pattern.charAt(i); if(cNext >= '0' && cNext <= '9') { pc = new
-         * UserFieldPatternConverter(formattingInfo, cNext - '0'); LogLog.debug("USER converter ["+cNext+"].");
-         * formattingInfo.dump(); currentLiteral.setLength(0); i++; } else LogLog.error("Unexpected char"
-         * +cNext+" at position "+i); } break;
-         */
-        case 'x':
-            pc = new BasicPatternConverter(formattingInfo, NDC_CONVERTER);
-            // LogLog.debug("NDC converter.");
-            currentLiteral.setLength(0);
-            break;
-        case 'X':
-            final String xOpt = extractOption();
-            pc = new MDCPatternConverter(formattingInfo, xOpt);
-            currentLiteral.setLength(0);
-            break;
-        default:
-            LogLog.error("Unexpected char [" + c + "] at position " + i + " in conversion patterrn.");
-            pc = new LiteralPatternConverter(currentLiteral.toString());
-            currentLiteral.setLength(0);
+                pc = new DatePatternConverter(formattingInfo, df);
+                // LogLog.debug("DATE converter {"+dateFormatStr+"}.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 'F':
+                pc = new LocationPatternConverter(formattingInfo, FILE_LOCATION_CONVERTER);
+                // LogLog.debug("File name converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 'l':
+                pc = new LocationPatternConverter(formattingInfo, FULL_LOCATION_CONVERTER);
+                // LogLog.debug("Location converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 'L':
+                pc = new LocationPatternConverter(formattingInfo, LINE_LOCATION_CONVERTER);
+                // LogLog.debug("LINE NUMBER converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 'm':
+                pc = new BasicPatternConverter(formattingInfo, MESSAGE_CONVERTER);
+                // LogLog.debug("MESSAGE converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 'M':
+                pc = new LocationPatternConverter(formattingInfo, METHOD_LOCATION_CONVERTER);
+                // LogLog.debug("METHOD converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 'p':
+                pc = new BasicPatternConverter(formattingInfo, LEVEL_CONVERTER);
+                // LogLog.debug("LEVEL converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 'r':
+                pc = new BasicPatternConverter(formattingInfo, RELATIVE_TIME_CONVERTER);
+                // LogLog.debug("RELATIVE time converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+            case 't':
+                pc = new BasicPatternConverter(formattingInfo, THREAD_CONVERTER);
+                // LogLog.debug("THREAD converter.");
+                // formattingInfo.dump();
+                currentLiteral.setLength(0);
+                break;
+                /*
+                 * case 'u': if(i < patternLength) { char cNext = pattern.charAt(i); if(cNext >= '0' && cNext <= '9') { pc = new
+                 * UserFieldPatternConverter(formattingInfo, cNext - '0'); LogLog.debug("USER converter ["+cNext+"].");
+                 * formattingInfo.dump(); currentLiteral.setLength(0); i++; } else LogLog.error("Unexpected char"
+                 * +cNext+" at position "+i); } break;
+                 */
+            case 'x':
+                pc = new BasicPatternConverter(formattingInfo, NDC_CONVERTER);
+                // LogLog.debug("NDC converter.");
+                currentLiteral.setLength(0);
+                break;
+            case 'X':
+                final String xOpt = extractOption();
+                pc = new MDCPatternConverter(formattingInfo, xOpt);
+                currentLiteral.setLength(0);
+                break;
+            default:
+                LogLog.error("Unexpected char [" + c + "] at position " + i + " in conversion patterrn.");
+                pc = new LiteralPatternConverter(currentLiteral.toString());
+                currentLiteral.setLength(0);
         }
 
         addConverter(pc);
@@ -352,19 +348,19 @@ public class PatternParser {
 
         public String convert(final LoggingEvent event) {
             switch (type) {
-            case RELATIVE_TIME_CONVERTER:
-                return (Long.toString(event.timeStamp - LoggingEvent.getStartTime()));
-            case THREAD_CONVERTER:
-                return event.getThreadName();
-            case LEVEL_CONVERTER:
-                return event.getLevel().toString();
-            case NDC_CONVERTER:
-                return event.getNDC();
-            case MESSAGE_CONVERTER: {
-                return event.getRenderedMessage();
-            }
-            default:
-                return null;
+                case RELATIVE_TIME_CONVERTER:
+                    return (Long.toString(event.timeStamp - LoggingEvent.getStartTime()));
+                case THREAD_CONVERTER:
+                    return event.getThreadName();
+                case LEVEL_CONVERTER:
+                    return event.getLevel().toString();
+                case NDC_CONVERTER:
+                    return event.getNDC();
+                case MESSAGE_CONVERTER: {
+                    return event.getRenderedMessage();
+                }
+                default:
+                    return null;
             }
         }
     }
@@ -454,21 +450,21 @@ public class PatternParser {
         public String convert(final LoggingEvent event) {
             final LocationInfo locationInfo = event.getLocationInformation();
             switch (type) {
-            case FULL_LOCATION_CONVERTER:
-                return locationInfo.fullInfo;
-            case METHOD_LOCATION_CONVERTER:
-                return locationInfo.getMethodName();
-            case LINE_LOCATION_CONVERTER:
-                return locationInfo.getLineNumber();
-            case FILE_LOCATION_CONVERTER:
-                return locationInfo.getFileName();
-            default:
-                return null;
+                case FULL_LOCATION_CONVERTER:
+                    return locationInfo.fullInfo;
+                case METHOD_LOCATION_CONVERTER:
+                    return locationInfo.getMethodName();
+                case LINE_LOCATION_CONVERTER:
+                    return locationInfo.getLineNumber();
+                case FILE_LOCATION_CONVERTER:
+                    return locationInfo.getFileName();
+                default:
+                    return null;
             }
         }
     }
 
-    private static abstract class NamedPatternConverter extends PatternConverter {
+    private abstract static class NamedPatternConverter extends PatternConverter {
         int precision;
 
         NamedPatternConverter(final FormattingInfo formattingInfo, final int precision) {
@@ -480,8 +476,7 @@ public class PatternParser {
 
         public String convert(final LoggingEvent event) {
             final String n = getFullyQualifiedName(event);
-            if (precision <= 0)
-                return n;
+            if (precision <= 0) return n;
             else {
                 final int len = n.length();
 
@@ -491,8 +486,7 @@ public class PatternParser {
                 int end = len - 1;
                 for (int i = precision; i > 0; i--) {
                     end = n.lastIndexOf('.', end - 1);
-                    if (end == -1)
-                        return n;
+                    if (end == -1) return n;
                 }
                 return n.substring(end + 1, len);
             }

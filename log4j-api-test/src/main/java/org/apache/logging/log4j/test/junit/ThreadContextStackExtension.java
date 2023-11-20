@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.test.junit;
 
 import java.util.Collection;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -40,7 +39,8 @@ class ThreadContextStackExtension implements BeforeEachCallback {
 
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
-        context.getStore(Namespace.create(ThreadContext.class, context.getRequiredTestClass(), context.getRequiredTestInstance()))
+        context.getStore(Namespace.create(
+                        ThreadContext.class, context.getRequiredTestClass(), context.getRequiredTestInstance()))
                 .getOrComputeIfAbsent(ThreadContextStackStore.class);
     }
 }

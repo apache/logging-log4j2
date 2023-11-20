@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.model.PluginType;
@@ -39,8 +38,7 @@ public class PluginMapFactoryResolver<T> extends AbstractPluginFactoryResolver<M
 
     @Override
     public Supplier<Map<String, ? extends T>> getFactory(
-            final ResolvableKey<Map<String, ? extends T>> resolvableKey,
-            final InstanceFactory instanceFactory) {
+            final ResolvableKey<Map<String, ? extends T>> resolvableKey, final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getNamespace();
         final ParameterizedType mapType = (ParameterizedType) resolvableKey.getType();
         final Type componentType = mapType.getActualTypeArguments()[1];

@@ -28,7 +28,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.di.spi.InjectionPoint;
@@ -76,7 +75,8 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
         type = TypeUtil.getSuperclassTypeParameter(getClass());
         rawType = TypeUtil.getRawType(type);
         final AnnotatedType superclass = getClass().getAnnotatedSuperclass();
-        final Annotation qualifier = AnnotationUtil.getElementAnnotationHavingMetaAnnotation(superclass, QualifierType.class);
+        final Annotation qualifier =
+                AnnotationUtil.getElementAnnotationHavingMetaAnnotation(superclass, QualifierType.class);
         qualifierType = qualifier != null ? qualifier.annotationType() : null;
         name = Keys.getName(superclass);
         namespace = Keys.getNamespace(superclass);
@@ -85,8 +85,12 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
     }
 
     private Key(
-            final Type type, final Class<T> rawType, final Class<? extends Annotation> qualifierType, final String name,
-            final String namespace, final OptionalInt order) {
+            final Type type,
+            final Class<T> rawType,
+            final Class<? extends Annotation> qualifierType,
+            final String name,
+            final String namespace,
+            final OptionalInt order) {
         this.type = type;
         this.rawType = rawType;
         this.qualifierType = qualifierType;
@@ -237,10 +241,10 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
             return false;
         }
         final Key<?> that = (Key<?>) o;
-        return TypeUtil.isEqual(this.type, that.type) &&
-                this.name.equalsIgnoreCase(that.name) &&
-                this.namespace.equalsIgnoreCase(that.namespace) &&
-                Objects.equals(this.qualifierType, that.qualifierType);
+        return TypeUtil.isEqual(this.type, that.type)
+                && this.name.equalsIgnoreCase(that.name)
+                && this.namespace.equalsIgnoreCase(that.namespace)
+                && Objects.equals(this.qualifierType, that.qualifierType);
     }
 
     @Override
@@ -316,8 +320,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
     public static <T> Key<T> forMethod(final Method method) {
         final Builder<T> builder = Key.builder(method.getGenericReturnType());
         AnnotationUtil.getOrder(method).ifPresent(builder::setOrder);
-        return builder
-                .setQualifierType(getQualifierType(method))
+        return builder.setQualifierType(getQualifierType(method))
                 .setName(Keys.getName(method))
                 .setNamespace(Keys.getNamespace(method))
                 .get();

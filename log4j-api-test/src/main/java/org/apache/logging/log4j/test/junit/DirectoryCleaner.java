@@ -25,20 +25,21 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.HashSet;
-
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 class DirectoryCleaner extends AbstractFileCleaner {
     @Override
     Collection<Path> getPathsForTest(final ExtensionContext context) {
         final Collection<Path> paths = new HashSet<>();
-        final CleanUpDirectories testClassAnnotation = context.getRequiredTestClass().getAnnotation(CleanUpDirectories.class);
+        final CleanUpDirectories testClassAnnotation =
+                context.getRequiredTestClass().getAnnotation(CleanUpDirectories.class);
         if (testClassAnnotation != null) {
             for (final String path : testClassAnnotation.value()) {
                 paths.add(Paths.get(path));
             }
         }
-        final CleanUpDirectories testMethodAnnotation = context.getRequiredTestMethod().getAnnotation(CleanUpDirectories.class);
+        final CleanUpDirectories testMethodAnnotation =
+                context.getRequiredTestMethod().getAnnotation(CleanUpDirectories.class);
         if (testMethodAnnotation != null) {
             for (final String path : testMethodAnnotation.value()) {
                 paths.add(Paths.get(path));

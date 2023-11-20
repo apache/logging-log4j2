@@ -16,8 +16,12 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.io.File;
+import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_LOCATION;
+import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_PARENT_LOCATION;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.given;
 
+import java.io.File;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
@@ -30,20 +34,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_LOCATION;
-import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_PARENT_LOCATION;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
-
 @ExtendWith(MockitoExtension.class)
 public class Log4jLookupTest {
 
-    private final static File EXPECT = new File(System.getProperty("user.home"), "/a/b/c/d/e/log4j2.xml");
+    private static final File EXPECT = new File(System.getProperty("user.home"), "/a/b/c/d/e/log4j2.xml");
 
     @Mock
     private LoggerContext mockCtx;
+
     @Mock
     private Configuration config;
+
     @Mock
     private ConfigurationSource configSrc;
 

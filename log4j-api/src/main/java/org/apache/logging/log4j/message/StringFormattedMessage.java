@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Locale;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -45,14 +44,14 @@ public class StringFormattedMessage implements Message {
     private Throwable throwable;
     private final Locale locale;
 
-   /**
-    * Constructs a message.
-    *
-    * @param locale the locale for this message format
-    * @param messagePattern the pattern for this message format
-    * @param arguments The objects to format
-    * @since 2.6
-    */
+    /**
+     * Constructs a message.
+     *
+     * @param locale the locale for this message format
+     * @param messagePattern the pattern for this message format
+     * @param arguments The objects to format
+     * @since 2.6
+     */
     public StringFormattedMessage(final Locale locale, final String messagePattern, final Object... arguments) {
         this.locale = locale;
         this.messagePattern = messagePattern;

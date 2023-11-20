@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.nio.file.Path;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -41,7 +40,8 @@ public class RollingAppenderCronEvery2Test extends AbstractRollingListenerTest {
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager)
+            throws Exception {
         manager.addRolloverListener(this);
         assertThat(Path.of(FILE)).exists();
         final long end = currentTimeMillis.get() + 5000;

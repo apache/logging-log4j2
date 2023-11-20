@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
@@ -39,8 +38,7 @@ public class PluginListFactoryResolver<T> extends AbstractPluginFactoryResolver<
 
     @Override
     public Supplier<List<? extends T>> getFactory(
-            final ResolvableKey<List<? extends T>> resolvableKey,
-            final InstanceFactory instanceFactory) {
+            final ResolvableKey<List<? extends T>> resolvableKey, final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getNamespace();
         final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
         final Type componentType = containerType.getActualTypeArguments()[0];

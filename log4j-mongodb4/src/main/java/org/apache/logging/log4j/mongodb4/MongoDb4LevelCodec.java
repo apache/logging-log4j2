@@ -47,5 +47,4 @@ public class MongoDb4LevelCodec implements Codec<Level> {
     public Class<Level> getEncoderClass() {
         return Level.class;
     }
-
 }

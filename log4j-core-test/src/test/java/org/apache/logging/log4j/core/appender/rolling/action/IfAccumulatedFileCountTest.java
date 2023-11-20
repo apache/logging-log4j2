@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the IfAccumulatedFileCount class.
@@ -65,10 +65,9 @@ public class IfAccumulatedFileCountTest {
     @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
-        final IfAccumulatedFileCount filter = IfAccumulatedFileCount.createFileCountCondition(30, counter, counter,
-                counter);
+        final IfAccumulatedFileCount filter =
+                IfAccumulatedFileCount.createFileCountCondition(30, counter, counter, counter);
         filter.beforeFileTreeWalk();
         assertEquals(3, counter.getBeforeFileTreeWalkCount());
     }
-
 }

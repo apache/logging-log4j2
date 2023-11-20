@@ -25,7 +25,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -95,7 +94,7 @@ public class DatagramOutputStream extends OutputStream {
     public void write(final int i) throws IOException {
         writeLock.lock();
         try {
-            copy(new byte[]{(byte) (i >>> SHIFT_3), (byte) (i >>> SHIFT_2), (byte) (i >>> SHIFT_1), (byte) i}, 0, 4);
+            copy(new byte[] {(byte) (i >>> SHIFT_3), (byte) (i >>> SHIFT_2), (byte) (i >>> SHIFT_1), (byte) i}, 0, 4);
         } finally {
             writeLock.unlock();
         }

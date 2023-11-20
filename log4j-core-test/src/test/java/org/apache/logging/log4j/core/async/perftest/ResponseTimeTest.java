@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -24,7 +26,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.HdrHistogram.Histogram;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
@@ -32,8 +33,6 @@ import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
-
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * Latency test showing both service time and response time.
@@ -84,23 +83,32 @@ import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
  * for some concrete visual examples.
  */
 // RUN
-// java -XX:+UnlockDiagnosticVMOptions -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution
+// java -XX:+UnlockDiagnosticVMOptions -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
+// -XX:+PrintTenuringDistribution
 // -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:GuaranteedSafepointInterval=500000
 // -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
-// -cp HdrHistogram-2.1.8.jar:disruptor-3.3.4.jar:log4j-api-2.6-SNAPSHOT.jar:log4j-core-2.6-SNAPSHOT.jar:log4j-core-2.6-SNAPSHOT-tests.jar
-// -DAsyncLogger.WaitStrategy=busyspin -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+// -cp
+// HdrHistogram-2.1.8.jar:disruptor-3.3.4.jar:log4j-api-2.6-SNAPSHOT.jar:log4j-core-2.6-SNAPSHOT.jar:log4j-core-2.6-SNAPSHOT-tests.jar
+// -DAsyncLogger.WaitStrategy=busyspin
+// -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
 // -Dlog4j2.enable.threadlocals=true -Dlog4j2.enable.direct.encoders=true
 //  -Xms1G -Xmx1G org.apache.logging.log4j.core.async.perftest.ResponseTimeTest 1 100000
 //
 // RUN recording in Java Flight Recorder:
-// %JAVA_HOME%\bin\java -XX:+UnlockCommercialFeatures -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -XX:+FlightRecorder -XX:StartFlightRecording=duration=10m,filename=replayStats-2.6-latency.jfr -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle -DAsyncLogger.WaitStrategy=yield  -Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE -cp .;HdrHistogram-2.1.8.jar;disruptor-3.3.4.jar;log4j-api-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT-tests.jar org.apache.logging.log4j.core.async.perftest.ResponseTimeTest 1 50000
+// %JAVA_HOME%\bin\java -XX:+UnlockCommercialFeatures -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints
+// -XX:+FlightRecorder -XX:StartFlightRecording=duration=10m,filename=replayStats-2.6-latency.jfr -verbose:gc
+// -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime
+// -XX:+PrintGCApplicationStoppedTime
+// -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
+// -DAsyncLogger.WaitStrategy=yield  -Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE -cp
+// .;HdrHistogram-2.1.8.jar;disruptor-3.3.4.jar;log4j-api-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT-tests.jar org.apache.logging.log4j.core.async.perftest.ResponseTimeTest 1 50000
 public class ResponseTimeTest {
     private static final String LATENCY_MSG = new String(new char[64]);
 
     public static void main(final String[] args) throws Exception {
         if (args.length < 2) {
-            System.out.println("Please specify thread count, target throughput (msg/sec) " +
-                    "and logger library (Log4j1, Log4j2, Logback, JUL)");
+            System.out.println("Please specify thread count, target throughput (msg/sec) "
+                    + "and logger library (Log4j1, Log4j2, Logback, JUL)");
             return;
         }
         final int threadCount = Integer.parseInt(args[0]);
@@ -108,16 +116,17 @@ public class ResponseTimeTest {
         final String loggerLib = args.length > 2 ? args[2] : "Log4j2";
 
         // print to console if ringbuffer is full
-        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(), PrintingAsyncQueueFullPolicy.class.getName());
+        System.setProperty(
+                Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(), PrintingAsyncQueueFullPolicy.class.getName());
         System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getKey(), String.valueOf(256 * 1024));
-        //System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, AsyncLoggerContextSelector.class.getName());
-        //System.setProperty(Log4jProperties.CONFIG_LOCATION, "perf3PlainNoLoc.xml");
+        // System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, AsyncLoggerContextSelector.class.getName());
+        // System.setProperty(Log4jProperties.CONFIG_LOCATION, "perf3PlainNoLoc.xml");
         if (System.getProperty(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY.getKey()) == null) {
             System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY.getKey(), "Yield");
         }
-        //for (Object key : System.getProperties().keySet()) {
+        // for (Object key : System.getProperties().keySet()) {
         //    System.out.println(key + "=" + System.getProperty((String) key));
-        //}
+        // }
 
         // initialize the logger
         final String wrapper = loggerLib.startsWith("Run") ? loggerLib : "Run" + loggerLib;
@@ -131,8 +140,12 @@ public class ResponseTimeTest {
                 ? new NoOpIdleStrategy()
                 : new YieldIdleStrategy();
 
-        System.out.printf("%s: %d threads, load is %,f msg/sec, using %s%n", loggerLib, threadCount,
-                loadMessagesPerSec, idleStrategy.getClass().getSimpleName());
+        System.out.printf(
+                "%s: %d threads, load is %,f msg/sec, using %s%n",
+                loggerLib,
+                threadCount,
+                loadMessagesPerSec,
+                idleStrategy.getClass().getSimpleName());
 
         // Warmup: run as many iterations of 50,000 calls to logger.log as we can in 1 minute
         final long WARMUP_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(1);
@@ -140,12 +153,19 @@ public class ResponseTimeTest {
         final List<Histogram> warmupResponseTmHistograms = new ArrayList<>(threadCount);
 
         final int WARMUP_COUNT = 50000 / threadCount;
-        runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, loadMessagesPerSec, idleStrategy,
-                warmupServiceTmHistograms, warmupResponseTmHistograms, threadCount);
+        runLatencyTest(
+                logger,
+                WARMUP_DURATION_MILLIS,
+                WARMUP_COUNT,
+                loadMessagesPerSec,
+                idleStrategy,
+                warmupServiceTmHistograms,
+                warmupResponseTmHistograms,
+                threadCount);
         System.out.println("-----------------Warmup done. load=" + loadMessagesPerSec);
         if (!Constants.ENABLE_DIRECT_ENCODERS || !isThreadLocalsEnabled()) {
-            //System.gc();
-            //Thread.sleep(5000);
+            // System.gc();
+            // Thread.sleep(5000);
         }
         System.out.println("-----------------Starting measured run. load=" + loadMessagesPerSec);
 
@@ -157,8 +177,15 @@ public class ResponseTimeTest {
         // Actual test: run as many iterations of 1,000,000 calls to logger.log as we can in 4 minutes.
         final long TEST_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(4);
         final int COUNT = (1000 * 1000) / threadCount;
-        runLatencyTest(logger, TEST_DURATION_MILLIS, COUNT, loadMessagesPerSec, idleStrategy, serviceTmHistograms,
-                responseTmHistograms, threadCount);
+        runLatencyTest(
+                logger,
+                TEST_DURATION_MILLIS,
+                COUNT,
+                loadMessagesPerSec,
+                idleStrategy,
+                serviceTmHistograms,
+                responseTmHistograms,
+                threadCount);
         logger.shutdown();
         final long end = System.currentTimeMillis();
 
@@ -171,13 +198,15 @@ public class ResponseTimeTest {
         resultResponseTm.outputPercentileDistribution(System.out, 1000.0);
         writeToFile("r", resultResponseTm, (int) (loadMessagesPerSec / 1000), 1000.0);
 
-        System.out.printf("%n%s: %d threads, load %,f msg/sec, ringbuffer full=%d%n", loggerLib, threadCount,
-                loadMessagesPerSec, PrintingAsyncQueueFullPolicy.ringbufferFull.get());
+        System.out.printf(
+                "%n%s: %d threads, load %,f msg/sec, ringbuffer full=%d%n",
+                loggerLib, threadCount, loadMessagesPerSec, PrintingAsyncQueueFullPolicy.ringbufferFull.get());
         System.out.println("Test duration: " + (end - start) / 1000.0 + " seconds");
     }
 
-    private static void writeToFile(final String suffix, final Histogram hist, final int thousandMsgPerSec,
-            final double scale) throws IOException {
+    private static void writeToFile(
+            final String suffix, final Histogram hist, final int thousandMsgPerSec, final double scale)
+            throws IOException {
         try (final PrintStream pout = new PrintStream(new FileOutputStream(thousandMsgPerSec + "k" + suffix))) {
             hist.outputPercentileDistribution(pout, scale);
         }
@@ -193,10 +222,16 @@ public class ResponseTimeTest {
         return result;
     }
 
-    public static void runLatencyTest(final IPerfTestRunner logger, final long durationMillis, final int samples,
-            final double loadMessagesPerSec, final IdleStrategy idleStrategy,
-            final List<Histogram> serviceTmHistograms, final List<Histogram> responseTmHistograms,
-            final int threadCount) throws InterruptedException {
+    public static void runLatencyTest(
+            final IPerfTestRunner logger,
+            final long durationMillis,
+            final int samples,
+            final double loadMessagesPerSec,
+            final IdleStrategy idleStrategy,
+            final List<Histogram> serviceTmHistograms,
+            final List<Histogram> responseTmHistograms,
+            final int threadCount)
+            throws InterruptedException {
 
         final Thread[] threads = new Thread[threadCount];
         final CountDownLatch LATCH = new CountDownLatch(threadCount);
@@ -230,8 +265,12 @@ public class ResponseTimeTest {
         }
     }
 
-    private static void runLatencyTest(final int samples, final IPerfTestRunner logger, final Histogram serviceTmHist,
-            final Histogram responseTmHist, final Pacer pacer) {
+    private static void runLatencyTest(
+            final int samples,
+            final IPerfTestRunner logger,
+            final Histogram serviceTmHist,
+            final Histogram responseTmHist,
+            final Pacer pacer) {
 
         for (int i = 0; i < samples; i++) {
             final long expectedStartTimeNanos = pacer.expectedNextOperationNanoTime();
@@ -341,11 +380,10 @@ public class ResponseTimeTest {
                 }
 
                 // Figure out if it's time to send, per catch up throughput:
-                final long unitsCompletedSinceCatchUpStart =
-                        unitsCompleted - unitsCompletedAtCatchUpStart;
+                final long unitsCompletedSinceCatchUpStart = unitsCompleted - unitsCompletedAtCatchUpStart;
 
-                nextStartTime = catchUpStartTime +
-                        (long) (unitsCompletedSinceCatchUpStart / catchUpThroughputInUnitsPerNsec);
+                nextStartTime =
+                        catchUpStartTime + (long) (unitsCompletedSinceCatchUpStart / catchUpThroughputInUnitsPerNsec);
 
                 if (nextStartTime > now) {
                     // Not yet time to send, even at catch-up throughout:

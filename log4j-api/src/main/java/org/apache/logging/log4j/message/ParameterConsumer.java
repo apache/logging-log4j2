@@ -38,5 +38,4 @@ public interface ParameterConsumer<S> {
      * @param state The state data.
      */
     void accept(Object parameter, int parameterIndex, S state);
-
 }

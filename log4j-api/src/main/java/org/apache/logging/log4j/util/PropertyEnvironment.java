@@ -105,11 +105,11 @@ public interface PropertyEnvironment {
      * @param defaultValueIfPresent the default value to use if the property is defined but not assigned
      * @return the boolean value of the property or {@code defaultValue} if undefined.
      */
-    default boolean getBooleanProperty(String name, boolean defaultValueIfAbsent,
-                                       boolean defaultValueIfPresent) {
+    default boolean getBooleanProperty(String name, boolean defaultValueIfAbsent, boolean defaultValueIfPresent) {
         final String prop = getStringProperty(name);
-        return prop == null ? defaultValueIfAbsent
-            : prop.isEmpty() ? defaultValueIfPresent : "true".equalsIgnoreCase(prop);
+        return prop == null
+                ? defaultValueIfAbsent
+                : prop.isEmpty() ? defaultValueIfPresent : "true".equalsIgnoreCase(prop);
     }
 
     /**
@@ -120,8 +120,7 @@ public interface PropertyEnvironment {
      * @param defaultValueIfPresent the default value to use if the property is defined but not assigned
      * @return the boolean value of the property or {@code defaultValue} if undefined.
      */
-    default boolean getBooleanProperty(PropertyKey key, boolean defaultValueIfAbsent,
-                                       boolean defaultValueIfPresent) {
+    default boolean getBooleanProperty(PropertyKey key, boolean defaultValueIfAbsent, boolean defaultValueIfPresent) {
         if (key == null) {
             return defaultValueIfAbsent;
         }
@@ -183,7 +182,6 @@ public interface PropertyEnvironment {
         return getCharsetProperty(key.getKey(), defaultValue);
     }
 
-
     /**
      * Gets the named property as a Charset value. If we cannot find the named Charset, see if it is mapped in
      * file {@code Log4j-charsets.properties} on the class path.
@@ -208,7 +206,7 @@ public interface PropertyEnvironment {
             }
         }
         LowLevelLogUtil.log("Unable to get Charset '" + charsetName + "' for property '" + name + "', using default "
-            + defaultValue + " and continuing.");
+                + defaultValue + " and continuing.");
         return defaultValue;
     }
 
@@ -315,7 +313,6 @@ public interface PropertyEnvironment {
         return supplier != null ? supplier.get() : null;
     }
 
-
     /**
      * Retrieves a Duration where the String is of the format nnn[unit] where nnn represents an integer value
      * and unit represents a time unit.
@@ -418,7 +415,6 @@ public interface PropertyEnvironment {
         }
         return getStringProperty(key.getKey(), defaultValue);
     }
-
 
     /**
      * Gets the named property as a String.

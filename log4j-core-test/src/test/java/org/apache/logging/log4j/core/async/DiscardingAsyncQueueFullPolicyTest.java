@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the DiscardingAsyncQueueFullPolicy class..
@@ -73,8 +73,7 @@ public class DiscardingAsyncQueueFullPolicyTest {
     }
 
     @Test
-    public void testGetRouteEnqueuesIfThresholdCapacityReachedButLevelMoreSpecificThanThreshold()
-            throws Exception {
+    public void testGetRouteEnqueuesIfThresholdCapacityReachedButLevelMoreSpecificThanThreshold() throws Exception {
         final DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (final Level level : new Level[] {Level.ERROR, Level.FATAL, Level.OFF}) {

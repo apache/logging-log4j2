@@ -23,5 +23,4 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 
 @SetSystemProperty(key = ScriptPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "Groovy, Javascript")
 @LoggerContextSource(value = "log4j-scriptRef-filters.xml", reconfigure = ReconfigurationPolicy.BEFORE_EACH)
-public class ScriptRefFilterTest extends AbstractScriptFilterTest {
-}
+public class ScriptRefFilterTest extends AbstractScriptFilterTest {}

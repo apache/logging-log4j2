@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LegacyPropertiesCompatibilityTest {
 
     public static Object[][] data() {
-        return new Object[][]{
+        return new Object[][] {
             {"log4j2.configurationFile", "Configuration.file"},
             {"log4j2.mergeStrategy", "Configuration.mergeStrategy"},
             {"log4j2.contextSelector", "LoggerContext.selector"},

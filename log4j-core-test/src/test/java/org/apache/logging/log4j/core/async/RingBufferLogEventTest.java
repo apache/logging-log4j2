@@ -16,8 +16,17 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Arrays;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -32,16 +41,6 @@ import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the RingBufferLogEvent class.
@@ -73,8 +72,22 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, new FixedPreciseClock(), new DummyNanoClock(1));
+        evt.setValues(
+                null,
+                loggerName,
+                marker,
+                fqcn,
+                level,
+                data,
+                t,
+                (StringMap) evt.getContextData(),
+                contextStack,
+                -1,
+                threadName,
+                -1,
+                location,
+                new FixedPreciseClock(),
+                new DummyNanoClock(1));
 
         assertTrue(evt.isPopulated());
 
@@ -95,8 +108,22 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, new FixedPreciseClock(), new DummyNanoClock(1));
+        evt.setValues(
+                null,
+                loggerName,
+                marker,
+                fqcn,
+                level,
+                data,
+                t,
+                (StringMap) evt.getContextData(),
+                contextStack,
+                -1,
+                threadName,
+                -1,
+                location,
+                new FixedPreciseClock(),
+                new DummyNanoClock(1));
         assertEquals(Level.OFF, evt.getLevel());
     }
 
@@ -112,8 +139,22 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, new FixedPreciseClock(), new DummyNanoClock(1));
+        evt.setValues(
+                null,
+                loggerName,
+                marker,
+                fqcn,
+                level,
+                data,
+                t,
+                (StringMap) evt.getContextData(),
+                contextStack,
+                -1,
+                threadName,
+                -1,
+                location,
+                new FixedPreciseClock(),
+                new DummyNanoClock(1));
         assertNotNull(evt.getMessage());
     }
 
@@ -129,8 +170,22 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = null;
         final String threadName = null;
         final StackTraceElement location = null;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, new FixedPreciseClock(123, 456), new DummyNanoClock(1));
+        evt.setValues(
+                null,
+                loggerName,
+                marker,
+                fqcn,
+                level,
+                data,
+                t,
+                (StringMap) evt.getContextData(),
+                contextStack,
+                -1,
+                threadName,
+                -1,
+                location,
+                new FixedPreciseClock(123, 456),
+                new DummyNanoClock(1));
         assertEquals(123, evt.getTimeMillis());
         assertEquals(456, evt.getInstant().getNanoOfMillisecond());
     }
@@ -147,8 +202,22 @@ public class RingBufferLogEventTest {
         final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
         final String threadName = "main";
         final StackTraceElement location = null;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location, new FixedPreciseClock(12345, 678), new DummyNanoClock(1));
+        evt.setValues(
+                null,
+                loggerName,
+                marker,
+                fqcn,
+                level,
+                data,
+                t,
+                (StringMap) evt.getContextData(),
+                contextStack,
+                -1,
+                threadName,
+                -1,
+                location,
+                new FixedPreciseClock(12345, 678),
+                new DummyNanoClock(1));
         ((StringMap) evt.getContextData()).putValue("key", "value");
 
         final LogEvent actual = evt.toMemento();
@@ -162,7 +231,8 @@ public class RingBufferLogEventTest {
         assertEquals(evt.getContextStack(), actual.getContextStack());
         assertEquals(evt.getThreadName(), actual.getThreadName());
         assertEquals(evt.getTimeMillis(), actual.getTimeMillis());
-        assertEquals(evt.getInstant().getNanoOfMillisecond(), actual.getInstant().getNanoOfMillisecond());
+        assertEquals(
+                evt.getInstant().getNanoOfMillisecond(), actual.getInstant().getNanoOfMillisecond());
         assertEquals(evt.getSource(), actual.getSource());
         assertEquals(evt.getThrownProxy(), actual.getThrownProxy());
     }
@@ -183,13 +253,27 @@ public class RingBufferLogEventTest {
             final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
             final String threadName = "main";
             final StackTraceElement location = null;
-            evt.setValues(null, loggerName, marker, fqcn, level, message, t, (StringMap) evt.getContextData(),
-                    contextStack, -1, threadName, -1, location, new FixedPreciseClock(12345, 678), new DummyNanoClock(1));
+            evt.setValues(
+                    null,
+                    loggerName,
+                    marker,
+                    fqcn,
+                    level,
+                    message,
+                    t,
+                    (StringMap) evt.getContextData(),
+                    contextStack,
+                    -1,
+                    threadName,
+                    -1,
+                    location,
+                    new FixedPreciseClock(12345, 678),
+                    new DummyNanoClock(1));
             ((StringMap) evt.getContextData()).putValue("key", "value");
 
             final Message actual = evt.toMemento().getMessage();
             assertEquals("Hello {}!", actual.getFormat());
-            assertArrayEquals(new String[]{"World"}, actual.getParameters());
+            assertArrayEquals(new String[] {"World"}, actual.getParameters());
             assertEquals("Hello World!", actual.getFormattedMessage());
         } finally {
             factory.recycle(message);
@@ -212,8 +296,22 @@ public class RingBufferLogEventTest {
             final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
             final String threadName = "main";
             final StackTraceElement location = null;
-            evt.setValues(null, loggerName, marker, fqcn, level, message, t, (StringMap) evt.getContextData(),
-                    contextStack, -1, threadName, -1, location, new FixedPreciseClock(12345, 678), new DummyNanoClock(1));
+            evt.setValues(
+                    null,
+                    loggerName,
+                    marker,
+                    fqcn,
+                    level,
+                    message,
+                    t,
+                    (StringMap) evt.getContextData(),
+                    contextStack,
+                    -1,
+                    threadName,
+                    -1,
+                    location,
+                    new FixedPreciseClock(12345, 678),
+                    new DummyNanoClock(1));
             ((StringMap) evt.getContextData()).putValue("key", "value");
 
             final Message memento1 = evt.memento();

@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.time.internal;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the DummyNanoClock.
@@ -34,5 +34,4 @@ public class DummyNanoClockTest {
     public void testReturnsConstructorValue() {
         assertEquals(123, new DummyNanoClock(123).nanoTime());
     }
-
 }

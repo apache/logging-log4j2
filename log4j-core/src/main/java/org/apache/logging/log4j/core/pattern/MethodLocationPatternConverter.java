@@ -25,13 +25,12 @@ import org.apache.logging.log4j.plugins.Plugin;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("MethodLocationPatternConverter")
-@ConverterKeys({ "M", "method" })
+@ConverterKeys({"M", "method"})
 public final class MethodLocationPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final MethodLocationPatternConverter INSTANCE =
-        new MethodLocationPatternConverter();
+    private static final MethodLocationPatternConverter INSTANCE = new MethodLocationPatternConverter();
 
     /**
      * Private constructor.

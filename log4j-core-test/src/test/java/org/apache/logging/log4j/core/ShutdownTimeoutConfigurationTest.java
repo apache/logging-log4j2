@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-test-shutdownTimeout.xml")
 public class ShutdownTimeoutConfigurationTest {
@@ -29,5 +29,4 @@ public class ShutdownTimeoutConfigurationTest {
     public void testShutdownFlag(final Configuration config) {
         assertEquals(5000, config.getShutdownTimeoutMillis());
     }
-
 }

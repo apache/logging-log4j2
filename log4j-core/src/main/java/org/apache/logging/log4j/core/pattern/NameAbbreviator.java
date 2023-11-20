@@ -19,9 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
 
 /**
  * NameAbbreviator generates abbreviated logger and class names.
@@ -75,8 +73,7 @@ public abstract class NameAbbreviator {
 
             int i = 0;
 
-            while (i < number.length() && number.charAt(i) >= '0'
-                    && number.charAt(i) <= '9') {
+            while (i < number.length() && number.charAt(i) >= '0' && number.charAt(i) <= '9') {
                 i++;
             }
 
@@ -84,8 +81,9 @@ public abstract class NameAbbreviator {
             //  if all blanks and digits
             //
             if (i == number.length()) {
-                return new MaxElementAbbreviator(Integer.parseInt(number),
-                        isNegativeNumber? MaxElementAbbreviator.Strategy.DROP : MaxElementAbbreviator.Strategy.RETAIN);
+                return new MaxElementAbbreviator(
+                        Integer.parseInt(number),
+                        isNegativeNumber ? MaxElementAbbreviator.Strategy.DROP : MaxElementAbbreviator.Strategy.RETAIN);
             }
 
             final ArrayList<PatternAbbreviatorFragment> fragments = new ArrayList<>(5);
@@ -161,8 +159,7 @@ public abstract class NameAbbreviator {
         /**
          * Constructor.
          */
-        public NOPAbbreviator() {
-        }
+        public NOPAbbreviator() {}
 
         /**
          * {@inheritDoc}
@@ -287,8 +284,7 @@ public abstract class NameAbbreviator {
          * @param ellipsis  character to represent elimination of characters,
          *                  '\0' if no ellipsis is desired.
          */
-        PatternAbbreviatorFragment(
-            final int charCount, final char ellipsis) {
+        PatternAbbreviatorFragment(final int charCount, final char ellipsis) {
             this.charCount = charCount;
             this.ellipsis = ellipsis;
         }
@@ -328,7 +324,8 @@ public abstract class NameAbbreviator {
 
         @Override
         public String toString() {
-            return String.format("%s[charCount=%s, ellipsis=%s]",
+            return String.format(
+                    "%s[charCount=%s, ellipsis=%s]",
                     getClass().getSimpleName(), charCount, Integer.toHexString(ellipsis));
         }
     }
@@ -349,8 +346,7 @@ public abstract class NameAbbreviator {
          */
         PatternAbbreviator(final List<PatternAbbreviatorFragment> fragments) {
             if (fragments.isEmpty()) {
-                throw new IllegalArgumentException(
-                    "fragments must have at least one element");
+                throw new IllegalArgumentException("fragments must have at least one element");
             }
 
             this.fragments = fragments.toArray(PatternAbbreviatorFragment.EMPTY_ARRAY);

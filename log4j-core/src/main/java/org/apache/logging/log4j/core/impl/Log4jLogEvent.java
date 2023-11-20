@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -127,7 +126,6 @@ public class Log4jLogEvent implements LogEvent {
                         this.contextData.clear();
                     }
                     this.contextData.putAll(other.getContextData());
-
                 }
                 this.thrownProxy = other.getThrownProxy();
                 this.source = other.getSource();
@@ -246,9 +244,23 @@ public class Log4jLogEvent implements LogEvent {
         @Override
         public Log4jLogEvent build() {
             initTimeFields();
-            final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFqcn, level, message, thrown,
-                    thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source,
-                    instant.getEpochMillisecond(), instant.getNanoOfMillisecond(), nanoTime);
+            final Log4jLogEvent result = new Log4jLogEvent(
+                    loggerName,
+                    marker,
+                    loggerFqcn,
+                    level,
+                    message,
+                    thrown,
+                    thrownProxy,
+                    contextData,
+                    contextStack,
+                    threadId,
+                    threadName,
+                    threadPriority,
+                    source,
+                    instant.getEpochMillisecond(),
+                    instant.getNanoOfMillisecond(),
+                    nanoTime);
             result.setIncludeLocation(includeLocation);
             result.setEndOfBatch(endOfBatch);
             return result;
@@ -282,7 +294,7 @@ public class Log4jLogEvent implements LogEvent {
         this(Strings.EMPTY, null, Strings.EMPTY, null, null, null, null, null, null, 0, null, 0, null, 0, 0, 0);
     }
 
-   /**
+    /**
      * Constructor.
      * @param loggerName The name of the Logger.
      * @param marker The Marker or null.
@@ -302,11 +314,23 @@ public class Log4jLogEvent implements LogEvent {
      * @param nanoTime The value of the running Java Virtual Machine's high-resolution time source when the event was
      *          created.
      */
-    private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-            final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
-            final StringMap contextData, final ThreadContext.ContextStack contextStack, final long threadId,
-            final String threadName, final int threadPriority, final StackTraceElement source,
-            final long timestampMillis, final int nanoOfMillisecond, final long nanoTime) {
+    private Log4jLogEvent(
+            final String loggerName,
+            final Marker marker,
+            final String loggerFQCN,
+            final Level level,
+            final Message message,
+            final Throwable thrown,
+            final ThrowableProxy thrownProxy,
+            final StringMap contextData,
+            final ThreadContext.ContextStack contextStack,
+            final long threadId,
+            final String threadName,
+            final int threadPriority,
+            final StackTraceElement source,
+            final long timestampMillis,
+            final int nanoOfMillisecond,
+            final long nanoTime) {
         this.loggerName = loggerName;
         this.marker = marker;
         this.loggerFqcn = loggerFQCN;
@@ -324,9 +348,8 @@ public class Log4jLogEvent implements LogEvent {
             ((LoggerNameAwareMessage) message).setLoggerName(loggerName);
         }
         this.nanoTime = nanoTime;
-        final long millis = message instanceof TimestampMessage
-                ? ((TimestampMessage) message).getTimestamp()
-                : timestampMillis;
+        final long millis =
+                message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : timestampMillis;
         instant.initFromEpochMilli(millis, nanoOfMillisecond);
     }
 
@@ -442,7 +465,6 @@ public class Log4jLogEvent implements LogEvent {
         }
         return thrownProxy;
     }
-
 
     /**
      * Returns the Marker associated with the event, or null.
@@ -622,5 +644,4 @@ public class Log4jLogEvent implements LogEvent {
         // Check:ON: MagicNumber
         return result;
     }
-
 }

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+
 import java.util.Map;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -44,8 +45,6 @@ import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.spi.*;
-
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * Provides instance binding defaults.
@@ -104,9 +103,13 @@ public class DefaultBundle {
     @SingletonFactory
     @ConditionalOnMissingBinding
     public LogEventFactory defaultLogEventFactory(
-            final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock, final RecyclerFactory recyclerFactory) {
-        return isThreadLocalsEnabled() ? new ReusableLogEventFactory(injector, clock, nanoClock, recyclerFactory) :
-                new DefaultLogEventFactory(injector, clock, nanoClock);
+            final ContextDataInjector injector,
+            final Clock clock,
+            final NanoClock nanoClock,
+            final RecyclerFactory recyclerFactory) {
+        return isThreadLocalsEnabled()
+                ? new ReusableLogEventFactory(injector, clock, nanoClock, recyclerFactory)
+                : new DefaultLogEventFactory(injector, clock, nanoClock);
     }
 
     @SingletonFactory
@@ -141,5 +144,4 @@ public class DefaultBundle {
     public Level defaultStatusLevel() {
         return Level.ERROR;
     }
-
 }

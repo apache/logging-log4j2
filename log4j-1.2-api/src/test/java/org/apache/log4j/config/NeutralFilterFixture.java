@@ -28,5 +28,4 @@ public class NeutralFilterFixture extends Filter {
     public int decide(final LoggingEvent event) {
         return NEUTRAL;
     }
-
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -31,8 +30,14 @@ import org.apache.logging.log4j.plugins.di.Key;
 public interface LogEventFactory {
     Key<LogEventFactory> KEY = new Key<>() {};
 
-    LogEvent createEvent(String loggerName, Marker marker, String fqcn, Level level, Message data,
-                         List<Property> properties, Throwable t);
+    LogEvent createEvent(
+            String loggerName,
+            Marker marker,
+            String fqcn,
+            Level level,
+            Message data,
+            List<Property> properties,
+            Throwable t);
 
     default LogEvent createEvent(
             String loggerName,

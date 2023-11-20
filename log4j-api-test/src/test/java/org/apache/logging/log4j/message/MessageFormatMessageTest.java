@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.util.Locale;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Locale;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class MessageFormatMessageTest {

@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.util.Properties;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Properties;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link OptionConverter}.
@@ -34,7 +33,8 @@ public class OptionConverterTest {
         props.setProperty("testKey", "Log4j");
         assertEquals("Value of key is ${key}.", OptionConverter.substVars("Value of key is ${key}.", props));
         assertEquals("Value of key is .", OptionConverter.substVars("Value of key is ${key2}.", props));
-        assertEquals("Value of testKey:testKey is Log4j:Log4j",
+        assertEquals(
+                "Value of testKey:testKey is Log4j:Log4j",
                 OptionConverter.substVars("Value of testKey:testKey is ${testKey}:${testKey}", props));
     }
 
@@ -47,8 +47,7 @@ public class OptionConverterTest {
         final Properties props = new Properties();
         props.setProperty("key", "Key");
         props.setProperty("testKey", "Hello");
-        assertEquals("Value of testKey is }",
-                OptionConverter.substVars("Value of testKey is ${test${key}}", props));
+        assertEquals("Value of testKey is }", OptionConverter.substVars("Value of testKey is ${test${key}}", props));
     }
 
     /**
@@ -59,8 +58,8 @@ public class OptionConverterTest {
     public void testAppend2() {
         final Properties props = new Properties();
         props.setProperty("test${key", "Hello");
-        assertEquals("Value of testKey is Hello}",
-                OptionConverter.substVars("Value of testKey is ${test${key}}", props));
+        assertEquals(
+                "Value of testKey is Hello}", OptionConverter.substVars("Value of testKey is ${test${key}}", props));
     }
 
     @Test
@@ -70,24 +69,20 @@ public class OptionConverterTest {
         props.setProperty("greeting", "Hello ${name}");
 
         final String s = props.getProperty("greeting");
-        System.out.println("greeting = '"+s+"'");
+        System.out.println("greeting = '" + s + "'");
     }
 
     private static class RecursiveProperties extends Properties {
         @Override
-        public String getProperty(final String key)
-        {
-            System.out.println("getProperty for "+key);
-            try
-            {
+        public String getProperty(final String key) {
+            System.out.println("getProperty for " + key);
+            try {
                 final String val = super.getProperty(key);
                 // The following call works for log4j 2.17.0 and causes StackOverflowError for 2.17.1
                 // This is because substVars change implementation in 2.17.1 to call StrSubstitutor.replace(val, props)
                 // which calls props.getProperty() for EVERY property making it recursive
                 return OptionConverter.substVars(val, this);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return super.getProperty(key);
             }
         }

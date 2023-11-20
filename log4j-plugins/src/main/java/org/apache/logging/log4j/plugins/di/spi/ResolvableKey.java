@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.logging.log4j.plugins.di.Key;
 
 public class ResolvableKey<T> {
@@ -78,7 +77,8 @@ public class ResolvableKey<T> {
         return new ResolvableKey<>(key, List.of(), dependencyChain);
     }
 
-    public static <T> ResolvableKey<T> of(final Key<T> key, final Collection<String> aliases, final DependencyChain dependencyChain) {
+    public static <T> ResolvableKey<T> of(
+            final Key<T> key, final Collection<String> aliases, final DependencyChain dependencyChain) {
         return new ResolvableKey<>(key, aliases, dependencyChain);
     }
 }

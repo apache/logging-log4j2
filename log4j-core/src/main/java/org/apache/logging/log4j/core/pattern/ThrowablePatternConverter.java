@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
@@ -32,7 +31,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
 
-
 /**
  * Outputs the Throwable portion of the LoggingEvent as a full stack trace
  * unless this converter's option is 'short', where it just outputs the first line of the trace, or if
@@ -40,13 +38,14 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("ThrowablePatternConverter")
-@ConverterKeys({ "ex", "throwable", "exception" })
+@ConverterKeys({"ex", "throwable", "exception"})
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     /**
      * Lists {@link PatternFormatter}s for the suffix attribute.
      */
     protected final List<PatternFormatter> formatters;
+
     private String rawOption;
     private final boolean subShortOption;
     private final boolean nonStandardLineSeparator;
@@ -63,7 +62,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      * @param options options, may be null.
      * @param config
      */
-    protected ThrowablePatternConverter(final String name, final String style, final String[] options, final Configuration config) {
+    protected ThrowablePatternConverter(
+            final String name, final String style, final String[] options, final Configuration config) {
         super(name, style);
         this.options = ThrowableFormatOptions.newInstance(options);
         if (options != null && options.length > 0) {
@@ -93,12 +93,12 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         } else {
             this.formatters = Collections.emptyList();
         }
-        subShortOption = ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption) ||
-                ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption) ||
-                ThrowableFormatOptions.FILE_NAME.equalsIgnoreCase(rawOption) ||
-                ThrowableFormatOptions.LINE_NUMBER.equalsIgnoreCase(rawOption) ||
-                ThrowableFormatOptions.METHOD_NAME.equalsIgnoreCase(rawOption) ||
-                ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption);
+        subShortOption = ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption)
+                || ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption)
+                || ThrowableFormatOptions.FILE_NAME.equalsIgnoreCase(rawOption)
+                || ThrowableFormatOptions.LINE_NUMBER.equalsIgnoreCase(rawOption)
+                || ThrowableFormatOptions.METHOD_NAME.equalsIgnoreCase(rawOption)
+                || ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption);
         nonStandardLineSeparator = !Strings.LINE_SEPARATOR.equals(this.options.getSeparator());
     }
 
@@ -123,8 +123,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
         if (subShortOption) {
             formatSubShortOption(t, getSuffix(event), buffer);
-        }
-        else if (t != null && options.anyLines()) {
+        } else if (t != null && options.anyLines()) {
             formatOption(t, getSuffix(event), buffer);
         }
     }
@@ -136,7 +135,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
         if (t != null) {
             trace = t.getStackTrace();
-            if (trace !=null && trace.length > 0) {
+            if (trace != null && trace.length > 0) {
                 throwingMethod = trace[0];
             }
         }
@@ -146,20 +145,15 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
             if (ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption)) {
                 toAppend = throwingMethod.getClassName();
-            }
-            else if (ThrowableFormatOptions.METHOD_NAME.equalsIgnoreCase(rawOption)) {
+            } else if (ThrowableFormatOptions.METHOD_NAME.equalsIgnoreCase(rawOption)) {
                 toAppend = throwingMethod.getMethodName();
-            }
-            else if (ThrowableFormatOptions.LINE_NUMBER.equalsIgnoreCase(rawOption)) {
+            } else if (ThrowableFormatOptions.LINE_NUMBER.equalsIgnoreCase(rawOption)) {
                 toAppend = String.valueOf(throwingMethod.getLineNumber());
-            }
-            else if (ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption)) {
+            } else if (ThrowableFormatOptions.MESSAGE.equalsIgnoreCase(rawOption)) {
                 toAppend = t.getMessage();
-            }
-            else if (ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption)) {
+            } else if (ThrowableFormatOptions.LOCALIZED_MESSAGE.equalsIgnoreCase(rawOption)) {
                 toAppend = t.getLocalizedMessage();
-            }
-            else if (ThrowableFormatOptions.FILE_NAME.equalsIgnoreCase(rawOption)) {
+            } else if (ThrowableFormatOptions.FILE_NAME.equalsIgnoreCase(rawOption)) {
                 toAppend = throwingMethod.getFileName();
             }
 
@@ -178,8 +172,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "Formatting a throwable is the main purpose of this class."
-    )
+            justification = "Formatting a throwable is the main purpose of this class.")
     private void formatOption(final Throwable throwable, final String suffix, final StringBuilder buffer) {
         final int len = buffer.length();
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
@@ -223,7 +216,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
         //noinspection ForLoopReplaceableByForEach
         final StringBuilder toAppendTo = new StringBuilder();
-        for (int i = 0, size = formatters.size(); i <  size; i++) {
+        for (int i = 0, size = formatters.size(); i < size; i++) {
             formatters.get(i).format(event, toAppendTo);
         }
         return toAppendTo.toString();

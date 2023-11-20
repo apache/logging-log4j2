@@ -38,19 +38,18 @@ public class JdbcAppenderStringSubstitutionTest {
     }
 
     @Rule
-    public final LoggerContextRule rule = new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-jdbc-string-substitution.xml");
+    public final LoggerContextRule rule =
+            new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-jdbc-string-substitution.xml");
 
     @Test
     public void test() throws Exception {
         final JdbcAppender appender = rule.getAppender("databaseAppender", JdbcAppender.class);
         Assert.assertNotNull(appender);
         @SuppressWarnings("resource")
-        final
-            JdbcDatabaseManager manager = appender.getManager();
+        final JdbcDatabaseManager manager = appender.getManager();
         Assert.assertNotNull(manager);
         final String sqlStatement = manager.getSqlStatement();
         Assert.assertFalse(sqlStatement, sqlStatement.contains(KEY));
         Assert.assertTrue(sqlStatement, sqlStatement.contains(VALUE));
     }
-
 }

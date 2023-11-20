@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -23,13 +25,10 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the PatternProcessor class.
@@ -37,9 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PatternProcessorTest {
 
     private static Instant parseLocalDateTime(final String text) {
-        return LocalDateTime.parse(text)
-                .atZone(ZoneId.systemDefault())
-                .toInstant();
+        return LocalDateTime.parse(text).atZone(ZoneId.systemDefault()).toInstant();
     }
 
     @Test
@@ -85,10 +82,12 @@ public class PatternProcessorTest {
         // during winter GMT-6
         // during summer GMT-5
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
-        final Instant initial = OffsetDateTime.parse("2014-03-09T01:31:59-06:00").toInstant();
+        final Instant initial =
+                OffsetDateTime.parse("2014-03-09T01:31:59-06:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        final Instant expected = OffsetDateTime.parse("2014-03-09T02:00:00-06:00").toInstant();
+        final Instant expected =
+                OffsetDateTime.parse("2014-03-09T02:00:00-06:00").toInstant();
         assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
@@ -99,11 +98,13 @@ public class PatternProcessorTest {
         // during summer GMT-5
         // during winter GMT-6
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
-        final Instant initial = OffsetDateTime.parse("2014-11-02T01:31:59-05:00").toInstant();
+        final Instant initial =
+                OffsetDateTime.parse("2014-11-02T01:31:59-05:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
         // expect 1h 29min since initial
-        final Instant expected = OffsetDateTime.parse("2014-11-02T03:00:00-05:00").toInstant();
+        final Instant expected =
+                OffsetDateTime.parse("2014-11-02T03:00:00-05:00").toInstant();
         assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
@@ -269,10 +270,12 @@ public class PatternProcessorTest {
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeDailyReturnsFirstHourOfNextDayHonoringTimeZoneOption1() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
-        final Instant initial = OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
+        final Instant initial =
+                OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        final Instant expected = OffsetDateTime.parse("2014-03-05T00:00:00-06:00").toInstant();
+        final Instant expected =
+                OffsetDateTime.parse("2014-03-05T00:00:00-06:00").toInstant();
         assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
@@ -284,10 +287,12 @@ public class PatternProcessorTest {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+10")); // default is ignored if pattern contains timezone
         try {
             final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
-            final Instant initial = OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
+            final Instant initial =
+                    OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
             final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-            final Instant expected = OffsetDateTime.parse("2014-03-05T00:00:00-06:00").toInstant();
+            final Instant expected =
+                    OffsetDateTime.parse("2014-03-05T00:00:00-06:00").toInstant();
             assertEquals(expected, Instant.ofEpochMilli(actual));
         } finally {
             TimeZone.setDefault(old);
@@ -302,10 +307,12 @@ public class PatternProcessorTest {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT-10")); // default is ignored if pattern contains timezone
         try {
             final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
-            final Instant initial = OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
+            final Instant initial =
+                    OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
             final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-            final Instant expected = OffsetDateTime.parse("2014-03-05T00:00:00-06:00").toInstant();
+            final Instant expected =
+                    OffsetDateTime.parse("2014-03-05T00:00:00-06:00").toInstant();
             assertEquals(expected, Instant.ofEpochMilli(actual));
         } finally {
             TimeZone.setDefault(old);
@@ -316,10 +323,12 @@ public class PatternProcessorTest {
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstJan() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
-        final Instant initial = OffsetDateTime.parse("2014-01-04T00:31:59-06:00").toInstant();
+        final Instant initial =
+                OffsetDateTime.parse("2014-01-04T00:31:59-06:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        final Instant expected = OffsetDateTime.parse("2014-01-05T00:00:00-06:00").toInstant();
+        final Instant expected =
+                OffsetDateTime.parse("2014-01-05T00:00:00-06:00").toInstant();
         assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
@@ -327,10 +336,12 @@ public class PatternProcessorTest {
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstJun() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
-        final Instant initial = OffsetDateTime.parse("2014-06-04T00:31:59-05:00").toInstant();
+        final Instant initial =
+                OffsetDateTime.parse("2014-06-04T00:31:59-05:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        final Instant expected = OffsetDateTime.parse("2014-06-05T00:00:00-05:00").toInstant();
+        final Instant expected =
+                OffsetDateTime.parse("2014-06-05T00:00:00-05:00").toInstant();
         assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
@@ -341,10 +352,12 @@ public class PatternProcessorTest {
         // during winter GMT-6
         // during summer GMT-5
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
-        final Instant initial = OffsetDateTime.parse("2014-03-09T00:31:59-06:00").toInstant();
+        final Instant initial =
+                OffsetDateTime.parse("2014-03-09T00:31:59-06:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        final Instant expected = OffsetDateTime.parse("2014-03-10T00:00:00-05:00").toInstant();
+        final Instant expected =
+                OffsetDateTime.parse("2014-03-10T00:00:00-05:00").toInstant();
         assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
@@ -355,10 +368,12 @@ public class PatternProcessorTest {
         // during summer GMT-5
         // during winter GMT-6
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
-        final Instant initial = OffsetDateTime.parse("2014-11-02T00:31:59-05:00").toInstant();
+        final Instant initial =
+                OffsetDateTime.parse("2014-11-02T00:31:59-05:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        final Instant expected = OffsetDateTime.parse("2014-11-03T00:00:00-06:00").toInstant();
+        final Instant expected =
+                OffsetDateTime.parse("2014-11-03T00:00:00-06:00").toInstant();
         assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 

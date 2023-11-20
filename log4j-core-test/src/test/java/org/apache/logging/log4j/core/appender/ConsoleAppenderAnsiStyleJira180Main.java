@@ -40,8 +40,8 @@ public class ConsoleAppenderAnsiStyleJira180Main {
         System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
         // System.out.println(System.getProperty("java.class.path"));
         final String config = args.length == 0 ? "target/test-classes/log4j2-180.xml" : args[0];
-        try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
-                config)) {
+        try (final LoggerContext ctx =
+                Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config)) {
             LOG.fatal("Fatal message.");
             LOG.error("Error message.");
             LOG.warn("Warning message.");
@@ -56,5 +56,4 @@ public class ConsoleAppenderAnsiStyleJira180Main {
             }
         }
     }
-
 }

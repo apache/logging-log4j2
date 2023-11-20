@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.util.QueueFactories;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link RecyclerFactory} pooling objects in a queue stored in a {@link ThreadLocal}.
@@ -71,10 +70,7 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
         private final ThreadLocal<Queue<V>> holder;
 
-        private ThreadLocalRecycler(
-                final Supplier<V> supplier,
-                final Consumer<V> cleaner,
-                final int capacity) {
+        private ThreadLocalRecycler(final Supplier<V> supplier, final Consumer<V> cleaner, final int capacity) {
             super(supplier);
             this.holder = ThreadLocal.withInitial(() -> QueueFactories.SPSC.create(capacity));
             this.cleaner = cleaner;
@@ -98,7 +94,5 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
         Queue<V> getQueue() {
             return holder.get();
         }
-
     }
-
 }

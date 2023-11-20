@@ -42,8 +42,8 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
                 .forEach(setProperty -> props.setProperty(setProperty.key(), setProperty.value()));
         final Class<?> testClass = context.getRequiredTestClass();
         final Object testInstance = context.getRequiredTestInstance();
-        ReflectionSupport
-                .findFields(testClass,
+        ReflectionSupport.findFields(
+                        testClass,
                         field -> ModifierSupport.isNotStatic(field)
                                 && field.getType().isAssignableFrom(TestProperties.class),
                         HierarchyTraversalMode.BOTTOM_UP)
@@ -56,16 +56,17 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
         AnnotationSupport.findRepeatableAnnotations(context.getRequiredTestClass(), SetTestProperty.class)
                 .forEach(setProperty -> props.setProperty(setProperty.key(), setProperty.value()));
         final Class<?> testClass = context.getRequiredTestClass();
-        ReflectionSupport
-        .findFields(testClass,
-                field -> ModifierSupport.isStatic(field)
-                        && field.getType().isAssignableFrom(TestProperties.class),
-                HierarchyTraversalMode.BOTTOM_UP)
-        .forEach(field -> ReflectionUtil.setStaticFieldValue(field, props));
+        ReflectionSupport.findFields(
+                        testClass,
+                        field -> ModifierSupport.isStatic(field)
+                                && field.getType().isAssignableFrom(TestProperties.class),
+                        HierarchyTraversalMode.BOTTOM_UP)
+                .forEach(field -> ReflectionUtil.setStaticFieldValue(field, props));
     }
 
     @Override
-    public TestProperties resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
+    public TestProperties resolveParameter(
+            final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
         return TestPropertySource.createProperties(extensionContext);
     }

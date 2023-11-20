@@ -24,7 +24,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.core.test.util.Profiler;
@@ -42,7 +41,6 @@ public class PerformanceComparison {
     private final Logger logger = LogManager.getLogger(PerformanceComparison.class.getName());
     private final org.slf4j.Logger logbacklogger = org.slf4j.LoggerFactory.getLogger(PerformanceComparison.class);
     private final org.apache.log4j.Logger log4jlogger = org.apache.log4j.Logger.getLogger(PerformanceComparison.class);
-
 
     // How many times should we try to log:
     private static final int COUNT = 500000;
@@ -109,7 +107,7 @@ public class PerformanceComparison {
         System.out.println("###############################################");
     }
 
-    //@Test
+    // @Test
     private void testRawPerformance() throws Exception {
         final OutputStream os = new FileOutputStream("target/testos.log", true);
         final long result1 = writeToStream(COUNT, os);
@@ -150,7 +148,6 @@ public class PerformanceComparison {
         return (System.nanoTime() - start) / loop;
     }
 
-
     private long log4j2(final int loop) {
         final Integer j = Integer.valueOf(2);
         final long start = System.nanoTime();
@@ -159,7 +156,6 @@ public class PerformanceComparison {
         }
         return (System.nanoTime() - start) / loop;
     }
-
 
     private long writeToWriter(final int loop, final Writer w) throws Exception {
         final Integer j = Integer.valueOf(2);
@@ -181,7 +177,7 @@ public class PerformanceComparison {
 
     private long writeToChannel(final int loop, final FileChannel channel) throws Exception {
         final Integer j = Integer.valueOf(2);
-        final ByteBuffer buf = ByteBuffer.allocateDirect(8*1024);
+        final ByteBuffer buf = ByteBuffer.allocateDirect(8 * 1024);
         final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             channel.write(getByteBuffer(buf, "SEE IF THIS IS LOGGED " + j + '.'));
@@ -199,5 +195,4 @@ public class PerformanceComparison {
     private byte[] getBytes(final String s) {
         return s.getBytes();
     }
-
 }

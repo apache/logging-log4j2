@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.io;
 
+import static org.junit.Assert.*;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class LoggerPrintWriterTest extends AbstractLoggerWriterTest {
     private PrintWriter print;
@@ -34,8 +33,7 @@ public class LoggerPrintWriterTest extends AbstractLoggerWriterTest {
 
     @Override
     protected Writer createWriterWrapper() {
-        this.print =
-            IoBuilder.forLogger(getExtendedLogger())
+        this.print = IoBuilder.forLogger(getExtendedLogger())
                 .filter(this.wrapped)
                 .setLevel(LEVEL)
                 .buildPrintWriter();
@@ -118,7 +116,7 @@ public class LoggerPrintWriterTest extends AbstractLoggerWriterTest {
 
     @Test
     public void testPrintf() throws Exception {
-        assertSame(this.print,  this.print.printf("<<<%s>>>", FIRST));
+        assertSame(this.print, this.print.printf("<<<%s>>>", FIRST));
         assertMessages();
         this.print.println();
         assertMessages("<<<" + FIRST + ">>>");

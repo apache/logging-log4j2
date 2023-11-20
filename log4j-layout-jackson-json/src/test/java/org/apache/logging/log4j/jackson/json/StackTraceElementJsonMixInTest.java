@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.jackson.json;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import java.io.IOException;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.jackson.Log4jStackTraceElementDeserializer;
 import org.junit.Assert;
@@ -43,8 +42,10 @@ public class StackTraceElementJsonMixInTest {
      * @throws JsonParseException
      * @throws JsonMappingException
      */
-    private void roundtrip(final ObjectMapper mapper) throws JsonProcessingException, IOException, JsonParseException, JsonMappingException {
-        final StackTraceElement expected = new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
+    private void roundtrip(final ObjectMapper mapper)
+            throws JsonProcessingException, IOException, JsonParseException, JsonMappingException {
+        final StackTraceElement expected =
+                new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
         final String s = mapper.writeValueAsString(expected);
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
         Assert.assertEquals(expected, actual);
@@ -57,8 +58,10 @@ public class StackTraceElementJsonMixInTest {
         final SimpleModule module = new Log4jJsonModule(encodeThreadContextAsList, true, false, false);
         module.addDeserializer(StackTraceElement.class, new Log4jStackTraceElementDeserializer());
         mapper.registerModule(module);
-        final StackTraceElement expected = new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
-        final String s = this.aposToQuotes("{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':123}");
+        final StackTraceElement expected =
+                new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
+        final String s = this.aposToQuotes(
+                "{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':123}");
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
         Assert.assertEquals(expected, actual);
     }
@@ -69,8 +72,10 @@ public class StackTraceElementJsonMixInTest {
         final SimpleModule module = new SimpleModule();
         module.addDeserializer(StackTraceElement.class, new Log4jStackTraceElementDeserializer());
         mapper.registerModule(module);
-        final StackTraceElement expected = new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
-        final String s = this.aposToQuotes("{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':123}");
+        final StackTraceElement expected =
+                new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
+        final String s = this.aposToQuotes(
+                "{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':123}");
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
         Assert.assertEquals(expected, actual);
     }

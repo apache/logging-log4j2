@@ -50,7 +50,6 @@ public class LocationInfoTest extends TestCase {
          */
         public static LocationInfo getInfo() {
             return new LocationInfo(new Throwable(), NameSubstring.class.getName());
-
         }
     }
 
@@ -66,7 +65,6 @@ public class LocationInfoTest extends TestCase {
         public static LocationInfo getInfo() {
             return NameSubstring.getInfo();
         }
-
     }
 
     /**
@@ -78,5 +76,4 @@ public class LocationInfoTest extends TestCase {
         assertEquals(NameSubstringCaller.class.getName(), li.getClassName());
         assertEquals("getInfo", li.getMethodName());
     }
-
 }

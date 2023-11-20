@@ -18,7 +18,6 @@ package org.apache.logging.log4j.jdbc.appender;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import org.apache.logging.log4j.core.config.Property;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,16 +27,16 @@ public class DriverManagerH2ConnectionSourceTest {
     @Test
     public void testH2Properties() throws SQLException {
         final Property[] properties = new Property[] {
-                // @formatter:off
-                Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
-                Property.createProperty("password", JdbcH2TestHelper.PASSWORD),
-                // @formatter:on
+            // @formatter:off
+            Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
+            Property.createProperty("password", JdbcH2TestHelper.PASSWORD),
+            // @formatter:on
         };
         // @formatter:off
         final DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
-            .setProperties(properties)
-            .build();
+                .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
+                .setProperties(properties)
+                .build();
         // @formatter:on
         try (final Connection conn = source.getConnection()) {
             Assert.assertFalse(conn.isClosed());
@@ -48,10 +47,10 @@ public class DriverManagerH2ConnectionSourceTest {
     public void testH2UserAndPassword() throws SQLException {
         // @formatter:off
         final DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
-            .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
-            .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
-            .build();
+                .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
+                .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
+                .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
+                .build();
         // @formatter:on
         try (final Connection conn = source.getConnection()) {
             Assert.assertFalse(conn.isClosed());

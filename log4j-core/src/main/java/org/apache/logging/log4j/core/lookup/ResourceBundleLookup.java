@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.lookup;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;

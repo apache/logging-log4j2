@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.test.BetterService;
@@ -29,9 +31,6 @@ import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.Service;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class ServiceLoaderUtilTest {
 
@@ -57,13 +56,15 @@ public class ServiceLoaderUtilTest {
                 .forEach(services::add));
         assertThat(services).hasSize(2);
         // A warning for each broken service
-        final List<Throwable> errors = listener.findStatusData(Level.WARN).map(StatusData::getThrowable)
+        final List<Throwable> errors = listener.findStatusData(Level.WARN)
+                .map(StatusData::getThrowable)
                 .collect(Collectors.toList());
         assertThat(errors.stream().map(Throwable::getMessage))
                 .allMatch(message -> message.endsWith("invalid.Service not found")
                         || message.endsWith("org.apache.logging.log4j.Logger not a subtype")
                         || message.endsWith("Truncated class file"));
-        assertThat(errors.stream().<Class<?>>map(Throwable::getClass)).containsExactlyInAnyOrder(
-                ServiceConfigurationError.class, ServiceConfigurationError.class, ClassFormatError.class);
+        assertThat(errors.stream().<Class<?>>map(Throwable::getClass))
+                .containsExactlyInAnyOrder(
+                        ServiceConfigurationError.class, ServiceConfigurationError.class, ClassFormatError.class);
     }
 }

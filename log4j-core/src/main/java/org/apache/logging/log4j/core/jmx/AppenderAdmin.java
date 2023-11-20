@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.core.jmx;
 
 import java.util.Objects;
-
 import javax.management.ObjectName;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 

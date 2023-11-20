@@ -20,9 +20,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -44,8 +42,8 @@ public final class FactoryMethodConnectionSource extends AbstractConnectionSourc
     private final DataSource dataSource;
     private final String description;
 
-    private FactoryMethodConnectionSource(final DataSource dataSource, final String className, final String methodName,
-                                          final String returnType) {
+    private FactoryMethodConnectionSource(
+            final DataSource dataSource, final String className, final String methodName, final String returnType) {
         this.dataSource = dataSource;
         this.description = "factory{ public static " + returnType + ' ' + className + '.' + methodName + "() }";
     }
@@ -72,8 +70,7 @@ public final class FactoryMethodConnectionSource extends AbstractConnectionSourc
      */
     @PluginFactory
     public static FactoryMethodConnectionSource createConnectionSource(
-            @PluginAttribute("class") final String className,
-            @PluginAttribute("method") final String methodName) {
+            @PluginAttribute("class") final String className, @PluginAttribute("method") final String methodName) {
         if (Strings.isEmpty(className) || Strings.isEmpty(methodName)) {
             LOGGER.error("No class name or method name specified for the connection factory method.");
             return null;
@@ -152,8 +149,8 @@ public final class FactoryMethodConnectionSource extends AbstractConnectionSourc
                 }
             };
         } else {
-            LOGGER.error("Method [{}.{}()] returns unsupported type [{}].", className, methodName,
-                    returnType.getName());
+            LOGGER.error(
+                    "Method [{}.{}()] returns unsupported type [{}].", className, methodName, returnType.getName());
             return null;
         }
 

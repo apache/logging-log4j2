@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.util.QueueFactory;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link RecyclerFactory} pooling objects in a queue created using the provided {@link QueueFactory}.
@@ -50,10 +49,7 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
 
         private final Queue<V> queue;
 
-        private QueueingRecycler(
-                final Supplier<V> supplier,
-                final Consumer<V> cleaner,
-                final Queue<V> queue) {
+        private QueueingRecycler(final Supplier<V> supplier, final Consumer<V> cleaner, final Queue<V> queue) {
             super(supplier);
             this.cleaner = cleaner;
             this.queue = queue;
@@ -76,7 +72,5 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
             cleaner.accept(value);
             queue.offer(value);
         }
-
     }
-
 }

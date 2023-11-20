@@ -32,7 +32,7 @@ import org.apache.logging.log4j.plugins.Plugin;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("ExtendedThrowablePatternConverter")
-@ConverterKeys({ "xEx", "xThrowable", "xException" })
+@ConverterKeys({"xEx", "xThrowable", "xException"})
 public final class ExtendedThrowablePatternConverter extends ThrowablePatternConverter {
 
     /**
@@ -73,9 +73,12 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');
             }
-            proxy.formatExtendedStackTraceTo(toAppendTo, options.getIgnorePackages(),
-                    options.getTextRenderer(), getSuffix(event), options.getSeparator());
+            proxy.formatExtendedStackTraceTo(
+                    toAppendTo,
+                    options.getIgnorePackages(),
+                    options.getTextRenderer(),
+                    getSuffix(event),
+                    options.getSeparator());
         }
     }
-
 }

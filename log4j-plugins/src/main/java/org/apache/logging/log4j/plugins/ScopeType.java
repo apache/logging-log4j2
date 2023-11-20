@@ -34,5 +34,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE) // on an annotation typically with @Target(TYPE), but we use static factory methods
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ScopeType {
-}
+public @interface ScopeType {}

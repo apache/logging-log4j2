@@ -25,13 +25,12 @@ import org.apache.logging.log4j.plugins.Plugin;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("LineLocationPatternConverter")
-@ConverterKeys({ "L", "line" })
+@ConverterKeys({"L", "line"})
 public final class LineLocationPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final LineLocationPatternConverter INSTANCE =
-        new LineLocationPatternConverter();
+    private static final LineLocationPatternConverter INSTANCE = new LineLocationPatternConverter();
 
     /**
      * Private constructor.
@@ -46,8 +45,7 @@ public final class LineLocationPatternConverter extends LogEventPatternConverter
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static LineLocationPatternConverter newInstance(
-        final String[] options) {
+    public static LineLocationPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 

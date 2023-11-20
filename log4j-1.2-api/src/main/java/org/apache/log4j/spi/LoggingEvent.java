@@ -18,7 +18,6 @@ package org.apache.log4j.spi;
 
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
@@ -31,9 +30,9 @@ import org.apache.log4j.bridge.LogEventAdapter;
 public class LoggingEvent {
 
     /**
-     Returns the time when the application started, in milliseconds
-     elapsed since 01.01.1970.
-     @return the JVM start time.
+     * Returns the time when the application started, in milliseconds
+     * elapsed since 01.01.1970.
+     * @return the JVM start time.
      */
     public static long getStartTime() {
         return LogEventAdapter.getStartTime();
@@ -66,8 +65,17 @@ public class LoggingEvent {
      * @param info Location info
      * @param properties MDC properties
      */
-    public LoggingEvent(final String fqnOfCategoryClass, final Category logger, final long timeStamp, final Level level, final Object message,
-        final String threadName, final ThrowableInformation throwable, final String ndc, final LocationInfo info, final Map properties) {
+    public LoggingEvent(
+            final String fqnOfCategoryClass,
+            final Category logger,
+            final long timeStamp,
+            final Level level,
+            final Object message,
+            final String threadName,
+            final ThrowableInformation throwable,
+            final String ndc,
+            final LocationInfo info,
+            final Map properties) {
         this.timeStamp = timeStamp;
     }
 
@@ -84,7 +92,13 @@ public class LoggingEvent {
      * @param message The message of this event.
      * @param throwable The throwable of this event.
      */
-    public LoggingEvent(String fqnOfCategoryClass, Category logger, long timeStamp, Priority level, Object message, Throwable throwable) {
+    public LoggingEvent(
+            String fqnOfCategoryClass,
+            Category logger,
+            long timeStamp,
+            Priority level,
+            Object message,
+            Throwable throwable) {
         this.timeStamp = timeStamp;
     }
 
@@ -100,7 +114,12 @@ public class LoggingEvent {
      * @param message The message of this event.
      * @param throwable The throwable of this event.
      */
-    public LoggingEvent(final String fqnOfCategoryClass, final Category logger, final Priority level, final Object message, final Throwable throwable) {
+    public LoggingEvent(
+            final String fqnOfCategoryClass,
+            final Category logger,
+            final Priority level,
+            final Object message,
+            final Throwable throwable) {
         timeStamp = System.currentTimeMillis();
     }
 
@@ -118,9 +137,9 @@ public class LoggingEvent {
     }
 
     /**
-     Set the location information for this logging event. The collected
-     information is cached for future use.
-     @return Always returns null.
+     * Set the location information for this logging event. The collected
+     * information is cached for future use.
+     * @return Always returns null.
      */
     public LocationInfo getLocationInformation() {
         return null;
@@ -145,34 +164,30 @@ public class LoggingEvent {
         return null;
     }
 
-    public
-    Object getMDC(final String key) {
+    public Object getMDC(final String key) {
         return null;
     }
 
     /**
-     Obtain a copy of this thread's MDC prior to serialization or
-     asynchronous logging.
+     * Obtain a copy of this thread's MDC prior to serialization or
+     * asynchronous logging.
      */
-    public void getMDCCopy() {
-    }
+    public void getMDCCopy() {}
 
     /**
-     Return the message for this logging event.
-
-     <p>Before serialization, the returned object is the message
-     passed by the user to generate the logging event. After
-     serialization, the returned value equals the String form of the
-     message possibly after object rendering.
-     @return Always returns null.
-     @since 1.1 */
-    public
-    Object getMessage() {
+     * Return the message for this logging event.
+     *
+     * <p>Before serialization, the returned object is the message
+     * passed by the user to generate the logging event. After
+     * serialization, the returned value equals the String form of the
+     * message possibly after object rendering.
+     * @return Always returns null.
+     * @since 1.1 */
+    public Object getMessage() {
         return null;
     }
 
-    public
-    String getNDC() {
+    public String getNDC() {
         return null;
     }
 
@@ -197,20 +212,20 @@ public class LoggingEvent {
     }
 
     /**
-     Returns the throwable information contained within this
-     event. May be <code>null</code> if there is no such information.
-
-     <p>Note that the {@link Throwable} object contained within a
-     {@link ThrowableInformation} does not survive serialization.
-     @return Always returns null.
-     @since 1.1 */
+     * Returns the throwable information contained within this
+     * event. May be <code>null</code> if there is no such information.
+     *
+     * <p>Note that the {@link Throwable} object contained within a
+     * {@link ThrowableInformation} does not survive serialization.
+     * @return Always returns null.
+     * @since 1.1 */
     public ThrowableInformation getThrowableInformation() {
         return null;
     }
 
     /**
-     Return this event's throwable's string[] representation.
-     @return Always returns null.
+     * Return this event's throwable's string[] representation.
+     * @return Always returns null.
      */
     public String[] getThrowableStrRep() {
         return null;
@@ -224,8 +239,5 @@ public class LoggingEvent {
         return null;
     }
 
-    public void setProperty(final String propName,
-            final String propValue) {
-
-    }
+    public void setProperty(final String propName, final String propValue) {}
 }

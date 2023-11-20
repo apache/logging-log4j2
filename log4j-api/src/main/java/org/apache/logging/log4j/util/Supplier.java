@@ -32,5 +32,4 @@ package org.apache.logging.log4j.util;
  * @since 2.4
  */
 @Deprecated
-public interface Supplier<T> extends java.util.function.Supplier<T> {
-}
+public interface Supplier<T> extends java.util.function.Supplier<T> {}

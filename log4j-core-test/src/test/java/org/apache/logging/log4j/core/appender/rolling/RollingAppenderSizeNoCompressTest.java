@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -25,7 +27,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -33,8 +34,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * LOG4J2-1804.
@@ -50,24 +49,25 @@ public class RollingAppenderSizeNoCompressTest {
     @Test
     @LoggerContextSource
     public void testAppender(final Logger logger, final LoggerContext context) throws Exception {
-      final List<String> messages = new ArrayList<>();
-        for (int i=0; i < 1000; ++i) {
-          final String message = "This is test message number " + i;
-          messages.add(message);
+        final List<String> messages = new ArrayList<>();
+        for (int i = 0; i < 1000; ++i) {
+            final String message = "This is test message number " + i;
+            messages.add(message);
             logger.debug(message);
         }
         if (!context.stop(30, TimeUnit.SECONDS)) {
             LOGGER.error("Could not stop cleanly logger context {}.", context);
         }
-        final List<Path> files = StreamSupport.stream(Files.newDirectoryStream(loggingPath).spliterator(), false)
+        final List<Path> files = StreamSupport.stream(
+                        Files.newDirectoryStream(loggingPath).spliterator(), false)
                 .collect(Collectors.toList());
         for (final Path file : files) {
-          final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Files.copy(file, baos);
             final String text = new String(baos.toByteArray(), Charset.defaultCharset());
             final String[] lines = text.split("[\\r\\n]+");
             for (final String line : lines) {
-              messages.remove(line);
+                messages.remove(line);
             }
         }
         assertThat(messages).as("Lost messages").isEmpty();

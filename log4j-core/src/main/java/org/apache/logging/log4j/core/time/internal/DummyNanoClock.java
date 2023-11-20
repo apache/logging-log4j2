@@ -46,5 +46,4 @@ public final class DummyNanoClock implements NanoClock {
     public long nanoTime() {
         return fixedNanoTime;
     }
-
 }

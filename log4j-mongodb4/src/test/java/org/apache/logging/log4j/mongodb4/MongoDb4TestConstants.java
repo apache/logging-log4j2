@@ -21,5 +21,4 @@ public class MongoDb4TestConstants {
     public static final String PROP_NAME_PORT = "MongoDBTestPort";
     static final String COLLECTION_NAME = "testCollection";
     static final String DATABASE_NAME = "testDb";
-
 }

@@ -26,7 +26,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import javax.management.Attribute;
 import javax.management.AttributeNotFoundException;
 import javax.management.InvalidAttributeValueException;
@@ -39,7 +38,6 @@ import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;
 import javax.management.ReflectionException;
 import javax.management.RuntimeOperationsException;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -69,7 +67,8 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 
     private void buildDynamicMBeanInfo() throws IntrospectionException {
         final Constructor[] constructors = this.getClass().getConstructors();
-        dConstructors[0] = new MBeanConstructorInfo("LayoutDynamicMBean(): Constructs a LayoutDynamicMBean instance", constructors[0]);
+        dConstructors[0] = new MBeanConstructorInfo(
+                "LayoutDynamicMBean(): Constructs a LayoutDynamicMBean instance", constructors[0]);
 
         final BeanInfo bi = Introspector.getBeanInfo(layout.getClass());
         final PropertyDescriptor[] pd = bi.getPropertyDescriptors();
@@ -90,7 +89,8 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
                         returnClassName = returnClass.getName();
                     }
 
-                    dAttributes.add(new MBeanAttributeInfo(name, returnClassName, "Dynamic", true, writeMethod != null, false));
+                    dAttributes.add(
+                            new MBeanAttributeInfo(name, returnClassName, "Dynamic", true, writeMethod != null, false));
                     dynamicProps.put(name, new MethodUnion(readMethod, writeMethod));
                 }
             }
@@ -98,16 +98,19 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 
         final MBeanParameterInfo[] params = new MBeanParameterInfo[0];
 
-        dOperations[0] = new MBeanOperationInfo("activateOptions", "activateOptions(): add an layout", params, "void", MBeanOperationInfo.ACTION);
+        dOperations[0] = new MBeanOperationInfo(
+                "activateOptions", "activateOptions(): add an layout", params, "void", MBeanOperationInfo.ACTION);
     }
 
     @Override
-    public Object getAttribute(final String attributeName) throws AttributeNotFoundException, MBeanException, ReflectionException {
+    public Object getAttribute(final String attributeName)
+            throws AttributeNotFoundException, MBeanException, ReflectionException {
 
         // Check attributeName is not null to avoid NullPointerException later on
         if (attributeName == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Attribute name cannot be null"),
-                "Cannot invoke a getter of " + dClassName + " with null attribute name");
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Attribute name cannot be null"),
+                    "Cannot invoke a getter of " + dClassName + " with null attribute name");
         }
 
         final MethodUnion mu = (MethodUnion) dynamicProps.get(attributeName);
@@ -118,7 +121,8 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
             try {
                 return mu.readMethod.invoke(layout, null);
             } catch (final InvocationTargetException e) {
-                if (e.getTargetException() instanceof InterruptedException || e.getTargetException() instanceof InterruptedIOException) {
+                if (e.getTargetException() instanceof InterruptedException
+                        || e.getTargetException() instanceof InterruptedIOException) {
                     Thread.currentThread().interrupt();
                 }
                 return null;
@@ -131,7 +135,6 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 
         // If attributeName has not been recognized throw an AttributeNotFoundException
         throw (new AttributeNotFoundException("Cannot find " + attributeName + " attribute in " + dClassName));
-
     }
 
     @Override
@@ -146,11 +149,13 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
         final MBeanAttributeInfo[] attribs = new MBeanAttributeInfo[dAttributes.size()];
         dAttributes.toArray(attribs);
 
-        return new MBeanInfo(dClassName, dDescription, attribs, dConstructors, dOperations, new MBeanNotificationInfo[0]);
+        return new MBeanInfo(
+                dClassName, dDescription, attribs, dConstructors, dOperations, new MBeanNotificationInfo[0]);
     }
 
     @Override
-    public Object invoke(final String operationName, final Object params[], final String signature[]) throws MBeanException, ReflectionException {
+    public Object invoke(final String operationName, final Object params[], final String signature[])
+            throws MBeanException, ReflectionException {
 
         if (operationName.equals("activateOptions") && layout instanceof OptionHandler) {
             final OptionHandler oh = (OptionHandler) layout;
@@ -169,19 +174,22 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
     }
 
     @Override
-    public void setAttribute(final Attribute attribute) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
+    public void setAttribute(final Attribute attribute)
+            throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
 
         // Check attribute is not null to avoid NullPointerException later on
         if (attribute == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Attribute cannot be null"),
-                "Cannot invoke a setter of " + dClassName + " with null attribute");
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Attribute cannot be null"),
+                    "Cannot invoke a setter of " + dClassName + " with null attribute");
         }
         final String name = attribute.getName();
         Object value = attribute.getValue();
 
         if (name == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Attribute name cannot be null"),
-                "Cannot invoke the setter of " + dClassName + " with null attribute name");
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Attribute name cannot be null"),
+                    "Cannot invoke the setter of " + dClassName + " with null attribute name");
         }
 
         final MethodUnion mu = (MethodUnion) dynamicProps.get(name);
@@ -199,7 +207,8 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
                 mu.writeMethod.invoke(layout, o);
 
             } catch (final InvocationTargetException e) {
-                if (e.getTargetException() instanceof InterruptedException || e.getTargetException() instanceof InterruptedIOException) {
+                if (e.getTargetException() instanceof InterruptedException
+                        || e.getTargetException() instanceof InterruptedIOException) {
                     Thread.currentThread().interrupt();
                 }
                 cat.error("FIXME", e);
@@ -209,7 +218,8 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
                 cat.error("FIXME", e);
             }
         } else {
-            throw (new AttributeNotFoundException("Attribute " + name + " not found in " + this.getClass().getName()));
+            throw (new AttributeNotFoundException(
+                    "Attribute " + name + " not found in " + this.getClass().getName()));
         }
     }
 }

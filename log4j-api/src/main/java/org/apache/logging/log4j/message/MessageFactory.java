@@ -81,7 +81,7 @@ public interface MessageFactory {
      * @see ParameterizedMessageFactory
      */
     default Message newMessage(final String message, final Object p0) {
-        return newMessage(message, new Object[] { p0 });
+        return newMessage(message, new Object[] {p0});
     }
 
     /**
@@ -94,7 +94,7 @@ public interface MessageFactory {
      * @see ParameterizedMessageFactory
      */
     default Message newMessage(final String message, final Object p0, final Object p1) {
-        return newMessage(message, new Object[] { p0, p1 });
+        return newMessage(message, new Object[] {p0, p1});
     }
 
     /**
@@ -108,7 +108,7 @@ public interface MessageFactory {
      * @see ParameterizedMessageFactory
      */
     default Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
-        return newMessage(message, new Object[] { p0, p1, p2 });
+        return newMessage(message, new Object[] {p0, p1, p2});
     }
 
     /**
@@ -122,8 +122,9 @@ public interface MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    default Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-        return newMessage(message, new Object[] { p0, p1, p2, p3 });
+    default Message newMessage(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        return newMessage(message, new Object[] {p0, p1, p2, p3});
     }
 
     /**
@@ -138,8 +139,9 @@ public interface MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    default Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-        return newMessage(message, new Object[] { p0, p1, p2, p3, p4 });
+    default Message newMessage(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+        return newMessage(message, new Object[] {p0, p1, p2, p3, p4});
     }
 
     /**
@@ -155,8 +157,15 @@ public interface MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    default Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
-        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5 });
+    default Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
+        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5});
     }
 
     /**
@@ -173,9 +182,16 @@ public interface MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    default Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-                               final Object p6) {
-        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5, p6 });
+    default Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
+        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5, p6});
     }
 
     /**
@@ -193,9 +209,17 @@ public interface MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    default Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-                               final Object p6, final Object p7) {
-        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7 });
+    default Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
+        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7});
     }
 
     /**
@@ -214,9 +238,18 @@ public interface MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    default Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-                               final Object p6, final Object p7, final Object p8) {
-        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7, p8 });
+    default Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
+        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7, p8});
     }
 
     /**
@@ -236,9 +269,19 @@ public interface MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    default Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-                               final Object p6, final Object p7, final Object p8, final Object p9) {
-        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7, p8, p9 });
+    default Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
+        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7, p8, p9});
     }
 
     /**
@@ -248,5 +291,4 @@ public interface MessageFactory {
      * @see Recycler
      */
     default void recycle(Message message) {}
-
 }

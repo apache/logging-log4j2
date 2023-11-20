@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -56,9 +55,7 @@ public class HangingAppender extends AbstractAppender {
 
     @PluginFactory
     public static HangingAppender createAppender(
-            @PluginAttribute
-            @Required(message = "No name provided for HangingAppender")
-            final String name,
+            @PluginAttribute @Required(message = "No name provided for HangingAppender") final String name,
             @PluginAttribute final long delay,
             @PluginAttribute final long startupDelay,
             @PluginAttribute final long shutdownDelay,

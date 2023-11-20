@@ -16,16 +16,14 @@
  */
 package org.apache.log4j.helpers;
 
-import java.util.stream.Stream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.stream.Stream;
 import org.apache.log4j.Level;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 /**
  * Unit tests for UtilLoggingLevel.
@@ -40,8 +38,7 @@ public class UtilLoggingLevelTest {
     }
 
     static Stream<Arguments> namesAndLevels() {
-        return UtilLoggingLevel.getAllPossibleLevels()
-                .stream()
+        return UtilLoggingLevel.getAllPossibleLevels().stream()
                 .map(level -> Arguments.of(level.toString() + "#" + UtilLoggingLevel.class.getName(), level));
     }
 

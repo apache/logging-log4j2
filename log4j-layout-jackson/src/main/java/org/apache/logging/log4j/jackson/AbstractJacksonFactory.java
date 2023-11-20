@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
 public abstract class AbstractJacksonFactory {
@@ -31,32 +30,33 @@ public abstract class AbstractJacksonFactory {
     protected final boolean includeStacktrace;
 
     protected final boolean stacktraceAsString;
+
     public AbstractJacksonFactory(final boolean includeStacktrace, final boolean stacktraceAsString) {
         super();
         this.includeStacktrace = includeStacktrace;
         this.stacktraceAsString = stacktraceAsString;
     }
 
-    abstract protected String getPropertyNameForContextMap();
+    protected abstract String getPropertyNameForContextMap();
 
-    abstract protected String getPropertyNameForTimeMillis();
+    protected abstract String getPropertyNameForTimeMillis();
 
-    abstract protected String getPropertyNameForInstant();
+    protected abstract String getPropertyNameForInstant();
 
-    abstract protected String getPropertyNameForNanoTime();
+    protected abstract String getPropertyNameForNanoTime();
 
-    abstract protected String getPropertyNameForSource();
+    protected abstract String getPropertyNameForSource();
 
-    abstract protected String getPropertyNameForStackTrace();
+    protected abstract String getPropertyNameForStackTrace();
 
-    abstract protected PrettyPrinter newCompactPrinter();
+    protected abstract PrettyPrinter newCompactPrinter();
 
-    abstract protected ObjectMapper newObjectMapper();
+    protected abstract ObjectMapper newObjectMapper();
 
-    abstract protected PrettyPrinter newPrettyPrinter();
+    protected abstract PrettyPrinter newPrettyPrinter();
 
-    public ObjectWriter newWriter(final boolean locationInfo, final boolean properties, final boolean compact,
-            final boolean includeMillis) {
+    public ObjectWriter newWriter(
+            final boolean locationInfo, final boolean properties, final boolean compact, final boolean includeMillis) {
         final SimpleFilterProvider filters = new SimpleFilterProvider();
         final Set<String> except = new HashSet<>(5);
         if (!locationInfo) {
@@ -75,9 +75,8 @@ public abstract class AbstractJacksonFactory {
         }
         except.add(this.getPropertyNameForNanoTime());
         filters.addFilter(Log4jLogEvent.class.getName(), SimpleBeanPropertyFilter.serializeAllExcept(except));
-        final ObjectWriter writer = this.newObjectMapper()
-                .writer(compact ? this.newCompactPrinter() : this.newPrettyPrinter());
+        final ObjectWriter writer =
+                this.newObjectMapper().writer(compact ? this.newCompactPrinter() : this.newPrettyPrinter());
         return writer.with(filters);
     }
-
 }

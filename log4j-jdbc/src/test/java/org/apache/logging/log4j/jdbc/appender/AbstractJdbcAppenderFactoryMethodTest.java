@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,10 +37,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Abstract unit test for JdbcAppender using a {@link FactoryMethodConnectionSource} configuration.
  */
@@ -45,11 +44,14 @@ public abstract class AbstractJdbcAppenderFactoryMethodTest {
 
     @Rule
     public final RuleChain rules;
+
     private final JdbcRule jdbcRule;
 
     protected AbstractJdbcAppenderFactoryMethodTest(final JdbcRule jdbcRule, final String databaseType) {
-        this.rules = RuleChain.emptyRuleChain().around(jdbcRule).around(new LoggerContextRule(
-            "org/apache/logging/log4j/jdbc/appender/log4j2-" + databaseType + "-factory-method.xml"));
+        this.rules = RuleChain.emptyRuleChain()
+                .around(jdbcRule)
+                .around(new LoggerContextRule(
+                        "org/apache/logging/log4j/jdbc/appender/log4j2-" + databaseType + "-factory-method.xml"));
         this.jdbcRule = jdbcRule;
     }
 
@@ -80,14 +82,21 @@ public abstract class AbstractJdbcAppenderFactoryMethodTest {
                 assertEquals(date, anotherDate);
                 assertTrue("The date should be later than pre-logging (1).", date >= millis);
                 assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
-                assertEquals("The literal column is not correct (1).", "Some Other Literal Value",
+                assertEquals(
+                        "The literal column is not correct (1).",
+                        "Some Other Literal Value",
                         resultSet.getString("literalColumn"));
                 assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getNString("level"));
                 assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
-                assertEquals("The message column is not correct (1).", "Factory logged message 01.",
+                assertEquals(
+                        "The message column is not correct (1).",
+                        "Factory logged message 01.",
                         resultSet.getString("message"));
-                assertEquals("The exception column is not correct (1).", Strings.EMPTY,
-                        IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
+                assertEquals(
+                        "The exception column is not correct (1).",
+                        Strings.EMPTY,
+                        IOUtils.readStringAndClose(
+                                resultSet.getNClob("exception").getCharacterStream(), -1));
 
                 assertTrue("There should be two rows.", resultSet.next());
 
@@ -96,14 +105,21 @@ public abstract class AbstractJdbcAppenderFactoryMethodTest {
                 assertEquals(date, anotherDate);
                 assertTrue("The date should be later than pre-logging (2).", date >= millis);
                 assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
-                assertEquals("The literal column is not correct (2).", "Some Other Literal Value",
+                assertEquals(
+                        "The literal column is not correct (2).",
+                        "Some Other Literal Value",
                         resultSet.getString("literalColumn"));
                 assertEquals("The level column is not correct (2).", "ERROR", resultSet.getNString("level"));
                 assertEquals("The logger column is not correct (2).", logger.getName(), resultSet.getNString("logger"));
-                assertEquals("The message column is not correct (2).", "Error from factory 02.",
+                assertEquals(
+                        "The message column is not correct (2).",
+                        "Error from factory 02.",
                         resultSet.getString("message"));
-                assertEquals("The exception column is not correct (2).", stackTrace,
-                        IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
+                assertEquals(
+                        "The exception column is not correct (2).",
+                        stackTrace,
+                        IOUtils.readStringAndClose(
+                                resultSet.getNClob("exception").getCharacterStream(), -1));
 
                 assertFalse("There should not be three rows.", resultSet.next());
             }
@@ -117,5 +133,4 @@ public abstract class AbstractJdbcAppenderFactoryMethodTest {
         // We really need a MySQL databases with a default configuration to test this.
         logger.debug(StringUtils.repeat('A', 1000));
     }
-
 }

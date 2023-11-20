@@ -24,7 +24,6 @@ import org.apache.logging.log4j.util.PropertyKey;
  * Properties used by the JUL support.
  */
 public enum JulPropertyKey implements PropertyKey {
-
     LEVEL_CONVERTER(PropertyComponent.JUL, "levelConverter"),
     LOGGER_ADAPTER(PropertyComponent.JUL, "loggerAdpater");
 
@@ -70,7 +69,4 @@ public enum JulPropertyKey implements PropertyKey {
     public String toString() {
         return getKey();
     }
-
-
-
 }

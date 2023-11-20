@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.layout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -73,8 +72,8 @@ public final class MarkerPatternSelector implements PatternSelector {
                 LOGGER.warn("No marker patterns were provided with PatternMatch");
                 return null;
             }
-            return new MarkerPatternSelector(properties, defaultPattern, alwaysWriteExceptions, disableAnsi,
-                    noConsoleNoAnsi, configuration);
+            return new MarkerPatternSelector(
+                    properties, defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, configuration);
         }
 
         public Builder setProperties(final PatternMatch[] properties) {
@@ -106,7 +105,6 @@ public final class MarkerPatternSelector implements PatternSelector {
             this.configuration = configuration;
             return this;
         }
-
     }
 
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
@@ -121,15 +119,19 @@ public final class MarkerPatternSelector implements PatternSelector {
 
     private final boolean requiresLocation;
 
-    private MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean disableAnsi,
-                                 final boolean noConsoleNoAnsi, final Configuration config) {
+    private MarkerPatternSelector(
+            final PatternMatch[] properties,
+            final String defaultPattern,
+            final boolean alwaysWriteExceptions,
+            final boolean disableAnsi,
+            final boolean noConsoleNoAnsi,
+            final Configuration config) {
         final PatternParser parser = PatternLayout.createPatternParser(config);
         boolean needsLocation = false;
         for (final PatternMatch property : properties) {
             try {
-                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions,
-                        disableAnsi, noConsoleNoAnsi);
+                final List<PatternFormatter> list =
+                        parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
                 final PatternFormatter[] formatters = list.toArray(new PatternFormatter[list.size()]);
                 formatterMap.put(property.getKey(), formatters);
                 for (int i = 0; !needsLocation && i < formatters.length; ++i) {
@@ -141,8 +143,8 @@ public final class MarkerPatternSelector implements PatternSelector {
             }
         }
         try {
-            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi,
-                    noConsoleNoAnsi);
+            final List<PatternFormatter> list =
+                    parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
             this.defaultPattern = defaultPattern;
             for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
@@ -191,7 +193,11 @@ public final class MarkerPatternSelector implements PatternSelector {
             if (!first) {
                 sb.append(", ");
             }
-            sb.append("key=\"").append(entry.getKey()).append("\", pattern=\"").append(entry.getValue()).append("\"");
+            sb.append("key=\"")
+                    .append(entry.getKey())
+                    .append("\", pattern=\"")
+                    .append(entry.getValue())
+                    .append("\"");
             first = false;
         }
         if (!first) {

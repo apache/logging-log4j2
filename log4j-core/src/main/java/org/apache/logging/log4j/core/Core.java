@@ -27,5 +27,4 @@ public class Core {
     public static final String CATEGORY_NAME = Node.CORE_NAMESPACE;
 
     public static final Key<PluginNamespace> PLUGIN_NAMESPACE_KEY = new @Namespace(Node.CORE_NAMESPACE) Key<>() {};
-
 }

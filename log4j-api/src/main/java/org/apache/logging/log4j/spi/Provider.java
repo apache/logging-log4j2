@@ -20,7 +20,6 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -67,15 +66,18 @@ public class Provider {
         versions = null;
     }
 
-    public Provider(final Integer priority, final String versions,
-                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
+    public Provider(
+            final Integer priority,
+            final String versions,
+            final Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
         this(priority, versions, loggerContextFactoryClass, null);
     }
 
-
-    public Provider(final Integer priority, final String versions,
-                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass,
-                    final Class<? extends ThreadContextMap> threadContextMapClass) {
+    public Provider(
+            final Integer priority,
+            final String versions,
+            final Class<? extends LoggerContextFactory> loggerContextFactoryClass,
+            final Class<? extends ThreadContextMap> threadContextMapClass) {
         this.url = null;
         this.classLoader = null;
         this.priority = priority;
@@ -230,10 +232,10 @@ public class Provider {
         }
 
         final Provider provider = (Provider) o;
-        return Objects.equals(priority, provider.priority) &&
-                Objects.equals(className, provider.className) &&
-                Objects.equals(loggerContextFactoryClass, provider.loggerContextFactoryClass) &&
-                Objects.equals(versions, provider.versions);
+        return Objects.equals(priority, provider.priority)
+                && Objects.equals(className, provider.className)
+                && Objects.equals(loggerContextFactoryClass, provider.loggerContextFactoryClass)
+                && Objects.equals(versions, provider.versions);
     }
 
     @Override

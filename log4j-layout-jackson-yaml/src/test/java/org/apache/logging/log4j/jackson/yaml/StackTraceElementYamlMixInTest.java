@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.jackson.yaml;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import java.io.IOException;
 import org.apache.logging.log4j.jackson.Log4jStackTraceElementDeserializer;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StackTraceElementYamlMixInTest {
 
@@ -33,8 +32,8 @@ public class StackTraceElementYamlMixInTest {
     }
 
     private void roundtrip(final ObjectMapper mapper) throws IOException {
-        final StackTraceElement expected = new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java",
-                123);
+        final StackTraceElement expected =
+                new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
         final String s = mapper.writeValueAsString(expected);
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
         assertEquals(expected, actual);
@@ -47,8 +46,8 @@ public class StackTraceElementYamlMixInTest {
         final SimpleModule module = new Log4jYamlModule(encodeThreadContextAsList, true, false);
         module.addDeserializer(StackTraceElement.class, new Log4jStackTraceElementDeserializer());
         mapper.registerModule(module);
-        final StackTraceElement expected = new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java",
-                123);
+        final StackTraceElement expected =
+                new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
         final StackTraceElement actual = mapper.readValue(
                 "---\nclass: package.SomeClass\nmethod: someMethod\nfile: SomeClass.java\nline: 123\n...",
                 StackTraceElement.class);
@@ -61,8 +60,8 @@ public class StackTraceElementYamlMixInTest {
         final SimpleModule module = new SimpleModule();
         module.addDeserializer(StackTraceElement.class, new Log4jStackTraceElementDeserializer());
         mapper.registerModule(module);
-        final StackTraceElement expected = new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java",
-                123);
+        final StackTraceElement expected =
+                new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
         final StackTraceElement actual = mapper.readValue(
                 "---\nclass: package.SomeClass\nmethod: someMethod\nfile: SomeClass.java\nline: 123\n...",
                 StackTraceElement.class);

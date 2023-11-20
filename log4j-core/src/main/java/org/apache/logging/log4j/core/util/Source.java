@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,8 +26,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -57,8 +56,7 @@ public class Source {
     // LOG4J2-3527 - Don't use Paths.get().
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
-            justification = "The URI should be specified in a configuration file."
-    )
+            justification = "The URI should be specified in a configuration file.")
     private static File toFile(final URI uri) {
         try {
             final String scheme = Objects.requireNonNull(uri, "uri").getScheme();
@@ -185,8 +183,7 @@ public class Source {
      */
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
-            justification = "The `file`, `uri` and `location` fields come from Log4j properties."
-    )
+            justification = "The `file`, `uri` and `location` fields come from Log4j properties.")
     public Path getPath() {
         return file != null ? file.toPath() : uri != null ? Paths.get(uri) : Paths.get(location);
     }

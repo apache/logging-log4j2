@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
-
-import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
@@ -34,10 +33,10 @@ import org.apache.logging.log4j.util.Strings;
 @AsynchronouslyFormattable
 @ServiceConsumer(value = ThreadInfoFactory.class, cardinality = Cardinality.SINGLE)
 public class ThreadDumpMessage implements Message, StringBuilderFormattable {
-    private static final Lazy<ThreadInfoFactory> FACTORY = Lazy.lazy(() ->
-            ServiceLoaderUtil.safeStream(ServiceLoader.load(ThreadInfoFactory.class, ThreadInfoFactory.class.getClassLoader()))
-                    .findFirst()
-                    .orElseGet(BasicThreadInfoFactory::new));
+    private static final Lazy<ThreadInfoFactory> FACTORY = Lazy.lazy(() -> ServiceLoaderUtil.safeStream(
+                    ServiceLoader.load(ThreadInfoFactory.class, ThreadInfoFactory.class.getClassLoader()))
+            .findFirst()
+            .orElseGet(BasicThreadInfoFactory::new));
 
     private final Map<ThreadInformation, StackTraceElement[]> threads;
     private final String title;
@@ -117,8 +116,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
         @Override
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
             final Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
-            final Map<ThreadInformation, StackTraceElement[]> threads =
-                new HashMap<>(map.size());
+            final Map<ThreadInformation, StackTraceElement[]> threads = new HashMap<>(map.size());
             for (final Map.Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
                 threads.put(new BasicThreadInformation(entry.getKey()), entry.getValue());
             }

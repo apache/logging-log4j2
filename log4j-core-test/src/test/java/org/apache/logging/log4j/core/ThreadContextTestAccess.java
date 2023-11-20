@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.lang.reflect.Method;
-
-import org.apache.logging.log4j.ThreadContext;
-
 import static org.junit.jupiter.api.Assertions.fail;
+
+import java.lang.reflect.Method;
+import org.apache.logging.log4j.ThreadContext;
 
 /**
  * <p>

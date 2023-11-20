@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,16 +27,12 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -43,7 +42,8 @@ public class RollingAppenderDirectCronTest {
     private static final String CONFIG = "log4j-rolling-direct-cron.xml";
     private static final String DIR = "target/rolling-direct-cron";
 
-    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -71,8 +71,6 @@ public class RollingAppenderDirectCronTest {
         delay.waitForRollover();
     }
 
-
-
     private class RolloverDelay implements RolloverListener {
         private volatile CountDownLatch latch;
 
@@ -96,9 +94,7 @@ public class RollingAppenderDirectCronTest {
         }
 
         @Override
-        public void rolloverTriggered(final String fileName) {
-
-        }
+        public void rolloverTriggered(final String fileName) {}
 
         @Override
         public void rolloverComplete(final String fileName) {
@@ -108,8 +104,9 @@ public class RollingAppenderDirectCronTest {
             try {
                 final List<String> lines = Files.readAllLines(path);
                 assertTrue("Not enough lines in " + fileName + ":" + lines.size(), lines.size() > 0);
-                assertTrue("log and file times don't match. file: " + matcher.group(1) + ", log: "
-                        + lines.get(0), lines.get(0).startsWith(matcher.group(1)));
+                assertTrue(
+                        "log and file times don't match. file: " + matcher.group(1) + ", log: " + lines.get(0),
+                        lines.get(0).startsWith(matcher.group(1)));
             } catch (IOException ex) {
                 fail("Unable to read file " + fileName + ": " + ex.getMessage());
             }

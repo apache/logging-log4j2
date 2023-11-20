@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link MarkerLookup}.
@@ -45,7 +45,8 @@ public class EventLookupTest {
                 .setMarker(marker) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .build();
         final String value = strLookup.lookup(event, "Marker");
         assertEquals(markerName, value);
     }
@@ -57,7 +58,8 @@ public class EventLookupTest {
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage(msg)).build();
+                .setMessage(new SimpleMessage(msg))
+                .build();
         final String value = strLookup.lookup(event, "Message");
         assertEquals(msg, value);
     }
@@ -69,7 +71,8 @@ public class EventLookupTest {
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage(msg)).build();
+                .setMessage(new SimpleMessage(msg))
+                .build();
         final String value = strLookup.lookup(event, "Level");
         assertEquals(Level.INFO.toString(), value);
     }
@@ -83,7 +86,8 @@ public class EventLookupTest {
                 .setTimeMillis(now)
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage(msg)).build();
+                .setMessage(new SimpleMessage(msg))
+                .build();
         final String value = strLookup.lookup(event, "Timestamp");
         assertEquals(Long.toString(now), value);
     }
@@ -95,7 +99,8 @@ public class EventLookupTest {
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage(msg)).build();
+                .setMessage(new SimpleMessage(msg))
+                .build();
         final String value = strLookup.lookup(event, "Logger");
         assertEquals(this.getClass().getName(), value);
     }
@@ -108,9 +113,9 @@ public class EventLookupTest {
                 .setThreadName("Main")
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage(msg)).build();
+                .setMessage(new SimpleMessage(msg))
+                .build();
         final String value = strLookup.lookup(event, "ThreadName");
         assertEquals("Main", value);
     }
-
 }

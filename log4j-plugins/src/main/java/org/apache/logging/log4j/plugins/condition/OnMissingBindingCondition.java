@@ -18,7 +18,6 @@ package org.apache.logging.log4j.plugins.condition;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 

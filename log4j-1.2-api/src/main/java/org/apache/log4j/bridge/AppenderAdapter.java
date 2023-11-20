@@ -16,7 +16,6 @@
  */
 package org.apache.log4j.bridge;
 
-
 import org.apache.log4j.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -75,8 +74,12 @@ public final class AppenderAdapter {
 
     public class Adapter extends AbstractAppender {
 
-        protected Adapter(final String name, final Filter filter, final Layout layout,
-            final boolean ignoreExceptions, final Property[] properties) {
+        protected Adapter(
+                final String name,
+                final Filter filter,
+                final Layout layout,
+                final boolean ignoreExceptions,
+                final Property[] properties) {
             super(name, filter, layout, ignoreExceptions, properties);
         }
 

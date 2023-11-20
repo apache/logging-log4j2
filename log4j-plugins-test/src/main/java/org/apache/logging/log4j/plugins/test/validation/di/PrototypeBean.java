@@ -16,5 +16,4 @@
  */
 package org.apache.logging.log4j.plugins.test.validation.di;
 
-public class PrototypeBean {
-}
+public class PrototypeBean {}

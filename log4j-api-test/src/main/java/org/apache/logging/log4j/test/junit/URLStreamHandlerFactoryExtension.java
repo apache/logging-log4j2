@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.test.junit;
 
 import java.net.URLStreamHandlerFactory;
-
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -27,14 +26,15 @@ public class URLStreamHandlerFactoryExtension implements BeforeAllCallback {
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        final URLStreamHandlerFactory factory = AnnotationSupport.findAnnotation(testClass, UsingURLStreamHandlerFactory.class)
+        final URLStreamHandlerFactory factory = AnnotationSupport.findAnnotation(
+                        testClass, UsingURLStreamHandlerFactory.class)
                 .map(UsingURLStreamHandlerFactory::value)
                 .map(ReflectionUtil::instantiate)
                 .orElseThrow();
         final URLStreamHandlerFactory oldFactory = URLStreamHandlerFactories.getURLStreamHandlerFactory();
         URLStreamHandlerFactories.setURLStreamHandlerFactory(factory);
         context.getStore(ExtensionContext.Namespace.create(getClass(), testClass))
-                .put(URLStreamHandlerFactory.class, (ExtensionContext.Store.CloseableResource) () ->
-                        URLStreamHandlerFactories.setURLStreamHandlerFactory(oldFactory));
+                .put(URLStreamHandlerFactory.class, (ExtensionContext.Store.CloseableResource)
+                        () -> URLStreamHandlerFactories.setURLStreamHandlerFactory(oldFactory));
     }
 }

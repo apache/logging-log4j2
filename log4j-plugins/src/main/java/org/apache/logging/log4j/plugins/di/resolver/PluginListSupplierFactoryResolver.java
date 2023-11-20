@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
@@ -32,10 +31,10 @@ public class PluginListSupplierFactoryResolver<T>
     @Override
     protected boolean supportsType(final Type rawType, final Type... typeArguments) {
         final Type typeArgument = typeArguments[0];
-        return TypeUtil.isAssignable(rawType, ArrayList.class) &&
-                TypeUtil.isAssignable(Supplier.class, typeArgument) &&
-                typeArgument instanceof ParameterizedType &&
-                ((ParameterizedType) typeArgument).getActualTypeArguments().length == 1;
+        return TypeUtil.isAssignable(rawType, ArrayList.class)
+                && TypeUtil.isAssignable(Supplier.class, typeArgument)
+                && typeArgument instanceof ParameterizedType
+                && ((ParameterizedType) typeArgument).getActualTypeArguments().length == 1;
     }
 
     @Override

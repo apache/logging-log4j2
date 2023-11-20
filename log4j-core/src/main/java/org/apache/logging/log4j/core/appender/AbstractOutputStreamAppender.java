@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -74,7 +73,6 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
             this.bufferSize = bufferSize;
             return asBuilder();
         }
-
     }
 
     /**
@@ -100,9 +98,14 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      * @param properties optional properties
      * @param manager The OutputStreamManager.
      */
-    protected AbstractOutputStreamAppender(final String name, final Layout layout,
-              final Filter filter, final boolean ignoreExceptions, final boolean immediateFlush, final Property[] properties,
-              final M manager) {
+    protected AbstractOutputStreamAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final Property[] properties,
+            final M manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.immediateFlush = immediateFlush;

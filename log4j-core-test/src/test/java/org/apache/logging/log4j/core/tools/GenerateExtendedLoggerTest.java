@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.tools;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Method;
@@ -26,14 +28,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
@@ -49,10 +49,10 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Tag("functional")
-@SetSystemProperty(key = LoggingSystemProperty.Constant.LOGGER_CONTEXT_FACTORY_CLASS, value = "org.apache.logging.log4j.test.TestLoggerContextFactory")
+@SetSystemProperty(
+        key = LoggingSystemProperty.Constant.LOGGER_CONTEXT_FACTORY_CLASS,
+        value = "org.apache.logging.log4j.test.TestLoggerContextFactory")
 public class GenerateExtendedLoggerTest {
 
     private static final String TEST_SOURCE = "target/test-classes/org/apache/logging/log4j/core/MyExtendedLogger.java";
@@ -89,8 +89,8 @@ public class GenerateExtendedLoggerTest {
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         final List<String> errors = new ArrayList<>();
         try (final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
-            final Iterable<? extends JavaFileObject> compilationUnits = fileManager
-                    .getJavaFileObjectsFromFiles(Collections.singletonList(f));
+            final Iterable<? extends JavaFileObject> compilationUnits =
+                    fileManager.getJavaFileObjectsFromFiles(Collections.singletonList(f));
             final String classPath = System.getProperty("jdk.module.path");
             final List<String> optionList = new ArrayList<>();
             if (Strings.isNotBlank(classPath)) {
@@ -98,7 +98,8 @@ public class GenerateExtendedLoggerTest {
                 optionList.add(classPath);
             }
             // compile generated source
-            compiler.getTask(null, fileManager, diagnostics, optionList, null, compilationUnits).call();
+            compiler.getTask(null, fileManager, diagnostics, optionList, null, compilationUnits)
+                    .call();
 
             // check we don't have any compilation errors
             for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
@@ -114,17 +115,21 @@ public class GenerateExtendedLoggerTest {
 
         // check that all factory methods exist and are static
         assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create").getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Class.class).getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Object.class).getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", String.class).getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Class.class, MessageFactory.class).getModifiers()));
-        assertTrue(Modifier
-                .isStatic(cls.getDeclaredMethod("create", Object.class, MessageFactory.class).getModifiers()));
-        assertTrue(Modifier
-                .isStatic(cls.getDeclaredMethod("create", String.class, MessageFactory.class).getModifiers()));
+        assertTrue(
+                Modifier.isStatic(cls.getDeclaredMethod("create", Class.class).getModifiers()));
+        assertTrue(
+                Modifier.isStatic(cls.getDeclaredMethod("create", Object.class).getModifiers()));
+        assertTrue(
+                Modifier.isStatic(cls.getDeclaredMethod("create", String.class).getModifiers()));
+        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Class.class, MessageFactory.class)
+                .getModifiers()));
+        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Object.class, MessageFactory.class)
+                .getModifiers()));
+        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", String.class, MessageFactory.class)
+                .getModifiers()));
 
         // check that the extended log methods exist
-        final String[] extendedMethods = { "diag", "notice", "verbose" };
+        final String[] extendedMethods = {"diag", "notice", "verbose"};
         for (final String name : extendedMethods) {
             assertDoesNotThrow(() -> {
                 cls.getDeclaredMethod(name, Marker.class, Message.class, Throwable.class);

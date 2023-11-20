@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.UUID;
-
 import org.apache.logging.log4j.core.util.UuidUtil;
 import org.openjdk.jmh.annotations.Benchmark;
 

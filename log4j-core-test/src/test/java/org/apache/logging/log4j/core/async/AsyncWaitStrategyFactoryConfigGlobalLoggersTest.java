@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.lmax.disruptor.YieldingWaitStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -24,9 +27,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
@@ -41,9 +41,14 @@ public class AsyncWaitStrategyFactoryConfigGlobalLoggersTest {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         assertTrue(context instanceof AsyncLoggerContext, "context is AsyncLoggerContext");
 
-        final AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
-        assertEquals(AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
-        assertTrue(asyncWaitStrategyFactory instanceof AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory, "factory is YieldingWaitStrategyFactory");
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
+                context.getConfiguration().getAsyncWaitStrategyFactory();
+        assertEquals(
+                AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory.class,
+                asyncWaitStrategyFactory.getClass());
+        assertTrue(
+                asyncWaitStrategyFactory instanceof AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory,
+                "factory is YieldingWaitStrategyFactory");
 
         final AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
 

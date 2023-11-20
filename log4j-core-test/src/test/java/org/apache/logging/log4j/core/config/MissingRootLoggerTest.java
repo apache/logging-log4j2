@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.Map;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
-
 import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Map;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("missingRootLogger.xml")
 public class MissingRootLoggerTest {
@@ -42,9 +41,9 @@ public class MissingRootLoggerTest {
         assertFalse(logger.isDebugEnabled(), "Logger should have the DEBUG level disabled");
         final Configuration config = ctx.getConfiguration();
         assertNotNull(config, "Config not null");
-//        final String MISSINGROOT = "MissingRootTest";
-//        assertTrue("Incorrect Configuration. Expected " + MISSINGROOT + " but found " + config.getName(),
-//                MISSINGROOT.equals(config.getName()));
+        //        final String MISSINGROOT = "MissingRootTest";
+        //        assertTrue("Incorrect Configuration. Expected " + MISSINGROOT + " but found " + config.getName(),
+        //                MISSINGROOT.equals(config.getName()));
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders not null");
         assertThat("There should only be two appenders", map, hasSize(2));
@@ -71,5 +70,4 @@ public class MissingRootLoggerTest {
         assertThat("The root appender should be a ConsoleAppender", rootAppenders, hasKey("DefaultConsole-2"));
         assertEquals(Level.ERROR, root.getLevel());
     }
-
 }

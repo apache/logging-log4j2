@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Property;
@@ -30,9 +32,6 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Factory;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  *
@@ -59,9 +58,14 @@ public class LogEventFactoryTest {
         }
 
         @Override
-        public LogEvent createEvent(final String loggerName, final Marker marker,
-                                    final String fqcn, final Level level, final Message data,
-                                    final List<Property> properties, final Throwable t) {
+        public LogEvent createEvent(
+                final String loggerName,
+                final Marker marker,
+                final String fqcn,
+                final Level level,
+                final Message data,
+                final List<Property> properties,
+                final Throwable t) {
             return Log4jLogEvent.newBuilder()
                     .setLoggerName("Test")
                     .setMarker(marker)

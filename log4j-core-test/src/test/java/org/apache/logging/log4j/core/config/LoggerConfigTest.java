@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.HashSet;
-import java.util.List;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -35,6 +25,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.HashSet;
+import java.util.List;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for LoggerConfig.
@@ -57,13 +56,11 @@ public class LoggerConfigTest {
         assertNull(createForProperties(null).getPropertyList(), "null propertiesList");
 
         final Property[] all = new Property[] {
-                Property.createProperty("key1", "value1"),
-                Property.createProperty("key2", "value2"),
+            Property.createProperty("key1", "value1"), Property.createProperty("key2", "value2"),
         };
         final LoggerConfig loggerConfig = createForProperties(all);
         final List<Property> list = loggerConfig.getPropertyList();
-        assertEquals(new HashSet<>(list),
-                     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
+        assertEquals(new HashSet<>(list), new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
 
         final Object[] actualList = new Object[1];
         loggerConfig.setLogEventFactory((loggerName, marker, fqcn, level, data, properties, t) -> {
@@ -77,13 +74,12 @@ public class LoggerConfigTest {
     @Test
     public void testPropertiesWithSubstitution() {
         final Property[] all = new Property[] {
-                Property.createProperty("key1", "value1-${sys:user.name}"),
-                Property.createProperty("key2", "value2-${sys:user.name}"),
+            Property.createProperty("key1", "value1-${sys:user.name}"),
+            Property.createProperty("key2", "value2-${sys:user.name}"),
         };
         final LoggerConfig loggerConfig = createForProperties(all);
         final List<Property> list = loggerConfig.getPropertyList();
-        assertEquals(new HashSet<>(list),
-                     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
+        assertEquals(new HashSet<>(list), new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
 
         final Object[] actualListHolder = new Object[1];
         loggerConfig.setLogEventFactory((loggerName, marker, fqcn, level, data, properties, t) -> {
@@ -121,7 +117,7 @@ public class LoggerConfigTest {
         assertEquals(config1.getLevel(), Level.ERROR, "Unexpected Level");
         assertEquals(config1.getExplicitLevel(), Level.ERROR, "Unexpected explicit level");
         assertEquals(config2.getLevel(), Level.ERROR, "Unexpected Level");
-        assertNull(config2.getExplicitLevel(),"Unexpected explicit level");
+        assertNull(config2.getExplicitLevel(), "Unexpected explicit level");
     }
 
     @Test

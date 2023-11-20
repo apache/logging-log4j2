@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests {@link FileSize}.
@@ -27,25 +27,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FileSizeTest {
 
     @ParameterizedTest(name = "[{index}] \"{0}\" -> {1}")
-    @CsvSource(delimiter = ':', value = {
-            "10:10",
-            "10KB:10240",
-            "10 KB:10240",
-            "10 kb:10240",
-            " 10 kb :10240",
-            "0.1 MB:104857",
-            "1 MB:1048576",
-            "10 MB:10485760",
-            "10.45 MB:10957619",
-            "10.75 MB:11272192",
-            "1,000 KB:1024000",
-            "1 GB:1073741824",
-            "0.51 GB:547608330",
-            "1 TB:1099511627776",
-            "1023 TB:1124800395214848",
-    })
+    @CsvSource(
+            delimiter = ':',
+            value = {
+                "10:10",
+                "10KB:10240",
+                "10 KB:10240",
+                "10 kb:10240",
+                " 10 kb :10240",
+                "0.1 MB:104857",
+                "1 MB:1048576",
+                "10 MB:10485760",
+                "10.45 MB:10957619",
+                "10.75 MB:11272192",
+                "1,000 KB:1024000",
+                "1 GB:1073741824",
+                "0.51 GB:547608330",
+                "1 TB:1099511627776",
+                "1023 TB:1124800395214848",
+            })
     void testValidFileSizes(final String expr, final long expected) {
         assertEquals(expected, FileSize.parse(expr, 0));
     }
-
 }

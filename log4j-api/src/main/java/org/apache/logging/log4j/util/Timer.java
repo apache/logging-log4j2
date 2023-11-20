@@ -27,12 +27,16 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Timer implements StringBuilderFormattable {
 
-    private final String name;        // The timer's name
+    private final String name; // The timer's name
+
     public enum Status {
-        Started, Stopped, Paused
+        Started,
+        Stopped,
+        Paused
     }
+
     private Status status; // The timer's status
-    private long elapsedTime;         // The elapsed time
+    private long elapsedTime; // The elapsed time
     private final int iterations;
     private static final long NANO_PER_SECOND = 1000000000L;
     private static final long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
@@ -40,13 +44,11 @@ public class Timer implements StringBuilderFormattable {
     private final ThreadLocal<Long> startTime = ThreadLocal.withInitial(() -> 0L);
     private final Lock stateChangeLock = new ReentrantLock();
 
-
     /**
      * Constructor.
      * @param name the timer name.
      */
-    public Timer(final String name)
-    {
+    public Timer(final String name) {
         this(name, 0);
     }
 
@@ -56,8 +58,7 @@ public class Timer implements StringBuilderFormattable {
      * @param name the timer name.
      * @param iterations the number of iterations that will take place.
      */
-    public Timer(final String name, final int iterations)
-    {
+    public Timer(final String name, final int iterations) {
         this.name = name;
         status = Status.Stopped;
         this.iterations = (iterations > 0) ? iterations : 0;
@@ -137,8 +138,7 @@ public class Timer implements StringBuilderFormattable {
      * Accessor for the name.
      * @return the timer's name.
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -147,8 +147,7 @@ public class Timer implements StringBuilderFormattable {
      *
      * @return the elapsed time.
      */
-    public long getElapsedTime()
-    {
+    public long getElapsedTime() {
         return elapsedTime / 1000000;
     }
 
@@ -157,8 +156,7 @@ public class Timer implements StringBuilderFormattable {
      *
      * @return the elapsed time.
      */
-    public long getElapsedNanoTime()
-    {
+    public long getElapsedNanoTime() {
         return elapsedTime;
     }
 
@@ -167,8 +165,7 @@ public class Timer implements StringBuilderFormattable {
      * Resume).
      * @return the string representing the last operation performed.
      */
-    public Status getStatus()
-    {
+    public Status getStatus() {
         return status;
     }
 
@@ -176,8 +173,7 @@ public class Timer implements StringBuilderFormattable {
      * Returns the String representation of the timer based upon its current state
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder result = new StringBuilder();
         formatTo(result);
         return result.toString();
@@ -293,5 +289,4 @@ public class Timer implements StringBuilderFormattable {
         result = 29 * result + (int) (elapsedTime ^ (elapsedTime >>> 32));
         return result;
     }
-
 }

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -31,8 +32,6 @@ import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class Log4jLogEventNanoTimeTest {
 
@@ -78,7 +77,6 @@ public class Log4jLogEventNanoTimeTest {
             final String[] parts = line.split(" AND ");
             assertThat(parts[0]).isEqualTo(parts[1]).isEqualTo(String.valueOf(DUMMYNANOTIME));
             assertThat(parts[2]).isEqualTo("Use dummy nano clock");
-
         }
     }
 }

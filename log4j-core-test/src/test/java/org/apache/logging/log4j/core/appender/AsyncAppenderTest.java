@@ -16,10 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -29,13 +35,6 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AsyncAppenderTest {
 
@@ -88,8 +87,8 @@ public class AsyncAppenderTest {
         exceptionTest(context);
 
         final List<Thread> backgroundThreads = Thread.getAllStackTraces().keySet().stream()
-        .filter(AsyncAppenderEventDispatcher.class::isInstance)
-        .collect(Collectors.toList());
+                .filter(AsyncAppenderEventDispatcher.class::isInstance)
+                .collect(Collectors.toList());
         assertFalse(backgroundThreads.isEmpty(), "Failed to locate background thread");
         for (Thread thread : backgroundThreads) {
             assertTrue(thread.isDaemon(), "AsyncAppender should use daemon threads");
@@ -136,7 +135,8 @@ public class AsyncAppenderTest {
 
     @Test
     @LoggerContextSource("log4j-asynch-no-location.xml")
-    public void testNoLocationInformation(final LoggerContext context, @Named("List") final ListAppender appender) throws InterruptedException {
+    public void testNoLocationInformation(final LoggerContext context, @Named("List") final ListAppender appender)
+            throws InterruptedException {
         final ExtendedLogger logger = context.getLogger(getClass());
         logger.error("This is a test");
         logger.warn("Hello world!");

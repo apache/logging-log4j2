@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -30,6 +27,9 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.junit.Test;
 
 public class AbstractDatabaseManagerTest {
     // this stub is provided because mocking constructors is hard
@@ -63,7 +63,6 @@ public class AbstractDatabaseManagerTest {
         protected void writeInternal(final LogEvent event) {
             // noop
         }
-
     }
 
     private AbstractDatabaseManager manager;

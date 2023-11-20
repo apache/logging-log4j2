@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config;
 import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.core.util.AbstractWatcher;
 import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Source;
@@ -33,9 +32,11 @@ public class ConfigurationFileWatcher extends AbstractWatcher implements FileWat
     private File file;
     private long lastModifiedMillis;
 
-    public ConfigurationFileWatcher(final Configuration configuration, final Reconfigurable reconfigurable,
-                                    final List<Consumer<Reconfigurable>> reconfigurableListeners,
-                                    final long lastModifiedMillis) {
+    public ConfigurationFileWatcher(
+            final Configuration configuration,
+            final Reconfigurable reconfigurable,
+            final List<Consumer<Reconfigurable>> reconfigurableListeners,
+            final long lastModifiedMillis) {
         super(configuration, reconfigurable, reconfigurableListeners);
         this.lastModifiedMillis = lastModifiedMillis;
     }
@@ -62,10 +63,12 @@ public class ConfigurationFileWatcher extends AbstractWatcher implements FileWat
     }
 
     @Override
-    public Watcher newWatcher(final Reconfigurable reconfigurable, final List<Consumer<Reconfigurable>> listeners,
-           final long lastModifiedMillis) {
-        final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(getConfiguration(), reconfigurable, listeners,
-            lastModifiedMillis);
+    public Watcher newWatcher(
+            final Reconfigurable reconfigurable,
+            final List<Consumer<Reconfigurable>> listeners,
+            final long lastModifiedMillis) {
+        final ConfigurationFileWatcher watcher =
+                new ConfigurationFileWatcher(getConfiguration(), reconfigurable, listeners, lastModifiedMillis);
         if (getSource() != null) {
             watcher.watching(getSource());
         }

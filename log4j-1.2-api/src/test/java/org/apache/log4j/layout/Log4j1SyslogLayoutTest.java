@@ -16,10 +16,13 @@
  */
 package org.apache.log4j.layout;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -33,14 +36,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 public class Log4j1SyslogLayoutTest {
 
     private static final SimpleMessage MESSAGE = new SimpleMessage("Hello world!");
-    private static final long TIMESTAMP = LocalDateTime.of(2022, 4, 5, 12, 34, 56).atZone(ZoneId.systemDefault())
+    private static final long TIMESTAMP = LocalDateTime.of(2022, 4, 5, 12, 34, 56)
+            .atZone(ZoneId.systemDefault())
             .toEpochSecond();
     private static final String localhostName = NetUtils.getLocalHostname();
 
@@ -55,8 +55,8 @@ public class Log4j1SyslogLayoutTest {
     }
 
     static Stream<Arguments> configurations() {
-        return Stream
-                .of(Arguments.of("<30>Hello world!", Facility.DAEMON, false, false),
+        return Stream.of(
+                        Arguments.of("<30>Hello world!", Facility.DAEMON, false, false),
                         Arguments.of("<30>Apr  5 12:34:56 %s Hello world!", Facility.DAEMON, true, false),
                         Arguments.of("<30>daemon:Hello world!", Facility.DAEMON, false, true),
                         Arguments.of("<30>Apr  5 12:34:56 %s daemon:Hello world!", Facility.DAEMON, true, true))
@@ -69,7 +69,8 @@ public class Log4j1SyslogLayoutTest {
 
     @ParameterizedTest
     @MethodSource("configurations")
-    public void testSimpleLayout(final String expected, final Facility facility, final boolean header, final boolean facilityPrinting) {
+    public void testSimpleLayout(
+            final String expected, final Facility facility, final boolean header, final boolean facilityPrinting) {
         final LogEvent logEvent = createLogEvent();
         StringLayout appenderLayout = Log4j1SyslogLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())

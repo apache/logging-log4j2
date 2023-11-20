@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests {@link ParameterFormatter}.
@@ -46,7 +45,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormat3StringArgs() {
         final String testMsg = "Test message {}{} {}";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterFormatter.format(testMsg, args);
         assertEquals("Test message ab c", result);
     }
@@ -54,7 +53,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatNullArgs() {
         final String testMsg = "Test message {} {} {} {} {} {}";
-        final String[] args = { "a", null, "c", null, null, null };
+        final String[] args = {"a", null, "c", null, null, null};
         final String result = ParameterFormatter.format(testMsg, args);
         assertEquals("Test message a null c null null null", result);
     }
@@ -62,7 +61,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatStringArgsIgnoresSuperfluousArgs() {
         final String testMsg = "Test message {}{} {}";
-        final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
+        final String[] args = {"a", "b", "c", "unnecessary", "superfluous"};
         final String result = ParameterFormatter.format(testMsg, args);
         assertEquals("Test message ab c", result);
     }
@@ -70,7 +69,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatStringArgsWithEscape() {
         final String testMsg = "Test message \\{}{} {}";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterFormatter.format(testMsg, args);
         assertEquals("Test message {}a b", result);
     }
@@ -78,7 +77,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatStringArgsWithTrailingEscape() {
         final String testMsg = "Test message {}{} {}\\";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterFormatter.format(testMsg, args);
         assertEquals("Test message ab c\\", result);
     }
@@ -86,7 +85,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatStringArgsWithTrailingEscapedEscape() {
         final String testMsg = "Test message {}{} {}\\\\";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterFormatter.format(testMsg, args);
         assertEquals("Test message ab c\\\\", result);
     }
@@ -94,7 +93,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatStringArgsWithEscapedEscape() {
         final String testMsg = "Test message \\\\{}{} {}";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterFormatter.format(testMsg, args);
         assertEquals("Test message \\ab c", result);
     }
@@ -102,7 +101,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatMessage3StringArgs() {
         final String testMsg = "Test message {}{} {}";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
@@ -112,7 +111,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatMessageNullArgs() {
         final String testMsg = "Test message {} {} {} {} {} {}";
-        final String[] args = { "a", null, "c", null, null, null };
+        final String[] args = {"a", null, "c", null, null, null};
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 6);
         final String result = sb.toString();
@@ -122,7 +121,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatMessageStringArgsIgnoresSuperfluousArgs() {
         final String testMsg = "Test message {}{} {}";
-        final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
+        final String[] args = {"a", "b", "c", "unnecessary", "superfluous"};
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 5);
         final String result = sb.toString();
@@ -132,7 +131,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatMessageStringArgsWithEscape() {
         final String testMsg = "Test message \\{}{} {}";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
@@ -142,7 +141,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatMessageStringArgsWithTrailingEscape() {
         final String testMsg = "Test message {}{} {}\\";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
@@ -152,7 +151,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatMessageStringArgsWithTrailingEscapedEscape() {
         final String testMsg = "Test message {}{} {}\\\\";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
@@ -162,7 +161,7 @@ public class ParameterFormatterTest {
     @Test
     public void testFormatMessageStringArgsWithEscapedEscape() {
         final String testMsg = "Test message \\\\{}{} {}";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
@@ -206,5 +205,4 @@ public class ParameterFormatterTest {
         final String expected = list.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(list));
         assertEquals(expected, actual);
     }
-
 }

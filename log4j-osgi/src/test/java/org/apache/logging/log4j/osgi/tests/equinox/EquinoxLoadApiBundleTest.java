@@ -29,5 +29,4 @@ public class EquinoxLoadApiBundleTest extends AbstractLoadBundleTest {
     protected FrameworkFactory getFactory() {
         return new EquinoxFactory();
     }
-
 }

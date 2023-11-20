@@ -27,10 +27,9 @@ import java.lang.annotation.Target;
  * Annotation stereotype for {@link Singleton} and {@link Factory} combined.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 @Inherited
 @Singleton
 @FactoryType
-public @interface SingletonFactory {
-}
+public @interface SingletonFactory {}

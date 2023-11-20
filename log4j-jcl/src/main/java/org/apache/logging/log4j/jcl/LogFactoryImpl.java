@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.jcl;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
@@ -84,5 +83,4 @@ public class LogFactoryImpl extends LogFactory {
             removeAttribute(name);
         }
     }
-
 }

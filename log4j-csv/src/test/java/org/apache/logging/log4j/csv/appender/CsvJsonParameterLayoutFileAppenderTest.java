@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -110,7 +109,7 @@ public class CsvJsonParameterLayoutFileAppenderTest {
 
     @Test
     public void testNoNulCharactersXml() throws IOException {
-        testNoNulCharacters("<test attr1='val1' attr2=\"value2\">X</test>",
-                "\"<test attr1='val1' attr2=\"\"value2\"\">X</test>\"");
+        testNoNulCharacters(
+                "<test attr1='val1' attr2=\"value2\">X</test>", "\"<test attr1='val1' attr2=\"\"value2\"\">X</test>\"");
     }
 }

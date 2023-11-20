@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.io.IOException;
-import java.util.Objects;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import java.io.IOException;
+import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link LevelMixIn}.
@@ -62,6 +61,7 @@ public abstract class LevelMixInTest {
             return 31 + Objects.hashCode(level);
         }
     }
+
     private ObjectMapper log4jObjectMapper;
 
     private ObjectReader reader;

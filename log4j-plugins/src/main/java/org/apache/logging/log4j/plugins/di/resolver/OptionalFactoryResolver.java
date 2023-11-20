@@ -21,7 +21,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
@@ -39,7 +38,8 @@ public class OptionalFactoryResolver<T> implements FactoryResolver<Optional<T>> 
     }
 
     @Override
-    public Supplier<Optional<T>> getFactory(final ResolvableKey<Optional<T>> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<Optional<T>> getFactory(
+            final ResolvableKey<Optional<T>> resolvableKey, final InstanceFactory instanceFactory) {
         final Key<?> key = resolvableKey.getKey();
         final Key<T> itemKey = key.getParameterizedTypeArgument(0);
         final Collection<String> aliases = resolvableKey.getAliases();
@@ -51,8 +51,8 @@ public class OptionalFactoryResolver<T> implements FactoryResolver<Optional<T>> 
             try {
                 return Optional.ofNullable(instanceFactory.getInstance(itemKey, aliases, dependencyChain));
             } catch (final PluginException e) {
-                StatusLogger.getLogger().trace("Error while getting instance for {} with dependencies {}",
-                        itemKey, dependencyChain, e);
+                StatusLogger.getLogger()
+                        .trace("Error while getting instance for {} with dependencies {}", itemKey, dependencyChain, e);
                 return Optional.empty();
             }
         };

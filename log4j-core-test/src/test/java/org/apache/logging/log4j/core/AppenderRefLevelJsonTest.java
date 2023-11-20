@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.hasSize;
+
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -23,9 +26,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.hasSize;
 
 @Tag("json")
 @LoggerContextSource("log4j-reference-level.json")
@@ -39,7 +39,10 @@ public class AppenderRefLevelJsonTest {
     org.apache.logging.log4j.Logger logger3;
     Marker testMarker = MarkerManager.getMarker("TEST");
 
-    public AppenderRefLevelJsonTest(final LoggerContext context, @Named("LIST1") final ListAppender first, @Named("LIST2") final ListAppender second) {
+    public AppenderRefLevelJsonTest(
+            final LoggerContext context,
+            @Named("LIST1") final ListAppender first,
+            @Named("LIST2") final ListAppender second) {
         logger1 = context.getLogger("org.apache.logging.log4j.test1");
         logger2 = context.getLogger("org.apache.logging.log4j.test2");
         logger3 = context.getLogger("org.apache.logging.log4j.test3");

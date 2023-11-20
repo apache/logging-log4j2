@@ -21,7 +21,6 @@ import java.text.ParseException;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -63,8 +62,7 @@ public final class FileSize {
 
                 // Read the quantity.
                 final String quantityString = matcher.group(1);
-                final double quantity = NumberFormat
-                        .getNumberInstance(Locale.ROOT)
+                final double quantity = NumberFormat.getNumberInstance(Locale.ROOT)
                         .parse(quantityString)
                         .doubleValue();
 
@@ -96,7 +94,5 @@ public final class FileSize {
         // Invalid input, bail out.
         LOGGER.error("FileSize unable to parse bytes: " + string);
         return defaultValue;
-
     }
-
 }

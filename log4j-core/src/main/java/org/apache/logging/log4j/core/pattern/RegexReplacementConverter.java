@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -30,7 +29,7 @@ import org.apache.logging.log4j.plugins.Plugin;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("replace")
-@ConverterKeys({ "replace" })
+@ConverterKeys({"replace"})
 public final class RegexReplacementConverter extends LogEventPatternConverter {
 
     private final Pattern pattern;
@@ -45,8 +44,8 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
      * @param pattern The regular expression Pattern.
      * @param substitution The substitution string.
      */
-    private RegexReplacementConverter(final List<PatternFormatter> formatters,
-                                      final Pattern pattern, final String substitution) {
+    private RegexReplacementConverter(
+            final List<PatternFormatter> formatters, final Pattern pattern, final String substitution) {
         super("replace", "replace");
         this.pattern = pattern;
         this.substitution = substitution;
@@ -83,7 +82,6 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
         final List<PatternFormatter> formatters = parser.parse(options[0]);
         return new RegexReplacementConverter(formatters, p, options[2]);
     }
-
 
     /**
      * {@inheritDoc}

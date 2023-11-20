@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**

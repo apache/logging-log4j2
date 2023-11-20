@@ -58,15 +58,10 @@ public final class ReusableMessageFactory implements MessageFactory {
 
     public ReusableMessageFactory(final RecyclerFactory recyclerFactory) {
         super();
-        parameterizedMessageRecycler = recyclerFactory.create(
-                ReusableParameterizedMessage::new,
-                ReusableParameterizedMessage::clear);
-        simpleMessageRecycler = recyclerFactory.create(
-                ReusableSimpleMessage::new,
-                ReusableSimpleMessage::clear);
-        objectMessageRecycler = recyclerFactory.create(
-                ReusableObjectMessage::new,
-                ReusableObjectMessage::clear);
+        parameterizedMessageRecycler =
+                recyclerFactory.create(ReusableParameterizedMessage::new, ReusableParameterizedMessage::clear);
+        simpleMessageRecycler = recyclerFactory.create(ReusableSimpleMessage::new, ReusableSimpleMessage::clear);
+        objectMessageRecycler = recyclerFactory.create(ReusableObjectMessage::new, ReusableObjectMessage::clear);
     }
 
     /**
@@ -137,44 +132,84 @@ public final class ReusableMessageFactory implements MessageFactory {
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3) {
+    public Message newMessage(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
         return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4) {
+    public Message newMessage(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -192,7 +227,6 @@ public final class ReusableMessageFactory implements MessageFactory {
         result.set(message);
         return result;
     }
-
 
     /**
      * Creates {@link ReusableObjectMessage} instances.

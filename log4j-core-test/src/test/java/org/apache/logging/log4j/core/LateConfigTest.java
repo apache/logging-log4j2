@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -36,9 +38,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 @Tag("functional")
 public class LateConfigTest {
 
@@ -51,8 +50,7 @@ public class LateConfigTest {
 
     static Stream<Log4jContextFactory> selectors() {
         final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
-        return Stream
-                .<ContextSelector>of(
+        return Stream.<ContextSelector>of(
                         new ClassLoaderContextSelector(instanceFactory.newChildInstanceFactory()),
                         new BasicContextSelector(instanceFactory.newChildInstanceFactory()),
                         new AsyncLoggerContextSelector(instanceFactory.newChildInstanceFactory()),

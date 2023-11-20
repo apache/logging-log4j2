@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
@@ -24,9 +27,6 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CronTriggeringPolicyTest {
 
@@ -48,20 +48,25 @@ public class CronTriggeringPolicyTest {
     }
 
     private DefaultRolloverStrategy createStrategy() {
-        return DefaultRolloverStrategy.newBuilder().setMax("7").setMin("1").setFileIndex("max")
-                .setStopCustomActionsOnError(false).setConfig(configuration).build();
+        return DefaultRolloverStrategy.newBuilder()
+                .setMax("7")
+                .setMin("1")
+                .setFileIndex("max")
+                .setStopCustomActionsOnError(false)
+                .setConfig(configuration)
+                .build();
     }
 
     private void testBuilder() {
         // @formatter:off
         final RollingFileAppender raf = RollingFileAppender.newBuilder()
-            .setName("test1")
-            .setFileName("target/testcmd1.log")
-            .setFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
-            .setPolicy(createPolicy())
-            .setStrategy(createStrategy())
-            .setConfiguration(configuration)
-            .build();
+                .setName("test1")
+                .setFileName("target/testcmd1.log")
+                .setFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
+                .setPolicy(createPolicy())
+                .setStrategy(createStrategy())
+                .setConfiguration(configuration)
+                .build();
         // @formatter:on
         assertNotNull(raf);
     }
@@ -80,13 +85,11 @@ public class CronTriggeringPolicyTest {
      */
     @Test
     public void testLoggerContextAndBuilder() {
-        assertDoesNotThrow(() ->
-        {
+        assertDoesNotThrow(() -> {
             try (final LoggerContext ignored = Configurator.initialize(configuration)) {
                 testBuilder();
             }
         });
-
     }
 
     /**
@@ -95,15 +98,14 @@ public class CronTriggeringPolicyTest {
     @Test
     public void testRollingRandomAccessFileAppender() {
         // @formatter:off
-        assertDoesNotThrow(() ->
-        RollingRandomAccessFileAppender.newBuilder()
-            .setName("test2")
-            .setFileName("target/testcmd2.log")
-            .setFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
-            .setPolicy(createPolicy())
-            .setStrategy(createStrategy())
-            .setConfiguration(configuration)
-            .build());
+        assertDoesNotThrow(() -> RollingRandomAccessFileAppender.newBuilder()
+                .setName("test2")
+                .setFileName("target/testcmd2.log")
+                .setFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
+                .setPolicy(createPolicy())
+                .setStrategy(createStrategy())
+                .setConfiguration(configuration)
+                .build());
         // @formatter:on
     }
 
@@ -121,9 +123,22 @@ public class CronTriggeringPolicyTest {
         final CronTriggeringPolicy triggerPolicy = createPolicy();
         final DefaultRolloverStrategy rolloverStrategy = createStrategy();
 
-        try (final RollingFileManager fileManager = RollingFileManager.getFileManager("target/testcmd3.log",
-        "target/testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
-        PatternLayout.createDefaultLayout(), 0, true, false, null, null, null, configuration)) {
+        try (final RollingFileManager fileManager = RollingFileManager.getFileManager(
+                "target/testcmd3.log",
+                "target/testcmd3.log.%d{yyyy-MM-dd}",
+                true,
+                true,
+                triggerPolicy,
+                rolloverStrategy,
+                null,
+                PatternLayout.createDefaultLayout(),
+                0,
+                true,
+                false,
+                null,
+                null,
+                null,
+                configuration)) {
             assertNotNull(fileManager);
             // trigger rollover
             fileManager.initialize();

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.plugins.condition;
 
 import java.lang.reflect.AnnotatedElement;
 
-
 /**
  * Checks an annotated element to see if it matches some condition.
  *

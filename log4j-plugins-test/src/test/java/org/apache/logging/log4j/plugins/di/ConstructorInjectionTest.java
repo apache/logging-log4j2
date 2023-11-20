@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.test.validation.di.AnotherSingletonBean;
 import org.apache.logging.log4j.plugins.test.validation.di.PrototypeBean;
 import org.apache.logging.log4j.plugins.test.validation.di.SingletonBean;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class ConstructorInjectionTest {
     static class TestBean {
@@ -31,7 +31,10 @@ class ConstructorInjectionTest {
         final PrototypeBean prototypeBean;
 
         @Inject
-        TestBean(final SingletonBean singletonBean, final AnotherSingletonBean anotherSingletonBean, final PrototypeBean prototypeBean) {
+        TestBean(
+                final SingletonBean singletonBean,
+                final AnotherSingletonBean anotherSingletonBean,
+                final PrototypeBean prototypeBean) {
             this.singletonBean = singletonBean;
             this.anotherSingletonBean = anotherSingletonBean;
             this.prototypeBean = prototypeBean;

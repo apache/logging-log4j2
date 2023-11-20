@@ -32,170 +32,183 @@ public class NoOpLogger extends Logger {
     }
 
     @Override
-    public void log(final LogRecord record) {
-    }
+    public void log(final LogRecord record) {}
 
     @Override
-    public void log(final Level level, final String msg) {
-    }
+    public void log(final Level level, final String msg) {}
 
     @Override
-    public void log(final Level level, final Supplier<String> msgSupplier) {
-    }
+    public void log(final Level level, final Supplier<String> msgSupplier) {}
 
     @Override
-    public void log(final Level level, final String msg, final Object param1) {
-    }
+    public void log(final Level level, final String msg, final Object param1) {}
 
     @Override
-    public void log(final Level level, final String msg, final Object[] params) {
-    }
+    public void log(final Level level, final String msg, final Object[] params) {}
 
     @Override
-    public void log(final Level level, final String msg, final Throwable thrown) {
-    }
+    public void log(final Level level, final String msg, final Throwable thrown) {}
 
     @Override
-    public void log(final Level level, final Throwable thrown, final Supplier<String> msgSupplier) {
-    }
+    public void log(final Level level, final Throwable thrown, final Supplier<String> msgSupplier) {}
 
     @Override
-    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg) {
-    }
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg) {}
 
     @Override
-    public void logp(final Level level, final String sourceClass, final String sourceMethod, final Supplier<String> msgSupplier) {
-    }
+    public void logp(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final Supplier<String> msgSupplier) {}
 
     @Override
-    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg, final Object param1) {
-    }
+    public void logp(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String msg,
+            final Object param1) {}
 
     @Override
-    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg, final Object[] params) {
-    }
+    public void logp(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String msg,
+            final Object[] params) {}
 
     @Override
-    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg, final Throwable thrown) {
-    }
+    public void logp(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String msg,
+            final Throwable thrown) {}
 
     @Override
-    public void logp(final Level level, final String sourceClass, final String sourceMethod, final Throwable thrown,
-            final Supplier<String> msgSupplier) {
-    }
+    public void logp(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final Throwable thrown,
+            final Supplier<String> msgSupplier) {}
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName, final String msg) {
-    }
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String bundleName,
+            final String msg) {}
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName, final String msg,
-            final Object param1) {
-    }
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String bundleName,
+            final String msg,
+            final Object param1) {}
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName, final String msg,
-            final Object[] params) {
-    }
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String bundleName,
+            final String msg,
+            final Object[] params) {}
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final ResourceBundle bundle, final String msg,
-            final Object... params) {
-    }
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final ResourceBundle bundle,
+            final String msg,
+            final Object... params) {}
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName, final String msg,
-            final Throwable thrown) {
-    }
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String bundleName,
+            final String msg,
+            final Throwable thrown) {}
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final ResourceBundle bundle, final String msg,
-            final Throwable thrown) {
-    }
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final ResourceBundle bundle,
+            final String msg,
+            final Throwable thrown) {}
 
     @Override
-    public void entering(final String sourceClass, final String sourceMethod) {
-    }
+    public void entering(final String sourceClass, final String sourceMethod) {}
 
     @Override
-    public void entering(final String sourceClass, final String sourceMethod, final Object param1) {
-    }
+    public void entering(final String sourceClass, final String sourceMethod, final Object param1) {}
 
     @Override
-    public void entering(final String sourceClass, final String sourceMethod, final Object[] params) {
-    }
+    public void entering(final String sourceClass, final String sourceMethod, final Object[] params) {}
 
     @Override
-    public void exiting(final String sourceClass, final String sourceMethod) {
-    }
+    public void exiting(final String sourceClass, final String sourceMethod) {}
 
     @Override
-    public void exiting(final String sourceClass, final String sourceMethod, final Object result) {
-    }
+    public void exiting(final String sourceClass, final String sourceMethod, final Object result) {}
 
     @Override
-    public void throwing(final String sourceClass, final String sourceMethod, final Throwable thrown) {
-    }
+    public void throwing(final String sourceClass, final String sourceMethod, final Throwable thrown) {}
 
     @Override
-    public void severe(final String msg) {
-    }
+    public void severe(final String msg) {}
 
     @Override
-    public void warning(final String msg) {
-    }
+    public void warning(final String msg) {}
 
     @Override
-    public void info(final String msg) {
-    }
+    public void info(final String msg) {}
 
     @Override
-    public void config(final String msg) {
-    }
+    public void config(final String msg) {}
 
     @Override
-    public void fine(final String msg) {
-    }
+    public void fine(final String msg) {}
 
     @Override
-    public void finer(final String msg) {
-    }
+    public void finer(final String msg) {}
 
     @Override
-    public void finest(final String msg) {
-    }
+    public void finest(final String msg) {}
 
     @Override
-    public void severe(final Supplier<String> msgSupplier) {
-    }
+    public void severe(final Supplier<String> msgSupplier) {}
 
     @Override
-    public void warning(final Supplier<String> msgSupplier) {
-    }
+    public void warning(final Supplier<String> msgSupplier) {}
 
     @Override
-    public void info(final Supplier<String> msgSupplier) {
-    }
+    public void info(final Supplier<String> msgSupplier) {}
 
     @Override
-    public void config(final Supplier<String> msgSupplier) {
-    }
+    public void config(final Supplier<String> msgSupplier) {}
 
     @Override
-    public void fine(final Supplier<String> msgSupplier) {
-    }
+    public void fine(final Supplier<String> msgSupplier) {}
 
     @Override
-    public void finer(final Supplier<String> msgSupplier) {
-    }
+    public void finer(final Supplier<String> msgSupplier) {}
 
     @Override
-    public void finest(final Supplier<String> msgSupplier) {
-    }
+    public void finest(final Supplier<String> msgSupplier) {}
 
     @Override
-    public void setLevel(final Level newLevel) throws SecurityException {
-    }
+    public void setLevel(final Level newLevel) throws SecurityException {}
 
     @Override
     public Level getLevel() {

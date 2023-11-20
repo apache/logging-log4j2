@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.jackson.xml.layout;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -78,9 +77,18 @@ public final class XmlLayout extends AbstractJacksonLayout {
 
         @Override
         public XmlLayout build() {
-            return new XmlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(), isCompact(),
-                    getCharset(), isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter(),
-                    isIncludeNullDelimiter(), getAdditionalFields());
+            return new XmlLayout(
+                    getConfiguration(),
+                    isLocationInfo(),
+                    isProperties(),
+                    isComplete(),
+                    isCompact(),
+                    getCharset(),
+                    isIncludeStacktrace(),
+                    isStacktraceAsString(),
+                    isIncludeNullDelimiter(),
+                    isIncludeNullDelimiter(),
+                    getAdditionalFields());
         }
     }
 
@@ -89,7 +97,6 @@ public final class XmlLayout extends AbstractJacksonLayout {
 
         public XmlLogEventWithAdditionalFields(final LogEvent logEvent, final Map<String, String> additionalFields) {
             super(logEvent, additionalFields);
-
         }
 
         @Override
@@ -97,7 +104,6 @@ public final class XmlLayout extends AbstractJacksonLayout {
         public LogEvent getLogEvent() {
             return super.getLogEvent();
         }
-
     }
 
     private static final String ROOT_TAG = "Events";
@@ -108,7 +114,18 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @return an XML Layout.
      */
     public static XmlLayout createDefaultLayout() {
-        return new XmlLayout(new DefaultConfiguration(), false, false, false, false, StandardCharsets.UTF_8, true, false, false, false, null);
+        return new XmlLayout(
+                new DefaultConfiguration(),
+                false,
+                false,
+                false,
+                false,
+                StandardCharsets.UTF_8,
+                true,
+                false,
+                false,
+                false,
+                null);
     }
 
     @PluginFactory
@@ -116,19 +133,35 @@ public final class XmlLayout extends AbstractJacksonLayout {
         return new Builder<B>().asBuilder();
     }
 
-    private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
-            final boolean complete, final boolean compact, final Charset charset, final boolean includeStacktrace,
-            final boolean stacktraceAsString, final boolean includeNullDelimiter, final boolean includeTimeMillis,
+    private XmlLayout(
+            final Configuration config,
+            final boolean locationInfo,
+            final boolean properties,
+            final boolean complete,
+            final boolean compact,
+            final Charset charset,
+            final boolean includeStacktrace,
+            final boolean stacktraceAsString,
+            final boolean includeNullDelimiter,
+            final boolean includeTimeMillis,
             final KeyValuePair[] additionalFields) {
-        super(config,
-                new XmlJacksonFactory(includeStacktrace, stacktraceAsString).newWriter(locationInfo, properties,
-                        compact, includeTimeMillis),
-                charset, compact, complete, false, null, null, includeNullDelimiter, additionalFields);
+        super(
+                config,
+                new XmlJacksonFactory(includeStacktrace, stacktraceAsString)
+                        .newWriter(locationInfo, properties, compact, includeTimeMillis),
+                charset,
+                compact,
+                complete,
+                false,
+                null,
+                null,
+                includeNullDelimiter,
+                additionalFields);
     }
 
     @Override
-    protected LogEventWithAdditionalFields createLogEventWithAdditionalFields(final LogEvent event,
-            final Map<String, String> additionalFieldsMap) {
+    protected LogEventWithAdditionalFields createLogEventWithAdditionalFields(
+            final LogEvent event, final Map<String, String> additionalFieldsMap) {
         return new XmlLogEventWithAdditionalFields(event, additionalFieldsMap);
     }
 

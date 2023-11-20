@@ -33,5 +33,4 @@ import org.apache.logging.log4j.message.Message;
  *
  * @since 2.4
  */
-public interface MessageSupplier extends java.util.function.Supplier<Message> {
-}
+public interface MessageSupplier extends java.util.function.Supplier<Message> {}

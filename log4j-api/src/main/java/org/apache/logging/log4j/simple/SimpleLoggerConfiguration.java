@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.simple;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.util.PropertyEnvironment;
-
 import static org.apache.logging.log4j.simple.SimpleLoggerContext.DEFAULT_DATE_TIME_FORMAT;
 import static org.apache.logging.log4j.simple.SimpleLoggerContext.SYSTEM_PREFIX;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 public class SimpleLoggerConfiguration {
 
@@ -68,7 +67,8 @@ public class SimpleLoggerConfiguration {
 
     public DateFormat getDateTimeFormat() {
         try {
-            return new SimpleDateFormat(environment.getStringProperty(SYSTEM_PREFIX + "dateTimeFormat", DEFAULT_DATE_TIME_FORMAT));
+            return new SimpleDateFormat(
+                    environment.getStringProperty(SYSTEM_PREFIX + "dateTimeFormat", DEFAULT_DATE_TIME_FORMAT));
         } catch (final IllegalArgumentException e) {
             return new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT);
         }

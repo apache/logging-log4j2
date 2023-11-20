@@ -27,8 +27,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 @Plugin("EndOfBatchResolverFactory")
 public final class EndOfBatchResolverFactory implements EventResolverFactory {
 
-    private static final EndOfBatchResolverFactory INSTANCE =
-            new EndOfBatchResolverFactory();
+    private static final EndOfBatchResolverFactory INSTANCE = new EndOfBatchResolverFactory();
 
     private EndOfBatchResolverFactory() {}
 
@@ -43,10 +42,7 @@ public final class EndOfBatchResolverFactory implements EventResolverFactory {
     }
 
     @Override
-    public EndOfBatchResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public EndOfBatchResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
         return EndOfBatchResolver.getInstance();
     }
-
 }

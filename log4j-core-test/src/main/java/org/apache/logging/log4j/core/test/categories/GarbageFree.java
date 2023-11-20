@@ -19,5 +19,4 @@ package org.apache.logging.log4j.core.test.categories;
 /**
  * JUnit category to indicate a test is for Garbage Free Validation.
  */
-public interface GarbageFree {
-}
+public interface GarbageFree {}

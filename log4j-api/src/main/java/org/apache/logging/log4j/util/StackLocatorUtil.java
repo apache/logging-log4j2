@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.util.Deque;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
-
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -34,8 +33,7 @@ public final class StackLocatorUtil {
         stackLocator = StackLocator.getInstance();
     }
 
-    private StackLocatorUtil() {
-    }
+    private StackLocatorUtil() {}
 
     // TODO: return Object.class instead of null (though it will have a null ClassLoader)
     // (MS) I believe this would work without any modifications elsewhere, but I could be wrong

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.plugins.name;
 
 import java.util.Optional;
-
 import org.apache.logging.log4j.plugins.Plugin;
 
 public class PluginNameProvider implements AnnotatedElementNameProvider<Plugin> {

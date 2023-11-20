@@ -23,9 +23,8 @@ import org.apache.log4j.Layout;
 public class ThreadGroupRenderer implements ObjectRenderer {
 
     @Override
-    public
-    String  doRender(final Object obj) {
-        if(obj instanceof ThreadGroup) {
+    public String doRender(final Object obj) {
+        if (obj instanceof ThreadGroup) {
             final StringBuilder sb = new StringBuilder();
             final ThreadGroup threadGroup = (ThreadGroup) obj;
             sb.append("java.lang.ThreadGroup[name=");
@@ -50,7 +49,7 @@ public class ThreadGroupRenderer implements ObjectRenderer {
         try {
             // this is the best we can do
             return obj.toString();
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             return ex.toString();
         }
     }

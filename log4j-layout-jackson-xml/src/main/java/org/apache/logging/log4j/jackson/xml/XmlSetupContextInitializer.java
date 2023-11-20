@@ -34,8 +34,8 @@ import org.apache.logging.log4j.jackson.LevelMixIn;
  */
 class XmlSetupContextInitializer {
 
-    public void setupModule(final SetupContext context, final boolean includeStacktrace,
-            final boolean stacktraceAsString) {
+    public void setupModule(
+            final SetupContext context, final boolean includeStacktrace, final boolean stacktraceAsString) {
         // JRE classes: we cannot edit those with Jackson annotations
         context.setMixInAnnotations(StackTraceElement.class, StackTraceElementXmlMixIn.class);
         // Log4j API classes: we do not want to edit those with Jackson annotations because the API module should not
@@ -46,8 +46,12 @@ class XmlSetupContextInitializer {
         context.setMixInAnnotations(LogEvent.class, LogEventWithContextListXmlMixIn.class);
         // Log4j Core classes: we do not want to bring in Jackson at runtime if we do not have to.
         context.setMixInAnnotations(ExtendedStackTraceElement.class, ExtendedStackTraceElementXmlMixIn.class);
-        context.setMixInAnnotations(ThrowableProxy.class, includeStacktrace
-                ? (stacktraceAsString ? ThrowableProxyWithStacktraceAsStringXmlMixIn.class : ThrowableProxyXmlMixIn.class)
-                : ThrowableProxyWithoutStacktraceXmlMixIn.class);
+        context.setMixInAnnotations(
+                ThrowableProxy.class,
+                includeStacktrace
+                        ? (stacktraceAsString
+                                ? ThrowableProxyWithStacktraceAsStringXmlMixIn.class
+                                : ThrowableProxyXmlMixIn.class)
+                        : ThrowableProxyWithoutStacktraceXmlMixIn.class);
     }
 }

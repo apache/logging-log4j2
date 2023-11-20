@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.internal;
 
 import java.util.Arrays;
-
 import org.apache.logging.log4j.BridgeAware;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
@@ -187,45 +186,88 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     }
 
     @Override
-    public void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+    public void log(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         if (isEnabled(message, p0, p1, p2, p3, p4)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4));
         }
     }
 
     @Override
-    public void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+    public void log(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         if (isEnabled(message, p0, p1, p2, p3, p4, p5)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5));
         }
     }
 
     @Override
-    public void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6) {
+    public void log(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         if (isEnabled(message, p0, p1, p2, p3, p4, p5, p6)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6));
         }
     }
 
     @Override
-    public void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6,
-                    final Object p7) {
+    public void log(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         if (isEnabled(message, p0, p1, p2, p3, p4, p5, p6, p7)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7));
         }
     }
 
     @Override
-    public void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6,
-                    final Object p7, final Object p8) {
+    public void log(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         if (isEnabled(message, p0, p1, p2, p3, p4, p5, p6, p7, p8)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8));
         }
     }
 
     @Override
-    public void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6,
-                    final Object p7, final Object p8, final Object p9) {
+    public void log(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         if (isEnabled(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
         }
@@ -280,56 +322,83 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     }
 
     protected boolean isEnabled(String message, Object p0) {
-        return throwable != null ? logger.isEnabled(level, marker, message, p0, throwable)
+        return throwable != null
+                ? logger.isEnabled(level, marker, message, p0, throwable)
                 : logger.isEnabled(level, marker, message, p0);
     }
 
     protected boolean isEnabled(String message, Object p0, Object p1) {
-        return throwable != null ? logger.isEnabled(level, marker, message, p0, p1, throwable)
+        return throwable != null
+                ? logger.isEnabled(level, marker, message, p0, p1, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1);
     }
 
     protected boolean isEnabled(String message, Object p0, Object p1, Object p2) {
-        return throwable != null ? logger.isEnabled(level, marker, message, p0, p1, p2, throwable)
+        return throwable != null
+                ? logger.isEnabled(level, marker, message, p0, p1, p2, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2);
     }
 
     protected boolean isEnabled(String message, Object p0, Object p1, Object p2, Object p3) {
-        return throwable != null ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, throwable)
+        return throwable != null
+                ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2, p3);
     }
 
     protected boolean isEnabled(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
-        return throwable != null ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, throwable)
+        return throwable != null
+                ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4);
     }
 
     protected boolean isEnabled(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
-        return throwable != null ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, throwable)
+        return throwable != null
+                ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5);
     }
 
-    protected boolean isEnabled(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6) {
-        return throwable != null ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, throwable)
+    protected boolean isEnabled(
+            String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+        return throwable != null
+                ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
-    protected boolean isEnabled(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6, Object p7) {
-        return throwable != null ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, throwable)
+    protected boolean isEnabled(
+            String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+        return throwable != null
+                ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
-    protected boolean isEnabled(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6, Object p7, Object p8) {
+    protected boolean isEnabled(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8) {
         return throwable != null
                 ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
-    protected boolean isEnabled(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6, Object p7, Object p8, Object p9) {
+    protected boolean isEnabled(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9) {
         return throwable != null
                 ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
@@ -339,5 +408,4 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     public void setRecycler(Recycler<LogBuilder> recycler) {
         this.recycler = recycler;
     }
-
 }

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.model;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -34,8 +33,14 @@ public final class PluginEntry implements Comparable<PluginEntry> {
     private final boolean deferChildren;
     private final String namespace;
 
-    private PluginEntry(final String key, final String className, final String name, final String elementType,
-                        final boolean printable, final boolean deferChildren, final String namespace) {
+    private PluginEntry(
+            final String key,
+            final String className,
+            final String name,
+            final String elementType,
+            final boolean printable,
+            final boolean deferChildren,
+            final String namespace) {
         this.key = key;
         this.className = className;
         this.name = name;
@@ -75,15 +80,14 @@ public final class PluginEntry implements Comparable<PluginEntry> {
 
     @Override
     public String toString() {
-        return "PluginEntry{" +
-                "key='" + key + '\'' +
-                ", className='" + className + '\'' +
-                ", name='" + name + '\'' +
-                ", elementType='" + elementType + '\'' +
-                ", printable=" + printable +
-                ", deferChildren=" + deferChildren +
-                ", namespace='" + namespace + '\'' +
-                '}';
+        return "PluginEntry{" + "key='"
+                + key + '\'' + ", className='"
+                + className + '\'' + ", name='"
+                + name + '\'' + ", elementType='"
+                + elementType + '\'' + ", printable="
+                + printable + ", deferChildren="
+                + deferChildren + ", namespace='"
+                + namespace + '\'' + '}';
     }
 
     @Override
@@ -197,15 +201,14 @@ public final class PluginEntry implements Comparable<PluginEntry> {
 
         @Override
         public String toString() {
-            return "PluginEntry.Builder{" +
-                    "key='" + key + '\'' +
-                    ", className='" + className + '\'' +
-                    ", name='" + name + '\'' +
-                    ", elementType='" + elementType + '\'' +
-                    ", printable=" + printable +
-                    ", deferChildren=" + deferChildren +
-                    ", namespace='" + namespace + '\'' +
-                    '}';
+            return "PluginEntry.Builder{" + "key='"
+                    + key + '\'' + ", className='"
+                    + className + '\'' + ", name='"
+                    + name + '\'' + ", elementType='"
+                    + elementType + '\'' + ", printable="
+                    + printable + ", deferChildren="
+                    + deferChildren + ", namespace='"
+                    + namespace + '\'' + '}';
         }
     }
 }

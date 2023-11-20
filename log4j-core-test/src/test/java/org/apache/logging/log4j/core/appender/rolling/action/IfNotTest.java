@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the Not composite condition.
@@ -36,8 +36,8 @@ public class IfNotTest {
 
     @Test
     public void testEmptyIsFalse() {
-        assertThrows(NullPointerException.class,
-                () -> IfNot.createNotCondition(null).accept(null, null, null));
+        assertThrows(
+                NullPointerException.class, () -> IfNot.createNotCondition(null).accept(null, null, null));
     }
 
     @Test
@@ -47,5 +47,4 @@ public class IfNotTest {
         not.beforeFileTreeWalk();
         assertEquals(1, counter.getBeforeFileTreeWalkCount());
     }
-
 }

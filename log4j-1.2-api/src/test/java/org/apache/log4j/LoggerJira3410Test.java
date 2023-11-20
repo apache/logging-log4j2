@@ -16,10 +16,12 @@
  */
 package org.apache.log4j;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.config.TestConfigurator;
 import org.apache.logging.log4j.core.Appender;
@@ -28,9 +30,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Tests Jira3410.
  */
@@ -38,7 +37,8 @@ public class LoggerJira3410Test {
 
     @Test
     public void test() throws Exception {
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
+        try (final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
             final Logger logger = LogManager.getLogger("test");
             //
             final Map<Object, Integer> map = new HashMap<>(1);
@@ -77,5 +77,4 @@ public class LoggerJira3410Test {
             assertTrue(msg2, msg2.trim().endsWith("{null=null, " + Long.MAX_VALUE + "=1}"));
         }
     }
-
 }

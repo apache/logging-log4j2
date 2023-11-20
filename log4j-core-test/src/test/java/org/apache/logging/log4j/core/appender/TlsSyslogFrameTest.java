@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.nio.charset.StandardCharsets;
-
-import org.apache.logging.log4j.util.Chars;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.util.Chars;
+import org.junit.jupiter.api.Test;
 
 public class TlsSyslogFrameTest {
     private static final String TEST_MESSAGE = "The quick brown fox jumps over the lazy dog";

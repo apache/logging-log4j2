@@ -24,7 +24,6 @@ import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
-
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LogEventWrapper;
@@ -143,14 +142,14 @@ public class Category implements AppenderAttachable {
      * The assigned level of this category. The <code>level</code> variable need not be assigned a value in which case it is
      * inherited form the hierarchy.
      */
-    volatile protected Level level;
+    protected volatile Level level;
 
     private RendererMap rendererMap;
 
     /**
      * The parent of this category. All categories have at least one ancestor which is the root category.
      */
-    volatile protected Category parent;
+    protected volatile Category parent;
 
     /**
      * Resource bundle for localized messages.
@@ -375,8 +374,8 @@ public class Category implements AppenderAttachable {
     @SuppressWarnings("unchecked")
     public Enumeration getAllAppenders() {
         if (LogManager.isLog4jCorePresent()) {
-            final Collection<org.apache.logging.log4j.core.Appender> appenders = CategoryUtil.getAppenders(logger)
-                    .values();
+            final Collection<org.apache.logging.log4j.core.Appender> appenders =
+                    CategoryUtil.getAppenders(logger).values();
             return Collections.enumeration(appenders.stream()
                     // omit native Log4j 2.x appenders
                     .filter(AppenderAdapter.Adapter.class::isInstance)
@@ -406,23 +405,23 @@ public class Category implements AppenderAttachable {
 
     public Level getEffectiveLevel() {
         switch (logger.getLevel().getStandardLevel()) {
-        case ALL:
-            return Level.ALL;
-        case TRACE:
-            return Level.TRACE;
-        case DEBUG:
-            return Level.DEBUG;
-        case INFO:
-            return Level.INFO;
-        case WARN:
-            return Level.WARN;
-        case ERROR:
-            return Level.ERROR;
-        case FATAL:
-            return Level.FATAL;
-        default:
-            // TODO Should this be an IllegalStateException?
-            return Level.OFF;
+            case ALL:
+                return Level.ALL;
+            case TRACE:
+                return Level.TRACE;
+            case DEBUG:
+                return Level.DEBUG;
+            case INFO:
+                return Level.INFO;
+            case WARN:
+                return Level.WARN;
+            case ERROR:
+                return Level.ERROR;
+            case FATAL:
+                return Level.FATAL;
+            default:
+                // TODO Should this be an IllegalStateException?
+                return Level.OFF;
         }
     }
 
@@ -582,7 +581,11 @@ public class Category implements AppenderAttachable {
         }
     }
 
-    void maybeLog(final String fqcn, final org.apache.logging.log4j.Level level, final Object message, final Throwable throwable) {
+    void maybeLog(
+            final String fqcn,
+            final org.apache.logging.log4j.Level level,
+            final Object message,
+            final Throwable throwable) {
         if (logger.isEnabled(level)) {
             final Message msg = createMessage(message);
             if (logger instanceof ExtendedLogger) {
@@ -603,7 +606,7 @@ public class Category implements AppenderAttachable {
     public void removeAllAppenders() {
         if (aai != null) {
             final Vector appenders = new Vector();
-            for (final Enumeration iter = aai.getAllAppenders(); iter != null && iter.hasMoreElements();) {
+            for (final Enumeration iter = aai.getAllAppenders(); iter != null && iter.hasMoreElements(); ) {
                 appenders.add(iter.nextElement());
             }
             aai.removeAllAppenders();
@@ -703,5 +706,4 @@ public class Category implements AppenderAttachable {
     public void warn(final Object message, final Throwable t) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.WARN, message, t);
     }
-
 }

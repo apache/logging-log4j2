@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.docker.model;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Map;
 
 /**
  *
@@ -75,7 +74,6 @@ public class NetworkSettings {
 
     @JsonProperty("MacAddress")
     private String macAddress;
-
 
     public Map<String, Network> getNetworks() {
         return networks;

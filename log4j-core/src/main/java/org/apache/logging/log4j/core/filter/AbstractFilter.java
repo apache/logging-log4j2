@@ -38,7 +38,7 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
  */
 public abstract class AbstractFilter extends AbstractLifeCycle implements Filter {
 
-    public static abstract class AbstractFilterBuilder<B extends AbstractFilterBuilder<B>>  {
+    public abstract static class AbstractFilterBuilder<B extends AbstractFilterBuilder<B>> {
 
         public static final String ATTR_ON_MISMATCH = "onMismatch";
         public static final String ATTR_ON_MATCH = "onMatch";
@@ -81,7 +81,6 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
         public B asBuilder() {
             return (B) this;
         }
-
     }
 
     /**
@@ -152,8 +151,8 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @return The Result of filtering.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-                         final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return Result.NEUTRAL;
     }
 
@@ -167,8 +166,8 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @return The Result of filtering.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-                         final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return Result.NEUTRAL;
     }
 
@@ -182,8 +181,8 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @return The Result of filtering.
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-                         final Object... params) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return Result.NEUTRAL;
     }
 
@@ -198,8 +197,8 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object p0) {
         return filter(logger, level, marker, msg, new Object[] {p0});
     }
 
@@ -215,8 +214,13 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1) {
         return filter(logger, level, marker, msg, new Object[] {p0, p1});
     }
 
@@ -233,8 +237,14 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         return filter(logger, level, marker, msg, new Object[] {p0, p1, p2});
     }
 
@@ -252,8 +262,15 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3});
     }
 
@@ -272,8 +289,15 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4});
     }
@@ -294,9 +318,17 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5});
     }
 
@@ -317,9 +349,18 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5, p6});
     }
 
@@ -341,9 +382,18 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7});
     }
@@ -367,10 +417,20 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7, p8});
     }
 
@@ -394,10 +454,21 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * @since 2.7
      */
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return filter(logger, level, marker, msg, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7, p8, p9});
     }
 

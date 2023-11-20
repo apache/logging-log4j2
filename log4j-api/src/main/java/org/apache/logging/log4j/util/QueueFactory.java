@@ -28,5 +28,4 @@ import java.util.Queue;
 public interface QueueFactory {
 
     <E> Queue<E> create();
-
 }

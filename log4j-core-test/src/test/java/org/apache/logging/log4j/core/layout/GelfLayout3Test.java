@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -30,8 +31,6 @@ import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("GelfLayout3Test.xml")
 @UsingAnyThreadContext
@@ -78,7 +77,8 @@ public class GelfLayout3Test {
         final String gelf = list.getMessages().get(0);
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(gelf);
-        assertEquals("arg1=\"test1\" arg2=\"\" arg3=\"test3\" message=\"My Test Message\"",
+        assertEquals(
+                "arg1=\"test1\" arg2=\"\" arg3=\"test3\" message=\"My Test Message\"",
                 json.get("short_message").asText());
         assertEquals("myhost", json.get("host").asText());
         assertNotNull(json.get("_mdc.loginId"));
@@ -95,5 +95,4 @@ public class GelfLayout3Test {
         assertNull(json.get("_empty"));
         assertEquals("FOO", json.get("_foo").asText());
     }
-
 }

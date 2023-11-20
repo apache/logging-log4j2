@@ -46,7 +46,10 @@ public class RequiredPropertyValidator implements ConstraintValidator<RequiredPr
             return false;
         }
         if (annotation.value().length() > 0 && !annotation.value().equalsIgnoreCase(property)) {
-            LOGGER.error("{} cannot be used. Required property {} is not set to {}", name, annotation.name(),
+            LOGGER.error(
+                    "{} cannot be used. Required property {} is not set to {}",
+                    name,
+                    annotation.name(),
                     annotation.value());
             return false;
         }

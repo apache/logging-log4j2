@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.plugins.test.validation;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -46,7 +45,8 @@ public class ValidatingPluginWithTypedBuilder {
         return new Builder<>();
     }
 
-    public static class Builder<T> implements org.apache.logging.log4j.plugins.util.Builder<ValidatingPluginWithTypedBuilder> {
+    public static class Builder<T>
+            implements org.apache.logging.log4j.plugins.util.Builder<ValidatingPluginWithTypedBuilder> {
 
         @PluginBuilderAttribute
         @Required(message = "The name given by the builder is null")

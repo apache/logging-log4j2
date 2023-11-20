@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.LinkedList;
 import java.util.List;
-
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests ReusableParameterizedMessage.
  */
 public class ReusableParameterizedMessageTest {
 
-    public static ReusableParameterizedMessage set(final ReusableParameterizedMessage msg, final String format,
-            final Object... params) {
+    public static ReusableParameterizedMessage set(
+            final ReusableParameterizedMessage msg, final String format, final Object... params) {
 
         return msg.set(format, params);
     }
@@ -55,67 +54,74 @@ public class ReusableParameterizedMessageTest {
     @Test
     public void testFormat3StringArgs() {
         final String testMsg = "Test message {}{} {}";
-        final String[] args = { "a", "b", "c" };
-        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
+        final String[] args = {"a", "b", "c"};
+        final String result =
+                new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
         assertEquals("Test message ab c", result);
     }
 
     @Test
     public void testFormatNullArgs() {
         final String testMsg = "Test message {} {} {} {} {} {}";
-        final String[] args = { "a", null, "c", null, null, null };
-        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
+        final String[] args = {"a", null, "c", null, null, null};
+        final String result =
+                new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
         assertEquals("Test message a null c null null null", result);
     }
 
     @Test
     public void testFormatStringArgsIgnoresSuperfluousArgs() {
         final String testMsg = "Test message {}{} {}";
-        final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
-        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
+        final String[] args = {"a", "b", "c", "unnecessary", "superfluous"};
+        final String result =
+                new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
         assertEquals("Test message ab c", result);
     }
 
     @Test
     public void testFormatStringArgsWithEscape() {
         final String testMsg = "Test message \\{}{} {}";
-        final String[] args = { "a", "b", "c" };
-        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
+        final String[] args = {"a", "b", "c"};
+        final String result =
+                new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
         assertEquals("Test message {}a b", result);
     }
 
     @Test
     public void testFormatStringArgsWithTrailingEscape() {
         final String testMsg = "Test message {}{} {}\\";
-        final String[] args = { "a", "b", "c" };
-        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
+        final String[] args = {"a", "b", "c"};
+        final String result =
+                new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
         assertEquals("Test message ab c\\", result);
     }
 
     @Test
     public void testFormatStringArgsWithTrailingText() {
         final String testMsg = "Test message {}{} {}Text";
-        final String[] args = { "a", "b", "c" };
-        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
+        final String[] args = {"a", "b", "c"};
+        final String result =
+                new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
         assertEquals("Test message ab cText", result);
     }
 
     @Test
     public void testFormatStringArgsWithTrailingEscapedEscape() {
         final String testMsg = "Test message {}{} {}\\\\";
-        final String[] args = { "a", "b", "c" };
-        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
+        final String[] args = {"a", "b", "c"};
+        final String result =
+                new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
         assertEquals("Test message ab c\\\\", result);
     }
 
     @Test
     public void testFormatStringArgsWithEscapedEscape() {
         final String testMsg = "Test message \\\\{}{} {}";
-        final Object[] args = { "a", "b", "c" };
-        final String result = new ReusableParameterizedMessage().set(testMsg, args).getFormattedMessage();
+        final Object[] args = {"a", "b", "c"};
+        final String result =
+                new ReusableParameterizedMessage().set(testMsg, args).getFormattedMessage();
         assertEquals("Test message \\ab c", result);
     }
-
 
     @Test
     public void testNotSafeWithMutableParams() {
@@ -158,12 +164,14 @@ public class ReusableParameterizedMessageTest {
         expected.add("msg");
         expected.add(EXCEPTION1);
         final List<Object> actual = new LinkedList<>();
-        msg.forEachParameter(new ParameterConsumer<Void>() {
-            @Override
-            public void accept(final Object parameter, final int parameterIndex, final Void state) {
-                actual.add(parameter);
-            }
-        }, null);
+        msg.forEachParameter(
+                new ParameterConsumer<Void>() {
+                    @Override
+                    public void accept(final Object parameter, final int parameterIndex, final Void state) {
+                        actual.add(parameter);
+                    }
+                },
+                null);
         assertEquals(expected, actual);
     }
 }

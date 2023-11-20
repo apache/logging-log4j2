@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class JdbcH2TestHelper {
 
@@ -59,5 +58,4 @@ public class JdbcH2TestHelper {
     static Connection getConnectionInMemoryPermanent() throws SQLException {
         return DriverManager.getConnection(CONNECTION_STRING_IN_MEMORY_PERMANENT, USER_NAME, PASSWORD);
     }
-
 }

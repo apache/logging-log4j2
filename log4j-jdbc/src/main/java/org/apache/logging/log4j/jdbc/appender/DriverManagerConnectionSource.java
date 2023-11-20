@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jdbc.appender;
 
 import java.sql.DriverManager;
-
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -46,10 +45,14 @@ public class DriverManagerConnectionSource extends AbstractDriverManagerConnecti
 
         @Override
         public DriverManagerConnectionSource build() {
-            return new DriverManagerConnectionSource(getDriverClassName(), getConnectionString(), getConnectionString(),
-                    getUserName(), getPassword(), getProperties());
+            return new DriverManagerConnectionSource(
+                    getDriverClassName(),
+                    getConnectionString(),
+                    getConnectionString(),
+                    getUserName(),
+                    getPassword(),
+                    getProperties());
         }
-
     }
 
     @PluginFactory
@@ -57,9 +60,13 @@ public class DriverManagerConnectionSource extends AbstractDriverManagerConnecti
         return new Builder<B>().asBuilder();
     }
 
-    public DriverManagerConnectionSource(final String driverClassName, final String connectionString,
-            final String actualConnectionString, final char[] userName, final char[] password, final Property[] properties) {
+    public DriverManagerConnectionSource(
+            final String driverClassName,
+            final String connectionString,
+            final String actualConnectionString,
+            final char[] userName,
+            final char[] password,
+            final Property[] properties) {
         super(driverClassName, connectionString, actualConnectionString, userName, password, properties);
     }
-
 }

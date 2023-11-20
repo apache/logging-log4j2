@@ -27,7 +27,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -106,7 +105,6 @@ public final class SyslogLayout extends AbstractStringLayout {
             this.escapeNL = escapeNL;
             return asBuilder();
         }
-
     }
 
     @PluginFactory
@@ -127,6 +125,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * Date format used if header = true.
      */
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH);
+
     private final Lock dateFormatLock = new ReentrantLock();
 
     /**

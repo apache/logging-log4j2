@@ -21,5 +21,9 @@ package org.apache.logging.log4j.core.util.internal;
  * This class should be considered internal to the Log4j implementation.
  */
 public enum Status {
-    SUCCESS, NOT_MODIFIED, NOT_FOUND, ERROR, EMPTY;
+    SUCCESS,
+    NOT_MODIFIED,
+    NOT_FOUND,
+    ERROR,
+    EMPTY;
 }

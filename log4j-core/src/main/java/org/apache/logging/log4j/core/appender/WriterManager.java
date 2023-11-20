@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.StringLayout;
 
 /**
@@ -37,16 +36,17 @@ public class WriterManager extends AbstractManager {
      * @param <T> The type of the WriterManager.
      * @return A WriterManager.
      */
-    public static <T> WriterManager getManager(final String name, final T data,
-                                                 final ManagerFactory<? extends WriterManager, T> factory) {
+    public static <T> WriterManager getManager(
+            final String name, final T data, final ManagerFactory<? extends WriterManager, T> factory) {
         return AbstractManager.getManager(name, factory, data);
     }
+
     protected final StringLayout layout;
 
     private volatile Writer writer;
 
-    public WriterManager(final Writer writer, final String streamName, final StringLayout layout,
-            final boolean writeHeader) {
+    public WriterManager(
+            final Writer writer, final String streamName, final StringLayout layout, final boolean writeHeader) {
         super(null, streamName);
         this.writer = writer;
         this.layout = layout;
@@ -131,7 +131,7 @@ public class WriterManager extends AbstractManager {
      * @param str the string to write
      * @throws AppenderLoggingException if an error occurs.
      */
-    protected void write(final String str)  {
+    protected void write(final String str) {
         writeLock.lock();
         try {
             writer.write(str);

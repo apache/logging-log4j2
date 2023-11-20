@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import static org.junit.jupiter.api.io.CleanupMode.NEVER;
+import static org.junit.jupiter.api.io.CleanupMode.ON_SUCCESS;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -25,7 +28,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.TestProperties;
@@ -41,17 +43,14 @@ import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.ModifierSupport;
 
-import static org.junit.jupiter.api.io.CleanupMode.NEVER;
-import static org.junit.jupiter.api.io.CleanupMode.ON_SUCCESS;
-
 public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallback, ParameterResolver {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
-        final List<Field> fields = AnnotationSupport.findAnnotatedFields(context.getRequiredTestClass(),
-                TempLoggingDir.class, ModifierSupport::isStatic);
+        final List<Field> fields = AnnotationSupport.findAnnotatedFields(
+                context.getRequiredTestClass(), TempLoggingDir.class, ModifierSupport::isStatic);
         Path loggingPath = null;
         for (final Field field : fields) {
             if (loggingPath != null) {
@@ -76,8 +75,8 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
             }
         });
         // Inject fields
-        final List<Field> fields = AnnotationSupport.findAnnotatedFields(context.getRequiredTestClass(),
-                TempLoggingDir.class, ModifierSupport::isNotStatic);
+        final List<Field> fields = AnnotationSupport.findAnnotatedFields(
+                context.getRequiredTestClass(), TempLoggingDir.class, ModifierSupport::isNotStatic);
         Path loggingPath = null;
         final Object instance = context.getRequiredTestInstance();
         for (final Field field : fields) {
@@ -104,7 +103,8 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        final TempLoggingDir annotation = parameterContext.findAnnotation(TempLoggingDir.class).get();
+        final TempLoggingDir annotation =
+                parameterContext.findAnnotation(TempLoggingDir.class).get();
         // Get or create temporary directory
         PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, extensionContext);
         if (holder == null || !extensionContext.equals(holder.getMainContext())) {
@@ -176,13 +176,14 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
 
         @Override
         public void close() throws IOException {
-            if (cleanupMode == NEVER || (cleanupMode == ON_SUCCESS
-                    && contexts.keySet().stream().anyMatch(context -> context.getExecutionException().isPresent()))) {
+            if (cleanupMode == NEVER
+                    || (cleanupMode == ON_SUCCESS
+                            && contexts.keySet().stream().anyMatch(context -> context.getExecutionException()
+                                    .isPresent()))) {
                 LOGGER.debug("Skipping cleanup of directory {}.", path);
                 return;
             }
             DirectoryCleaner.deleteDirectory(path);
         }
-
     }
 }

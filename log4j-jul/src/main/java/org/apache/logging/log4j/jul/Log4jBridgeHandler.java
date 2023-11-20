@@ -16,22 +16,20 @@
  */
 package org.apache.logging.log4j.jul;
 
-//note: NO import of Logger, Level, LogManager to prevent conflicts JUL/log4j
+// note: NO import of Logger, Level, LogManager to prevent conflicts JUL/log4j
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.LogRecord;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.status.StatusLogger;
-
 
 /**
  * Bridge from JUL to log4j2.<br>
@@ -97,7 +95,6 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
     private String julSuffixToAppend = null;
     private LoggerContext context;
 
-
     /**
      * Adds a new Log4jBridgeHandler instance to JUL's root logger.
      * This is a programmatic alternative to specify
@@ -120,40 +117,37 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
         return java.util.logging.LogManager.getLogManager().getLogger("");
     }
 
-
     /** Initialize this handler by reading out JUL configuration. */
     public Log4jBridgeHandler() {
         final java.util.logging.LogManager julLogMgr = java.util.logging.LogManager.getLogManager();
         final String className = this.getClass().getName();
-        init(Boolean.parseBoolean(julLogMgr.getProperty(className + ".sysoutDebug")),
+        init(
+                Boolean.parseBoolean(julLogMgr.getProperty(className + ".sysoutDebug")),
                 julLogMgr.getProperty(className + ".appendSuffix"),
-                Boolean.parseBoolean(julLogMgr.getProperty(className + ".propagateLevels")) );
-
+                Boolean.parseBoolean(julLogMgr.getProperty(className + ".propagateLevels")));
     }
 
     /** Initialize this handler with given configuration. */
     public Log4jBridgeHandler(boolean debugOutput, String suffixToAppend, boolean propagateLevels) {
-           init(debugOutput, suffixToAppend, propagateLevels);
-       }
-
+        init(debugOutput, suffixToAppend, propagateLevels);
+    }
 
     /** Perform init. of this handler with given configuration (typical use is for constructor). */
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "The data is available only in debug mode."
-    )
+            justification = "The data is available only in debug mode.")
     protected void init(boolean debugOutput, String suffixToAppend, boolean propagateLevels) {
-           this.doDebugOutput = debugOutput;
+        this.doDebugOutput = debugOutput;
         if (debugOutput) {
             new Exception("DIAGNOSTIC ONLY (sysout):  Log4jBridgeHandler instance created (" + this + ")")
-                    .printStackTrace(System.out);    // is no error thus no syserr
+                    .printStackTrace(System.out); // is no error thus no syserr
         }
 
         if (suffixToAppend != null) {
-            suffixToAppend = suffixToAppend.trim();    // remove spaces
+            suffixToAppend = suffixToAppend.trim(); // remove spaces
             if (suffixToAppend.isEmpty()) {
                 suffixToAppend = null;
-            } else if (suffixToAppend.charAt(0) != '.') {    // always make it a sub-logger
+            } else if (suffixToAppend.charAt(0) != '.') { // always make it a sub-logger
                 suffixToAppend = '.' + suffixToAppend;
             }
         }
@@ -168,10 +162,12 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
             // be set here, but a call of JUL.readConfiguration() will be done on purpose
         }
 
-        SLOGGER.debug("Log4jBridgeHandler init. with: suffix='{}', lvlProp={}, instance={}",
-                suffixToAppend, propagateLevels, this);
+        SLOGGER.debug(
+                "Log4jBridgeHandler init. with: suffix='{}', lvlProp={}, instance={}",
+                suffixToAppend,
+                propagateLevels,
+                this);
     }
-
 
     @Override
     public void close() {
@@ -186,15 +182,14 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
         }
     }
 
-
     @Override
     public void publish(final LogRecord record) {
-        if (record == null) {    // silently ignore null records
+        if (record == null) { // silently ignore null records
             return;
         }
 
         final org.apache.logging.log4j.Logger log4jLogger = getLog4jLogger(record);
-        final String msg = julFormatter.formatMessage(record);    // use JUL's implementation to get real msg
+        final String msg = julFormatter.formatMessage(record); // use JUL's implementation to get real msg
         /* log4j allows nulls:
         if (msg == null) {
             // JUL allows nulls, but other log system may not
@@ -208,7 +203,8 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
                 ((ExtendedLogger) log4jLogger).logIfEnabled(FQCN, log4jLevel, null, msg, thrown);
             } catch (NoClassDefFoundError e) {
                 // sometimes there are problems with log4j.ExtendedStackTraceElement, so try a workaround
-                log4jLogger.warn("Log4jBridgeHandler: ignored exception when calling 'ExtendedLogger': {}", e.toString());
+                log4jLogger.warn(
+                        "Log4jBridgeHandler: ignored exception when calling 'ExtendedLogger': {}", e.toString());
                 log4jLogger.log(log4jLevel, msg, thrown);
             }
         } else {
@@ -216,12 +212,10 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
         }
     }
 
-
     @Override
     public void flush() {
         // nothing to do
     }
-
 
     /**
      * Return the log4j-Logger instance that will be used for logging.
@@ -237,9 +231,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
         return org.apache.logging.log4j.LogManager.getLogger(name);
     }
 
-
-/////  log level propagation code
-
+    /////  log level propagation code
 
     @Override
     public void accept(final Configuration configuration) {
@@ -250,7 +242,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
     /** Save "hard" references to configured JUL loggers. (is lazy init.) */
     private Set<java.util.logging.Logger> julLoggerRefs;
     /** Perform developer tests? (Should be unused/outcommented for real code) */
-    //private static final boolean DEVTEST = false;
+    // private static final boolean DEVTEST = false;
 
     private void propagateLogLevels(final Configuration config) {
         SLOGGER.debug("Log4jBridgeHandler.propagateLogLevels(): {}", config);
@@ -264,36 +256,40 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
             julLoggerRefs.clear();
         }
 
-        //if (DEVTEST)  debugPrintJulLoggers("Start of propagation");
+        // if (DEVTEST)  debugPrintJulLoggers("Start of propagation");
         // walk through all log4j configured loggers and set JUL level accordingly
         final Map<String, LoggerConfig> log4jLoggers = config.getLoggers();
-        //java.util.List<String> outTxt = new java.util.ArrayList<>();    // DEVTEST / DEV-DEBUG ONLY
+        // java.util.List<String> outTxt = new java.util.ArrayList<>();    // DEVTEST / DEV-DEBUG ONLY
         for (LoggerConfig lcfg : log4jLoggers.values()) {
-            final java.util.logging.Logger julLog = java.util.logging.Logger.getLogger(lcfg.getName());    // this also fits for root = ""
-            final java.util.logging.Level julLevel = LevelTranslator.toJavaLevel(lcfg.getLevel());    // lcfg.getLevel() never returns null
+            final java.util.logging.Logger julLog =
+                    java.util.logging.Logger.getLogger(lcfg.getName()); // this also fits for root = ""
+            final java.util.logging.Level julLevel =
+                    LevelTranslator.toJavaLevel(lcfg.getLevel()); // lcfg.getLevel() never returns null
             julLog.setLevel(julLevel);
-            julLoggerRefs.add(julLog);    // save an explicit reference to prevent GC
-            //if (DEVTEST)  outTxt.add("propagating '" + lcfg.getName() + "' / " + lcfg.getLevel() + "  ->  " + julLevel);
+            julLoggerRefs.add(julLog); // save an explicit reference to prevent GC
+            // if (DEVTEST)  outTxt.add("propagating '" + lcfg.getName() + "' / " + lcfg.getLevel() + "  ->  " +
+            // julLevel);
         } // for
-        //if (DEVTEST)  java.util.Collections.sort(outTxt, String.CASE_INSENSITIVE_ORDER);
-        //if (DEVTEST)  for (String s : outTxt)  System.out.println("+ " + s);
-        //if (DEVTEST)  debugPrintJulLoggers("After propagation");
+        // if (DEVTEST)  java.util.Collections.sort(outTxt, String.CASE_INSENSITIVE_ORDER);
+        // if (DEVTEST)  for (String s : outTxt)  System.out.println("+ " + s);
+        // if (DEVTEST)  debugPrintJulLoggers("After propagation");
 
         // cleanup JUL: reset all log levels not explicitly given by log4j
         // This has to happen after propagation because JUL creates and inits. the loggers lazily
         // so a nested logger might be created during the propagation-for-loop above and gets
         // its JUL-configured level not until then.
         final java.util.logging.LogManager julMgr = java.util.logging.LogManager.getLogManager();
-        for (Enumeration<String> en = julMgr.getLoggerNames();  en.hasMoreElements(); ) {
+        for (Enumeration<String> en = julMgr.getLoggerNames(); en.hasMoreElements(); ) {
             final java.util.logging.Logger julLog = julMgr.getLogger(en.nextElement());
-            if (julLog != null  &&  julLog.getLevel() != null  &&  !"".equals(julLog.getName())
-                    &&  !log4jLoggers.containsKey(julLog.getName()) ) {
+            if (julLog != null
+                    && julLog.getLevel() != null
+                    && !"".equals(julLog.getName())
+                    && !log4jLoggers.containsKey(julLog.getName())) {
                 julLog.setLevel(null);
             }
         } // for
-        //if (DEVTEST)  debugPrintJulLoggers("After JUL cleanup");
+        // if (DEVTEST)  debugPrintJulLoggers("After JUL cleanup");
     }
-
 
     /* DEV-DEBUG ONLY  (comment out for release) *xx/
     private void debugPrintJulLoggers(String infoStr) {

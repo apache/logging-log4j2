@@ -25,5 +25,4 @@ import org.apache.logging.log4j.plugins.Singleton;
 @Plugin("Beta")
 @Ordered(Ordered.FIRST)
 @Singleton
-public class BetaBean implements BaseBean {
-}
+public class BetaBean implements BaseBean {}

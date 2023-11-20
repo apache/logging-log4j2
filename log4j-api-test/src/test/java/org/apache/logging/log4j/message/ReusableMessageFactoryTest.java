@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.spi.ThreadLocalRecyclerFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ReusableMessageFactory class.
@@ -72,20 +72,20 @@ public class ReusableMessageFactoryTest {
     @Test
     public void testCreateEventOverwritesFields() throws Exception {
         final Message message1 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 1, 2, 3, 4);
-        assertReusableParameterizeMessage(message1, "text, p0={} p1={} p2={} p3={}", new Object[]{
-                new Integer(1), //
-                new Integer(2), //
-                new Integer(3), //
-                new Integer(4), //
+        assertReusableParameterizeMessage(message1, "text, p0={} p1={} p2={} p3={}", new Object[] {
+            new Integer(1), //
+            new Integer(2), //
+            new Integer(3), //
+            new Integer(4), //
         });
 
         factory.recycle(message1);
         final Message message2 = factory.newMessage("other, A={} B={} C={} D={}", 1, 2, 3, 4);
-        assertReusableParameterizeMessage(message1, "other, A={} B={} C={} D={}", new Object[]{
-                new Integer(1), //
-                new Integer(2), //
-                new Integer(3), //
-                new Integer(4), //
+        assertReusableParameterizeMessage(message1, "other, A={} B={} C={} D={}", new Object[] {
+            new Integer(1), //
+            new Integer(2), //
+            new Integer(3), //
+            new Integer(4), //
         });
         assertSame(message1, message2);
         factory.recycle(message2);
@@ -114,21 +114,20 @@ public class ReusableMessageFactoryTest {
         assertNotNull(message1[0]);
         assertNotNull(message2[0]);
         assertNotSame(message1[0], message2[0]);
-        assertReusableParameterizeMessage(message1[0], "text, p0={} p1={} p2={} p3={}", new Object[]{
-                new Integer(1), //
-                new Integer(2), //
-                new Integer(3), //
-                new Integer(4), //
+        assertReusableParameterizeMessage(message1[0], "text, p0={} p1={} p2={} p3={}", new Object[] {
+            new Integer(1), //
+            new Integer(2), //
+            new Integer(3), //
+            new Integer(4), //
         });
 
-        assertReusableParameterizeMessage(message2[0], "other, A={} B={} C={} D={}", new Object[]{
-                new Integer(1), //
-                new Integer(2), //
-                new Integer(3), //
-                new Integer(4), //
+        assertReusableParameterizeMessage(message2[0], "other, A={} B={} C={} D={}", new Object[] {
+            new Integer(1), //
+            new Integer(2), //
+            new Integer(3), //
+            new Integer(4), //
         });
         factory.recycle(message1[0]);
         factory.recycle(message2[0]);
     }
-
 }

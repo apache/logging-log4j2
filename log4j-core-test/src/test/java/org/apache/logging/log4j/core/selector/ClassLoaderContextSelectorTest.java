@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import java.lang.reflect.Field;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.lang.reflect.Field;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class ClassLoaderContextSelectorTest {
 
-    private static final String PKG = ClassLoaderContextSelectorTest.class.getPackage().getName();
+    private static final String PKG =
+            ClassLoaderContextSelectorTest.class.getPackage().getName();
 
     private ClassLoader loader1, loader2, loader3;
 

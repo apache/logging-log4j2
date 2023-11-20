@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.impl;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Loader;
@@ -47,7 +46,8 @@ import org.apache.logging.log4j.util.StringMap;
  * @since 2.7
  */
 public class ContextDataFactory {
-    private static final String CLASS_NAME = PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.THREAD_CONTEXT_DATA_CLASS_NAME);
+    private static final String CLASS_NAME =
+            PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.THREAD_CONTEXT_DATA_CLASS_NAME);
     private static final Class<? extends StringMap> CACHED_CLASS = createCachedClass(CLASS_NAME);
 
     /**
@@ -57,6 +57,7 @@ public class ContextDataFactory {
      * graalvm is not support MethodHandle now, so the Constructor need not to return MethodHandle.
      */
     private static final Constructor<? extends StringMap> DEFAULT_CONSTRUCTOR = createDefaultConstructor(CACHED_CLASS);
+
     private static final Constructor<? extends StringMap> INITIAL_CAPACITY_CONSTRUCTOR =
             createInitialCapacityConstructor(CACHED_CLASS);
 
@@ -145,5 +146,4 @@ public class ContextDataFactory {
     public static StringMap emptyFrozenContextData() {
         return EMPTY_STRING_MAP;
     }
-
 }

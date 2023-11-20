@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.test.junit;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -40,7 +39,6 @@ class ThreadContextMapExtension implements BeforeEachCallback {
 
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
-        context.getStore(ExtensionContextAnchor.LOG4J2_NAMESPACE)
-                .getOrComputeIfAbsent(ThreadContextMapStore.class);
+        context.getStore(ExtensionContextAnchor.LOG4J2_NAMESPACE).getOrComputeIfAbsent(ThreadContextMapStore.class);
     }
 }

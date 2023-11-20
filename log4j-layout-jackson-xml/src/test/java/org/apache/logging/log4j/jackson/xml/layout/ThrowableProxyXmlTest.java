@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jackson.xml.layout;
 
 import java.io.IOException;
-
 import org.apache.logging.log4j.jackson.ThrowableProxyJacksonTest;
 import org.apache.logging.log4j.jackson.xml.Log4jXmlObjectMapper;
 import org.junit.Test;
@@ -28,5 +27,4 @@ public class ThrowableProxyXmlTest extends ThrowableProxyJacksonTest {
     public void testIoContainerAsXml() throws IOException {
         testIoContainer(new Log4jXmlObjectMapper());
     }
-
 }

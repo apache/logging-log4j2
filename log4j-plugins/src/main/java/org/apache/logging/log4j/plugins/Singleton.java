@@ -27,9 +27,8 @@ import java.lang.annotation.Target;
  * Scope type where provided instances are singletons.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 @Inherited
 @ScopeType
-public @interface Singleton {
-}
+public @interface Singleton {}

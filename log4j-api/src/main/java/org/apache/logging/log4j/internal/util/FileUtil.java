@@ -25,8 +25,12 @@ import java.net.URL;
 public class FileUtil {
 
     private static final String META_INF = "META-INF/";
+
     public enum FileLocation {
-        MODULE, CLASSLOADER, URL, FILE;
+        MODULE,
+        CLASSLOADER,
+        URL,
+        FILE;
     }
 
     public FileLocation findLocation(final Module module, final ClassLoader classLoader, final String fileName) {
@@ -61,6 +65,4 @@ public class FileUtil {
 
         return null;
     }
-
-
 }

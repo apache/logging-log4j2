@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.spring.cloud.config.client;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Source;
@@ -36,8 +37,6 @@ import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * Class Description goes here.
  */
@@ -48,7 +47,8 @@ public class Log4j2EventListenerTest {
     private static final String CONFIG = "log4j-console.xml";
     private static final String DIR = "target/logs";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -60,7 +60,10 @@ public class Log4j2EventListenerTest {
     public void test() throws Exception {
         final AtomicInteger count = new AtomicInteger(0);
         final Source source = new Source(new File("test.java"));
-        loggerContextRule.getLoggerContext().getConfiguration().getWatchManager()
+        loggerContextRule
+                .getLoggerContext()
+                .getConfiguration()
+                .getWatchManager()
                 .watch(source, new TestWatcher(count));
         publisher.publishEvent(new EnvironmentChangeEvent(new HashSet<>()));
         assertTrue(count.get() > 0);
@@ -80,9 +83,7 @@ public class Log4j2EventListenerTest {
         }
 
         @Override
-        public void modified() {
-
-        }
+        public void modified() {}
 
         @Override
         public boolean isModified() {
@@ -96,9 +97,7 @@ public class Log4j2EventListenerTest {
         }
 
         @Override
-        public void watching(final Source source) {
-
-        }
+        public void watching(final Source source) {}
 
         @Override
         public Source getSource() {
@@ -106,7 +105,10 @@ public class Log4j2EventListenerTest {
         }
 
         @Override
-        public Watcher newWatcher(final Reconfigurable reconfigurable, final List<Consumer<Reconfigurable>> listeners, final long lastModifiedMillis) {
+        public Watcher newWatcher(
+                final Reconfigurable reconfigurable,
+                final List<Consumer<Reconfigurable>> listeners,
+                final long lastModifiedMillis) {
             return this;
         }
     }

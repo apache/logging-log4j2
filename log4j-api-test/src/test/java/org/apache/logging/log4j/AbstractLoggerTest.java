@@ -16,8 +16,15 @@
  */
 package org.apache.logging.log4j;
 
-import java.util.List;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.List;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -33,14 +40,6 @@ import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @StatusLoggerLevel("WARN")
 @ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
@@ -72,27 +71,22 @@ public class AbstractLoggerTest {
         new LogEvent(MARKER_NAME, simple, null),
         new LogEvent(null, simple, t),
         new LogEvent(MARKER_NAME, simple, t),
-
         new LogEvent(null, object, null),
         new LogEvent(MARKER_NAME, object, null),
         new LogEvent(null, object, t),
         new LogEvent(MARKER_NAME, object, t),
-
         new LogEvent(null, param, null),
         new LogEvent(MARKER_NAME, param, null),
-
         new LogEvent(null, simple, null),
         new LogEvent(null, simple, t),
         new LogEvent(MARKER_NAME, simple, null),
         new LogEvent(MARKER_NAME, simple, t),
         new LogEvent(MARKER_NAME, simple, null),
-
         new LogEvent(null, charSeq, null),
         new LogEvent(null, charSeq, t),
         new LogEvent(MARKER_NAME, charSeq, null),
         new LogEvent(MARKER_NAME, charSeq, t),
     };
-
 
     @Test
     public void testDebug() {
@@ -894,36 +888,43 @@ public class AbstractLoggerTest {
     @ResourceLock("log4j2.StatusLogger")
     public void testMessageThrows() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
-        logger.error(new TestMessage(() -> {
-            throw new IllegalStateException("Oops!");
-        }, "Message Format"));
+        logger.error(new TestMessage(
+                () -> {
+                    throw new IllegalStateException("Oops!");
+                },
+                "Message Format"));
         final List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
         final StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
         assertEquals(Level.WARN, mostRecent.getLevel());
-        assertThat(mostRecent.getFormattedStatus(), containsString(
-                "org.apache.logging.log4j.spi.AbstractLogger caught " +
-                        "java.lang.IllegalStateException logging TestMessage: Message Format"));
+        assertThat(
+                mostRecent.getFormattedStatus(),
+                containsString("org.apache.logging.log4j.spi.AbstractLogger caught "
+                        + "java.lang.IllegalStateException logging TestMessage: Message Format"));
     }
 
     @Test
     @ResourceLock("log4j2.StatusLogger")
     public void testMessageThrowsAndNullFormat() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
-        logger.error(new TestMessage(() -> {
-            throw new IllegalStateException("Oops!");
-        }, null /* format */));
+        logger.error(new TestMessage(
+                () -> {
+                    throw new IllegalStateException("Oops!");
+                },
+                null /* format */));
         final List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
         final StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
         assertEquals(Level.WARN, mostRecent.getLevel());
-        assertThat(mostRecent.getFormattedStatus(), containsString(
-                "org.apache.logging.log4j.spi.AbstractLogger caught " +
-                        "java.lang.IllegalStateException logging TestMessage: "));
+        assertThat(
+                mostRecent.getFormattedStatus(),
+                containsString("org.apache.logging.log4j.spi.AbstractLogger caught "
+                        + "java.lang.IllegalStateException logging TestMessage: "));
     }
 
     private static final class TestMessage implements Message {
         private static final long serialVersionUID = 1L;
         private final FormattedMessageSupplier formattedMessageSupplier;
         private final String format;
+
         TestMessage(final FormattedMessageSupplier formattedMessageSupplier, final String format) {
             this.formattedMessageSupplier = formattedMessageSupplier;
             this.format = format;
@@ -998,7 +999,9 @@ public class AbstractLoggerTest {
                 if (currentEvent.markerName == null) {
                     fail("Incorrect marker. Expected null. Actual is " + marker.getName());
                 } else {
-                    assertEquals(currentEvent.markerName, marker.getName(),
+                    assertEquals(
+                            currentEvent.markerName,
+                            marker.getName(),
                             "Incorrect marker. Expected " + currentEvent.markerName + ", actual " + marker.getName());
                 }
             }
@@ -1013,9 +1016,11 @@ public class AbstractLoggerTest {
                     assertTrue(
                             data.getClass().isAssignableFrom(currentEvent.data.getClass()),
                             "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
-                    assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
-                            "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                                    data.getFormattedMessage());
+                    assertEquals(
+                            currentEvent.data.getFormattedMessage(),
+                            data.getFormattedMessage(),
+                            "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual "
+                                    + data.getFormattedMessage());
                 }
             }
             if (t == null) {
@@ -1026,7 +1031,8 @@ public class AbstractLoggerTest {
                 if (currentEvent.t == null) {
                     fail("Incorrect Throwable. Expected null. Actual is " + t);
                 } else {
-                    assertEquals(currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
+                    assertEquals(
+                            currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
                 }
             }
             return true;
@@ -1060,67 +1066,127 @@ public class AbstractLoggerTest {
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-                                 final Object p1) {
+        public boolean isEnabled(
+                final Level level, final Marker marker, final String message, final Object p0, final Object p1) {
             return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1), null);
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-                                 final Object p1, final Object p2) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2) {
             return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2), null);
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-                                 final Object p1, final Object p2, final Object p3) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3) {
             return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3), null);
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-                                 final Object p1, final Object p2, final Object p3,
-                                 final Object p4) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4) {
             return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4), null);
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-                                 final Object p1, final Object p2, final Object p3,
-                                 final Object p4, final Object p5) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5) {
             return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5), null);
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-                                 final Object p1, final Object p2, final Object p3,
-                                 final Object p4, final Object p5, final Object p6) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5,
+                final Object p6) {
             return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6), null);
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-                                 final Object p1, final Object p2, final Object p3,
-                                 final Object p4, final Object p5, final Object p6,
-                                 final Object p7) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5,
+                final Object p6,
+                final Object p7) {
             return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7), null);
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-                                 final Object p1, final Object p2, final Object p3,
-                                 final Object p4, final Object p5, final Object p6,
-                                 final Object p7, final Object p8) {
-            return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8), null);
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5,
+                final Object p6,
+                final Object p7,
+                final Object p8) {
+            return isEnabled(
+                    level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8), null);
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-                                 final Object p1, final Object p2, final Object p3,
-                                 final Object p4, final Object p5, final Object p6,
-                                 final Object p7, final Object p8, final Object p9) {
-            return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9),
-                    null);
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5,
+                final Object p6,
+                final Object p7,
+                final Object p8,
+                final Object p9) {
+            return isEnabled(
+                    level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9), null);
         }
 
         @Override
@@ -1129,7 +1195,8 @@ public class AbstractLoggerTest {
         }
 
         @Override
-        public void logMessage(final String fqcn, final Level level, final Marker marker, final Message data, final Throwable t) {
+        public void logMessage(
+                final String fqcn, final Level level, final Marker marker, final Message data, final Throwable t) {
             assertEquals(level, currentLevel, "Incorrect Level. Expected " + currentLevel + ", actual " + level);
             if (marker == null) {
                 if (currentEvent.markerName != null) {
@@ -1139,7 +1206,9 @@ public class AbstractLoggerTest {
                 if (currentEvent.markerName == null) {
                     fail("Incorrect marker. Expected null. Actual is " + marker.getName());
                 } else {
-                    assertEquals(currentEvent.markerName, marker.getName(),
+                    assertEquals(
+                            currentEvent.markerName,
+                            marker.getName(),
                             "Incorrect marker. Expected " + currentEvent.markerName + ", actual " + marker.getName());
                 }
             }
@@ -1154,9 +1223,11 @@ public class AbstractLoggerTest {
                     assertTrue(
                             data.getClass().isAssignableFrom(currentEvent.data.getClass()),
                             "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
-                    assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
-                            "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                                    data.getFormattedMessage());
+                    assertEquals(
+                            currentEvent.data.getFormattedMessage(),
+                            data.getFormattedMessage(),
+                            "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual "
+                                    + data.getFormattedMessage());
                 }
             }
             if (t == null) {
@@ -1167,7 +1238,8 @@ public class AbstractLoggerTest {
                 if (currentEvent.t == null) {
                     fail("Incorrect Throwable. Expected null. Actual is " + t);
                 } else {
-                    assertEquals(currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
+                    assertEquals(
+                            currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
                 }
             }
         }
@@ -1199,7 +1271,8 @@ public class AbstractLoggerTest {
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final CharSequence message, final Throwable t) {
+        public boolean isEnabled(
+                final Level level, final Marker marker, final CharSequence message, final Throwable t) {
             return true;
         }
 
@@ -1229,56 +1302,134 @@ public class AbstractLoggerTest {
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1) {
+        public boolean isEnabled(
+                final Level level, final Marker marker, final String message, final Object p0, final Object p1) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5,
+                final Object p6) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6, final Object p7) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5,
+                final Object p6,
+                final Object p7) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5,
+                final Object p6,
+                final Object p7,
+                final Object p8) {
             return true;
         }
 
         @Override
-        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        public boolean isEnabled(
+                final Level level,
+                final Marker marker,
+                final String message,
+                final Object p0,
+                final Object p1,
+                final Object p2,
+                final Object p3,
+                final Object p4,
+                final Object p5,
+                final Object p6,
+                final Object p7,
+                final Object p8,
+                final Object p9) {
             return true;
         }
 
         @Override
-        public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
-            if(expectingThrowables) {
+        public void logMessage(
+                final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+            if (expectingThrowables) {
                 assertNotNull(t, "Expected a Throwable but received null!");
             } else {
-                assertNull(t, "Expected null but received a Throwable! "+t);
+                assertNull(t, "Expected null but received a Throwable! " + t);
             }
             if (message != null) {
                 message.getFormattedMessage();

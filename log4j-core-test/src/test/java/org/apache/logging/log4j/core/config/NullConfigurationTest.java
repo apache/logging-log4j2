@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
 
 class NullConfigurationTest {
     @Test

@@ -19,7 +19,6 @@ package org.apache.log4j;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-
 import org.apache.logging.log4j.ThreadContext;
 
 /**
@@ -28,28 +27,24 @@ import org.apache.logging.log4j.ThreadContext;
  */
 public final class MDC {
 
-    private static final ThreadLocal<Map<String, Object>> localMap =
-        new InheritableThreadLocal<Map<String, Object>>() {
-            @Override
-            protected Map<String, Object> initialValue() {
-                return new HashMap<>();
-            }
+    private static final ThreadLocal<Map<String, Object>> localMap = new InheritableThreadLocal<Map<String, Object>>() {
+        @Override
+        protected Map<String, Object> initialValue() {
+            return new HashMap<>();
+        }
 
-            @Override
-            protected Map<String, Object> childValue(final Map<String, Object> parentValue) {
-                return parentValue == null ? new HashMap<>() : new HashMap<>(parentValue);
-            }
-        };
+        @Override
+        protected Map<String, Object> childValue(final Map<String, Object> parentValue) {
+            return parentValue == null ? new HashMap<>() : new HashMap<>(parentValue);
+        }
+    };
 
-    private MDC() {
-    }
-
+    private MDC() {}
 
     public static void put(final String key, final String value) {
         localMap.get().put(key, value);
         ThreadContext.put(key, value);
     }
-
 
     public static void put(final String key, final Object value) {
         localMap.get().put(key, value);

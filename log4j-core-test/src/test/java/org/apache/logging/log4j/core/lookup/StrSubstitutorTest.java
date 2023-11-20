@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
@@ -26,14 +27,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @StatusLoggerLevel("OFF")
 public class StrSubstitutorTest {
 
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
-
 
     @BeforeAll
     public static void before() {
@@ -142,7 +140,7 @@ public class StrSubstitutorTest {
                 StrSubstitutor.DEFAULT_ESCAPE,
                 StrSubstitutor.DEFAULT_VALUE_DELIMITER,
                 null // Ensure valueEscapeMatcher == null
-        );
+                );
         // regular default values work without a valueEscapeMatcher.
         assertEquals("3", sub.replace("${y:-3}"));
         // variables with ':-' are treated as if they have a default value
@@ -167,7 +165,7 @@ public class StrSubstitutorTest {
         final StrLookup lookup = new Interpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         ThreadContext.put(TESTKEY, TESTVAL);
-        //String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
+        // String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
         final String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
         assertEquals("TestValue", value);
     }

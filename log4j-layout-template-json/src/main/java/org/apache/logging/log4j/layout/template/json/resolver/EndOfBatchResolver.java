@@ -37,11 +37,8 @@ public final class EndOfBatchResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         final boolean endOfBatch = logEvent.isEndOfBatch();
         jsonWriter.writeBoolean(endOfBatch);
     }
-
 }

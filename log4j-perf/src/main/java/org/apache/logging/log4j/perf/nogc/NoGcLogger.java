@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.nogc;
 
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.core.Layout;
 
 /**
@@ -35,5 +34,4 @@ public class NoGcLogger extends AbstractLogger {
         reusedMessage.set(message, p1, p2, p3, p4);
         log(reusedMessage);
     }
-
 }

@@ -25,7 +25,6 @@ import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.util.Cast;
 
 /**
@@ -43,8 +42,7 @@ import org.apache.logging.log4j.util.Cast;
  */
 public final class TypeUtil {
 
-    private TypeUtil() {
-    }
+    private TypeUtil() {}
 
     /**
      * Indicates if two {@link Type}s are assignment compatible.
@@ -147,9 +145,9 @@ public final class TypeUtil {
             // verify all type arguments are assignable
             final Type lhsArgument = lhsTypeArguments[i];
             final Type rhsArgument = rhsTypeArguments[i];
-            if (!lhsArgument.equals(rhsArgument) &&
-                    !(lhsArgument instanceof WildcardType &&
-                            isWildcardAssignable((WildcardType) lhsArgument, rhsArgument))) {
+            if (!lhsArgument.equals(rhsArgument)
+                    && !(lhsArgument instanceof WildcardType
+                            && isWildcardAssignable((WildcardType) lhsArgument, rhsArgument))) {
                 return false;
             }
         }
@@ -206,12 +204,12 @@ public final class TypeUtil {
 
     private static Type[] getEffectiveUpperBounds(final WildcardType type) {
         final Type[] upperBounds = type.getUpperBounds();
-        return upperBounds.length == 0 ? new Type[]{Object.class} : upperBounds;
+        return upperBounds.length == 0 ? new Type[] {Object.class} : upperBounds;
     }
 
     private static Type[] getEffectiveLowerBounds(final WildcardType type) {
         final Type[] lowerBounds = type.getLowerBounds();
-        return lowerBounds.length == 0 ? new Type[]{null} : lowerBounds;
+        return lowerBounds.length == 0 ? new Type[] {null} : lowerBounds;
     }
 
     private static boolean isBoundAssignable(final Type lhs, final Type rhs) {
@@ -285,15 +283,16 @@ public final class TypeUtil {
             }
             final var firstType = (ParameterizedType) first;
             final var secondType = (ParameterizedType) second;
-            return Objects.equals(firstType.getOwnerType(), secondType.getOwnerType()) &&
-                    firstType.getRawType().equals(secondType.getRawType()) &&
-                    Arrays.equals(firstType.getActualTypeArguments(), secondType.getActualTypeArguments());
+            return Objects.equals(firstType.getOwnerType(), secondType.getOwnerType())
+                    && firstType.getRawType().equals(secondType.getRawType())
+                    && Arrays.equals(firstType.getActualTypeArguments(), secondType.getActualTypeArguments());
         }
         if (first instanceof GenericArrayType) {
             if (!(second instanceof GenericArrayType)) {
                 return false;
             }
-            return isEqual(((GenericArrayType) first).getGenericComponentType(),
+            return isEqual(
+                    ((GenericArrayType) first).getGenericComponentType(),
                     ((GenericArrayType) second).getGenericComponentType());
         }
         if (first instanceof WildcardType) {
@@ -302,8 +301,8 @@ public final class TypeUtil {
             }
             final var firstType = (WildcardType) first;
             final var secondType = (WildcardType) second;
-            return Arrays.equals(firstType.getUpperBounds(), secondType.getUpperBounds()) &&
-                    Arrays.equals(firstType.getLowerBounds(), secondType.getLowerBounds());
+            return Arrays.equals(firstType.getUpperBounds(), secondType.getUpperBounds())
+                    && Arrays.equals(firstType.getLowerBounds(), secondType.getLowerBounds());
         }
         if (first instanceof TypeVariable<?>) {
             if (!(second instanceof TypeVariable<?>)) {
@@ -311,10 +310,9 @@ public final class TypeUtil {
             }
             final var firstType = (TypeVariable<?>) first;
             final var secondType = (TypeVariable<?>) second;
-            return firstType.getName().equals(secondType.getName()) &&
-                    firstType.getGenericDeclaration().equals(secondType.getGenericDeclaration());
+            return firstType.getName().equals(secondType.getName())
+                    && firstType.getGenericDeclaration().equals(secondType.getGenericDeclaration());
         }
         return false;
     }
-
 }

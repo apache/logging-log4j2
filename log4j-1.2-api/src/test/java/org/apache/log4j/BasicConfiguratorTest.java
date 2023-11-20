@@ -50,7 +50,8 @@ public class BasicConfiguratorTest {
 
     @Test
     public void testConfigureNullAppender() {
-        // The NullAppender name is null and we do not want an NPE when the name is used as a key in a ConcurrentHashMap.
+        // The NullAppender name is null and we do not want an NPE when the name is used as a key in a
+        // ConcurrentHashMap.
         BasicConfigurator.configure(NullAppender.getNullAppender());
     }
 }

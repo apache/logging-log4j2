@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;

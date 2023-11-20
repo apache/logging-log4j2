@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("MarkerNamePatternConverter")
-@ConverterKeys({ "markerSimpleName" })
+@ConverterKeys({"markerSimpleName"})
 @PerformanceSensitive("allocation")
 public final class MarkerSimpleNamePatternConverter extends LogEventPatternConverter {
 

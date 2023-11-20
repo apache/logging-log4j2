@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
@@ -31,11 +35,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @AllocatePorts("SocketAppenderSocketOptionsTest.port")
 public class SocketAppenderSocketOptionsTest {
@@ -61,14 +60,11 @@ public class SocketAppenderSocketOptionsTest {
     @LoggerContextSource("log4j-socket-options.xml")
     public void testSocketOptions(@Named("socket") final SocketAppender appender) throws IOException {
         final AbstractSocketManager abstractSocketManager = appender.getManager();
-        assertThat(abstractSocketManager)
-                .isNotNull()
-                .isInstanceOf(TcpSocketManager.class);
+        assertThat(abstractSocketManager).isNotNull().isInstanceOf(TcpSocketManager.class);
         final TcpSocketManager manager = (TcpSocketManager) abstractSocketManager;
-        final Class<? extends OutputStream> nullOutputStreamType = OutputStream.nullOutputStream().getClass();
-        assertThat(manager.getOutputStream())
-                .isNotNull()
-                .isInstanceOf(nullOutputStreamType);
+        final Class<? extends OutputStream> nullOutputStreamType =
+                OutputStream.nullOutputStream().getClass();
+        assertThat(manager.getOutputStream()).isNotNull().isInstanceOf(nullOutputStreamType);
         final SocketOptions socketOptions = manager.getSocketOptions();
         assertNotNull(socketOptions);
         final Socket socket = manager.getSocket();
@@ -78,7 +74,9 @@ public class SocketAppenderSocketOptionsTest {
         assertEquals(false, socketOptions.isOobInline());
         assertEquals(false, socketOptions.isReuseAddress());
         assertEquals(false, socketOptions.isTcpNoDelay());
-        assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(), socketOptions.getActualTrafficClass().intValue());
+        assertEquals(
+                Rfc1349TrafficClass.IPTOS_LOWCOST.value(),
+                socketOptions.getActualTrafficClass().intValue());
         assertEquals(10000, socketOptions.getReceiveBufferSize().intValue());
         assertEquals(8000, socketOptions.getSendBufferSize().intValue());
         assertEquals(12345, socketOptions.getSoLinger().intValue());

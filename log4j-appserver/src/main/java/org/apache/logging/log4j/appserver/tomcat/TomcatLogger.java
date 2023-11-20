@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.appserver.tomcat;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.juli.logging.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -49,8 +48,7 @@ public class TomcatLogger implements Log {
     private static final long serialVersionUID = 1L;
     private static final String FQCN = TomcatLogger.class.getName();
     private static final String[] FILE_NAMES = {
-        "log4j2-tomcat.xml", "log4j2-tomcat.json", "log4j2-tomcat.yaml", "log4j2-tomcat.yml",
-        "log4j2-tomcat.properties"
+        "log4j2-tomcat.xml", "log4j2-tomcat.json", "log4j2-tomcat.yaml", "log4j2-tomcat.yml", "log4j2-tomcat.properties"
     };
 
     private final ExtendedLogger logger;

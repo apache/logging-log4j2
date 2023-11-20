@@ -27,11 +27,9 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
@@ -62,19 +60,29 @@ public final class Log4j1ConfigurationConverter {
     @Command(name = "Log4j1ConfigurationConverter")
     public static class CommandLineArguments extends BasicCommandLineArguments implements Runnable {
 
-        @Option(names = { "--failfast", "-f" }, description = "Fails on the first failure in recurse mode.")
+        @Option(
+                names = {"--failfast", "-f"},
+                description = "Fails on the first failure in recurse mode.")
         private boolean failFast;
 
-        @Option(names = { "--in", "-i" }, description = "Specifies the input file.")
+        @Option(
+                names = {"--in", "-i"},
+                description = "Specifies the input file.")
         private Path pathIn;
 
-        @Option(names = { "--out", "-o" }, description = "Specifies the output file.")
+        @Option(
+                names = {"--out", "-o"},
+                description = "Specifies the output file.")
         private Path pathOut;
 
-        @Option(names = { "--recurse", "-r" }, description = "Recurses into this folder looking for the input file")
+        @Option(
+                names = {"--recurse", "-r"},
+                description = "Recurses into this folder looking for the input file")
         private Path recurseIntoPath;
 
-        @Option(names = { "--verbose", "-v" }, description = "Be verbose.")
+        @Option(
+                names = {"--verbose", "-v"},
+                description = "Be verbose.")
         private boolean verbose;
 
         public Path getPathIn() {
@@ -152,8 +160,8 @@ public final class Log4j1ConfigurationConverter {
     }
 
     protected void convert(final InputStream input, final OutputStream output) throws IOException {
-        final ConfigurationBuilder<BuiltConfiguration> builder = new Log4j1ConfigurationParser()
-                .buildConfigurationBuilder(input);
+        final ConfigurationBuilder<BuiltConfiguration> builder =
+                new Log4j1ConfigurationParser().buildConfigurationBuilder(input);
         builder.writeXmlConfiguration(output);
     }
 
@@ -180,18 +188,20 @@ public final class Log4j1ConfigurationConverter {
                             verbose("Reading %s", file);
                             String newFile = file.getFileName().toString();
                             final int lastIndex = newFile.lastIndexOf(".");
-                            newFile = lastIndex < 0 ? newFile + FILE_EXT_XML
+                            newFile = lastIndex < 0
+                                    ? newFile + FILE_EXT_XML
                                     : newFile.substring(0, lastIndex) + FILE_EXT_XML;
                             final Path resolvedPath = file.resolveSibling(newFile);
-                            try (final InputStream input = new InputStreamWrapper(Files.newInputStream(file), file.toString());
-                                final OutputStream output = Files.newOutputStream(resolvedPath)) {
+                            try (final InputStream input =
+                                            new InputStreamWrapper(Files.newInputStream(file), file.toString());
+                                    final OutputStream output = Files.newOutputStream(resolvedPath)) {
                                 try {
                                     final ByteArrayOutputStream tmpOutput = new ByteArrayOutputStream();
                                     convert(input, tmpOutput);
                                     tmpOutput.close();
                                     DefaultConfigurationBuilder.formatXml(
-                                        new StreamSource(new ByteArrayInputStream(tmpOutput.toByteArray())),
-                                        new StreamResult(output));
+                                            new StreamSource(new ByteArrayInputStream(tmpOutput.toByteArray())),
+                                            new StreamResult(output));
                                     countOKs.incrementAndGet();
                                 } catch (ConfigurationException | IOException e) {
                                     countFails.incrementAndGet();
@@ -215,12 +225,14 @@ public final class Log4j1ConfigurationConverter {
             } catch (final IOException e) {
                 throw new ConfigurationException(e);
             } finally {
-                verbose("OK = %,d, Failures = %,d, Total = %,d", countOKs.get(), countFails.get(),
-                        countOKs.get() + countFails.get());
+                verbose(
+                        "OK = %,d, Failures = %,d, Total = %,d",
+                        countOKs.get(), countFails.get(), countOKs.get() + countFails.get());
             }
         } else {
             verbose("Reading %s", cla.getPathIn());
-            try (final InputStream input = getInputStream(); final OutputStream output = getOutputStream()) {
+            try (final InputStream input = getInputStream();
+                    final OutputStream output = getOutputStream()) {
                 convert(input, output);
             } catch (final IOException e) {
                 throw new ConfigurationException(e);
@@ -234,5 +246,4 @@ public final class Log4j1ConfigurationConverter {
             System.err.println(String.format(template, args));
         }
     }
-
 }

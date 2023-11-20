@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.jackson.xml.layout;
 
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertThat;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -24,16 +28,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertThat;
 
 /**
  * Like the test for LOG4J2-1769.

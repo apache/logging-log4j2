@@ -19,5 +19,4 @@ package org.apache.logging.log4j.plugins.test.validation.di;
 import org.apache.logging.log4j.plugins.Singleton;
 
 @Singleton
-public class SingletonBean {
-}
+public class SingletonBean {}

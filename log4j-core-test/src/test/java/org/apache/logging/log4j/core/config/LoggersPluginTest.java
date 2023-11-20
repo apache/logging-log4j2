@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests LoggersPlugin.
@@ -39,7 +39,7 @@ public class LoggersPluginTest {
         final Logger logger = LogManager.getLogger();
         logger.info("Test");
         final StatusData data = StatusLogger.getLogger().getStatusData().get(0);
-        //System.out.println(data.getFormattedStatus());
+        // System.out.println(data.getFormattedStatus());
 
         assertThat(data.getLevel()).isEqualTo(Level.ERROR);
         assertThat(data.getMessage().getFormattedMessage()).startsWith("Could not configure plugin element Loggers");

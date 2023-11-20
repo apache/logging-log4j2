@@ -18,7 +18,6 @@ package org.apache.log4j.config;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
@@ -38,7 +37,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 // @Order(50)
 public class Log4j1ConfigurationFactory extends ConfigurationFactory {
 
-    private static final String[] SUFFIXES = { ".properties" };
+    private static final String[] SUFFIXES = {".properties"};
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
@@ -55,5 +54,4 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
     protected String[] getSupportedTypes() {
         return SUFFIXES;
     }
-
 }

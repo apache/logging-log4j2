@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.StringJoiner;
-
 import org.apache.logging.log4j.plugins.di.Key;
 
 class DependencyChains {

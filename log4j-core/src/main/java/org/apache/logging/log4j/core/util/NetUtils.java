@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -30,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -181,7 +180,6 @@ public final class NetUtils {
                 sb.append(":").append(String.format("%02x", macAddr[i]));
             }
             return sb.toString();
-
         }
         return null;
     }
@@ -198,8 +196,7 @@ public final class NetUtils {
      */
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
-            justification = "Currently `path` comes from a configuration file."
-    )
+            justification = "Currently `path` comes from a configuration file.")
     public static URI toURI(final String path) {
         try {
             // Resolves absolute URI
@@ -229,5 +226,4 @@ public final class NetUtils {
         }
         return uris;
     }
-
 }

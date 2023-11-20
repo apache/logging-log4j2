@@ -24,7 +24,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class CronRolloverApp {
 
-
     private static Logger logger;
 
     public static void main(final String[] args) {
@@ -36,7 +35,7 @@ public class CronRolloverApp {
                 Thread.sleep(1 * 1000);
             }
         } catch (final Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             logger.error("Exception general", e);
         }
     }

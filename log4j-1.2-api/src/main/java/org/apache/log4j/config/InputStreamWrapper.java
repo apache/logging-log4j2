@@ -88,5 +88,4 @@ class InputStreamWrapper extends InputStream {
     public String toString() {
         return getClass().getSimpleName() + " [description=" + description + ", input=" + input + "]";
     }
-
 }

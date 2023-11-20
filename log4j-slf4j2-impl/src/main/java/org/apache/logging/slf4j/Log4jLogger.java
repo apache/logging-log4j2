@@ -343,7 +343,13 @@ public class Log4jLogger implements LocationAwareLogger {
     }
 
     @Override
-    public void log(final Marker marker, final String fqcn, final int level, final String message, final Object[] params, final Throwable throwable) {
+    public void log(
+            final Marker marker,
+            final String fqcn,
+            final int level,
+            final String message,
+            final Object[] params,
+            final Throwable throwable) {
         final Level log4jLevel = getLevel(level);
         final org.apache.logging.log4j.Marker log4jMarker = markerFactory.getLog4jMarker(marker);
 
@@ -369,16 +375,16 @@ public class Log4jLogger implements LocationAwareLogger {
 
     private static Level getLevel(final int i) {
         switch (i) {
-        case TRACE_INT:
-            return Level.TRACE;
-        case DEBUG_INT:
-            return Level.DEBUG;
-        case INFO_INT:
-            return Level.INFO;
-        case WARN_INT:
-            return Level.WARN;
-        case ERROR_INT:
-            return Level.ERROR;
+            case TRACE_INT:
+                return Level.TRACE;
+            case DEBUG_INT:
+                return Level.DEBUG;
+            case INFO_INT:
+                return Level.INFO;
+            case WARN_INT:
+                return Level.WARN;
+            case ERROR_INT:
+                return Level.ERROR;
         }
         return Level.ERROR;
     }
@@ -393,5 +399,4 @@ public class Log4jLogger implements LocationAwareLogger {
     public boolean isEnabledForLevel(final org.slf4j.event.Level level) {
         return logger.isEnabled(getLevel(level.toInt()));
     }
-
 }

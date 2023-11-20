@@ -22,7 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
@@ -39,8 +38,7 @@ public class PluginSetFactoryResolver<T> extends AbstractPluginFactoryResolver<S
 
     @Override
     public Supplier<Set<? extends T>> getFactory(
-            final ResolvableKey<Set<? extends T>> resolvableKey,
-            final InstanceFactory instanceFactory) {
+            final ResolvableKey<Set<? extends T>> resolvableKey, final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getNamespace();
         final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
         final Type componentType = containerType.getActualTypeArguments()[0];

@@ -20,7 +20,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.LayoutTest;
 import org.apache.log4j.spi.LoggingEvent;
@@ -48,8 +47,12 @@ public class DateLayoutTest extends LayoutTest {
      * @param expectedHeader expected value for getHeader().
      * @param expectedFooter expected value for getFooter().
      */
-    protected DateLayoutTest(final String testName, final String expectedContentType, final boolean expectedIgnoresThrowable, final String expectedHeader,
-        final String expectedFooter) {
+    protected DateLayoutTest(
+            final String testName,
+            final String expectedContentType,
+            final boolean expectedIgnoresThrowable,
+            final String expectedHeader,
+            final String expectedFooter) {
         super(testName, expectedContentType, expectedIgnoresThrowable, expectedHeader, expectedFooter);
     }
 
@@ -273,8 +276,7 @@ public class DateLayoutTest extends LayoutTest {
         /**
          * {@inheritDoc}
          */
-        public void activateOptions() {
-        }
+        public void activateOptions() {}
 
         /**
          * {@inheritDoc}

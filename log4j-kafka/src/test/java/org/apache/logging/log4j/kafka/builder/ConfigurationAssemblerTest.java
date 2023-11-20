@@ -16,9 +16,13 @@
  */
 package org.apache.logging.log4j.kafka.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,11 +43,6 @@ import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.kafka.appender.KafkaAppender;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  *
  */
@@ -52,10 +51,11 @@ public class ConfigurationAssemblerTest {
     @Test
     public void testBuildConfiguration() throws Exception {
         try {
-            System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
+            System.setProperty(
+                    Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
-            final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory
-                    .newConfigurationBuilder();
+            final ConfigurationBuilder<BuiltConfiguration> builder =
+                    ConfigurationBuilderFactory.newConfigurationBuilder();
             CustomConfigurationFactory.addTestFixtures("config name", builder);
             final Configuration configuration = builder.build();
             try (final LoggerContext ctx = Configurator.initialize(configuration)) {
@@ -69,9 +69,11 @@ public class ConfigurationAssemblerTest {
     @Test
     public void testCustomConfigurationFactory() throws Exception {
         try {
-            System.setProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
+            System.setProperty(
+                    Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.kafka.builder.CustomConfigurationFactory");
-            System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
+            System.setProperty(
+                    Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
             final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
             validate(config);

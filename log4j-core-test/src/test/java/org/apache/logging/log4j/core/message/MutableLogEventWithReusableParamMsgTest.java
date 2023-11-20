@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.message;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsSame.sameInstance;
+
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableParameterizedMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsSame.sameInstance;
 
 /**
  * LOG4J2-1409
@@ -37,7 +37,7 @@ public class MutableLogEventWithReusableParamMsgTest {
         evt.setMessage(msg);
         evt.clear();
 
-        msg.set("Hello {}", new Object[]{1});
+        msg.set("Hello {}", new Object[] {1});
         evt.setMessage(msg);
         evt.clear();
 
@@ -67,8 +67,9 @@ public class MutableLogEventWithReusableParamMsgTest {
         public ReusableParameterizedMessage set(final String messagePattern, final Object p0) {
             return super.set(messagePattern, p0);
         }
-        public ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1,
-                final Object p2) {
+
+        public ReusableParameterizedMessage set(
+                final String messagePattern, final Object p0, final Object p1, final Object p2) {
             return super.set(messagePattern, p0, p1, p2);
         }
     }

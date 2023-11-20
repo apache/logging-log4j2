@@ -21,7 +21,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.util.Strings;
@@ -43,8 +42,14 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param layout The layout
      * @param bufferSize The buffer size
      */
-    protected DatagramSocketManager(final String name, final OutputStream os, final InetAddress inetAddress, final String host,
-                                    final int port, final Layout layout, final int bufferSize) {
+    protected DatagramSocketManager(
+            final String name,
+            final OutputStream os,
+            final InetAddress inetAddress,
+            final String host,
+            final int port,
+            final Layout layout,
+            final int bufferSize) {
         super(name, os, inetAddress, host, port, layout, true, bufferSize);
     }
 
@@ -56,16 +61,16 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param bufferSize The buffer size.
      * @return A DatagramSocketManager.
      */
-    public static DatagramSocketManager getSocketManager(final String host, final int port,
-                                                         final Layout layout, final int bufferSize) {
+    public static DatagramSocketManager getSocketManager(
+            final String host, final int port, final Layout layout, final int bufferSize) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
         if (port <= 0) {
             throw new IllegalArgumentException("A port value is required");
         }
-        return (DatagramSocketManager) getManager("UDP:" + host + ':' + port,
-                new FactoryData(host, port, layout, bufferSize), FACTORY);
+        return (DatagramSocketManager)
+                getManager("UDP:" + host + ':' + port, new FactoryData(host, port, layout, bufferSize), FACTORY);
     }
 
     /**
@@ -116,8 +121,8 @@ public class DatagramSocketManager extends AbstractSocketManager {
                 LOGGER.error("Could not find address of " + data.host, ex);
                 return null;
             }
-            final OutputStream os = new DatagramOutputStream(data.host, data.port, data.layout.getHeader(),
-                    data.layout.getFooter());
+            final OutputStream os =
+                    new DatagramOutputStream(data.host, data.port, data.layout.getHeader(), data.layout.getFooter());
             return new DatagramSocketManager(name, os, inetAddress, data.host, data.port, data.layout, data.bufferSize);
         }
     }

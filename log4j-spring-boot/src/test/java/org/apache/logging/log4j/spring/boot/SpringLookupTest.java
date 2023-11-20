@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -26,10 +29,6 @@ import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
 import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.junit.Test;
 import org.springframework.mock.env.MockEnvironment;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 /**
  * Test SpringLookup.
@@ -72,7 +71,8 @@ public class SpringLookupTest {
         env.setProperty("app.property", "test");
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         context.putObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY, env);
-        final InterpolatorFactory interpolatorFactory = context.getInstanceFactory().getInstance(InterpolatorFactory.class);
+        final InterpolatorFactory interpolatorFactory =
+                context.getInstanceFactory().getInstance(InterpolatorFactory.class);
         final Map<String, String> properties = new HashMap<>();
         final Interpolator lookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));
         lookup.setLoggerContext(context);

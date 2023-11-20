@@ -21,8 +21,12 @@ package org.apache.logging.log4j.core.test.categories;
  */
 public interface Layouts {
     interface Csv {}
+
     interface Jansi {}
+
     interface Json {}
+
     interface Xml {}
+
     interface Yaml {}
 }

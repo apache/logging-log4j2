@@ -16,12 +16,17 @@
  */
 package org.apache.logging.log4j.jeromq.appender;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.awaitility.Awaitility.waitAtMost;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Layout;
@@ -40,13 +45,6 @@ import org.junit.jupiter.api.Timeout;
 import org.zeromq.ZMonitor;
 import org.zeromq.ZMonitor.Event;
 import org.zeromq.ZMonitor.ZEvent;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import static org.awaitility.Awaitility.waitAtMost;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("zeromq")
 @Timeout(value = 20, unit = TimeUnit.SECONDS)
@@ -74,8 +72,8 @@ public class JeroMqAppenderTest {
         final Logger logger = ctx.getLogger(getClass());
         final int expectedReceiveCount = 3;
         final String endpoint = getTcpEndpoint(appender);
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getZContext(), endpoint,
-                expectedReceiveCount);
+        final JeroMqTestClient client =
+                new JeroMqTestClient(JeroMqManager.getZContext(), endpoint, expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         final ZMonitor monitor = createMonitor(appender);
         boolean connected = false;
@@ -114,8 +112,8 @@ public class JeroMqAppenderTest {
         final int nThreads = 10;
         final int expectedReceiveCount = 2 * nThreads;
         final String endpoint = getTcpEndpoint(appender);
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getZContext(), endpoint,
-                expectedReceiveCount);
+        final JeroMqTestClient client =
+                new JeroMqTestClient(JeroMqManager.getZContext(), endpoint, expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         final ZMonitor monitor = createMonitor(appender);
         boolean connected = false;
@@ -144,14 +142,14 @@ public class JeroMqAppenderTest {
                 } else if (string.startsWith("Again")) {
                     again++;
                 } else {
-                        fail("Unexpected message: " + string);
+                    fail("Unexpected message: " + string);
                 }
             }
             assertEquals(nThreads, hello);
             assertEquals(nThreads, again);
         } finally {
-            ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MS, MILLISECONDS,
-                    JeroMqAppenderTest.class.getSimpleName());
+            ExecutorServices.shutdown(
+                    executor, DEFAULT_TIMEOUT_MS, MILLISECONDS, JeroMqAppenderTest.class.getSimpleName());
             if (connected) {
                 waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.DISCONNECTED));
             }
@@ -169,7 +167,6 @@ public class JeroMqAppenderTest {
         assertEquals(2, appender.getSendRcTrue());
         assertEquals(0, appender.getSendRcFalse());
     }
-
 
     private String getTcpEndpoint(final JeroMqAppender appender) {
         for (final String endpoint : appender.getManager().getEndpoints()) {
@@ -193,7 +190,8 @@ public class JeroMqAppenderTest {
     }
 
     private ZMonitor createMonitor(final JeroMqAppender appender) {
-        final ZMonitor monitor = new ZMonitor(JeroMqManager.getZContext(), appender.getManager().getSocket());
+        final ZMonitor monitor =
+                new ZMonitor(JeroMqManager.getZContext(), appender.getManager().getSocket());
         monitor.add(Event.HANDSHAKE_PROTOCOL, Event.DISCONNECTED);
         monitor.start();
         LOGGER.info("Starting ZMonitor for JeroMqAppender {}.", appender.getName());
@@ -209,7 +207,6 @@ public class JeroMqAppenderTest {
                 LOGGER.info("JeroMqAppender sent a message: {}.", layout.toSerializable(event));
                 return Result.NEUTRAL;
             }
-
         });
     }
 }

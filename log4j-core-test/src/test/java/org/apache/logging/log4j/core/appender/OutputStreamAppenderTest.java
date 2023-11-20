@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -68,9 +67,7 @@ public class OutputStreamAppenderTest {
     public void testBuildFilter() {
         final NoMarkerFilter filter = NoMarkerFilter.newBuilder().build();
         // @formatter:off
-        final var builder = OutputStreamAppender.newBuilder()
-                .setName("test")
-                .setFilter(filter);
+        final var builder = OutputStreamAppender.newBuilder().setName("test").setFilter(filter);
         // @formatter:on
         Assert.assertEquals(filter, builder.getFilter());
         final OutputStreamAppender appender = builder.build();
@@ -111,14 +108,14 @@ public class OutputStreamAppenderTest {
         final Configuration config = ctx.getConfiguration();
         // @formatter:off
         final Appender appender = FileAppender.newBuilder()
-            .setFileName("target/" + getClass().getName() + ".log")
-            .setAppend(false)
-            .setName("File")
-            .setIgnoreExceptions(false)
-            .setBufferedIo(false)
-            .setBufferSize(4000)
-            .setConfiguration(config)
-            .build();
+                .setFileName("target/" + getClass().getName() + ".log")
+                .setAppend(false)
+                .setName("File")
+                .setIgnoreExceptions(false)
+                .setBufferedIo(false)
+                .setBufferSize(4000)
+                .setConfiguration(config)
+                .build();
         // @formatter:on
         appender.start();
         config.addAppender(appender);

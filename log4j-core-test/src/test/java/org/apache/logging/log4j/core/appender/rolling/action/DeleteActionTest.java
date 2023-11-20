@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitor;
@@ -23,30 +27,29 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code DeleteAction} class.
  */
 public class DeleteActionTest {
 
-    private static DeleteAction createAnyFilter(final String path, final boolean followLinks, final int maxDepth, final boolean testMode) {
+    private static DeleteAction createAnyFilter(
+            final String path, final boolean followLinks, final int maxDepth, final boolean testMode) {
         final PathCondition[] pathFilters = {new FixedCondition(true)};
         return create(path, followLinks, maxDepth, testMode, pathFilters);
     }
 
-    private static DeleteAction create(final String path, final boolean followLinks, final int maxDepth, final boolean testMode,
+    private static DeleteAction create(
+            final String path,
+            final boolean followLinks,
+            final int maxDepth,
+            final boolean testMode,
             final PathCondition[] conditions) {
         final Configuration config = new BasicConfigurationFactory.BasicConfiguration();
-        return DeleteAction.createDeleteAction(path, followLinks, maxDepth, testMode, null, conditions,
-                null, config);
+        return DeleteAction.createDeleteAction(path, followLinks, maxDepth, testMode, null, conditions, null, config);
     }
 
     @Test
@@ -108,8 +111,8 @@ public class DeleteActionTest {
 
         final DeleteAction deleteTestMode = createAnyFilter("any", true, 0, true);
         assertTrue(deleteTestMode.isTestMode());
-        final FileVisitor<Path> testVisitor = deleteTestMode.createFileVisitor(delete.getBasePath(),
-                delete.getPathConditions());
+        final FileVisitor<Path> testVisitor =
+                deleteTestMode.createFileVisitor(delete.getBasePath(), delete.getPathConditions());
         assertThat(testVisitor, instanceOf(DeletingVisitor.class));
         assertTrue(((DeletingVisitor) testVisitor).isTestMode());
     }

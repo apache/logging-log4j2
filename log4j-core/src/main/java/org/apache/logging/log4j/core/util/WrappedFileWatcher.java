@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 
@@ -32,15 +31,16 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     private final FileWatcher watcher;
     private volatile long lastModifiedMillis;
 
-    public WrappedFileWatcher(final FileWatcher watcher, final Configuration configuration,
-                              final Reconfigurable reconfigurable,
-                              final List<Consumer<Reconfigurable>> configurationListeners,
-                              final long lastModifiedMillis) {
+    public WrappedFileWatcher(
+            final FileWatcher watcher,
+            final Configuration configuration,
+            final Reconfigurable reconfigurable,
+            final List<Consumer<Reconfigurable>> configurationListeners,
+            final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
         this.watcher = watcher;
         this.lastModifiedMillis = lastModifiedMillis;
     }
-
 
     public WrappedFileWatcher(final FileWatcher watcher) {
         super(null, null, null);
@@ -91,10 +91,12 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     }
 
     @Override
-    public Watcher newWatcher(final Reconfigurable reconfigurable, final List<Consumer<Reconfigurable>> listeners,
-           final long lastModifiedMillis) {
-        final WrappedFileWatcher watcher = new WrappedFileWatcher(this.watcher, getConfiguration(), reconfigurable, listeners,
-            lastModifiedMillis);
+    public Watcher newWatcher(
+            final Reconfigurable reconfigurable,
+            final List<Consumer<Reconfigurable>> listeners,
+            final long lastModifiedMillis) {
+        final WrappedFileWatcher watcher =
+                new WrappedFileWatcher(this.watcher, getConfiguration(), reconfigurable, listeners, lastModifiedMillis);
         if (getSource() != null) {
             watcher.watching(getSource());
         }

@@ -28,8 +28,7 @@ import java.util.NoSuchElementException;
 public final class NullEnumeration implements Enumeration {
     private static final NullEnumeration INSTANCE = new NullEnumeration();
 
-    private NullEnumeration() {
-    }
+    private NullEnumeration() {}
 
     public static NullEnumeration getInstance() {
         return INSTANCE;

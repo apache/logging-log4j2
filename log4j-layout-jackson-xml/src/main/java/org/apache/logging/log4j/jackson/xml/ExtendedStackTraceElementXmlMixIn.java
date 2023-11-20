@@ -29,7 +29,7 @@ public abstract class ExtendedStackTraceElementXmlMixIn extends ExtendedStackTra
 
     @JsonCreator
     public ExtendedStackTraceElementXmlMixIn(
-    // @formatter:off
+            // @formatter:off
             @JsonProperty(ATTR_CLASS_LOADER_NAME) final String classLoaderName,
             @JsonProperty(ATTR_MODULE) final String moduleName,
             @JsonProperty(ATTR_MODULE_VERSION) final String moduleVersion,
@@ -40,10 +40,19 @@ public abstract class ExtendedStackTraceElementXmlMixIn extends ExtendedStackTra
             @JsonProperty(ATTR_EXACT) final boolean exact,
             @JsonProperty(ATTR_LOCATION) final String location,
             @JsonProperty(ATTR_VERSION) final String version
-   // @formatter:on
-    ) {
-        super(classLoaderName, moduleName, moduleVersion, declaringClass, methodName, fileName, lineNumber, exact,
-                location, version);
+            // @formatter:on
+            ) {
+        super(
+                classLoaderName,
+                moduleName,
+                moduleVersion,
+                declaringClass,
+                methodName,
+                fileName,
+                lineNumber,
+                exact,
+                location,
+                version);
     }
 
     @Override

@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.io;
 
-import java.util.List;
+import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.junit.Assert.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.junit.Before;
 import org.junit.ClassRule;
-
-import static org.hamcrest.core.StringStartsWith.startsWith;
-import static org.junit.Assert.*;
 
 public abstract class AbstractStreamTest {
 
@@ -33,11 +32,11 @@ public abstract class AbstractStreamTest {
         return ctx.getLogger("UnitTestLogger");
     }
 
-    protected final static String NEWLINE = System.lineSeparator();
-    protected final static Level LEVEL = Level.ERROR;
-    protected final static String FIRST = "first";
+    protected static final String NEWLINE = System.lineSeparator();
+    protected static final Level LEVEL = Level.ERROR;
+    protected static final String FIRST = "first";
 
-    protected final static String LAST = "last";
+    protected static final String LAST = "last";
 
     @ClassRule
     public static LoggerContextRule ctx = new LoggerContextRule("log4j2-streams-unit-test.xml");

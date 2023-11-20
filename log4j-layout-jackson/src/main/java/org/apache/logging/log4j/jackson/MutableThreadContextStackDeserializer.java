@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import java.io.IOException;
+import java.util.List;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 
 /**
@@ -40,11 +39,12 @@ final class MutableThreadContextStackDeserializer extends StdDeserializer<Mutabl
     }
 
     @Override
-    public MutableThreadContextStack deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
-        final List<String> list = jp.readValueAs(new TypeReference<List<String>>() {
-            // empty
-        });
+    public MutableThreadContextStack deserialize(final JsonParser jp, final DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
+        final List<String> list = jp.readValueAs(
+                new TypeReference<List<String>>() {
+                    // empty
+                });
         return new MutableThreadContextStack(list);
     }
 }

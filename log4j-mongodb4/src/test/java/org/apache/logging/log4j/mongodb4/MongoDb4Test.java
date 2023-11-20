@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -25,10 +28,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 
 @UsingMongoDb4
 @LoggerContextSource("log4j2-mongodb.xml")
@@ -57,5 +56,4 @@ public class MongoDb4Test {
         final Document thrown = second.get("thrown", Document.class);
         assertEquals("Hello ex 2", thrown.getString("message"), thrown.toJson());
     }
-
 }

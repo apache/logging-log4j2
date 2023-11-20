@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
@@ -30,9 +32,6 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class ReadOnlyStringMapResolverTest {
 
@@ -79,12 +78,8 @@ class ReadOnlyStringMapResolverTest {
     }
 
     private static void verifyConfigFailure(
-            final String eventTemplate,
-            final Class<? extends Throwable> failureClass,
-            final String failureMessage) {
-        Assertions
-                .assertThatThrownBy(() -> JsonTemplateLayout
-                        .newBuilder()
+            final String eventTemplate, final Class<? extends Throwable> failureClass, final String failureMessage) {
+        Assertions.assertThatThrownBy(() -> JsonTemplateLayout.newBuilder()
                         .setConfiguration(CONFIGURATION)
                         .setEventTemplate(eventTemplate)
                         .build())
@@ -102,8 +97,7 @@ class ReadOnlyStringMapResolverTest {
                 "replacement", "$1"));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -112,17 +106,14 @@ class ReadOnlyStringMapResolverTest {
         final StringMap contextData = new SortedArrayStringMap();
         contextData.putValue("user:role", "engineer");
         contextData.putValue("user:rank", "senior");
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setContextData(contextData)
-                .build();
+        final LogEvent logEvent =
+                Log4jLogEvent.newBuilder().setContextData(contextData).build();
 
         // Check the serialized event.
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
             assertThat(accessor.getString("role")).isEqualTo("engineer");
             assertThat(accessor.getString("rank")).isEqualTo("senior");
         });
-
     }
 
     @Test
@@ -136,20 +127,14 @@ class ReadOnlyStringMapResolverTest {
         contextData.putValue(mdcDirectlyAccessedKey, mdcDirectlyAccessedValue);
         final String mdcDirectlyAccessedNullPropertyKey = "mdcKey2";
         contextData.putValue(mdcDirectlyAccessedNullPropertyKey, null);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = Log4jLogEvent.newBuilder()
                 .setMessage(message)
                 .setContextData(contextData)
                 .build();
 
         // Check the serialized event.
         testReadOnlyStringMapKeyAccess(
-                mdcDirectlyAccessedKey,
-                mdcDirectlyAccessedValue,
-                mdcDirectlyAccessedNullPropertyKey,
-                logEvent,
-                "mdc");
-
+                mdcDirectlyAccessedKey, mdcDirectlyAccessedValue, mdcDirectlyAccessedNullPropertyKey, logEvent, "mdc");
     }
 
     @Test
@@ -159,21 +144,12 @@ class ReadOnlyStringMapResolverTest {
         final String directlyAccessedKey = "mapKey1";
         final String directlyAccessedValue = "mapValue1";
         final String directlyAccessedNullPropertyKey = "mapKey2";
-        final Message message = new StringMapMessage()
-                .with(directlyAccessedKey, directlyAccessedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setMessage(message)
-                .build();
+        final Message message = new StringMapMessage().with(directlyAccessedKey, directlyAccessedValue);
+        final LogEvent logEvent = Log4jLogEvent.newBuilder().setMessage(message).build();
 
         // Check the serialized event.
         testReadOnlyStringMapKeyAccess(
-                directlyAccessedKey,
-                directlyAccessedValue,
-                directlyAccessedNullPropertyKey,
-                logEvent,
-                "map");
-
+                directlyAccessedKey, directlyAccessedValue, directlyAccessedNullPropertyKey, logEvent, "map");
     }
 
     private static void testReadOnlyStringMapKeyAccess(
@@ -185,16 +161,17 @@ class ReadOnlyStringMapResolverTest {
 
         // Create the event template.
         final String eventTemplate = writeJson(asMap(
-                directlyAccessedKey, asMap(
-                "$resolver", resolverName,
-                "key", directlyAccessedKey),
-                directlyAccessedNullPropertyKey, asMap(
-                "$resolver", resolverName,
-                "key", directlyAccessedNullPropertyKey)));
+                directlyAccessedKey,
+                        asMap(
+                                "$resolver", resolverName,
+                                "key", directlyAccessedKey),
+                directlyAccessedNullPropertyKey,
+                        asMap(
+                                "$resolver", resolverName,
+                                "key", directlyAccessedNullPropertyKey)));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
@@ -205,7 +182,6 @@ class ReadOnlyStringMapResolverTest {
             assertThat(accessor.getString(directlyAccessedKey)).isEqualTo(directlyAccessedValue);
             assertThat(accessor.getString(directlyAccessedNullPropertyKey)).isNull();
         });
-
     }
 
     @Test
@@ -220,20 +196,14 @@ class ReadOnlyStringMapResolverTest {
         final String mdcPatternMismatchedKey = "mdcKey2";
         final String mdcPatternMismatchedValue = "mdcValue2";
         contextData.putValue(mdcPatternMismatchedKey, mdcPatternMismatchedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = Log4jLogEvent.newBuilder()
                 .setMessage(message)
                 .setContextData(contextData)
                 .build();
 
         // Check the serialized event.
         testReadOnlyStringMapPattern(
-                mdcPatternMatchedKey,
-                mdcPatternMatchedValue,
-                mdcPatternMismatchedKey,
-                logEvent,
-                "mdc");
-
+                mdcPatternMatchedKey, mdcPatternMatchedValue, mdcPatternMismatchedKey, logEvent, "mdc");
     }
 
     @Test
@@ -247,19 +217,10 @@ class ReadOnlyStringMapResolverTest {
         final Message message = new StringMapMessage()
                 .with(patternMatchedKey, patternMatchedValue)
                 .with(patternMismatchedKey, patternMismatchedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setMessage(message)
-                .build();
+        final LogEvent logEvent = Log4jLogEvent.newBuilder().setMessage(message).build();
 
         // Check the serialized event.
-        testReadOnlyStringMapPattern(
-                patternMatchedKey,
-                patternMatchedValue,
-                patternMismatchedKey,
-                logEvent,
-                "map");
-
+        testReadOnlyStringMapPattern(patternMatchedKey, patternMatchedValue, patternMismatchedKey, logEvent, "map");
     }
 
     private static void testReadOnlyStringMapPattern(
@@ -272,13 +233,13 @@ class ReadOnlyStringMapResolverTest {
         // Create the event template.
         final String mapFieldName = "map";
         final String eventTemplate = writeJson(asMap(
-                mapFieldName, asMap(
+                mapFieldName,
+                asMap(
                         "$resolver", resolverName,
                         "pattern", patternMatchedKey)));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
@@ -286,10 +247,11 @@ class ReadOnlyStringMapResolverTest {
 
         // Check the serialized event.
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-            assertThat(accessor.getString(new String[]{mapFieldName, patternMatchedKey})).isEqualTo(patternMatchedValue);
-            assertThat(accessor.exists(new String[]{mapFieldName, patternMismatchedKey})).isFalse();
+            assertThat(accessor.getString(new String[] {mapFieldName, patternMatchedKey}))
+                    .isEqualTo(patternMatchedValue);
+            assertThat(accessor.exists(new String[] {mapFieldName, patternMismatchedKey}))
+                    .isFalse();
         });
-
     }
 
     @Test
@@ -304,20 +266,14 @@ class ReadOnlyStringMapResolverTest {
         final String mdcPatternMismatchedKey = "mdcKey2";
         final String mdcPatternMismatchedValue = "mdcValue2";
         contextData.putValue(mdcPatternMismatchedKey, mdcPatternMismatchedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = Log4jLogEvent.newBuilder()
                 .setMessage(message)
                 .setContextData(contextData)
                 .build();
 
         // Check the serialized event.
         testReadOnlyStringMapFlatten(
-                mdcPatternMatchedKey,
-                mdcPatternMatchedValue,
-                mdcPatternMismatchedKey,
-                logEvent,
-                "mdc");
-
+                mdcPatternMatchedKey, mdcPatternMatchedValue, mdcPatternMismatchedKey, logEvent, "mdc");
     }
 
     @Test
@@ -331,19 +287,10 @@ class ReadOnlyStringMapResolverTest {
         final Message message = new StringMapMessage()
                 .with(patternMatchedKey, patternMatchedValue)
                 .with(patternMismatchedKey, patternMismatchedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setMessage(message)
-                .build();
+        final LogEvent logEvent = Log4jLogEvent.newBuilder().setMessage(message).build();
 
         // Check the serialized event.
-        testReadOnlyStringMapFlatten(
-                patternMatchedKey,
-                patternMatchedValue,
-                patternMismatchedKey,
-                logEvent,
-                "map");
-
+        testReadOnlyStringMapFlatten(patternMatchedKey, patternMatchedValue, patternMismatchedKey, logEvent, "map");
     }
 
     private static void testReadOnlyStringMapFlatten(
@@ -356,14 +303,14 @@ class ReadOnlyStringMapResolverTest {
         // Create the event template.
         final String prefix = "_map.";
         final String eventTemplate = writeJson(asMap(
-                "ignoredFieldName", asMap(
+                "ignoredFieldName",
+                asMap(
                         "$resolver", resolverName,
                         "pattern", patternMatchedKey,
                         "flatten", asMap("prefix", prefix))));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
@@ -374,7 +321,6 @@ class ReadOnlyStringMapResolverTest {
             assertThat(accessor.getString(prefix + patternMatchedKey)).isEqualTo(patternMatchedValue);
             assertThat(accessor.exists(prefix + patternMismatchedKey)).isFalse();
         });
-
     }
 
     @Test
@@ -382,23 +328,21 @@ class ReadOnlyStringMapResolverTest {
 
         // Create the log event.
         final StringMapMessage message = new StringMapMessage().with("key1", "val1");
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setMessage(message)
-                .build();
+        final LogEvent logEvent = Log4jLogEvent.newBuilder().setMessage(message).build();
 
         // Create the event template node with map values.
         final String eventTemplate = writeJson(asMap(
-                "mapValue1", asMap(
-                        "$resolver", "map",
-                        "key", "key1"),
-                "mapValue2", asMap(
-                        "$resolver", "map",
-                        "key", "key?")));
+                "mapValue1",
+                        asMap(
+                                "$resolver", "map",
+                                "key", "key1"),
+                "mapValue2",
+                        asMap(
+                                "$resolver", "map",
+                                "key", "key?")));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -408,7 +352,6 @@ class ReadOnlyStringMapResolverTest {
             assertThat(accessor.getString("mapValue1")).isEqualTo("val1");
             assertThat(accessor.getString("mapValue2")).isNull();
         });
-
     }
 
     @Test
@@ -417,27 +360,19 @@ class ReadOnlyStringMapResolverTest {
         // Create the event template.
         final String key = "list";
         final String eventTemplate = writeJson(asMap(
-                "typedValue", asMap(
-                        "$resolver", "map",
-                        "key", key),
-                "stringifiedValue", asMap(
-                        "$resolver", "map",
-                        "key", key,
-                        "stringified", true)));
+                "typedValue", asMap("$resolver", "map", "key", key),
+                "stringifiedValue", asMap("$resolver", "map", "key", key, "stringified", true)));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
         // Create the log event with a MapMessage.
         final List<Integer> value = Arrays.asList(1, 2);
-        final StringMapMessage mapMessage = new StringMapMessage()
-                .with(key, value);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final StringMapMessage mapMessage = new StringMapMessage().with(key, value);
+        final LogEvent logEvent = Log4jLogEvent.newBuilder()
                 .setMessage(mapMessage)
                 .setTimeMillis(System.currentTimeMillis())
                 .build();
@@ -447,7 +382,5 @@ class ReadOnlyStringMapResolverTest {
             assertThat(accessor.getObject("typedValue")).isEqualTo(value);
             assertThat(accessor.getString("stringifiedValue")).isEqualTo(String.valueOf(value));
         });
-
     }
-
 }

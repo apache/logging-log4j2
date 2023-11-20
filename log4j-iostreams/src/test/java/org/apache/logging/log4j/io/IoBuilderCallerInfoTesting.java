@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.io;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.ClassRule;
-
-import static org.junit.Assert.*;
 
 public class IoBuilderCallerInfoTesting {
 
@@ -35,7 +35,7 @@ public class IoBuilderCallerInfoTesting {
         return getExtendedLogger();
     }
 
-    protected final static Level LEVEL = Level.WARN;
+    protected static final Level LEVEL = Level.WARN;
 
     @ClassRule
     public static LoggerContextRule ctx = new LoggerContextRule("log4j2-streams-calling-info.xml");

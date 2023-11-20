@@ -18,7 +18,6 @@ package org.apache.logging.log4j.dbcp2.appender;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.jdbc.appender.JdbcH2TestHelper;
 import org.junit.Assert;
@@ -37,33 +36,35 @@ public class PoolingDriverConnectionSourceTest {
     @Test
     public void testH2Properties() throws SQLException {
         final Property[] properties = new Property[] {
-                // @formatter:off
-                Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
-                Property.createProperty("password", JdbcH2TestHelper.PASSWORD),
-                // @formatter:on
+            // @formatter:off
+            Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
+            Property.createProperty("password", JdbcH2TestHelper.PASSWORD),
+            // @formatter:on
         };
         // @formatter:off
-        final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
-            .setProperties(properties)
-            .build();
+        final PoolingDriverConnectionSource source =
+                PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
+                        .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
+                        .setProperties(properties)
+                        .build();
         openAndClose(source);
     }
 
     @Test
     public void testH2PropertiesAndPoolName() throws SQLException {
         final Property[] properties = new Property[] {
-                // @formatter:off
-                Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
-                Property.createProperty("password", JdbcH2TestHelper.PASSWORD),
-                // @formatter:on
+            // @formatter:off
+            Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
+            Property.createProperty("password", JdbcH2TestHelper.PASSWORD),
+            // @formatter:on
         };
         // @formatter:off
-        final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
-            .setProperties(properties)
-            .setPoolName("MyPoolName")
-            .build();
+        final PoolingDriverConnectionSource source =
+                PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
+                        .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
+                        .setProperties(properties)
+                        .setPoolName("MyPoolName")
+                        .build();
         // @formatter:on
         openAndClose(source);
     }
@@ -71,37 +72,43 @@ public class PoolingDriverConnectionSourceTest {
     @Test
     public void testH2UserAndPassword() throws SQLException {
         // @formatter:off
-        final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
-            .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
-            .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
-            .build();
+        final PoolingDriverConnectionSource source =
+                PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
+                        .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
+                        .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
+                        .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
+                        .build();
         openAndClose(source);
     }
 
     @Test
     public void testH2UserPasswordAndPoolName() throws SQLException {
         // @formatter:off
-        final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
-            .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
-            .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
-            .setPoolName("MyPoolName")
-            .build();
+        final PoolingDriverConnectionSource source =
+                PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
+                        .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
+                        .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
+                        .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
+                        .setPoolName("MyPoolName")
+                        .build();
         openAndClose(source);
     }
 
     @Test
     public void testPoolableConnectionFactoryConfig() throws SQLException {
-        final PoolableConnectionFactoryConfig poolableConnectionFactoryConfig = PoolableConnectionFactoryConfig.newBuilder().setMaxConnLifetimeMillis(30000).build();
+        final PoolableConnectionFactoryConfig poolableConnectionFactoryConfig =
+                PoolableConnectionFactoryConfig.newBuilder()
+                        .setMaxConnLifetimeMillis(30000)
+                        .build();
         // @formatter:off
-        final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
-            .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
-            .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
-            .setPoolName("MyPoolName")
-            .setPoolableConnectionFactoryConfig(poolableConnectionFactoryConfig)
-            .build();
+        final PoolingDriverConnectionSource source =
+                PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
+                        .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
+                        .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
+                        .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
+                        .setPoolName("MyPoolName")
+                        .setPoolableConnectionFactoryConfig(poolableConnectionFactoryConfig)
+                        .build();
         // @formatter:on
         openAndClose(source);
     }

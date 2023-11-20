@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class FilePasswordProviderTest {
 

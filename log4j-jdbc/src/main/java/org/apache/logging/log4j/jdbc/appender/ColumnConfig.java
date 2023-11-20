@@ -71,7 +71,9 @@ public final class ColumnConfig {
             final boolean isPattern = Strings.isNotEmpty(pattern);
             final boolean isLiteralValue = Strings.isNotEmpty(literal);
 
-            if ((isPattern && isLiteralValue) || (isPattern && isEventTimestamp) || (isLiteralValue && isEventTimestamp)) {
+            if ((isPattern && isLiteralValue)
+                    || (isPattern && isEventTimestamp)
+                    || (isLiteralValue && isEventTimestamp)) {
                 LOGGER.error("The pattern, literal, and isEventTimestamp attributes are mutually exclusive.");
                 return null;
             }
@@ -85,8 +87,7 @@ public final class ColumnConfig {
             }
 
             if (isPattern) {
-                final PatternLayout layout =
-                    PatternLayout.newBuilder()
+                final PatternLayout layout = PatternLayout.newBuilder()
                         .setPattern(pattern)
                         .setConfiguration(configuration)
                         .setAlwaysWriteExceptions(false)
@@ -173,10 +174,12 @@ public final class ColumnConfig {
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+
     @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
+
     private final String columnName;
     private final String columnNameKey;
     private final PatternLayout layout;
@@ -188,8 +191,13 @@ public final class ColumnConfig {
 
     private final boolean clob;
 
-    private ColumnConfig(final String columnName, final PatternLayout layout, final String literalValue,
-                         final boolean eventDate, final boolean unicode, final boolean clob) {
+    private ColumnConfig(
+            final String columnName,
+            final PatternLayout layout,
+            final String literalValue,
+            final boolean eventDate,
+            final boolean unicode,
+            final boolean clob) {
         this.columnName = columnName;
         this.columnNameKey = ColumnMapping.toKey(columnName);
         this.layout = layout;

@@ -42,5 +42,4 @@ public interface TemplateResolverInterceptor<V, C extends TemplateResolverContex
     default Object processTemplateBeforeResolverInjection(final C context, final Object node) {
         return node;
     }
-
 }

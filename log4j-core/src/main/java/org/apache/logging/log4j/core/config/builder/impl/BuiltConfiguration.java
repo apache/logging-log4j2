@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config.builder.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -46,7 +45,8 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component scriptsComponent;
     private String contentType = "text";
 
-    public BuiltConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
+    public BuiltConfiguration(
+            final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
         super(loggerContext, source);
         statusConfig = new StatusConfiguration().setStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
@@ -96,7 +96,8 @@ public class BuiltConfiguration extends AbstractConfiguration {
         children.add(convertToNode(rootNode, appendersComponent));
         if (filtersComponent.getComponents().size() > 0) {
             if (filtersComponent.getComponents().size() == 1) {
-                children.add(convertToNode(rootNode, filtersComponent.getComponents().get(0)));
+                children.add(
+                        convertToNode(rootNode, filtersComponent.getComponents().get(0)));
             } else {
                 children.add(convertToNode(rootNode, filtersComponent));
             }

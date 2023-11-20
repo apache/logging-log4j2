@@ -25,7 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -96,20 +95,30 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         protected Charset getCharset(final String property, final Charset defaultCharset) {
             return sysProps.getCharsetProperty(property, defaultCharset);
         }
-
     }
 
-    private ConsoleAppender(final String name, final Layout layout, final Filter filter,
-                            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target,
-                            final Property[] properties) {
+    private ConsoleAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final OutputStreamManager manager,
+            final boolean ignoreExceptions,
+            final Target target,
+            final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, properties, manager);
         this.target = target;
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
-        return new ConsoleAppender("DefaultConsole-" + COUNT.incrementAndGet(), layout, null,
-                getDefaultManager(DEFAULT_TARGET, false, false, layout), true, DEFAULT_TARGET, null);
+        return new ConsoleAppender(
+                "DefaultConsole-" + COUNT.incrementAndGet(),
+                layout,
+                null,
+                getDefaultManager(DEFAULT_TARGET, false, false, layout),
+                true,
+                DEFAULT_TARGET,
+                null);
     }
 
     @PluginFactory
@@ -152,21 +161,28 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         @Override
         public ConsoleAppender build() {
             if (follow && direct) {
-                throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
+                throw new IllegalArgumentException(
+                        "Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
             }
             final Layout layout = getOrCreateLayout(target.getDefaultCharset());
             final Configuration configuration = getConfiguration();
-            final PropertyEnvironment propertyEnvironment = configuration != null
-                    && configuration.getLoggerContext() != null
-                    ? configuration.getLoggerContext().getProperties() : PropertiesUtil.getProperties();
-            return new ConsoleAppender(getName(), layout, getFilter(),
+            final PropertyEnvironment propertyEnvironment =
+                    configuration != null && configuration.getLoggerContext() != null
+                            ? configuration.getLoggerContext().getProperties()
+                            : PropertiesUtil.getProperties();
+            return new ConsoleAppender(
+                    getName(),
+                    layout,
+                    getFilter(),
                     getManager(target, follow, direct, layout, propertyEnvironment),
-                    isIgnoreExceptions(), target, getPropertyArray());
+                    isIgnoreExceptions(),
+                    target,
+                    getPropertyArray());
         }
     }
 
-    private static OutputStreamManager getDefaultManager(final Target target, final boolean follow, final boolean direct,
-            final Layout layout) {
+    private static OutputStreamManager getDefaultManager(
+            final Target target, final boolean follow, final boolean direct, final Layout layout) {
         final OutputStream os = getOutputStream(follow, direct, target, PropertiesUtil.getProperties());
 
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
@@ -174,30 +190,38 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
-    private static OutputStreamManager getManager(final Target target, final boolean follow, final boolean direct,
-            final Layout layout, final PropertyEnvironment properties) {
+    private static OutputStreamManager getManager(
+            final Target target,
+            final boolean follow,
+            final boolean direct,
+            final Layout layout,
+            final PropertyEnvironment properties) {
         final OutputStream os = getOutputStream(follow, direct, target, properties);
         final String managerName = target.name() + '.' + follow + '.' + direct;
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
-    private static OutputStream getOutputStream(final boolean follow, final boolean direct, final Target target,
-                                                final PropertyEnvironment properties) {
+    private static OutputStream getOutputStream(
+            final boolean follow, final boolean direct, final Target target, final PropertyEnvironment properties) {
         final String enc = Charset.defaultCharset().name();
         OutputStream outputStream;
         try {
             // @formatter:off
-            outputStream = target == Target.SYSTEM_OUT ?
-                direct ? new FileOutputStream(FileDescriptor.out) :
-                    (follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out) :
-                direct ? new FileOutputStream(FileDescriptor.err) :
-                    (follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err);
+            outputStream = target == Target.SYSTEM_OUT
+                    ? direct
+                            ? new FileOutputStream(FileDescriptor.out)
+                            : (follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out)
+                    : direct
+                            ? new FileOutputStream(FileDescriptor.err)
+                            : (follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err);
             // @formatter:on
             outputStream = new CloseShieldOutputStream(outputStream);
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
-        if (!properties.isOsWindows() || properties.getBooleanProperty(Log4jPropertyKey.CONSOLE_JANSI_ENABLED, true) || direct) {
+        if (!properties.isOsWindows()
+                || properties.getBooleanProperty(Log4jPropertyKey.CONSOLE_JANSI_ENABLED, true)
+                || direct) {
             return outputStream;
         }
         try {
@@ -210,7 +234,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final NoSuchMethodException nsme) {
             LOGGER.warn("{} is missing the proper constructor", JANSI_CLASS);
         } catch (final Exception ex) {
-            LOGGER.warn("Unable to instantiate {} due to {}", JANSI_CLASS, clean(Throwables.getRootCause(ex).toString()).trim());
+            LOGGER.warn(
+                    "Unable to instantiate {} due to {}",
+                    JANSI_CLASS,
+                    clean(Throwables.getRootCause(ex).toString()).trim());
         }
         return outputStream;
     }
@@ -223,8 +250,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * An implementation of OutputStream that redirects to the current System.err.
      */
     private static class SystemErrStream extends OutputStream {
-        public SystemErrStream() {
-        }
+        public SystemErrStream() {}
 
         @Override
         public void close() {
@@ -256,8 +282,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * An implementation of OutputStream that redirects to the current System.out.
      */
     private static class SystemOutStream extends OutputStream {
-        public SystemOutStream() {
-        }
+        public SystemOutStream() {}
 
         @Override
         public void close() {
@@ -328,5 +353,4 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     public Target getTarget() {
         return target;
     }
-
 }

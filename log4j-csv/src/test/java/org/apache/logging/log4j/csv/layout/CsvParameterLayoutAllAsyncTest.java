@@ -38,7 +38,8 @@ public class CsvParameterLayoutAllAsyncTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
+        System.setProperty(
+                Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                 AsyncLoggerContextSelector.class.getName());
         System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "AsyncLoggerTest.xml");
     }
@@ -47,7 +48,6 @@ public class CsvParameterLayoutAllAsyncTest {
     public static void afterClass() {
         System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(), Strings.EMPTY);
     }
-
 
     @Test
     public void testLayoutDefaultNormal() throws Exception {

@@ -21,7 +21,6 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -152,5 +151,4 @@ public final class AvailablePortFinder {
 
         return false;
     }
-
 }

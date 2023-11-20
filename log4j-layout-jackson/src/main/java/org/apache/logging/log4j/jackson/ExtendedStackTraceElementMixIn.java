@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
  * Mix-in for {@link ExtendedStackTraceElement}.
  */
 @JsonPropertyOrder({
-    //@formatter:off
+    // @formatter:off
     ExtendedStackTraceElementMixIn.ATTR_CLASS_LOADER_NAME,
     ExtendedStackTraceElementMixIn.ATTR_MODULE,
     ExtendedStackTraceElementMixIn.ATTR_MODULE_VERSION,
@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
     ExtendedStackTraceElementMixIn.ATTR_EXACT,
     ExtendedStackTraceElementMixIn.ATTR_LOCATION,
     ExtendedStackTraceElementMixIn.ATTR_VERSION
-    //@formatter:on
+    // @formatter:on
 })
 public abstract class ExtendedStackTraceElementMixIn {
 
@@ -55,7 +55,7 @@ public abstract class ExtendedStackTraceElementMixIn {
 
     @JsonCreator
     public ExtendedStackTraceElementMixIn(
-    // @formatter:off
+            // @formatter:off
             @JsonProperty(ATTR_CLASS_LOADER_NAME) final String classLoaderName,
             @JsonProperty(ATTR_MODULE) final String moduleName,
             @JsonProperty(ATTR_MODULE_VERSION) final String moduleVersion,
@@ -66,8 +66,8 @@ public abstract class ExtendedStackTraceElementMixIn {
             @JsonProperty(ATTR_EXACT) final boolean exact,
             @JsonProperty(ATTR_LOCATION) final String location,
             @JsonProperty(ATTR_VERSION) final String version
-   // @formatter:on
-    ) {
+            // @formatter:on
+            ) {
         // empty
     }
 
@@ -109,5 +109,4 @@ public abstract class ExtendedStackTraceElementMixIn {
 
     @JsonIgnore
     public abstract boolean isNativeMethod();
-
 }

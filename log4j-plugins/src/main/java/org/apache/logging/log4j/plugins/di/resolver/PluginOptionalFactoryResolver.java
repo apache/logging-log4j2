@@ -20,15 +20,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 
 /**
  * Factory resolver for {@code Optional<T>} plugin instances.
  */
-public class PluginOptionalFactoryResolver<T>
-        extends AbstractPluginFactoryResolver<Optional<? extends T>> {
+public class PluginOptionalFactoryResolver<T> extends AbstractPluginFactoryResolver<Optional<? extends T>> {
     @Override
     protected boolean supportsType(final Type rawType, final Type... typeArguments) {
         return Optional.class == rawType;
@@ -36,11 +34,11 @@ public class PluginOptionalFactoryResolver<T>
 
     @Override
     public Supplier<Optional<? extends T>> getFactory(
-            final ResolvableKey<Optional<? extends T>> resolvableKey,
-            final InstanceFactory instanceFactory) {
+            final ResolvableKey<Optional<? extends T>> resolvableKey, final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getNamespace();
         final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
         final Type componentType = containerType.getActualTypeArguments()[0];
-        return () -> Plugins.<T>streamPluginInstancesMatching(instanceFactory, namespace, componentType).findFirst();
+        return () -> Plugins.<T>streamPluginInstancesMatching(instanceFactory, namespace, componentType)
+                .findFirst();
     }
 }

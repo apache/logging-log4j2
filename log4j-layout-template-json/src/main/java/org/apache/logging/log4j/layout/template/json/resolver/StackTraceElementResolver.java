@@ -70,8 +70,7 @@ final class StackTraceElementResolver implements TemplateResolver<StackTraceElem
         return "stackTraceElement";
     }
 
-    private TemplateResolver<StackTraceElement> createInternalResolver(
-            final TemplateResolverConfig config) {
+    private TemplateResolver<StackTraceElement> createInternalResolver(final TemplateResolverConfig config) {
         final String fieldName = config.getString("field");
         if ("className".equals(fieldName)) {
             return CLASS_NAME_RESOLVER;
@@ -86,10 +85,7 @@ final class StackTraceElementResolver implements TemplateResolver<StackTraceElem
     }
 
     @Override
-    public void resolve(
-            final StackTraceElement stackTraceElement,
-            final JsonWriter jsonWriter) {
+    public void resolve(final StackTraceElement stackTraceElement, final JsonWriter jsonWriter) {
         internalResolver.resolve(stackTraceElement, jsonWriter);
     }
-
 }

@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -41,22 +40,20 @@ public class NameAbbreviatorTest {
 
     @Parameterized.Parameters(name = "pattern=\"{0}\", expected={1}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(
-            new Object[][]{
-                // { pattern, expected }
-                { "0", "NameAbbreviatorTest" },
-                { "1", "NameAbbreviatorTest" },
-                { "2", "pattern.NameAbbreviatorTest" },
-                { "3", "core.pattern.NameAbbreviatorTest" },
-                { "1.", "o.a.l.l.c.p.NameAbbreviatorTest" },
-                { "1.1.~", "o.a.~.~.~.~.NameAbbreviatorTest" },
-                { "1.1.1.*", "o.a.l.log4j.core.pattern.NameAbbreviatorTest" },
-                { ".", "......NameAbbreviatorTest" },
-                { "1.2*", "o.a.l.l.c.pattern.NameAbbreviatorTest" },
-                { "1.3*", "o.a.l.l.core.pattern.NameAbbreviatorTest" },
-                { "1.8*", "org.apache.logging.log4j.core.pattern.NameAbbreviatorTest" }
-            }
-        );
+        return Arrays.asList(new Object[][] {
+            // { pattern, expected }
+            {"0", "NameAbbreviatorTest"},
+            {"1", "NameAbbreviatorTest"},
+            {"2", "pattern.NameAbbreviatorTest"},
+            {"3", "core.pattern.NameAbbreviatorTest"},
+            {"1.", "o.a.l.l.c.p.NameAbbreviatorTest"},
+            {"1.1.~", "o.a.~.~.~.~.NameAbbreviatorTest"},
+            {"1.1.1.*", "o.a.l.log4j.core.pattern.NameAbbreviatorTest"},
+            {".", "......NameAbbreviatorTest"},
+            {"1.2*", "o.a.l.l.c.pattern.NameAbbreviatorTest"},
+            {"1.3*", "o.a.l.l.core.pattern.NameAbbreviatorTest"},
+            {"1.8*", "org.apache.logging.log4j.core.pattern.NameAbbreviatorTest"}
+        });
     }
 
     @Test

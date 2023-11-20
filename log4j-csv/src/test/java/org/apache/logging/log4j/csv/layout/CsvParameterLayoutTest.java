@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.csv.layout;
 
+import static org.junit.Assert.assertEquals;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -42,8 +43,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * Tests {@link AbstractCsvLayout}.
  *
@@ -54,8 +53,14 @@ import static org.junit.Assert.assertEquals;
 public class CsvParameterLayoutTest {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { new LoggerContextRule("csvParamsSync.xml"), },
-                { new LoggerContextRule("csvParamsMixedAsync.xml"), }, });
+        return Arrays.asList(new Object[][] {
+            {
+                new LoggerContextRule("csvParamsSync.xml"),
+            },
+            {
+                new LoggerContextRule("csvParamsMixedAsync.xml"),
+            },
+        });
     }
 
     @Rule
@@ -70,8 +75,18 @@ public class CsvParameterLayoutTest {
 
     @Test
     public void testCustomCharset() {
-        final AbstractCsvLayout layout = CsvParameterLayout.createLayout(new DefaultConfiguration(), "Excel", null, null, null, null, null,
-                null, StandardCharsets.UTF_16, null, null);
+        final AbstractCsvLayout layout = CsvParameterLayout.createLayout(
+                new DefaultConfiguration(),
+                "Excel",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                StandardCharsets.UTF_16,
+                null,
+                null);
         assertEquals("text/csv; charset=UTF-16", layout.getContentType());
     }
 
@@ -111,7 +126,10 @@ public class CsvParameterLayoutTest {
             // wait until background thread finished processing
             appender.countDownLatch.await(10, TimeUnit.SECONDS);
         }
-        assertEquals("Background thread did not finish processing: msg count", msgCount, appender.getMessages().size());
+        assertEquals(
+                "Background thread did not finish processing: msg count",
+                msgCount,
+                appender.getMessages().size());
 
         // don't stop appender until background thread is done
         appender.stop();
@@ -176,7 +194,10 @@ public class CsvParameterLayoutTest {
         if (appender.getMessages().size() < msgCount) {
             appender.countDownLatch.await(5, TimeUnit.SECONDS);
         }
-        assertEquals("Background thread did not finish processing: msg count", msgCount, appender.getMessages().size());
+        assertEquals(
+                "Background thread did not finish processing: msg count",
+                msgCount,
+                appender.getMessages().size());
 
         // don't stop appender until background thread is done
         appender.stop();
@@ -184,5 +205,4 @@ public class CsvParameterLayoutTest {
         final String eventStr = list.get(0).toString();
         Assert.assertTrue(eventStr, eventStr.contains(json));
     }
-
 }

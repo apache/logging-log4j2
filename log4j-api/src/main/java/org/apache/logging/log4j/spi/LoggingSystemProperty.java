@@ -85,7 +85,7 @@ public enum LoggingSystemProperty implements PropertyKey {
      * Property to override the default {@link FlowMessageFactory} class.
      */
     // Message.flowMessageFactory
-    LOGGER_FLOW_MESSAGE_FACTORY_CLASS (PropertyComponent.MESSAGE, Constant.FLOW_MESSAGE_FACTORY),
+    LOGGER_FLOW_MESSAGE_FACTORY_CLASS(PropertyComponent.MESSAGE, Constant.FLOW_MESSAGE_FACTORY),
 
     /**
      * Property to override the default maximum nesting depth of map messages to format in JSON output. The
@@ -107,7 +107,7 @@ public enum LoggingSystemProperty implements PropertyKey {
      * reached, older entries will be removed as new entries are added. The default value is 200.
      */
     // StatusLogger.entries
-     STATUS_MAX_ENTRIES(PropertyComponent.STATUS_LOGGER, Constant.ENTRIES),
+    STATUS_MAX_ENTRIES(PropertyComponent.STATUS_LOGGER, Constant.ENTRIES),
 
     /**
      * Property that can be configured with the {@link Level} name to use as the default level for
@@ -254,6 +254,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          * </p>
          */
         static final String DEBUG = "debug";
+
         public static String SYSTEM_DEBUG = SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.SYSTEM + DELIM + DEBUG;
 
         /**
@@ -262,6 +263,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // Web.enableWebApp : calculate | true | false
         static final String IS_WEBAPP = "isWebApp";
+
         public static final String WEB_IS_WEBAPP =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.WEB + DELIM + IS_WEBAPP;
 
@@ -272,6 +274,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // ThreadLocals.enabled : calculate | true | false
         static final String ENABLE = "enable";
+
         public static final String THREAD_LOCALS_ENABLE =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_LOCALS + DELIM + ENABLE;
 
@@ -282,6 +285,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // TODO: see if this can be removed
         static final String IGNORE_TCL = "ignoreTCL";
+
         public static final String LOADER_IGNORE_THREAD_CONTEXT_LOADER =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.LOADER + DELIM + IGNORE_TCL;
 
@@ -292,6 +296,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // TODO: see if this can be removed
         static final String FORCE_TCL_ONLY = "forceTCLOnly";
+
         public static final String LOADER_FORCE_THREAD_CONTEXT_LOADER =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.LOADER + DELIM + FORCE_TCL_ONLY;
 
@@ -300,6 +305,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // GC.unboxRingBufferSize
         static final String UNBOX_RING_BUFFER_SIZE = "unboxRingBufferSize";
+
         public static final String GC_UNBOX_RING_BUFFER_SIZE =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.GC + DELIM + UNBOX_RING_BUFFER_SIZE;
 
@@ -308,6 +314,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // LoggerContext.factory
         static final String FACTORY = "factory";
+
         public static final String LOGGER_CONTEXT_FACTORY_CLASS =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.LOGGER_CONTEXT + DELIM + FACTORY;
 
@@ -323,6 +330,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // Message.flowMessageFactory
         static final String FLOW_MESSAGE_FACTORY = "flowMessageFactory";
+
         public static final String LOGGER_FLOW_MESSAGE_FACTORY_CLASS =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.MESSAGE + DELIM + FLOW_MESSAGE_FACTORY;
 
@@ -332,6 +340,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // Message.jsonFormatterMaxDepth
         static final String JSON_FORMATTER_MAX_DEPTH = "jsonFormatterMaxDepth";
+
         public static final String LOGGER_MAP_MESSAGE_JSON_FORMATTER_MAX_DEPTH =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.MESSAGE + DELIM + JSON_FORMATTER_MAX_DEPTH;
 
@@ -343,6 +352,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // GC.maxReusableMsgSize
         static final String MAX_REUSABLE_MSG_SIZE = "maxReusableMsgSize";
+
         public static final String GC_REUSABLE_MESSAGE_MAX_SIZE =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.GC + DELIM + MAX_REUSABLE_MSG_SIZE;
 
@@ -375,6 +385,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // StatusLogger.entries
         static final String ENTRIES = "entries";
+
         public static final String STATUS_MAX_ENTRIES =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.STATUS_LOGGER + DELIM + ENTRIES;
 
@@ -384,6 +395,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // StatusLogger.listenerLevel
         static final String LISTENER_LEVEL = "listenerLevel";
+
         public static final String STATUS_DEFAULT_LISTENER_LEVEL =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.STATUS_LOGGER + DELIM + LISTENER_LEVEL;
 
@@ -401,6 +413,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // ThreadContext.enableMap
         static final String ENABLE_MAP = "enableMap";
+
         public static final String THREAD_CONTEXT_MAP_ENABLED =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_CONTEXT + DELIM + ENABLE_MAP;
 
@@ -410,6 +423,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // ThreadContext.enableStack
         static final String ENABLE_STACK = "enableStack";
+
         public static final String THREAD_CONTEXT_STACK_ENABLED =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_CONTEXT + DELIM + ENABLE_STACK;
 
@@ -427,6 +441,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // ThreadContext.mapInheritable
         static final String MAP_INHERITABLE = "mapInheritable";
+
         public static final String THREAD_CONTEXT_MAP_INHERITABLE =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_CONTEXT + DELIM + MAP_INHERITABLE;
 
@@ -436,6 +451,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          * {@link ThreadContext#getThreadContextMap()}.
          */
         static final String MAP_CLASS = "mapClass";
+
         public static final String THREAD_CONTEXT_MAP_CLASS =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_CONTEXT + DELIM + MAP_CLASS;
 
@@ -444,6 +460,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // ThreadContext.initialCapacity
         static final String INITIAL_CAPACITY = "initialCapcity";
+
         public static final String THREAD_CONTEXT_INITIAL_CAPACITY =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_CONTEXT + DELIM + INITIAL_CAPACITY;
 
@@ -452,11 +469,12 @@ public enum LoggingSystemProperty implements PropertyKey {
          */
         // ThreadContext.garbageFree
         static final String GARBAGE_FREE = "garbageFree";
+
         public static final String THREAD_CONTEXT_GARBAGE_FREE_ENABLED =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_CONTEXT + DELIM + GARBAGE_FREE;
 
         static final String IS_WEB_APP = "isWebApp";
-        public static final String WEB = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
-                + PropertyComponent.Constant.WEB + DELIM + IS_WEB_APP;
+        public static final String WEB =
+                LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.WEB + DELIM + IS_WEB_APP;
     }
 }

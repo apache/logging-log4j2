@@ -16,14 +16,16 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-//note: NO import of Logger, Level, LogManager to prevent conflicts JUL/log4j
+// note: NO import of Logger, Level, LogManager to prevent conflicts JUL/log4j
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Map.Entry;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -33,10 +35,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 
 /**
  * Test the Log4jBridgeHandler.
@@ -59,33 +57,33 @@ import static org.junit.Assert.assertTrue;
  * The code also contains evaluation/test code for development time. It is not used for the unit tests
  * but kept here for reference and info. See field DEVTEST.
  */
-@FixMethodOrder(org.junit.runners.MethodSorters.NAME_ASCENDING)    // is nicer for manually checking console output
+@FixMethodOrder(org.junit.runners.MethodSorters.NAME_ASCENDING) // is nicer for manually checking console output
 public class Log4jBridgeHandlerTest {
     /** Perform developer tests? */
     private static final boolean DEVTEST = false;
 
     /** Do output the captured logger-output to stdout? */
-    private static final boolean OUTPUT_CAPTURED = !DEVTEST && Boolean.parseBoolean(
-            System.getProperty("log4j.Log4jBridgeHandlerTest.outputCaptured"));
+    private static final boolean OUTPUT_CAPTURED =
+            !DEVTEST && Boolean.parseBoolean(System.getProperty("log4j.Log4jBridgeHandlerTest.outputCaptured"));
 
     /** This classes' simple name = relevant part of logger name. */
     private static final String CSNAME = Log4jBridgeHandlerTest.class.getSimpleName();
     // loggers used in many tests
-    private static final java.util.logging.Logger julLog = java.util.logging.Logger.getLogger(Log4jBridgeHandlerTest.class.getName());
+    private static final java.util.logging.Logger julLog =
+            java.util.logging.Logger.getLogger(Log4jBridgeHandlerTest.class.getName());
     private static final org.apache.logging.log4j.Logger log4jLog = org.apache.logging.log4j.LogManager.getLogger();
 
     // capture sysout/syserr
-    //@Rule  public final SystemErrRule systemOutRule = new SystemErrRule().enableLog();
+    // @Rule  public final SystemErrRule systemOutRule = new SystemErrRule().enableLog();
     private static final ByteArrayOutputStream sysoutBytes = new ByteArrayOutputStream(1024);
     private static PrintStream prevSysErrStream;
-
 
     @BeforeClass
     public static void beforeClass() {
         // debug output to easily recognize misconfig.:
-        //System.out.println("sys-props:\n" + System.getProperties());
+        // System.out.println("sys-props:\n" + System.getProperties());
         System.out.println("sysout:  logging-cfg-file:  " + System.getProperty("java.util.logging.config.file"));
-        if (DEVTEST) devTestBeforeClass();    // call before stderr capturing
+        if (DEVTEST) devTestBeforeClass(); // call before stderr capturing
 
         // JUL does not like setting stderr inbetween, so set it once and reset collecting stream
         // for each method; (thus com.github.stefanbirkner:system-rules:SystemErrRule cannot be used)
@@ -102,60 +100,60 @@ public class Log4jBridgeHandlerTest {
         System.err.println("^^^--- END capturing output of stderr ---^^^");
     }
 
-
     @Before
     public void beforeTest() {
         // reset sysout collector
         sysoutBytes.reset();
     }
 
-
     /** Assert that captured sysout matches given regexp (any text may follow afterwards). */
     private void assertSysoutMatches(String regex) {
-        //String logOutput = systemOutRule.getLogWithNormalizedLineSeparator();
+        // String logOutput = systemOutRule.getLogWithNormalizedLineSeparator();
         String logOutput = sysoutBytes.toString();
         if (OUTPUT_CAPTURED) prevSysErrStream.print(logOutput);
         logOutput = logOutput.replace("\r\n", "\n");
-        regex = regex + "(.|\\n)*";        // allow any text with NL afterwards
+        regex = regex + "(.|\\n)*"; // allow any text with NL afterwards
         assertTrue("Unmatching output:\n" + logOutput + "\n-- vs: --\n" + regex + "\n----", logOutput.matches(regex));
     }
 
     /** Get regex for a JUL console output. Must match JUL-Console-Formatter! */
-    private String jul(final java.util.logging.Level lvl, final String locationPartRE,
-                       final String msgPartRE, final String exceptionClassAndMsgRE) {
+    private String jul(
+            final java.util.logging.Level lvl,
+            final String locationPartRE,
+            final String msgPartRE,
+            final String exceptionClassAndMsgRE) {
         return "JUL:.*" + lvl.getLocalizedName() + ".*" + CSNAME
-                + ".*" + locationPartRE + ".*" + msgPartRE + ".*\n"    // use real \n at end here for better error output
-                + (exceptionClassAndMsgRE == null ? ""
-                : ".*" + exceptionClassAndMsgRE + ".*\\n(\tat .*\\n)*\\n?");
+                + ".*" + locationPartRE + ".*" + msgPartRE + ".*\n" // use real \n at end here for better error output
+                + (exceptionClassAndMsgRE == null ? "" : ".*" + exceptionClassAndMsgRE + ".*\\n(\tat .*\\n)*\\n?");
     }
 
     /** Get regex for a log4j console output. Must match log4j2-Console-Layout! */
-    private String log4j(final org.apache.logging.log4j.Level lvl, final boolean julBridged,
-                         final String methodPartRE, final String msgPartRE, final String exceptionClassAndMsgRE) {
+    private String log4j(
+            final org.apache.logging.log4j.Level lvl,
+            final boolean julBridged,
+            final String methodPartRE,
+            final String msgPartRE,
+            final String exceptionClassAndMsgRE) {
         return "log4j2:.*" + lvl.name() + ".*" + CSNAME + (julBridged ? "\\._JUL" : "")
                 + ".*" + CSNAME + "/\\w*" + methodPartRE + "\\w*/.*"
-                + msgPartRE + ".*\n"        // use real \n at end here for better error output
-                + (exceptionClassAndMsgRE == null ? ""
-                : ".*" + exceptionClassAndMsgRE + ".*\\n(\tat .*\\n)*\\n?");
+                + msgPartRE + ".*\n" // use real \n at end here for better error output
+                + (exceptionClassAndMsgRE == null ? "" : ".*" + exceptionClassAndMsgRE + ".*\\n(\tat .*\\n)*\\n?");
     }
-
 
     @Test
     public void test1SimpleLoggings1Jul() {
         julLog.info("Test-'Info'-Log with JUL");
         julLog.fine("Test-'Fine'-Log with JUL");
-        julLog.finest("Test-'Finest'-Log with JUL");    // should not be logged because JUL-level is FINER
-        julLog.warning("Test-'Warn'-Log with JUL");    // thus add another log afterwards to allow checking
+        julLog.finest("Test-'Finest'-Log with JUL"); // should not be logged because JUL-level is FINER
+        julLog.warning("Test-'Warn'-Log with JUL"); // thus add another log afterwards to allow checking
         final String methodRE = "SimpleLoggings1Jul";
-        assertSysoutMatches(
-                log4j(org.apache.logging.log4j.Level.INFO, true, methodRE, "'Info'-Log with JUL", null)
-                        + jul(java.util.logging.Level.INFO, methodRE, "'Info'-Log with JUL", null)
-                        + log4j(org.apache.logging.log4j.Level.DEBUG, true, methodRE, "'Fine'-Log with JUL", null)
-                        + jul(java.util.logging.Level.FINE, methodRE, "'Fine'-Log with JUL", null)
-                        // no finest/trace
-                        + log4j(org.apache.logging.log4j.Level.WARN, true, methodRE, "'Warn'-Log with JUL", null)
-                        + jul(java.util.logging.Level.WARNING, methodRE, "'Warn'-Log with JUL", null)
-        );
+        assertSysoutMatches(log4j(org.apache.logging.log4j.Level.INFO, true, methodRE, "'Info'-Log with JUL", null)
+                + jul(java.util.logging.Level.INFO, methodRE, "'Info'-Log with JUL", null)
+                + log4j(org.apache.logging.log4j.Level.DEBUG, true, methodRE, "'Fine'-Log with JUL", null)
+                + jul(java.util.logging.Level.FINE, methodRE, "'Fine'-Log with JUL", null)
+                // no finest/trace
+                + log4j(org.apache.logging.log4j.Level.WARN, true, methodRE, "'Warn'-Log with JUL", null)
+                + jul(java.util.logging.Level.WARNING, methodRE, "'Warn'-Log with JUL", null));
     }
 
     @Test
@@ -164,23 +162,24 @@ public class Log4jBridgeHandlerTest {
         log4jLog.debug("Test-'Debug'-Log with log4j2");
         log4jLog.trace("Test-'Trace'-Log with log4j2");
         final String methodRE = "SimpleLoggings2Log4jDirect";
-        assertSysoutMatches(
-                log4j(org.apache.logging.log4j.Level.INFO, false, methodRE, "'Info'-Log with log4j2", null)
-                        + log4j(org.apache.logging.log4j.Level.DEBUG, false, methodRE, "'Debug'-Log with log4j2", null)
-                        + log4j(org.apache.logging.log4j.Level.TRACE, false, methodRE, "'Trace'-Log with log4j2", null)
-        );
+        assertSysoutMatches(log4j(org.apache.logging.log4j.Level.INFO, false, methodRE, "'Info'-Log with log4j2", null)
+                + log4j(org.apache.logging.log4j.Level.DEBUG, false, methodRE, "'Debug'-Log with log4j2", null)
+                + log4j(org.apache.logging.log4j.Level.TRACE, false, methodRE, "'Trace'-Log with log4j2", null));
     }
-
 
     @Test
     public void test2SubMethod() {
-        subMethodWithLogs();        // location info is sub method now
+        subMethodWithLogs(); // location info is sub method now
         final String methodRE = "subMethodWithLogs";
         assertSysoutMatches(
                 log4j(org.apache.logging.log4j.Level.DEBUG, true, methodRE, "'Fine'-Log with JUL in subMethod", null)
                         + jul(java.util.logging.Level.FINE, methodRE, "'Fine'-Log with JUL in subMethod", null)
-                        + log4j(org.apache.logging.log4j.Level.INFO, false, methodRE, "'Info'-Log with log4j2 in subMethod", null)
-        );
+                        + log4j(
+                                org.apache.logging.log4j.Level.INFO,
+                                false,
+                                methodRE,
+                                "'Info'-Log with log4j2 in subMethod",
+                                null));
     }
 
     private void subMethodWithLogs() {
@@ -188,94 +187,124 @@ public class Log4jBridgeHandlerTest {
         log4jLog.info("Test-'Info'-Log with log4j2 in subMethod");
     }
 
-
     @Test
     public void test3JulFlow1() {
         // note: manually given source information get lost in log4j!
         julLog.entering("enteringExampleClassParam", "enteringExampleMethodParam");
         final String methodRE = "JulFlow";
-        assertSysoutMatches(
-                log4j(org.apache.logging.log4j.Level.TRACE, true, methodRE, "ENTRY", null)
-                        + jul(java.util.logging.Level.FINER, "enteringExampleClassParam enteringExampleMethodParam", "ENTRY", null)
-        );
+        assertSysoutMatches(log4j(org.apache.logging.log4j.Level.TRACE, true, methodRE, "ENTRY", null)
+                + jul(
+                        java.util.logging.Level.FINER,
+                        "enteringExampleClassParam enteringExampleMethodParam",
+                        "ENTRY",
+                        null));
     }
 
     @Test
     public void test3JulFlow2() {
         // note: manually given source information get lost in log4j!
-        julLog.entering("enteringExampleClassParam", "enteringExampleMethodParam_withParams",
-                new Object[]{"with some", "parameters", 42});
+        julLog.entering("enteringExampleClassParam", "enteringExampleMethodParam_withParams", new Object[] {
+            "with some", "parameters", 42
+        });
         final String methodRE = "JulFlow";
         assertSysoutMatches(
-                log4j(org.apache.logging.log4j.Level.TRACE, true, methodRE,
-                        "ENTRY.*with some.*param.*42", null)
-                        + jul(java.util.logging.Level.FINER, "enteringExampleClassParam enteringExampleMethodParam_withParams",
-                        "ENTRY.*with some.*param.*42", null)
-        );
+                log4j(org.apache.logging.log4j.Level.TRACE, true, methodRE, "ENTRY.*with some.*param.*42", null)
+                        + jul(
+                                java.util.logging.Level.FINER,
+                                "enteringExampleClassParam enteringExampleMethodParam_withParams",
+                                "ENTRY.*with some.*param.*42",
+                                null));
     }
 
     @Test
     public void test3JulFlow3() {
         // note: manually given source information get lost in log4j!
-        julLog.exiting("exitingExampleClassParam", "exitingExampleMethodParam",
+        julLog.exiting(
+                "exitingExampleClassParam",
+                "exitingExampleMethodParam",
                 Arrays.asList("array of Strings", "that are the exit", "result"));
         final String methodRE = "JulFlow";
-        assertSysoutMatches(
-                log4j(org.apache.logging.log4j.Level.TRACE, true, methodRE,
-                        "RETURN.*array of Str.*that are.*result", null)
-                        + jul(java.util.logging.Level.FINER, "exitingExampleClassParam exitingExampleMethodParam",
-                        "RETURN.*array of Str.*that are.*result", null)
-        );
+        assertSysoutMatches(log4j(
+                        org.apache.logging.log4j.Level.TRACE,
+                        true,
+                        methodRE,
+                        "RETURN.*array of Str.*that are.*result",
+                        null)
+                + jul(
+                        java.util.logging.Level.FINER,
+                        "exitingExampleClassParam exitingExampleMethodParam",
+                        "RETURN.*array of Str.*that are.*result",
+                        null));
     }
 
     @Test
     public void test3JulFlow4() {
         // note: manually given source information get lost in log4j!
-        julLog.throwing("throwingExampleClassParam", "throwingExampleMethodParam",
+        julLog.throwing(
+                "throwingExampleClassParam",
+                "throwingExampleMethodParam",
                 new IllegalStateException("ONLY TEST for JUL-throwing()"));
         final String methodRE = "JulFlow";
-        assertSysoutMatches(
-                log4j(org.apache.logging.log4j.Level.TRACE, true, methodRE,
-                        "THROW", "IllegalStateException.*ONLY TEST for JUL-throwing")
-                        + jul(java.util.logging.Level.FINER, "throwingExampleClassParam throwingExampleMethodParam",
-                        "THROW", "IllegalStateException.*ONLY TEST for JUL-throwing")
-        );
+        assertSysoutMatches(log4j(
+                        org.apache.logging.log4j.Level.TRACE,
+                        true,
+                        methodRE,
+                        "THROW",
+                        "IllegalStateException.*ONLY TEST for JUL-throwing")
+                + jul(
+                        java.util.logging.Level.FINER,
+                        "throwingExampleClassParam throwingExampleMethodParam",
+                        "THROW",
+                        "IllegalStateException.*ONLY TEST for JUL-throwing"));
     }
-
 
     @Test
     public void test4JulSpecials1() {
-        julLog.log(java.util.logging.Level.WARNING, "JUL-Test via log() as warning with exception",
+        julLog.log(
+                java.util.logging.Level.WARNING,
+                "JUL-Test via log() as warning with exception",
                 new java.util.zip.DataFormatException("ONLY TEST for JUL.log()"));
         final String methodRE = "JulSpecials";
-        assertSysoutMatches(
-                log4j(org.apache.logging.log4j.Level.WARN, true, methodRE,
-                        "JUL-Test via log\\(\\) as warning", "DataFormatException.*ONLY TEST for JUL")
-                        + jul(java.util.logging.Level.WARNING, methodRE, "JUL-Test via log\\(\\) as warning",
+        assertSysoutMatches(log4j(
+                        org.apache.logging.log4j.Level.WARN,
+                        true,
+                        methodRE,
+                        "JUL-Test via log\\(\\) as warning",
                         "DataFormatException.*ONLY TEST for JUL")
-        );
+                + jul(
+                        java.util.logging.Level.WARNING,
+                        methodRE,
+                        "JUL-Test via log\\(\\) as warning",
+                        "DataFormatException.*ONLY TEST for JUL"));
     }
 
     @Test
     public void test4JulSpecials2() {
         // test with MessageFormat
-        julLog.log(java.util.logging.Level.INFO, "JUL-Test via log() with parameters (0={0}, 1={1}, 2={2,number,##000.0})",
-                new Object[]{"a", "b", 42});
+        julLog.log(
+                java.util.logging.Level.INFO,
+                "JUL-Test via log() with parameters (0={0}, 1={1}, 2={2,number,##000.0})",
+                new Object[] {"a", "b", 42});
         final String methodRE = "JulSpecials";
-        assertSysoutMatches(
-                log4j(org.apache.logging.log4j.Level.INFO, true, methodRE,
-                        "JUL-Test via log\\(\\) with parameters \\(0=a, 1=b, 2=042.0\\)", null)
-                        + jul(java.util.logging.Level.INFO, methodRE,
-                        "JUL-Test via log\\(\\) with parameters \\(0=a, 1=b, 2=042.0\\)", null)
-        );
+        assertSysoutMatches(log4j(
+                        org.apache.logging.log4j.Level.INFO,
+                        true,
+                        methodRE,
+                        "JUL-Test via log\\(\\) with parameters \\(0=a, 1=b, 2=042.0\\)",
+                        null)
+                + jul(
+                        java.util.logging.Level.INFO,
+                        methodRE,
+                        "JUL-Test via log\\(\\) with parameters \\(0=a, 1=b, 2=042.0\\)",
+                        null));
     }
 
     // no test for logrb(ResourceBundle)-case as this is very specific and seldom used (in
     // my opinion); and it does not add any real thing to test here
 
-
     private void assertLogLevel(final String loggerName, final java.util.logging.Level julLevel) {
-        final java.util.logging.Logger lg = java.util.logging.LogManager.getLogManager().getLogger(loggerName);
+        final java.util.logging.Logger lg =
+                java.util.logging.LogManager.getLogManager().getLogger(loggerName);
         assertEquals("Logger '" + loggerName + "'", julLevel, (lg == null ? null : lg.getLevel()));
     }
 
@@ -296,13 +325,12 @@ public class Log4jBridgeHandlerTest {
         assertLogLevel("log4j.Log4jBridgeHandlerTest.propagate1.nested1.deeplyNested", null);
     }
 
-
     @Test
     public void test5LevelPropSetLevel() {
         String name = "log4j.test.new_logger_level_set";
         Configurator.setLevel(name, org.apache.logging.log4j.Level.DEBUG);
         assertLogLevel(name, java.util.logging.Level.FINE);
-        test5LevelPropFromConfigFile();    // the rest should be untouched!
+        test5LevelPropFromConfigFile(); // the rest should be untouched!
 
         name = "log4j.Log4jBridgeHandlerTest.propagate1.nested1";
         Configurator.setLevel(name, org.apache.logging.log4j.Level.WARN);
@@ -315,18 +343,17 @@ public class Log4jBridgeHandlerTest {
         // loggerContext.updateLoggers() which calls firePropertyChangeEvent()
     }
 
-
     @Test
     public void test5LevelPropGC() {
         // this test will fail if you comment out "julLoggerRefs.add(julLog);" in propagateLogLevels()
-        test5LevelPropFromConfigFile();    // at start, all should be fine
-        final java.util.logging.Logger julLogRef = java.util.logging.Logger
-                .getLogger("log4j.Log4jBridgeHandlerTest.propagate1.nested1");
-        System.gc();    // a single call is sufficient
-        System.out.println("sysout:  test5LevelPropGC() still has reference to JUL-logger: "
-                + julLogRef.getName() + " / " + julLogRef);
+        test5LevelPropFromConfigFile(); // at start, all should be fine
+        final java.util.logging.Logger julLogRef =
+                java.util.logging.Logger.getLogger("log4j.Log4jBridgeHandlerTest.propagate1.nested1");
+        System.gc(); // a single call is sufficient
+        System.out.println("sysout:  test5LevelPropGC() still has reference to JUL-logger: " + julLogRef.getName()
+                + " / " + julLogRef);
         try {
-            test5LevelPropFromConfigFile();    // even after GC the not referenced loggers should still be there
+            test5LevelPropFromConfigFile(); // even after GC the not referenced loggers should still be there
         } catch (Throwable t) {
             debugPrintJulLoggers("After GC");
             // => JUL root logger, above explicitly referenced logger and its parent ("...propagate1")
@@ -335,7 +362,6 @@ public class Log4jBridgeHandlerTest {
             throw t;
         }
     }
-
 
     /** Print all available JUL loggers to stdout. */
     private static void debugPrintJulLoggers(final String infoStr) {
@@ -361,11 +387,9 @@ public class Log4jBridgeHandlerTest {
         }
     }
 
-
-////////////////
-////////////////   INTERNAL DEVELOPER TESTS follow
-////////////////   (these are NOT neccessary for unit test but source is kept here for reference and info)
-
+    ////////////////
+    ////////////////   INTERNAL DEVELOPER TESTS follow
+    ////////////////   (these are NOT neccessary for unit test but source is kept here for reference and info)
 
     static {
         if (DEVTEST) {
@@ -373,9 +397,10 @@ public class Log4jBridgeHandlerTest {
 
             // get log4j context impl. (requires log4j-core!)
             // note:  "LogManager.getContext();"  does not work, it returns another instance!?!
-            final LoggerContext context = LoggerContext.getContext(false);    // this matches Configurator.setLevel() impl.
+            final LoggerContext context = LoggerContext.getContext(false); // this matches Configurator.setLevel() impl.
             final Configuration cfg = context.getConfiguration();
-            // print real loggers (=> is empty when using LogManager.getContext()!?! only contains already instantiated loggers)
+            // print real loggers (=> is empty when using LogManager.getContext()!?! only contains already instantiated
+            // loggers)
             System.out.println("LogCtx " + context + " '" + context.getName() + "',  loc = "
                     + context.getConfigLocation() + ",  cfg = " + cfg + " = " + System.identityHashCode(cfg));
             for (org.apache.logging.log4j.Logger lg : context.getLoggers()) {
@@ -385,11 +410,12 @@ public class Log4jBridgeHandlerTest {
             System.out.println("Loggers in Cfg:");
             for (Entry<String, LoggerConfig> entry : cfg.getLoggers().entrySet()) {
                 final LoggerConfig lcfg = entry.getValue();
-                System.out.println("- '" + entry.getKey() + "' = '" + lcfg.getName() + "' / "
-                        + lcfg.getLevel() + "; " + lcfg);
+                System.out.println(
+                        "- '" + entry.getKey() + "' = '" + lcfg.getName() + "' / " + lcfg.getLevel() + "; " + lcfg);
             }
 
-            // print JUL loggers (=> is completely init. here, even if first JUL log and BridgeHandler-creation happens later)
+            // print JUL loggers (=> is completely init. here, even if first JUL log and BridgeHandler-creation happens
+            // later)
             debugPrintJulLoggers("in static-class-init");
             /* java.util.logging.LogManager julMgr = java.util.logging.LogManager.getLogManager();
             System.out.println("\nJUL-Loggers for " + julMgr);
@@ -406,19 +432,22 @@ public class Log4jBridgeHandlerTest {
             // changing of log4j config. is to be done via log4j.core.config.Configurator,
             // e.g. setLevel(loggerName, newLevel)
             // Note: the (internal) log4j.core.Logger has a setLevel() but this should not be used.
-            cfg.addListener(reconfigurable -> System.out.println("sysout:  CfgListener.PropChLi-reconfigure: " + reconfigurable));
-            context.addConfigurationStartedListener(configuration -> System.out.println("sysout:  CfgListener.PropChLi-configurationStarted: " + configuration));
+            cfg.addListener(reconfigurable ->
+                    System.out.println("sysout:  CfgListener.PropChLi-reconfigure: " + reconfigurable));
+            context.addConfigurationStartedListener(configuration ->
+                    System.out.println("sysout:  CfgListener.PropChLi-configurationStarted: " + configuration));
 
             System.out.println("sysout:  static init. END");
         } // if
     }
 
-
     private static void devTestBeforeClass() {
-        log4jLog.info("Dummy-Start-Log in beforeClass()");    // force init. of log4j (needed?? does not harm)
-        @SuppressWarnings("resource") final LoggerContext context = LoggerContext.getContext(false);    // this matches Configurator.setLevel() impl. (instead of "LogManager.getContext();")
-        System.out.println("beforeClass():  LogCtx " + context + " '" + context.getName() + "',  loc = " + context.getConfigLocation()
-                + ",  cfg = " + context.getConfiguration());
+        log4jLog.info("Dummy-Start-Log in beforeClass()"); // force init. of log4j (needed?? does not harm)
+        @SuppressWarnings("resource")
+        final LoggerContext context = LoggerContext.getContext(
+                false); // this matches Configurator.setLevel() impl. (instead of "LogManager.getContext();")
+        System.out.println("beforeClass():  LogCtx " + context + " '" + context.getName() + "',  loc = "
+                + context.getConfigLocation() + ",  cfg = " + context.getConfiguration());
         for (org.apache.logging.log4j.Logger lg : context.getLoggers()) {
             System.out.println("- Logger '" + lg.getName() + "',  lvl = " + lg.getLevel());
         }

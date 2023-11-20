@@ -29,8 +29,11 @@ class JsonJacksonFactory extends AbstractJacksonFactory {
     private final boolean encodeThreadContextAsList;
     private final boolean objectMessageAsJsonObject;
 
-    public JsonJacksonFactory(final boolean encodeThreadContextAsList, final boolean includeStacktrace,
-            final boolean stacktraceAsString, final boolean objectMessageAsJsonObject) {
+    public JsonJacksonFactory(
+            final boolean encodeThreadContextAsList,
+            final boolean includeStacktrace,
+            final boolean stacktraceAsString,
+            final boolean objectMessageAsJsonObject) {
         super(includeStacktrace, stacktraceAsString);
         this.encodeThreadContextAsList = encodeThreadContextAsList;
         this.objectMessageAsJsonObject = objectMessageAsJsonObject;
@@ -73,13 +76,12 @@ class JsonJacksonFactory extends AbstractJacksonFactory {
 
     @Override
     protected ObjectMapper newObjectMapper() {
-        return new Log4jJsonObjectMapper(encodeThreadContextAsList, includeStacktrace, stacktraceAsString,
-                objectMessageAsJsonObject);
+        return new Log4jJsonObjectMapper(
+                encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject);
     }
 
     @Override
     protected PrettyPrinter newPrettyPrinter() {
         return new DefaultPrettyPrinter();
     }
-
 }

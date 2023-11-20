@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -31,8 +32,6 @@ import java.nio.file.attribute.UserPrincipal;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Objects;
 import java.util.Set;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -48,8 +47,7 @@ public final class FileUtils {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private FileUtils() {
-    }
+    private FileUtils() {}
 
     /**
      * Tries to convert the specified URI to a file object. If this fails, <b>null</b> is returned.
@@ -57,21 +55,19 @@ public final class FileUtils {
      * @param uri the URI
      * @return the resulting file object
      */
-    @SuppressFBWarnings(
-            value = "PATH_TRAVERSAL_IN",
-            justification = "Currently `uri` comes from a configuration file."
-    )
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "Currently `uri` comes from a configuration file.")
     public static File fileFromUri(URI uri) {
         if (uri == null) {
             return null;
         }
         if (uri.isAbsolute()) {
-            if (JBOSS_FILE.equals(uri.getScheme())) try {
-                // patch the scheme
-                uri = new URI(PROTOCOL_FILE, uri.getSchemeSpecificPart(), uri.getFragment());
-            } catch (final URISyntaxException use) {
-                // should not happen, ignore
-            }
+            if (JBOSS_FILE.equals(uri.getScheme()))
+                try {
+                    // patch the scheme
+                    uri = new URI(PROTOCOL_FILE, uri.getSchemeSpecificPart(), uri.getFragment());
+                } catch (final URISyntaxException use) {
+                    // should not happen, ignore
+                }
             try {
                 if (PROTOCOL_FILE.equals(uri.getScheme())) {
                     return new File(uri);
@@ -95,7 +91,8 @@ public final class FileUtils {
     }
 
     public static boolean isFile(final URL url) {
-        return url != null && (url.getProtocol().equals(PROTOCOL_FILE) || url.getProtocol().equals(JBOSS_FILE));
+        return url != null
+                && (url.getProtocol().equals(PROTOCOL_FILE) || url.getProtocol().equals(JBOSS_FILE));
     }
 
     public static String getFileExtension(final File file) {
@@ -135,7 +132,8 @@ public final class FileUtils {
      * @throws IOException
      */
     public static void makeParentDirs(final File file) throws IOException {
-        final File parent = Objects.requireNonNull(file, "file").getCanonicalFile().getParentFile();
+        final File parent =
+                Objects.requireNonNull(file, "file").getCanonicalFile().getParentFile();
         if (parent != null) {
             mkdir(parent, true);
         }
@@ -150,14 +148,16 @@ public final class FileUtils {
      * @param fileGroup File group
      * @throws IOException If IO error during definition of file attribute view
      */
-    public static void defineFilePosixAttributeView(final Path path,
+    public static void defineFilePosixAttributeView(
+            final Path path,
             final Set<PosixFilePermission> filePermissions,
             final String fileOwner,
-            final String fileGroup) throws IOException {
+            final String fileGroup)
+            throws IOException {
         final PosixFileAttributeView view = Files.getFileAttributeView(path, PosixFileAttributeView.class);
         if (view != null) {
-            final UserPrincipalLookupService lookupService = FileSystems.getDefault()
-                    .getUserPrincipalLookupService();
+            final UserPrincipalLookupService lookupService =
+                    FileSystems.getDefault().getUserPrincipalLookupService();
             if (fileOwner != null) {
                 final UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(fileOwner);
                 if (userPrincipal != null) {

@@ -38,16 +38,10 @@ public class FilteredObjectInputStream extends ObjectInputStream {
             "java.math.BigInteger",
             // for Message delegate
             "java.rmi.MarshalledObject",
-            "[B"
-    );
+            "[B");
 
     private static final List<String> REQUIRED_JAVA_PACKAGES = Arrays.asList(
-            "java.lang.",
-            "java.time",
-            "java.util.",
-            "org.apache.logging.log4j.",
-            "[Lorg.apache.logging.log4j."
-    );
+            "java.lang.", "java.time", "java.util.", "org.apache.logging.log4j.", "[Lorg.apache.logging.log4j.");
 
     private final Collection<String> allowedClasses;
 
@@ -97,5 +91,4 @@ public class FilteredObjectInputStream extends ObjectInputStream {
         }
         return false;
     }
-
 }

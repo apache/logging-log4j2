@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import java.io.IOException;
+import java.util.Map;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -41,14 +40,14 @@ public class ContextDataDeserializer extends StdDeserializer<StringMap> {
     }
 
     @Override
-    public StringMap deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
+    public StringMap deserialize(final JsonParser jp, final DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
 
         // Sanity check: verify that we got "Json Object":
-//        JsonToken tok = jp.nextToken();
-//        if (tok != JsonToken.START_OBJECT) {
-//            throw new IOException("Expected data to start with an Object");
-//        }
+        //        JsonToken tok = jp.nextToken();
+        //        if (tok != JsonToken.START_OBJECT) {
+        //            throw new IOException("Expected data to start with an Object");
+        //        }
         final StringMap contextData = ContextDataFactory.createContextData();
         // Iterate over object fields:
         while (jp.nextToken() != JsonToken.END_OBJECT) {

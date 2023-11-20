@@ -60,6 +60,5 @@ public class BasicConfigurator {
     /**
      * Constructs a new instance.
      */
-    protected BasicConfigurator() {
-    }
+    protected BasicConfigurator() {}
 }

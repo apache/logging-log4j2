@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -229,27 +228,52 @@ public class MementoLogEvent implements LogEvent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final MementoLogEvent that = (MementoLogEvent) o;
-        return nanoTime == that.nanoTime && locationRequired == that.locationRequired &&
-                endOfBatch == that.endOfBatch && threadId == that.threadId && threadPriority == that.threadPriority &&
-                Objects.equals(loggerFqcn, that.loggerFqcn) && Objects.equals(loggerName, that.loggerName) &&
-                Objects.equals(instant, that.instant) && Objects.equals(level, that.level) &&
-                Objects.equals(marker, that.marker) && Objects.equals(message, that.message) &&
-                Objects.equals(contextData, that.contextData) && Objects.equals(contextStack, that.contextStack) &&
-                Objects.equals(source, that.source) && Objects.equals(threadName, that.threadName) &&
-                Objects.equals(thrown, that.thrown) && Objects.equals(thrownProxy, that.thrownProxy);
+        return nanoTime == that.nanoTime
+                && locationRequired == that.locationRequired
+                && endOfBatch == that.endOfBatch
+                && threadId == that.threadId
+                && threadPriority == that.threadPriority
+                && Objects.equals(loggerFqcn, that.loggerFqcn)
+                && Objects.equals(loggerName, that.loggerName)
+                && Objects.equals(instant, that.instant)
+                && Objects.equals(level, that.level)
+                && Objects.equals(marker, that.marker)
+                && Objects.equals(message, that.message)
+                && Objects.equals(contextData, that.contextData)
+                && Objects.equals(contextStack, that.contextStack)
+                && Objects.equals(source, that.source)
+                && Objects.equals(threadName, that.threadName)
+                && Objects.equals(thrown, that.thrown)
+                && Objects.equals(thrownProxy, that.thrownProxy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(loggerFqcn, loggerName, instant, nanoTime, level, marker, locationRequired, endOfBatch,
-                message, contextData, contextStack, source, threadName, threadId, threadPriority, thrown, thrownProxy);
+        return Objects.hash(
+                loggerFqcn,
+                loggerName,
+                instant,
+                nanoTime,
+                level,
+                marker,
+                locationRequired,
+                endOfBatch,
+                message,
+                contextData,
+                contextStack,
+                source,
+                threadName,
+                threadId,
+                threadPriority,
+                thrown,
+                thrownProxy);
     }
 
     @Override
     public String toString() {
         final String n = loggerName.isEmpty() ? LoggerConfig.ROOT : loggerName;
-        return "Logger=" + n + " Level=" + level.name() + " Message=" +
-                (message == null ? Strings.EMPTY : message.getFormattedMessage());
+        return "Logger=" + n + " Level=" + level.name() + " Message="
+                + (message == null ? Strings.EMPTY : message.getFormattedMessage());
     }
 
     private static ReadOnlyStringMap memento(final ReadOnlyStringMap readOnlyMap) {

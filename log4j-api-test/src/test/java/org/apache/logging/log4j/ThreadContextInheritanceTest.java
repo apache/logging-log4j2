@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.test.ThreadContextUtilityClass;
 import org.apache.logging.log4j.test.junit.InitializesThreadContext;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link ThreadContext}.

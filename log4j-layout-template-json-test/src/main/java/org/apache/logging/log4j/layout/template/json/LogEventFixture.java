@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
@@ -54,8 +53,7 @@ final class LogEventFixture {
         final String loggerFqcn = "f.q.c.n" + id;
         final String loggerName = "a.B" + id;
         final long nanoTime = timeMillis * 2;
-        return Log4jLogEvent
-                .newBuilder()
+        return Log4jLogEvent.newBuilder()
                 .setLoggerName(loggerName)
                 .setLoggerFqcn(loggerFqcn)
                 .setLevel(level)
@@ -77,9 +75,7 @@ final class LogEventFixture {
         return logEvents;
     }
 
-    private static long createLogEventTimeMillis(
-            final long startTimeMillis,
-            final int logEventIndex) {
+    private static long createLogEventTimeMillis(final long startTimeMillis, final int logEventIndex) {
         // Create event time repeating every certain number of consecutive
         // events. This is better aligned with the real-world use case and
         // gives surface to timestamp formatter caches to perform their
@@ -87,9 +83,7 @@ final class LogEventFixture {
         return startTimeMillis + logEventIndex / TIME_OVERLAPPING_CONSECUTIVE_EVENT_COUNT;
     }
 
-    private static LogEvent createFullLogEvent(
-            final String id,
-            final long timeMillis) {
+    private static LogEvent createFullLogEvent(final String id, final long timeMillis) {
 
         // Create exception.
         final Exception sourceHelper = new Exception();
@@ -114,8 +108,7 @@ final class LogEventFixture {
         final long nanoTime = timeMillis * 2;
 
         // Create the event.
-        return Log4jLogEvent
-                .newBuilder()
+        return Log4jLogEvent.newBuilder()
                 .setLoggerName(loggerName)
                 .setLoggerFqcn(loggerFqcn)
                 .setLevel(level)
@@ -130,7 +123,6 @@ final class LogEventFixture {
                 .setTimeMillis(timeMillis)
                 .setNanoTime(nanoTime)
                 .build();
-
     }
 
     private static StringMap createContextData(final String id) {
@@ -149,5 +141,4 @@ final class LogEventFixture {
         contextStack.add("stack_msg2" + id);
         return contextStack;
     }
-
 }

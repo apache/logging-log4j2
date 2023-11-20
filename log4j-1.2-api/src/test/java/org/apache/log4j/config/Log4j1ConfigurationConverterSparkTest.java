@@ -19,7 +19,6 @@ package org.apache.log4j.config;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -34,5 +33,4 @@ public class Log4j1ConfigurationConverterSparkTest extends AbstractLog4j1Configu
     public Log4j1ConfigurationConverterSparkTest(final Path path) {
         super(path);
     }
-
 }

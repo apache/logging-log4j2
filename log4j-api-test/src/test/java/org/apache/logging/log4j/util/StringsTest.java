@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class StringsTest {
 
@@ -84,5 +83,4 @@ public class StringsTest {
     public void testQuote() {
         assertEquals("'Q'", Strings.quote("Q"));
     }
-
 }

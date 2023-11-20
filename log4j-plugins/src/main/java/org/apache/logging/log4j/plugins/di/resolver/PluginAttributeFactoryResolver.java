@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.di.resolver;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.function.Function;
-
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
@@ -48,8 +47,7 @@ public class PluginAttributeFactoryResolver<T> extends AbstractAttributeFactoryR
             Map.entry(Character.class, PluginAttribute::defaultChar),
             Map.entry(short.class, PluginAttribute::defaultShort),
             Map.entry(Short.class, PluginAttribute::defaultShort),
-            Map.entry(Class.class, PluginAttribute::defaultClass)
-    );
+            Map.entry(Class.class, PluginAttribute::defaultClass));
 
     public PluginAttributeFactoryResolver() {
         super(PluginAttribute.class);
@@ -61,8 +59,11 @@ public class PluginAttributeFactoryResolver<T> extends AbstractAttributeFactoryR
     }
 
     @Override
-    protected T getDefaultValue(final PluginAttribute annotation, final StringValueResolver resolver,
-                                final Type type, final TypeConverter<T> typeConverter) {
+    protected T getDefaultValue(
+            final PluginAttribute annotation,
+            final StringValueResolver resolver,
+            final Type type,
+            final TypeConverter<T> typeConverter) {
         final Function<PluginAttribute, T> extractor = Cast.cast(DEFAULT_VALUE_EXTRACTORS.get(type));
         if (extractor != null) {
             return extractor.apply(annotation);

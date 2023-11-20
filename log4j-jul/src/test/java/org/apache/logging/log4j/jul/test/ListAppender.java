@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -98,8 +97,8 @@ public class ListAppender extends AbstractAppender {
         raw = false;
     }
 
-    public ListAppender(final String name, final Filter filter, final Layout layout,
-            final boolean newline, final boolean raw) {
+    public ListAppender(
+            final String name, final Filter filter, final Layout layout, final boolean newline, final boolean raw) {
         super(name, filter, layout, true, Property.EMPTY_ARRAY);
         this.newLine = newline;
         this.raw = raw;
@@ -211,8 +210,8 @@ public class ListAppender extends AbstractAppender {
         return List.copyOf(data);
     }
 
-    public static ListAppender createAppender(final String name, final boolean newLine, final boolean raw,
-                                              final Layout layout, final Filter filter) {
+    public static ListAppender createAppender(
+            final String name, final boolean newLine, final boolean raw, final Layout layout, final Filter filter) {
         return new ListAppender(name, filter, layout, newLine, raw);
     }
 

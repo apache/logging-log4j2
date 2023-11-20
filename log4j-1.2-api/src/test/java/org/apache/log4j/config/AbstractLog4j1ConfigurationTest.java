@@ -16,6 +16,12 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
@@ -28,7 +34,6 @@ import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -62,12 +67,6 @@ import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 public abstract class AbstractLog4j1ConfigurationTest {
 
     abstract Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException;
@@ -91,7 +90,10 @@ public abstract class AbstractLog4j1ConfigurationTest {
     private void testConsoleAppender(final ConsoleAppender expected, final ConsoleAppender actual) {
         assertEquals("immediateFlush", expected.getImmediateFlush(), actual.getImmediateFlush());
         assertEquals("target", expected.getTarget(), actual.getTarget());
-        assertEquals("layoutClass", expected.getLayout().getClass(), actual.getLayout().getClass());
+        assertEquals(
+                "layoutClass",
+                expected.getLayout().getClass(),
+                actual.getLayout().getClass());
         if (expected.getLayout() instanceof PatternLayout) {
             patternLayoutEquals((PatternLayout) expected.getLayout(), (PatternLayout) actual.getLayout());
         }
@@ -106,7 +108,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
         final Configuration configuration = getConfiguration(configResource);
         final String name = "Console";
         final ConsoleAppender appender = configuration.getAppender(name);
-        assertNotNull("Missing appender '" + name + "' in configuration " + configResource + " → " + configuration, appender);
+        assertNotNull(
+                "Missing appender '" + name + "' in configuration " + configResource + " → " + configuration, appender);
         assertEquals("follow", true, getFollowProperty(appender));
         assertEquals(Target.SYSTEM_ERR, appender.getTarget());
         //
@@ -129,7 +132,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
     }
 
     public void testDailyRollingFileAppender() throws Exception {
-        testDailyRollingFileAppender("config-1.2/log4j-DailyRollingFileAppender", "DRFA", "target/hadoop.log%d{.dd-MM-yyyy}");
+        testDailyRollingFileAppender(
+                "config-1.2/log4j-DailyRollingFileAppender", "DRFA", "target/hadoop.log%d{.dd-MM-yyyy}");
     }
 
     public void testRollingFileAppenderWithProperties() throws Exception {
@@ -146,7 +150,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
             assertEquals("append", false, getAppendProperty(appender));
             assertEquals("bufferSize", 1000, appender.getManager().getBufferSize());
             assertEquals("immediateFlush", false, appender.getImmediateFlush());
-            final DefaultRolloverStrategy rolloverStrategy = (DefaultRolloverStrategy) appender.getManager().getRolloverStrategy();
+            final DefaultRolloverStrategy rolloverStrategy =
+                    (DefaultRolloverStrategy) appender.getManager().getRolloverStrategy();
             assertEquals(16, rolloverStrategy.getMaxIndex());
             final CompositeTriggeringPolicy ctp = (CompositeTriggeringPolicy) appender.getTriggeringPolicy();
             final TriggeringPolicy[] triggeringPolicies = ctp.getTriggeringPolicies();
@@ -196,8 +201,10 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertTrue(appender.getClass().getName(), appender instanceof RollingFileAppender);
         final RollingFileAppender rfa = (RollingFileAppender) appender;
 
-        assertTrue("defaultRolloverStrategy", rfa.getManager().getRolloverStrategy() instanceof DefaultRolloverStrategy);
-        assertFalse("rolloverStrategy", ((DefaultRolloverStrategy) rfa.getManager().getRolloverStrategy()).isUseMax());
+        assertTrue(
+                "defaultRolloverStrategy", rfa.getManager().getRolloverStrategy() instanceof DefaultRolloverStrategy);
+        assertFalse(
+                "rolloverStrategy", ((DefaultRolloverStrategy) rfa.getManager().getRolloverStrategy()).isUseMax());
         assertEquals("append", false, getAppendProperty(rfa));
         assertEquals("bufferSize", 1000, rfa.getManager().getBufferSize());
         assertEquals("immediateFlush", false, rfa.getImmediateFlush());
@@ -310,7 +317,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     private boolean getFollowProperty(final ConsoleAppender consoleAppender)
             throws Exception, NoSuchFieldException, IllegalAccessException {
-        final CloseShieldOutputStream wrapperStream = (CloseShieldOutputStream) getOutputStream(consoleAppender.getManager());
+        final CloseShieldOutputStream wrapperStream =
+                (CloseShieldOutputStream) getOutputStream(consoleAppender.getManager());
         final Field delegateField = CloseShieldOutputStream.class.getDeclaredField("delegate");
         delegateField.setAccessible(true);
         final boolean follow = !System.out.equals(delegateField.get(wrapperStream));
@@ -326,10 +334,10 @@ public abstract class AbstractLog4j1ConfigurationTest {
     }
 
     private boolean getAppendProperty(final FileOutputStream os) throws Exception {
-            // Java 11
-            final Field appendField = FileDescriptor.class.getDeclaredField("append");
-            appendField.setAccessible(true);
-            return (Boolean) appendField.get(os.getFD());
+        // Java 11
+        final Field appendField = FileDescriptor.class.getDeclaredField("append");
+        appendField.setAccessible(true);
+        return (Boolean) appendField.get(os.getFD());
     }
 
     private OutputStream getOutputStream(final OutputStreamManager manager) throws Exception {
@@ -340,7 +348,9 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     private Layout testLayout(final Configuration config, final String appenderName) {
         final ConsoleAppender appender = config.getAppender(appenderName);
-        assertNotNull("Missing appender '" + appenderName + "' in configuration " + config.getConfigurationSource(), appender);
+        assertNotNull(
+                "Missing appender '" + appenderName + "' in configuration " + config.getConfigurationSource(),
+                appender);
         return appender.getLayout();
     }
 
@@ -361,7 +371,10 @@ public abstract class AbstractLog4j1ConfigurationTest {
         // TTCCLayout
         final PatternLayout ttccLayout = (PatternLayout) testLayout(config, "TTCCLayout");
         assertNotNull(ttccLayout);
-        assertEquals("equivalent conversion pattern", "%r [%t] %p %c %notEmpty{%ndc }- %m%n", ttccLayout.getConversionPattern());
+        assertEquals(
+                "equivalent conversion pattern",
+                "%r [%t] %p %c %notEmpty{%ndc }- %m%n",
+                ttccLayout.getConversionPattern());
         // TODO: XMLLayout
         // final XmlLayout xmlLayout = (XmlLayout) testLayout(config, "XMLLayout");
         // assertNotNull(xmlLayout);
@@ -374,7 +387,9 @@ public abstract class AbstractLog4j1ConfigurationTest {
         // DailyRollingFileAppender
         final RollingFileAppender dailyRollingFileAppender = config.getAppender("DailyRollingFileAppender");
         assertNotNull(dailyRollingFileAppender);
-        assertEquals("equivalent file pattern", "target/dailyRollingFileAppender%d{.yyyy-MM-dd}",
+        assertEquals(
+                "equivalent file pattern",
+                "target/dailyRollingFileAppender%d{.yyyy-MM-dd}",
                 dailyRollingFileAppender.getFilePattern());
         assertEquals("append", true, getAppendProperty(dailyRollingFileAppender));
         assertEquals("bufferSize", 8192, dailyRollingFileAppender.getManager().getBufferSize());
@@ -389,12 +404,14 @@ public abstract class AbstractLog4j1ConfigurationTest {
         final RollingFileAppender rollingFileAppender = config.getAppender("RollingFileAppender");
         assertNotNull(rollingFileAppender);
         assertEquals("equivalent file pattern", "target/rollingFileAppender.%i", rollingFileAppender.getFilePattern());
-        final CompositeTriggeringPolicy compositePolicy = rollingFileAppender.getManager().getTriggeringPolicy();
+        final CompositeTriggeringPolicy compositePolicy =
+                rollingFileAppender.getManager().getTriggeringPolicy();
         assertEquals(1, compositePolicy.getTriggeringPolicies().length);
-        final SizeBasedTriggeringPolicy sizePolicy = (SizeBasedTriggeringPolicy) compositePolicy.getTriggeringPolicies()[0];
+        final SizeBasedTriggeringPolicy sizePolicy =
+                (SizeBasedTriggeringPolicy) compositePolicy.getTriggeringPolicies()[0];
         assertEquals("maxFileSize", 10 * 1024 * 1024L, sizePolicy.getMaxFileSize());
-        final DefaultRolloverStrategy strategy = (DefaultRolloverStrategy) rollingFileAppender.getManager()
-                .getRolloverStrategy();
+        final DefaultRolloverStrategy strategy =
+                (DefaultRolloverStrategy) rollingFileAppender.getManager().getRolloverStrategy();
         assertEquals("maxBackupIndex", 1, strategy.getMaxIndex());
         assertEquals("append", true, getAppendProperty(rollingFileAppender));
         assertEquals("bufferSize", 8192, rollingFileAppender.getManager().getBufferSize());
@@ -417,7 +434,9 @@ public abstract class AbstractLog4j1ConfigurationTest {
             }
         } else if (filter instanceof FilterAdapter) {
             // Don't create adapters from wrappers
-            assertFalse("found FilterAdapter of a FilterWrapper", ((FilterAdapter) filter).getFilter() instanceof FilterWrapper);
+            assertFalse(
+                    "found FilterAdapter of a FilterWrapper",
+                    ((FilterAdapter) filter).getFilter() instanceof FilterWrapper);
             count += checkFilters(((FilterAdapter) filter).getFilter());
         } else {
             count++;
@@ -435,7 +454,9 @@ public abstract class AbstractLog4j1ConfigurationTest {
         int count = 0;
         if (filter instanceof FilterWrapper) {
             // Don't create wrappers from adapters
-            assertFalse("found FilterWrapper of a FilterAdapter", ((FilterWrapper) filter).getFilter() instanceof FilterAdapter);
+            assertFalse(
+                    "found FilterWrapper of a FilterAdapter",
+                    ((FilterWrapper) filter).getFilter() instanceof FilterAdapter);
             count += checkFilters(((FilterWrapper) filter).getFilter());
         } else {
             count++;
@@ -469,10 +490,11 @@ public abstract class AbstractLog4j1ConfigurationTest {
             // List appenders
             final Appender appender = configuration.getAppender("LIST");
             assertNotNull(appender);
-            assertEquals(3, checkFilters(((Filterable)appender).getFilter()));
+            assertEquals(3, checkFilters(((Filterable) appender).getFilter()));
             final ListAppender legacyAppender = (ListAppender) ((Adapter) appender).getAppender();
-            final org.apache.logging.log4j.core.test.appender.ListAppender nativeAppender = configuration.getAppender("LIST2");
-            assertEquals(3, checkFilters(((Filterable)nativeAppender).getFilter()));
+            final org.apache.logging.log4j.core.test.appender.ListAppender nativeAppender =
+                    configuration.getAppender("LIST2");
+            assertEquals(3, checkFilters(((Filterable) nativeAppender).getFilter()));
             final Logger logger = LogManager.getLogger(PropertiesConfigurationTest.class);
             int expected = 0;
             // message blocked by Threshold

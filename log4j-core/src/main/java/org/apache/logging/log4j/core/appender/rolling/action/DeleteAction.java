@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -60,8 +59,14 @@ public class DeleteAction extends AbstractPathAction {
      *            deleted).
      * @param scriptCondition
      */
-    DeleteAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth, final boolean testMode,
-            final PathSorter sorter, final PathCondition[] pathConditions, final ScriptConditional scriptCondition,
+    DeleteAction(
+            final String basePath,
+            final boolean followSymbolicLinks,
+            final int maxDepth,
+            final boolean testMode,
+            final PathSorter sorter,
+            final PathCondition[] pathConditions,
+            final ScriptConditional scriptCondition,
             final StrSubstitutor subst) {
         super(basePath, followSymbolicLinks, maxDepth, pathConditions, subst);
         this.testMode = testMode;
@@ -206,9 +211,16 @@ public class DeleteAction extends AbstractPathAction {
             @PluginElement final PathCondition[] pathConditions,
             @PluginElement final ScriptConditional scriptCondition,
             @PluginConfiguration final Configuration config) {
-            // @formatter:on
+        // @formatter:on
         final PathSorter sorter = sorterParameter == null ? new PathSortByModificationTime(true) : sorterParameter;
-        return new DeleteAction(basePath, followLinks, maxDepth, testMode, sorter, pathConditions, scriptCondition,
+        return new DeleteAction(
+                basePath,
+                followLinks,
+                maxDepth,
+                testMode,
+                sorter,
+                pathConditions,
+                scriptCondition,
                 config.getStrSubstitutor());
     }
 }

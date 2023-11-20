@@ -29,7 +29,7 @@ import java.lang.reflect.AnnotatedElement;
  * @see org.apache.logging.log4j.plugins.util.OrderedComparator OrderedComparator
  * @see org.apache.logging.log4j.plugins.util.AnnotationUtil#getOrder(AnnotatedElement) getOrder
  */
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.TYPE_USE })
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Ordered {

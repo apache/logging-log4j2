@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -33,8 +34,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -58,7 +57,8 @@ public class AsyncLoggerTimestampMessageTest {
         final Logger log = context.getLogger("com.foo.Bar");
         assertThat(PoisonClock.invoked).hasValue(null);
         log.info((Message) new TimeMsg("Async logger msg with embedded timestamp", 123456789000L));
-        assertThat(list.getMessages(1, 1, TimeUnit.SECONDS)).containsExactly("123456789000 Async logger msg with embedded timestamp");
+        assertThat(list.getMessages(1, 1, TimeUnit.SECONDS))
+                .containsExactly("123456789000 Async logger msg with embedded timestamp");
         assertThat(PoisonClock.invoked).hasValue(null);
     }
 

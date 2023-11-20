@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -30,8 +31,6 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * LOG4J2-1699.
@@ -71,20 +70,20 @@ public class RollingAppenderSizeCompressPermissionsTest {
             if (ext != null) {
                 if (file.getName().startsWith("test1")) {
                     gzippedFiles1++;
-                    assertEquals("rw-------",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertEquals(
+                            "rw-------", PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
                 } else {
                     gzippedFiles2++;
-                    assertEquals("r--r--r--",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertEquals(
+                            "r--r--r--", PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
                 }
             } else {
                 if (file.getName().startsWith("test1")) {
-                    assertEquals("rw-------",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertEquals(
+                            "rw-------", PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
                 } else {
-                    assertEquals("rwx------",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertEquals(
+                            "rwx------", PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
                 }
             }
         }

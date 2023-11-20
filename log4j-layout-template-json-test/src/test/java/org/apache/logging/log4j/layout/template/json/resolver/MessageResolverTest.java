@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -23,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -38,9 +40,6 @@ import org.apache.logging.log4j.util.JsonReader;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
-import static org.assertj.core.api.Assertions.assertThat;
-
 class MessageResolverTest {
 
     /**
@@ -48,27 +47,18 @@ class MessageResolverTest {
      */
     @Test
     @LoggerContextSource("messageFallbackKeyUsingJsonTemplateLayout.xml")
-    void log4j1_logger_calls_should_use_fallbackKey(
-            final @Named(value = "List") ListAppender appender) {
+    void log4j1_logger_calls_should_use_fallbackKey(final @Named(value = "List") ListAppender appender) {
 
         // Log using legacy Log4j 1 API.
-        final String log4j1Message =
-                "Message logged using org.apache.log4j.Category.info(Object)";
-        org.apache.log4j.LogManager
-                .getLogger(MessageResolverTest.class)
-                .info(log4j1Message);
+        final String log4j1Message = "Message logged using org.apache.log4j.Category.info(Object)";
+        org.apache.log4j.LogManager.getLogger(MessageResolverTest.class).info(log4j1Message);
 
         // Log using Log4j 2 API.
-        final String log4j2Message =
-                "Message logged using org.apache.logging.log4j.Logger.info(String)";
-        org.apache.logging.log4j.LogManager
-                .getLogger(MessageResolverTest.class)
-                .info(log4j2Message);
+        final String log4j2Message = "Message logged using org.apache.logging.log4j.Logger.info(String)";
+        org.apache.logging.log4j.LogManager.getLogger(MessageResolverTest.class).info(log4j2Message);
 
         // Collect and parse logged messages.
-        final List<Object> actualLoggedEvents = appender
-                .getData()
-                .stream()
+        final List<Object> actualLoggedEvents = appender.getData().stream()
                 .map(jsonBytes -> {
                     final String json = new String(jsonBytes, StandardCharsets.UTF_8);
                     return JsonReader.read(json);
@@ -76,14 +66,10 @@ class MessageResolverTest {
                 .collect(Collectors.toList());
 
         // Verify logged messages.
-        final List<Object> expectedLoggedEvents = Stream
-                .of(log4j1Message, log4j2Message)
-                .map(message -> Collections.singletonMap(
-                        "message", Collections.singletonMap(
-                                "fallback", message)))
+        final List<Object> expectedLoggedEvents = Stream.of(log4j1Message, log4j2Message)
+                .map(message -> Collections.singletonMap("message", Collections.singletonMap("fallback", message)))
                 .collect(Collectors.toList());
         Assertions.assertThat(actualLoggedEvents).isEqualTo(expectedLoggedEvents);
-
     }
 
     @Test
@@ -91,44 +77,40 @@ class MessageResolverTest {
 
         // Create the event template.
         final String eventTemplate = writeJson(asMap(
-                "message", asMap(
+                "message",
+                asMap(
                         "$resolver", "message",
                         "fallbackKey", "formattedMessage")));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
         // Create a log event with a MapMessage.
-        final Message mapMessage = new StringMapMessage()
-                .with("key1", "val1");
-        final LogEvent mapMessageLogEvent = Log4jLogEvent
-                .newBuilder()
+        final Message mapMessage = new StringMapMessage().with("key1", "val1");
+        final LogEvent mapMessageLogEvent = Log4jLogEvent.newBuilder()
                 .setMessage(mapMessage)
                 .setTimeMillis(System.currentTimeMillis())
                 .build();
 
         // Check the serialized MapMessage.
-        usingSerializedLogEventAccessor(layout, mapMessageLogEvent, accessor ->
-                assertThat(accessor.getString(new String[]{"message", "key1"}))
+        usingSerializedLogEventAccessor(
+                layout, mapMessageLogEvent, accessor -> assertThat(accessor.getString(new String[] {"message", "key1"}))
                         .isEqualTo("val1"));
 
         // Create a log event with a SimpleMessage.
         final Message simpleMessage = new SimpleMessage("simple");
-        final LogEvent simpleMessageLogEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent simpleMessageLogEvent = Log4jLogEvent.newBuilder()
                 .setMessage(simpleMessage)
                 .setTimeMillis(System.currentTimeMillis())
                 .build();
 
         // Check the serialized MapMessage.
-        usingSerializedLogEventAccessor(layout, simpleMessageLogEvent, accessor ->
-                assertThat(accessor.getString(new String[]{"message", "formattedMessage"}))
-                        .isEqualTo("simple"));
-
+        usingSerializedLogEventAccessor(layout, simpleMessageLogEvent, accessor -> assertThat(
+                        accessor.getString(new String[] {"message", "formattedMessage"}))
+                .isEqualTo("simple"));
     }
 
     @Test
@@ -138,18 +120,13 @@ class MessageResolverTest {
         final StringMapMessage message = new StringMapMessage();
         message.put("message", "Hello, World!");
         message.put("bottle", "Kickapoo Joy Juice");
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setMessage(message)
-                .build();
+        final LogEvent logEvent = Log4jLogEvent.newBuilder().setMessage(message).build();
 
         // Create the event template.
-        final String eventTemplate = writeJson(asMap(
-                "message", asMap("$resolver", "message")));
+        final String eventTemplate = writeJson(asMap("message", asMap("$resolver", "message")));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
@@ -157,10 +134,9 @@ class MessageResolverTest {
 
         // Check the serialized event.
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-            assertThat(accessor.getString(new String[]{"message", "message"})).isEqualTo("Hello, World!");
-            assertThat(accessor.getString(new String[]{"message", "bottle"})).isEqualTo("Kickapoo Joy Juice");
+            assertThat(accessor.getString(new String[] {"message", "message"})).isEqualTo("Hello, World!");
+            assertThat(accessor.getString(new String[] {"message", "bottle"})).isEqualTo("Kickapoo Joy Juice");
         });
-
     }
 
     @Test
@@ -173,18 +149,13 @@ class MessageResolverTest {
         attachment.put("id", id);
         attachment.put("name", name);
         final ObjectMessage message = new ObjectMessage(attachment);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setMessage(message)
-                .build();
+        final LogEvent logEvent = Log4jLogEvent.newBuilder().setMessage(message).build();
 
         // Create the event template.
-        final String eventTemplate = writeJson(asMap(
-                "message", asMap("$resolver", "message")));
+        final String eventTemplate = writeJson(asMap("message", asMap("$resolver", "message")));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
@@ -192,22 +163,19 @@ class MessageResolverTest {
 
         // Check the serialized event.
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-            assertThat(accessor.getInteger(new String[]{"message", "id"})).isEqualTo(id);
-            assertThat(accessor.getString(new String[]{"message", "name"})).isEqualTo(name);
+            assertThat(accessor.getInteger(new String[] {"message", "id"})).isEqualTo(id);
+            assertThat(accessor.getString(new String[] {"message", "name"})).isEqualTo(name);
         });
-
     }
 
     @Test
     void test_MapMessage_serialization() {
 
         // Create the event template.
-        final String eventTemplate = writeJson(asMap(
-                "message", asMap("$resolver", "message")));
+        final String eventTemplate = writeJson(asMap("message", asMap("$resolver", "message")));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -217,19 +185,17 @@ class MessageResolverTest {
                 .with("key1", "val1")
                 .with("key2", 0xDEADBEEF)
                 .with("key3", Collections.singletonMap("key3.1", "val3.1"));
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = Log4jLogEvent.newBuilder()
                 .setMessage(mapMessage)
                 .setTimeMillis(System.currentTimeMillis())
                 .build();
 
         // Check the serialized event.
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-            assertThat(accessor.getString(new String[]{"message", "key1"})).isEqualTo("val1");
-            assertThat(accessor.getInteger(new String[]{"message", "key2"})).isEqualTo(0xDEADBEEF);
-            assertThat(accessor.getString(new String[]{"message", "key3", "key3.1"})).isEqualTo("val3.1");
+            assertThat(accessor.getString(new String[] {"message", "key1"})).isEqualTo("val1");
+            assertThat(accessor.getInteger(new String[] {"message", "key2"})).isEqualTo(0xDEADBEEF);
+            assertThat(accessor.getString(new String[] {"message", "key3", "key3.1"}))
+                    .isEqualTo("val3.1");
         });
-
     }
-
 }

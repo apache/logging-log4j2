@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests ReusableObjectMessage.
@@ -66,16 +66,16 @@ public class ReusableObjectMessageTest {
 
     @Test
     public void testGetParameters_InitiallyReturnsNullObjectInLength1Array() throws Exception {
-        assertArrayEquals(new Object[]{null}, new ReusableObjectMessage().getParameters());
+        assertArrayEquals(new Object[] {null}, new ReusableObjectMessage().getParameters());
     }
 
     @Test
     public void testGetParameters_ReturnsSetObjectInParameterArrayAfterMessageSet() throws Exception {
         final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
-        assertArrayEquals(new Object[]{"abc"}, msg.getParameters());
+        assertArrayEquals(new Object[] {"abc"}, msg.getParameters());
         msg.set("def");
-        assertArrayEquals(new Object[]{"def"}, msg.getParameters());
+        assertArrayEquals(new Object[] {"def"}, msg.getParameters());
     }
 
     @Test

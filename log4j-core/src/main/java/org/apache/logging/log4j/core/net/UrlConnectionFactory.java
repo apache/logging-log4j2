@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.JarURLConnection;
@@ -24,10 +27,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.net.ssl.HttpsURLConnection;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -36,8 +36,6 @@ import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Constructs an HTTPURLConnection. This class should be considered to be internal
@@ -60,15 +58,16 @@ public class UrlConnectionFactory {
 
     @SuppressFBWarnings(
             value = "URLCONNECTION_SSRF_FD",
-            justification = "The URL parameter originates only from secure sources."
-    )
-    public static <T extends URLConnection> T createConnection(final URL url, final long lastModifiedMillis,
-                                                               final SslConfiguration sslConfiguration,
-                                                               final AuthorizationProvider authorizationProvider,
-                                                               final PropertyEnvironment props)
-        throws IOException {
-        final List<String> allowed = Arrays.asList(Strings.splitList(toRootLowerCase(props
-                .getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS))));
+            justification = "The URL parameter originates only from secure sources.")
+    public static <T extends URLConnection> T createConnection(
+            final URL url,
+            final long lastModifiedMillis,
+            final SslConfiguration sslConfiguration,
+            final AuthorizationProvider authorizationProvider,
+            final PropertyEnvironment props)
+            throws IOException {
+        final List<String> allowed = Arrays.asList(Strings.splitList(
+                toRootLowerCase(props.getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS))));
         if (allowed.size() == 1 && NO_PROTOCOLS.equals(allowed.get(0))) {
             throw new ProtocolException("No external protocols have been enabled");
         }
@@ -120,8 +119,7 @@ public class UrlConnectionFactory {
 
     @SuppressFBWarnings(
             value = "URLCONNECTION_SSRF_FD",
-            justification = "This method sanitizes the usage of the provided URL."
-    )
+            justification = "This method sanitizes the usage of the provided URL.")
     public static URLConnection createConnection(final URL url) throws IOException {
         final URLConnection urlConnection;
         if (url.getProtocol().equals(HTTPS) || url.getProtocol().equals(HTTP)) {

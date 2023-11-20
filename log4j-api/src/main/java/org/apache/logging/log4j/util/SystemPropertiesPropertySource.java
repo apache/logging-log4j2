@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -24,8 +25,6 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import aQute.bnd.annotation.spi.ServiceProvider;
 
 /**
  * PropertySource backed by the current system properties. Other than having a
@@ -152,5 +151,4 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
         }
         return true;
     }
-
 }

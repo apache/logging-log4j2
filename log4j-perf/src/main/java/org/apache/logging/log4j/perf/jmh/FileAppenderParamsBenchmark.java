@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import static org.apache.logging.log4j.util.Unbox.*;
+
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -32,8 +33,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.slf4j.LoggerFactory;
-
-import static org.apache.logging.log4j.util.Unbox.*;
 
 /**
  * Benchmarks Log4j 2, Log4j 1, Logback and JUL using the DEBUG level which is enabled for this test. The configuration
@@ -84,11 +83,11 @@ public class FileAppenderParamsBenchmark {
     private void deleteLogFiles() {
         final File logbackFile = new File("target/testlogback.log");
         logbackFile.delete();
-        final File log4jFile = new File ("target/testlog4j.log");
+        final File log4jFile = new File("target/testlog4j.log");
         log4jFile.delete();
-        final File log4jRandomFile = new File ("target/testRandomlog4j2.log");
+        final File log4jRandomFile = new File("target/testRandomlog4j2.log");
         log4jRandomFile.delete();
-        final File log4j2File = new File ("target/testlog4j2.log");
+        final File log4j2File = new File("target/testlog4j2.log");
         log4j2File.delete();
         final File julFile = new File("target/testJulLog.log");
         julFile.delete();
@@ -163,7 +162,8 @@ public class FileAppenderParamsBenchmark {
     @Benchmark
     public void param3JulFile() {
         // must specify sourceClass or JUL will look it up by walking the stack trace!
-        julLogger.logp(Level.INFO, getClass().getName(), "param3JulFile", "Val1={}, val2={}, val3={}",
-                new Object[]{++j, ++k, ++m});
+        julLogger.logp(Level.INFO, getClass().getName(), "param3JulFile", "Val1={}, val2={}, val3={}", new Object[] {
+            ++j, ++k, ++m
+        });
     }
 }

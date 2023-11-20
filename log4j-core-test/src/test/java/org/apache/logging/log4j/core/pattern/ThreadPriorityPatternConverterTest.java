@@ -16,18 +16,19 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreadPriorityPatternConverterTest {
 
     @Test
     public void testConverterAppendsLogEventNanoTimeToStringBuilder() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setThreadPriority(1).build();
+                .setThreadPriority(1)
+                .build();
         final StringBuilder sb = new StringBuilder();
         final ThreadPriorityPatternConverter converter = ThreadPriorityPatternConverter.newInstance(null);
         converter.format(event, sb);

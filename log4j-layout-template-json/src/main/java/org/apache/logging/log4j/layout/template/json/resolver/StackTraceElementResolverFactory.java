@@ -22,8 +22,7 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 final class StackTraceElementResolverFactory
         implements TemplateResolverFactory<StackTraceElement, StackTraceElementResolverContext> {
 
-    private static final StackTraceElementResolverFactory INSTANCE =
-            new StackTraceElementResolverFactory();
+    private static final StackTraceElementResolverFactory INSTANCE = new StackTraceElementResolverFactory();
 
     private StackTraceElementResolverFactory() {}
 
@@ -38,9 +37,7 @@ final class StackTraceElementResolverFactory
 
     @Override
     public StackTraceElementResolver create(
-            final StackTraceElementResolverContext context,
-            final TemplateResolverConfig config) {
+            final StackTraceElementResolverContext context, final TemplateResolverConfig config) {
         return new StackTraceElementResolver(config);
     }
-
 }

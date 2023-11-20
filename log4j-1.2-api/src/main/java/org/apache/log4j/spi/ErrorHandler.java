@@ -19,7 +19,6 @@ package org.apache.log4j.spi;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 
-
 /**
  * Appenders may delegate their error handling to
  * <code>ErrorHandlers</code>.
@@ -40,7 +39,6 @@ public interface ErrorHandler {
      * @since 1.2
      */
     void setLogger(Logger logger);
-
 
     /**
      * Equivalent to the {@link #error(String, Exception, int,

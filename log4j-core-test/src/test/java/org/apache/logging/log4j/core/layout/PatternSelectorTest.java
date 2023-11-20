@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Layout;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatternSelectorTest {
 
@@ -50,21 +50,28 @@ public class PatternSelectorTest {
                 .setConfiguration(ctx.getConfiguration())
                 .build();
         // @formatter:on
-        final PatternLayout layout = PatternLayout.newBuilder().setPatternSelector(selector)
-                .setConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder()
+                .setPatternSelector(selector)
+                .setConfiguration(ctx.getConfiguration())
+                .build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.layout.PatternSelectorTest$FauxLogger")
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.layout.PatternSelectorTest$FauxLogger")
                 .setMarker(MarkerManager.getMarker("FLOW"))
                 .setLevel(Level.TRACE) //
                 .setIncludeLocation(true)
-                .setMessage(new SimpleMessage("entry")).build();
+                .setMessage(new SimpleMessage("entry"))
+                .build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
-        final String expectSuffix1 = String.format("====== PatternSelectorTest.testMarkerPatternSelector:61 entry ======%n");
+        final String expectSuffix1 =
+                String.format("====== PatternSelectorTest.testMarkerPatternSelector:65 entry ======%n");
         assertThat(result1).endsWith(expectSuffix1);
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world 1!")).build();
+                .setMessage(new SimpleMessage("Hello, world 1!"))
+                .build();
         final String result2 = new String(layout.toByteArray(event2));
         final String expectSuffix2 = String.format("Hello, world 1!%n");
         assertThat(result2).endsWith(expectSuffix2);
@@ -80,20 +87,27 @@ public class PatternSelectorTest {
                 .setDisableAnsi(true)
                 .setProperties(patterns)
                 .build();
-        final PatternLayout layout = PatternLayout.newBuilder().setPatternSelector(selector)
-                .setConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder()
+                .setPatternSelector(selector)
+                .setConfiguration(ctx.getConfiguration())
+                .build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.layout.PatternSelectorTest$FauxLogger")
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.layout.PatternSelectorTest$FauxLogger")
                 .setLevel(Level.TRACE) //
                 .setIncludeLocation(true)
-                .setMessage(new SimpleMessage("entry")).build();
+                .setMessage(new SimpleMessage("entry"))
+                .build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
-        final String expectSuffix1 = String.format("====== PatternSelectorTest.testLevelPatternSelector:90 entry ======%n");
+        final String expectSuffix1 =
+                String.format("====== PatternSelectorTest.testLevelPatternSelector:101 entry ======%n");
         assertThat(result1).endsWith(expectSuffix1);
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world 1!")).build();
+                .setMessage(new SimpleMessage("Hello, world 1!"))
+                .build();
         final String result2 = new String(layout.toByteArray(event2));
         final String expectSuffix2 = String.format("Hello, world 1!%n");
         assertThat(result2).endsWith(expectSuffix2);

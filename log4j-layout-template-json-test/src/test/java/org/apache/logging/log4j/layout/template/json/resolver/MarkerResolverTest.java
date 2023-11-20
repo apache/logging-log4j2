@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class MarkerResolverTest {
 
@@ -33,28 +33,24 @@ class MarkerResolverTest {
 
         // Create the event template
         final String eventTemplate = writeJson(asMap(
-                "marker", asMap(
+                "marker",
+                asMap(
                         "$resolver", "marker",
                         "field", "name")));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
         // Create the log event.
         final Marker marker = MarkerManager.getMarker("MARKER");
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setMarker(marker)
-                .build();
+        final LogEvent logEvent = Log4jLogEvent.newBuilder().setMarker(marker).build();
 
         // Check the serialized event.
-        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
-                assertThat(accessor.getString("marker")).isEqualTo("MARKER"));
-
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> assertThat(accessor.getString("marker"))
+                .isEqualTo("MARKER"));
     }
 
     @Test
@@ -62,13 +58,13 @@ class MarkerResolverTest {
 
         // Create the event template
         final String eventTemplate = writeJson(asMap(
-                "parents", asMap(
+                "parents",
+                asMap(
                         "$resolver", "marker",
                         "field", "parents")));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -79,16 +75,12 @@ class MarkerResolverTest {
         final Marker childMarker = MarkerManager.getMarker("CHILD_MARKER_NAME");
         childMarker.setParents(parentMarker1, parentMarker2);
 
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setMarker(childMarker)
-                .build();
+        final LogEvent logEvent =
+                Log4jLogEvent.newBuilder().setMarker(childMarker).build();
 
         // Check the serialized event.
-        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
-                assertThat(accessor.getList("parents", String.class))
+        usingSerializedLogEventAccessor(
+                layout, logEvent, accessor -> assertThat(accessor.getList("parents", String.class))
                         .containsOnly(parentMarker1.getName(), parentMarker2.getName()));
-
     }
-
 }

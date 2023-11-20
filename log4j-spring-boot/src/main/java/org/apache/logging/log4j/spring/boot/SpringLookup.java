@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -28,8 +29,6 @@ import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.springframework.core.env.Environment;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Lookup for Spring properties.
@@ -126,7 +125,6 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
             }
 
             return environment.getProperty(key);
-
         }
         return null;
     }

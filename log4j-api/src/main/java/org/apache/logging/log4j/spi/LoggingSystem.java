@@ -16,6 +16,16 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.LOGGER_FLOW_MESSAGE_FACTORY_CLASS;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.LOGGER_MESSAGE_FACTORY_CLASS;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_ENABLE;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_INITIAL_CAPACITY;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_CLASS;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_INHERITABLE;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_STACK_ENABLED;
+
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -29,8 +39,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
@@ -47,15 +55,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.LOGGER_FLOW_MESSAGE_FACTORY_CLASS;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.LOGGER_MESSAGE_FACTORY_CLASS;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_ENABLE;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_CLASS;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_INHERITABLE;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_STACK_ENABLED;
-
 /**
  * Handles initializing the Log4j API through {@link Provider} discovery. This keeps track of which
  * {@link LoggerContextFactory} to use in {@link LogManager} along with factories for {@link ThreadContextMap}
@@ -69,6 +68,7 @@ public class LoggingSystem {
      * Resource name for a Log4j 2 provider properties file.
      */
     private static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
+
     private static final String API_VERSION = "Log4jAPIVersion";
     private static final String[] COMPATIBLE_API_VERSIONS = {"3.0.0"};
 
@@ -78,8 +78,8 @@ public class LoggingSystem {
 
     private final Lazy<SystemProvider> providerLazy = Lazy.relaxed(this::findProvider);
     private final Lazy<PropertyEnvironment> environmentLazy = Lazy.relaxed(PropertiesUtil::getProperties);
-    private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = environmentLazy.map(environment ->
-            getProvider().createLoggerContextFactory(environment));
+    private final Lazy<LoggerContextFactory> loggerContextFactoryLazy =
+            environmentLazy.map(environment -> getProvider().createLoggerContextFactory(environment));
     private final Lazy<MessageFactory> messageFactoryLazy = environmentLazy.map(environment -> {
         final String className = environment.getStringProperty(LOGGER_MESSAGE_FACTORY_CLASS);
         if (className != null) {
@@ -100,14 +100,13 @@ public class LoggingSystem {
         }
         return new DefaultFlowMessageFactory();
     });
-    private final Lazy<Supplier<ThreadContextMap>> threadContextMapFactoryLazy = environmentLazy.map(environment ->
-            () -> getProvider().createContextMap(environment));
-    private final Lazy<Supplier<ThreadContextStack>> threadContextStackFactoryLazy = environmentLazy.map(environment ->
-            () -> getProvider().createContextStack(environment));
+    private final Lazy<Supplier<ThreadContextMap>> threadContextMapFactoryLazy =
+            environmentLazy.map(environment -> () -> getProvider().createContextMap(environment));
+    private final Lazy<Supplier<ThreadContextStack>> threadContextStackFactoryLazy =
+            environmentLazy.map(environment -> () -> getProvider().createContextStack(environment));
     private final Lazy<RecyclerFactory> recyclerFactoryLazy = Lazy.relaxed(RecyclerFactories::getDefault);
 
-    public LoggingSystem() {
-    }
+    public LoggingSystem() {}
 
     private SystemProvider getProvider() {
         return providerLazy.get();
@@ -202,8 +201,7 @@ public class LoggingSystem {
     }
 
     private static List<Provider> loadLegacyProviders() {
-        return LoaderUtil.findUrlResources(PROVIDER_RESOURCE)
-                .stream()
+        return LoaderUtil.findUrlResources(PROVIDER_RESOURCE).stream()
                 .map(urlResource -> loadLegacyProvider(urlResource.getUrl(), urlResource.getClassLoader()))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -266,7 +264,8 @@ public class LoggingSystem {
             final Class<? extends T> typedClass = loadedClass.asSubclass(type);
             return tryInstantiate(typedClass);
         } catch (final ClassNotFoundException | ClassCastException e) {
-            LowLevelLogUtil.logException(String.format("Unable to load %s class '%s'", type.getSimpleName(), className), e);
+            LowLevelLogUtil.logException(
+                    String.format("Unable to load %s class '%s'", type.getSimpleName(), className), e);
             return null;
         }
     }
@@ -286,7 +285,8 @@ public class LoggingSystem {
             final String customFactoryClass =
                     environment.getStringProperty(LoggingSystemProperty.LOGGER_CONTEXT_FACTORY_CLASS);
             if (customFactoryClass != null) {
-                final LoggerContextFactory customFactory = createInstance(customFactoryClass, LoggerContextFactory.class);
+                final LoggerContextFactory customFactory =
+                        createInstance(customFactoryClass, LoggerContextFactory.class);
                 if (customFactory != null) {
                     return customFactory;
                 }
@@ -300,9 +300,9 @@ public class LoggingSystem {
                     }
                 }
             }
-            LowLevelLogUtil.log("Log4j could not find a logging implementation. " +
-                    "Please add log4j-core dependencies to classpath or module path. " +
-                    "Using SimpleLogger to log to the console.");
+            LowLevelLogUtil.log("Log4j could not find a logging implementation. "
+                    + "Please add log4j-core dependencies to classpath or module path. "
+                    + "Using SimpleLogger to log to the console.");
             return SimpleLoggerContextFactory.INSTANCE;
         }
 
@@ -329,12 +329,14 @@ public class LoggingSystem {
         public ThreadContextMap createContextMap(final PropertyEnvironment environment) {
             final String customThreadContextMap = environment.getStringProperty(THREAD_CONTEXT_MAP_CLASS);
             if (customThreadContextMap != null) {
-                final ThreadContextMap customContextMap = createInstance(customThreadContextMap, ThreadContextMap.class);
+                final ThreadContextMap customContextMap =
+                        createInstance(customThreadContextMap, ThreadContextMap.class);
                 if (customContextMap != null) {
                     return customContextMap;
                 }
             }
-            final boolean enableMap = environment.getBooleanProperty(LoggingSystemProperty.THREAD_CONTEXT_MAP_ENABLED,
+            final boolean enableMap = environment.getBooleanProperty(
+                    LoggingSystemProperty.THREAD_CONTEXT_MAP_ENABLED,
                     environment.getBooleanProperty(LoggingSystemProperty.THREAD_CONTEXT_ENABLE, true));
             if (!enableMap) {
                 return new NoOpThreadContextMap();
@@ -349,8 +351,8 @@ public class LoggingSystem {
             final boolean threadLocalsEnabled = Constants.isThreadLocalsEnabled();
             final boolean garbageFreeEnabled = environment.getBooleanProperty(THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
             final boolean inheritableMap = environment.getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE);
-            final int initialCapacity = environment.getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY,
-                    THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY);
+            final int initialCapacity = environment.getIntegerProperty(
+                    THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY);
             if (threadLocalsEnabled) {
                 if (garbageFreeEnabled) {
                     return new GarbageFreeSortedArrayThreadContextMap(inheritableMap, initialCapacity);
@@ -361,8 +363,8 @@ public class LoggingSystem {
         }
 
         public ThreadContextStack createContextStack(final PropertyEnvironment environment) {
-            final boolean enableStack = environment.getBooleanProperty(THREAD_CONTEXT_STACK_ENABLED,
-                    environment.getBooleanProperty(THREAD_CONTEXT_ENABLE, true));
+            final boolean enableStack = environment.getBooleanProperty(
+                    THREAD_CONTEXT_STACK_ENABLED, environment.getBooleanProperty(THREAD_CONTEXT_ENABLE, true));
             return new DefaultThreadContextStack(enableStack);
         }
     }

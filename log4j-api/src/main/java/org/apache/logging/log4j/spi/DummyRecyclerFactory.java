@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Recycler strategy which doesn't recycle anything; all instances are freshly created.
@@ -55,7 +55,5 @@ public final class DummyRecyclerFactory implements RecyclerFactory {
 
         @Override
         public void release(final V value) {}
-
     }
-
 }

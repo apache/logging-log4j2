@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MarkerFilterTest {
 
@@ -46,7 +46,8 @@ public class MarkerFilterTest {
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setMarker(grandChild) //
                 .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .build();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         filter = MarkerFilter.createFilter("Child", null, null);
         filter.start();
@@ -54,7 +55,8 @@ public class MarkerFilterTest {
         event = Log4jLogEvent.newBuilder() //
                 .setMarker(sibling) //
                 .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .build();
         assertSame(Filter.Result.DENY, filter.filter(event));
         filter.stop();
     }

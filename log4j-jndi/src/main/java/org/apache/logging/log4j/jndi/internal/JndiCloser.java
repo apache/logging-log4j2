@@ -26,8 +26,7 @@ import javax.naming.NamingException;
  */
 public final class JndiCloser {
 
-    private JndiCloser() {
-    }
+    private JndiCloser() {}
 
     /**
      * Closes the specified {@code Context}.
@@ -58,5 +57,4 @@ public final class JndiCloser {
             return false;
         }
     }
-
 }

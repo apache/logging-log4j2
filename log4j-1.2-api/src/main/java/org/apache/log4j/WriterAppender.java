@@ -21,12 +21,10 @@ import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.status.StatusLogger;
-
 
 /**
  * WriterAppender appends log events to a {@link Writer} or an
@@ -64,12 +62,10 @@ public class WriterAppender extends AppenderSkeleton {
      */
     protected QuietWriter qw;
 
-
     /**
      * This default constructor does nothing.
      */
-    public WriterAppender() {
-    }
+    public WriterAppender() {}
 
     /**
      * Instantiate a WriterAppender and set the output destination to a
@@ -129,9 +125,7 @@ public class WriterAppender extends AppenderSkeleton {
      * Does nothing.
      */
     @Override
-    public void activateOptions() {
-    }
-
+    public void activateOptions() {}
 
     /**
      * This method is called by the {@link AppenderSkeleton#doAppend}
@@ -187,7 +181,6 @@ public class WriterAppender extends AppenderSkeleton {
         }
         return true;
     }
-
 
     /**
      * Close this appender instance. The underlying stream or writer is
@@ -264,7 +257,6 @@ public class WriterAppender extends AppenderSkeleton {
         encoding = value;
     }
 
-
     /**
      * Set the {@link ErrorHandler} for this WriterAppender and also the
      * underlying {@link QuietWriter} if any.
@@ -298,10 +290,9 @@ public class WriterAppender extends AppenderSkeleton {
     public synchronized void setWriter(final Writer writer) {
         reset();
         this.qw = new QuietWriter(writer, errorHandler);
-        //this.tp = new TracerPrintWriter(qw);
+        // this.tp = new TracerPrintWriter(qw);
         writeHeader();
     }
-
 
     /**
      * Actual writing occurs here.
@@ -331,7 +322,6 @@ public class WriterAppender extends AppenderSkeleton {
         }
     }
 
-
     /**
      * The WriterAppender requires a layout. Hence, this method returns
      * <code>true</code>.
@@ -350,9 +340,8 @@ public class WriterAppender extends AppenderSkeleton {
     protected void reset() {
         closeWriter();
         this.qw = null;
-        //this.tp = null;
+        // this.tp = null;
     }
-
 
     /**
      * Write a footer as produced by the embedded layout's {@link

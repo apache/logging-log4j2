@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -65,7 +64,8 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     /**
      * Property that disables the usage of this {@link LoggingSystem}.
      */
-    public static final String LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM = "SpringBoot.disableCloudConfigLoggingSystem";
+    public static final String LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM =
+            "SpringBoot.disableCloudConfigLoggingSystem";
 
     public static final String ENVIRONMENT_KEY = "SpringEnvironment";
     private static final String HTTPS = "https";
@@ -86,7 +86,10 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
      * @param logFile the log file.
      */
     @Override
-    public void initialize(final LoggingInitializationContext initializationContext, final String configLocation, final LogFile logFile) {
+    public void initialize(
+            final LoggingInitializationContext initializationContext,
+            final String configLocation,
+            final LogFile logFile) {
         final Environment environment = initializationContext.getEnvironment();
         PropertiesUtil.getProperties().addPropertySource(new SpringPropertySource(environment));
         getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, environment);
@@ -116,7 +119,6 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     protected void loadConfiguration(final String location, final LogFile logFile) {
         loadConfiguration(location, logFile, Collections.emptyList());
     }
-
 
     @Override
     protected void loadDefaults(final LoggingInitializationContext initializationContext, final LogFile logFile) {
@@ -169,12 +171,15 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                             if (config instanceof AbstractConfiguration) {
                                 configs.add((AbstractConfiguration) config);
                             } else {
-                                LOGGER.warn("Configuration at {} cannot be combined in a CompositeConfiguration", sourceLocation);
+                                LOGGER.warn(
+                                        "Configuration at {} cannot be combined in a CompositeConfiguration",
+                                        sourceLocation);
                                 return;
                             }
                         } catch (Exception ex) {
                             if (!first) {
-                                LOGGER.warn("Error accessing {}: {}. Ignoring override", sourceLocation, ex.getMessage());
+                                LOGGER.warn(
+                                        "Error accessing {}: {}. Ignoring override", sourceLocation, ex.getMessage());
                             } else {
                                 throw ex;
                             }
@@ -188,10 +193,8 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                     ctx.start(configs.get(0));
                 }
             }
-        }
-        catch (Exception ex) {
-            throw new IllegalStateException(
-                    "Could not initialize Log4J2 logging from " + location, ex);
+        } catch (Exception ex) {
+            throw new IllegalStateException("Could not initialize Log4J2 logging from " + location, ex);
         }
     }
 
@@ -211,8 +214,8 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                 final String[] pairs = url.getQuery().split("&");
                 for (String pair : pairs) {
                     final int idx = pair.indexOf("=");
-                    final String key = idx > 0 ?
-                            URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8) : pair;
+                    final String key =
+                            idx > 0 ? URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8) : pair;
                     if (key.equalsIgnoreCase(OVERRIDE_PARAM)) {
                         locations.add(URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8));
                     }
@@ -228,10 +231,10 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     private ConfigurationSource getConfigurationSource(final URL url) throws IOException, URISyntaxException {
         final PropertyEnvironment props = PropertiesUtil.getProperties();
         final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
-        final SslConfiguration sslConfiguration = url.getProtocol().equals(HTTPS)
-                ? SslConfigurationFactory.getSslConfiguration(props) : null;
-        final URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration,
-                provider, props);
+        final SslConfiguration sslConfiguration =
+                url.getProtocol().equals(HTTPS) ? SslConfigurationFactory.getSslConfiguration(props) : null;
+        final URLConnection urlConnection =
+                UrlConnectionFactory.createConnection(url, 0, sslConfiguration, provider, props);
 
         final File file = FileUtils.fileFromUri(url.toURI());
         try {
@@ -260,7 +263,5 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
             }
             return new Log4j2SpringBootLoggingSystem(classLoader);
         }
-
     }
-
 }

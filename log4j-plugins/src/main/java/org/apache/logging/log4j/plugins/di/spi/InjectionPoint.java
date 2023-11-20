@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
 
@@ -56,11 +55,7 @@ public class InjectionPoint<T> {
 
     @Override
     public String toString() {
-        return "InjectionPoint{" +
-                "key=" + key +
-                ", aliases=" + aliases +
-                ", element=" + element +
-                '}';
+        return "InjectionPoint{" + "key=" + key + ", aliases=" + aliases + ", element=" + element + '}';
     }
 
     public static <T> InjectionPoint<T> forField(final Field field) {

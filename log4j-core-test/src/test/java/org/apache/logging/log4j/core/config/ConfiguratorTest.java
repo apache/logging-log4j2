@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.net.URI;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
 public class ConfiguratorTest {
@@ -45,7 +44,8 @@ public class ConfiguratorTest {
     @Test
     public void testReconfigure() {
         final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
-        try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
+        try (final LoggerContext loggerContext =
+                Configurator.initialize(getClass().getName(), null, path)) {
             assertNotNull(loggerContext.getConfiguration().getAppender("List"));
             final URI uri = loggerContext.getConfigLocation();
             assertNotNull(uri, "No configuration location returned");
@@ -57,7 +57,8 @@ public class ConfiguratorTest {
     @Test
     public void testReconfigureFromPath() {
         final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
-        try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
+        try (final LoggerContext loggerContext =
+                Configurator.initialize(getClass().getName(), null, path)) {
             assertNotNull(loggerContext.getConfiguration().getAppender("List"));
             final URI uri = loggerContext.getConfigLocation();
             assertNotNull(uri, "No configuration location returned");
@@ -68,7 +69,8 @@ public class ConfiguratorTest {
     }
 
     private void testInitializeFromFilePath(final String path) {
-        try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
+        try (final LoggerContext loggerContext =
+                Configurator.initialize(getClass().getName(), null, path)) {
             assertNotNull(loggerContext.getConfiguration().getAppender("List"));
         }
     }
@@ -79,16 +81,17 @@ public class ConfiguratorTest {
     @Test
     public void testSetLevelUsesCanonicalName() {
         final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
-        try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
+        try (final LoggerContext loggerContext =
+                Configurator.initialize(getClass().getName(), null, path)) {
             Configurator.setLevel(Internal.class, Level.DEBUG);
             final Configuration config = loggerContext.getConfiguration();
             assertNotNull(config);
             final String canonicalName = Internal.class.getCanonicalName();
-            assertThat(config.getLoggerConfig(canonicalName)).extracting(LoggerConfig::getName, LoggerConfig::getExplicitLevel)
+            assertThat(config.getLoggerConfig(canonicalName))
+                    .extracting(LoggerConfig::getName, LoggerConfig::getExplicitLevel)
                     .containsExactly(canonicalName, Level.DEBUG);
         }
     }
 
-    private static class Internal {
-    }
+    private static class Internal {}
 }

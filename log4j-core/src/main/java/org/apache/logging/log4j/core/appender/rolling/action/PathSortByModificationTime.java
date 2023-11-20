@@ -48,8 +48,7 @@ public class PathSortByModificationTime implements PathSorter {
      * @return A PathSorter.
      */
     @PluginFactory
-    public static PathSorter createSorter(
-            @PluginAttribute(defaultBoolean = true) final boolean recentFirst) {
+    public static PathSorter createSorter(@PluginAttribute(defaultBoolean = true) final boolean recentFirst) {
         return new PathSortByModificationTime(recentFirst);
     }
 

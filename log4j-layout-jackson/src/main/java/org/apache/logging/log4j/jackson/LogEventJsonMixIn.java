@@ -48,8 +48,9 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
     JsonConstants.ELT_CONTEXT_STACK,
     "loggerFQCN",
     "Source",
-    "endOfBatch" })
-    // @formatter:on
+    "endOfBatch"
+})
+// @formatter:on
 /**
  * As of Jackson 2.9.4, if we extend AbstractLogEventMixIn, then the {@link ObjectMessage} serializer
  * {@code ObjectMessageSerializer} does not get invoked. Either a bug in Jackson or in our set up code.
@@ -133,5 +134,4 @@ public abstract class LogEventJsonMixIn /* extends AbstractLogEventMixIn */ impl
 
     @Override
     public abstract void setIncludeLocation(boolean locationRequired);
-
 }

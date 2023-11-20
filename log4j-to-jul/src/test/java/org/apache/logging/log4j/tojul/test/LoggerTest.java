@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.tojul.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.common.testing.TestLogHandler;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
-import com.google.common.testing.TestLogHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.tojul.JULLogger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoggerTest {
 
@@ -45,7 +44,6 @@ public class LoggerTest {
     // https://javadoc.io/doc/com.google.guava/guava-testlib/latest/com/google/common/testing/TestLogHandler.html
     private TestLogHandler handler;
 
-
     @BeforeEach
     public void setupLogCapture() {
         handler = new TestLogHandler();
@@ -54,12 +52,13 @@ public class LoggerTest {
         log4jLogger = LogManager.getLogger(getClass());
         assertThat(log4jLogger).isInstanceOf(JULLogger.class);
         julLogger = java.util.logging.Logger.getLogger(getClass().getName());
-        assertThat(julLogger).isSameAs(((JULLogger)log4jLogger).getWrappedLogger());
+        assertThat(julLogger).isSameAs(((JULLogger) log4jLogger).getWrappedLogger());
         julLogger.addHandler(handler);
 
         julLoggerDefaultLevel = julLogger.getLevel();
 
-        // Check that there is no configuration file which invalidates our assumption that the root logger is the parent of our julLogger
+        // Check that there is no configuration file which invalidates our assumption that the root logger is the parent
+        // of our julLogger
         assertThat(julLogger.getParent()).isEqualTo(rootLogger);
     }
 
@@ -102,7 +101,8 @@ public class LoggerTest {
         assertThat(log1.getThrown()).isNull();
     }
 
-    @Test public void errorAtSevereWithException() {
+    @Test
+    public void errorAtSevereWithException() {
         julLogger.setLevel(Level.SEVERE);
         log4jLogger.error("hello, {}", "world", new IOException("Testing, testing"));
 
@@ -121,7 +121,8 @@ public class LoggerTest {
         assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 
-    @Test public void infoAtInfoOnParent() {
+    @Test
+    public void infoAtInfoOnParent() {
         julLogger.getParent().setLevel(Level.INFO);
         log4jLogger.info("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
@@ -134,13 +135,15 @@ public class LoggerTest {
         assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 
-    @Test public void debugAtInfo() {
+    @Test
+    public void debugAtInfo() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.debug("hello, world");
         assertThat(handler.getStoredLogRecords()).isEmpty();
     }
 
-    @Test public void debugAtFiner() {
+    @Test
+    public void debugAtFiner() {
         julLogger.setLevel(Level.FINER);
         log4jLogger.debug("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
@@ -153,13 +156,15 @@ public class LoggerTest {
         assertThat(handler.getStoredLogRecords()).isEmpty();
     }
 
-    @Test public void traceAtAllOnParent() {
+    @Test
+    public void traceAtAllOnParent() {
         julLogger.getParent().setLevel(Level.ALL);
         log4jLogger.trace("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 
-    @Test public void fatalAtOff() {
+    @Test
+    public void fatalAtOff() {
         julLogger.getParent().setLevel(Level.OFF);
         log4jLogger.fatal("hello, world");
         assertThat(handler.getStoredLogRecords()).isEmpty();
@@ -231,14 +236,17 @@ public class LoggerTest {
 
     static class Another {
         org.apache.logging.log4j.Logger anotherLog4jLogger = LogManager.getLogger(getClass());
-        java.util.logging.Logger anotherJULLogger = java.util.logging.Logger.getLogger(getClass().getName());
+        java.util.logging.Logger anotherJULLogger =
+                java.util.logging.Logger.getLogger(getClass().getName());
+
         Another(final TestLogHandler handler) {
             anotherJULLogger.addHandler(handler);
             anotherLog4jLogger.info("hello, another world");
         }
     }
 
-    @Test public void placeholdersInFormat() {
+    @Test
+    public void placeholdersInFormat() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, {0} {}", "world");
 
@@ -249,7 +257,8 @@ public class LoggerTest {
         assertThat(formattedMessage).isEqualTo("hello, {0} world");
     }
 
-    @Test public void placeholdersInFormattedMessage() {
+    @Test
+    public void placeholdersInFormattedMessage() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, {}", "{0} world");
 

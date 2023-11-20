@@ -64,5 +64,4 @@ public class CleanFiles extends AbstractExternalFileCleaner {
     protected boolean clean(final Path path, final int tryIndex) throws IOException {
         return Files.deleteIfExists(path);
     }
-
 }

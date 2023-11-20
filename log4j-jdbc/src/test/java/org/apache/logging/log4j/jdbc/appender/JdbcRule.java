@@ -20,7 +20,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.rules.TestRule;
@@ -47,7 +46,9 @@ public class JdbcRule implements TestRule {
      * @param createTableStatement an optional SQL DDL statement to create a table for use in a JUnit test.
      * @param dropTableStatement an optional SQL DDL statement to drop the created table.
      */
-    public JdbcRule(final ConnectionSource connectionSource, final String createTableStatement,
+    public JdbcRule(
+            final ConnectionSource connectionSource,
+            final String createTableStatement,
             final String dropTableStatement) {
         this.connectionSource = Objects.requireNonNull(connectionSource, "connectionSource");
         this.createTableStatement = createTableStatement;
@@ -55,8 +56,8 @@ public class JdbcRule implements TestRule {
     }
 
     @Override
-    public org.junit.runners.model.Statement apply(final org.junit.runners.model.Statement base,
-            final Description description) {
+    public org.junit.runners.model.Statement apply(
+            final org.junit.runners.model.Statement base, final Description description) {
         return new org.junit.runners.model.Statement() {
             @Override
             public void evaluate() throws Throwable {
@@ -75,7 +76,6 @@ public class JdbcRule implements TestRule {
                     }
                 }
             }
-
         };
     }
 

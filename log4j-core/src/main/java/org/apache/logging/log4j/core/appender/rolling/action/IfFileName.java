@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -60,8 +59,8 @@ public final class IfFileName implements PathCondition {
      */
     private IfFileName(final String glob, final String regex, final PathCondition... nestedConditions) {
         if (regex == null && glob == null) {
-            throw new IllegalArgumentException("Specify either a path glob or a regular expression. "
-                    + "Both cannot be null.");
+            throw new IllegalArgumentException(
+                    "Specify either a path glob or a regular expression. " + "Both cannot be null.");
         }
         this.syntaxAndPattern = createSyntaxAndPatternString(glob, regex);
         this.pathMatcher = FileSystems.getDefault().getPathMatcher(syntaxAndPattern);
@@ -138,7 +137,7 @@ public final class IfFileName implements PathCondition {
             @PluginAttribute final String glob,
             @PluginAttribute final String regex,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
-            // @formatter:on
+        // @formatter:on
         return new IfFileName(glob, regex, nestedConditions);
     }
 

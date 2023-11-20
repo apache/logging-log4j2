@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+import java.io.IOException;
 
 /**
  * Copy and edit the Jackson (Apache License 2.0) class to use Log4j attribute names. Does not work as of Jackson 2.3.2.
@@ -42,18 +41,22 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
     }
 
     @Override
-    public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
+    public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
         JsonToken t = jp.getCurrentToken();
         // Must get an Object
         if (t == JsonToken.START_OBJECT) {
-            String classLoaderName = null, moduleName = null, moduleVersion = null, className = null, methodName = null,
+            String classLoaderName = null,
+                    moduleName = null,
+                    moduleVersion = null,
+                    className = null,
+                    methodName = null,
                     fileName = null;
             int lineNumber = -1;
 
             while ((t = jp.nextValue()) != JsonToken.END_OBJECT) {
                 final String propName = jp.getCurrentName();
-                switch(propName) {
+                switch (propName) {
                     case "class": {
                         className = jp.getText();
                         break;
@@ -70,7 +73,8 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
                             try {
                                 lineNumber = Integer.parseInt(jp.getText().trim());
                             } catch (final NumberFormatException e) {
-                                throw JsonMappingException.from(jp, "Non-numeric token (" + t + ") for property 'line'", e);
+                                throw JsonMappingException.from(
+                                        jp, "Non-numeric token (" + t + ") for property 'line'", e);
                             }
                         }
                         break;
@@ -100,8 +104,8 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
                     }
                 }
             }
-            return new StackTraceElement(classLoaderName, moduleName, moduleVersion, className, methodName, fileName,
-                    lineNumber);
+            return new StackTraceElement(
+                    classLoaderName, moduleName, moduleVersion, className, methodName, fileName, lineNumber);
         }
         throw ctxt.mappingException(this._valueClass, t);
     }

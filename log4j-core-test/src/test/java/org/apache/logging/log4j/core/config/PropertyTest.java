@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for LOG4J2-1313
@@ -42,19 +41,24 @@ public class PropertyTest {
         assertNotNull(messages, "No Messages");
         assertEquals(1, messages.size(), "message count" + messages);
 
-        //<Property name="emptyElementKey" />
-        //<Property name="emptyAttributeKey" value="" />
-        //<Property name="emptyAttributeKey2" value=""></Property>
-        //<Property name="elementKey">elementValue</Property>
-        //<Property name="attributeKey" value="attributeValue" />
-        //<Property name="attributeWithEmptyElementKey" value="attributeValue2"></Property>
-        //<Property name="bothElementAndAttributeKey" value="attributeValue3">elementValue3</Property>
+        // <Property name="emptyElementKey" />
+        // <Property name="emptyAttributeKey" value="" />
+        // <Property name="emptyAttributeKey2" value=""></Property>
+        // <Property name="elementKey">elementValue</Property>
+        // <Property name="attributeKey" value="attributeValue" />
+        // <Property name="attributeWithEmptyElementKey" value="attributeValue2"></Property>
+        // <Property name="bothElementAndAttributeKey" value="attributeValue3">elementValue3</Property>
         final String expect = "1=elementValue" + // ${sys:elementKey}
-                ",2=" + // ${sys:emptyElementKey}
-                ",a=" + // ${sys:emptyAttributeKey}
-                ",b=" + // ${sys:emptyAttributeKey2}
-                ",3=attributeValue" + // ${sys:attributeKey}
-                ",4=attributeValue2" + // ${sys:attributeWithEmptyElementKey}
+                ",2="
+                + // ${sys:emptyElementKey}
+                ",a="
+                + // ${sys:emptyAttributeKey}
+                ",b="
+                + // ${sys:emptyAttributeKey2}
+                ",3=attributeValue"
+                + // ${sys:attributeKey}
+                ",4=attributeValue2"
+                + // ${sys:attributeWithEmptyElementKey}
                 ",5=elementValue3,m=msg"; // ${sys:bothElementAndAttributeKey}
         assertEquals(expect, messages.get(0));
         app.clear();

@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import java.util.Map;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("legacy-plugins.xml")
 public class LegacyPluginTest {
@@ -45,8 +44,10 @@ public class LegacyPluginTest {
                 final Layout layout = entry.getValue().getLayout();
                 assertNotNull("No layout for CustomConsole Appender");
                 final String name = layout.getClass().getSimpleName();
-                assertEquals("CustomConsoleLayout",
-                        name, "Incorrect Layout class. Expected CustomConsoleLayout, Actual " + name);
+                assertEquals(
+                        "CustomConsoleLayout",
+                        name,
+                        "Incorrect Layout class. Expected CustomConsoleLayout, Actual " + name);
             }
         }
     }

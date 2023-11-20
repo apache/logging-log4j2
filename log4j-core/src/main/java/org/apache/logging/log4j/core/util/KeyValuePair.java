@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.util;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;

@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.jackson.yaml.layout;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -68,9 +67,21 @@ public final class YamlLayout extends AbstractJacksonLayout {
         public YamlLayout build() {
             final String headerPattern = toStringOrNull(getHeader());
             final String footerPattern = toStringOrNull(getFooter());
-            return new YamlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(), isCompact(),
-                    getEventEol(), headerPattern, footerPattern, getCharset(), isIncludeStacktrace(),
-                    isStacktraceAsString(), isIncludeNullDelimiter(), isIncludeTimeMillis(), getAdditionalFields());
+            return new YamlLayout(
+                    getConfiguration(),
+                    isLocationInfo(),
+                    isProperties(),
+                    isComplete(),
+                    isCompact(),
+                    getEventEol(),
+                    headerPattern,
+                    footerPattern,
+                    getCharset(),
+                    isIncludeStacktrace(),
+                    isStacktraceAsString(),
+                    isIncludeNullDelimiter(),
+                    isIncludeTimeMillis(),
+                    getAdditionalFields());
         }
     }
 
@@ -93,7 +104,6 @@ public final class YamlLayout extends AbstractJacksonLayout {
         public LogEvent getLogEvent() {
             return super.getLogEvent();
         }
-
     }
 
     private static final String DEFAULT_FOOTER = Strings.EMPTY;
@@ -108,8 +118,21 @@ public final class YamlLayout extends AbstractJacksonLayout {
      * @return A YAML Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER,
-                DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, false, null);
+        return new YamlLayout(
+                new DefaultConfiguration(),
+                false,
+                false,
+                false,
+                false,
+                false,
+                DEFAULT_HEADER,
+                DEFAULT_FOOTER,
+                StandardCharsets.UTF_8,
+                true,
+                false,
+                false,
+                false,
+                null);
     }
 
     @PluginFactory
@@ -117,25 +140,46 @@ public final class YamlLayout extends AbstractJacksonLayout {
         return new Builder<B>().asBuilder();
     }
 
-    private YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
-            final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
-            final String footerPattern, final Charset charset, final boolean includeStacktrace,
-            final boolean stacktraceAsString, final boolean includeNullDelimiter, final boolean includeTimeMillis,
+    private YamlLayout(
+            final Configuration config,
+            final boolean locationInfo,
+            final boolean properties,
+            final boolean complete,
+            final boolean compact,
+            final boolean eventEol,
+            final String headerPattern,
+            final String footerPattern,
+            final Charset charset,
+            final boolean includeStacktrace,
+            final boolean stacktraceAsString,
+            final boolean includeNullDelimiter,
+            final boolean includeTimeMillis,
             final KeyValuePair[] additionalFields) {
-        super(config,
-                new YamlJacksonFactory(includeStacktrace, stacktraceAsString).newWriter(locationInfo, properties,
-                        compact, includeTimeMillis),
-                charset, compact, complete, eventEol,
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern)
-                        .setDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern)
-                        .setDefaultPattern(DEFAULT_FOOTER).build(),
-                includeNullDelimiter, additionalFields);
+        super(
+                config,
+                new YamlJacksonFactory(includeStacktrace, stacktraceAsString)
+                        .newWriter(locationInfo, properties, compact, includeTimeMillis),
+                charset,
+                compact,
+                complete,
+                eventEol,
+                PatternLayout.newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setPattern(headerPattern)
+                        .setDefaultPattern(DEFAULT_HEADER)
+                        .build(),
+                PatternLayout.newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setPattern(footerPattern)
+                        .setDefaultPattern(DEFAULT_FOOTER)
+                        .build(),
+                includeNullDelimiter,
+                additionalFields);
     }
 
     @Override
-    protected LogEventWithAdditionalFields createLogEventWithAdditionalFields(final LogEvent event,
-            final Map<String, String> additionalFieldsMap) {
+    protected LogEventWithAdditionalFields createLogEventWithAdditionalFields(
+            final LogEvent event, final Map<String, String> additionalFieldsMap) {
         return new YamlLogEventWithAdditionalFields(event, additionalFieldsMap);
     }
 

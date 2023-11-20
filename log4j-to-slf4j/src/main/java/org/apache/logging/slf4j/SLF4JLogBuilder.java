@@ -216,24 +216,43 @@ public class SLF4JLogBuilder implements LogBuilder {
     }
 
     @Override
-    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7) {
+    public void log(
+            String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
         if (isValid()) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7));
         }
     }
 
     @Override
-    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8) {
+    public void log(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8) {
         if (isValid()) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8));
         }
     }
 
     @Override
-    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8, Object p9) {
+    public void log(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9) {
         if (isValid()) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
         }
@@ -245,5 +264,4 @@ public class SLF4JLogBuilder implements LogBuilder {
             logMessage(EMPTY_MESSAGE);
         }
     }
-
 }

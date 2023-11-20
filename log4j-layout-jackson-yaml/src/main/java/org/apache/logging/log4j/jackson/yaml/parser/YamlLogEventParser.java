@@ -28,5 +28,4 @@ public class YamlLogEventParser extends AbstractJacksonLogEventParser {
     public YamlLogEventParser() {
         super(new Log4jYamlObjectMapper());
     }
-
 }

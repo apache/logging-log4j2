@@ -44,5 +44,4 @@ public class Log4jXmlObjectMapper extends XmlMapper {
         super(new Log4jXmlModule(includeStacktrace, stacktraceAsString));
         this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
-
 }

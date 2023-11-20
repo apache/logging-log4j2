@@ -97,7 +97,6 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
             position += maxLength;
             truncated = true;
         }
-
     }
 
     @Override
@@ -120,7 +119,6 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
             position += maxLength;
             truncated = true;
         }
-
     }
 
     @Override
@@ -148,7 +146,6 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
             position += maxLength;
             truncated = true;
         }
-
     }
 
     @Override
@@ -159,9 +156,7 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
 
     @Override
     public Writer append(final CharSequence seq) {
-        return seq == null
-                ? append("null", 0, 4)
-                : append(seq, 0, seq.length());
+        return seq == null ? append("null", 0, 4) : append(seq, 0, seq.length());
     }
 
     @Override
@@ -201,7 +196,6 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
             truncated = true;
         }
         return this;
-
     }
 
     @Override
@@ -245,5 +239,4 @@ final class TruncatingBufferedWriter extends Writer implements CharSequence {
     public String toString() {
         return new String(buffer, 0, position);
     }
-
 }

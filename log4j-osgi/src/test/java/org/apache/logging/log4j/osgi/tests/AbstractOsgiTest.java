@@ -52,5 +52,4 @@ public abstract class AbstractOsgiTest {
     }
 
     protected abstract FrameworkFactory getFactory();
-
 }

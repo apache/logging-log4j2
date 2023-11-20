@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -83,14 +82,22 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             final Layout layout = getOrCreateLayout();
             final Configuration configuration = getConfiguration();
             final LoggerContext loggerContext = configuration.getLoggerContext();
-            final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(fileName, append, isImmediateFlush(),
-                    actualRegionLength, advertiseURI, layout, loggerContext);
+            final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(
+                    fileName, append, isImmediateFlush(), actualRegionLength, advertiseURI, layout, loggerContext);
             if (manager == null) {
                 return null;
             }
 
-            return new MemoryMappedFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(), false,
-                    advertise ? configuration.getAdvertiser() : null, getPropertyArray());
+            return new MemoryMappedFileAppender(
+                    name,
+                    layout,
+                    getFilter(),
+                    manager,
+                    fileName,
+                    isIgnoreExceptions(),
+                    false,
+                    advertise ? configuration.getAdvertiser() : null,
+                    getPropertyArray());
         }
 
         public B setFileName(final String fileName) {
@@ -117,7 +124,6 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
-
     }
 
     private static final int BIT_POSITION_1GB = 30; // 2^30 ~= 1GB
@@ -128,9 +134,16 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private MemoryMappedFileAppender(final String name, final Layout layout,
-            final Filter filter, final MemoryMappedFileManager manager, final String filename,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
+    private MemoryMappedFileAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final MemoryMappedFileManager manager,
+            final String filename,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final Advertiser advertiser,
+            final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
@@ -182,19 +195,28 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      */
     private static int determineValidRegionLength(final String name, final int regionLength) {
         if (regionLength > MAX_REGION_LENGTH) {
-            LOGGER.info("MemoryMappedAppender[{}] Reduced region length from {} to max length: {}", name, regionLength,
+            LOGGER.info(
+                    "MemoryMappedAppender[{}] Reduced region length from {} to max length: {}",
+                    name,
+                    regionLength,
                     MAX_REGION_LENGTH);
             return MAX_REGION_LENGTH;
         }
         if (regionLength < MIN_REGION_LENGTH) {
-            LOGGER.info("MemoryMappedAppender[{}] Expanded region length from {} to min length: {}", name, regionLength,
+            LOGGER.info(
+                    "MemoryMappedAppender[{}] Expanded region length from {} to min length: {}",
+                    name,
+                    regionLength,
                     MIN_REGION_LENGTH);
             return MIN_REGION_LENGTH;
         }
         final int result = Integers.ceilingNextPowerOfTwo(regionLength);
         if (regionLength != result) {
-            LOGGER.info("MemoryMappedAppender[{}] Rounded up region length from {} to next power of two: {}", name,
-                    regionLength, result);
+            LOGGER.info(
+                    "MemoryMappedAppender[{}] Rounded up region length from {} to next power of two: {}",
+                    name,
+                    regionLength,
+                    result);
         }
         return result;
     }

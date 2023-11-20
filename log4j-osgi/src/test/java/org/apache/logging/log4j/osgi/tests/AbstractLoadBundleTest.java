@@ -19,12 +19,10 @@ package org.apache.logging.log4j.osgi.tests;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-
 
 /**
  * Tests a basic Log4J 'setup' in an OSGi container.
@@ -92,21 +90,24 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         return oldStream;
     }
 
-    private void start(final Bundle api, final Bundle plugins, final Bundle core, final Bundle dummy) throws BundleException {
+    private void start(final Bundle api, final Bundle plugins, final Bundle core, final Bundle dummy)
+            throws BundleException {
         api.start();
         plugins.start();
         core.start();
         dummy.start();
     }
 
-    private void stop(final Bundle api, final Bundle plugins, final Bundle core, final Bundle dummy) throws BundleException {
+    private void stop(final Bundle api, final Bundle plugins, final Bundle core, final Bundle dummy)
+            throws BundleException {
         dummy.stop();
         core.stop();
         plugins.stop();
         api.stop();
     }
 
-    private void uninstall(final Bundle api, final Bundle plugins, final Bundle core, final Bundle dummy) throws BundleException {
+    private void uninstall(final Bundle api, final Bundle plugins, final Bundle core, final Bundle dummy)
+            throws BundleException {
         dummy.uninstall();
         core.uninstall();
         plugins.uninstall();
@@ -183,17 +184,20 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         // fails if LOG4J2-1637 is not fixed
         try {
             core.start();
-        }
-        catch (final BundleException ex) {
+        } catch (final BundleException ex) {
             boolean shouldRethrow = true;
             final Throwable t = ex.getCause();
             if (t != null) {
                 final Throwable t2 = t.getCause();
                 if (t2 != null) {
                     final String cause = t2.toString();
-                    final boolean result = cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger") // Equinox
-                                  || cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger not found by org.apache.logging.log4j.core [2]"); // Felix
-                    Assert.assertFalse("org.apache.logging.log4j package is not properly imported in org.apache.logging.log4j.core bundle, check that the package is exported from api and is not split between api and core", result);
+                    final boolean result =
+                            cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger") // Equinox
+                                    || cause.equals(
+                                            "java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger not found by org.apache.logging.log4j.core [2]"); // Felix
+                    Assert.assertFalse(
+                            "org.apache.logging.log4j package is not properly imported in org.apache.logging.log4j.core bundle, check that the package is exported from api and is not split between api and core",
+                            result);
                     shouldRethrow = !result;
                 }
             }
@@ -231,13 +235,18 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
         final Class<?> levelClassFromAPI = core.loadClass("org.apache.logging.log4j.Level");
 
-        Assert.assertEquals("expected 1.2 API Level to have the same class loader as Core", levelClassFrom12API.getClassLoader(), coreClassFromCore.getClassLoader());
-        Assert.assertNotEquals("expected 1.2 API Level NOT to have the same class loader as API Level", levelClassFrom12API.getClassLoader(), levelClassFromAPI.getClassLoader());
+        Assert.assertEquals(
+                "expected 1.2 API Level to have the same class loader as Core",
+                levelClassFrom12API.getClassLoader(),
+                coreClassFromCore.getClassLoader());
+        Assert.assertNotEquals(
+                "expected 1.2 API Level NOT to have the same class loader as API Level",
+                levelClassFrom12API.getClassLoader(),
+                levelClassFromAPI.getClassLoader());
 
         core.stop();
         api.stop();
 
         uninstall(api, plugins, core, compat);
     }
-
 }

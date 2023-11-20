@@ -35,5 +35,4 @@ import java.lang.annotation.Target;
 @Inherited
 @UsingThreadContextMap
 @UsingThreadContextStack
-public @interface UsingAnyThreadContext {
-}
+public @interface UsingAnyThreadContext {}

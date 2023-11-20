@@ -76,9 +76,8 @@ public final class ClockFactory {
     @ConditionalOnMissingBinding
     @SingletonFactory
     public Clock clock(
-            final PropertyEnvironment environment,
-            final InstanceFactory instanceFactory,
-            final ClassLoader classLoader) throws ClassNotFoundException {
+            final PropertyEnvironment environment, final InstanceFactory instanceFactory, final ClassLoader classLoader)
+            throws ClassNotFoundException {
         final String customClock = environment.getStringProperty(Log4jPropertyKey.CONFIG_CLOCK);
         if (customClock == null) {
             return logSupportedPrecision(new SystemClock());
@@ -99,7 +98,8 @@ public final class ClockFactory {
                 return logSupportedPrecision(CoarseCachedClock.instance());
 
             default:
-                final Class<? extends Clock> clockClass = classLoader.loadClass(customClock).asSubclass(Clock.class);
+                final Class<? extends Clock> clockClass =
+                        classLoader.loadClass(customClock).asSubclass(Clock.class);
                 return logSupportedPrecision(instanceFactory.getInstance(clockClass));
         }
     }

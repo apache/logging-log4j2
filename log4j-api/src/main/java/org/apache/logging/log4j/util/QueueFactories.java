@@ -20,7 +20,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
-
 import org.jctools.queues.MpmcArrayQueue;
 import org.jctools.queues.MpscArrayQueue;
 import org.jctools.queues.SpmcArrayQueue;
@@ -106,8 +105,8 @@ public enum QueueFactories {
             }
             return new ProxyQueueFactory(queueFactory, capacity);
         } catch (final ReflectiveOperationException | LinkageError | SecurityException error) {
-            final String message = String.format(
-                    "failed to create the queue factory using the supplier path `%s`", supplierPath);
+            final String message =
+                    String.format("failed to create the queue factory using the supplier path `%s`", supplierPath);
             throw new RuntimeException(message, error);
         }
     }
@@ -127,14 +126,12 @@ public enum QueueFactories {
         public <E> Queue<E> create() {
             return factory.create(capacity);
         }
-
     }
 
     @FunctionalInterface
     private interface BoundedQueueFactory {
 
         <E> Queue<E> create(final int capacity);
-
     }
 
     private static final class ArrayBlockingQueueFactory implements BoundedQueueFactory {
@@ -147,11 +144,9 @@ public enum QueueFactories {
         public <E> Queue<E> create(final int capacity) {
             return new ArrayBlockingQueue<>(capacity);
         }
-
     }
 
     private enum JCToolsQueueFactory implements BoundedQueueFactory {
-
         SPSC {
             @Override
             public <E> Queue<E> create(final int capacity) {
@@ -189,7 +184,6 @@ public enum QueueFactories {
                 return ArrayBlockingQueueFactory.INSTANCE;
             }
         }
-
     }
 
     private static final class ConstructorProvidedQueueFactory implements BoundedQueueFactory {
@@ -209,7 +203,6 @@ public enum QueueFactories {
                 throw new RuntimeException("queue construction failure", error);
             }
         }
-
     }
 
     private static final class StaticMethodProvidedQueueFactory implements BoundedQueueFactory {
@@ -228,7 +221,5 @@ public enum QueueFactories {
                 throw new RuntimeException("queue construction failure", error);
             }
         }
-
     }
-
 }

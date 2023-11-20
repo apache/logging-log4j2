@@ -21,7 +21,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -42,8 +41,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin
 public class JsonTemplateLayout implements StringLayout {
 
-    private static final Map<String, String> CONTENT_FORMAT =
-            Collections.singletonMap("version", "1");
+    private static final Map<String, String> CONTENT_FORMAT = Collections.singletonMap("version", "1");
 
     private final Charset charset;
 
@@ -61,9 +59,7 @@ public class JsonTemplateLayout implements StringLayout {
 
         final Encoder<StringBuilder> encoder;
 
-        private Context(
-                final JsonWriter jsonWriter,
-                final Encoder<StringBuilder> encoder) {
+        private Context(final JsonWriter jsonWriter, final Encoder<StringBuilder> encoder) {
             this.jsonWriter = jsonWriter;
             this.encoder = encoder;
         }
@@ -72,7 +68,6 @@ public class JsonTemplateLayout implements StringLayout {
         public void close() {
             jsonWriter.close();
         }
-
     }
 
     private JsonTemplateLayout(final Builder builder) {
@@ -81,8 +76,7 @@ public class JsonTemplateLayout implements StringLayout {
         final String eventDelimiterSuffix = builder.isNullEventDelimiterEnabled() ? "\0" : "";
         this.eventDelimiter = builder.eventDelimiter + eventDelimiterSuffix;
         final Configuration configuration = builder.configuration;
-        final JsonWriter jsonWriter = JsonWriter
-                .newBuilder()
+        final JsonWriter jsonWriter = JsonWriter.newBuilder()
                 .setMaxStringLength(builder.maxStringLength)
                 .setTruncatedStringSuffix(builder.truncatedStringSuffix)
                 .build();
@@ -99,14 +93,17 @@ public class JsonTemplateLayout implements StringLayout {
         // Inject resolver factory and interceptor plugins.
         final List<EventResolverFactory> resolverFactories =
                 configuration.getComponent(new @Namespace(EventResolverFactory.CATEGORY) Key<>() {});
-        final Map<String, EventResolverFactory> resolverFactoryByName =
-                resolverFactories.stream().collect(
-                        Collectors.toMap(EventResolverFactory::getName, Function.identity(), (factory, conflictingFactory) -> {
+        final Map<String, EventResolverFactory> resolverFactoryByName = resolverFactories.stream()
+                .collect(Collectors.toMap(
+                        EventResolverFactory::getName,
+                        Function.identity(),
+                        (factory, conflictingFactory) -> {
                             final String message = String.format(
                                     "found resolver factories with overlapping names: %s (%s and %s)",
                                     factory.getName(), conflictingFactory, factory);
                             throw new IllegalArgumentException(message);
-                        }, LinkedHashMap::new));
+                        },
+                        LinkedHashMap::new));
         final List<EventResolverInterceptor> resolverInterceptors =
                 configuration.getComponent(new @Namespace(EventResolverInterceptor.CATEGORY) Key<>() {});
         final EventResolverStringSubstitutor substitutor =
@@ -119,8 +116,7 @@ public class JsonTemplateLayout implements StringLayout {
         // Determine the max. string byte count.
         final float maxByteCountPerChar = builder.charset.newEncoder().maxBytesPerChar();
         final int maxStringByteCount =
-                Math.toIntExact(Math.round(Math.ceil(
-                        maxByteCountPerChar * builder.maxStringLength)));
+                Math.toIntExact(Math.round(Math.ceil(maxByteCountPerChar * builder.maxStringLength)));
 
         // Replace null event template additional fields with an empty array.
         final EventTemplateAdditionalField[] eventTemplateAdditionalFields =
@@ -129,8 +125,7 @@ public class JsonTemplateLayout implements StringLayout {
                         : new EventTemplateAdditionalField[0];
 
         // Create the resolver context.
-        final EventResolverContext resolverContext = EventResolverContext
-                .newBuilder()
+        final EventResolverContext resolverContext = EventResolverContext.newBuilder()
                 .setConfiguration(configuration)
                 .setResolverFactoryByName(resolverFactoryByName)
                 .setResolverInterceptors(resolverInterceptors)
@@ -148,30 +143,18 @@ public class JsonTemplateLayout implements StringLayout {
 
         // Compile the resolver template.
         return TemplateResolvers.ofTemplate(resolverContext, eventTemplate);
-
     }
 
     private static String readEventTemplate(final Builder builder) {
-        return readTemplate(
-                builder.eventTemplate,
-                builder.eventTemplateUri,
-                builder.charset);
+        return readTemplate(builder.eventTemplate, builder.eventTemplateUri, builder.charset);
     }
 
     private static String readStackTraceElementTemplate(final Builder builder) {
-        return readTemplate(
-                builder.stackTraceElementTemplate,
-                builder.stackTraceElementTemplateUri,
-                builder.charset);
+        return readTemplate(builder.stackTraceElementTemplate, builder.stackTraceElementTemplateUri, builder.charset);
     }
 
-    private static String readTemplate(
-            final String template,
-            final String templateUri,
-            final Charset charset) {
-        return Strings.isBlank(template)
-                ? Uris.readUri(templateUri, charset)
-                : template;
+    private static String readTemplate(final String template, final String templateUri, final Charset charset) {
+        return Strings.isBlank(template) ? Uris.readUri(templateUri, charset) : template;
     }
 
     private static Recycler<Context> createContextRecycler(final Builder builder, final JsonWriter jsonWriter) {
@@ -179,9 +162,7 @@ public class JsonTemplateLayout implements StringLayout {
         return builder.configuration.getRecyclerFactory().create(supplier, Context::close);
     }
 
-    private static Supplier<Context> createContextSupplier(
-            final Charset charset,
-            final JsonWriter jsonWriter) {
+    private static Supplier<Context> createContextSupplier(final Charset charset, final JsonWriter jsonWriter) {
         return () -> {
             final JsonWriter clonedJsonWriter = jsonWriter.clone();
             final Encoder<StringBuilder> encoder = new StringBuilderEncoder(charset);
@@ -218,7 +199,6 @@ public class JsonTemplateLayout implements StringLayout {
         finally {
             contextRecycler.release(context);
         }
-
     }
 
     @Override
@@ -242,7 +222,6 @@ public class JsonTemplateLayout implements StringLayout {
         finally {
             contextRecycler.release(context);
         }
-
     }
 
     @Override
@@ -277,8 +256,7 @@ public class JsonTemplateLayout implements StringLayout {
     }
 
     @SuppressWarnings({"unused", "WeakerAccess"})
-    public static final class Builder
-            implements org.apache.logging.log4j.plugins.util.Builder<JsonTemplateLayout> {
+    public static final class Builder implements org.apache.logging.log4j.plugins.util.Builder<JsonTemplateLayout> {
 
         @PluginConfiguration
         private Configuration configuration;
@@ -287,48 +265,40 @@ public class JsonTemplateLayout implements StringLayout {
         private Charset charset = JsonTemplateLayoutDefaults.getCharset();
 
         @PluginBuilderAttribute
-        private boolean locationInfoEnabled =
-                JsonTemplateLayoutDefaults.isLocationInfoEnabled();
+        private boolean locationInfoEnabled = JsonTemplateLayoutDefaults.isLocationInfoEnabled();
 
         @PluginBuilderAttribute
-        private boolean stackTraceEnabled =
-                JsonTemplateLayoutDefaults.isStackTraceEnabled();
+        private boolean stackTraceEnabled = JsonTemplateLayoutDefaults.isStackTraceEnabled();
 
         @PluginBuilderAttribute
         private String eventTemplate = JsonTemplateLayoutDefaults.getEventTemplate();
 
         @PluginBuilderAttribute
-        private String eventTemplateUri =
-                JsonTemplateLayoutDefaults.getEventTemplateUri();
+        private String eventTemplateUri = JsonTemplateLayoutDefaults.getEventTemplateUri();
 
         @PluginBuilderAttribute
-        private String eventTemplateRootObjectKey =
-                JsonTemplateLayoutDefaults.getEventTemplateRootObjectKey();
+        private String eventTemplateRootObjectKey = JsonTemplateLayoutDefaults.getEventTemplateRootObjectKey();
 
         @PluginElement("EventTemplateAdditionalField")
         private EventTemplateAdditionalField[] eventTemplateAdditionalFields;
 
         @PluginBuilderAttribute
-        private String stackTraceElementTemplate =
-                JsonTemplateLayoutDefaults.getStackTraceElementTemplate();
+        private String stackTraceElementTemplate = JsonTemplateLayoutDefaults.getStackTraceElementTemplate();
 
         @PluginBuilderAttribute
-        private String stackTraceElementTemplateUri =
-                JsonTemplateLayoutDefaults.getStackTraceElementTemplateUri();
+        private String stackTraceElementTemplateUri = JsonTemplateLayoutDefaults.getStackTraceElementTemplateUri();
 
         @PluginBuilderAttribute
         private String eventDelimiter = JsonTemplateLayoutDefaults.getEventDelimiter();
 
         @PluginBuilderAttribute
-        private boolean nullEventDelimiterEnabled =
-                JsonTemplateLayoutDefaults.isNullEventDelimiterEnabled();
+        private boolean nullEventDelimiterEnabled = JsonTemplateLayoutDefaults.isNullEventDelimiterEnabled();
 
         @PluginBuilderAttribute
         private int maxStringLength = JsonTemplateLayoutDefaults.getMaxStringLength();
 
         @PluginBuilderAttribute
-        private String truncatedStringSuffix =
-                JsonTemplateLayoutDefaults.getTruncatedStringSuffix();
+        private String truncatedStringSuffix = JsonTemplateLayoutDefaults.getTruncatedStringSuffix();
 
         private Builder() {
             // Do nothing.
@@ -411,8 +381,7 @@ public class JsonTemplateLayout implements StringLayout {
             return stackTraceElementTemplate;
         }
 
-        public Builder setStackTraceElementTemplate(
-                final String stackTraceElementTemplate) {
+        public Builder setStackTraceElementTemplate(final String stackTraceElementTemplate) {
             this.stackTraceElementTemplate = stackTraceElementTemplate;
             return this;
         }
@@ -421,8 +390,7 @@ public class JsonTemplateLayout implements StringLayout {
             return stackTraceElementTemplateUri;
         }
 
-        public Builder setStackTraceElementTemplateUri(
-                final String stackTraceElementTemplateUri) {
+        public Builder setStackTraceElementTemplateUri(final String stackTraceElementTemplateUri) {
             this.stackTraceElementTemplateUri = stackTraceElementTemplateUri;
             return this;
         }
@@ -440,8 +408,7 @@ public class JsonTemplateLayout implements StringLayout {
             return nullEventDelimiterEnabled;
         }
 
-        public Builder setNullEventDelimiterEnabled(
-                final boolean nullEventDelimiterEnabled) {
+        public Builder setNullEventDelimiterEnabled(final boolean nullEventDelimiterEnabled) {
             this.nullEventDelimiterEnabled = nullEventDelimiterEnabled;
             return this;
         }
@@ -473,30 +440,30 @@ public class JsonTemplateLayout implements StringLayout {
         private void validate() {
             Objects.requireNonNull(configuration, "configuration");
             if (Strings.isBlank(eventTemplate) && Strings.isBlank(eventTemplateUri)) {
-                    throw new IllegalArgumentException(
-                            "both eventTemplate and eventTemplateUri are blank");
+                throw new IllegalArgumentException("both eventTemplate and eventTemplateUri are blank");
             }
-            if (stackTraceEnabled &&
-                    Strings.isBlank(stackTraceElementTemplate)
+            if (stackTraceEnabled
+                    && Strings.isBlank(stackTraceElementTemplate)
                     && Strings.isBlank(stackTraceElementTemplateUri)) {
                 throw new IllegalArgumentException(
                         "both stackTraceElementTemplate and stackTraceElementTemplateUri are blank");
             }
             if (maxStringLength <= 0) {
                 throw new IllegalArgumentException(
-                        "was expecting a non-zero positive maxStringLength: " +
-                                maxStringLength);
+                        "was expecting a non-zero positive maxStringLength: " + maxStringLength);
             }
             Objects.requireNonNull(truncatedStringSuffix, "truncatedStringSuffix");
         }
-
     }
 
     @Configurable(printObject = true)
     @Plugin("EventTemplateAdditionalField")
     public static final class EventTemplateAdditionalField {
 
-        public enum Format { STRING, JSON }
+        public enum Format {
+            STRING,
+            JSON
+        }
 
         private final String key;
 
@@ -531,9 +498,7 @@ public class JsonTemplateLayout implements StringLayout {
                 return false;
             }
             final EventTemplateAdditionalField that = (EventTemplateAdditionalField) object;
-            return key.equals(that.key) &&
-                    value.equals(that.value) &&
-                    format == that.format;
+            return key.equals(that.key) && value.equals(that.value) && format == that.format;
         }
 
         @Override
@@ -543,9 +508,7 @@ public class JsonTemplateLayout implements StringLayout {
 
         @Override
         public String toString() {
-            final String formattedValue = Format.STRING.equals(format)
-                    ? String.format("\"%s\"", value)
-                    : value;
+            final String formattedValue = Format.STRING.equals(format) ? String.format("\"%s\"", value) : value;
             return String.format("%s=%s", key, formattedValue);
         }
 
@@ -596,9 +559,6 @@ public class JsonTemplateLayout implements StringLayout {
                 }
                 Objects.requireNonNull(format, "format");
             }
-
         }
-
     }
-
 }

@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests Bzip2CompressAction.
@@ -35,14 +34,12 @@ public class Bzip2CompressActionTest {
 
     @Test
     public void testConstructorDisallowsNullSource() {
-        assertThrows(NullPointerException.class,
-                () -> new CommonsCompressAction("bzip2", null, new File("any"), true));
+        assertThrows(NullPointerException.class, () -> new CommonsCompressAction("bzip2", null, new File("any"), true));
     }
 
     @Test
     public void testConstructorDisallowsNullDestination() {
-        assertThrows(NullPointerException.class,
-                () -> new CommonsCompressAction("bzip2", new File("any"), null, true));
+        assertThrows(NullPointerException.class, () -> new CommonsCompressAction("bzip2", new File("any"), null, true));
     }
 
     @Test
@@ -75,23 +72,135 @@ public class Bzip2CompressActionTest {
         assertTrue(destination.exists(), "Destination should exist after Bzip2CompressAction");
         assertFalse(source.exists(), "Source should have been deleted");
 
-        final byte[] bz2 = new byte[] { (byte) 0x42, (byte) 0x5A, (byte) 0x68, (byte) 0x39, (byte) 0x31, (byte) 0x41,
-                (byte) 0x59, (byte) 0x26, (byte) 0x53, (byte) 0x59, (byte) 0x9C, (byte) 0xE1, (byte) 0xE8, (byte) 0x2D,
-                (byte) 0x00, (byte) 0x00, (byte) 0x1C, (byte) 0xDF, (byte) 0x80, (byte) 0x00, (byte) 0x12, (byte) 0x40,
-                (byte) 0x01, (byte) 0x38, (byte) 0x10, (byte) 0x3F, (byte) 0xFF, (byte) 0xFF, (byte) 0xF0, (byte) 0x26,
-                (byte) 0x27, (byte) 0x9C, (byte) 0x40, (byte) 0x20, (byte) 0x00, (byte) 0x70, (byte) 0x63, (byte) 0x4D,
-                (byte) 0x06, (byte) 0x80, (byte) 0x19, (byte) 0x34, (byte) 0x06, (byte) 0x46, (byte) 0x9A, (byte) 0x18,
-                (byte) 0x9A, (byte) 0x30, (byte) 0xCF, (byte) 0xFD, (byte) 0x55, (byte) 0x4D, (byte) 0x0D, (byte) 0x06,
-                (byte) 0x9A, (byte) 0x0C, (byte) 0x40, (byte) 0x1A, (byte) 0x1A, (byte) 0x34, (byte) 0x34, (byte) 0xCD,
-                (byte) 0x46, (byte) 0x05, (byte) 0x6B, (byte) 0x19, (byte) 0x92, (byte) 0x23, (byte) 0x5E, (byte) 0xB5,
-                (byte) 0x2E, (byte) 0x79, (byte) 0x65, (byte) 0x41, (byte) 0x81, (byte) 0x33, (byte) 0x4B, (byte) 0x53,
-                (byte) 0x5B, (byte) 0x62, (byte) 0x75, (byte) 0x0A, (byte) 0x14, (byte) 0xB6, (byte) 0xB7, (byte) 0x37,
-                (byte) 0xB8, (byte) 0x38, (byte) 0xB9, (byte) 0x39, (byte) 0xBA, (byte) 0x2A, (byte) 0x4E, (byte) 0xEA,
-                (byte) 0xEC, (byte) 0xEE, (byte) 0xAD, (byte) 0xE1, (byte) 0xE5, (byte) 0x63, (byte) 0xD3, (byte) 0x22,
-                (byte) 0xE8, (byte) 0x90, (byte) 0x52, (byte) 0xA9, (byte) 0x7A, (byte) 0x68, (byte) 0x90, (byte) 0x5C,
-                (byte) 0x82, (byte) 0x0B, (byte) 0x51, (byte) 0xBF, (byte) 0x24, (byte) 0x61, (byte) 0x7F, (byte) 0x17,
-                (byte) 0x72, (byte) 0x45, (byte) 0x38, (byte) 0x50, (byte) 0x90, (byte) 0x9C, (byte) 0xE1, (byte) 0xE8,
-                (byte) 0x2D };
+        final byte[] bz2 = new byte[] {
+            (byte) 0x42,
+            (byte) 0x5A,
+            (byte) 0x68,
+            (byte) 0x39,
+            (byte) 0x31,
+            (byte) 0x41,
+            (byte) 0x59,
+            (byte) 0x26,
+            (byte) 0x53,
+            (byte) 0x59,
+            (byte) 0x9C,
+            (byte) 0xE1,
+            (byte) 0xE8,
+            (byte) 0x2D,
+            (byte) 0x00,
+            (byte) 0x00,
+            (byte) 0x1C,
+            (byte) 0xDF,
+            (byte) 0x80,
+            (byte) 0x00,
+            (byte) 0x12,
+            (byte) 0x40,
+            (byte) 0x01,
+            (byte) 0x38,
+            (byte) 0x10,
+            (byte) 0x3F,
+            (byte) 0xFF,
+            (byte) 0xFF,
+            (byte) 0xF0,
+            (byte) 0x26,
+            (byte) 0x27,
+            (byte) 0x9C,
+            (byte) 0x40,
+            (byte) 0x20,
+            (byte) 0x00,
+            (byte) 0x70,
+            (byte) 0x63,
+            (byte) 0x4D,
+            (byte) 0x06,
+            (byte) 0x80,
+            (byte) 0x19,
+            (byte) 0x34,
+            (byte) 0x06,
+            (byte) 0x46,
+            (byte) 0x9A,
+            (byte) 0x18,
+            (byte) 0x9A,
+            (byte) 0x30,
+            (byte) 0xCF,
+            (byte) 0xFD,
+            (byte) 0x55,
+            (byte) 0x4D,
+            (byte) 0x0D,
+            (byte) 0x06,
+            (byte) 0x9A,
+            (byte) 0x0C,
+            (byte) 0x40,
+            (byte) 0x1A,
+            (byte) 0x1A,
+            (byte) 0x34,
+            (byte) 0x34,
+            (byte) 0xCD,
+            (byte) 0x46,
+            (byte) 0x05,
+            (byte) 0x6B,
+            (byte) 0x19,
+            (byte) 0x92,
+            (byte) 0x23,
+            (byte) 0x5E,
+            (byte) 0xB5,
+            (byte) 0x2E,
+            (byte) 0x79,
+            (byte) 0x65,
+            (byte) 0x41,
+            (byte) 0x81,
+            (byte) 0x33,
+            (byte) 0x4B,
+            (byte) 0x53,
+            (byte) 0x5B,
+            (byte) 0x62,
+            (byte) 0x75,
+            (byte) 0x0A,
+            (byte) 0x14,
+            (byte) 0xB6,
+            (byte) 0xB7,
+            (byte) 0x37,
+            (byte) 0xB8,
+            (byte) 0x38,
+            (byte) 0xB9,
+            (byte) 0x39,
+            (byte) 0xBA,
+            (byte) 0x2A,
+            (byte) 0x4E,
+            (byte) 0xEA,
+            (byte) 0xEC,
+            (byte) 0xEE,
+            (byte) 0xAD,
+            (byte) 0xE1,
+            (byte) 0xE5,
+            (byte) 0x63,
+            (byte) 0xD3,
+            (byte) 0x22,
+            (byte) 0xE8,
+            (byte) 0x90,
+            (byte) 0x52,
+            (byte) 0xA9,
+            (byte) 0x7A,
+            (byte) 0x68,
+            (byte) 0x90,
+            (byte) 0x5C,
+            (byte) 0x82,
+            (byte) 0x0B,
+            (byte) 0x51,
+            (byte) 0xBF,
+            (byte) 0x24,
+            (byte) 0x61,
+            (byte) 0x7F,
+            (byte) 0x17,
+            (byte) 0x72,
+            (byte) 0x45,
+            (byte) 0x38,
+            (byte) 0x50,
+            (byte) 0x90,
+            (byte) 0x9C,
+            (byte) 0xE1,
+            (byte) 0xE8,
+            (byte) 0x2D
+        };
         assertEquals(bz2.length, destination.length());
 
         // check the compressed contents

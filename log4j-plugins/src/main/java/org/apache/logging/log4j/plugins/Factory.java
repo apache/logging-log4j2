@@ -44,5 +44,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @FactoryType
-public @interface Factory {
-}
+public @interface Factory {}

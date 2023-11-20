@@ -21,7 +21,4 @@ import org.apache.logging.log4j.core.LogEvent;
 /**
  * {@link TemplateResolverInterceptor} specialized for {@link LogEvent}s.
  */
-public interface EventResolverInterceptor
-        extends TemplateResolverInterceptor<LogEvent, EventResolverContext> {
-
-}
+public interface EventResolverInterceptor extends TemplateResolverInterceptor<LogEvent, EventResolverContext> {}

@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.gctests;
 
+import static java.lang.System.getProperty;
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+import static org.apache.logging.log4j.util.Constants.isWebApp;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
+import com.google.monitoring.runtime.instrumentation.Sampler;
 import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -26,9 +35,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
-import com.google.monitoring.runtime.instrumentation.Sampler;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
@@ -39,22 +45,13 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 
-import static java.lang.System.getProperty;
-
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
-import static org.apache.logging.log4j.util.Constants.isWebApp;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 /**
  * Utility methods for the GC-free logging tests.
  */
 public enum GcFreeLoggingTestUtil {
     ;
 
-    public static void executeLogging(final String configurationFile,
-                                      final Class<?> testClass) throws Exception {
+    public static void executeLogging(final String configurationFile, final Class<?> testClass) throws Exception {
 
         System.setProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE.getSystemKey(), "true");
         System.setProperty(Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS.getSystemKey(), "true");
@@ -91,8 +88,8 @@ public enum GcFreeLoggingTestUtil {
 
         // BlockingWaitStrategy uses ReentrantLock which allocates Node objects. Ignore this.
         final String[] exclude = new String[] {
-                "java/util/concurrent/locks/AbstractQueuedSynchronizer$Node", //
-                "com/google/monitoring/runtime/instrumentation/Sampler"
+            "java/util/concurrent/locks/AbstractQueuedSynchronizer$Node", //
+            "com/google/monitoring/runtime/instrumentation/Sampler"
         };
         final AtomicBoolean samplingEnabled = new AtomicBoolean(true);
         final Sampler sampler = (count, desc, newObj, size) -> {
@@ -104,8 +101,7 @@ public enum GcFreeLoggingTestUtil {
                     return; // exclude
                 }
             }
-            System.err.println("I just allocated the object " + newObj +
-                    " of type " + desc + " whose size is " + size);
+            System.err.println("I just allocated the object " + newObj + " of type " + desc + " whose size is " + size);
             if (count != -1) {
                 System.err.println("It's an array of size " + count);
             }
@@ -224,12 +220,12 @@ public enum GcFreeLoggingTestUtil {
         final String usePreciseClock = System.getProperty(Log4jPropertyKey.USE_PRECISE_CLOCK.getSystemKey());
 
         final File tempFile = File.createTempFile("allocations", ".txt");
-        //tempFile.deleteOnExit();
+        // tempFile.deleteOnExit();
         final List<String> command = new ArrayList<>();
         command.add(javaBin);
         command.add(javaagent);
         if (usePreciseClock != null) {
-            command.add("-D" + Log4jPropertyKey.USE_PRECISE_CLOCK.getSystemKey()  + "=" + usePreciseClock);
+            command.add("-D" + Log4jPropertyKey.USE_PRECISE_CLOCK.getSystemKey() + "=" + usePreciseClock);
         }
         command.add("-cp");
         command.add(classpath);
@@ -243,19 +239,21 @@ public enum GcFreeLoggingTestUtil {
 
         final AtomicInteger lineCounter = new AtomicInteger(0);
         try (final Stream<String> lines = Files.lines(tempFile.toPath(), Charset.defaultCharset())) {
-            final Pattern pattern = Pattern.compile(String.format("^FATAL .*\\.%s [main].*",
-                    Pattern.quote(cls.getSimpleName())));
+            final Pattern pattern =
+                    Pattern.compile(String.format("^FATAL .*\\.%s [main].*", Pattern.quote(cls.getSimpleName())));
             assertThat(lines.flatMap(l -> {
-                final int lineNumber = lineCounter.incrementAndGet();
-                final String line = l.trim();
-                return pattern.matcher(line).matches() ? Stream.of(lineNumber + ": " + line) : Stream.empty();
-            })).isEmpty();
+                        final int lineNumber = lineCounter.incrementAndGet();
+                        final String line = l.trim();
+                        return pattern.matcher(line).matches() ? Stream.of(lineNumber + ": " + line) : Stream.empty();
+                    }))
+                    .isEmpty();
         }
     }
 
     private static File agentJar() throws Exception {
         final String name = AllocationRecorder.class.getName();
-        final URL url = AllocationRecorder.class.getResource("/" + name.replace('.', '/').concat(".class"));
+        final URL url = AllocationRecorder.class.getResource(
+                "/" + name.replace('.', '/').concat(".class"));
         if (url == null) {
             throw new IllegalStateException("Could not find url for " + name);
         }

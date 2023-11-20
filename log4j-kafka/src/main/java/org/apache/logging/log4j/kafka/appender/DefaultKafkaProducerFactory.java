@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.kafka.appender;
 
 import java.util.Properties;
-
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 
@@ -38,5 +37,4 @@ public class DefaultKafkaProducerFactory implements KafkaProducerFactory {
     public Producer<byte[], byte[]> newKafkaProducer(final Properties config) {
         return new KafkaProducer<>(config);
     }
-
 }

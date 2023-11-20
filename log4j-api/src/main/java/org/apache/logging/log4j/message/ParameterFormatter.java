@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -62,12 +61,9 @@ final class ParameterFormatter {
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
     private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter
-                    .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-                    .withZone(ZoneId.systemDefault());
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
 
-    private ParameterFormatter() {
-    }
+    private ParameterFormatter() {}
 
     /**
      * Counts the number of unescaped placeholders in the given messagePattern.
@@ -180,8 +176,12 @@ final class ParameterFormatter {
      * @param messagePattern the message pattern containing placeholders.
      * @param arguments      the arguments to be used to replace placeholders.
      */
-    static void formatMessage2(final StringBuilder buffer, final String messagePattern,
-            final Object[] arguments, final int argCount, final int[] indices) {
+    static void formatMessage2(
+            final StringBuilder buffer,
+            final String messagePattern,
+            final Object[] arguments,
+            final int argCount,
+            final int[] indices) {
         if (messagePattern == null || arguments == null || argCount == 0) {
             buffer.append(messagePattern);
             return;
@@ -202,8 +202,13 @@ final class ParameterFormatter {
      * @param messagePattern the message pattern containing placeholders.
      * @param arguments      the arguments to be used to replace placeholders.
      */
-    static void formatMessage3(final StringBuilder buffer, final char[] messagePattern, final int patternLength,
-            final Object[] arguments, final int argCount, final int[] indices) {
+    static void formatMessage3(
+            final StringBuilder buffer,
+            final char[] messagePattern,
+            final int patternLength,
+            final Object[] arguments,
+            final int argCount,
+            final int[] indices) {
         if (messagePattern == null) {
             return;
         }
@@ -227,8 +232,8 @@ final class ParameterFormatter {
      * @param messagePattern the message pattern containing placeholders.
      * @param arguments      the arguments to be used to replace placeholders.
      */
-    static void formatMessage(final StringBuilder buffer, final String messagePattern,
-            final Object[] arguments, final int argCount) {
+    static void formatMessage(
+            final StringBuilder buffer, final String messagePattern, final Object[] arguments, final int argCount) {
         if (messagePattern == null || arguments == null || argCount == 0) {
             buffer.append(messagePattern);
             return;
@@ -281,8 +286,12 @@ final class ParameterFormatter {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void handleRemainingCharIfAny(final String messagePattern, final int len,
-            final StringBuilder buffer, final int escapeCounter, final int i) {
+    private static void handleRemainingCharIfAny(
+            final String messagePattern,
+            final int len,
+            final StringBuilder buffer,
+            final int escapeCounter,
+            final int i) {
         if (i == len - 1) {
             final char curChar = messagePattern.charAt(i);
             handleLastChar(buffer, escapeCounter, curChar);
@@ -364,8 +373,8 @@ final class ParameterFormatter {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 25 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void writeArgOrDelimPair(final Object[] arguments, final int argCount, final int currentArgument,
-            final StringBuilder buffer) {
+    private static void writeArgOrDelimPair(
+            final Object[] arguments, final int argCount, final int currentArgument, final StringBuilder buffer) {
         if (currentArgument < argCount) {
             recursiveDeepToString(arguments[currentArgument], buffer);
         } else {
@@ -502,9 +511,7 @@ final class ParameterFormatter {
     }
 
     private static void appendPotentiallyRecursiveValue(
-            final Object o,
-            final StringBuilder str,
-            final Set<Object> dejaVu) {
+            final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         final Class<?> oClass = o.getClass();
         if (oClass.isArray()) {
             appendArray(o, str, dejaVu, oClass);
@@ -518,10 +525,7 @@ final class ParameterFormatter {
     }
 
     private static void appendArray(
-            final Object o,
-            final StringBuilder str,
-            final Set<Object> dejaVu,
-            final Class<?> oClass) {
+            final Object o, final StringBuilder str, final Set<Object> dejaVu, final Class<?> oClass) {
         if (oClass == byte[].class) {
             str.append(Arrays.toString((byte[]) o));
         } else if (oClass == short[].class) {
@@ -565,10 +569,7 @@ final class ParameterFormatter {
     /**
      * Specialized handler for {@link Map}s.
      */
-    private static void appendMap(
-            final Object o,
-            final StringBuilder str,
-            final Set<Object> dejaVu) {
+    private static void appendMap(final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
         final boolean seen = !effectiveDejaVu.add(o);
         if (seen) {
@@ -598,10 +599,7 @@ final class ParameterFormatter {
     /**
      * Specialized handler for {@link Collection}s.
      */
-    private static void appendCollection(
-            final Object o,
-            final StringBuilder str,
-            final Set<Object> dejaVu) {
+    private static void appendCollection(final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
         final boolean seen = !effectiveDejaVu.add(o);
         if (seen) {
@@ -624,9 +622,7 @@ final class ParameterFormatter {
     }
 
     private static Set<Object> getOrCreateDejaVu(final Set<Object> dejaVu) {
-        return dejaVu == null
-                ? createDejaVu()
-                : dejaVu;
+        return dejaVu == null ? createDejaVu() : dejaVu;
     }
 
     private static Set<Object> createDejaVu() {
@@ -688,5 +684,4 @@ final class ParameterFormatter {
         }
         return obj.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(obj));
     }
-
 }

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
  */
 public class AbstractPluginWithGenericBuilder {
 
-    public static abstract class Builder<B extends Builder<B>> {
+    public abstract static class Builder<B extends Builder<B>> {
 
         @PluginBuilderAttribute
         @Required(message = "The thing given by the builder is null")
@@ -43,7 +43,6 @@ public class AbstractPluginWithGenericBuilder {
             this.thing = name;
             return asBuilder();
         }
-
     }
 
     private final String thing;

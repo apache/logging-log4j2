@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -99,8 +98,17 @@ public final class RoutingAppender extends AbstractAppender {
                     }
                 }
             }
-            return new RoutingAppender(name, getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
-                    getConfiguration(), purgePolicy, defaultRouteScript, getPropertyArray(), requiresLocation);
+            return new RoutingAppender(
+                    name,
+                    getFilter(),
+                    isIgnoreExceptions(),
+                    routes,
+                    rewritePolicy,
+                    getConfiguration(),
+                    purgePolicy,
+                    defaultRouteScript,
+                    getPropertyArray(),
+                    requiresLocation);
         }
 
         public Routes getRoutes() {
@@ -147,7 +155,6 @@ public final class RoutingAppender extends AbstractAppender {
             this.requiresLocation = requiresLocation;
             return asBuilder();
         }
-
     }
 
     @PluginFactory
@@ -161,8 +168,8 @@ public final class RoutingAppender extends AbstractAppender {
     private Route defaultRoute;
     private final Configuration configuration;
     private final ConcurrentMap<String, CreatedRouteAppenderControl> createdAppenders = new ConcurrentHashMap<>();
-    private final Map<String, AppenderControl> createdAppendersUnmodifiableView
-            = Collections.unmodifiableMap(createdAppenders);
+    private final Map<String, AppenderControl> createdAppendersUnmodifiableView =
+            Collections.unmodifiableMap(createdAppenders);
     private final ConcurrentMap<String, RouteAppenderControl> referencedAppenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
     private final PurgePolicy purgePolicy;
@@ -171,9 +178,17 @@ public final class RoutingAppender extends AbstractAppender {
     private final Boolean requiresLocation;
     private final Lock lock = new ReentrantLock();
 
-    private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
-            final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
-            final Script defaultRouteScript, final Property[] properties, final Boolean requiresLocation) {
+    private RoutingAppender(
+            final String name,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final Routes routes,
+            final RewritePolicy rewritePolicy,
+            final Configuration configuration,
+            final PurgePolicy purgePolicy,
+            final Script defaultRouteScript,
+            final Property[] properties,
+            final Boolean requiresLocation) {
         super(name, filter, null, ignoreExceptions, properties);
         this.routes = routes;
         this.configuration = configuration;
@@ -234,7 +249,6 @@ public final class RoutingAppender extends AbstractAppender {
         return requiresLocation != null ? requiresLocation : false;
     }
 
-
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
@@ -254,8 +268,9 @@ public final class RoutingAppender extends AbstractAppender {
             event = rewritePolicy.rewrite(event);
         }
         final String pattern = routes.getPattern(event, scriptStaticVariables);
-        final String key = pattern != null ? configuration.getStrSubstitutor().replace(event, pattern) :
-                defaultRoute.getKey() != null ? defaultRoute.getKey() : DEFAULT_KEY;
+        final String key = pattern != null
+                ? configuration.getStrSubstitutor().replace(event, pattern)
+                : defaultRoute.getKey() != null ? defaultRoute.getKey() : DEFAULT_KEY;
         final RouteAppenderControl control;
         lock.lock();
         try {
@@ -379,8 +394,10 @@ public final class RoutingAppender extends AbstractAppender {
             control.tryStopAppender();
         } else {
             if (referencedAppenders.containsKey(key)) {
-                LOGGER.debug("Route {} using an appender reference may not be removed because " +
-                        "the appender may be used outside of the RoutingAppender", key);
+                LOGGER.debug(
+                        "Route {} using an appender reference may not be removed because "
+                                + "the appender may be used outside of the RoutingAppender",
+                        key);
             } else {
                 LOGGER.debug("Route with {} key already deleted", key);
             }
@@ -428,7 +445,7 @@ public final class RoutingAppender extends AbstractAppender {
      *   to remove an appender that doesn't exist yet. It's counterintuitive to get an event that a route has been
      *   used at a point when we expect the route doesn't exist in {@link #getAppenders()}.
      */
-    private static abstract class RouteAppenderControl extends AppenderControl {
+    private abstract static class RouteAppenderControl extends AppenderControl {
 
         RouteAppenderControl(final Appender appender) {
             super(appender, null, null);
@@ -451,8 +468,8 @@ public final class RoutingAppender extends AbstractAppender {
         @Override
         void checkout() {
             if (pendingDeletion) {
-                LOGGER.warn("CreatedRouteAppenderControl.checkout invoked on a " +
-                        "RouteAppenderControl that is pending deletion");
+                LOGGER.warn("CreatedRouteAppenderControl.checkout invoked on a "
+                        + "RouteAppenderControl that is pending deletion");
             }
             depth.incrementAndGet();
         }

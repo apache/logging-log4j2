@@ -77,8 +77,7 @@ final class DynamicWordAbbreviator extends NameAbbreviator {
                     destination.append(".");
                 }
             } else if (words[i].length() > 0) {
-                destination.append(words[i].charAt(0))
-                        .append(".");
+                destination.append(words[i].charAt(0)).append(".");
             }
         }
     }
@@ -114,5 +113,4 @@ final class DynamicWordAbbreviator extends NameAbbreviator {
 
         return tokens;
     }
-
 }

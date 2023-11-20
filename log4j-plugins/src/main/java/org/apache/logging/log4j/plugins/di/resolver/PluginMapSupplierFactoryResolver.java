@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.model.PluginType;
@@ -32,12 +31,12 @@ public class PluginMapSupplierFactoryResolver<T>
         extends AbstractPluginFactoryResolver<Map<String, ? extends Supplier<? extends T>>> {
     @Override
     protected boolean supportsType(final Type rawType, final Type... typeArguments) {
-        return rawType == Map.class &&
-                typeArguments.length == 2 &&
-                typeArguments[0] == String.class &&
-                TypeUtil.isAssignable(Supplier.class, typeArguments[1]) &&
-                typeArguments[1] instanceof ParameterizedType &&
-                ((ParameterizedType) typeArguments[1]).getActualTypeArguments().length == 1;
+        return rawType == Map.class
+                && typeArguments.length == 2
+                && typeArguments[0] == String.class
+                && TypeUtil.isAssignable(Supplier.class, typeArguments[1])
+                && typeArguments[1] instanceof ParameterizedType
+                && ((ParameterizedType) typeArguments[1]).getActualTypeArguments().length == 1;
     }
 
     @Override

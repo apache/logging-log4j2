@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -59,8 +58,13 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * @param properties TODO
      * @param manager The matching {@link AbstractDatabaseManager} implementation.
      */
-    protected AbstractDatabaseAppender(final String name, final Filter filter,
-                                       final Layout layout, final boolean ignoreExceptions, final Property[] properties, final T manager) {
+    protected AbstractDatabaseAppender(
+            final String name,
+            final Filter filter,
+            final Layout layout,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            final T manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
@@ -71,12 +75,18 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         try {
             this.getManager().write(event);
         } catch (final LoggingException e) {
-            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
-                    this.getName(), e);
+            LOGGER.error(
+                    "Unable to write to database [{}] for appender [{}].",
+                    this.getManager().getName(),
+                    this.getName(),
+                    e);
             throw e;
         } catch (final Exception e) {
-            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
-                    this.getName(), e);
+            LOGGER.error(
+                    "Unable to write to database [{}] for appender [{}].",
+                    this.getManager().getName(),
+                    this.getName(),
+                    e);
             throw new AppenderLoggingException("Unable to write to database in appender: " + e.getMessage(), e);
         } finally {
             this.readLock.unlock();

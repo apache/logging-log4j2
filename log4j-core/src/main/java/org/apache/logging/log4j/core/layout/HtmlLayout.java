@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
@@ -27,8 +28,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -79,8 +78,15 @@ public final class HtmlLayout extends AbstractStringLayout {
 
     /**Possible font sizes */
     public enum FontSize {
-        SMALLER("smaller"), XXSMALL("xx-small"), XSMALL("x-small"), SMALL("small"), MEDIUM("medium"), LARGE("large"),
-        XLARGE("x-large"), XXLARGE("xx-large"),  LARGER("larger");
+        SMALLER("smaller"),
+        XXSMALL("xx-small"),
+        XSMALL("x-small"),
+        SMALL("small"),
+        MEDIUM("medium"),
+        LARGE("large"),
+        XLARGE("x-large"),
+        XXLARGE("xx-large"),
+        LARGER("larger");
 
         private final String size;
 
@@ -124,8 +130,9 @@ public final class HtmlLayout extends AbstractStringLayout {
         this.font = font;
         this.fontSize = fontSize;
         this.headerSize = headerSize;
-        this.datePatternConverter = DEFAULT_DATE_PATTERN.equals(datePattern) ? null
-            : DatePatternConverter.newInstance(new String[] {datePattern, timezone});
+        this.datePatternConverter = DEFAULT_DATE_PATTERN.equals(datePattern)
+                ? null
+                : DatePatternConverter.newInstance(new String[] {datePattern, timezone});
     }
 
     /**
@@ -213,7 +220,8 @@ public final class HtmlLayout extends AbstractStringLayout {
             }
 
             sbuf.append("<td title=\"Message\">");
-            sbuf.append(Transform.escapeHtmlTags(event.getMessage().getFormattedMessage()).replaceAll(REGEXP, "<br />"));
+            sbuf.append(Transform.escapeHtmlTags(event.getMessage().getFormattedMessage())
+                    .replaceAll(REGEXP, "<br />"));
             sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
             sbuf.append("</tr>").append(Strings.LINE_SEPARATOR);
 
@@ -221,7 +229,8 @@ public final class HtmlLayout extends AbstractStringLayout {
                 sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
                 sbuf.append(";\" colspan=\"6\" ");
                 sbuf.append("title=\"Nested Diagnostic Context\">");
-                sbuf.append("NDC: ").append(Transform.escapeHtmlTags(event.getContextStack().toString()));
+                sbuf.append("NDC: ")
+                        .append(Transform.escapeHtmlTags(event.getContextStack().toString()));
                 sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
             }
 
@@ -229,13 +238,16 @@ public final class HtmlLayout extends AbstractStringLayout {
                 sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
                 sbuf.append(";\" colspan=\"6\" ");
                 sbuf.append("title=\"Mapped Diagnostic Context\">");
-                sbuf.append("MDC: ").append(Transform.escapeHtmlTags(event.getContextData().toMap().toString()));
+                sbuf.append("MDC: ")
+                        .append(Transform.escapeHtmlTags(
+                                event.getContextData().toMap().toString()));
                 sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
             }
 
             final Throwable throwable = event.getThrown();
             if (throwable != null) {
-                sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : ").append(fontSize);
+                sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : ")
+                        .append(fontSize);
                 sbuf.append(";\" colspan=\"6\">");
                 appendThrowableAsHtml(throwable, sbuf);
                 sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
@@ -254,8 +266,7 @@ public final class HtmlLayout extends AbstractStringLayout {
 
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "Log4j prints stacktraces only to logs, which should be private."
-    )
+            justification = "Log4j prints stacktraces only to logs, which should be private.")
     private void appendThrowableAsHtml(final Throwable throwable, final StringBuilder sbuf) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
@@ -268,11 +279,11 @@ public final class HtmlLayout extends AbstractStringLayout {
         final LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
         final ArrayList<String> lines = new ArrayList<>();
         try {
-          String line = reader.readLine();
-          while (line != null) {
-            lines.add(line);
-            line = reader.readLine();
-          }
+            String line = reader.readLine();
+            while (line != null) {
+                lines.add(line);
+                line = reader.readLine();
+            }
         } catch (final IOException ex) {
             if (ex instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
@@ -330,7 +341,8 @@ public final class HtmlLayout extends AbstractStringLayout {
             appendLs(sbuf, "<hr size=\"1\" noshade=\"noshade\">");
             appendLs(sbuf, "Log session start time " + new Date() + "<br>");
             appendLs(sbuf, "<br>");
-            appendLs(sbuf,
+            appendLs(
+                    sbuf,
                     "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">");
             appendLs(sbuf, "<tr>");
             appendLs(sbuf, "<th>Time</th>");
@@ -408,8 +420,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private String timezone = null; // null means default timezone
 
-        private Builder() {
-        }
+        private Builder() {}
 
         public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
@@ -463,8 +474,16 @@ public final class HtmlLayout extends AbstractStringLayout {
                 contentType = DEFAULT_CONTENT_TYPE + "; charset=" + charset;
             }
             return new HtmlLayout(
-                    configuration, locationInfo, title, contentType, charset, fontName, fontSize.getFontSize(),
-                    fontSize.larger().getFontSize(), datePattern, timezone);
+                    configuration,
+                    locationInfo,
+                    title,
+                    contentType,
+                    charset,
+                    fontName,
+                    fontSize.getFontSize(),
+                    fontSize.larger().getFontSize(),
+                    datePattern,
+                    timezone);
         }
     }
 }

@@ -24,7 +24,4 @@ import org.apache.logging.log4j.core.LogEvent;
  * @see EventResolver
  * @see EventResolverContext
  */
-public interface EventResolverFactory
-        extends TemplateResolverFactory<LogEvent, EventResolverContext> {
-
-}
+public interface EventResolverFactory extends TemplateResolverFactory<LogEvent, EventResolverContext> {}

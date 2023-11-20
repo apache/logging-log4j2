@@ -28,8 +28,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 @Plugin("scripts")
 public final class ScriptsPlugin {
 
-    private ScriptsPlugin() {
-    }
+    private ScriptsPlugin() {}
 
     /**
      * Return the array of scripts

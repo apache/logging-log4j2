@@ -33,7 +33,9 @@ final class Log4jYamlModule extends SimpleModule {
     private final boolean includeStacktrace;
     private final boolean stacktraceAsString;
 
-    Log4jYamlModule(final boolean encodeThreadContextAsList, final boolean includeStacktrace,
+    Log4jYamlModule(
+            final boolean encodeThreadContextAsList,
+            final boolean includeStacktrace,
             final boolean stacktraceAsString) {
         super(Log4jYamlModule.class.getName(), new Version(2, 0, 0, null, null, null));
         this.encodeThreadContextAsList = encodeThreadContextAsList;

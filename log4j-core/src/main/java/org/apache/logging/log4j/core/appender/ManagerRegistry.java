@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
@@ -54,8 +53,8 @@ public class ManagerRegistry {
             if (manager == null) {
                 manager = factory.createManager(name, data);
                 if (manager == null) {
-                    final String message = "Error creating manager with name '" + name + "' from ManagerFactory " +
-                            factory + " using data " + data;
+                    final String message = "Error creating manager with name '" + name + "' from ManagerFactory "
+                            + factory + " using data " + data;
                     throw new ManagerException(message);
                 }
                 managers.put(name, manager);
@@ -89,5 +88,4 @@ public class ManagerRegistry {
     boolean removeManager(final String name, final AbstractManager manager) {
         return managers.remove(name, manager);
     }
-
 }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -44,15 +43,16 @@ public class ExecutorServices {
      * @return {@code true} if the given executor terminated and {@code false} if the timeout elapsed before
      *         termination.
      */
-    public static boolean shutdown(final ExecutorService executorService, final long timeout, final TimeUnit timeUnit, final String source) {
+    public static boolean shutdown(
+            final ExecutorService executorService, final long timeout, final TimeUnit timeUnit, final String source) {
         if (executorService == null || executorService.isTerminated()) {
             return true;
         }
         executorService.shutdown(); // Disable new tasks from being submitted
         if (timeout > 0 && timeUnit == null) {
-            throw new IllegalArgumentException(
-                    String.format("%s can't shutdown %s when timeout = %,d and timeUnit = %s.", source, executorService,
-                            timeout, timeUnit));
+            throw new IllegalArgumentException(String.format(
+                    "%s can't shutdown %s when timeout = %,d and timeUnit = %s.",
+                    source, executorService, timeout, timeUnit));
         }
         if (timeout > 0) {
             try {
@@ -61,8 +61,8 @@ public class ExecutorServices {
                     executorService.shutdownNow(); // Cancel currently executing tasks
                     // Wait a while for tasks to respond to being cancelled
                     if (!executorService.awaitTermination(timeout, timeUnit)) {
-                        LOGGER.error("{} pool {} did not terminate after {} {}", source, executorService, timeout,
-                                timeUnit);
+                        LOGGER.error(
+                                "{} pool {} did not terminate after {} {}", source, executorService, timeout, timeUnit);
                     }
                     return false;
                 }

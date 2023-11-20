@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.io.IOException;
 import java.nio.file.Path;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
@@ -34,9 +36,6 @@ import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @UsingStatusListener
 public class CustomConfigurationTest {
@@ -60,9 +59,9 @@ public class CustomConfigurationTest {
             }
         }
         final Layout layout = PatternLayout.newBuilder()
-            .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-            .setConfiguration(config)
-            .build();
+                .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+                .setConfiguration(config)
+                .build();
         final FileAppender appender = FileAppender.newBuilder()
                 .setFileName(logFile.toString())
                 .setAppend(false)
@@ -74,7 +73,7 @@ public class CustomConfigurationTest {
         appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
-        final AppenderRef[] refs = new AppenderRef[]{ref};
+        final AppenderRef[] refs = new AppenderRef[] {ref};
 
         final LoggerConfig loggerConfig = LoggerConfig.newBuilder()
                 .setAdditivity(false)
@@ -89,7 +88,6 @@ public class CustomConfigurationTest {
         ctx.updateLoggers();
         final Logger logger = ctx.getLogger(CustomConfigurationTest.class);
         logger.info("This is a test");
-        assertThat(logFile).exists()
-                .isNotEmptyFile();
+        assertThat(logFile).exists().isNotEmptyFile();
     }
 }

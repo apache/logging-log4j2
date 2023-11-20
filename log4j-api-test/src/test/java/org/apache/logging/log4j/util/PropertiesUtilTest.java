@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PropertiesUtilTest {
 
@@ -55,7 +54,8 @@ public class PropertiesUtilTest {
         assertEquals(4, parts.size());
         assertHasAllProperties(parts.get("a"));
         assertHasAllProperties(parts.get("b"));
-        assertHasAllProperties(PropertiesUtil.partitionOnCommonPrefixes(parts.get("c")).get("1"));
+        assertHasAllProperties(
+                PropertiesUtil.partitionOnCommonPrefixes(parts.get("c")).get("1"));
         assertHasAllProperties(parts.get("dd"));
     }
 
@@ -65,7 +65,6 @@ public class PropertiesUtilTest {
         assertEquals("2", properties.getProperty("2"));
         assertEquals("3", properties.getProperty("3"));
     }
-
 
     @Test
     public void testGetCharsetProperty() {
@@ -129,7 +128,6 @@ public class PropertiesUtilTest {
         assertEquals(true, util.getBooleanProperty("JNDI.enableJMS"));
         assertEquals("Groovy,JavaScript", util.getStringProperty("Script.enableLanguages"));
         assertEquals("com.acme.log4j.CustomMergeStrategy", util.getStringProperty("Configuration.mergeStrategy"));
-
     }
 
     @Test
@@ -143,19 +141,19 @@ public class PropertiesUtilTest {
     }
 
     private static final String[][] data = {
-            { null, "org.apache.logging.log4j.level" },
-            { null, "Log4jAnotherProperty" },
-            { null, "log4j2.catalinaBase" },
-            { "ok", "Configuration.file" },
-            { "ok", "Configuration.level" },
-            { null, "log4j2.newLevel" },
-            { "ok", "AsyncLogger.timeout" },
-            { "ok", "AsyncLoggerConfig.ringBufferSize" },
-            { "ok", "ThreadContext.enable" },
-            { "ok", "ThreadContext.enableStack" },
-            { "ok", "ThreadContext.enableMap" },
-            { "ok", "ThreadContext.mapInheritable" }
-            };
+        {null, "org.apache.logging.log4j.level"},
+        {null, "Log4jAnotherProperty"},
+        {null, "log4j2.catalinaBase"},
+        {"ok", "Configuration.file"},
+        {"ok", "Configuration.level"},
+        {null, "log4j2.newLevel"},
+        {"ok", "AsyncLogger.timeout"},
+        {"ok", "AsyncLoggerConfig.ringBufferSize"},
+        {"ok", "ThreadContext.enable"},
+        {"ok", "ThreadContext.enableStack"},
+        {"ok", "ThreadContext.enableMap"},
+        {"ok", "ThreadContext.mapInheritable"}
+    };
 
     /**
      * LOG4J2-3413: Log4j should only resolve properties that start with a 'log4j'

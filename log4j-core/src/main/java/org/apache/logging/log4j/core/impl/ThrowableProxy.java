@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -100,11 +99,13 @@ public class ThrowableProxy {
         this.localizedMessage = throwable.getLocalizedMessage();
         final Map<String, ThrowableProxyHelper.CacheEntry> map = new HashMap<>();
         final Deque<Class<?>> stack = StackLocatorUtil.getCurrentStackTrace();
-        this.extendedStackTrace = ThrowableProxyHelper.toExtendedStackTrace(this, stack, map, null, throwable.getStackTrace());
+        this.extendedStackTrace =
+                ThrowableProxyHelper.toExtendedStackTrace(this, stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
         final Set<Throwable> causeVisited = new HashSet<>(1);
-        this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, map, throwableCause,
-            visited, causeVisited);
+        this.causeProxy = throwableCause == null
+                ? null
+                : new ThrowableProxy(throwable, stack, map, throwableCause, visited, causeVisited);
         this.suppressedProxies = ThrowableProxyHelper.toSuppressedProxies(throwable, visited);
     }
 
@@ -118,19 +119,24 @@ public class ThrowableProxy {
      * @param suppressedVisited TODO
      * @param causeVisited      TODO
      */
-    private ThrowableProxy(final Throwable parent, final Deque<Class<?>> stack,
-                           final Map<String, ThrowableProxyHelper.CacheEntry> map,
-                           final Throwable cause, final Set<Throwable> suppressedVisited,
-                           final Set<Throwable> causeVisited) {
+    private ThrowableProxy(
+            final Throwable parent,
+            final Deque<Class<?>> stack,
+            final Map<String, ThrowableProxyHelper.CacheEntry> map,
+            final Throwable cause,
+            final Set<Throwable> suppressedVisited,
+            final Set<Throwable> causeVisited) {
         causeVisited.add(cause);
         this.throwable = cause;
         this.name = cause.getClass().getName();
         this.message = this.throwable.getMessage();
         this.localizedMessage = this.throwable.getLocalizedMessage();
-        this.extendedStackTrace = ThrowableProxyHelper.toExtendedStackTrace(this, stack, map, parent.getStackTrace(), cause.getStackTrace());
+        this.extendedStackTrace = ThrowableProxyHelper.toExtendedStackTrace(
+                this, stack, map, parent.getStackTrace(), cause.getStackTrace());
         final Throwable causeCause = cause.getCause();
-        this.causeProxy = causeCause == null || causeVisited.contains(causeCause) ? null : new ThrowableProxy(parent,
-            stack, map, causeCause, suppressedVisited, causeVisited);
+        this.causeProxy = causeCause == null || causeVisited.contains(causeCause)
+                ? null
+                : new ThrowableProxy(parent, stack, map, causeCause, suppressedVisited, causeVisited);
         this.suppressedProxies = ThrowableProxyHelper.toSuppressedProxies(cause, suppressedVisited);
     }
 
@@ -190,7 +196,11 @@ public class ThrowableProxy {
      * @param suffix
      */
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages, final String suffix) {
+    public void formatWrapper(
+            final StringBuilder sb,
+            final ThrowableProxy cause,
+            final List<String> ignorePackages,
+            final String suffix) {
         this.formatWrapper(sb, cause, ignorePackages, PlainTextRenderer.getInstance(), suffix);
     }
 
@@ -203,8 +213,12 @@ public class ThrowableProxy {
      * @param suffix Append this to the end of each stack frame.
      */
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
-            final TextRenderer textRenderer, final String suffix) {
+    public void formatWrapper(
+            final StringBuilder sb,
+            final ThrowableProxy cause,
+            final List<String> ignorePackages,
+            final TextRenderer textRenderer,
+            final String suffix) {
         formatWrapper(sb, cause, ignorePackages, textRenderer, suffix, EOL_STR);
     }
 
@@ -218,9 +232,14 @@ public class ThrowableProxy {
      * @param lineSeparator The end-of-line separator.
      */
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
-                              final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        ThrowableProxyRenderer.formatWrapper(sb,  cause, ignorePackages, textRenderer, suffix, lineSeparator);
+    public void formatWrapper(
+            final StringBuilder sb,
+            final ThrowableProxy cause,
+            final List<String> ignorePackages,
+            final TextRenderer textRenderer,
+            final String suffix,
+            final String lineSeparator) {
+        ThrowableProxyRenderer.formatWrapper(sb, cause, ignorePackages, textRenderer, suffix, lineSeparator);
     }
 
     public ThrowableProxy getCauseProxy() {
@@ -256,7 +275,8 @@ public class ThrowableProxy {
      * @param suffix Append this to the end of each stack frame.
      * @return The formatted Throwable that caused this Throwable.
      */
-    public String getCauseStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix) {
+    public String getCauseStackTraceAsString(
+            final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix) {
         return getCauseStackTraceAsString(ignorePackages, textRenderer, suffix, EOL_STR);
     }
 
@@ -269,7 +289,11 @@ public class ThrowableProxy {
      * @param lineSeparator The end-of-line separator.
      * @return The formatted Throwable that caused this Throwable.
      */
-    public String getCauseStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    public String getCauseStackTraceAsString(
+            final List<String> ignorePackages,
+            final TextRenderer textRenderer,
+            final String suffix,
+            final String lineSeparator) {
         final StringBuilder sb = new StringBuilder();
         ThrowableProxyRenderer.formatCauseStackTrace(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
         return sb.toString();
@@ -343,7 +367,8 @@ public class ThrowableProxy {
      * @param suffix Append this to the end of each stack frame.
      * @return The formatted stack trace including packaging information.
      */
-    public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix) {
+    public String getExtendedStackTraceAsString(
+            final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix) {
         return getExtendedStackTraceAsString(ignorePackages, textRenderer, suffix, EOL_STR);
     }
 
@@ -356,7 +381,11 @@ public class ThrowableProxy {
      * @param lineSeparator The end-of-line separator.
      * @return The formatted stack trace including packaging information.
      */
-    public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    public String getExtendedStackTraceAsString(
+            final List<String> ignorePackages,
+            final TextRenderer textRenderer,
+            final String suffix,
+            final String lineSeparator) {
         final StringBuilder sb = new StringBuilder(1024);
         formatExtendedStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator);
         return sb.toString();
@@ -371,8 +400,14 @@ public class ThrowableProxy {
      * @param suffix Append this to the end of each stack frame.
      * @param lineSeparator The end-of-line separator.
      */
-    public void formatExtendedStackTraceTo(final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        ThrowableProxyRenderer.formatExtendedStackTraceTo(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
+    public void formatExtendedStackTraceTo(
+            final StringBuilder sb,
+            final List<String> ignorePackages,
+            final TextRenderer textRenderer,
+            final String suffix,
+            final String lineSeparator) {
+        ThrowableProxyRenderer.formatExtendedStackTraceTo(
+                this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
     }
 
     public String getLocalizedMessage() {

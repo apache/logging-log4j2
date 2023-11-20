@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.annotation;
 
 import java.lang.reflect.AnnotatedElement;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.condition.Condition;
@@ -41,8 +40,12 @@ public class OnPropertyKeyCondition implements Condition {
         final String value = annotation.value();
         final String property = context.getEnvironment().getStringProperty(propertyKey);
         final boolean result = property != null && (value.isEmpty() || value.equalsIgnoreCase(property));
-        LOGGER.debug("ConditionalOnPropertyKey {} for key='{}', value='{}'; property='{}'", result,
-                propertyKey.getName(), value, property);
+        LOGGER.debug(
+                "ConditionalOnPropertyKey {} for key='{}', value='{}'; property='{}'",
+                result,
+                propertyKey.getName(),
+                value,
+                property);
         return result;
     }
 }

@@ -16,11 +16,14 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.*;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -36,10 +39,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a Console Appender
@@ -60,28 +59,35 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
 
     public static final Logger LOGGER = StatusLogger.getLogger();
 
-    public SocketAppenderBuilder() {
-    }
+    public SocketAppenderBuilder() {}
 
     public SocketAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(final String name, final String host, final int port, final Layout layout,
-        final Filter filter, final String level, final boolean immediateFlush, final int reconnectDelayMillis, final T configuration) {
+    private <T extends Log4j1Configuration> Appender createAppender(
+            final String name,
+            final String host,
+            final int port,
+            final Layout layout,
+            final Filter filter,
+            final String level,
+            final boolean immediateFlush,
+            final int reconnectDelayMillis,
+            final T configuration) {
         final org.apache.logging.log4j.core.Layout actualLayout = LayoutAdapter.adapt(layout);
         final org.apache.logging.log4j.core.Filter actualFilter = buildFilters(level, filter);
         // @formatter:off
         return AppenderWrapper.adapt(SocketAppender.newBuilder()
-            .setHost(host)
-            .setPort(port)
-            .setReconnectDelayMillis(reconnectDelayMillis)
-            .setName(name)
-            .setLayout(actualLayout)
-            .setFilter(actualFilter)
-            .setConfiguration(configuration)
-            .setImmediateFlush(immediateFlush)
-            .build());
+                .setHost(host)
+                .setPort(port)
+                .setReconnectDelayMillis(reconnectDelayMillis)
+                .setName(name)
+                .setLayout(actualLayout)
+                .setFilter(actualFilter)
+                .setConfiguration(configuration)
+                .setImmediateFlush(immediateFlush)
+                .build());
         // @formatter:on
     }
 
@@ -97,49 +103,64 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
         final AtomicBoolean immediateFlush = new AtomicBoolean(true);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
-            case LAYOUT_TAG:
-                layout.set(config.parseLayout(currentElement));
-                break;
-            case FILTER_TAG:
-                config.addFilter(filter, currentElement);
-                break;
-            case PARAM_TAG:
-                switch (getNameAttributeKey(currentElement)) {
-                case HOST_PARAM:
-                    set(HOST_PARAM, currentElement, host);
+                case LAYOUT_TAG:
+                    layout.set(config.parseLayout(currentElement));
                     break;
-                case PORT_PARAM:
-                    set(PORT_PARAM, currentElement, port);
+                case FILTER_TAG:
+                    config.addFilter(filter, currentElement);
                     break;
-                case RECONNECTION_DELAY_PARAM:
-                    set(RECONNECTION_DELAY_PARAM, currentElement, reconnectDelay);
+                case PARAM_TAG:
+                    switch (getNameAttributeKey(currentElement)) {
+                        case HOST_PARAM:
+                            set(HOST_PARAM, currentElement, host);
+                            break;
+                        case PORT_PARAM:
+                            set(PORT_PARAM, currentElement, port);
+                            break;
+                        case RECONNECTION_DELAY_PARAM:
+                            set(RECONNECTION_DELAY_PARAM, currentElement, reconnectDelay);
+                            break;
+                        case THRESHOLD_PARAM:
+                            set(THRESHOLD_PARAM, currentElement, level);
+                            break;
+                        case IMMEDIATE_FLUSH_PARAM:
+                            set(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
+                            break;
+                    }
                     break;
-                case THRESHOLD_PARAM:
-                    set(THRESHOLD_PARAM, currentElement, level);
-                    break;
-                case IMMEDIATE_FLUSH_PARAM:
-                    set(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
-                    break;
-                }
-                break;
             }
         });
-        return createAppender(name, host.get(), port.get(), layout.get(), filter.get(), level.get(), immediateFlush.get(), reconnectDelay.get(), config);
+        return createAppender(
+                name,
+                host.get(),
+                port.get(),
+                layout.get(),
+                filter.get(),
+                level.get(),
+                immediateFlush.get(),
+                reconnectDelay.get(),
+                config);
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix, final String filterPrefix, final Properties props,
-        final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         // @formatter:off
-        return createAppender(name,
-            getProperty(HOST_PARAM),
-            getIntegerProperty(PORT_PARAM, DEFAULT_PORT),
-            configuration.parseLayout(layoutPrefix, name, props),
-            configuration.parseAppenderFilters(props, filterPrefix, name),
-            getProperty(THRESHOLD_PARAM),
-            getBooleanProperty(IMMEDIATE_FLUSH_PARAM),
-            getIntegerProperty(RECONNECTION_DELAY_PARAM, DEFAULT_RECONNECTION_DELAY),
-            configuration);
+        return createAppender(
+                name,
+                getProperty(HOST_PARAM),
+                getIntegerProperty(PORT_PARAM, DEFAULT_PORT),
+                configuration.parseLayout(layoutPrefix, name, props),
+                configuration.parseAppenderFilters(props, filterPrefix, name),
+                getProperty(THRESHOLD_PARAM),
+                getBooleanProperty(IMMEDIATE_FLUSH_PARAM),
+                getIntegerProperty(RECONNECTION_DELAY_PARAM, DEFAULT_RECONNECTION_DELAY),
+                configuration);
         // @formatter:on
     }
 }

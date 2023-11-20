@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.from;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Node;
@@ -30,9 +33,6 @@ import org.apache.logging.log4j.plugins.test.validation.di.ConfigurablePlugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.from;
-
 class ConfigurationProcessorTest {
     final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
     final ConfigurationProcessor configurationProcessor = new ConfigurationProcessor(instanceFactory);
@@ -40,15 +40,19 @@ class ConfigurationProcessorTest {
     @Inject
     @Configurable
     PluginType<ConfigurablePlugin> configurablePluginType;
+
     @Inject
     @Configurable
     PluginType<ValidatingPlugin> validatingPluginType;
+
     @Inject
     @Configurable
     PluginType<ValidatingPluginWithGenericBuilder> validatingPluginWithGenericBuilderPluginType;
+
     @Inject
     @Configurable
     PluginType<ValidatingPluginWithTypedBuilder> validatingPluginWithTypedBuilderPluginType;
+
     @Inject
     @Configurable
     PluginType<PluginWithGenericSubclassFoo1Builder> pluginWithGenericSubclassFoo1BuilderPluginType;
@@ -68,8 +72,7 @@ class ConfigurationProcessorTest {
                 .setAttribute("name", "Alpha")
                 .get();
         final ValidatingPlugin object = configurationProcessor.processNodeTree(alpha);
-        assertThat(object)
-                .returns("Alpha", from(ValidatingPlugin::getName));
+        assertThat(object).returns("Alpha", from(ValidatingPlugin::getName));
     }
 
     @Test
@@ -80,8 +83,7 @@ class ConfigurationProcessorTest {
                 .setAttribute("name", "Beta")
                 .get();
         final ValidatingPluginWithGenericBuilder object = configurationProcessor.processNodeTree(beta);
-        assertThat(object)
-                .returns("Beta", from(ValidatingPluginWithGenericBuilder::getName));
+        assertThat(object).returns("Beta", from(ValidatingPluginWithGenericBuilder::getName));
     }
 
     @Test
@@ -92,8 +94,7 @@ class ConfigurationProcessorTest {
                 .setAttribute("name", "Gamma")
                 .get();
         final ValidatingPluginWithTypedBuilder object = configurationProcessor.processNodeTree(gamma);
-        assertThat(object)
-                .returns("Gamma", from(ValidatingPluginWithTypedBuilder::getName));
+        assertThat(object).returns("Gamma", from(ValidatingPluginWithTypedBuilder::getName));
     }
 
     @Test
@@ -115,20 +116,16 @@ class ConfigurationProcessorTest {
         final Node root = Node.newBuilder()
                 .setName("root")
                 .setPluginType(configurablePluginType)
-                .addChild(builder -> builder
-                        .setName("alpha")
+                .addChild(builder -> builder.setName("alpha")
                         .setPluginType(validatingPluginType)
                         .setAttribute("name", "Alpha"))
-                .addChild(builder -> builder
-                        .setName("beta")
+                .addChild(builder -> builder.setName("beta")
                         .setPluginType(validatingPluginWithGenericBuilderPluginType)
                         .setAttribute("name", "Beta"))
-                .addChild(builder -> builder
-                        .setName("gamma")
+                .addChild(builder -> builder.setName("gamma")
                         .setPluginType(validatingPluginWithTypedBuilderPluginType)
                         .setAttribute("name", "Gamma"))
-                .addChild(builder -> builder
-                        .setName("delta")
+                .addChild(builder -> builder.setName("delta")
                         .setPluginType(pluginWithGenericSubclassFoo1BuilderPluginType)
                         .setAttribute("thing", "thought")
                         .setAttribute("foo1", "bar2"))

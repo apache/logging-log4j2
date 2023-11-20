@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -47,13 +46,14 @@ public class AsyncLoggerConfigTest3 {
 
         final Message msg = new ParameterizedMessage("{}", map);
         final Log4jLogEvent event = Log4jLogEvent.newBuilder()
-        .setLevel(Level.WARN)
-        .setLoggerName(getClass().getName())
-        .setMessage(msg)
-        .setTimeMillis(0).build();
+                .setLevel(Level.WARN)
+                .setLoggerName(getClass().getName())
+                .setMessage(msg)
+                .setTimeMillis(0)
+                .build();
 
         for (int i = 0; i < 100; i++) {
-            ((AsyncLoggerConfig)((org.apache.logging.log4j.core.Logger) log).get()).callAppenders(event);
+            ((AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) log).get()).callAppenders(event);
             for (int j = 0; j < 3000; j++) {
                 map.remove(String.valueOf(j));
             }

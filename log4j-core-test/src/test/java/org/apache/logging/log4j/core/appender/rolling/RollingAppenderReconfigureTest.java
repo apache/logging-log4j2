@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -28,18 +30,14 @@ import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * LOG4J2-1725.
  */
 @UsingStatusListener
 public class RollingAppenderReconfigureTest {
 
-    private static final URL CONFIG = RollingAppenderReconfigureTest.class
-            .getResource("RollingAppenderReconfigureTest.xml");
+    private static final URL CONFIG =
+            RollingAppenderReconfigureTest.class.getResource("RollingAppenderReconfigureTest.xml");
     private static final File CONFIG_FILE = FileUtils.toFile(CONFIG);
 
     @TempLoggingDir
@@ -53,14 +51,12 @@ public class RollingAppenderReconfigureTest {
             logger.debug("This is test message number {}", i);
         }
 
-        assertThat(loggingPath)
-                .isDirectoryContaining("glob:**/*.current")
-                .isDirectoryContaining("glob:**/*.rolled");
+        assertThat(loggingPath).isDirectoryContaining("glob:**/*.current").isDirectoryContaining("glob:**/*.rolled");
 
         final String originalXmlConfig = FileUtils.readFileToString(CONFIG_FILE, UTF_8);
         try {
-            final String updatedXmlConfig = originalXmlConfig.replace("rollingtest.%i.rolled",
-                    "rollingtest.%i.reconfigured");
+            final String updatedXmlConfig =
+                    originalXmlConfig.replace("rollingtest.%i.rolled", "rollingtest.%i.reconfigured");
             FileUtils.write(CONFIG_FILE, updatedXmlConfig, UTF_8);
 
             // Reconfigure

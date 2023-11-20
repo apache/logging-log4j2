@@ -22,10 +22,9 @@ import org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector;
 public class CoreContextSelectors {
 
     public static final Class<?>[] CLASSES = new Class<?>[] {
-            ClassLoaderContextSelector.class,
-            BasicContextSelector.class,
-            AsyncLoggerContextSelector.class,
-            BasicAsyncLoggerContextSelector.class
+        ClassLoaderContextSelector.class,
+        BasicContextSelector.class,
+        AsyncLoggerContextSelector.class,
+        BasicAsyncLoggerContextSelector.class
     };
-
 }

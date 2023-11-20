@@ -18,7 +18,6 @@ package org.apache.logging.log4j.plugins.di.resolver;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
 

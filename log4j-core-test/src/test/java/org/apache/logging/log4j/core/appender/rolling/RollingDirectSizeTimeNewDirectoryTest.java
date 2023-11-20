@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,7 +26,6 @@ import java.util.Map;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -35,8 +36,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This test attempts to validate that logging rolls when the file size exceeds 5KB or every second.
@@ -63,7 +62,8 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 15)
-    public void streamClosedError(final LoggerContext context, @Named("RollingFile") final RollingFileAppender appender) throws Exception {
+    public void streamClosedError(final LoggerContext context, @Named("RollingFile") final RollingFileAppender appender)
+            throws Exception {
         appender.getManager().addRolloverListener(this);
         final Logger logger = context.getLogger(RollingDirectSizeTimeNewDirectoryTest.class);
 
@@ -80,7 +80,8 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
         phaser.arriveAndAwaitAdvance();
 
         assertTrue(rolloverFiles.size() > 1, "A time based rollover did not occur");
-        final int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get)).get();
+        final int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get))
+                .get();
         assertTrue(maxFiles > 1, "No size based rollovers occurred");
     }
 

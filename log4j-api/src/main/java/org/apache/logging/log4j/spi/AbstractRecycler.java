@@ -35,5 +35,4 @@ public abstract class AbstractRecycler<V> implements Recycler<V> {
         }
         return instance;
     }
-
 }

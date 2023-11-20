@@ -26,8 +26,7 @@ import java.util.Properties;
  *
  * @since 2.10.0
  */
-public class PropertiesPropertySource extends ContextAwarePropertySource
-        implements ReloadablePropertySource {
+public class PropertiesPropertySource extends ContextAwarePropertySource implements ReloadablePropertySource {
 
     private final int priority;
     private final Properties properties;
@@ -44,13 +43,12 @@ public class PropertiesPropertySource extends ContextAwarePropertySource
         this(properties, contextName, priority, false);
     }
 
-    public PropertiesPropertySource(final Properties properties, final String contextName, final int priority,
-                                    final boolean includeInvalid) {
+    public PropertiesPropertySource(
+            final Properties properties, final String contextName, final int priority, final boolean includeInvalid) {
         super(properties, contextName, includeInvalid);
         this.priority = priority;
         this.properties = properties;
     }
-
 
     @Override
     public int getPriority() {

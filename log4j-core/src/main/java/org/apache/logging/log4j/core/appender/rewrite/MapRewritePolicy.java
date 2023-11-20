@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rewrite;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -128,8 +127,7 @@ public final class MapRewritePolicy implements RewritePolicy {
      */
     @PluginFactory
     public static MapRewritePolicy createPolicy(
-            @PluginAttribute final String mode,
-            @PluginElement("KeyValuePair") final KeyValuePair[] pairs) {
+            @PluginAttribute final String mode, @PluginElement("KeyValuePair") final KeyValuePair[] pairs) {
         Mode op = mode == null ? op = Mode.Add : Mode.valueOf(mode);
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the MapRewritePolicy");

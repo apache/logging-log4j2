@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.plugins.validation.constraints;
 
 import java.lang.annotation.*;
-
 import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.validators.RequiredValidator;
 

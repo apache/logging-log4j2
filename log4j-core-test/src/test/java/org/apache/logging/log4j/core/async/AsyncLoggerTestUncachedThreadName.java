@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -27,9 +29,6 @@ import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "UNCACHED")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncLoggerTest.xml")
@@ -60,5 +59,4 @@ public class AsyncLoggerTestUncachedThreadName {
         assertTrue(line1.endsWith(" INFO c.f.Bar [main]   Async logger msg "), "line1");
         assertTrue(line2.endsWith(" INFO c.f.Bar [MODIFIED-THREADNAME]   Async logger msg "), "line2");
     }
-
 }

@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -33,7 +33,8 @@ public class StructuredDataMessageTest {
         msg.put("project", "Log4j");
         msg.put("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
         final String result = msg.getFormattedMessage();
-        final String expected = "Alert [MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
+        final String expected =
+                "Alert [MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
         assertEquals(expected, result);
     }
 
@@ -44,8 +45,9 @@ public class StructuredDataMessageTest {
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
         msg.put("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
-        final String result = msg.getFormattedMessage(new String[] { "WHATEVER" });
-        final String expected = "[MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"]";
+        final String result = msg.getFormattedMessage(new String[] {"WHATEVER"});
+        final String expected =
+                "[MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"]";
         assertEquals(expected, result);
     }
 
@@ -56,9 +58,8 @@ public class StructuredDataMessageTest {
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
         msg.put("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
-        final String result = msg.getFormattedMessage(new String[] { "XML" });
-        final String expected =
-                  "<StructuredData>\n"
+        final String result = msg.getFormattedMessage(new String[] {"XML"});
+        final String expected = "<StructuredData>\n"
                 + "<type>Alert</type>\n"
                 + "<id>MsgId@12345</id>\n"
                 + "<Map>\n"
@@ -78,7 +79,8 @@ public class StructuredDataMessageTest {
                 .with("project", "Log4j")
                 .with("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
         final String result = msg.getFormattedMessage();
-        final String expected = "Alert [MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
+        final String expected =
+                "Alert [MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
         assertEquals(expected, result);
     }
 
@@ -86,8 +88,9 @@ public class StructuredDataMessageTest {
     public void testMsgWithKeyTooLong() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
-        assertThrows(IllegalArgumentException.class, () ->
-                msg.put("This is a very long key that will violate the key length validation", "Testing"));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> msg.put("This is a very long key that will violate the key length validation", "Testing"));
     }
 
     @Test
@@ -105,15 +108,16 @@ public class StructuredDataMessageTest {
         // modify parameter after calling msg.getFormattedMessage
         msg.put("memo", "Added later");
         final String result2 = msg.getFormattedMessage();
-        final String expected2 = "Alert [MsgId@1 memo=\"Added later\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
+        final String expected2 =
+                "Alert [MsgId@1 memo=\"Added later\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
         assertEquals(expected2, result2);
     }
 
     @Test
     public void testEnterpriseNoAsOidFragment() {
         final String testMsg = "Test message {}";
-        final StructuredDataMessage structuredDataMessage = new StructuredDataMessage("XX_DATA@1234.55.6.7", testMsg, "Nothing");
+        final StructuredDataMessage structuredDataMessage =
+                new StructuredDataMessage("XX_DATA@1234.55.6.7", testMsg, "Nothing");
         assertNotNull(structuredDataMessage);
     }
-
 }

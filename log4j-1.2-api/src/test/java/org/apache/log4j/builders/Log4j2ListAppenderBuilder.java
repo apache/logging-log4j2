@@ -16,9 +16,11 @@
  */
 package org.apache.log4j.builders;
 
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
+import static org.apache.log4j.xml.XmlConfiguration.*;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -32,9 +34,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
 
-import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
-import static org.apache.log4j.xml.XmlConfiguration.*;
-
 /**
  * Builder for the native Log4j 2.x list appender to be used in the tests.
  */
@@ -42,8 +41,7 @@ import static org.apache.log4j.xml.XmlConfiguration.*;
 @Plugin("org.apache.logging.log4j.test.appender.ListAppender")
 public class Log4j2ListAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
-    public Log4j2ListAppenderBuilder() {
-    }
+    public Log4j2ListAppenderBuilder() {}
 
     public Log4j2ListAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
@@ -56,21 +54,26 @@ public class Log4j2ListAppenderBuilder extends AbstractBuilder implements Append
         final AtomicReference<Filter> filter = new AtomicReference<>();
         forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
-                case LAYOUT_TAG :
+                case LAYOUT_TAG:
                     layout.set(configuration.parseLayout(currentElement));
                     break;
-                case FILTER_TAG :
+                case FILTER_TAG:
                     configuration.addFilter(filter, currentElement);
                     break;
-                default :
+                default:
             }
         });
         return createAppender(name, layout.get(), filter.get());
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix, final String filterPrefix,
-            final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         return createAppender(name, layout, filter);
@@ -78,11 +81,10 @@ public class Log4j2ListAppenderBuilder extends AbstractBuilder implements Append
 
     private Appender createAppender(final String name, final Layout layout, final Filter filter) {
         final org.apache.logging.log4j.core.Layout log4j2Layout = LayoutAdapter.adapt(layout);
-        return AppenderWrapper.adapt(
-                ListAppender.newBuilder()
-                        .setName(name)
-                        .setLayout(log4j2Layout)
-                        .setFilter(AbstractBuilder.buildFilters(null, filter))
-                        .build());
+        return AppenderWrapper.adapt(ListAppender.newBuilder()
+                .setName(name)
+                .setLayout(log4j2Layout)
+                .setFilter(AbstractBuilder.buildFilters(null, filter))
+                .build());
     }
 }

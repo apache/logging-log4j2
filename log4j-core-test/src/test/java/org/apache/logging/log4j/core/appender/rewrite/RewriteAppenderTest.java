@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,10 +33,6 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-rewrite.xml")
 public class RewriteAppenderTest {
@@ -64,7 +63,6 @@ public class RewriteAppenderTest {
         assertEquals("Apache", value);
     }
 
-
     @Test
     public void testProperties(final LoggerContext context) {
         final Logger logger = context.getLogger(RewriteAppenderTest.class);
@@ -76,7 +74,6 @@ public class RewriteAppenderTest {
         assertEquals(list.size(), 1, "Incorrect number of events. Expected 1, got " + list.size());
         assertFalse(list.get(0).contains("{user."), "Did not resolve user name");
     }
-
 
     @Test
     public void testFilter(final LoggerContext context) {

@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -27,14 +28,12 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @LoggerContextSource("log4j2-console-disableAnsi.xml")
 public class DisableAnsiTest {
 
     private static final String EXPECTED =
             "ERROR LoggerTest o.a.l.l.c.p.DisableAnsiTest org.apache.logging.log4j.core.pattern.DisableAnsiTest"
-            + Strings.LINE_SEPARATOR;
+                    + Strings.LINE_SEPARATOR;
 
     private Logger logger;
     private ListAppender app;
@@ -52,8 +51,8 @@ public class DisableAnsiTest {
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
-        assertTrue(msgs.get(0).endsWith(EXPECTED),
+        assertTrue(
+                msgs.get(0).endsWith(EXPECTED),
                 "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
     }
-
 }

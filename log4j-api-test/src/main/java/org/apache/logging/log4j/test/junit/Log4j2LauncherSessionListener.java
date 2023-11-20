@@ -31,5 +31,4 @@ public class Log4j2LauncherSessionListener implements LauncherSessionListener {
         // in the middle of a test.
         PropertiesUtil.getProperties();
     }
-
 }

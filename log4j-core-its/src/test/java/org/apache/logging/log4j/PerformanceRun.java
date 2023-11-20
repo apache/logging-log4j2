@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-
 import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.ClassRule;
@@ -132,5 +131,4 @@ public class PerformanceRun {
     private byte[] getBytes(final String s) {
         return s.getBytes();
     }
-
 }

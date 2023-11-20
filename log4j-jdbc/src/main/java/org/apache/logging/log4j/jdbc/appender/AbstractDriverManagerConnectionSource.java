@@ -20,7 +20,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -126,8 +125,13 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
     private final Property[] properties;
     private final char[] userName;
 
-    public AbstractDriverManagerConnectionSource(final String driverClassName, final String connectionString,
-            final String actualConnectionString, final char[] userName, final char[] password, final Property[] properties) {
+    public AbstractDriverManagerConnectionSource(
+            final String driverClassName,
+            final String connectionString,
+            final String actualConnectionString,
+            final char[] userName,
+            final char[] password,
+            final Property[] properties) {
         super();
         this.driverClassName = driverClassName;
         this.connectionString = connectionString;
@@ -156,8 +160,13 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
         } else {
             connection = DriverManager.getConnection(actualConnectionString, toString(userName), toString(password));
         }
-        LOGGER.debug("{} acquired connection for '{}': {} ({}@{})", getClass().getSimpleName(), actualConnectionString,
-                connection, connection.getClass().getName(), Integer.toHexString(connection.hashCode()));
+        LOGGER.debug(
+                "{} acquired connection for '{}': {} ({}@{})",
+                getClass().getSimpleName(),
+                actualConnectionString,
+                connection,
+                connection.getClass().getName(),
+                Integer.toHexString(connection.hashCode()));
         return connection;
     }
 
@@ -200,8 +209,11 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
             try {
                 Class.forName(className);
             } catch (final Exception e) {
-                throw new SQLException(String.format("The %s could not load the JDBC driver %s: %s",
-                        getClass().getSimpleName(), className, e.toString()), e);
+                throw new SQLException(
+                        String.format(
+                                "The %s could not load the JDBC driver %s: %s",
+                                getClass().getSimpleName(), className, e.toString()),
+                        e);
             }
         }
     }

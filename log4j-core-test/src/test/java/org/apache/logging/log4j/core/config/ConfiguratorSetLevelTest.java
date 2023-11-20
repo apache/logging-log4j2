@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -24,9 +27,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Tag("functional")
 @LoggerContextSource("log4j-set-level.xml")
@@ -47,7 +47,7 @@ public class ConfiguratorSetLevelTest {
         final Logger logger = loggerContext.getLogger(ConfiguratorSetLevelTest.class);
         Configurator.setLevel(logger, Level.DEBUG);
         final LoggerConfig loggerConfig = ((AbstractConfiguration) loggerContext.getConfiguration())
-        .getLogger(ConfiguratorSetLevelTest.class.getName());
+                .getLogger(ConfiguratorSetLevelTest.class.getName());
         assertNotNull(loggerConfig);
         assertEquals(Level.DEBUG, loggerConfig.getLevel());
         assertEquals(0, loggerConfig.getAppenderRefs().size());

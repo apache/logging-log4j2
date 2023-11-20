@@ -17,19 +17,16 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 /**
  * {@link TemplateResolverStringSubstitutor} specialized for {@link StackTraceElement}s.
  */
-final class StackTraceElementResolverStringSubstitutor
-        implements TemplateResolverStringSubstitutor<StackTraceElement> {
+final class StackTraceElementResolverStringSubstitutor implements TemplateResolverStringSubstitutor<StackTraceElement> {
 
     private final StrSubstitutor substitutor;
 
-    StackTraceElementResolverStringSubstitutor(
-            final StrSubstitutor substitutor) {
+    StackTraceElementResolverStringSubstitutor(final StrSubstitutor substitutor) {
         this.substitutor = Objects.requireNonNull(substitutor, "substitutor");
     }
 
@@ -47,5 +44,4 @@ final class StackTraceElementResolverStringSubstitutor
     public String replace(final StackTraceElement ignored, final String source) {
         return substitutor.replace(null, source);
     }
-
 }

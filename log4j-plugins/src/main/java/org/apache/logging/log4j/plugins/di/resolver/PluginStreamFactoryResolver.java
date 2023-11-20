@@ -20,7 +20,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 
@@ -36,8 +35,7 @@ public class PluginStreamFactoryResolver<T> extends AbstractPluginFactoryResolve
 
     @Override
     public Supplier<Stream<? extends T>> getFactory(
-            final ResolvableKey<Stream<? extends T>> resolvableKey,
-            final InstanceFactory instanceFactory) {
+            final ResolvableKey<Stream<? extends T>> resolvableKey, final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getNamespace();
         final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
         final Type componentType = containerType.getActualTypeArguments()[0];

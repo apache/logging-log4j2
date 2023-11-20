@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -30,30 +31,24 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTem
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
-
 class GelfLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
     private static final String HOST_NAME = "localhost";
 
-    private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout
-            .newBuilder()
+    private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
             .setEventTemplateUri("classpath:GelfLayout.json")
-            .setEventTemplateAdditionalFields(
-                    new EventTemplateAdditionalField[]{
-                            EventTemplateAdditionalField
-                                    .newBuilder()
-                                    .setKey("host")
-                                    .setValue(HOST_NAME)
-                                    .build()
-                    })
+            .setEventTemplateAdditionalFields(new EventTemplateAdditionalField[] {
+                EventTemplateAdditionalField.newBuilder()
+                        .setKey("host")
+                        .setValue(HOST_NAME)
+                        .build()
+            })
             .build();
 
-    private static final GelfLayout GELF_LAYOUT = GelfLayout
-            .newBuilder()
+    private static final GelfLayout GELF_LAYOUT = GelfLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
             .setHost(HOST_NAME)
             .setCompressionType(GelfLayout.CompressionType.OFF)
@@ -84,13 +79,11 @@ class GelfLayoutTest {
         Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(gelfLayoutMap);
     }
 
-    private static Map<String, Object> renderUsingJsonTemplateLayout(
-            final LogEvent logEvent) {
+    private static Map<String, Object> renderUsingJsonTemplateLayout(final LogEvent logEvent) {
         return serializeUsingLayout(logEvent, JSON_TEMPLATE_LAYOUT);
     }
 
-    private static Map<String, Object> renderUsingGelfLayout(
-            final LogEvent logEvent) {
+    private static Map<String, Object> renderUsingGelfLayout(final LogEvent logEvent) {
         return serializeUsingLayout(logEvent, GELF_LAYOUT);
     }
 
@@ -101,20 +94,16 @@ class GelfLayoutTest {
             final Instant logEventInstant,
             final Map<String, Object> jsonTemplateLayoutMap,
             final Map<String, Object> gelfLayoutMap) {
-        final BigDecimal jsonTemplateLayoutTimestamp =
-                (BigDecimal) jsonTemplateLayoutMap.remove("timestamp");
-        final BigDecimal gelfLayoutTimestamp =
-                (BigDecimal) gelfLayoutMap.remove("timestamp");
+        final BigDecimal jsonTemplateLayoutTimestamp = (BigDecimal) jsonTemplateLayoutMap.remove("timestamp");
+        final BigDecimal gelfLayoutTimestamp = (BigDecimal) gelfLayoutMap.remove("timestamp");
         final String description = String.format(
                 "instantEpochSecs=%d.%d, jsonTemplateLayoutTimestamp=%s, gelfLayoutTimestamp=%s",
                 logEventInstant.getEpochSecond(),
                 logEventInstant.getNanoOfSecond(),
                 jsonTemplateLayoutTimestamp,
                 gelfLayoutTimestamp);
-        Assertions
-                .assertThat(jsonTemplateLayoutTimestamp.compareTo(gelfLayoutTimestamp))
+        Assertions.assertThat(jsonTemplateLayoutTimestamp.compareTo(gelfLayoutTimestamp))
                 .as(description)
                 .isEqualTo(0);
     }
-
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -24,11 +26,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
-@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncWaitStrategyIncorrectFactoryConfigGlobalLoggerTest.xml")
+@SetSystemProperty(
+        key = Log4jPropertyKey.Constant.CONFIG_LOCATION,
+        value = "AsyncWaitStrategyIncorrectFactoryConfigGlobalLoggerTest.xml")
 public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
 
     @Test
@@ -36,13 +38,16 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         assertTrue(context instanceof AsyncLoggerContext, "context is AsyncLoggerContext");
 
-        final AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
+                context.getConfiguration().getAsyncWaitStrategyFactory();
         assertNull(asyncWaitStrategyFactory);
 
         final AsyncLogger logger = (AsyncLogger) context.getRootLogger();
         final AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
-        assertEquals(TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
-        assertTrue(delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy,
+        assertEquals(
+                TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
+        assertTrue(
+                delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy,
                 "waitstrategy is TimeoutBlockingWaitStrategy");
     }
 }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.plugins.di;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
@@ -173,7 +172,8 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
         }
     }
 
-    private <A extends Annotation> ConstraintValidator<A> initialize(final AnnotatedAnnotation<A, Constraint> constraint) {
+    private <A extends Annotation> ConstraintValidator<A> initialize(
+            final AnnotatedAnnotation<A, Constraint> constraint) {
         final Class<? extends ConstraintValidator<A>> validatorType =
                 Cast.cast(constraint.getMetaAnnotation().value());
         final ConstraintValidator<A> validator = getInstance(validatorType);

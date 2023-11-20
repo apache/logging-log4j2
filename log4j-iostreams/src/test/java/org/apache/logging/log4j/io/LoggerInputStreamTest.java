@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.io;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class LoggerInputStreamTest extends AbstractStreamTest {
     protected ByteArrayInputStream wrapped;
@@ -34,9 +33,9 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
 
     protected InputStream createInputStream() {
         return IoBuilder.forLogger(getExtendedLogger())
-            .filter(this.wrapped)
-            .setLevel(LEVEL)
-            .buildInputStream();
+                .filter(this.wrapped)
+                .setLevel(LEVEL)
+                .buildInputStream();
     }
 
     @Before

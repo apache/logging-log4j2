@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -30,9 +32,6 @@ import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 @Tag("async")
 @UsingStatusListener
@@ -58,7 +57,8 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
         }
         Files.delete(file.toPath());
 
-        final String expected = "Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!";
+        final String expected =
+                "Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!";
         assertThat(line1, equalTo(expected));
         assertThat(line2, equalTo(expected));
     }

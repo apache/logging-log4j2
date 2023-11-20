@@ -47,8 +47,8 @@ import org.apache.logging.log4j.jackson.ThrowableProxyWithoutStacktraceMixIn;
  */
 public class JsonSetupContextInitializer {
 
-    public void setupModule(final SetupContext context, final boolean includeStacktrace,
-            final boolean stacktraceAsString) {
+    public void setupModule(
+            final SetupContext context, final boolean includeStacktrace, final boolean stacktraceAsString) {
         // JRE classes: we cannot edit those with Jackson annotations
         context.setMixInAnnotations(StackTraceElement.class, StackTraceElementMixIn.class);
         // Log4j API classes: we do not want to edit those with Jackson annotations because the API module should not
@@ -59,8 +59,12 @@ public class JsonSetupContextInitializer {
         context.setMixInAnnotations(LogEvent.class, LogEventJsonMixIn.class); // different ThreadContext handling
         // Log4j Core classes: we do not want to bring in Jackson at runtime if we do not have to.
         context.setMixInAnnotations(ExtendedStackTraceElement.class, ExtendedStackTraceElementMixIn.class);
-        context.setMixInAnnotations(ThrowableProxy.class, includeStacktrace
-                ? (stacktraceAsString ? ThrowableProxyWithStacktraceAsStringMixIn.class : ThrowableProxyMixIn.class)
-                : ThrowableProxyWithoutStacktraceMixIn.class);
+        context.setMixInAnnotations(
+                ThrowableProxy.class,
+                includeStacktrace
+                        ? (stacktraceAsString
+                                ? ThrowableProxyWithStacktraceAsStringMixIn.class
+                                : ThrowableProxyMixIn.class)
+                        : ThrowableProxyWithoutStacktraceMixIn.class);
     }
 }

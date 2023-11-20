@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -29,8 +30,6 @@ import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedF
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -61,7 +60,8 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
         for (final File file : files) {
             final BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
             System.out.println(file + " (" + fileAttributes.size() + "B) "
-                    + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(fileAttributes.lastModifiedTime().toMillis()));
+                    + FixedDateFormat.create(FixedFormat.ABSOLUTE)
+                            .format(fileAttributes.lastModifiedTime().toMillis()));
         }
         assertEquals(4, files.length, Arrays.toString(files));
         long total = 0;

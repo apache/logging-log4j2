@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.params.IntRangeSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class ThreadLocalRecyclerFactoryTest {
 
@@ -72,7 +71,6 @@ class ThreadLocalRecyclerFactoryTest {
                 .collect(Collectors.toList());
 
         assertThat(reacquiredObjects).containsExactlyElementsOf(acquiredObjects);
-
     }
 
     @Test
@@ -81,9 +79,8 @@ class ThreadLocalRecyclerFactoryTest {
         assertThat(recyclerQueue).isEmpty();
 
         // simulate a massively callstack with tons of logging
-        final List<RecyclableObject> acquiredObjects = IntStream.range(0, 1024)
-                .mapToObj(i -> recycler.acquire())
-                .collect(Collectors.toList());
+        final List<RecyclableObject> acquiredObjects =
+                IntStream.range(0, 1024).mapToObj(i -> recycler.acquire()).collect(Collectors.toList());
 
         // still nothing returned to pool
         assertThat(recyclerQueue).isEmpty();
@@ -94,7 +91,5 @@ class ThreadLocalRecyclerFactoryTest {
 
         // upon return, we should only have `CAPACITY` retained for future use
         assertThat(recyclerQueue).hasSize(CAPACITY);
-
     }
-
 }

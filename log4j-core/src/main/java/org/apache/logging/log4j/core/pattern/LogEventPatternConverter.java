@@ -84,5 +84,4 @@ public abstract class LogEventPatternConverter extends AbstractPatternConverter 
     public String emptyVariableOutput() {
         return "";
     }
-
 }

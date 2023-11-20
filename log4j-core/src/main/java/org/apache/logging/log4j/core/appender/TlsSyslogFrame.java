@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.util.Chars;
 
 /**
@@ -73,5 +72,4 @@ public class TlsSyslogFrame {
         }
         return true;
     }
-
 }

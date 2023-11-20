@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.HashMap;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link PropertiesLookup}.

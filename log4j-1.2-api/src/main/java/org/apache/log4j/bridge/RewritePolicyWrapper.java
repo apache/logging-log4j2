@@ -33,8 +33,8 @@ public class RewritePolicyWrapper implements RewritePolicy {
 
     @Override
     public LoggingEvent rewrite(final LoggingEvent source) {
-        final LogEvent event = source instanceof LogEventAdapter ? ((LogEventAdapter) source).getEvent() :
-        new LogEventWrapper(source);
+        final LogEvent event =
+                source instanceof LogEventAdapter ? ((LogEventAdapter) source).getEvent() : new LogEventWrapper(source);
         return new LogEventAdapter(policy.rewrite(event));
     }
 

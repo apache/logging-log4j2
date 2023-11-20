@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.TriConsumer;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -30,6 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.TriConsumer;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the JdkMapAdapterStringMap class.
@@ -392,7 +391,7 @@ public class JdkMapAdapterStringMapTest {
         assertEquals(5, original.size(), "size");
 
         final JdkMapAdapterStringMap other = new JdkMapAdapterStringMap();
-        for (int i = 0 ; i < 500; i++) {
+        for (int i = 0; i < 500; i++) {
             other.putValue(String.valueOf(i), String.valueOf(i));
         }
         other.putValue(null, "otherVal");
@@ -404,7 +403,7 @@ public class JdkMapAdapterStringMapTest {
         assertEquals("bbb", original.getValue("b"));
         assertEquals("ccc", original.getValue("c"));
         assertEquals("ddd", original.getValue("d"));
-        for (int i = 0 ; i < 500; i++) {
+        for (int i = 0; i < 500; i++) {
             assertEquals(String.valueOf(i), original.getValue(String.valueOf(i)));
         }
     }
@@ -532,7 +531,9 @@ public class JdkMapAdapterStringMapTest {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("b", "bbb");
         original.freeze();
-        assertThrows(UnsupportedOperationException.class, () -> original.remove("b")); // existing key: modifies the collection
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> original.remove("b")); // existing key: modifies the collection
     }
 
     @Test
@@ -590,7 +591,6 @@ public class JdkMapAdapterStringMapTest {
         original.putValue(null, "abc");
         assertEquals(6, original.size());
         assertEquals("abc", original.getValue(null));
-
     }
 
     @Test
@@ -777,10 +777,11 @@ public class JdkMapAdapterStringMapTest {
 
         original.forEach(new BiConsumer<String, String>() {
             int count = 0;
+
             @Override
             public void accept(final String key, final String value) {
-//                assertEquals("key", key, original.getKeyAt(count));
-//                assertEquals("val", value, original.getValueAt(count));
+                //                assertEquals("key", key, original.getKeyAt(count));
+                //                assertEquals("val", value, original.getValueAt(count));
                 count++;
                 assertTrue(count <= original.size(), "count should not exceed size but was " + count);
             }
@@ -791,12 +792,12 @@ public class JdkMapAdapterStringMapTest {
         JdkMapAdapterStringMap data;
         int count;
     }
+
     static TriConsumer<String, String, JdkMapAdapterStringMapTest.State> COUNTER = (key, value, state) -> {
-//            assertEquals("key", key, state.data.getKeyAt(state.count));
-//            assertEquals("val", value, state.data.getValueAt(state.count));
+        //            assertEquals("key", key, state.data.getKeyAt(state.count));
+        //            assertEquals("val", value, state.data.getValueAt(state.count));
         state.count++;
-        assertTrue(
-                state.count <= state.data.size(), "count should not exceed size but was " + state.count);
+        assertTrue(state.count <= state.data.size(), "count should not exceed size but was " + state.count);
     };
 
     @Test
@@ -811,5 +812,4 @@ public class JdkMapAdapterStringMapTest {
         original.forEach(COUNTER, state);
         assertEquals(state.count, original.size());
     }
-
 }

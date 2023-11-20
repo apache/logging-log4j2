@@ -28,7 +28,6 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.LogManager;
@@ -84,7 +83,8 @@ public class PropertiesConfiguration extends Log4j1Configuration {
      * @param source The ConfigurationSource.
      * @param monitorIntervalSeconds The monitoring interval in seconds.
      */
-    public PropertiesConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final int monitorIntervalSeconds) {
+    public PropertiesConfiguration(
+            final LoggerContext loggerContext, final ConfigurationSource source, final int monitorIntervalSeconds) {
         super(loggerContext, source, monitorIntervalSeconds);
     }
 
@@ -118,7 +118,10 @@ public class PropertiesConfiguration extends Log4j1Configuration {
                 try {
                     properties.load(inputStream);
                 } catch (final Exception e) {
-                    LOGGER.error("Could not read configuration file [{}].", getConfigurationSource().toString(), e);
+                    LOGGER.error(
+                            "Could not read configuration file [{}].",
+                            getConfigurationSource().toString(),
+                            e);
                     return;
                 }
             }
@@ -134,7 +137,8 @@ public class PropertiesConfiguration extends Log4j1Configuration {
             if (source == null) {
                 return null;
             }
-            final Configuration config = new PropertiesConfigurationFactory().getConfiguration(getLoggerContext(), source);
+            final Configuration config =
+                    new PropertiesConfigurationFactory().getConfiguration(getLoggerContext(), source);
             return config == null || config.getState() != State.INITIALIZING ? null : config;
         } catch (final IOException ex) {
             LOGGER.error("Cannot locate file {}: {}", getConfigurationSource(), ex);
@@ -394,7 +398,12 @@ public class PropertiesConfiguration extends Log4j1Configuration {
     /**
      * This method must work for the root category as well.
      */
-    private void parseLogger(final Properties props, final LoggerConfig loggerConfig, final String optionKey, final String loggerName, final String value) {
+    private void parseLogger(
+            final Properties props,
+            final LoggerConfig loggerConfig,
+            final String optionKey,
+            final String loggerName,
+            final String value) {
 
         LOGGER.debug("Parsing for [{}] with value=[{}].", loggerName, value);
         // We must skip over ',' but not white space
@@ -412,8 +421,9 @@ public class PropertiesConfiguration extends Log4j1Configuration {
             final String levelStr = st.nextToken();
             LOGGER.debug("Level token is [{}].", levelStr);
 
-            final org.apache.logging.log4j.Level level = levelStr == null ? org.apache.logging.log4j.Level.ERROR
-                : OptionConverter.convertLevel(levelStr, org.apache.logging.log4j.Level.DEBUG);
+            final org.apache.logging.log4j.Level level = levelStr == null
+                    ? org.apache.logging.log4j.Level.ERROR
+                    : OptionConverter.convertLevel(levelStr, org.apache.logging.log4j.Level.DEBUG);
             loggerConfig.setLevel(level);
             LOGGER.debug("Logger {} level set to {}", loggerName, level);
         }
@@ -461,8 +471,13 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         return appender;
     }
 
-    private Appender buildAppender(final String appenderName, final String className, final String prefix, final String layoutPrefix, final String filterPrefix,
-        final Properties props) {
+    private Appender buildAppender(
+            final String appenderName,
+            final String className,
+            final String prefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props) {
         final Appender appender = newInstanceOf(className, "Appender");
         if (appender == null) {
             return null;
@@ -497,7 +512,8 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         return layout;
     }
 
-    private Layout buildLayout(final String layoutPrefix, final String className, final String appenderName, final Properties props) {
+    private Layout buildLayout(
+            final String layoutPrefix, final String className, final String appenderName, final Properties props) {
         final Layout layout = newInstanceOf(className, "Layout");
         if (layout == null) {
             return null;
@@ -508,31 +524,38 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         return layout;
     }
 
-    public ErrorHandler parseErrorHandler(final Properties props, final String errorHandlerPrefix, final String errorHandlerClass, final Appender appender) {
+    public ErrorHandler parseErrorHandler(
+            final Properties props,
+            final String errorHandlerPrefix,
+            final String errorHandlerClass,
+            final Appender appender) {
         final ErrorHandler eh = newInstanceOf(errorHandlerClass, "ErrorHandler");
         final String[] keys = new String[] {
             // @formatter:off
             errorHandlerPrefix + "." + ROOT_REF,
             errorHandlerPrefix + "." + LOGGER_REF,
-            errorHandlerPrefix + "." + APPENDER_REF_TAG};
-            // @formatter:on
+            errorHandlerPrefix + "." + APPENDER_REF_TAG
+        };
+        // @formatter:on
         addProperties(eh, keys, props, errorHandlerPrefix);
         return eh;
     }
 
     public void addProperties(final Object obj, final String[] keys, final Properties props, final String prefix) {
         final Properties edited = new Properties();
-        props.stringPropertyNames().stream().filter(name -> {
-            if (name.startsWith(prefix)) {
-                for (final String key : keys) {
-                    if (name.equals(key)) {
-                        return false;
+        props.stringPropertyNames().stream()
+                .filter(name -> {
+                    if (name.startsWith(prefix)) {
+                        for (final String key : keys) {
+                            if (name.equals(key)) {
+                                return false;
+                            }
+                        }
+                        return true;
                     }
-                }
-                return true;
-            }
-            return false;
-        }).forEach(name -> edited.put(name, props.getProperty(name)));
+                    return false;
+                })
+                .forEach(name -> edited.put(name, props.getProperty(name)));
         PropertySetter.setProperties(obj, edited, prefix + ".");
     }
 
@@ -593,7 +616,13 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         try {
             return LoaderUtil.newInstanceOf(className);
         } catch (ReflectiveOperationException | LinkageError | RuntimeException ex) {
-            LOGGER.error("Unable to create {} {} due to {}:{}", type, className, ex.getClass().getSimpleName(), ex.getMessage(), ex);
+            LOGGER.error(
+                    "Unable to create {} {} due to {}:{}",
+                    type,
+                    className,
+                    ex.getClass().getSimpleName(),
+                    ex.getMessage(),
+                    ex);
             return null;
         }
     }
@@ -611,5 +640,4 @@ public class PropertiesConfiguration extends Log4j1Configuration {
             return key + "=" + value;
         }
     }
-
 }

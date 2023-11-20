@@ -144,10 +144,10 @@ final class LazyUtil {
 
     static class ReleaseAcquireLazy<T> implements Lazy<T> {
         private static final VarHandle VALUE;
+
         static {
             try {
-                VALUE = MethodHandles.lookup()
-                        .findVarHandle(ReleaseAcquireLazy.class, "value", Object.class);
+                VALUE = MethodHandles.lookup().findVarHandle(ReleaseAcquireLazy.class, "value", Object.class);
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new IllegalStateException(e);
             }

@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.file.Path;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.pattern.NotANumber;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test getEligibleFiles method.
@@ -40,7 +39,8 @@ public class EligibleFilesTest {
 
     @Test
     public void runTestWithPlusCharacter() throws Exception {
-        final String path = "target/test-classes/rolloverPath/log4j.20211028T194500+0200." + NotANumber.VALUE + ".log.gz";
+        final String path =
+                "target/test-classes/rolloverPath/log4j.20211028T194500+0200." + NotANumber.VALUE + ".log.gz";
         final TestRolloverStrategy strategy = new TestRolloverStrategy();
         final Map<Integer, Path> files = strategy.findFilesWithPlusInPath(path);
         assertTrue(files.size() > 0, "No files found");

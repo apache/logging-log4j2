@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.jackson.layout;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -42,7 +41,7 @@ import org.apache.logging.log4j.util.Strings;
 
 abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
-    public static abstract class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B> {
+    public abstract static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B> {
 
         @PluginBuilderAttribute
         private boolean eventEol;
@@ -195,6 +194,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
             return header == null ? null : new String(header, Charset.defaultCharset());
         }
     }
+
     @JsonRootName(XmlConstants.ELT_EVENT)
     public static class LogEventWrapperWithAdditionalFields {
 
@@ -234,14 +234,16 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     protected static final String DEFAULT_EOL = "\r\n";
 
     protected static final String COMPACT_EOL = Strings.EMPTY;
+
     private static LogEvent convertMutableToLog4jEvent(final LogEvent event) {
         // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
         // TODO Need to set up the same filters for MutableLogEvent but don't know how...
         // This is a workaround.
         return event instanceof Log4jLogEvent ? event : event.toMemento();
     }
-    private static ResolvableKeyValuePair[] prepareAdditionalFields(final Configuration config,
-            final KeyValuePair[] additionalFields) {
+
+    private static ResolvableKeyValuePair[] prepareAdditionalFields(
+            final Configuration config, final KeyValuePair[] additionalFields) {
         if (additionalFields == null || additionalFields.length == 0) {
             // No fields set
             return new ResolvableKeyValuePair[0];
@@ -251,7 +253,8 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         final ResolvableKeyValuePair[] resolvableFields = new ResolvableKeyValuePair[additionalFields.length];
 
         for (int i = 0; i < additionalFields.length; i++) {
-            final ResolvableKeyValuePair resolvable = resolvableFields[i] = new ResolvableKeyValuePair(additionalFields[i]);
+            final ResolvableKeyValuePair resolvable =
+                    resolvableFields[i] = new ResolvableKeyValuePair(additionalFields[i]);
 
             // Validate
             if (config == null && resolvable.valueNeedsLookup) {
@@ -262,9 +265,11 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         return resolvableFields;
     }
+
     protected static boolean valueNeedsLookup(final String value) {
         return value != null && value.contains("${");
     }
+
     protected final String eol;
     protected final ObjectWriter objectWriter;
 
@@ -276,18 +281,42 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected final ResolvableKeyValuePair[] additionalFields;
 
-    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
-            final Serializer footerSerializer, final boolean includeNullDelimiter,
+    protected AbstractJacksonLayout(
+            final Configuration config,
+            final ObjectWriter objectWriter,
+            final Charset charset,
+            final boolean compact,
+            final boolean complete,
+            final boolean eventEol,
+            final Serializer headerSerializer,
+            final Serializer footerSerializer,
+            final boolean includeNullDelimiter,
             final KeyValuePair[] additionalFields) {
-        this(config, objectWriter, charset, compact, complete, eventEol, null,
-                headerSerializer, footerSerializer, includeNullDelimiter, additionalFields);
+        this(
+                config,
+                objectWriter,
+                charset,
+                compact,
+                complete,
+                eventEol,
+                null,
+                headerSerializer,
+                footerSerializer,
+                includeNullDelimiter,
+                additionalFields);
     }
 
-
-    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final String endOfLine,
-            final Serializer headerSerializer, final Serializer footerSerializer, final boolean includeNullDelimiter,
+    protected AbstractJacksonLayout(
+            final Configuration config,
+            final ObjectWriter objectWriter,
+            final Charset charset,
+            final boolean compact,
+            final boolean complete,
+            final boolean eventEol,
+            final String endOfLine,
+            final Serializer headerSerializer,
+            final Serializer footerSerializer,
+            final boolean includeNullDelimiter,
             final KeyValuePair[] additionalFields) {
         super(config, charset, headerSerializer, footerSerializer);
         this.objectWriter = objectWriter;
@@ -298,8 +327,8 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         this.additionalFields = prepareAdditionalFields(config, additionalFields);
     }
 
-    protected LogEventWrapperWithAdditionalFields createLogEventWrapperWithAdditionalFields(final LogEvent event,
-            final Map<String, String> additionalFieldsMap) {
+    protected LogEventWrapperWithAdditionalFields createLogEventWrapperWithAdditionalFields(
+            final LogEvent event, final Map<String, String> additionalFieldsMap) {
         return new LogEventWrapperWithAdditionalFields(event, additionalFieldsMap);
     }
 

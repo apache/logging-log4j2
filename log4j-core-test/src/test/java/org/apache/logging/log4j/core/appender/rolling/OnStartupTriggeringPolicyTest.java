@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -28,16 +31,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link OnStartupTriggeringPolicy}.
@@ -69,14 +68,33 @@ public class OnStartupTriggeringPolicyTest {
         final FileTime fileTime = FileTime.fromMillis(timeStamp);
         final BasicFileAttributeView attrs = Files.getFileAttributeView(target, BasicFileAttributeView.class);
         attrs.setTimes(fileTime, fileTime, fileTime);
-        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%msg").setConfiguration(configuration)
+        final PatternLayout layout = PatternLayout.newBuilder()
+                .setPattern("%msg")
+                .setConfiguration(configuration)
                 .build();
-        final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder().setCompressionLevelStr("0")
-                .setStopCustomActionsOnError(true).setConfig(configuration).build();
+        final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
+                .setCompressionLevelStr("0")
+                .setStopCustomActionsOnError(true)
+                .setConfig(configuration)
+                .build();
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
 
-        try (final RollingFileManager manager = RollingFileManager.getFileManager(target.toString(), tempDir.toString() + TARGET_PATTERN, true,
-                false, policy, strategy, null, layout, 8192, true, false, null, null, null, configuration)) {
+        try (final RollingFileManager manager = RollingFileManager.getFileManager(
+                target.toString(),
+                tempDir.toString() + TARGET_PATTERN,
+                true,
+                false,
+                policy,
+                strategy,
+                null,
+                layout,
+                8192,
+                true,
+                false,
+                null,
+                null,
+                null,
+                configuration)) {
             manager.initialize();
             final String files;
             try (final Stream<Path> contents = Files.list(tempDir)) {
@@ -88,5 +106,4 @@ public class OnStartupTriggeringPolicyTest {
             assertEquals(size, Files.size(rolled), rolled.toString());
         }
     }
-
 }

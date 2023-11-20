@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.plugins.di.resolver;
 
 import java.lang.reflect.Type;
-
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
@@ -25,7 +24,8 @@ import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 /**
  * Factory resolver for {@link PluginBuilderAttribute}-annotated keys. This injects a plugin configuration option.
  */
-public class PluginBuilderAttributeFactoryResolver<T> extends AbstractAttributeFactoryResolver<T, PluginBuilderAttribute> {
+public class PluginBuilderAttributeFactoryResolver<T>
+        extends AbstractAttributeFactoryResolver<T, PluginBuilderAttribute> {
     public PluginBuilderAttributeFactoryResolver() {
         super(PluginBuilderAttribute.class);
     }
@@ -36,8 +36,11 @@ public class PluginBuilderAttributeFactoryResolver<T> extends AbstractAttributeF
     }
 
     @Override
-    protected T getDefaultValue(final PluginBuilderAttribute annotation, final StringValueResolver resolver,
-                                final Type type, final TypeConverter<T> typeConverter) {
+    protected T getDefaultValue(
+            final PluginBuilderAttribute annotation,
+            final StringValueResolver resolver,
+            final Type type,
+            final TypeConverter<T> typeConverter) {
         return null;
     }
 }

@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * Checks if a Log4j property is present or matches a specific non-empty value.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Documented
 @Conditional(OnPropertyCondition.class)
 public @interface ConditionalOnProperty {

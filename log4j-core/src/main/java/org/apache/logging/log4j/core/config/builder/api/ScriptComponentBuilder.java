@@ -20,6 +20,4 @@ package org.apache.logging.log4j.core.config.builder.api;
  * Assembler for constructing Layout Components.
  * @since 2.5
  */
-public interface ScriptComponentBuilder extends ComponentBuilder<ScriptComponentBuilder> {
-
-}
+public interface ScriptComponentBuilder extends ComponentBuilder<ScriptComponentBuilder> {}

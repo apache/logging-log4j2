@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ThreadLocalRandom;
@@ -26,13 +28,10 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.junit.function.ThrowingRunnable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 // tests adapted from Kotlin
 @Timeout(30)
@@ -58,15 +57,17 @@ class LazyTest {
         final int threads = 3;
         final CyclicBarrier barrier = new CyclicBarrier(threads);
         final List<Thread> runners = IntStream.range(0, threads)
-        .mapToObj(i -> {
-            final Thread thread = new Thread(threadGroup, () -> runCatching(() -> {
-                barrier.await();
-                lazy.get();
-            }));
-            thread.start();
-            return thread;
-        })
-        .collect(Collectors.toList());
+                .mapToObj(i -> {
+                    final Thread thread = new Thread(
+                            threadGroup,
+                            () -> runCatching(() -> {
+                                barrier.await();
+                                lazy.get();
+                            }));
+                    thread.start();
+                    return thread;
+                })
+                .collect(Collectors.toList());
         runners.forEach(thread -> runCatching(thread::join));
         assertThat(counter.get()).isEqualTo(1);
     }
@@ -76,9 +77,9 @@ class LazyTest {
         final AtomicInteger counter = new AtomicInteger();
         final int nrThreads = 3;
         final int[] values = ThreadLocalRandom.current()
-        .ints(nrThreads)
-        .map(i -> 100 + i % 50)
-        .toArray();
+                .ints(nrThreads)
+                .map(i -> 100 + i % 50)
+                .toArray();
         final int[] runs = new int[nrThreads];
         final Lazy<Integer> lazy = Lazy.relaxed(() -> {
             final int id = counter.getAndIncrement();
@@ -89,15 +90,17 @@ class LazyTest {
         });
         final CyclicBarrier barrier = new CyclicBarrier(nrThreads);
         final List<Thread> threads = IntStream.range(0, nrThreads)
-        .mapToObj(i -> {
-            final Thread thread = new Thread(threadGroup, () -> runCatching(() -> {
-                barrier.await();
-                lazy.get();
-            }));
-            thread.start();
-            return thread;
-        })
-        .collect(Collectors.toList());
+                .mapToObj(i -> {
+                    final Thread thread = new Thread(
+                            threadGroup,
+                            () -> runCatching(() -> {
+                                barrier.await();
+                                lazy.get();
+                            }));
+                    thread.start();
+                    return thread;
+                })
+                .collect(Collectors.toList());
         while (!lazy.isInitialized()) {
             runCatching(() -> Thread.sleep(1));
         }
@@ -110,7 +113,9 @@ class LazyTest {
 
     @Test
     void strictLazyRace() {
-        racyTest(3, 5000,
+        racyTest(
+                3,
+                5000,
                 () -> {
                     final AtomicInteger counter = new AtomicInteger();
                     return Lazy.lazy(counter::incrementAndGet);
@@ -121,7 +126,9 @@ class LazyTest {
 
     @Test
     void relaxedLazyRace() {
-        racyTest(3, 5000,
+        racyTest(
+                3,
+                5000,
                 () -> Lazy.relaxed(() -> Thread.currentThread().getId()),
                 (lazy, ignored) -> lazy.value(),
                 result -> result.stream().allMatch(v -> Objects.equals(v, result.get(0))));
@@ -135,8 +142,12 @@ class LazyTest {
         }
     }
 
-    <S, T> void racyTest(final int nrThreads, final int runs, final Supplier<S> stateInitializer,
-                         final BiFunction<S, Integer, T> run, final Predicate<List<T>> resultsValidator) {
+    <S, T> void racyTest(
+            final int nrThreads,
+            final int runs,
+            final Supplier<S> stateInitializer,
+            final BiFunction<S, Integer, T> run,
+            final Predicate<List<T>> resultsValidator) {
         final List<T> runResult = Collections.synchronizedList(new ArrayList<>());
         final List<Map.Entry<Integer, List<T>>> invalidResults = Collections.synchronizedList(new ArrayList<>());
         final AtomicInteger currentRunId = new AtomicInteger(0);
@@ -152,18 +163,20 @@ class LazyTest {
             state.set(stateInitializer.get());
         });
         final List<Thread> runners = IntStream.range(0, nrThreads)
-        .mapToObj(i -> {
-            final Thread thread = new Thread(threadGroup, () -> runCatching(() -> {
-                barrier.await();
-                for (int j = 0; j < runs; j++) {
-                    runResult.add(run.apply(state.get(), j));
-                    barrier.await();
-                }
-            }));
-            thread.start();
-            return thread;
-        })
-        .collect(Collectors.toList());
+                .mapToObj(i -> {
+                    final Thread thread = new Thread(
+                            threadGroup,
+                            () -> runCatching(() -> {
+                                barrier.await();
+                                for (int j = 0; j < runs; j++) {
+                                    runResult.add(run.apply(state.get(), j));
+                                    barrier.await();
+                                }
+                            }));
+                    thread.start();
+                    return thread;
+                })
+                .collect(Collectors.toList());
         runners.forEach(thread -> runCatching(thread::join));
         assertThat(invalidResults).isEmpty();
     }

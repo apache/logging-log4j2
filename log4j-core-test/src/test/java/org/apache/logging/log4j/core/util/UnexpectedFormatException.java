@@ -18,12 +18,12 @@ package org.apache.logging.log4j.core.util;
 
 public class UnexpectedFormatException extends Exception {
 
-  /**
+    /**
      * Generated serial version ID.
      */
     private static final long serialVersionUID = -5322323184538975579L;
 
-public UnexpectedFormatException(final String msg) {
-    super(msg);
-  }
+    public UnexpectedFormatException(final String msg) {
+        super(msg);
+    }
 }

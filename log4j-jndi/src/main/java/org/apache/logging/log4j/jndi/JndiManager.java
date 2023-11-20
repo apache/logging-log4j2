@@ -16,16 +16,14 @@
  */
 package org.apache.logging.log4j.jndi;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -100,14 +98,20 @@ public class JndiManager extends AbstractManager {
      * @param additionalProperties      Any additional JNDI environment properties to set or {@code null} for none.
      * @return the JndiManager for the provided parameters.
      */
-    public static JndiManager getJndiManager(final String initialContextFactoryName,
+    public static JndiManager getJndiManager(
+            final String initialContextFactoryName,
             final String providerURL,
             final String urlPkgPrefixes,
             final String securityPrincipal,
             final String securityCredentials,
             final Properties additionalProperties) {
-        final Properties properties = createProperties(initialContextFactoryName, providerURL, urlPkgPrefixes,
-                securityPrincipal, securityCredentials, additionalProperties);
+        final Properties properties = createProperties(
+                initialContextFactoryName,
+                providerURL,
+                urlPkgPrefixes,
+                securityPrincipal,
+                securityCredentials,
+                additionalProperties);
         return getManager(createManagerName(), FACTORY, properties);
     }
 
@@ -146,8 +150,12 @@ public class JndiManager extends AbstractManager {
      * @return the Properties for the provided parameters.
      * @since 2.9
      */
-    public static Properties createProperties(final String initialContextFactoryName, final String providerURL,
-            final String urlPkgPrefixes, final String securityPrincipal, final String securityCredentials,
+    public static Properties createProperties(
+            final String initialContextFactoryName,
+            final String providerURL,
+            final String urlPkgPrefixes,
+            final String securityPrincipal,
+            final String securityCredentials,
             final Properties additionalProperties) {
         if (initialContextFactoryName == null) {
             return null;
@@ -157,8 +165,10 @@ public class JndiManager extends AbstractManager {
         if (providerURL != null) {
             properties.setProperty(Context.PROVIDER_URL, providerURL);
         } else {
-            LOGGER.warn("The JNDI InitialContextFactory class name [{}] was provided, but there was no associated "
-                    + "provider URL. This is likely to cause problems.", initialContextFactoryName);
+            LOGGER.warn(
+                    "The JNDI InitialContextFactory class name [{}] was provided, but there was no associated "
+                            + "provider URL. This is likely to cause problems.",
+                    initialContextFactoryName);
         }
         if (urlPkgPrefixes != null) {
             properties.setProperty(Context.URL_PKG_PREFIXES, urlPkgPrefixes);
@@ -168,7 +178,8 @@ public class JndiManager extends AbstractManager {
             if (securityCredentials != null) {
                 properties.setProperty(Context.SECURITY_CREDENTIALS, securityCredentials);
             } else {
-                LOGGER.warn("A security principal [{}] was provided, but with no corresponding security credentials.",
+                LOGGER.warn(
+                        "A security principal [{}] was provided, but with no corresponding security credentials.",
                         securityPrincipal);
             }
         }
@@ -194,8 +205,7 @@ public class JndiManager extends AbstractManager {
     @SuppressWarnings({"unchecked", "BanJNDI"})
     @SuppressFBWarnings(
             value = "LDAP_INJECTION",
-            justification = "This method only accepts an empty or 'java:' URI scheme."
-    )
+            justification = "This method only accepts an empty or 'java:' URI scheme.")
     public <T> T lookup(final String name) throws NamingException {
         if (context == null) {
             return null;
@@ -217,8 +227,8 @@ public class JndiManager extends AbstractManager {
         @Override
         public JndiManager createManager(final String name, final Properties data) {
             if (!isJndiEnabled()) {
-                throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true",
-                        "JNDI.enable{SubKey}"));
+                throw new IllegalStateException(String.format(
+                        "JNDI must be enabled by setting one of the %s* properties to true", "JNDI.enable{SubKey}"));
             }
             try {
                 return new JndiManager(name, new InitialContext(data));
@@ -227,12 +237,10 @@ public class JndiManager extends AbstractManager {
                 return null;
             }
         }
-
     }
 
     @Override
     public String toString() {
         return "JndiManager [context=" + context + ", count=" + count + "]";
     }
-
 }

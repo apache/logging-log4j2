@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.util;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -35,11 +34,10 @@ public final class Loader {
 
     private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
-    final static Boolean ignoreTccl =
-        Boolean.valueOf(PropertiesUtil.getProperties().getStringProperty(LoggingSystemProperty.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null));
+    static final Boolean ignoreTccl = Boolean.valueOf(PropertiesUtil.getProperties()
+            .getStringProperty(LoggingSystemProperty.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null));
 
-    private Loader() {
-    }
+    private Loader() {}
 
     /**
      * Returns the ClassLoader to use.
@@ -200,8 +198,7 @@ public final class Loader {
      * @return The class, or null if loader is null.
      * @throws ClassNotFoundException if the class could not be found.
      */
-    public static Class<?> loadClass(final String className, final ClassLoader loader)
-            throws ClassNotFoundException {
+    public static Class<?> loadClass(final String className, final ClassLoader loader) throws ClassNotFoundException {
         return loader != null ? loader.loadClass(className) : null;
     }
 

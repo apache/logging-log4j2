@@ -92,8 +92,8 @@ public final class ZipCompressAction extends AbstractAction {
      * @return true if source file compressed.
      * @throws IOException on IO exception.
      */
-    public static boolean execute(final File source, final File destination, final boolean deleteSource,
-            final int level) throws IOException {
+    public static boolean execute(
+            final File source, final File destination, final boolean deleteSource, final int level) throws IOException {
         if (source.exists()) {
             try (final FileInputStream fis = new FileInputStream(source);
                     final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destination))) {
@@ -132,8 +132,8 @@ public final class ZipCompressAction extends AbstractAction {
 
     @Override
     public String toString() {
-        return ZipCompressAction.class.getSimpleName() + '[' + source + " to " + destination
-                + ", level=" + level + ", deleteSource=" + deleteSource + ']';
+        return ZipCompressAction.class.getSimpleName() + '[' + source + " to " + destination + ", level=" + level
+                + ", deleteSource=" + deleteSource + ']';
     }
 
     public File getSource() {

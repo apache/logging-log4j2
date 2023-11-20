@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.plugins.di.spi;
 
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 

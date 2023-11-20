@@ -21,7 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.apache.logging.log4j.plugins.Factory;
 
 /**
@@ -32,5 +31,4 @@ import org.apache.logging.log4j.plugins.Factory;
 @Target(ElementType.METHOD)
 @Documented
 @Conditional(OnMissingBindingCondition.class)
-public @interface ConditionalOnMissingBinding {
-}
+public @interface ConditionalOnMissingBinding {}

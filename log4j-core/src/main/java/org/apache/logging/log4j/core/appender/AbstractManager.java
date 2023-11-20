@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -67,7 +66,6 @@ public abstract class AbstractManager implements AutoCloseable {
         public Configuration getConfiguration() {
             return configuration;
         }
-
     }
 
     /**
@@ -118,8 +116,8 @@ public abstract class AbstractManager implements AutoCloseable {
      * @param <T> The type of the Factory data.
      * @return A Manager with the specified name and type.
      */
-    public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory,
-                                                              final T data) {
+    public static <M extends AbstractManager, T> M getManager(
+            final String name, final ManagerFactory<M, T> factory, final T data) {
         return REGISTRY.getOrCreateManager(name, factory, data);
     }
 
@@ -157,8 +155,9 @@ public abstract class AbstractManager implements AutoCloseable {
             return narrowClass.cast(manager);
         } catch (final ClassCastException e) {
             throw new ManagerException(
-                    "Configuration has multiple incompatible Appenders pointing to the same resource '" +
-                            manager.getName() + "'", e);
+                    "Configuration has multiple incompatible Appenders pointing to the same resource '"
+                            + manager.getName() + "'",
+                    e);
         }
     }
 
@@ -229,8 +228,8 @@ public abstract class AbstractManager implements AutoCloseable {
     }
 
     protected void log(final Level level, final String message, final Throwable throwable) {
-        final Message m = LOGGER.getMessageFactory().newMessage("{} {} {}: {}",
-                getClass().getSimpleName(), getName(), message, throwable);
+        final Message m = LOGGER.getMessageFactory()
+                .newMessage("{} {} {}: {}", getClass().getSimpleName(), getName(), message, throwable);
         LOGGER.log(level, m, throwable);
     }
 
@@ -245,5 +244,4 @@ public abstract class AbstractManager implements AutoCloseable {
     protected void logWarn(final String message, final Throwable throwable) {
         log(Level.WARN, message, throwable);
     }
-
 }

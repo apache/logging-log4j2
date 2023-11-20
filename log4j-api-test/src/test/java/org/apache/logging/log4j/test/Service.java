@@ -16,5 +16,4 @@
  */
 package org.apache.logging.log4j.test;
 
-public interface Service {
-}
+public interface Service {}

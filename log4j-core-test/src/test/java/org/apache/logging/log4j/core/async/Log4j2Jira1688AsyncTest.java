@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -27,8 +28,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
  * Tests LOG4J2-1688 Multiple loggings of arguments are setting these arguments to null.
@@ -46,7 +45,8 @@ public class Log4j2Jira1688AsyncTest {
     }
 
     @Test
-    public void testLog4j2Only(@Named("List") final ListAppender listAppender, final ExtendedLogger log4JLogger) throws InterruptedException {
+    public void testLog4j2Only(@Named("List") final ListAppender listAppender, final ExtendedLogger log4JLogger)
+            throws InterruptedException {
         final int limit = 11; // more than unrolled varargs
         final Object[] args = createArray(limit);
         final Object[] originalArgs = Arrays.copyOf(args, args.length);
@@ -60,5 +60,4 @@ public class Log4j2Jira1688AsyncTest {
         log4JLogger.logIfEnabled("test", Level.ERROR, null, "test {}", args);
         assertArrayEquals(originalArgs, args, Arrays.toString(args));
     }
-
 }

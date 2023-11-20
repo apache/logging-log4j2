@@ -18,7 +18,6 @@ package org.apache.logging.log4j.plugins.name;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.logging.log4j.plugins.PluginAliases;
 
 public class PluginAliasesProvider implements AnnotatedElementAliasesProvider<PluginAliases> {

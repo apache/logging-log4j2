@@ -18,7 +18,6 @@ package org.apache.logging.log4j.status;
 
 import java.io.PrintStream;
 import java.text.DateFormat;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
@@ -34,8 +33,13 @@ class StatusLoggerFactory {
 
     SimpleLogger createSimpleLogger(final String name, final Level loggerLevel, final PrintStream stream) {
         final DateFormat dateFormat = configuration.getDateTimeFormat();
-        return new SimpleLogger(name, ParameterizedNoReferenceMessageFactory.INSTANCE, stream,
-                loggerLevel, dateFormat, dateFormat != null);
+        return new SimpleLogger(
+                name,
+                ParameterizedNoReferenceMessageFactory.INSTANCE,
+                stream,
+                loggerLevel,
+                dateFormat,
+                dateFormat != null);
     }
 
     StatusLogger createStatusLogger() {

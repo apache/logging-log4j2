@@ -52,7 +52,9 @@ public class SystemPropertyBundle {
 
     @Inject
     public SystemPropertyBundle(
-            final InstanceFactory instanceFactory, final PropertyEnvironment properties, final ClassLoader classLoader) {
+            final InstanceFactory instanceFactory,
+            final PropertyEnvironment properties,
+            final ClassLoader classLoader) {
         this.instanceFactory = instanceFactory;
         this.properties = properties;
         this.classLoader = classLoader;
@@ -74,7 +76,8 @@ public class SystemPropertyBundle {
     @ConditionalOnPropertyKey(key = Log4jPropertyKey.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME)
     @Factory
     public ContextDataInjector systemPropertyContextDataInjector() throws ClassNotFoundException {
-        return newInstanceOfProperty(Log4jPropertyKey.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME, ContextDataInjector.class);
+        return newInstanceOfProperty(
+                Log4jPropertyKey.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME, ContextDataInjector.class);
     }
 
     @ConditionalOnPropertyKey(key = Log4jPropertyKey.LOG_EVENT_FACTORY_CLASS_NAME)

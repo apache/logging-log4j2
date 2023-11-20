@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -30,8 +31,6 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
 public class ContextDataProviderTest {
@@ -66,6 +65,5 @@ public class ContextDataProviderTest {
             contextData.put("testKey", "testValue");
             return contextData;
         }
-
     }
 }

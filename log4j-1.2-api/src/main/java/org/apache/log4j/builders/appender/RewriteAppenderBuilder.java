@@ -16,11 +16,15 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
+import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.RewritePolicyAdapter;
@@ -43,11 +47,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
-import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
-import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.*;
-
 /**
  * Build an Rewrite Appender
  */
@@ -58,8 +57,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String REWRITE_POLICY_TAG = "rewritePolicy";
 
-    public RewriteAppenderBuilder() {
-    }
+    public RewriteAppenderBuilder() {}
 
     public RewriteAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
@@ -96,18 +94,29 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
                     break;
             }
         });
-        return createAppender(name, level.get(), appenderRefs.get().toArray(Strings.EMPTY_ARRAY), rewritePolicyHolder.get(),
-                filter.get(), config);
+        return createAppender(
+                name,
+                level.get(),
+                appenderRefs.get().toArray(Strings.EMPTY_ARRAY),
+                rewritePolicyHolder.get(),
+                filter.get(),
+                config);
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         final String appenderRef = getProperty(APPENDER_REF_TAG);
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         final String policyPrefix = appenderPrefix + ".rewritePolicy";
         final String className = getProperty(policyPrefix);
-        final RewritePolicy policy = configuration.getBuilderManager()
+        final RewritePolicy policy = configuration
+                .getBuilderManager()
                 .parse(className, policyPrefix, props, configuration, BuilderManager.INVALID_REWRITE_POLICY);
         final String level = getProperty(THRESHOLD_PARAM);
         if (appenderRef == null) {
@@ -122,14 +131,18 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         return createAppender(name, level, new String[] {appenderRef}, policy, filter, configuration);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(final String name, final String level,
-            final String[] appenderRefs, final RewritePolicy policy, final Filter filter, final T configuration) {
+    private <T extends Log4j1Configuration> Appender createAppender(
+            final String name,
+            final String level,
+            final String[] appenderRefs,
+            final RewritePolicy policy,
+            final Filter filter,
+            final T configuration) {
         if (appenderRefs.length == 0) {
             LOGGER.error("No appender references configured for RewriteAppender {}", name);
             return null;
         }
-        final Level logLevel = OptionConverter.convertLevel(level,
-                Level.TRACE);
+        final Level logLevel = OptionConverter.convertLevel(level, Level.TRACE);
         final AppenderRef[] refs = new AppenderRef[appenderRefs.length];
         int index = 0;
         for (final String appenderRef : appenderRefs) {
@@ -142,7 +155,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         } else {
             rewritePolicy = new RewritePolicyAdapter(policy);
         }
-        return AppenderWrapper.adapt(RewriteAppender.createAppender(name, true, refs, configuration,
-                rewritePolicy, rewriteFilter));
+        return AppenderWrapper.adapt(
+                RewriteAppender.createAppender(name, true, refs, configuration, rewritePolicy, rewriteFilter));
     }
 }

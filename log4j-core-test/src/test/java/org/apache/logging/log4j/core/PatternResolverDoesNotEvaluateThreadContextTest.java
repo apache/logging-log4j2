@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @LoggerContextSource("log4j2-pattern-layout-with-context.xml")
 public class PatternResolverDoesNotEvaluateThreadContextTest {
@@ -37,8 +36,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
     private final ListAppender listAppender;
 
     public PatternResolverDoesNotEvaluateThreadContextTest(
-            final LoggerContext context,
-            @Named("list") final ListAppender app) {
+            final LoggerContext context, @Named("list") final ListAppender app) {
         this.context = context;
         this.listAppender = app.clear();
     }
@@ -50,8 +48,10 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         final String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a test", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a test",
+                message);
     }
 
     @Test
@@ -61,8 +61,10 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         final String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a ${upper:test}", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a ${upper:test}",
+                message);
     }
 
     @Test
@@ -77,8 +79,10 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         final String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest 123 This is a test", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest 123 This is a test",
+                message);
     }
 
     @Test
@@ -93,8 +97,10 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         final String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest ${java:version} This is a test", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest ${java:version} This is a test",
+                message);
     }
 
     @Test
@@ -109,7 +115,9 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         final String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest user${java:version}name This is a test", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest user${java:version}name This is a test",
+                message);
     }
 }

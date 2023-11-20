@@ -16,6 +16,7 @@
  */
 package org.apache.log4j;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
@@ -23,8 +24,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.spi.ThrowableRenderer;
 
 /**
@@ -42,8 +41,7 @@ public final class DefaultThrowableRenderer implements ThrowableRenderer {
      */
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "The throwable is formatted into a log file, which should be private."
-    )
+            justification = "The throwable is formatted into a log file, which should be private.")
     public static String[] render(final Throwable throwable) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);

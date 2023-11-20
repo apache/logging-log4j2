@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
-
 import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
@@ -74,8 +73,14 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * @param eventPrefix The value to prefix to event keys.
      * @param compress If true the event body should be compressed.
      */
-    public FlumeEvent(final LogEvent event, final String includes, final String excludes, final String required,
-                      String mdcPrefix, String eventPrefix, final boolean compress) {
+    public FlumeEvent(
+            final LogEvent event,
+            final String includes,
+            final String excludes,
+            final String required,
+            String mdcPrefix,
+            String eventPrefix,
+            final boolean compress) {
         this.event = event;
         this.compress = compress;
         final Map<String, String> headers = getHeaders();
@@ -125,13 +130,12 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 }
             }
         }
-        final String guid =  UuidUtil.getTimeBasedUuid().toString();
+        final String guid = UuidUtil.getTimeBasedUuid().toString();
         final Message message = event.getMessage();
         if (message instanceof MapMessage) {
             // Add the guid to the Map so that it can be included in the Layout.
             @SuppressWarnings("unchecked")
-            final
-            MapMessage<?, String> stringMapMessage = (MapMessage<?, String>) message;
+            final MapMessage<?, String> stringMapMessage = (MapMessage<?, String>) message;
             stringMapMessage.put(GUID, guid);
             if (message instanceof StructuredDataMessage) {
                 addStructuredData(eventPrefix, headers, (StructuredDataMessage) message);
@@ -144,8 +148,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         addContextData(mdcPrefix, headers, contextMap);
     }
 
-    protected void addStructuredData(final String prefix, final Map<String, String> fields,
-                                     final StructuredDataMessage msg) {
+    protected void addStructuredData(
+            final String prefix, final Map<String, String> fields, final StructuredDataMessage msg) {
         fields.put(prefix + EVENT_TYPE, msg.getType());
         final StructuredDataId id = msg.getId();
         fields.put(prefix + EVENT_ID, id.getName());
@@ -158,8 +162,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         }
     }
 
-    protected void addContextData(final String prefix, final Map<String, String> fields,
-                                  final Map<String, String> context) {
+    protected void addContextData(
+            final String prefix, final Map<String, String> fields, final Map<String, String> context) {
         final Map<String, String> map = new HashMap<>();
         for (final Map.Entry<String, String> entry : context.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
@@ -363,5 +367,4 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     public void setEndOfBatch(final boolean endOfBatch) {
         event.setEndOfBatch(endOfBatch);
     }
-
 }

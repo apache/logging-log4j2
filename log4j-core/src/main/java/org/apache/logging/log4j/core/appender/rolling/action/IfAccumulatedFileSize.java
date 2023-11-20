@@ -21,7 +21,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.FileSize;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -70,8 +69,13 @@ public final class IfAccumulatedFileSize implements PathCondition {
         final boolean result = accumulatedSize > thresholdBytes;
         final String match = result ? ">" : "<=";
         final String accept = result ? "ACCEPTED" : "REJECTED";
-        LOGGER.trace("IfAccumulatedFileSize {}: {} accumulated size '{}' {} thresholdBytes '{}'", accept, relativePath,
-                accumulatedSize, match, thresholdBytes);
+        LOGGER.trace(
+                "IfAccumulatedFileSize {}: {} accumulated size '{}' {} thresholdBytes '{}'",
+                accept,
+                relativePath,
+                accumulatedSize,
+                match,
+                thresholdBytes);
         if (result) {
             return IfAll.accept(nestedConditions, basePath, relativePath, attrs);
         }
@@ -100,7 +104,7 @@ public final class IfAccumulatedFileSize implements PathCondition {
             // @formatter:off
             @PluginAttribute("exceeds") final String size,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
-            // @formatter:on
+        // @formatter:on
 
         if (size == null) {
             LOGGER.error("IfAccumulatedFileSize missing mandatory size threshold.");

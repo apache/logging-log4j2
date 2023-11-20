@@ -16,17 +16,6 @@
  */
 package org.apache.logging.log4j.jpl;
 
-import java.lang.System.Logger;
-import java.util.List;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.MementoLogEvent;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -34,6 +23,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+
+import java.lang.System.Logger;
+import java.util.List;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.MementoLogEvent;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class Log4jSystemLoggerTest {
 

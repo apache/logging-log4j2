@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.csv.layout;
 
 import java.nio.charset.Charset;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -37,8 +36,14 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
     protected static final String DEFAULT_FORMAT = "Default";
     private static final String CONTENT_TYPE = "text/csv";
 
-    protected static CSVFormat createFormat(final String format, final Character delimiter, final Character escape,
-            final Character quote, final QuoteMode quoteMode, final String nullString, final String recordSeparator) {
+    protected static CSVFormat createFormat(
+            final String format,
+            final Character delimiter,
+            final Character escape,
+            final Character quote,
+            final QuoteMode quoteMode,
+            final String nullString,
+            final String recordSeparator) {
         CSVFormat csvFormat = CSVFormat.valueOf(format);
         if (isNotNul(delimiter)) {
             csvFormat = csvFormat.withDelimiter(delimiter);
@@ -67,11 +72,23 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
 
     private final CSVFormat format;
 
-    protected AbstractCsvLayout(final Configuration config, final Charset charset, final CSVFormat csvFormat,
-            final String header, final String footer) {
-        super(config, charset,
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(header).build(),
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footer).build());
+    protected AbstractCsvLayout(
+            final Configuration config,
+            final Charset charset,
+            final CSVFormat csvFormat,
+            final String header,
+            final String footer) {
+        super(
+                config,
+                charset,
+                PatternLayout.newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setPattern(header)
+                        .build(),
+                PatternLayout.newSerializerBuilder()
+                        .setConfiguration(config)
+                        .setPattern(footer)
+                        .build());
         this.format = csvFormat;
     }
 

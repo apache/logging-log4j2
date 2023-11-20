@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.Collection;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collection;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -27,14 +28,13 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class StructuredDataFilterTest {
 
     @Test
     public void testFilter() {
-        final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("id.name", "AccountTransfer"),
-                                                    new KeyValuePair("ToAccount", "123456")};
+        final KeyValuePair[] pairs = new KeyValuePair[] {
+            new KeyValuePair("id.name", "AccountTransfer"), new KeyValuePair("ToAccount", "123456")
+        };
         StructuredDataFilter filter = StructuredDataFilter.createFilter(pairs, "and", null, null);
         assertNotNull(filter);
         filter.start();
@@ -64,7 +64,7 @@ public class StructuredDataFilterTest {
     public void testConfig(final Configuration config) {
         final Filter filter = config.getFilter();
         assertNotNull(filter, "No StructuredDataFilter");
-        assertTrue(filter instanceof  StructuredDataFilter, "Not a StructuredDataFilter");
+        assertTrue(filter instanceof StructuredDataFilter, "Not a StructuredDataFilter");
         final StructuredDataFilter sdFilter = (StructuredDataFilter) filter;
         assertFalse(sdFilter.isAnd(), "Should not be And filter");
         final IndexedReadOnlyStringMap map = sdFilter.getStringMap();

@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.script.config.builder;
 
-import java.util.concurrent.TimeUnit;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -26,8 +27,6 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConfigurationBuilderTest {
 
@@ -38,22 +37,23 @@ public class ConfigurationBuilderTest {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
         builder.setShutdownTimeout(5000, TimeUnit.MILLISECONDS);
-        builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy").addIsWatched(true));
+        builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy")
+                .addIsWatched(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
 
-        final AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
-        appenderBuilder.add(builder.newLayout("PatternLayout").
-                addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
-        appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
-                Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
+        final AppenderComponentBuilder appenderBuilder =
+                builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+        appenderBuilder.add(
+                builder.newLayout("PatternLayout").addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+        appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
+                .addAttribute("marker", "FLOW"));
         builder.add(appenderBuilder);
 
-        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true).
-                    add(builder.newAppenderRef("Stdout")).
-                    addAttribute("additivity", false));
-        builder.add(builder.newLogger("org.apache.logging.log4j.core").
-                    add(builder.newAppenderRef("Stdout")));
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true)
+                .add(builder.newAppenderRef("Stdout"))
+                .addAttribute("additivity", false));
+        builder.add(builder.newLogger("org.apache.logging.log4j.core").add(builder.newAppenderRef("Stdout")));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
 
         builder.addProperty("MyKey", "MyValue");
@@ -61,45 +61,48 @@ public class ConfigurationBuilderTest {
         builder.setPackages("foo,bar");
     }
 
-    private final static String expectedXml =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" /*+ EOL*/ +
-            "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\" shutdownTimeout=\"5000\">" + EOL +
-                INDENT + "<Properties>" + EOL +
-                INDENT + INDENT + "<Property name=\"MyKey\">MyValue</Property>" + EOL +
-                INDENT + "</Properties>" + EOL +
-                INDENT + "<Scripts>" + EOL +
-                INDENT + INDENT + "<ScriptFile name=\"target/test-classes/scripts/filter.groovy\" path=\"target/test-classes/scripts/filter.groovy\" isWatched=\"true\"/>" + EOL +
-                INDENT + "</Scripts>" + EOL +
-                INDENT + "<CustomLevels>" + EOL +
-                INDENT + INDENT + "<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + EOL +
-                INDENT + "</CustomLevels>" + EOL +
-                INDENT + "<ThresholdFilter onMatch=\"ACCEPT\" onMismatch=\"NEUTRAL\" level=\"DEBUG\"/>" + EOL +
-                INDENT + "<Appenders>" + EOL +
-                INDENT + INDENT + "<CONSOLE name=\"Stdout\" target=\"SYSTEM_OUT\">" + EOL +
-                INDENT + INDENT + INDENT + "<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + EOL +
-                INDENT + INDENT + INDENT + "<MarkerFilter onMatch=\"DENY\" onMismatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL +
-                INDENT + INDENT + "</CONSOLE>" + EOL +
-                INDENT + "</Appenders>" + EOL +
-                INDENT + "<Loggers>" + EOL +
-                INDENT + INDENT + "<Logger name=\"org.apache.logging.log4j\" level=\"DEBUG\" includeLocation=\"true\" additivity=\"false\">" + EOL +
-                INDENT + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL +
-                INDENT + INDENT + "</Logger>" + EOL +
-                INDENT + INDENT + "<Logger name=\"org.apache.logging.log4j.core\">" + EOL +
-                INDENT + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL +
-                INDENT + INDENT + "</Logger>" + EOL +
-                INDENT + INDENT + "<Root level=\"ERROR\">" + EOL +
-                INDENT + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL +
-                INDENT + INDENT + "</Root>" + EOL +
-                INDENT + "</Loggers>" + EOL +
-            "</Configuration>" + EOL;
+    private static final String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" /*+ EOL*/
+            + "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\" shutdownTimeout=\"5000\">"
+            + EOL + INDENT
+            + "<Properties>" + EOL + INDENT
+            + INDENT + "<Property name=\"MyKey\">MyValue</Property>" + EOL + INDENT
+            + "</Properties>" + EOL + INDENT
+            + "<Scripts>" + EOL + INDENT
+            + INDENT
+            + "<ScriptFile name=\"target/test-classes/scripts/filter.groovy\" path=\"target/test-classes/scripts/filter.groovy\" isWatched=\"true\"/>"
+            + EOL + INDENT
+            + "</Scripts>" + EOL + INDENT
+            + "<CustomLevels>" + EOL + INDENT
+            + INDENT + "<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + EOL + INDENT
+            + "</CustomLevels>" + EOL + INDENT
+            + "<ThresholdFilter onMatch=\"ACCEPT\" onMismatch=\"NEUTRAL\" level=\"DEBUG\"/>" + EOL + INDENT
+            + "<Appenders>" + EOL + INDENT
+            + INDENT + "<CONSOLE name=\"Stdout\" target=\"SYSTEM_OUT\">" + EOL + INDENT
+            + INDENT + INDENT + "<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + EOL + INDENT
+            + INDENT + INDENT + "<MarkerFilter onMatch=\"DENY\" onMismatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL + INDENT
+            + INDENT + "</CONSOLE>" + EOL + INDENT
+            + "</Appenders>" + EOL + INDENT
+            + "<Loggers>" + EOL + INDENT
+            + INDENT
+            + "<Logger name=\"org.apache.logging.log4j\" level=\"DEBUG\" includeLocation=\"true\" additivity=\"false\">"
+            + EOL + INDENT
+            + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL + INDENT
+            + INDENT + "</Logger>" + EOL + INDENT
+            + INDENT + "<Logger name=\"org.apache.logging.log4j.core\">" + EOL + INDENT
+            + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL + INDENT
+            + INDENT + "</Logger>" + EOL + INDENT
+            + INDENT + "<Root level=\"ERROR\">" + EOL + INDENT
+            + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL + INDENT
+            + INDENT + "</Root>" + EOL + INDENT
+            + "</Loggers>" + EOL + "</Configuration>"
+            + EOL;
 
     @Test
-    //@DisabledOnOs(OS.WINDOWS) // TODO make test run properly on Windows
+    // @DisabledOnOs(OS.WINDOWS) // TODO make test run properly on Windows
     public void testXmlConstructing() throws Exception {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
         assertEquals(expectedXml, xmlConfiguration);
     }
-
 }

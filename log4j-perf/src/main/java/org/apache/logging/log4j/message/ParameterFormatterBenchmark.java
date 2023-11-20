@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.util.concurrent.TimeUnit;
-
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -41,8 +40,9 @@ import org.openjdk.jmh.annotations.State;
 //
 @State(Scope.Benchmark)
 public class ParameterFormatterBenchmark {
-    private static final Object[] ARGS = { "arg1", "arg2", "arg3", "arg4", "arg5", "arg6", "arg7", "arg8",
-            "arg9", "arg10",};
+    private static final Object[] ARGS = {
+        "arg1", "arg2", "arg3", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9", "arg10",
+    };
 
     @State(Scope.Thread)
     public static class ThreadState {
@@ -118,8 +118,10 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency5ParamsV2(final ThreadState state) {
         state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}", state.indices);
-        ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}", ARGS, count, state.indices);
+        final int count =
+                ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}", state.indices);
+        ParameterFormatter.formatMessage2(
+                state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}", ARGS, count, state.indices);
         return state.buffer.length();
     }
 
@@ -128,8 +130,10 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency7ParamsV2(final ThreadState state) {
         state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", state.indices);
-        ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", ARGS, count, state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders2(
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", state.indices);
+        ParameterFormatter.formatMessage2(
+                state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", ARGS, count, state.indices);
         return state.buffer.length();
     }
 
@@ -138,8 +142,14 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency9ParamsV2(final ThreadState state) {
         state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", state.indices);
-        ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", ARGS, count, state.indices);
+        final int count = ParameterFormatter.countArgumentPlaceholders2(
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", state.indices);
+        ParameterFormatter.formatMessage2(
+                state.buffer,
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}",
+                ARGS,
+                count,
+                state.indices);
         return state.buffer.length();
     }
 
@@ -168,7 +178,8 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency7Params(final ThreadState state) {
         state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}");
+        final int count =
+                ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}");
         ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", ARGS, count);
         return state.buffer.length();
     }
@@ -178,8 +189,10 @@ public class ParameterFormatterBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency9Params(final ThreadState state) {
         state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}");
-        ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", ARGS, count);
+        final int count = ParameterFormatter.countArgumentPlaceholders(
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}");
+        ParameterFormatter.formatMessage(
+                state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", ARGS, count);
         return state.buffer.length();
     }
 }

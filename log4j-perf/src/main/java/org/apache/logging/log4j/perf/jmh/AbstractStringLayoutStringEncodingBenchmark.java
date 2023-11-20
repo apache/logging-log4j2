@@ -19,7 +19,6 @@ package org.apache.logging.log4j.perf.jmh;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -51,7 +50,7 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Thread)
 public class AbstractStringLayoutStringEncodingBenchmark {
     private static final String MESSAGE =
-        "This is rather long and chatty log message with quite some interesting information and a bit of fun in it which is suitable here";
+            "This is rather long and chatty log message with quite some interesting information and a bit of fun in it which is suitable here";
 
     private byte[] bytes;
 
@@ -72,8 +71,8 @@ public class AbstractStringLayoutStringEncodingBenchmark {
     @Setup
     public void setUp() {
         bytes = new byte[128];
-        for (int i = 0; i<bytes.length; i++) {
-            bytes[i] = (byte)i;
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) i;
         }
 
         usAsciiGetBytesLayout = new GetBytesLayout(Charset.forName("US-ASCII"));
@@ -106,18 +105,18 @@ public class AbstractStringLayoutStringEncodingBenchmark {
         final long timestamp = 12345678;
 
         return Log4jLogEvent.newBuilder() //
-            .setLoggerName("name(ignored)") //
-            .setMarker(marker) //
-            .setLoggerFqcn(fqcn) //
-            .setLevel(level) //
-            .setMessage(message) //
-            .setThrown(t) //
-            .setContextData(mdc) //
-            .setContextStack(ndc) //
-            .setThreadName(threadName) //
-            .setSource(location) //
-            .setTimeMillis(timestamp) //
-            .build();
+                .setLoggerName("name(ignored)") //
+                .setMarker(marker) //
+                .setLoggerFqcn(fqcn) //
+                .setLevel(level) //
+                .setMessage(message) //
+                .setThrown(t) //
+                .setContextData(mdc) //
+                .setContextStack(ndc) //
+                .setThreadName(threadName) //
+                .setSource(location) //
+                .setTimeMillis(timestamp) //
+                .build();
     }
 
     @BenchmarkMode(Mode.Throughput)
@@ -287,5 +286,4 @@ public class AbstractStringLayoutStringEncodingBenchmark {
             buffer.clear();
         }
     }
-
 }

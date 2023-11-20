@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -68,12 +67,12 @@ public class RollingFileAppenderAccessTest {
             file.deleteOnExit();
             // @formatter:off
             final RollingFileAppender appender = RollingFileAppender.newBuilder()
-                .setFileName(file.getCanonicalPath())
-                .setFilePattern("FilePattern")
-                .setName("Name")
-                .setPolicy(OnStartupTriggeringPolicy.createPolicy(1))
-                .setConfiguration(config)
-                .build();
+                    .setFileName(file.getCanonicalPath())
+                    .setFilePattern("FilePattern")
+                    .setName("Name")
+                    .setPolicy(OnStartupTriggeringPolicy.createPolicy(1))
+                    .setConfiguration(config)
+                    .build();
             // @formatter:on
             final RollingFileManager manager = appender.getManager();
             // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their

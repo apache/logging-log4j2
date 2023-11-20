@@ -33,7 +33,7 @@ public abstract class StackTraceElementMixIn {
 
     @JsonCreator
     protected StackTraceElementMixIn(
-    // @formatter:off
+            // @formatter:off
             @JsonProperty(StackTraceElementConstants.ATTR_CLASS_LOADER_NAME) final String classLoaderName,
             @JsonProperty(StackTraceElementConstants.ATTR_MODULE) final String moduleName,
             @JsonProperty(StackTraceElementConstants.ATTR_MODULE_VERSION) final String moduleVersion,
@@ -41,8 +41,8 @@ public abstract class StackTraceElementMixIn {
             @JsonProperty(StackTraceElementConstants.ATTR_METHOD) final String methodName,
             @JsonProperty(StackTraceElementConstants.ATTR_FILE) final String fileName,
             @JsonProperty(StackTraceElementConstants.ATTR_LINE) final int lineNumber)
-    // @formatter:on
-    {
+                // @formatter:on
+            {
         // empty
     }
 
@@ -66,5 +66,4 @@ public abstract class StackTraceElementMixIn {
 
     @JsonProperty(StackTraceElementConstants.ATTR_METHOD)
     protected abstract String getMethodName();
-
 }

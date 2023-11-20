@@ -17,7 +17,6 @@
 package org.apache.log4j.or;
 
 import java.util.Hashtable;
-
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.logging.log4j.core.util.Loader;
@@ -42,9 +41,12 @@ public class RendererMap {
     /**
      * Add a renderer to a hierarchy passed as parameter.
      */
-    static public void addRenderer(final RendererSupport repository, final String renderedClassName, final String renderingClassName) {
-        StatusLogger.getLogger().debug("Rendering class: [" + renderingClassName + "], Rendered class: [" + renderedClassName + "].");
-        final ObjectRenderer renderer = (ObjectRenderer) OptionConverter.instantiateByClassName(renderingClassName, ObjectRenderer.class, null);
+    public static void addRenderer(
+            final RendererSupport repository, final String renderedClassName, final String renderingClassName) {
+        StatusLogger.getLogger()
+                .debug("Rendering class: [" + renderingClassName + "], Rendered class: [" + renderedClassName + "].");
+        final ObjectRenderer renderer =
+                (ObjectRenderer) OptionConverter.instantiateByClassName(renderingClassName, ObjectRenderer.class, null);
         if (renderer == null) {
             StatusLogger.getLogger().error("Could not instantiate renderer [" + renderingClassName + "].");
             return;
@@ -63,20 +65,16 @@ public class RendererMap {
      * returned as a {@link String}.
      */
     public String findAndRender(final Object o) {
-        if (o == null)
-            return null;
-        else
-            return get(o.getClass()).doRender(o);
+        if (o == null) return null;
+        else return get(o.getClass()).doRender(o);
     }
 
     /**
      * Syntactic sugar method that calls {@link #get(Class)} with the class of the object parameter.
      */
     public ObjectRenderer get(final Object o) {
-        if (o == null)
-            return null;
-        else
-            return get(o.getClass());
+        if (o == null) return null;
+        else return get(o.getClass());
     }
 
     /**
@@ -139,8 +137,7 @@ public class RendererMap {
                 return r;
             }
             r = searchInterfaces(c);
-            if (r != null)
-                return r;
+            if (r != null) return r;
         }
         return defaultRenderer;
     }
@@ -155,8 +152,7 @@ public class RendererMap {
         final Class[] ia = c.getInterfaces();
         for (int i = 0; i < ia.length; i++) {
             r = searchInterfaces(ia[i]);
-            if (r != null)
-                return r;
+            if (r != null) return r;
         }
         return null;
     }

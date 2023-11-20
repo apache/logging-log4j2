@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Converts values to lower case. The passed in "key" should be the value of another lookup.

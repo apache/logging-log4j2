@@ -62,5 +62,4 @@ public class CustomNoopAppender extends AppenderSkeleton {
     public void setStringA(final String stringA) {
         this.stringA = stringA;
     }
-
 }

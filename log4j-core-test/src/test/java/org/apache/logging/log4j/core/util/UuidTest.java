@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.util.UUID;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
 
 public class UuidTest {
 
@@ -32,20 +31,20 @@ public class UuidTest {
     @Test
     public void testTimeBaseUuid() {
         final UUID uuid = UuidUtil.getTimeBasedUuid();
-        //final UUID uuid2 = UuidUtil.getTimeBasedUUID(); // unused
+        // final UUID uuid2 = UuidUtil.getTimeBasedUUID(); // unused
         final long current = (System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
         final long time = uuid.timestamp();
         assertTrue(current + 10000 - time > 0, "Incorrect time");
         final UUID[] uuids = new UUID[COUNT];
         final long start = System.nanoTime();
-        for (int i=0; i < COUNT; ++i) {
+        for (int i = 0; i < COUNT; ++i) {
             uuids[i] = UuidUtil.getTimeBasedUuid();
         }
         final long elapsed = System.nanoTime() - start;
         System.out.println("Elapsed for " + COUNT + " UUIDS = " + elapsed + " Average = " + elapsed / COUNT + " ns");
         int errors = 0;
-        for (int i=0; i < COUNT; ++i) {
-            for (int j=i+1; j < COUNT; ++j) {
+        for (int i = 0; i < COUNT; ++i) {
+            for (int j = i + 1; j < COUNT; ++j) {
                 if (uuids[i].equals(uuids[j])) {
                     ++errors;
                     System.out.println("UUID " + i + " equals UUID " + j);
@@ -67,11 +66,11 @@ public class UuidTest {
         UuidUtil.initialize(null);
 
         // Test if no ArrayIndexOutOfBoundsException is thrown for different Mac address lengths
-        for (int i=0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             // Create MAC address byte array with i as size
             final byte[] mac = new byte[i];
-            for(int j=0; j < i; j++) {
-                mac[j] = (byte)j;
+            for (int j = 0; j < i; j++) {
+                mac[j] = (byte) j;
             }
             UuidUtil.initialize(mac);
         }
@@ -82,22 +81,22 @@ public class UuidTest {
         final Thread[] threads = new Thread[THREADS];
         final UUID[] uuids = new UUID[COUNT * THREADS];
         final long[] elapsed = new long[THREADS];
-        for (int i=0; i < THREADS; ++i) {
+        for (int i = 0; i < THREADS; ++i) {
             threads[i] = new Worker(uuids, elapsed, i, COUNT);
         }
-        for (int i=0; i < THREADS; ++i) {
+        for (int i = 0; i < THREADS; ++i) {
             threads[i].start();
         }
         long elapsedTime = 0;
-        for (int i=0; i < THREADS; ++i) {
+        for (int i = 0; i < THREADS; ++i) {
             threads[i].join();
             elapsedTime += elapsed[i];
         }
-        System.out.println("Elapsed for " + COUNT * THREADS + " UUIDS = " + elapsedTime + " Average = " +
-                elapsedTime / (COUNT * THREADS) + " ns");
+        System.out.println("Elapsed for " + COUNT * THREADS + " UUIDS = " + elapsedTime + " Average = "
+                + elapsedTime / (COUNT * THREADS) + " ns");
         int errors = 0;
-        for (int i=0; i < COUNT * THREADS; ++i) {
-            for (int j=i+1; j < COUNT * THREADS; ++j) {
+        for (int i = 0; i < COUNT * THREADS; ++i) {
+            for (int j = i + 1; j < COUNT * THREADS; ++j) {
                 if (uuids[i].equals(uuids[j])) {
                     ++errors;
                     System.out.println("UUID " + i + " equals UUID " + j);
@@ -106,8 +105,6 @@ public class UuidTest {
         }
         assertEquals(0, errors, errors + " duplicate UUIDS");
     }
-
-
 
     private static class Worker extends Thread {
 
@@ -127,7 +124,7 @@ public class UuidTest {
         public void run() {
             final int pos = index * count;
             final long start = System.nanoTime();
-            for (int i=pos; i < pos + count; ++i) {
+            for (int i = pos; i < pos + count; ++i) {
                 uuids[i] = UuidUtil.getTimeBasedUuid();
             }
             elapsed[index] = System.nanoTime() - start;

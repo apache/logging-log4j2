@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.junit.CleanFiles;
@@ -32,9 +34,6 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
 /**
  * Simple tests for both the RandomAccessFileAppender and RollingRandomAccessFileAppender.
  */
@@ -43,15 +42,13 @@ public class RandomAccessFileAppenderTest {
 
     @Parameterized.Parameters(name = "{0}, locationEnabled={1}, type={2}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[][]{
-                        { "RandomAccessFileAppenderTest", false, ".xml" },
-                        { "RandomAccessFileAppenderLocationTest", true, ".xml" },
-                        { "RollingRandomAccessFileAppenderTest", false, ".xml" },
-                        { "RollingRandomAccessFileAppenderLocationTest", true, ".xml" },
-                        { "RollingRandomAccessFileAppenderLocationPropsTest", false, ".properties" }
-                }
-        );
+        return Arrays.asList(new Object[][] {
+            {"RandomAccessFileAppenderTest", false, ".xml"},
+            {"RandomAccessFileAppenderLocationTest", true, ".xml"},
+            {"RollingRandomAccessFileAppenderTest", false, ".xml"},
+            {"RollingRandomAccessFileAppenderLocationTest", true, ".xml"},
+            {"RollingRandomAccessFileAppenderLocationPropsTest", false, ".properties"}
+        });
     }
 
     private final LoggerContextRule init;
@@ -85,8 +82,8 @@ public class RandomAccessFileAppenderTest {
         assertNotNull(line);
         assertThat(line, containsString(message));
         final Matcher<String> containsLocationInformation = containsString("testRandomAccessConfiguration");
-        final Matcher<String> containsLocationInformationIfEnabled = this.locationEnabled ?
-                containsLocationInformation : not(containsLocationInformation);
+        final Matcher<String> containsLocationInformationIfEnabled =
+                this.locationEnabled ? containsLocationInformation : not(containsLocationInformation);
         assertThat(line, containsLocationInformationIfEnabled);
     }
 }

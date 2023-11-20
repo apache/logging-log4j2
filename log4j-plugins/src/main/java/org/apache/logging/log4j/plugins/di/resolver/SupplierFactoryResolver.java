@@ -20,7 +20,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
@@ -38,7 +37,8 @@ public class SupplierFactoryResolver<T> implements FactoryResolver<Supplier<T>> 
     }
 
     @Override
-    public Supplier<Supplier<T>> getFactory(final ResolvableKey<Supplier<T>> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<Supplier<T>> getFactory(
+            final ResolvableKey<Supplier<T>> resolvableKey, final InstanceFactory instanceFactory) {
         final Key<T> key = resolvableKey.getKey().getSuppliedType();
         final Collection<String> aliases = resolvableKey.getAliases();
         // dependencies ignored as this is a lazy binding

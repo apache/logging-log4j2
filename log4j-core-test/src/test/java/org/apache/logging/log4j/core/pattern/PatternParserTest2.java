@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PatternParserTest2 {
 
@@ -57,7 +56,8 @@ public class PatternParserTest2 {
         assertEquals("13-24-59 \\t---", buf.toString());
     }
 
-    private void parse(final String pattern, final boolean convert, final StringBuilder buf, final Date date, final int i) {
+    private void parse(
+            final String pattern, final boolean convert, final StringBuilder buf, final Date date, final int i) {
         final PatternParser parser0 = new PatternParser(null, "Converter", null);
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
@@ -75,8 +75,11 @@ public class PatternParserTest2 {
      * @param buf string buffer to which formatted file name is appended, may not be null.
      * @param objects objects to be evaluated in formatting, may not be null.
      */
-    protected final void formatFileName(final ArrayPatternConverter[] patternConverters,
-            final FormattingInfo[] patternFields, final StringBuilder buf, final Object... objects) {
+    protected final void formatFileName(
+            final ArrayPatternConverter[] patternConverters,
+            final FormattingInfo[] patternFields,
+            final StringBuilder buf,
+            final Object... objects) {
         for (int i = 0; i < patternConverters.length; i++) {
             final int fieldStart = buf.length();
             patternConverters[i].format(buf, objects);

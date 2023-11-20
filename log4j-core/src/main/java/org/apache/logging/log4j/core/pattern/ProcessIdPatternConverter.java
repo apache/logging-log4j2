@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 
 @Namespace("Converter")
 @Plugin("ProcessIdPatternConverter")
-@ConverterKeys({ "pid", "processId" })
+@ConverterKeys({"pid", "processId"})
 public final class ProcessIdPatternConverter extends LogEventPatternConverter {
     private static final String DEFAULT_DEFAULT_VALUE = "???";
     private final String pid;

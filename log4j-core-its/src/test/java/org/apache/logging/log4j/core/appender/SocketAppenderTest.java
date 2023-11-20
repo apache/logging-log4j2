@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,9 +34,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
@@ -53,8 +54,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -374,7 +373,8 @@ public class SocketAppenderTest {
                     if (socket != null) {
                         final InputStream is = socket.getInputStream();
                         while (!shutdown) {
-                            final MappingIterator<LogEvent> mappingIterator = objectMapper.readerFor(Log4jLogEvent.class).readValues(is);
+                            final MappingIterator<LogEvent> mappingIterator =
+                                    objectMapper.readerFor(Log4jLogEvent.class).readValues(is);
                             while (mappingIterator.hasNextValue()) {
                                 queue.add(mappingIterator.nextValue());
                                 count.incrementAndGet();
@@ -399,5 +399,4 @@ public class SocketAppenderTest {
             return count.get();
         }
     }
-
 }

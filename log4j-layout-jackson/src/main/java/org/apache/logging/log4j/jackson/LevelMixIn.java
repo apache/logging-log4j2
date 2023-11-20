@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Marker;
  * </p>
  * @see Marker
  */
-@JsonIgnoreProperties({ "name", "declaringClass", "standardLevel" })
+@JsonIgnoreProperties({"name", "declaringClass", "standardLevel"})
 public abstract class LevelMixIn {
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
@@ -39,5 +39,4 @@ public abstract class LevelMixIn {
 
     @JsonValue
     public abstract String name();
-
 }

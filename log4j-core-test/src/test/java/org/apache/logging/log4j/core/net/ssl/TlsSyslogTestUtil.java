@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.net.ssl;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
 
 public class TlsSyslogTestUtil {

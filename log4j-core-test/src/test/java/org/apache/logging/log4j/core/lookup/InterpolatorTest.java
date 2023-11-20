@@ -16,12 +16,17 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -31,12 +36,6 @@ import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.assertSame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  *
@@ -120,7 +119,6 @@ public class InterpolatorTest {
         assertLookupNotEmpty(lookup, "java:hw");
     }
 
-
     @Test
     public void testInterpolatorMapMessageWithNoPrefix() {
         final HashMap<String, String> configProperties = new HashMap<>();
@@ -129,11 +127,11 @@ public class InterpolatorTest {
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
         final LogEvent event = Log4jLogEvent.newBuilder()
-        .setLoggerName(getClass().getName())
-        .setLoggerFqcn(Logger.class.getName())
-        .setLevel(Level.INFO)
-        .setMessage(new StringMapMessage(map))
-        .build();
+                .setLoggerName(getClass().getName())
+                .setLoggerFqcn(Logger.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new StringMapMessage(map))
+                .build();
         assertEquals("configProperties", interpolator.lookup(event, "key"));
     }
 
@@ -143,14 +141,12 @@ public class InterpolatorTest {
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
         final LogEvent event = Log4jLogEvent.newBuilder()
-        .setLoggerName(getClass().getName())
-        .setLoggerFqcn(Logger.class.getName())
-        .setLevel(Level.INFO)
-        .setMessage(new StringMapMessage(map))
-        .build();
-        assertNull(
-                interpolator.lookup(event, "key"),
-                "Values without a map prefix should not match MapMessages");
+                .setLoggerName(getClass().getName())
+                .setLoggerFqcn(Logger.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new StringMapMessage(map))
+                .build();
+        assertNull(interpolator.lookup(event, "key"), "Values without a map prefix should not match MapMessages");
     }
 
     @Test
@@ -161,11 +157,11 @@ public class InterpolatorTest {
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
         final LogEvent event = Log4jLogEvent.newBuilder()
-        .setLoggerName(getClass().getName())
-        .setLoggerFqcn(Logger.class.getName())
-        .setLevel(Level.INFO)
-        .setMessage(new StringMapMessage(map))
-        .build();
+                .setLoggerName(getClass().getName())
+                .setLoggerFqcn(Logger.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new StringMapMessage(map))
+                .build();
         assertEquals("mapMessage", interpolator.lookup(event, "map:key"));
     }
 }

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -49,7 +48,7 @@ public class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
 
     @PluginFactory
     public static JCToolsBlockingQueueFactory createFactory(
-        @PluginAttribute(defaultString = "PARK") final WaitStrategy waitStrategy) {
+            @PluginAttribute(defaultString = "PARK") final WaitStrategy waitStrategy) {
         return new JCToolsBlockingQueueFactory(waitStrategy);
     }
 
@@ -86,7 +85,7 @@ public class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
                     return false;
                 }
                 idleCounter = waitStrategy.idle(idleCounter);
-            } while (!Thread.interrupted()); //clear interrupted flag
+            } while (!Thread.interrupted()); // clear interrupted flag
             throw new InterruptedException();
         }
 
@@ -102,7 +101,7 @@ public class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
                     return null;
                 }
                 idleCounter = waitStrategy.idle(idleCounter);
-            } while (!Thread.interrupted()); //clear interrupted flag
+            } while (!Thread.interrupted()); // clear interrupted flag
             throw new InterruptedException();
         }
 
@@ -114,13 +113,13 @@ public class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
                     return;
                 }
                 idleCounter = waitStrategy.idle(idleCounter);
-            } while (!Thread.interrupted()); //clear interrupted flag
+            } while (!Thread.interrupted()); // clear interrupted flag
             throw new InterruptedException();
         }
 
         @Override
         public boolean offer(final E e) {
-            //keep 2 cache lines empty to avoid false sharing that will slow the consumer thread when queue is full.
+            // keep 2 cache lines empty to avoid false sharing that will slow the consumer thread when queue is full.
             return offerIfBelowThreshold(e, capacity() - 32);
         }
 
@@ -138,7 +137,7 @@ public class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
                     return result;
                 }
                 idleCounter = waitStrategy.idle(idleCounter);
-            } while (!Thread.interrupted()); //clear interrupted flag
+            } while (!Thread.interrupted()); // clear interrupted flag
             throw new InterruptedException();
         }
     }
@@ -176,5 +175,4 @@ public class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
     private interface Idle {
         int idle(int idleCounter);
     }
-
 }

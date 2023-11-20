@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -37,7 +36,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("style")
-@ConverterKeys({ "style" })
+@ConverterKeys({"style"})
 @PerformanceSensitive("allocation")
 public final class StyleConverter extends LogEventPatternConverter implements AnsiConverter {
 
@@ -116,7 +115,7 @@ public final class StyleConverter extends LogEventPatternConverter implements An
         }
 
         //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, size = patternFormatters.size(); i <  size; i++) {
+        for (int i = 0, size = patternFormatters.size(); i < size; i++) {
             patternFormatters.get(i).format(event, toAppendTo);
         }
 
@@ -160,5 +159,4 @@ public final class StyleConverter extends LogEventPatternConverter implements An
         sb.append(']');
         return sb.toString();
     }
-
 }

@@ -46,5 +46,4 @@ public class ConfigurationFactoryData {
     public LoggerContext getLoggerContext() {
         return configuration != null ? configuration.getLoggerContext() : null;
     }
-
 }

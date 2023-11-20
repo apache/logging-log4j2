@@ -20,7 +20,6 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -83,6 +82,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * Conversion pattern.
      */
     private final String conversionPattern;
+
     private final PatternSelector patternSelector;
     private final Serializer eventSerializer;
 
@@ -103,11 +103,20 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param headerPattern header conversion pattern.
      * @param footerPattern footer conversion pattern.
      */
-    private PatternLayout(final Configuration config, final RegexReplacement replace, final String eventPattern,
-            final PatternSelector patternSelector, final Charset charset, final boolean alwaysWriteExceptions,
-            final boolean disableAnsi, final boolean noConsoleNoAnsi, final String headerPattern,
+    private PatternLayout(
+            final Configuration config,
+            final RegexReplacement replace,
+            final String eventPattern,
+            final PatternSelector patternSelector,
+            final Charset charset,
+            final boolean alwaysWriteExceptions,
+            final boolean disableAnsi,
+            final boolean noConsoleNoAnsi,
+            final String headerPattern,
             final String footerPattern) {
-        super(config, charset,
+        super(
+                config,
+                charset,
                 newSerializerBuilder()
                         .setConfiguration(config)
                         .setReplace(replace)
@@ -173,8 +182,7 @@ public final class PatternLayout extends AbstractStringLayout {
         return Map.of(
                 "structured", "false",
                 "formatType", "conversion",
-                "format", conversionPattern
-        );
+                "format", conversionPattern);
     }
 
     /**
@@ -286,7 +294,8 @@ public final class PatternLayout extends AbstractStringLayout {
         private final PatternFormatter[] formatters;
         private final Recycler<StringBuilder> recycler;
 
-        private PatternFormatterPatternSerializer(final PatternFormatter[] formatters, final Recycler<StringBuilder> recycler) {
+        private PatternFormatterPatternSerializer(
+                final PatternFormatter[] formatters, final Recycler<StringBuilder> recycler) {
             this.formatters = formatters;
             this.recycler = recycler;
         }
@@ -311,10 +320,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toString() {
-            return super.toString() +
-                    "[formatters=" +
-                    Arrays.toString(formatters) +
-                    "]";
+            return super.toString() + "[formatters=" + Arrays.toString(formatters) + "]";
         }
     }
 
@@ -324,8 +330,10 @@ public final class PatternLayout extends AbstractStringLayout {
         private final RegexReplacement replace;
         private final Recycler<StringBuilder> recycler;
 
-        private PatternSerializerWithReplacement(final PatternSerializer delegate, final RegexReplacement replace,
-                                                 final Recycler<StringBuilder> recycler) {
+        private PatternSerializerWithReplacement(
+                final PatternSerializer delegate,
+                final RegexReplacement replace,
+                final Recycler<StringBuilder> recycler) {
             this.delegate = delegate;
             this.replace = replace;
             this.recycler = recycler;
@@ -351,16 +359,9 @@ public final class PatternLayout extends AbstractStringLayout {
             return buffer;
         }
 
-
-
         @Override
         public String toString() {
-            return super.toString() +
-                    "[delegate=" +
-                    delegate +
-                    ", replace=" +
-                    replace +
-                    "]";
+            return super.toString() + "[delegate=" + delegate + ", replace=" + replace + "]";
         }
 
         @Override
@@ -389,8 +390,11 @@ public final class PatternLayout extends AbstractStringLayout {
             if (patternSelector == null) {
                 try {
                     final PatternParser parser = createPatternParser(configuration);
-                    final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
-                            alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
+                    final List<PatternFormatter> list = parser.parse(
+                            pattern == null ? defaultPattern : pattern,
+                            alwaysWriteExceptions,
+                            disableAnsi,
+                            noConsoleNoAnsi);
                     final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
                     boolean hasFormattingInfo = false;
                     for (PatternFormatter formatter : formatters) {
@@ -403,7 +407,9 @@ public final class PatternLayout extends AbstractStringLayout {
                     final PatternSerializer serializer = hasFormattingInfo
                             ? new PatternFormatterPatternSerializer(formatters, recycler)
                             : new NoFormatPatternSerializer(formatters, recycler);
-                    return replace == null ? serializer : new PatternSerializerWithReplacement(serializer, replace, recycler);
+                    return replace == null
+                            ? serializer
+                            : new PatternSerializerWithReplacement(serializer, replace, recycler);
                 } catch (final RuntimeException ex) {
                     throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
                 }
@@ -450,7 +456,6 @@ public final class PatternLayout extends AbstractStringLayout {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }
-
     }
 
     private static final class PatternSelectorSerializer implements Serializer, Serializer2 {
@@ -459,8 +464,10 @@ public final class PatternLayout extends AbstractStringLayout {
         private final RegexReplacement replace;
         private final Recycler<StringBuilder> recycler;
 
-        private PatternSelectorSerializer(final PatternSelector patternSelector, final RegexReplacement replace,
-                                          final Recycler<StringBuilder> recycler) {
+        private PatternSelectorSerializer(
+                final PatternSelector patternSelector,
+                final RegexReplacement replace,
+                final Recycler<StringBuilder> recycler) {
             super();
             this.patternSelector = patternSelector;
             this.replace = replace;
@@ -579,13 +586,13 @@ public final class PatternLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private String footer;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         private boolean useAnsiEscapeCodes() {
             final PropertyEnvironment properties = PropertiesUtil.getProperties();
             final boolean isPlatformSupportsAnsi = !properties.isOsWindows();
-            final boolean isJansiRequested = !properties.getBooleanProperty(Log4jPropertyKey.CONSOLE_JANSI_ENABLED, false);
+            final boolean isJansiRequested =
+                    !properties.getBooleanProperty(Log4jPropertyKey.CONSOLE_JANSI_ENABLED, false);
             return isPlatformSupportsAnsi || isJansiRequested;
         }
 
@@ -689,8 +696,17 @@ public final class PatternLayout extends AbstractStringLayout {
             if (configuration == null) {
                 configuration = new DefaultConfiguration();
             }
-            return new PatternLayout(configuration, regexReplacement, pattern, patternSelector, charset,
-                alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, header, footer);
+            return new PatternLayout(
+                    configuration,
+                    regexReplacement,
+                    pattern,
+                    patternSelector,
+                    charset,
+                    alwaysWriteExceptions,
+                    disableAnsi,
+                    noConsoleNoAnsi,
+                    header,
+                    footer);
         }
     }
 

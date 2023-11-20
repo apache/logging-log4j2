@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -141,8 +140,8 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                             } else if (itemValue instanceof List<?>) {
                                 final List<?> list = (List<?>) itemValue;
                                 LOGGER.debug("Processing array for object {}", itemKey);
-                                list.forEach(subValue -> child.addChild(
-                                        constructNode(itemKey, child, Cast.cast(subValue))));
+                                list.forEach(
+                                        subValue -> child.addChild(constructNode(itemKey, child, Cast.cast(subValue))));
                             }
                         });
                         node.addChild(child);
@@ -161,8 +160,11 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             t = pluginType.getElementType() + ':' + pluginType.getPluginClass();
         }
 
-        final String p = node.getParent() == null ? "null"
-                : node.getParent().getName() == null ? LoggerConfig.ROOT : node.getParent().getName();
+        final String p = node.getParent() == null
+                ? "null"
+                : node.getParent().getName() == null
+                        ? LoggerConfig.ROOT
+                        : node.getParent().getName();
         LOGGER.debug("Returning {} with parent {} of type {}", node.getName(), p, t);
         return node;
     }
@@ -170,7 +172,8 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
     @Override
     public Configuration reconfigure() {
         try {
-            final ConfigurationSource configurationSource = getConfigurationSource().resetInputStream();
+            final ConfigurationSource configurationSource =
+                    getConfigurationSource().resetInputStream();
             if (configurationSource == null) {
                 return null;
             }
@@ -229,11 +232,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
 
         @Override
         public String toString() {
-            return "Status{" +
-                    "node=" + node +
-                    ", name='" + name + '\'' +
-                    ", errorType=" + errorType +
-                    '}';
+            return "Status{" + "node=" + node + ", name='" + name + '\'' + ", errorType=" + errorType + '}';
         }
     }
 }

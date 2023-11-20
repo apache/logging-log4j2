@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.jackson.xml.layout;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -47,8 +48,6 @@ import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link XmlLayout}.
@@ -95,8 +94,8 @@ public class XmlLayoutTest {
         assertTrue(str.contains(String.format("<ContextStackItem>%s</ContextStackItem>", value)), str);
     }
 
-    private void checkElementName(final String name, final String str,
-                                  final boolean withAttributes, final boolean withChildren) {
+    private void checkElementName(
+            final String name, final String str, final boolean withAttributes, final boolean withChildren) {
         // simple checks, don't try to be too smart here, we're just looking for the names and basic shape.
         // start
         final String startStr = withAttributes ? "<" + name + " " : "<" + name + ">";
@@ -112,8 +111,11 @@ public class XmlLayoutTest {
         assertFalse(str.contains("<" + name));
     }
 
-    private void checkJsonPropertyOrder(final boolean includeContextStack, final boolean includeContextMap,
-            final boolean includeStacktrace, final String str) {
+    private void checkJsonPropertyOrder(
+            final boolean includeContextStack,
+            final boolean includeContextMap,
+            final boolean includeStacktrace,
+            final String str) {
         final JsonPropertyOrder annotation = AbstractLogEventXmlMixIn.class.getAnnotation(JsonPropertyOrder.class);
         Assertions.assertNotNull(annotation);
         int previousIndex = 0;
@@ -168,9 +170,12 @@ public class XmlLayoutTest {
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setIncludeStacktrace(false)
-                .setAdditionalFields(new KeyValuePair[] { new KeyValuePair("KEY1", "VALUE1"),
-                        new KeyValuePair("KEY2", "${java:runtime}"), })
-                .setCharset(StandardCharsets.UTF_8).setConfiguration(ctx.getConfiguration()).build();
+                .setAdditionalFields(new KeyValuePair[] {
+                    new KeyValuePair("KEY1", "VALUE1"), new KeyValuePair("KEY2", "${java:runtime}"),
+                })
+                .setCharset(StandardCharsets.UTF_8)
+                .setConfiguration(ctx.getConfiguration())
+                .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertTrue(str.contains("<KEY1>VALUE1</KEY1>"), str);
         assertTrue(str.contains("<KEY2>" + new JavaLookup().getRuntime() + "</KEY2>"), str);
@@ -180,11 +185,15 @@ public class XmlLayoutTest {
     public void testMutableLogEvent() {
         final AbstractJacksonLayout layout = XmlLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
-                .setLocationInfo(false).setProperties(false)
+                .setLocationInfo(false)
+                .setProperties(false)
                 .setIncludeStacktrace(false)
-                .setAdditionalFields(new KeyValuePair[] { new KeyValuePair("KEY1", "VALUE1"),
-                        new KeyValuePair("KEY2", "${java:runtime}"), })
-                .setCharset(StandardCharsets.UTF_8).setConfiguration(ctx.getConfiguration()).build();
+                .setAdditionalFields(new KeyValuePair[] {
+                    new KeyValuePair("KEY1", "VALUE1"), new KeyValuePair("KEY2", "${java:runtime}"),
+                })
+                .setCharset(StandardCharsets.UTF_8)
+                .setConfiguration(ctx.getConfiguration())
+                .build();
         final Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
         final MutableLogEvent mutableEvent = new MutableLogEvent();
         mutableEvent.initFrom(logEvent);
@@ -193,8 +202,12 @@ public class XmlLayoutTest {
         assertEquals(strLogEvent, strMutableEvent, strMutableEvent);
     }
 
-    private void testAllFeatures(final boolean includeLocationInfo, final boolean compact,
-            final boolean includeContextMap, final boolean includeContextStack, final boolean includeStacktrace)
+    private void testAllFeatures(
+            final boolean includeLocationInfo,
+            final boolean compact,
+            final boolean includeContextMap,
+            final boolean includeContextStack,
+            final boolean includeStacktrace)
             throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         // @formatter:off
@@ -214,8 +227,8 @@ public class XmlLayoutTest {
         assertEquals(includeLocationInfo, str.contains("Source"), str);
         assertEquals(includeContextMap, str.contains("ContextMap"), str);
         final Log4jLogEvent actual = new Log4jXmlObjectMapper().readValue(str, Log4jLogEvent.class);
-        LogEventFixtures.assertEqualLogEvents(expected, actual, includeLocationInfo, includeContextMap,
-                includeStacktrace);
+        LogEventFixtures.assertEqualLogEvents(
+                expected, actual, includeLocationInfo, includeContextMap, includeStacktrace);
         if (includeContextMap) {
             this.checkContextMapElement("MDC.A", "A_Value", str);
             this.checkContextMapElement("MDC.B", "B_Value", str);
@@ -309,7 +322,8 @@ public class XmlLayoutTest {
     public void testIncludeNullDelimiterFalse() {
         final AbstractJacksonLayout layout = XmlLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
-                .setCompact(true).setIncludeNullDelimiter(false)
+                .setCompact(true)
+                .setIncludeNullDelimiter(false)
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertFalse(str.endsWith("\0"));
@@ -319,7 +333,8 @@ public class XmlLayoutTest {
     public void testIncludeNullDelimiterTrue() {
         final AbstractJacksonLayout layout = XmlLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
-                .setCompact(true).setIncludeNullDelimiter(true)
+                .setCompact(true)
+                .setIncludeNullDelimiter(true)
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertTrue(str.endsWith("\0"));
@@ -337,8 +352,12 @@ public class XmlLayoutTest {
         // set up appender
         final XmlLayout layout = XmlLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
-                .setLocationInfo(true).setProperties(true).setComplete(true)
-                .setCompact(false).setIncludeStacktrace(true).build();
+                .setLocationInfo(true)
+                .setProperties(true)
+                .setComplete(true)
+                .setCompact(false)
+                .setIncludeStacktrace(true)
+                .build();
 
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
@@ -390,8 +409,12 @@ public class XmlLayoutTest {
     public void testLayoutLoggerName() {
         final XmlLayout layout = XmlLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
-                .setLocationInfo(false).setProperties(true).setComplete(true)
-                .setCompact(false).setIncludeStacktrace(true).build();
+                .setLocationInfo(false)
+                .setProperties(true)
+                .setComplete(true)
+                .setCompact(false)
+                .setIncludeStacktrace(true)
+                .build();
 
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("a.B") //
@@ -399,7 +422,8 @@ public class XmlLayoutTest {
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("M")) //
                 .setThreadName("threadName") //
-                .setTimeMillis(1).build();
+                .setTimeMillis(1)
+                .build();
         final String str = layout.toSerializable(event);
         assertTrue(str.contains("loggerName=\"a.B\""), str);
     }

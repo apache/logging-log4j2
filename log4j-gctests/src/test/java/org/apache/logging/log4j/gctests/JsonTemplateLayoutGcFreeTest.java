@@ -35,9 +35,6 @@ public class JsonTemplateLayoutGcFreeTest {
     public static void main(final String[] args) throws Exception {
         System.setProperty("log4j.layout.jsonTemplate.recyclerFactory", "threadLocal");
         System.setProperty(LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED.getSystemKey(), "true");
-        GcFreeLoggingTestUtil.executeLogging(
-                "gcFreeJsonTemplateLayoutLogging.xml",
-                JsonTemplateLayoutGcFreeTest.class);
+        GcFreeLoggingTestUtil.executeLogging("gcFreeJsonTemplateLayoutLogging.xml", JsonTemplateLayoutGcFreeTest.class);
     }
-
 }

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.async;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -47,21 +46,22 @@ import org.junit.jupiter.params.provider.ValueSource;
 class AsyncAppenderExceptionHandlingTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            FailOnceAppender.ThrowableClassName.RUNTIME_EXCEPTION,
-            FailOnceAppender.ThrowableClassName.LOGGING_EXCEPTION,
-            FailOnceAppender.ThrowableClassName.EXCEPTION,
-            FailOnceAppender.ThrowableClassName.ERROR,
-            FailOnceAppender.ThrowableClassName.THROWABLE,
-            FailOnceAppender.ThrowableClassName.THREAD_DEATH
-    })
+    @ValueSource(
+            strings = {
+                FailOnceAppender.ThrowableClassName.RUNTIME_EXCEPTION,
+                FailOnceAppender.ThrowableClassName.LOGGING_EXCEPTION,
+                FailOnceAppender.ThrowableClassName.EXCEPTION,
+                FailOnceAppender.ThrowableClassName.ERROR,
+                FailOnceAppender.ThrowableClassName.THROWABLE,
+                FailOnceAppender.ThrowableClassName.THREAD_DEATH
+            })
     void AsyncAppender_should_not_stop_on_appender_failures(final String throwableClassName) {
 
         // Create the logger.
         final String throwableClassNamePropertyName = "throwableClassName";
         System.setProperty(throwableClassNamePropertyName, throwableClassName);
         try (final LoggerContext loggerContext =
-                     Configurator.initialize("Test", "AsyncAppenderExceptionHandlingTest.xml")) {
+                Configurator.initialize("Test", "AsyncAppenderExceptionHandlingTest.xml")) {
             final Logger logger = loggerContext.getRootLogger();
 
             // Log the 1st message, which should fail due to the FailOnceAppender.
@@ -81,9 +81,7 @@ class AsyncAppenderExceptionHandlingTest {
             final FailOnceAppender failOnceAppender = configuration.getAppender("FailOnce");
             Assertions.assertNotNull(failOnceAppender, "couldn't obtain the FailOnceAppender");
             Assertions.assertTrue(failOnceAppender.isFailed(), "FailOnceAppender hasn't failed yet");
-            final List<String> accumulatedMessages = failOnceAppender
-                    .drainEvents()
-                    .stream()
+            final List<String> accumulatedMessages = failOnceAppender.drainEvents().stream()
                     .map(LogEvent::getMessage)
                     .map(Message::getFormattedMessage)
                     .collect(Collectors.toList());
@@ -92,7 +90,5 @@ class AsyncAppenderExceptionHandlingTest {
         } finally {
             System.setProperty(throwableClassNamePropertyName, Strings.EMPTY);
         }
-
     }
-
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Writer;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Property;
@@ -41,8 +40,13 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         @Override
         public WriterAppender build() {
             final StringLayout layout = (StringLayout) getOrCreateLayout();
-            return new WriterAppender(getName(), layout, getFilter(), getManager(target, follow, layout),
-                    isIgnoreExceptions(), getPropertyArray());
+            return new WriterAppender(
+                    getName(),
+                    layout,
+                    getFilter(),
+                    getManager(target, follow, layout),
+                    isIgnoreExceptions(),
+                    getPropertyArray());
         }
 
         public B setFollow(final boolean shouldFollow) {
@@ -101,8 +105,8 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
     private static WriterManager getManager(final Writer target, final boolean follow, final StringLayout layout) {
         final Writer writer = new CloseShieldWriter(target);
-        final String managerName = target.getClass().getName() + "@" + Integer.toHexString(target.hashCode()) + '.'
-                + follow;
+        final String managerName =
+                target.getClass().getName() + "@" + Integer.toHexString(target.hashCode()) + '.' + follow;
         return WriterManager.getManager(managerName, new FactoryData(writer, managerName, layout), factory);
     }
 
@@ -110,9 +114,13 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         return new Builder<B>().asBuilder();
     }
 
-    private WriterAppender(final String name, final StringLayout layout, final Filter filter,
-            final WriterManager manager, final boolean ignoreExceptions, final Property[] properties) {
+    private WriterAppender(
+            final String name,
+            final StringLayout layout,
+            final Filter filter,
+            final WriterManager manager,
+            final boolean ignoreExceptions,
+            final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, properties, manager);
     }
-
 }

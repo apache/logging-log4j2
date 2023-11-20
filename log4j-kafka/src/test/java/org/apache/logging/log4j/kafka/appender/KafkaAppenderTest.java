@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.kafka.appender;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -26,7 +32,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -46,41 +51,35 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 @Category(Appenders.Kafka.class)
 public class KafkaAppenderTest {
 
     private static final Serializer<byte[]> SERIALIZER = new ByteArraySerializer();
 
-    private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, SERIALIZER,
-            SERIALIZER) {
+    private static final MockProducer<byte[], byte[]> kafka =
+            new MockProducer<byte[], byte[]>(true, SERIALIZER, SERIALIZER) {
 
-        // @Override in version 1.1.1
-        public void close(final long timeout, final TimeUnit timeUnit) {
-            // Intentionally do not close in order to reuse
-        }
+                // @Override in version 1.1.1
+                public void close(final long timeout, final TimeUnit timeUnit) {
+                    // Intentionally do not close in order to reuse
+                }
 
-        // @Override in version 3.3.1
-        public void close(final Duration timeout) {
-            // Intentionally do no close in order to reuse
-        }
-    };
+                // @Override in version 3.3.1
+                public void close(final Duration timeout) {
+                    // Intentionally do no close in order to reuse
+                }
+            };
 
     private static final String LOG_MESSAGE = "Hello, world!";
     private static final String TOPIC_NAME = "kafka-topic";
 
     private static Log4jLogEvent createLogEvent() {
         return Log4jLogEvent.newBuilder()
-            .setLoggerName(KafkaAppenderTest.class.getName())
-            .setLoggerFqcn(KafkaAppenderTest.class.getName())
-            .setLevel(Level.INFO)
-            .setMessage(new SimpleMessage(LOG_MESSAGE))
-            .build();
+                .setLoggerName(KafkaAppenderTest.class.getName())
+                .setLoggerFqcn(KafkaAppenderTest.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new SimpleMessage(LOG_MESSAGE))
+                .build();
     }
 
     @BeforeClass
@@ -161,7 +160,6 @@ public class KafkaAppenderTest {
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
     }
 
-
     @Test
     public void testAppenderNoEventTimestamp() throws Exception {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderNoEventTimestamp");
@@ -184,5 +182,4 @@ public class KafkaAppenderTest {
             return (LogEvent) ois.readObject();
         }
     }
-
 }

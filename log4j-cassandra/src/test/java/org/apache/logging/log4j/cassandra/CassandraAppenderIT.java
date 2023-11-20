@@ -16,15 +16,17 @@
  */
 package org.apache.logging.log4j.cassandra;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -33,26 +35,22 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 /**
  * Integration test for CassandraAppender.
  */
 @Disabled("https://issues.apache.org/jira/browse/LOG4J2-3384")
 public class CassandraAppenderIT {
 
-    private static final String DDL = "CREATE TABLE logs (" +
-        "id timeuuid PRIMARY KEY," +
-        "timeid timeuuid," +
-        "message text," +
-        "level text," +
-        "marker text," +
-        "logger text," +
-        "timestamp timestamp," +
-        "mdc map<text,text>," +
-        "ndc list<text>" +
-        ")";
+    private static final String DDL = "CREATE TABLE logs (" + "id timeuuid PRIMARY KEY,"
+            + "timeid timeuuid,"
+            + "message text,"
+            + "level text,"
+            + "marker text,"
+            + "logger text,"
+            + "timestamp timestamp,"
+            + "mdc map<text,text>,"
+            + "ndc list<text>"
+            + ")";
 
     @Disabled("Doesn't work in Java 11 at this Cassandra version")
     @Test

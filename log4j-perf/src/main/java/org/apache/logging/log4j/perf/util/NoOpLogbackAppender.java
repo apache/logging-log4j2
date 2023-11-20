@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.perf.util;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import ch.qos.logback.core.AppenderBase;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Logback no-op appender.

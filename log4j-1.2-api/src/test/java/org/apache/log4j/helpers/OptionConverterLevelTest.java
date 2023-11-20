@@ -16,9 +16,14 @@
  */
 package org.apache.log4j.helpers;
 
+import static org.apache.log4j.helpers.OptionConverter.toLog4j1Level;
+import static org.apache.log4j.helpers.OptionConverter.toLog4j2Level;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.Arrays;
 import java.util.stream.Stream;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
 import org.apache.log4j.bridge.LogEventAdapter;
@@ -27,12 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.apache.log4j.helpers.OptionConverter.toLog4j1Level;
-import static org.apache.log4j.helpers.OptionConverter.toLog4j2Level;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class OptionConverterLevelTest {
 
@@ -63,8 +62,8 @@ public class OptionConverterLevelTest {
      */
     @ParameterizedTest
     @MethodSource("standardLevels")
-    public void testStandardIntLevelConversion(final Level log4j1Level,
-            final org.apache.logging.log4j.Level log4j2Level) {
+    public void testStandardIntLevelConversion(
+            final Level log4j1Level, final org.apache.logging.log4j.Level log4j2Level) {
         assertEquals(log4j2Level.intLevel(), toLog4j2Level(log4j1Level.toInt()));
         assertEquals(log4j1Level.toInt(), toLog4j1Level(log4j2Level.intLevel()));
     }
@@ -108,7 +107,8 @@ public class OptionConverterLevelTest {
     public void testCustomLog4j2Levels() {
         final int infoDebug = (StandardLevel.INFO.intLevel() + StandardLevel.DEBUG.intLevel()) / 2;
         final org.apache.logging.log4j.Level v2Level = org.apache.logging.log4j.Level.forName("INFO_DEBUG", infoDebug);
-        final Level v1Level = OptionConverter.toLevel("INFO_DEBUG#" + org.apache.logging.log4j.Level.class.getName(), null);
+        final Level v1Level =
+                OptionConverter.toLevel("INFO_DEBUG#" + org.apache.logging.log4j.Level.class.getName(), null);
         assertNotNull(v1Level);
         assertEquals(v2Level, v1Level.getVersion2Level());
         final int expectedLevel = (Priority.INFO_INT + Priority.DEBUG_INT) / 2;
@@ -118,5 +118,4 @@ public class OptionConverterLevelTest {
         // Non-existent level
         assertNull(OptionConverter.toLevel("WARN_INFO#" + org.apache.logging.log4j.Level.class.getName(), null));
     }
-
 }

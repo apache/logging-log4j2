@@ -27,7 +27,6 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.spi.InjectionPoint;
@@ -70,7 +69,8 @@ public final class AnnotationUtil {
     }
 
     private static <M extends Annotation> void scanElementForMetaAnnotations(
-            final AnnotatedElement element, final Class<M> metaAnnotationType,
+            final AnnotatedElement element,
+            final Class<M> metaAnnotationType,
             final Set<Class<? extends Annotation>> visitedAnnotations,
             final Stream.Builder<AnnotatedAnnotation<? extends Annotation, M>> matched) {
         for (final Annotation annotation : element.getAnnotations()) {
@@ -102,15 +102,12 @@ public final class AnnotationUtil {
      */
     public static <A extends Annotation> A getLogicalAnnotation(
             final AnnotatedElement element, final Class<A> annotationType) {
-        return findLogicalAnnotations(element, annotationType)
-                .findFirst()
-                .orElse(null);
+        return findLogicalAnnotations(element, annotationType).findFirst().orElse(null);
     }
 
     public static <A extends Annotation> List<A> getLogicalAnnotations(
             final AnnotatedElement element, final Class<A> annotationType) {
-        return findLogicalAnnotations(element, annotationType)
-                .collect(Collectors.toList());
+        return findLogicalAnnotations(element, annotationType).collect(Collectors.toList());
     }
 
     public static <A extends Annotation> Stream<A> findLogicalAnnotations(
@@ -121,8 +118,10 @@ public final class AnnotationUtil {
     }
 
     private static <A extends Annotation> void scanElementAnnotationsForLogicalAnnotation(
-            final AnnotatedElement element, final Class<A> logicalAnnotation,
-            final Set<Class<? extends Annotation>> visitedAnnotations, final Stream.Builder<A> matched) {
+            final AnnotatedElement element,
+            final Class<A> logicalAnnotation,
+            final Set<Class<? extends Annotation>> visitedAnnotations,
+            final Stream.Builder<A> matched) {
         for (final Annotation annotation : element.getAnnotations()) {
             final Class<? extends Annotation> annotationType = annotation.annotationType();
             if (annotationType.getPackageName().startsWith("java.lang.")) {
@@ -131,7 +130,8 @@ public final class AnnotationUtil {
             if (annotationType == logicalAnnotation) {
                 matched.add(logicalAnnotation.cast(annotation));
             } else if (visitedAnnotations.add(annotationType)) {
-                scanElementAnnotationsForLogicalAnnotation(annotationType, logicalAnnotation, visitedAnnotations, matched);
+                scanElementAnnotationsForLogicalAnnotation(
+                        annotationType, logicalAnnotation, visitedAnnotations, matched);
             }
         }
     }
@@ -148,8 +148,7 @@ public final class AnnotationUtil {
                 .collect(Collectors.toList());
     }
 
-    private AnnotationUtil() {
-    }
+    private AnnotationUtil() {}
 
     public static OptionalInt getOrder(final AnnotatedElement element) {
         final Ordered ordered = getLogicalAnnotation(element, Ordered.class);

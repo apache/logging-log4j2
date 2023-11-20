@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.filter;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -63,7 +62,6 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             this.propertyArray = properties;
             return asBuilder();
         }
-
     }
 
     /**
@@ -101,7 +99,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             } else if (currentFilter instanceof CompositeFilter) {
                 this.filter = ((CompositeFilter) currentFilter).addFilter(filter);
             } else {
-                final Filter[] filters = new Filter[]{currentFilter, filter};
+                final Filter[] filters = new Filter[] {currentFilter, filter};
                 this.filter = CompositeFilter.createFilters(filters);
             }
         } finally {
@@ -207,5 +205,4 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         }
         return stopped;
     }
-
 }

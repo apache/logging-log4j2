@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.apache.logging.log4j.util.Strings;
 
 public class LegacyBsdTlsSyslogInputStreamReader extends TlsSyslogInputStreamReaderBase {
@@ -45,8 +44,7 @@ public class LegacyBsdTlsSyslogInputStreamReader extends TlsSyslogInputStreamRea
                     break;
                 }
             }
-        }
-        catch (final EOFException e) {
+        } catch (final EOFException e) {
             if (buffer.size() > 0) {
                 message = buffer.toString();
                 buffer.reset();

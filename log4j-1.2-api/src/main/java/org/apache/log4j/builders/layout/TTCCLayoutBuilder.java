@@ -16,10 +16,13 @@
  */
 package org.apache.log4j.builders.layout;
 
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -30,10 +33,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
-
-import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a Pattern Layout
@@ -48,8 +47,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
     private static final String DATE_FORMAT_PARAM = "DateFormat";
     private static final String TIMEZONE_FORMAT = "TimeZone";
 
-    public TTCCLayoutBuilder() {
-    }
+    public TTCCLayoutBuilder() {}
 
     public TTCCLayoutBuilder(final String prefix, final Properties props) {
         super(prefix, props);
@@ -83,8 +81,13 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
                 }
             }
         });
-        return createLayout(threadPrinting.get(), categoryPrefixing.get(), contextPrinting.get(),
-                dateFormat.get(), timezone.get(), config);
+        return createLayout(
+                threadPrinting.get(),
+                categoryPrefixing.get(),
+                contextPrinting.get(),
+                dateFormat.get(),
+                timezone.get(),
+                config);
     }
 
     @Override
@@ -95,17 +98,21 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
         final String dateFormat = getProperty(DATE_FORMAT_PARAM, RELATIVE);
         final String timezone = getProperty(TIMEZONE_FORMAT);
 
-        return createLayout(threadPrinting, categoryPrefixing, contextPrinting,
-                dateFormat, timezone, config);
+        return createLayout(threadPrinting, categoryPrefixing, contextPrinting, dateFormat, timezone, config);
     }
 
-    private Layout createLayout(final boolean threadPrinting, final boolean categoryPrefixing, final boolean contextPrinting,
-            final String dateFormat, final String timezone, final Log4j1Configuration config) {
+    private Layout createLayout(
+            final boolean threadPrinting,
+            final boolean categoryPrefixing,
+            final boolean contextPrinting,
+            final String dateFormat,
+            final String timezone,
+            final Log4j1Configuration config) {
         final StringBuilder sb = new StringBuilder();
         if (dateFormat != null) {
             if (RELATIVE.equalsIgnoreCase(dateFormat)) {
                 sb.append("%r ");
-            } else if (!NULL.equalsIgnoreCase(dateFormat)){
+            } else if (!NULL.equalsIgnoreCase(dateFormat)) {
                 sb.append("%d{").append(dateFormat).append("}");
                 if (timezone != null) {
                     sb.append("{").append(timezone).append("}");

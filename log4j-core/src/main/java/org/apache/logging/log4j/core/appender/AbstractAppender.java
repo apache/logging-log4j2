@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.nio.charset.Charset;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
@@ -91,7 +90,10 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
         public Layout getOrCreateLayout(final Charset charset) {
             if (layout == null) {
-                return PatternLayout.newBuilder().setConfiguration(getConfiguration()).setCharset(charset).build();
+                return PatternLayout.newBuilder()
+                        .setConfiguration(getConfiguration())
+                        .setCharset(charset)
+                        .build();
             }
             return layout;
         }
@@ -105,7 +107,6 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         public Configuration getConfiguration() {
             return configuration;
         }
-
     }
 
     private final String name;
@@ -123,8 +124,12 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      *            then passed to the application.
      * @param properties Optional properties
      */
-    protected AbstractAppender(final String name, final Filter filter, final Layout layout,
-            final boolean ignoreExceptions, final Property[] properties) {
+    protected AbstractAppender(
+            final String name,
+            final Filter filter,
+            final Layout layout,
+            final boolean ignoreExceptions,
+            final Property[] properties) {
         super(filter, properties);
         this.name = Objects.requireNonNull(name, "name");
         this.layout = layout;
@@ -239,5 +244,4 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     public String toString() {
         return name;
     }
-
 }

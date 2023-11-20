@@ -16,12 +16,17 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.log4j.CustomFileAppender;
 import org.apache.log4j.CustomNoopAppender;
@@ -39,12 +44,6 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 /**
  * Test reconfiguring with an XML configuration.
  */
@@ -60,24 +59,35 @@ public class PropertiesReconfigurationTest {
 
     private final CountDownLatch toggle = new CountDownLatch(1);
 
-    private void assertCustomFileAppender(final org.apache.log4j.Appender appender, final boolean expectBoolean, final int expectInt,
-        final String expectString) {
+    private void assertCustomFileAppender(
+            final org.apache.log4j.Appender appender,
+            final boolean expectBoolean,
+            final int expectInt,
+            final String expectString) {
         final CustomFileAppender customAppender = (CustomFileAppender) appender;
         assertEquals(expectBoolean, customAppender.getBooleanA());
         assertEquals(expectInt, customAppender.getIntA());
         assertEquals(expectString, customAppender.getStringA());
     }
 
-    private void assertCustomNoopAppender(final org.apache.log4j.Appender appender, final boolean expectBoolean, final int expectInt,
-        final String expectString) {
+    private void assertCustomNoopAppender(
+            final org.apache.log4j.Appender appender,
+            final boolean expectBoolean,
+            final int expectInt,
+            final String expectString) {
         final CustomNoopAppender customAppender = (CustomNoopAppender) appender;
         assertEquals(expectBoolean, customAppender.getBooleanA());
         assertEquals(expectInt, customAppender.getIntA());
         assertEquals(expectString, customAppender.getStringA());
     }
 
-    private void checkConfigureCustomAppenders(final String configPath, final boolean expectAppend, final int expectInt, final String expectString,
-        final FailableConsumer<String, IOException> configurator) throws IOException {
+    private void checkConfigureCustomAppenders(
+            final String configPath,
+            final boolean expectAppend,
+            final int expectInt,
+            final String expectString,
+            final FailableConsumer<String, IOException> configurator)
+            throws IOException {
         final File file = new File(configPath);
         assertTrue(file.exists(), "No Config file");
         try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
@@ -114,11 +124,13 @@ public class PropertiesReconfigurationTest {
         assertEquals(expectAppend, manager.isAppend());
     }
 
-    private void checkCoreFileAppender(final boolean expectAppend, final Configuration configuration, final String appenderName) {
+    private void checkCoreFileAppender(
+            final boolean expectAppend, final Configuration configuration, final String appenderName) {
         checkCoreFileAppender(expectAppend, configuration.getAppender(appenderName));
     }
 
-    private void checkCustomAppender(final String appenderName, final boolean expectBoolean, final int expectInt, final String expectString) {
+    private void checkCustomAppender(
+            final String appenderName, final boolean expectBoolean, final int expectInt, final String expectString) {
         final Logger logger = LogManager.getRootLogger();
         final org.apache.log4j.Appender appender = logger.getAppender(appenderName);
         assertNotNull(appender);
@@ -126,7 +138,8 @@ public class PropertiesReconfigurationTest {
         assertCustomNoopAppender(getAppenderFromContext(appenderName), expectBoolean, expectInt, expectString);
     }
 
-    private void checkCustomFileAppender(final String appenderName, final boolean expectBoolean, final int expectInt, final String expectString) {
+    private void checkCustomFileAppender(
+            final String appenderName, final boolean expectBoolean, final int expectInt, final String expectString) {
         final Logger logger = LogManager.getRootLogger();
         final org.apache.log4j.Appender appender = logger.getAppender(appenderName);
         assertNotNull(appender);
@@ -146,7 +159,8 @@ public class PropertiesReconfigurationTest {
     private <T extends org.apache.log4j.Appender> T getAppenderFromContext(final String appenderName) {
         final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
         final LoggerConfig loggerConfig = context.getConfiguration().getRootLogger();
-        final AppenderAdapter.Adapter adapter = (AppenderAdapter.Adapter) loggerConfig.getAppenders().get(appenderName);
+        final AppenderAdapter.Adapter adapter =
+                (AppenderAdapter.Adapter) loggerConfig.getAppenders().get(appenderName);
         return adapter != null ? (T) adapter.getAppender() : null;
     }
 

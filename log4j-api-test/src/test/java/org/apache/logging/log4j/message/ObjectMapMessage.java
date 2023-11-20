@@ -16,5 +16,4 @@
  */
 package org.apache.logging.log4j.message;
 
-class ObjectMapMessage extends MapMessage<ObjectMapMessage, Object> {
-}
+class ObjectMapMessage extends MapMessage<ObjectMapMessage, Object> {}

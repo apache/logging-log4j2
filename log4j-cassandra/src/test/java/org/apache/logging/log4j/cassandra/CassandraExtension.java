@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.cassandra;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,9 +27,6 @@ import java.security.Permission;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
-
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
 import org.apache.cassandra.service.CassandraDaemon;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Closer;
@@ -40,9 +41,8 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.opentest4j.TestAbortedException;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
-public class CassandraExtension extends TypeBasedParameterResolver<Cluster> implements BeforeEachCallback, AfterEachCallback {
+public class CassandraExtension extends TypeBasedParameterResolver<Cluster>
+        implements BeforeEachCallback, AfterEachCallback {
     private static final ThreadFactory THREAD_FACTORY = Log4jThreadFactory.createThreadFactory("CassandraFixture");
 
     @Override
@@ -67,14 +67,16 @@ public class CassandraExtension extends TypeBasedParameterResolver<Cluster> impl
             } else {
                 fail(error);
             }
-            final var cluster = Cluster.builder().addContactPoints(InetAddress.getLoopbackAddress()).build();
+            final var cluster = Cluster.builder()
+                    .addContactPoints(InetAddress.getLoopbackAddress())
+                    .build();
             final var store = context.getStore(
                     ExtensionContext.Namespace.create(CassandraFixture.class, context.getRequiredTestInstance()));
             store.put(Cluster.class, cluster);
             store.put(EmbeddedCassandra.class, embeddedCassandra);
             try (final Session session = cluster.connect()) {
-                session.execute("CREATE KEYSPACE " + cassandraFixture.keyspace() + " WITH REPLICATION = " +
-                        "{ 'class': 'SimpleStrategy', 'replication_factor': 2 };");
+                session.execute("CREATE KEYSPACE " + cassandraFixture.keyspace() + " WITH REPLICATION = "
+                        + "{ 'class': 'SimpleStrategy', 'replication_factor': 2 };");
             }
             try (final Session session = cluster.connect(cassandraFixture.keyspace())) {
                 for (final String ddl : cassandraFixture.setup()) {
@@ -82,13 +84,12 @@ public class CassandraExtension extends TypeBasedParameterResolver<Cluster> impl
                 }
             }
         }
-
     }
 
     @Override
     public void afterEach(final ExtensionContext context) throws Exception {
-        final var store =
-                context.getStore(ExtensionContext.Namespace.create(CassandraFixture.class, context.getRequiredTestInstance()));
+        final var store = context.getStore(
+                ExtensionContext.Namespace.create(CassandraFixture.class, context.getRequiredTestInstance()));
         final var cluster = store.get(Cluster.class, Cluster.class);
         final var embeddedCassandra = store.get(EmbeddedCassandra.class, EmbeddedCassandra.class);
         if (embeddedCassandra != null) {
@@ -98,8 +99,7 @@ public class CassandraExtension extends TypeBasedParameterResolver<Cluster> impl
     }
 
     @Override
-    public Cluster resolveParameter(
-            final ParameterContext parameterContext, final ExtensionContext extensionContext)
+    public Cluster resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
         final var store = extensionContext.getStore(
                 ExtensionContext.Namespace.create(CassandraFixture.class, extensionContext.getRequiredTestInstance()));
@@ -112,8 +112,7 @@ public class CassandraExtension extends TypeBasedParameterResolver<Cluster> impl
         private final CountDownLatch latch;
         private final AtomicReference<Throwable> errorRef;
 
-        private EmbeddedCassandra(
-                final CountDownLatch latch, final AtomicReference<Throwable> errorRef) {
+        private EmbeddedCassandra(final CountDownLatch latch, final AtomicReference<Throwable> errorRef) {
             this.latch = latch;
             this.errorRef = errorRef;
         }

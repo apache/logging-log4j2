@@ -18,7 +18,6 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import java.util.Locale;
 import java.util.function.Function;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
@@ -159,7 +158,6 @@ public final class CaseConverterResolver implements EventResolver {
     private final TemplateResolver<LogEvent> replacementResolver;
 
     private enum ErrorHandlingStrategy {
-
         FAIL("fail"),
 
         PASS("pass"),
@@ -171,12 +169,9 @@ public final class CaseConverterResolver implements EventResolver {
         ErrorHandlingStrategy(final String name) {
             this.name = name;
         }
-
     }
 
-    CaseConverterResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    CaseConverterResolver(final EventResolverContext context, final TemplateResolverConfig config) {
         this.inputResolver = createDelegate(context, config);
         this.converter = createConverter(config);
         this.errorHandlingStrategy = readErrorHandlingStrategy(config);
@@ -184,14 +179,12 @@ public final class CaseConverterResolver implements EventResolver {
     }
 
     private static TemplateResolver<LogEvent> createDelegate(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+            final EventResolverContext context, final TemplateResolverConfig config) {
         final Object delegateObject = config.getObject("input");
         return TemplateResolvers.ofObject(context, delegateObject);
     }
 
-    private static Function<String, String> createConverter(
-            final TemplateResolverConfig config) {
+    private static Function<String, String> createConverter(final TemplateResolverConfig config) {
         final Locale locale = config.getLocale("locale");
         final String _case = config.getString("case");
         if ("upper".equals(_case)) {
@@ -203,8 +196,7 @@ public final class CaseConverterResolver implements EventResolver {
         }
     }
 
-    private static ErrorHandlingStrategy readErrorHandlingStrategy(
-            final TemplateResolverConfig config) {
+    private static ErrorHandlingStrategy readErrorHandlingStrategy(final TemplateResolverConfig config) {
         final String strategyName = config.getString("errorHandlingStrategy");
         if (strategyName == null) {
             return ErrorHandlingStrategy.REPLACE;
@@ -214,13 +206,11 @@ public final class CaseConverterResolver implements EventResolver {
                 return strategy;
             }
         }
-        throw new IllegalArgumentException(
-                "illegal error handling strategy: " + config);
+        throw new IllegalArgumentException("illegal error handling strategy: " + config);
     }
 
     private static TemplateResolver<LogEvent> createReplacement(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+            final EventResolverContext context, final TemplateResolverConfig config) {
         final Object replacementObject = config.getObject("replacement");
         return TemplateResolvers.ofObject(context, replacementObject);
     }
@@ -252,19 +242,13 @@ public final class CaseConverterResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter,
-            final boolean succeedingEntry) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter, final boolean succeedingEntry) {
         final int startIndex = jsonWriter.getStringBuilder().length();
         inputResolver.resolve(logEvent, jsonWriter, succeedingEntry);
         convertCase(logEvent, jsonWriter, startIndex);
     }
 
-    private void convertCase(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter,
-            final int startIndex) {
+    private void convertCase(final LogEvent logEvent, final JsonWriter jsonWriter, final int startIndex) {
 
         // If the last emitted JSON token was a string, convert it.
         final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
@@ -280,8 +264,7 @@ public final class CaseConverterResolver implements EventResolver {
         // Otherwise, see what we can do.
         else if (ErrorHandlingStrategy.FAIL.equals(errorHandlingStrategy)) {
             final String json = jsonWriterStringBuilder.substring(startIndex, endIndex);
-            throw new RuntimeException(
-                    "was expecting a string value, found: " + json);
+            throw new RuntimeException("was expecting a string value, found: " + json);
         } else if (ErrorHandlingStrategy.PASS.equals(errorHandlingStrategy)) {
             // Do nothing.
         } else if (ErrorHandlingStrategy.REPLACE.equals(errorHandlingStrategy)) {
@@ -290,14 +273,10 @@ public final class CaseConverterResolver implements EventResolver {
         } else {
             throw new AssertionError("should not have reached here");
         }
-
     }
 
     private void convertCase(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter,
-            final int startIndex,
-            final String json) {
+            final LogEvent logEvent, final JsonWriter jsonWriter, final int startIndex, final String json) {
         final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
         final String string = (String) JsonReader.read(json);
         final String convertedString;
@@ -305,9 +284,7 @@ public final class CaseConverterResolver implements EventResolver {
             convertedString = converter.apply(string);
         } catch (final Exception error) {
             if (ErrorHandlingStrategy.FAIL.equals(errorHandlingStrategy)) {
-                throw new RuntimeException(
-                        "case conversion failure for string: " + string,
-                        error);
+                throw new RuntimeException("case conversion failure for string: " + string, error);
             } else if (ErrorHandlingStrategy.PASS.equals(errorHandlingStrategy)) {
                 return;
             } else if (ErrorHandlingStrategy.REPLACE.equals(errorHandlingStrategy)) {
@@ -320,5 +297,4 @@ public final class CaseConverterResolver implements EventResolver {
         jsonWriterStringBuilder.setLength(startIndex);
         jsonWriter.writeString(convertedString);
     }
-
 }

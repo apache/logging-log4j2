@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.convert;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -33,8 +36,6 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.util.CronExpression;
@@ -42,8 +43,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.util.LoaderUtil;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * General {@link TypeConverter} implementations.
@@ -167,7 +166,6 @@ public final class CoreTypeConverters {
                 default:
                     return LoaderUtil.loadClass(s);
             }
-
         }
     }
 
@@ -203,8 +201,7 @@ public final class CoreTypeConverters {
         @Override
         @SuppressFBWarnings(
                 value = "PATH_TRAVERSAL_IN",
-                justification = "The name of the accessed file is based on a configuration value."
-        )
+                justification = "The name of the accessed file is based on a configuration value.")
         public File convert(final String s) {
             return new File(s);
         }
@@ -245,8 +242,7 @@ public final class CoreTypeConverters {
         @Override
         @SuppressFBWarnings(
                 value = "PATH_TRAVERSAL_IN",
-                justification = "The name of the accessed file is based on a configuration value."
-        )
+                justification = "The name of the accessed file is based on a configuration value.")
         public Path convert(final String s) throws Exception {
             return Paths.get(s);
         }

@@ -34,7 +34,8 @@ public class ContextSelectorCallback implements BeforeAllCallback, AfterAllCallb
                 .map(ContextSelectorType::value)
                 .ifPresent(contextSelectorClass -> {
                     final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
-                    instanceFactory.registerBinding(Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(contextSelectorClass)));
+                    instanceFactory.registerBinding(
+                            Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(contextSelectorClass)));
                     DI.initializeFactory(instanceFactory);
                     final Log4jContextFactory factory = instanceFactory.getInstance(Log4jContextFactory.class);
                     LogManager.setFactory(factory);

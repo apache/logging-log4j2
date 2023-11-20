@@ -27,5 +27,4 @@ class MethodUnion {
         this.readMethod = readMethod;
         this.writeMethod = writeMethod;
     }
-
 }

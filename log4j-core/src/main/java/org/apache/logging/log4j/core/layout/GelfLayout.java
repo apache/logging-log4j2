@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,8 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -61,7 +60,6 @@ import org.apache.logging.log4j.util.TriConsumer;
 public final class GelfLayout extends AbstractStringLayout {
 
     public enum CompressionType {
-
         GZIP {
             @Override
             public DeflaterOutputStream createDeflaterOutputStream(final OutputStream os) throws IOException {
@@ -106,7 +104,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final Recycler<StringBuilderWriter> stringBuilderWriterRecycler;
 
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
-        implements org.apache.logging.log4j.plugins.util.Builder<GelfLayout> {
+            implements org.apache.logging.log4j.plugins.util.Builder<GelfLayout> {
 
         @PluginBuilderAttribute
         private String host;
@@ -178,21 +176,36 @@ public final class GelfLayout extends AbstractStringLayout {
                 messagePattern = null;
             }
             if (messagePattern != null) {
-                patternLayout = PatternLayout.newBuilder().setPattern(messagePattern)
+                patternLayout = PatternLayout.newBuilder()
+                        .setPattern(messagePattern)
                         .setAlwaysWriteExceptions(includeStacktrace)
                         .setConfiguration(getConfiguration())
                         .build();
             }
             if (patternSelector != null) {
-                patternLayout = PatternLayout.newBuilder().setPatternSelector(patternSelector)
+                patternLayout = PatternLayout.newBuilder()
+                        .setPatternSelector(patternSelector)
                         .setAlwaysWriteExceptions(includeStacktrace)
                         .setConfiguration(getConfiguration())
                         .build();
             }
-            return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
-                    includeStacktrace, includeThreadContext, includeMapMessage, includeNullDelimiter,
-                    includeNewLineDelimiter, omitEmptyFields, mdcChecker, mapChecker, patternLayout,
-                    threadContextPrefix, mapPrefix);
+            return new GelfLayout(
+                    getConfiguration(),
+                    host,
+                    additionalFields,
+                    compressionType,
+                    compressionThreshold,
+                    includeStacktrace,
+                    includeThreadContext,
+                    includeMapMessage,
+                    includeNullDelimiter,
+                    includeNewLineDelimiter,
+                    omitEmptyFields,
+                    mdcChecker,
+                    mapChecker,
+                    patternLayout,
+                    threadContextPrefix,
+                    mapPrefix);
         }
 
         private ListChecker createChecker(final String excludes, final String includes) {
@@ -243,7 +256,9 @@ public final class GelfLayout extends AbstractStringLayout {
             return includeThreadContext;
         }
 
-        public boolean isIncludeNullDelimiter() { return includeNullDelimiter; }
+        public boolean isIncludeNullDelimiter() {
+            return includeNullDelimiter;
+        }
 
         public boolean isIncludeNewLineDelimiter() {
             return includeNewLineDelimiter;
@@ -428,14 +443,24 @@ public final class GelfLayout extends AbstractStringLayout {
             }
             return asBuilder();
         }
-
     }
 
-    private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields,
-            final CompressionType compressionType, final int compressionThreshold, final boolean includeStacktrace,
-            final boolean includeThreadContext, final boolean includeMapMessage, final boolean includeNullDelimiter,
-            final boolean includeNewLineDelimiter, final boolean omitEmptyFields, final ListChecker mdcChecker,
-            final ListChecker mapChecker, final PatternLayout patternLayout, final String mdcPrefix,
+    private GelfLayout(
+            final Configuration config,
+            final String host,
+            final KeyValuePair[] additionalFields,
+            final CompressionType compressionType,
+            final int compressionThreshold,
+            final boolean includeStacktrace,
+            final boolean includeThreadContext,
+            final boolean includeMapMessage,
+            final boolean includeNullDelimiter,
+            final boolean includeNewLineDelimiter,
+            final boolean omitEmptyFields,
+            final ListChecker mdcChecker,
+            final ListChecker mapChecker,
+            final PatternLayout patternLayout,
+            final String mdcPrefix,
             final String mapPrefix) {
         super(config, StandardCharsets.UTF_8);
         this.host = host != null ? host : NetUtils.getLocalHostname();
@@ -443,7 +468,8 @@ public final class GelfLayout extends AbstractStringLayout {
         if (config == null) {
             for (final KeyValuePair additionalField : this.additionalFields) {
                 if (valueNeedsLookup(additionalField.getValue())) {
-                    throw new IllegalArgumentException("configuration needs to be set when there are additional fields with variables");
+                    throw new IllegalArgumentException(
+                            "configuration needs to be set when there are additional fields with variables");
                 }
             }
         }
@@ -461,9 +487,8 @@ public final class GelfLayout extends AbstractStringLayout {
         this.mdcWriter = new FieldWriter(mdcChecker, mdcPrefix);
         this.mapWriter = new FieldWriter(mapChecker, mapPrefix);
         this.layout = patternLayout;
-        stringBuilderWriterRecycler = config.getRecyclerFactory().create(
-                () -> new StringBuilderWriter(MAX_STRING_BUILDER_SIZE),
-                writer -> {
+        stringBuilderWriterRecycler = config.getRecyclerFactory()
+                .create(() -> new StringBuilderWriter(MAX_STRING_BUILDER_SIZE), writer -> {
                     final StringBuilder stringBuilder = writer.getBuilder();
                     StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
                     stringBuilder.setLength(0);
@@ -741,8 +766,7 @@ public final class GelfLayout extends AbstractStringLayout {
      */
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "Log4j prints stacktraces only to logs, which should be private."
-    )
+            justification = "Log4j prints stacktraces only to logs, which should be private.")
     static CharSequence formatThrowable(final Throwable throwable) {
         // stack traces are big enough to provide a reasonably large initial capacity here
         final StringBuilderWriter writer = new StringBuilderWriter(2048);

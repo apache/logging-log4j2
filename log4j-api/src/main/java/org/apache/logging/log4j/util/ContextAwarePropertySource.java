@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.logging.log4j.spi.PropertyComponent;
 
 /**
@@ -36,8 +35,8 @@ public abstract class ContextAwarePropertySource implements PropertySource {
     private final String contextName;
     private final boolean includeInvalid;
 
-    public ContextAwarePropertySource(final Properties properties, final String contextName,
-                                      final boolean includeInvalid) {
+    public ContextAwarePropertySource(
+            final Properties properties, final String contextName, final boolean includeInvalid) {
         if (properties != null) {
             this.propertiesMap = parseProperties(properties, contextName, includeInvalid);
         } else {
@@ -126,8 +125,8 @@ public abstract class ContextAwarePropertySource implements PropertySource {
      * @param includeInvalid stores properties that do not match the Log4j2 convention.
      * @return The Properties Map.
      */
-    protected Map<String, Properties> parseProperties(final Properties properties, final String contextName,
-                                                    final boolean includeInvalid) {
+    protected Map<String, Properties> parseProperties(
+            final Properties properties, final String contextName, final boolean includeInvalid) {
         final Map<String, Properties> propertiesMap = new ConcurrentHashMap<>();
         if (contextName == null || contextName.equals(SYSTEM_CONTEXT)) {
             for (String propertyName : properties.stringPropertyNames()) {
@@ -151,8 +150,9 @@ public abstract class ContextAwarePropertySource implements PropertySource {
                         }
                         props.setProperty(propName, properties.getProperty(propertyName));
                     } else {
-                        LowLevelLogUtil.log("Key " + propName +
-                                " is invalid. Log4j properties must be in the form \"log4j2.{contextName}.{componentName}.{key}\"");
+                        LowLevelLogUtil.log(
+                                "Key " + propName
+                                        + " is invalid. Log4j properties must be in the form \"log4j2.{contextName}.{componentName}.{key}\"");
                     }
                 }
             }

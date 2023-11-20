@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -50,7 +49,6 @@ public class ThreadLocalRecyclerNestedLoggingTest {
             logger.info("B");
             return "C";
         }
-
     }
 
     @Test
@@ -63,21 +61,16 @@ public class ThreadLocalRecyclerNestedLoggingTest {
         logger.error("A", new ThrowableLoggingInGetMessage(logger));
         final List<String> messages1 = readAppendedMessages(appender1);
         final List<String> messages2 = readAppendedMessages(appender2);
-        Assertions
-                .assertThat(messages1)
+        Assertions.assertThat(messages1)
                 .containsExactlyInAnyOrderElementsOf(messages2)
-                .containsExactlyInAnyOrderElementsOf(Stream
-                        .of("['B',null]", "['A','C']")
+                .containsExactlyInAnyOrderElementsOf(Stream.of("['B',null]", "['A','C']")
                         .map(json -> json.replaceAll("'", "\""))
                         .collect(Collectors.toList()));
     }
 
     private static List<String> readAppendedMessages(final ListAppender appender) {
-        return appender
-                .getData()
-                .stream()
+        return appender.getData().stream()
                 .map(messageBytes -> new String(messageBytes, StandardCharsets.UTF_8))
                 .collect(Collectors.toList());
     }
-
 }

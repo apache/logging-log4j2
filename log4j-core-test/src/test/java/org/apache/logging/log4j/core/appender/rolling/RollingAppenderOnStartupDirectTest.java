@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -29,16 +32,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -87,7 +86,8 @@ public class RollingAppenderOnStartupDirectTest {
                 if (path.toFile().getName().startsWith(ROLLED)) {
                     final List<String> lines = Files.readAllLines(path);
                     assertTrue("No messages in " + path.toFile().getName(), lines.size() > 0);
-                    assertTrue("Missing message for " + path.toFile().getName(),
+                    assertTrue(
+                            "Missing message for " + path.toFile().getName(),
                             lines.get(0).startsWith(PREFIX));
                 }
             }
@@ -105,5 +105,4 @@ public class RollingAppenderOnStartupDirectTest {
         }
         Files.delete(Paths.get(DIR));
     }
-
 }

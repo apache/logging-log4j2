@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -40,7 +39,8 @@ public class TypeConverterFactory {
 
     @Inject
     public TypeConverterFactory(@TypeConverters final List<TypeConverter<?>> typeConverters) {
-        typeConverters.forEach(converter -> registerTypeConverter(getTypeConverterSupportedType(converter.getClass()), converter));
+        typeConverters.forEach(
+                converter -> registerTypeConverter(getTypeConverterSupportedType(converter.getClass()), converter));
         registerTypeConverter(Boolean.class, Boolean::valueOf);
         registerTypeAlias(Boolean.class, Boolean.TYPE);
         registerTypeConverter(Byte.class, Byte::valueOf);
@@ -76,7 +76,8 @@ public class TypeConverterFactory {
         if (type instanceof Class<?>) {
             final Class<?> clazz = (Class<?>) type;
             if (clazz.isEnum()) {
-                return Cast.cast(registerTypeConverter(type, s -> EnglishEnums.valueOf(clazz.asSubclass(Enum.class), s)));
+                return Cast.cast(
+                        registerTypeConverter(type, s -> EnglishEnums.valueOf(clazz.asSubclass(Enum.class), s)));
             }
         }
         // look for compatible converters
@@ -105,11 +106,12 @@ public class TypeConverterFactory {
         if (conflictingConverter != null) {
             final boolean overridable;
             if (converter instanceof Comparable) {
-                @SuppressWarnings("unchecked") final Comparable<TypeConverter<?>> comparableConverter =
-                        (Comparable<TypeConverter<?>>) converter;
+                @SuppressWarnings("unchecked")
+                final Comparable<TypeConverter<?>> comparableConverter = (Comparable<TypeConverter<?>>) converter;
                 overridable = comparableConverter.compareTo(conflictingConverter) < 0;
             } else if (conflictingConverter instanceof Comparable) {
-                @SuppressWarnings("unchecked") final Comparable<TypeConverter<?>> comparableConflictingConverter =
+                @SuppressWarnings("unchecked")
+                final Comparable<TypeConverter<?>> comparableConflictingConverter =
                         (Comparable<TypeConverter<?>>) conflictingConverter;
                 overridable = comparableConflictingConverter.compareTo(converter) > 0;
             } else {
@@ -118,13 +120,17 @@ public class TypeConverterFactory {
             if (overridable) {
                 LOGGER.debug(
                         "Replacing TypeConverter [{}] for type [{}] with [{}] after comparison.",
-                        conflictingConverter, type, converter);
+                        conflictingConverter,
+                        type,
+                        converter);
                 typeConverters.put(type, converter);
                 return converter;
             } else {
                 LOGGER.warn(
                         "Ignoring TypeConverter [{}] for type [{}] that conflicts with [{}], since they are not comparable.",
-                        converter, type, conflictingConverter);
+                        converter,
+                        type,
+                        conflictingConverter);
                 return conflictingConverter;
             }
         } else {

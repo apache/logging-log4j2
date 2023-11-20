@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.spi;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -130,7 +129,7 @@ public interface ThreadContextMap {
      *
      * <p>If the current thread does not have a context map it is
      * created as a side effect.</p>
-
+     *
      * @param keys The keys.
      * @since 3.0.0
      */

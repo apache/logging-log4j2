@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.nio.file.Path;
-
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
@@ -38,7 +37,11 @@ class GarbageFreeAsyncThreadContextTest {
 
     @Test
     void garbageFreeMixed() throws Exception {
-        AsyncThreadContextTest.doTestAsyncLogWritesToLog(AsyncThreadContextTest.ContextImpl.GARBAGE_FREE,
-                AsyncThreadContextTest.Mode.MIXED, getClass(), loggingPath, props);
+        AsyncThreadContextTest.doTestAsyncLogWritesToLog(
+                AsyncThreadContextTest.ContextImpl.GARBAGE_FREE,
+                AsyncThreadContextTest.Mode.MIXED,
+                getClass(),
+                loggingPath,
+                props);
     }
 }

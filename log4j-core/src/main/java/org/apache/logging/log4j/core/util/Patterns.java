@@ -38,8 +38,7 @@ public final class Patterns {
      */
     public static final String WHITESPACE = "\\s*";
 
-    private Patterns() {
-    }
+    private Patterns() {}
 
     /**
      * Creates a pattern string for {@code separator} surrounded by whitespace.

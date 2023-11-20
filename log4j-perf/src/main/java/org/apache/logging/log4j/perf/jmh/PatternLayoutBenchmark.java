@@ -18,7 +18,6 @@ package org.apache.logging.log4j.perf.jmh;
 
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -51,8 +50,8 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Thread)
 public class PatternLayoutBenchmark {
 
-    final static String STR = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
-    final static LogEvent EVENT = createLogEvent();
+    static final String STR = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
+    static final LogEvent EVENT = createLogEvent();
     private static final String STRING_ISO8859_1 = "ISO-8859-1";
     private static final Charset CHARSET_ISO8859_1 = Charset.forName(STRING_ISO8859_1);
     private static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
@@ -321,7 +320,7 @@ public class PatternLayoutBenchmark {
     public byte[] byteArrayMCNoSpace() {
         return PATTERN_M_C_NOSPACE.toByteArray(EVENT);
     }
-//---
+    // ---
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
@@ -406,5 +405,4 @@ public class PatternLayoutBenchmark {
     public String serializableMCNoSpace() {
         return PATTERN_M_C_NOSPACE.toSerializable(EVENT);
     }
-
 }

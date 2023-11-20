@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.apache.logging.log4j.plugins.test.validation.di.FirstCircularBean;
 import org.apache.logging.log4j.plugins.test.validation.di.SecondCircularBean;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CircularDependencyExceptionTest {
     final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();

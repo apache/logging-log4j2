@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests the ContextDataFactory class.
  */
-@SetSystemProperty(key = Log4jPropertyKey.Constant.THREAD_CONTEXT_DATA_CLASS_NAME,
+@SetSystemProperty(
+        key = Log4jPropertyKey.Constant.THREAD_CONTEXT_DATA_CLASS_NAME,
         value = "org.apache.logging.log4j.core.impl.FactoryTestStringMap")
 public class ContextDataFactoryPropertySetTest {
 

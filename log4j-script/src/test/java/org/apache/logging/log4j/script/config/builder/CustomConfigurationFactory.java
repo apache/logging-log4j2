@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.script.config.builder;
 
 import java.net.URI;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -33,30 +32,31 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
  * Normally this would be a plugin. However, we don't want it used for everything so it will be defined
  * via a system property.
  */
-//@Category(ConfigurationFactory.CATEGORY)
-//@Plugin("CustomConfigurationFactory")
-//@Order(50)
+// @Category(ConfigurationFactory.CATEGORY)
+// @Plugin("CustomConfigurationFactory")
+// @Order(50)
 public class CustomConfigurationFactory extends ConfigurationFactory {
 
-    public static Configuration addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
+    public static Configuration addTestFixtures(
+            final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
-        builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy").addIsWatched(true));
+        builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy")
+                .addIsWatched(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
 
-        final AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
-        appenderBuilder.add(builder.
-                newLayout("PatternLayout").
-                addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
-        appenderBuilder.add(builder.
-                newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL).
-                addAttribute("marker", "FLOW"));
+        final AppenderComponentBuilder appenderBuilder =
+                builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+        appenderBuilder.add(
+                builder.newLayout("PatternLayout").addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+        appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
+                .addAttribute("marker", "FLOW"));
         builder.add(appenderBuilder);
 
-        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true).
-                    add(builder.newAppenderRef("Stdout")).
-                    addAttribute("additivity", false));
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true)
+                .add(builder.newAppenderRef("Stdout"))
+                .addAttribute("additivity", false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
 
         builder.add(builder.newCustomLevel("Panic", 17));
@@ -70,7 +70,8 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+    public Configuration getConfiguration(
+            final LoggerContext loggerContext, final String name, final URI configLocation) {
         final ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
         return addTestFixtures(name, builder);
     }

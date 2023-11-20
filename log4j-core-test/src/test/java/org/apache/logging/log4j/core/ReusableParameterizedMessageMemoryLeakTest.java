@@ -16,22 +16,21 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReusableParameterizedMessageMemoryLeakTest {
 
     @Test
     public void testParametersAreNotLeaked() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
-        final ReusableMessage message = (ReusableMessage) ReusableMessageFactory.INSTANCE.newMessage(
-        "foo {}", new ParameterObject("paramValue", latch));
+        final ReusableMessage message = (ReusableMessage)
+                ReusableMessageFactory.INSTANCE.newMessage("foo {}", new ParameterObject("paramValue", latch));
         // Large enough for the parameters, but smaller than the default reusable array size.
         message.swapParameters(new Object[5]);
         try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
@@ -43,6 +42,7 @@ public class ReusableParameterizedMessageMemoryLeakTest {
     private static final class ParameterObject {
         private final String value;
         private final CountDownLatch latch;
+
         ParameterObject(final String value, final CountDownLatch latch) {
             this.value = value;
             this.latch = latch;

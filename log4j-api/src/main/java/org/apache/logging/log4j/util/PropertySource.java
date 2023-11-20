@@ -57,8 +57,7 @@ public interface PropertySource {
      *
      * @param action action to perform on each key/value pair
      */
-    default void forEach(final BiConsumer<String, String> action) {
-    }
+    default void forEach(final BiConsumer<String, String> action) {}
 
     /**
      * Returns the list of all property names for the System Context.
@@ -111,7 +110,9 @@ public interface PropertySource {
 
         @Override
         public int compare(final PropertySource o1, final PropertySource o2) {
-            int result = Integer.compare(Objects.requireNonNull(o1).getPriority(), Objects.requireNonNull(o2).getPriority());
+            int result = Integer.compare(
+                    Objects.requireNonNull(o1).getPriority(),
+                    Objects.requireNonNull(o2).getPriority());
             if (result == 0) {
                 result = o1.equals(o2) ? 0 : -1;
             }
@@ -217,7 +218,8 @@ public interface PropertySource {
 
         static void populateCache() {
             try {
-                final Enumeration<URL> urls = PropertySource.class.getClassLoader().getResources(MAPPING_FILE);
+                final Enumeration<URL> urls =
+                        PropertySource.class.getClassLoader().getResources(MAPPING_FILE);
                 while (urls.hasMoreElements()) {
                     final URL url = urls.nextElement();
                     try (final InputStream is = url.openStream()) {
@@ -250,7 +252,6 @@ public interface PropertySource {
             }
         }
 
-        private Util() {
-        }
+        private Util() {}
     }
 }

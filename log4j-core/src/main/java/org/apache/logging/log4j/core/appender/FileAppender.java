@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -90,14 +89,33 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             }
             final Layout layout = getOrCreateLayout();
 
-            final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
-                    advertiseUri, layout, bufferSize, filePermissions, fileOwner, fileGroup, getConfiguration());
+            final FileManager manager = FileManager.getFileManager(
+                    fileName,
+                    append,
+                    locking,
+                    bufferedIo,
+                    createOnDemand,
+                    advertiseUri,
+                    layout,
+                    bufferSize,
+                    filePermissions,
+                    fileOwner,
+                    fileGroup,
+                    getConfiguration());
             if (manager == null) {
                 return null;
             }
 
-            return new FileAppender(getName(), layout, getFilter(), manager, fileName, isIgnoreExceptions(),
-                    !bufferedIo || isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null, getPropertyArray());
+            return new FileAppender(
+                    getName(),
+                    layout,
+                    getFilter(),
+                    manager,
+                    fileName,
+                    isIgnoreExceptions(),
+                    !bufferedIo || isImmediateFlush(),
+                    advertise ? getConfiguration().getAdvertiser() : null,
+                    getPropertyArray());
         }
 
         public String getAdvertiseUri() {
@@ -180,7 +198,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             this.fileGroup = fileGroup;
             return asBuilder();
         }
-
     }
 
     @PluginFactory
@@ -194,9 +211,16 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     private final Object advertisement;
 
-    private FileAppender(final String name, final Layout layout, final Filter filter,
-                         final FileManager manager, final String filename, final boolean ignoreExceptions,
-                         final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
+    private FileAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final FileManager manager,
+            final String filename,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final Advertiser advertiser,
+            final Property[] properties) {
 
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {

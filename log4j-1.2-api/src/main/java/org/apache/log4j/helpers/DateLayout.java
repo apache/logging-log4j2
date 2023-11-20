@@ -16,46 +16,45 @@
  */
 package org.apache.log4j.helpers;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * This abstract layout takes care of all the date related options and formatting work.
  */
-abstract public class DateLayout extends Layout {
+public abstract class DateLayout extends Layout {
 
     /**
      * String constant designating no time information. Current value of this constant is <b>NULL</b>.
      *
      */
-    public final static String NULL_DATE_FORMAT = "NULL";
+    public static final String NULL_DATE_FORMAT = "NULL";
 
     /**
      * String constant designating relative time. Current value of this constant is <b>RELATIVE</b>.
      */
-    public final static String RELATIVE_TIME_DATE_FORMAT = "RELATIVE";
+    public static final String RELATIVE_TIME_DATE_FORMAT = "RELATIVE";
 
     /**
      * @deprecated Options are now handled using the JavaBeans paradigm. This constant is not longer needed and will be
      *             removed in the <em>near</em> term.
      */
     @Deprecated
-    final static public String DATE_FORMAT_OPTION = "DateFormat";
+    public static final String DATE_FORMAT_OPTION = "DateFormat";
 
     /**
      * @deprecated Options are now handled using the JavaBeans paradigm. This constant is not longer needed and will be
      *             removed in the <em>near</em> term.
      */
     @Deprecated
-    final static public String TIMEZONE_OPTION = "TimeZone";
+    public static final String TIMEZONE_OPTION = "TimeZone";
 
     protected FieldPosition pos = new FieldPosition(0);
 

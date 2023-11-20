@@ -22,15 +22,15 @@ import org.hamcrest.Matcher;
 
 public final class ClassMatchers {
 
-    private static final Matcher<String> LOADABLE_CLASS_NAME = new CustomTypeSafeMatcher<String>("a loadable class name") {
-        @Override
-        protected boolean matchesSafely(final String item) {
-            return LoaderUtil.isClassAvailable(item);
-        }
-    };
+    private static final Matcher<String> LOADABLE_CLASS_NAME =
+            new CustomTypeSafeMatcher<String>("a loadable class name") {
+                @Override
+                protected boolean matchesSafely(final String item) {
+                    return LoaderUtil.isClassAvailable(item);
+                }
+            };
 
     public static Matcher<String> loadableClassName() {
         return LOADABLE_CLASS_NAME;
     }
-
 }

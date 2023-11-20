@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.model;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -26,14 +28,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
-
-import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
@@ -46,6 +45,7 @@ public class PluginRegistry {
      */
     private static final String PLUGIN_CACHE_FILE =
             "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
@@ -91,14 +91,17 @@ public class PluginRegistry {
         final ServiceLoader<PluginService> serviceLoader = ServiceLoader.load(PluginService.class, classLoader);
         final AtomicInteger pluginCount = new AtomicInteger();
         for (final PluginService pluginService : serviceLoader) {
-            pluginService.getNamespaces().values().forEach(category -> pluginCount.addAndGet(namespaces.merge(category)));
+            pluginService
+                    .getNamespaces()
+                    .values()
+                    .forEach(category -> pluginCount.addAndGet(namespaces.merge(category)));
         }
         final int numPlugins = pluginCount.get();
         LOGGER.debug(() -> {
             final long endTime = System.nanoTime();
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-            return "Took " + numFormat.format((endTime - startTime) * 1e-9) +
-                    " seconds to load " + numPlugins + " plugins from " + classLoader;
+            return "Took " + numFormat.format((endTime - startTime) * 1e-9) + " seconds to load " + numPlugins
+                    + " plugins from " + classLoader;
         });
     }
 
@@ -117,18 +120,17 @@ public class PluginRegistry {
         }
         final Namespaces namespaces = new Namespaces();
         final AtomicInteger pluginCount = new AtomicInteger();
-        cache.getAllNamespaces().forEach((key, outer) ->
-                outer.values().forEach(entry -> {
-                    final PluginType<?> type = new PluginType<>(entry, classLoader);
-                    namespaces.add(type);
-                    pluginCount.incrementAndGet();
-                }));
+        cache.getAllNamespaces().forEach((key, outer) -> outer.values().forEach(entry -> {
+            final PluginType<?> type = new PluginType<>(entry, classLoader);
+            namespaces.add(type);
+            pluginCount.incrementAndGet();
+        }));
         final int numPlugins = pluginCount.get();
         LOGGER.debug(() -> {
             final long endTime = System.nanoTime();
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-            return "Took " + numFormat.format((endTime - startTime) * 1e-9) +
-                    " seconds to load " + numPlugins + " plugins from " + classLoader;
+            return "Took " + numFormat.format((endTime - startTime) * 1e-9) + " seconds to load " + numPlugins
+                    + " plugins from " + classLoader;
         });
         return namespaces;
     }
@@ -185,7 +187,8 @@ public class PluginRegistry {
         }
 
         public PluginNamespace getOrCreate(final String category) {
-            return namespaces.computeIfAbsent(category.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, category));
+            return namespaces.computeIfAbsent(
+                    category.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, category));
         }
 
         @Override

@@ -28,14 +28,13 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("LoggerFqcnPatternConverter")
-@ConverterKeys({ "fqcn" })
+@ConverterKeys({"fqcn"})
 @PerformanceSensitive("allocation")
 public final class LoggerFqcnPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final LoggerFqcnPatternConverter INSTANCE =
-        new LoggerFqcnPatternConverter();
+    private static final LoggerFqcnPatternConverter INSTANCE = new LoggerFqcnPatternConverter();
 
     /**
      * Private constructor.
@@ -50,8 +49,7 @@ public final class LoggerFqcnPatternConverter extends LogEventPatternConverter {
      * @param options options, currently ignored, may be null.
      * @return instance of LoggerFqcnPatternConverter.
      */
-    public static LoggerFqcnPatternConverter newInstance(
-        final String[] options) {
+    public static LoggerFqcnPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 

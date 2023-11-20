@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.jul.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -27,15 +28,14 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
-//@Category(AsyncLoggers.class)
+// @Category(AsyncLoggers.class)
 @Ignore("https://issues.apache.org/jira/browse/LOG4J2-3523")
 public class AsyncLoggerThreadsTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
+        System.setProperty(
+                Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                 AsyncLoggerContextSelector.class.getName());
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
     }

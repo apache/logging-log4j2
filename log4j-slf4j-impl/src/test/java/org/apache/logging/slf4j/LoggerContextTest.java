@@ -16,14 +16,13 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.Set;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Set;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests cleanup of the LoggerContexts.

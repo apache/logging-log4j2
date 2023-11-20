@@ -21,7 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.util.Strings;
 
@@ -61,5 +60,4 @@ public @interface Configurable {
      * @return true if child elements should defer instantiation until they are accessed.
      */
     boolean deferChildren() default false;
-
 }

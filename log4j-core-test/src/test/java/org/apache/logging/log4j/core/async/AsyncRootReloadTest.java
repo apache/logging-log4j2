@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.async;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.FileUtils;

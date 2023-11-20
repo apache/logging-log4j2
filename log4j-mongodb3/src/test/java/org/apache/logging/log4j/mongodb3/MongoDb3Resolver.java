@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.mongodb3;
 
-import java.util.function.Supplier;
-
 import com.mongodb.MongoClient;
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -39,6 +37,7 @@ import de.flapdoodle.os.OSType;
 import de.flapdoodle.reverse.TransitionWalker.ReachedState;
 import de.flapdoodle.reverse.transitions.Derive;
 import de.flapdoodle.reverse.transitions.Start;
+import java.util.function.Supplier;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -53,8 +52,7 @@ import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 
-public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient>
-        implements BeforeAllCallback {
+public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient> implements BeforeAllCallback {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String LOGGING_TARGET_PROPERTY = "log4j2.mongoDbLoggingTarget";
@@ -66,10 +64,10 @@ public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient>
             switch (loggingTarget) {
                 case STATUS_LOGGER:
                     return ProcessOutput.builder()
-                            .output(Processors.named("[" + label + " output]",
-                                    new StatusLoggerStreamProcessor(Level.INFO)))
-                            .error(Processors.named("[" + label + " error]",
-                                    new StatusLoggerStreamProcessor(Level.ERROR)))
+                            .output(Processors.named(
+                                    "[" + label + " output]", new StatusLoggerStreamProcessor(Level.INFO)))
+                            .error(Processors.named(
+                                    "[" + label + " error]", new StatusLoggerStreamProcessor(Level.ERROR)))
                             .commands(new StatusLoggerStreamProcessor(Level.DEBUG))
                             .build();
                 case CONSOLE:
@@ -90,8 +88,8 @@ public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient>
         final Mongod mongod = Mongod.builder()
                 .processOutput(Derive.given(Name.class)
                         .state(ProcessOutput.class)
-                        .deriveBy(name -> getProcessOutput(LoggingTarget.getLoggingTarget(LoggingTarget.STATUS_LOGGER),
-                                name.value())))
+                        .deriveBy(name -> getProcessOutput(
+                                LoggingTarget.getLoggingTarget(LoggingTarget.STATUS_LOGGER), name.value())))
                 .processConfig(Start.to(ProcessConfig.class)
                         .initializedWith(ProcessConfig.defaults().withStopTimeoutInMillis(BUILDER_TIMEOUT_MILLIS))
                         .withTransitionLabel("create default"))
@@ -99,10 +97,11 @@ public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient>
                 .packageOfDistribution(new PackageOfCommandDistribution() {
 
                     @Override
-                    protected Package packageOf(Command command, Distribution distribution,
-                            DistributionBaseUrl baseUrl) {
+                    protected Package packageOf(
+                            Command command, Distribution distribution, DistributionBaseUrl baseUrl) {
                         if (distribution.platform().operatingSystem().type() == OSType.Windows) {
-                            final Package relativePackage = legacyPackageResolverFactory().apply(command)
+                            final Package relativePackage = legacyPackageResolverFactory()
+                                    .apply(command)
                                     .packageFor(distribution);
                             final FileSet.Builder fileSetBuilder = FileSet.builder()
                                     .addEntry(FileType.Library, "ssleay32.dll")
@@ -130,7 +129,8 @@ public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient>
     }
 
     public enum LoggingTarget {
-        CONSOLE, STATUS_LOGGER;
+        CONSOLE,
+        STATUS_LOGGER;
 
         public static LoggingTarget getLoggingTarget(final LoggingTarget defaultValue) {
             return LoggingTarget.valueOf(System.getProperty(LOGGING_TARGET_PROPERTY, defaultValue.name()));
@@ -140,7 +140,6 @@ public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient>
     private static final class MongoClientHolder implements CloseableResource, Supplier<MongoClient> {
         private final ReachedState<RunningMongodProcess> state;
         private final MongoClient mongoClient;
-
 
         public MongoClientHolder(final Mongod mongod, final TestProperties props) {
             state = mongod.start(Version.Main.V3_6);
@@ -174,8 +173,7 @@ public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient>
             LOGGER.log(level, () -> stripLineEndings(line));
         }
 
-        public void onProcessed() {
-        }
+        public void onProcessed() {}
 
         protected String stripLineEndings(String line) {
             // we still need to remove line endings that are passed on by

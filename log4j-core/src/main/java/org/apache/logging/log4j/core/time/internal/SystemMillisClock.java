@@ -32,5 +32,4 @@ public final class SystemMillisClock implements Clock {
     public long currentTimeMillis() {
         return System.currentTimeMillis();
     }
-
 }

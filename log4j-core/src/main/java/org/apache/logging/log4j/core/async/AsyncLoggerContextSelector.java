@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.net.URI;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
@@ -42,8 +41,9 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
      */
     public static boolean isSelected() {
         // FIXME(ms): this should check Injector bindings
-        return AsyncLoggerContextSelector.class.getName().equals(
-                PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME));
+        return AsyncLoggerContextSelector.class
+                .getName()
+                .equals(PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME));
     }
 
     @Inject
@@ -52,7 +52,8 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
     }
 
     @Override
-    protected LoggerContext createContext(final String name, final URI configLocation, final ConfigurableInstanceFactory instanceFactory) {
+    protected LoggerContext createContext(
+            final String name, final URI configLocation, final ConfigurableInstanceFactory instanceFactory) {
         return new AsyncLoggerContext(name, null, configLocation, instanceFactory);
     }
 

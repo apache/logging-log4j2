@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import java.util.List;
-
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import java.util.List;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolversPostProcessor;
@@ -38,7 +37,6 @@ public class LegacyAnnotationFactoryResolversPostProcessor extends FactoryResolv
                 new LegacyPluginValueFactoryResolver(),
                 new LegacyPluginNodeFactoryResolver(),
                 new PluginConfigurationFactoryResolver(),
-                new PluginLoggerContextFactoryResolver()
-        ));
+                new PluginLoggerContextFactoryResolver()));
     }
 }

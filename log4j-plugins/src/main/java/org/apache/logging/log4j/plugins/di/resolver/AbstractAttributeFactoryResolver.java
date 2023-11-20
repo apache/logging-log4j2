@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
@@ -78,6 +77,9 @@ public abstract class AbstractAttributeFactoryResolver<T, A extends Annotation> 
 
     protected abstract boolean isSensitive(final A annotation);
 
-    protected abstract T getDefaultValue(final A annotation, final StringValueResolver resolver,
-                                         final Type type, final TypeConverter<T> typeConverter);
+    protected abstract T getDefaultValue(
+            final A annotation,
+            final StringValueResolver resolver,
+            final Type type,
+            final TypeConverter<T> typeConverter);
 }

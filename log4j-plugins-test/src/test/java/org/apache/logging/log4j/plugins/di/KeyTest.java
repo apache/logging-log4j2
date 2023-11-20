@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
-
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Ordered;
@@ -31,18 +34,13 @@ import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 // TODO: add tests for more complex types with generics etc
 class KeyTest {
 
     @Namespace("namespace")
     @Named("name")
     @Ordered(42)
-    static class AnnotatedClass {
-    }
+    static class AnnotatedClass {}
 
     @Test
     void forClass() {
@@ -164,8 +162,9 @@ class KeyTest {
 
     @Test
     void parameterWithCustomQualifierAndNamespace() {
-        final Parameter parameter = assertDoesNotThrow(() ->
-                LogicallyAnnotatedParameter.class.getDeclaredMethod("inject", String.class).getParameters()[0]);
+        final Parameter parameter =
+                assertDoesNotThrow(() -> LogicallyAnnotatedParameter.class.getDeclaredMethod("inject", String.class)
+                        .getParameters()[0]);
         final Key<String> key = Key.forParameter(parameter);
         assertEquals("logical", key.getNamespace());
         assertEquals("parameter", key.getName());

@@ -40,7 +40,7 @@ public class KubernetesClientBuilder {
         try {
             base = Config.autoConfigure(null);
         } catch (Exception ex) {
-            if (ex instanceof  NullPointerException) {
+            if (ex instanceof NullPointerException) {
                 return null;
             }
         }

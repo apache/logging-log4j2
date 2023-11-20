@@ -46,5 +46,4 @@ public class Log4j1LevelPatternConverter extends LogEventPatternConverter {
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         toAppendTo.append(OptionConverter.convertLevel(event.getLevel()).toString());
     }
-
 }

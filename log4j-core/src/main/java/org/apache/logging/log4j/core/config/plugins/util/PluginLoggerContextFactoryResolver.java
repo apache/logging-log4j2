@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.plugins.PluginLoggerContext;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
@@ -33,8 +32,7 @@ public class PluginLoggerContextFactoryResolver implements FactoryResolver<Logge
 
     @Override
     public Supplier<LoggerContext> getFactory(
-            final ResolvableKey<LoggerContext> resolvableKey,
-            final InstanceFactory instanceFactory) {
+            final ResolvableKey<LoggerContext> resolvableKey, final InstanceFactory instanceFactory) {
         return instanceFactory.getFactory(LoggerContext.KEY);
     }
 }

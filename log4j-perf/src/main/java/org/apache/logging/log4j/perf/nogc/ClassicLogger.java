@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.nogc;
 
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -29,11 +28,14 @@ public class ClassicLogger extends AbstractLogger {
 
     @Override
     protected StringLayout createLayout() {
-        return PatternLayout.newBuilder().setCharset(StandardCharsets.UTF_8).setPattern("%m").build();
+        return PatternLayout.newBuilder()
+                .setCharset(StandardCharsets.UTF_8)
+                .setPattern("%m")
+                .build();
     }
 
     public void log(final String message, final Object... params) {
         log(new ParameterizedMessage(message, params));
-        //log(new NoGcMessage(16).set(message, params[0], params[1], params[2], params[3]));
+        // log(new NoGcMessage(16).set(message, params[0], params[1], params[2], params[3]));
     }
 }

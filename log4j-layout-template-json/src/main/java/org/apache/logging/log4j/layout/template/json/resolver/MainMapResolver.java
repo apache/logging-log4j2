@@ -67,24 +67,17 @@ public final class MainMapResolver implements EventResolver {
         final String key = config.getString("key");
         final Integer index = config.getInteger("index");
         if (key != null && index != null) {
-            throw new IllegalArgumentException(
-                    "provided both key and index: " + config);
+            throw new IllegalArgumentException("provided both key and index: " + config);
         }
         if (key == null && index == null) {
-            throw new IllegalArgumentException(
-                    "either key or index must be provided: " + config);
+            throw new IllegalArgumentException("either key or index must be provided: " + config);
         }
-        this.key = index != null
-                ? String.valueOf(index)
-                : key;
+        this.key = index != null ? String.valueOf(index) : key;
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         final String value = MAIN_MAP_LOOKUP.lookup(key);
         jsonWriter.writeString(value);
     }
-
 }

@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -44,7 +43,8 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  */
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin("RollingRandomAccessFile")
-public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
+public final class RollingRandomAccessFileAppender
+        extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
 
     public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<RollingRandomAccessFileAppender> {
@@ -107,7 +107,9 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
                             .build();
                 }
             } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
-                LOGGER.error("RollingFileAppender '{}': When no file name is provided a DirectFileRolloverStrategy must be configured", name);
+                LOGGER.error(
+                        "RollingFileAppender '{}': When no file name is provided a DirectFileRolloverStrategy must be configured",
+                        name);
                 return null;
             }
 
@@ -125,18 +127,38 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
 
             final boolean immediateFlush = isImmediateFlush();
             final int bufferSize = getBufferSize();
-            final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager
-                    .getRollingRandomAccessFileManager(fileName, filePattern, append, immediateFlush, bufferSize, policy,
-                            strategy, advertiseURI, layout,
-                            filePermissions, fileOwner, fileGroup, getConfiguration());
+            final RollingRandomAccessFileManager manager =
+                    RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
+                            fileName,
+                            filePattern,
+                            append,
+                            immediateFlush,
+                            bufferSize,
+                            policy,
+                            strategy,
+                            advertiseURI,
+                            layout,
+                            filePermissions,
+                            fileOwner,
+                            fileGroup,
+                            getConfiguration());
             if (manager == null) {
                 return null;
             }
 
             manager.initialize();
 
-            return new RollingRandomAccessFileAppender(name, layout,getFilter(), manager, fileName, filePattern,
-                    isIgnoreExceptions(), immediateFlush, bufferSize, advertise ? getConfiguration().getAdvertiser() : null);
+            return new RollingRandomAccessFileAppender(
+                    name,
+                    layout,
+                    getFilter(),
+                    manager,
+                    fileName,
+                    filePattern,
+                    isIgnoreExceptions(),
+                    immediateFlush,
+                    bufferSize,
+                    advertise ? getConfiguration().getAdvertiser() : null);
         }
 
         public B setFileName(final String fileName) {
@@ -188,7 +210,6 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             this.fileGroup = fileGroup;
             return asBuilder();
         }
-
     }
 
     private final String fileName;
@@ -196,10 +217,17 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     private final Object advertisement;
     private final Advertiser advertiser;
 
-    private RollingRandomAccessFileAppender(final String name, final Layout layout,
-            final Filter filter, final RollingRandomAccessFileManager manager, final String fileName,
-            final String filePattern, final boolean ignoreExceptions,
-            final boolean immediateFlush, final int bufferSize, final Advertiser advertiser) {
+    private RollingRandomAccessFileAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final RollingRandomAccessFileManager manager,
+            final String fileName,
+            final String filePattern,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final int bufferSize,
+            final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, null, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
@@ -269,5 +297,4 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
-
 }

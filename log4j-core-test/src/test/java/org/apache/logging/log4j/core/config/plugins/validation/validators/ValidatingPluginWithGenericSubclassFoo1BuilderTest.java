@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.ConfigurationProcessor;
 import org.apache.logging.log4j.plugins.Node;
@@ -26,8 +28,6 @@ import org.apache.logging.log4j.plugins.test.validation.PluginWithGenericSubclas
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @StatusLoggerLevel("OFF")
 public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {

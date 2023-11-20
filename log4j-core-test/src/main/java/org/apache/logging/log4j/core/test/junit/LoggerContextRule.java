@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import java.util.concurrent.TimeUnit;
+import static org.junit.Assert.assertNotNull;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -43,8 +44,6 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import static org.junit.Assert.assertNotNull;
-
 /**
  * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file. If the system
  * property {@code EBUG} is set (e.g., through the command line option {@code -DEBUG}), then the StatusLogger will be
@@ -61,7 +60,8 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
     }
 
     private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
-    private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
+    private static final String SYS_PROP_KEY_DISPLAY_NAME =
+            "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
     private final String configurationLocation;
     private LoggerContext loggerContext;
     private Class<? extends ContextSelector> contextSelectorClass;
@@ -94,20 +94,28 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
      * @param contextSelectorClass
      *            custom ContextSelector class to use instead of default
      */
-    public LoggerContextRule(final String configurationLocation, final Class<? extends ContextSelector> contextSelectorClass) {
-        this(configurationLocation, contextSelectorClass, AbstractLifeCycle.DEFAULT_STOP_TIMEOUT,
+    public LoggerContextRule(
+            final String configurationLocation, final Class<? extends ContextSelector> contextSelectorClass) {
+        this(
+                configurationLocation,
+                contextSelectorClass,
+                AbstractLifeCycle.DEFAULT_STOP_TIMEOUT,
                 AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
     }
 
-    public LoggerContextRule(final String configurationLocation, final Class<? extends ContextSelector> contextSelectorClass,
-            final long shutdownTimeout, final TimeUnit shutdownTimeUnit) {
+    public LoggerContextRule(
+            final String configurationLocation,
+            final Class<? extends ContextSelector> contextSelectorClass,
+            final long shutdownTimeout,
+            final TimeUnit shutdownTimeUnit) {
         this.configurationLocation = configurationLocation;
         this.contextSelectorClass = contextSelectorClass;
         this.shutdownTimeout = shutdownTimeout;
         this.shutdownTimeUnit = shutdownTimeUnit;
     }
 
-    public LoggerContextRule(final String configurationLocation, final int shutdownTimeout, final TimeUnit shutdownTimeUnit) {
+    public LoggerContextRule(
+            final String configurationLocation, final int shutdownTimeout, final TimeUnit shutdownTimeUnit) {
         this(configurationLocation, null, shutdownTimeout, shutdownTimeUnit);
     }
 
@@ -126,7 +134,8 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                 System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, displayName);
                 final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
                 if (contextSelectorClass != null) {
-                    instanceFactory.registerBinding(Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(contextSelectorClass)));
+                    instanceFactory.registerBinding(
+                            Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(contextSelectorClass)));
                 }
                 DI.initializeFactory(instanceFactory);
                 final Log4jContextFactory factory = new Log4jContextFactory(instanceFactory);
@@ -137,19 +146,23 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                 if (Strings.isBlank(configurationLocation)) {
                     loggerContext = factory.getContext(fqcn, classLoader, null, false);
                 } else if (configurationLocation.contains(",")) {
-                    loggerContext = factory.getContext(fqcn, classLoader, null, false, NetUtils.toURIs(configurationLocation),
-                            displayName);
+                    loggerContext = factory.getContext(
+                            fqcn, classLoader, null, false, NetUtils.toURIs(configurationLocation), displayName);
                 } else {
-                    loggerContext = factory.getContext(fqcn, classLoader, null, false, NetUtils.toURI(configurationLocation),
-                            displayName);
+                    loggerContext = factory.getContext(
+                            fqcn, classLoader, null, false, NetUtils.toURI(configurationLocation), displayName);
                 }
                 assertNotNull("Error initializing LoggerContext", loggerContext);
                 try {
                     base.evaluate();
                 } finally {
                     if (!Configurator.shutdown(loggerContext, shutdownTimeout, shutdownTimeUnit)) {
-                        StatusLogger.getLogger().error("Logger context {} did not shutdown completely after {} {}.",
-                                loggerContext.getName(), shutdownTimeout, shutdownTimeUnit);
+                        StatusLogger.getLogger()
+                                .error(
+                                        "Logger context {} did not shutdown completely after {} {}.",
+                                        loggerContext.getName(),
+                                        shutdownTimeout,
+                                        shutdownTimeUnit);
                     }
                     loggerContext = null;
                     contextSelectorClass = null;
@@ -159,7 +172,6 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                 }
             }
         };
-
     }
 
     /**
@@ -170,9 +182,9 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
      * @return the named Appender or {@code null} if it wasn't defined in the configuration.
      */
     @SuppressWarnings("unchecked") // Assume the call site knows what it is doing.
-     public <T extends Appender> T getAppender(final String name) {
-         return (T) getConfiguration().getAppenders().get(name);
-     }
+    public <T extends Appender> T getAppender(final String name) {
+        return (T) getConfiguration().getAppenders().get(name);
+    }
 
     /**
      * Gets a named Appender for this LoggerContext.
@@ -327,12 +339,13 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
         return RuleChain.outerRule(new CleanFiles(files)).around(this);
     }
 
-    public RuleChain withCleanFoldersRule(final boolean before, final boolean after, final int maxTries, final String... folders) {
-        return RuleChain.outerRule(new CleanFolders(before, after, maxTries, folders)).around(this);
+    public RuleChain withCleanFoldersRule(
+            final boolean before, final boolean after, final int maxTries, final String... folders) {
+        return RuleChain.outerRule(new CleanFolders(before, after, maxTries, folders))
+                .around(this);
     }
 
     public RuleChain withCleanFoldersRule(final String... folders) {
         return RuleChain.outerRule(new CleanFolders(folders)).around(this);
     }
-
 }

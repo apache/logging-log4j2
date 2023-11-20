@@ -22,7 +22,6 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
@@ -39,22 +38,31 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     private volatile OutputStream outputStream;
     private boolean skipFooter;
 
-    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout layout,
-            final boolean writeHeader) {
+    protected OutputStreamManager(
+            final OutputStream os, final String streamName, final Layout layout, final boolean writeHeader) {
         this(os, streamName, layout, writeHeader, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
-    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout layout,
-            final boolean writeHeader, final int bufferSize) {
+    protected OutputStreamManager(
+            final OutputStream os,
+            final String streamName,
+            final Layout layout,
+            final boolean writeHeader,
+            final int bufferSize) {
         this(null, os, streamName, false, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
     }
 
     /**
      * @since 2.7
      */
-    protected OutputStreamManager(final LoggerContext loggerContext, final OutputStream os, final String streamName,
-                                  final boolean createOnDemand, final Layout layout, final boolean writeHeader,
-                                  final ByteBuffer byteBuffer) {
+    protected OutputStreamManager(
+            final LoggerContext loggerContext,
+            final OutputStream os,
+            final String streamName,
+            final boolean createOnDemand,
+            final Layout layout,
+            final boolean writeHeader,
+            final ByteBuffer byteBuffer) {
         super(loggerContext, streamName);
         if (createOnDemand && os != null) {
             LOGGER.error(
@@ -78,8 +86,8 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param <T> The type of the OutputStreamManager.
      * @return An OutputStreamManager.
      */
-    public static <T> OutputStreamManager getManager(final String name, final T data,
-                                                 final ManagerFactory<? extends OutputStreamManager, T> factory) {
+    public static <T> OutputStreamManager getManager(
+            final String name, final T data, final ManagerFactory<? extends OutputStreamManager, T> factory) {
         return AbstractManager.getManager(name, factory, data);
     }
 
@@ -159,7 +167,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param bytes The serialized Log event.
      * @throws AppenderLoggingException if an error occurs.
      */
-    protected void write(final byte[] bytes)  {
+    protected void write(final byte[] bytes) {
         write(bytes, 0, bytes.length, false);
     }
 
@@ -169,7 +177,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param immediateFlush If true, flushes after writing.
      * @throws AppenderLoggingException if an error occurs.
      */
-    protected void write(final byte[] bytes, final boolean immediateFlush)  {
+    protected void write(final byte[] bytes, final boolean immediateFlush) {
         write(bytes, 0, bytes.length, immediateFlush);
     }
 
@@ -354,7 +362,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     @Override
     public void writeBytes(final ByteBuffer data) {
         if (data.remaining() == 0) {
-          return;
+            return;
         }
         writeLock.lock();
         try {

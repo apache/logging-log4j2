@@ -30,7 +30,9 @@ public class ConditionContext {
     private final InstanceFactory instanceFactory;
 
     private ConditionContext(
-            final PropertyEnvironment environment, final ClassLoader classLoader, final InstanceFactory instanceFactory) {
+            final PropertyEnvironment environment,
+            final ClassLoader classLoader,
+            final InstanceFactory instanceFactory) {
         this.environment = environment;
         this.classLoader = classLoader;
         this.instanceFactory = instanceFactory;

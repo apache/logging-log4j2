@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -62,8 +61,14 @@ public final class FailoverAppender extends AbstractAppender {
 
     private volatile long nextCheckNanos;
 
-    private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
-            final int intervalMillis, final Configuration config, final boolean ignoreExceptions,
+    private FailoverAppender(
+            final String name,
+            final Filter filter,
+            final String primary,
+            final String[] failovers,
+            final int intervalMillis,
+            final Configuration config,
+            final boolean ignoreExceptions,
             final Property[] properties) {
         super(name, filter, null, ignoreExceptions, properties);
         this.primaryRef = primary;
@@ -129,8 +134,8 @@ public final class FailoverAppender extends AbstractAppender {
     }
 
     private void failover(final LogEvent event, final Exception ex) {
-        final RuntimeException re = ex != null ?
-                (ex instanceof LoggingException ? (LoggingException) ex : new LoggingException(ex)) : null;
+        final RuntimeException re =
+                ex != null ? (ex instanceof LoggingException ? (LoggingException) ex : new LoggingException(ex)) : null;
         boolean written = false;
         Exception failoverException = null;
         for (final AppenderControl control : failoverAppenders) {
@@ -184,9 +189,11 @@ public final class FailoverAppender extends AbstractAppender {
     public static FailoverAppender createAppender(
             @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name,
             @PluginAttribute @Required(message = "A primary Appender must be specified") final String primary,
-            @PluginElement @Required(message = "At least one failover Appender must be specified") final String[] failovers,
+            @PluginElement @Required(message = "At least one failover Appender must be specified")
+                    final String[] failovers,
             @PluginAliases("retryInterval") // deprecated
-            @PluginAttribute(defaultInt = DEFAULT_INTERVAL_SECONDS) final int retryIntervalSeconds,
+                    @PluginAttribute(defaultInt = DEFAULT_INTERVAL_SECONDS)
+                    final int retryIntervalSeconds,
             final Configuration config,
             @PluginElement final Filter filter,
             @PluginAttribute(defaultBoolean = true) final boolean ignoreExceptions) {
@@ -198,6 +205,7 @@ public final class FailoverAppender extends AbstractAppender {
             LOGGER.warn("Interval {} is less than zero. Using default", retryIntervalSeconds);
             retryIntervalMillis = DEFAULT_INTERVAL_SECONDS * Constants.MILLIS_IN_SECONDS;
         }
-        return new FailoverAppender(name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions, Property.EMPTY_ARRAY);
+        return new FailoverAppender(
+                name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions, Property.EMPTY_ARRAY);
     }
 }

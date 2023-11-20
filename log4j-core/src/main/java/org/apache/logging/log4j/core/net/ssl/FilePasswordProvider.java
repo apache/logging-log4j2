@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -25,8 +26,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * PasswordProvider that reads password from a file.
@@ -55,10 +54,7 @@ class FilePasswordProvider implements PasswordProvider {
      * @param passwordFile the path to the password file
      * @throws NoSuchFileException if the password file does not exist when this FilePasswordProvider is constructed
      */
-    @SuppressFBWarnings(
-            value = "PATH_TRAVERSAL_IN",
-            justification = "The file name comes from a configuration option."
-    )
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "The file name comes from a configuration option.")
     public FilePasswordProvider(final String passwordFile) throws NoSuchFileException {
         this.passwordPath = Paths.get(passwordFile);
         if (!Files.exists(passwordPath)) {

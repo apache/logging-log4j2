@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.layout.template.json.util.CharSequencePointer;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter;
@@ -54,42 +53,30 @@ final class StackTraceStringResolver implements StackTraceResolver {
             final List<String> truncationPointMatcherStrings,
             final List<String> truncationPointMatcherRegexes) {
         final Supplier<TruncatingBufferedPrintWriter> writerSupplier =
-                () -> TruncatingBufferedPrintWriter.ofCapacity(
-                        context.getMaxStringByteCount());
+                () -> TruncatingBufferedPrintWriter.ofCapacity(context.getMaxStringByteCount());
         final RecyclerFactory recyclerFactory = context.getConfiguration().getRecyclerFactory();
-        this.srcWriterRecycler =
-                recyclerFactory.create(
-                        writerSupplier, TruncatingBufferedPrintWriter::close);
-        this.dstWriterRecycler =
-                recyclerFactory.create(
-                        writerSupplier, TruncatingBufferedPrintWriter::close);
-        this.sequencePointerRecycler =
-                recyclerFactory.create(CharSequencePointer::new);
-        this.truncationEnabled =
-                !truncationPointMatcherStrings.isEmpty() ||
-                        !truncationPointMatcherRegexes.isEmpty();
+        this.srcWriterRecycler = recyclerFactory.create(writerSupplier, TruncatingBufferedPrintWriter::close);
+        this.dstWriterRecycler = recyclerFactory.create(writerSupplier, TruncatingBufferedPrintWriter::close);
+        this.sequencePointerRecycler = recyclerFactory.create(CharSequencePointer::new);
+        this.truncationEnabled = !truncationPointMatcherStrings.isEmpty() || !truncationPointMatcherRegexes.isEmpty();
         this.truncationSuffix = truncationSuffix;
         this.truncationPointMatcherStrings = truncationPointMatcherStrings;
-        this.groupedTruncationPointMatcherRegexes =
-                groupTruncationPointMatcherRegexes(truncationPointMatcherRegexes);
+        this.groupedTruncationPointMatcherRegexes = groupTruncationPointMatcherRegexes(truncationPointMatcherRegexes);
     }
 
-    private static List<Pattern> groupTruncationPointMatcherRegexes(
-            final List<String> regexes) {
-        return regexes
-                .stream()
+    private static List<Pattern> groupTruncationPointMatcherRegexes(final List<String> regexes) {
+        return regexes.stream()
                 .map(regex -> Pattern.compile(
-                        ".*?" +                 // Make `.*` lazy with `?` suffix, since we want to find the _first_ match of `regex`.
-                                regex +         // Match the user input.
-                                "(.*)",         // Group that is to be truncated.
+                        ".*?" + // Make `.*` lazy with `?` suffix, since we want to find the _first_ match of `regex`.
+                                regex
+                                + // Match the user input.
+                                "(.*)", // Group that is to be truncated.
                         Pattern.DOTALL))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void resolve(
-            final Throwable throwable,
-            final JsonWriter jsonWriter) {
+    public void resolve(final Throwable throwable, final JsonWriter jsonWriter) {
         final TruncatingBufferedPrintWriter srcWriter = srcWriterRecycler.acquire();
         try {
             throwable.printStackTrace(srcWriter);
@@ -110,11 +97,9 @@ final class StackTraceStringResolver implements StackTraceResolver {
         }
 
         // Allocate temporary buffers and truncate the input.
-        final TruncatingBufferedPrintWriter dstWriter =
-                dstWriterRecycler.acquire();
+        final TruncatingBufferedPrintWriter dstWriter = dstWriterRecycler.acquire();
         try {
-            final CharSequencePointer sequencePointer =
-                    sequencePointerRecycler.acquire();
+            final CharSequencePointer sequencePointer = sequencePointerRecycler.acquire();
             try {
                 truncate(srcWriter, dstWriter, sequencePointer);
             } finally {
@@ -124,7 +109,6 @@ final class StackTraceStringResolver implements StackTraceResolver {
         } finally {
             dstWriterRecycler.release(dstWriter);
         }
-
     }
 
     private void truncate(
@@ -132,19 +116,14 @@ final class StackTraceStringResolver implements StackTraceResolver {
             final TruncatingBufferedPrintWriter dstWriter,
             final CharSequencePointer sequencePointer) {
         int startIndex = 0;
-        for (;;) {
+        for (; ; ) {
 
             // Find the next label start, if present.
-            final int labeledLineStartIndex =
-                    findLabeledLineStartIndex(
-                            srcWriter, startIndex, srcWriter.length());
-            final int endIndex = labeledLineStartIndex >= 0
-                    ? labeledLineStartIndex
-                    : srcWriter.length();
+            final int labeledLineStartIndex = findLabeledLineStartIndex(srcWriter, startIndex, srcWriter.length());
+            final int endIndex = labeledLineStartIndex >= 0 ? labeledLineStartIndex : srcWriter.length();
 
             // Copy up to the truncation point, if it matches.
-            final int truncationPointIndex = findTruncationPointIndex(
-                    srcWriter, startIndex, endIndex, sequencePointer);
+            final int truncationPointIndex = findTruncationPointIndex(srcWriter, startIndex, endIndex, sequencePointer);
             if (truncationPointIndex > 0) {
                 dstWriter.append(srcWriter, startIndex, truncationPointIndex);
                 dstWriter.append(System.lineSeparator());
@@ -160,7 +139,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
             if (labeledLineStartIndex > 0) {
                 dstWriter.append(System.lineSeparator());
                 startIndex = labeledLineStartIndex;
-                for (;;) {
+                for (; ; ) {
                     final char c = srcWriter.charAt(startIndex++);
                     dstWriter.append(c);
                     if (c == ':') {
@@ -173,7 +152,6 @@ final class StackTraceStringResolver implements StackTraceResolver {
             else {
                 break;
             }
-
         }
     }
 
@@ -187,8 +165,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
         // noinspection ForLoopReplaceableByForEach (avoid iterator allocation)
         for (int i = 0; i < truncationPointMatcherStrings.size(); i++) {
             final String matcher = truncationPointMatcherStrings.get(i);
-            final int matchIndex = findMatchingIndex(
-                    matcher, writer, startIndex, endIndex);
+            final int matchIndex = findMatchingIndex(matcher, writer, startIndex, endIndex);
             if (matchIndex > 0) {
                 // No need for `Math.addExact()`, since we have a match:
                 return matchIndex + matcher.length();
@@ -216,17 +193,13 @@ final class StackTraceStringResolver implements StackTraceResolver {
 
         // No matches.
         return -1;
-
     }
 
-    private static int findLabeledLineStartIndex(
-            final CharSequence buffer,
-            final int startIndex,
-            final int endIndex) {
+    private static int findLabeledLineStartIndex(final CharSequence buffer, final int startIndex, final int endIndex) {
         // Note that the index arithmetic in this method is not guarded.
         // That is, there are no `Math.addExact()` or `Math.subtractExact()` usages.
         // Since we know a priori that we are already operating within buffer limits.
-        for (int bufferIndex = startIndex; bufferIndex < endIndex;) {
+        for (int bufferIndex = startIndex; bufferIndex < endIndex; ) {
 
             // Find the next line start, if exists.
             final int lineStartIndex = findLineStartIndex(buffer, bufferIndex, endIndex);
@@ -241,46 +214,42 @@ final class StackTraceStringResolver implements StackTraceResolver {
             }
 
             // Search for the `Caused by: ` occurrence.
-            if (bufferIndex < (endIndex - 11) &&
-                    buffer.charAt(bufferIndex) == 'C' &&
-                    buffer.charAt(bufferIndex + 1) == 'a' &&
-                    buffer.charAt(bufferIndex + 2) == 'u' &&
-                    buffer.charAt(bufferIndex + 3) == 's' &&
-                    buffer.charAt(bufferIndex + 4) == 'e' &&
-                    buffer.charAt(bufferIndex + 5) == 'd' &&
-                    buffer.charAt(bufferIndex + 6) == ' ' &&
-                    buffer.charAt(bufferIndex + 7) == 'b' &&
-                    buffer.charAt(bufferIndex + 8) == 'y' &&
-                    buffer.charAt(bufferIndex + 9) == ':' &&
-                    buffer.charAt(bufferIndex + 10) == ' ') {
+            if (bufferIndex < (endIndex - 11)
+                    && buffer.charAt(bufferIndex) == 'C'
+                    && buffer.charAt(bufferIndex + 1) == 'a'
+                    && buffer.charAt(bufferIndex + 2) == 'u'
+                    && buffer.charAt(bufferIndex + 3) == 's'
+                    && buffer.charAt(bufferIndex + 4) == 'e'
+                    && buffer.charAt(bufferIndex + 5) == 'd'
+                    && buffer.charAt(bufferIndex + 6) == ' '
+                    && buffer.charAt(bufferIndex + 7) == 'b'
+                    && buffer.charAt(bufferIndex + 8) == 'y'
+                    && buffer.charAt(bufferIndex + 9) == ':'
+                    && buffer.charAt(bufferIndex + 10) == ' ') {
                 return lineStartIndex;
             }
 
             // Search for the `Suppressed: ` occurrence.
-            else if (bufferIndex < (endIndex - 12) &&
-                    buffer.charAt(bufferIndex) == 'S' &&
-                    buffer.charAt(bufferIndex + 1) == 'u' &&
-                    buffer.charAt(bufferIndex + 2) == 'p' &&
-                    buffer.charAt(bufferIndex + 3) == 'p' &&
-                    buffer.charAt(bufferIndex + 4) == 'r' &&
-                    buffer.charAt(bufferIndex + 5) == 'e' &&
-                    buffer.charAt(bufferIndex + 6) == 's' &&
-                    buffer.charAt(bufferIndex + 7) == 's' &&
-                    buffer.charAt(bufferIndex + 8) == 'e' &&
-                    buffer.charAt(bufferIndex + 9) == 'd' &&
-                    buffer.charAt(bufferIndex + 10) == ':' &&
-                    buffer.charAt(bufferIndex + 11) == ' ') {
+            else if (bufferIndex < (endIndex - 12)
+                    && buffer.charAt(bufferIndex) == 'S'
+                    && buffer.charAt(bufferIndex + 1) == 'u'
+                    && buffer.charAt(bufferIndex + 2) == 'p'
+                    && buffer.charAt(bufferIndex + 3) == 'p'
+                    && buffer.charAt(bufferIndex + 4) == 'r'
+                    && buffer.charAt(bufferIndex + 5) == 'e'
+                    && buffer.charAt(bufferIndex + 6) == 's'
+                    && buffer.charAt(bufferIndex + 7) == 's'
+                    && buffer.charAt(bufferIndex + 8) == 'e'
+                    && buffer.charAt(bufferIndex + 9) == 'd'
+                    && buffer.charAt(bufferIndex + 10) == ':'
+                    && buffer.charAt(bufferIndex + 11) == ' ') {
                 return lineStartIndex;
             }
-
         }
         return -1;
     }
 
-    private static int findLineStartIndex(
-            final CharSequence buffer,
-            final int startIndex,
-            final int endIndex) {
+    private static int findLineStartIndex(final CharSequence buffer, final int startIndex, final int endIndex) {
         char prevChar = '-';
         for (int i = startIndex; i <= endIndex; i++) {
             if (prevChar == '\n') {
@@ -320,7 +289,5 @@ final class StackTraceStringResolver implements StackTraceResolver {
             }
         }
         return -1;
-
     }
-
 }

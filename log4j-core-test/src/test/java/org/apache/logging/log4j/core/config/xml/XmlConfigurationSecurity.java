@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.IOException;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Tag("functional")
 @Tag("security")
@@ -33,8 +32,8 @@ public class XmlConfigurationSecurity {
     @Test
     @Timeout(5)
     public void xmlSecurity() throws IOException {
-        final LoggerContext context = Configurator.initialize("XmlConfigurationSecurity", "XmlConfigurationSecurity.xml");
+        final LoggerContext context =
+                Configurator.initialize("XmlConfigurationSecurity", "XmlConfigurationSecurity.xml");
         assertNotNull(context.getConfiguration().getAppender("list"));
     }
-
 }

@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -30,9 +32,6 @@ import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -48,7 +47,8 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest {
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+    public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager)
+            throws Exception {
         manager.addRolloverListener(this);
         final Logger logger = context.getLogger(getClass());
         final File file = new File(FILE);
@@ -63,7 +63,8 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest {
 
         final Path src = Path.of("target", "test-classes", "log4j-rolling-cron2.xml");
         context.addConfigurationStartedListener(ignored -> reconfigured.countDown());
-        try (final OutputStream os = Files.newOutputStream(Path.of("target", "test-classes", "log4j-rolling-cron.xml"))) {
+        try (final OutputStream os =
+                Files.newOutputStream(Path.of("target", "test-classes", "log4j-rolling-cron.xml"))) {
             Files.copy(src, os);
         }
         currentTimeMillis.addAndGet(5000);
@@ -79,7 +80,6 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest {
         assertThat(policy).isInstanceOf(CronTriggeringPolicy.class);
         final CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
         assertEquals("* * * ? * *", expression.getCronExpression(), "Incorrect triggering policy");
-
     }
 
     @Override

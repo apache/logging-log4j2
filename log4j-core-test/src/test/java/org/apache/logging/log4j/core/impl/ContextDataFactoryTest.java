@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ContextDataFactory class.

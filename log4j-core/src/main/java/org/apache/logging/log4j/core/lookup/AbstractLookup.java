@@ -32,5 +32,4 @@ public abstract class AbstractLookup implements StrLookup {
     public String lookup(final String key) {
         return lookup(null, key);
     }
-
 }

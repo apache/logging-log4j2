@@ -42,5 +42,4 @@ public interface ParameterVisitable {
      * @since 2.11
      */
     <S> void forEachParameter(ParameterConsumer<S> action, S state);
-
 }

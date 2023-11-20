@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.time.Instant;
  *
  * @see Marker
  */
-@JsonIgnoreProperties({ "epochMillisecond", "nanoOfMillisecond" })
+@JsonIgnoreProperties({"epochMillisecond", "nanoOfMillisecond"})
 public abstract class InstantMixIn {
 
     protected static final String ATTR_NANO_OF_SECOND = "nanoOfSecond";
@@ -38,11 +38,11 @@ public abstract class InstantMixIn {
 
     @JsonCreator
     protected InstantMixIn(
-    // @formatter:off
+            // @formatter:off
             @JsonProperty(ATTR_EPOCH_SECOND) final long epochSecond,
             @JsonProperty(ATTR_NANO_OF_SECOND) final int nanoOfSecond)
-            // @formatter:on
-    {
+                // @formatter:on
+            {
         // empty
     }
 

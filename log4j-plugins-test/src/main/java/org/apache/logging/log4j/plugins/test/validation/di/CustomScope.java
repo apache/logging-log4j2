@@ -18,10 +18,8 @@ package org.apache.logging.log4j.plugins.test.validation.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
 import org.apache.logging.log4j.plugins.ScopeType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @ScopeType
-public @interface CustomScope {
-}
+public @interface CustomScope {}

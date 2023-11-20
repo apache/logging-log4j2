@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,10 +32,6 @@ import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ShutdownCallbackRegistryTest {
 
@@ -85,5 +84,4 @@ public class ShutdownCallbackRegistryTest {
             CALLBACKS.clear();
         }
     }
-
 }

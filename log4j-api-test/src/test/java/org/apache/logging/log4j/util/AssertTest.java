@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AssertTest {
 
     public static Object[][] data() {
-        return new Object[][]{
+        return new Object[][] {
             // value, isEmpty
             {null, true},
             {"", true},
@@ -39,7 +38,7 @@ public class AssertTest {
             {1, false},
             {false, false},
             {true, false},
-            {new Object[]{null}, false},
+            {new Object[] {null}, false},
             {Collections.singletonList(null), false},
             {Collections.singletonMap("", null), false},
             {"null", false}
@@ -51,5 +50,4 @@ public class AssertTest {
     public void isEmpty(final Object value, final boolean isEmpty) throws Exception {
         assertEquals(isEmpty, Assert.isEmpty(value));
     }
-
 }

@@ -18,9 +18,7 @@ package org.apache.logging.log4j.jdbc.appender;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jdbc.appender.internal.JndiUtil;

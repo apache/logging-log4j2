@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.status;
 
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.PropertyEnvironment;
-
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
 
 public class StatusLoggerConfiguration {
     private final PropertyEnvironment environment;

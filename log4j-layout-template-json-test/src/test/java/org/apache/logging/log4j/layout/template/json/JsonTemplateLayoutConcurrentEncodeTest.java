@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -25,7 +29,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -39,10 +42,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests {@link JsonTemplateLayout} doesn't exhibit unexpected behavior when accessed concurrently.
@@ -60,12 +59,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JsonTemplateLayoutConcurrentEncodeTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "dummy",
-            "threadLocal",
-            "queue:supplier=java.util.concurrent.ArrayBlockingQueue.new",
-            "queue:supplier=org.jctools.queues.MpmcArrayQueue.new"
-    })
+    @ValueSource(
+            strings = {
+                "dummy",
+                "threadLocal",
+                "queue:supplier=java.util.concurrent.ArrayBlockingQueue.new",
+                "queue:supplier=org.jctools.queues.MpmcArrayQueue.new"
+            })
     void test_concurrent_encode(final String recyclerFactory) throws IOException {
         final Path appenderFilepath = createAppenderFilepath(recyclerFactory);
         final int workerCount = 10;
@@ -78,9 +78,7 @@ class JsonTemplateLayoutConcurrentEncodeTest {
             });
             verifyLines(appenderFilepath, messageLength, workerCount * messageCount);
         } catch (final Throwable error) {
-            final String message = String.format(
-                    "test failure for appender pointing to file: `%s`",
-                    appenderFilepath);
+            final String message = String.format("test failure for appender pointing to file: `%s`", appenderFilepath);
             throw new AssertionError(message, error);
         }
         Files.delete(appenderFilepath);
@@ -91,9 +89,7 @@ class JsonTemplateLayoutConcurrentEncodeTest {
                 "%s-%s.log",
                 JsonTemplateLayoutConcurrentEncodeTest.class.getSimpleName(),
                 recyclerFactory.replaceAll("[^A-Za-z0-9]+", ""));
-        return Paths.get(
-                System.getProperty("java.io.tmpdir"),
-                appenderFilename);
+        return Paths.get(System.getProperty("java.io.tmpdir"), appenderFilename);
     }
 
     private static void withContextFromTemplate(
@@ -106,8 +102,7 @@ class JsonTemplateLayoutConcurrentEncodeTest {
                 "%s-%s",
                 JsonTemplateLayoutConcurrentEncodeTest.class.getSimpleName(),
                 recyclerFactory.replaceAll("[^A-Za-z0-9]+", ""));
-        final ConfigurationBuilder<?> configBuilder = ConfigurationBuilderFactory
-                .newConfigurationBuilder()
+        final ConfigurationBuilder<?> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder()
                 .setStatusLevel(Level.ERROR)
                 .setConfigurationName(configName);
 
@@ -118,7 +113,8 @@ class JsonTemplateLayoutConcurrentEncodeTest {
         final Configuration config = configBuilder
                 .add(configBuilder
                         .newAppender(appenderName, "File")
-                        .addAttribute("fileName", appenderFilepath.toAbsolutePath().toString())
+                        .addAttribute(
+                                "fileName", appenderFilepath.toAbsolutePath().toString())
                         .addAttribute("append", false)
                         .addAttribute("immediateFlush", false)
                         .addAttribute("ignoreExceptions", false)
@@ -126,27 +122,19 @@ class JsonTemplateLayoutConcurrentEncodeTest {
                                 .newLayout("JsonTemplateLayout")
                                 .addAttribute("eventTemplate", eventTemplateJson)
                                 .addAttribute("recyclerFactory", recyclerFactory)))
-                .add(configBuilder
-                        .newRootLogger(Level.ALL)
-                        .add(configBuilder.newAppenderRef(appenderName)))
+                .add(configBuilder.newRootLogger(Level.ALL).add(configBuilder.newAppenderRef(appenderName)))
                 .build(false);
 
         // Initialize the configuration and pass it to the consumer.
         try (final LoggerContext loggerContext = Configurator.initialize(config)) {
             loggerContextConsumer.accept(loggerContext);
         }
-
     }
 
     private static void runWorkers(
-            final int workerCount,
-            final int messageLength,
-            final int messageCount,
-            final Logger logger) {
-        final List<Thread> workers = IntStream
-                .range(0, workerCount)
-                .mapToObj((final int threadIndex) ->
-                        createWorker(messageLength, messageCount, logger, threadIndex))
+            final int workerCount, final int messageLength, final int messageCount, final Logger logger) {
+        final List<Thread> workers = IntStream.range(0, workerCount)
+                .mapToObj((final int threadIndex) -> createWorker(messageLength, messageCount, logger, threadIndex))
                 .collect(Collectors.toList());
         workers.forEach(Thread::start);
         workers.forEach((final Thread worker) -> {
@@ -160,17 +148,13 @@ class JsonTemplateLayoutConcurrentEncodeTest {
     }
 
     private static Thread createWorker(
-            final int messageLength,
-            final int messageCount,
-            final Logger logger,
-            final int threadIndex) {
+            final int messageLength, final int messageCount, final Logger logger, final int threadIndex) {
 
         // Check thread index.
         final int maxThreadIndex = 'Z' - 'A';
         if (threadIndex > maxThreadIndex) {
-            final String message = String.format(
-                    "was expecting `threadIndex <= %d`, found: %d",
-                    maxThreadIndex, threadIndex);
+            final String message =
+                    String.format("was expecting `threadIndex <= %d`, found: %d", maxThreadIndex, threadIndex);
             throw new IndexOutOfBoundsException(message);
         }
 
@@ -187,25 +171,20 @@ class JsonTemplateLayoutConcurrentEncodeTest {
                     }
                 },
                 threadName);
-
     }
 
-    private static void verifyLines(
-            final Path appenderFilepath,
-            final int messageLength,
-            final int messageCount) {
+    private static void verifyLines(final Path appenderFilepath, final int messageLength, final int messageCount) {
         try (final InputStream inputStream = new FileInputStream(appenderFilepath.toFile());
-             final Reader reader = new InputStreamReader(inputStream, StandardCharsets.US_ASCII);
-             final BufferedReader bufferedReader = new BufferedReader(reader)) {
+                final Reader reader = new InputStreamReader(inputStream, StandardCharsets.US_ASCII);
+                final BufferedReader bufferedReader = new BufferedReader(reader)) {
             int lineCount = 0;
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 try {
                     verifyLine(messageLength, line);
                 } catch (final Throwable error) {
-                    final String message = String.format(
-                            "verification failure at line %d: `%s`",
-                            (lineCount + 1), line);
+                    final String message =
+                            String.format("verification failure at line %d: `%s`", (lineCount + 1), line);
                     throw new AssertionError(message, error);
                 }
                 lineCount++;
@@ -225,10 +204,7 @@ class JsonTemplateLayoutConcurrentEncodeTest {
         final char c1 = line.charAt(1);
         for (int i = 1; i < messageLength; i++) {
             final char c = line.charAt(1 + i);
-            assertThat(c)
-                    .describedAs("character at index %d", i)
-                    .isEqualTo(c1);
+            assertThat(c).describedAs("character at index %d", i).isEqualTo(c1);
         }
     }
-
 }

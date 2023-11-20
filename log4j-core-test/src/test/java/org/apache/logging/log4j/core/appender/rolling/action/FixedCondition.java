@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 
-
 /**
  * Test helper class.
  */
@@ -37,6 +36,5 @@ public class FixedCondition implements PathCondition {
     }
 
     @Override
-    public void beforeFileTreeWalk() {
-    }
+    public void beforeFileTreeWalk() {}
 }

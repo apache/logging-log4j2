@@ -24,5 +24,4 @@ public interface RendererSupport {
     public RendererMap getRendererMap();
 
     public void setRenderer(Class renderedClass, ObjectRenderer renderer);
-
 }

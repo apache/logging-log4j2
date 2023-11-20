@@ -25,5 +25,5 @@ public interface ObjectRenderer {
      * @param o The object to render.
      * @return The String representation of the object.
      */
-     String doRender(Object o);
+    String doRender(Object o);
 }

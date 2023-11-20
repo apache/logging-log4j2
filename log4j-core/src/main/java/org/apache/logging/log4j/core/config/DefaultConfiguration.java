@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-
 /**
  * The default configuration writes all output to the Console using the default logging level. You configure default
  * logging level by setting the system property "org.apache.logging.log4j.level" to a level name. If you do not
@@ -44,8 +43,7 @@ public class DefaultConfiguration extends AbstractConfiguration {
     }
 
     @Override
-    protected void doConfigure() {
-    }
+    protected void doConfigure() {}
 
     @Override
     public String toString() {

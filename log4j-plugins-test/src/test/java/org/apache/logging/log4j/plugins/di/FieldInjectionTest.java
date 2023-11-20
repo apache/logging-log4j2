@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.test.validation.di.AnotherSingletonBean;
@@ -25,8 +27,6 @@ import org.apache.logging.log4j.plugins.test.validation.di.PrototypeGrandchildBe
 import org.apache.logging.log4j.plugins.test.validation.di.SingletonBean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class FieldInjectionTest {
     static class TestBundle {
@@ -61,7 +61,8 @@ class FieldInjectionTest {
         assertThat(bean).isNotNull();
         assertThat(bean.singletonBean).isNotNull();
         assertThat(bean.anotherSingletonBean).isNotNull();
-        assertThat(bean.prototypeGrandchildBean).isNotNull()
+        assertThat(bean.prototypeGrandchildBean)
+                .isNotNull()
                 .extracting(PrototypeGrandchildBean::getPrototypeChildBean)
                 .isNotNull()
                 .extracting(PrototypeChildBean::getPrototypeBean)

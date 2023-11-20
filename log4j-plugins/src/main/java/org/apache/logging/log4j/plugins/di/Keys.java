@@ -25,7 +25,6 @@ import java.lang.reflect.Parameter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
 import org.apache.logging.log4j.plugins.name.AliasesProvider;
@@ -103,19 +102,21 @@ public final class Keys {
      * @return annotated name of method without is/set/get/with prefix
      */
     public static String getName(final Method method) {
-        return hasName(method) ? getSpecifiedName(method).orElseGet(() -> {
-            final String methodName = method.getName();
-            if (methodName.startsWith("is")) {
-                return BeanUtils.decapitalize(methodName.substring(2));
-            }
-            if (methodName.startsWith("set") || methodName.startsWith("get")) {
-                return BeanUtils.decapitalize(methodName.substring(3));
-            }
-            if (methodName.startsWith("with")) {
-                return BeanUtils.decapitalize(methodName.substring(4));
-            }
-            return methodName;
-        }) : Strings.EMPTY;
+        return hasName(method)
+                ? getSpecifiedName(method).orElseGet(() -> {
+                    final String methodName = method.getName();
+                    if (methodName.startsWith("is")) {
+                        return BeanUtils.decapitalize(methodName.substring(2));
+                    }
+                    if (methodName.startsWith("set") || methodName.startsWith("get")) {
+                        return BeanUtils.decapitalize(methodName.substring(3));
+                    }
+                    if (methodName.startsWith("with")) {
+                        return BeanUtils.decapitalize(methodName.substring(4));
+                    }
+                    return methodName;
+                })
+                : Strings.EMPTY;
     }
 
     /**

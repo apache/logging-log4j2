@@ -28,6 +28,5 @@ public final class ContextAnchor {
      */
     public static final ThreadLocal<LoggerContext> THREAD_CONTEXT = new ThreadLocal<>();
 
-    private ContextAnchor() {
-    }
+    private ContextAnchor() {}
 }

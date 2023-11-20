@@ -20,7 +20,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -95,7 +94,6 @@ public abstract class AbstractLayout implements StringLayout {
             this.header = header;
             return asBuilder();
         }
-
     }
 
     /**
@@ -137,10 +135,7 @@ public abstract class AbstractLayout implements StringLayout {
      * @param footer the footer to add when the stream is closed, may be null
      */
     public AbstractLayout(
-            final Configuration configuration,
-            final Charset charset,
-            final byte[] header,
-            final byte[] footer) {
+            final Configuration configuration, final Charset charset, final byte[] header, final byte[] footer) {
         super();
         this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.charset = charset != null ? charset : DEFAULT_CHARSET;
@@ -230,5 +225,4 @@ public abstract class AbstractLayout implements StringLayout {
         final byte[] data = toByteArray(event);
         destination.writeBytes(data, 0, data.length);
     }
-
 }
