@@ -75,7 +75,7 @@ public class LoggerTest {
         assertThat(
                 "Incorrect message 1",
                 results.get(0),
-                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:72) Hello"));
+                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:71) Hello"));
         assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
         assertThat(
                 "Incorrect message 3",
@@ -84,7 +84,7 @@ public class LoggerTest {
         assertThat(
                 "Throwable incorrect in message 3",
                 results.get(2),
-                containsString("org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:74)"));
+                containsString("org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:73)"));
     }
 
     @Test

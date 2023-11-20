@@ -47,7 +47,7 @@ public class PatternSelectorTest {
                 messages.size(),
                 "Incorrect number of messages. Expected 3, Actual " + messages.size() + ": " + messages);
         final String expect = String.format("[TRACE] TestMarkerPatternSelector ====== "
-                + "o.a.l.l.s.l.PatternSelectorTest.testMarkerPatternSelector:41 Enter ======%n");
+                + "o.a.l.l.s.l.PatternSelectorTest.testMarkerPatternSelector:40 Enter ======%n");
         assertEquals(expect, messages.get(0));
         assertEquals("[INFO ] TestMarkerPatternSelector Hello World" + Strings.LINE_SEPARATOR, messages.get(1));
         app.clear();
@@ -68,9 +68,9 @@ public class PatternSelectorTest {
                 messages.size(),
                 "Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages);
         String expect = "[TRACE] TestScriptPatternSelector ====== "
-                + "o.a.l.l.s.l.PatternSelectorTest.testScriptPatternSelector:59 Enter ======" + Strings.LINE_SEPARATOR;
+                + "o.a.l.l.s.l.PatternSelectorTest.testScriptPatternSelector:60 Enter ======" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
-        expect = "[INFO ] TestScriptPatternSelector o.a.l.l.s.l.PatternSelectorTest.testScriptPatternSelector.60 "
+        expect = "[INFO ] TestScriptPatternSelector o.a.l.l.s.l.PatternSelectorTest.testScriptPatternSelector.61 "
                 + "Hello World" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] NoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));
@@ -92,11 +92,11 @@ public class PatternSelectorTest {
                 messages.size(),
                 "Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages);
         String expect = "[TRACE] TestJavaScriptPatternSelector ====== "
-                + "o.a.l.l.s.l.PatternSelectorTest.testJavaScriptPatternSelector:81 Enter ======"
+                + "o.a.l.l.s.l.PatternSelectorTest.testJavaScriptPatternSelector:84 Enter ======"
                 + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
         expect = "[INFO ] TestJavaScriptPatternSelector "
-                + "o.a.l.l.s.l.PatternSelectorTest.testJavaScriptPatternSelector.82 Hello World"
+                + "o.a.l.l.s.l.PatternSelectorTest.testJavaScriptPatternSelector.85 Hello World"
                 + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] JavascriptNoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));

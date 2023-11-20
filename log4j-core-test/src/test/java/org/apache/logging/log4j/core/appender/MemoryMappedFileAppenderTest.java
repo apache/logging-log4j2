@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -65,7 +64,7 @@ public class MemoryMappedFileAppenderTest {
         assertEquals(18 + 2 * LINESEP, Files.size(logFile));
 
         final List<String> lines = Files.readAllLines(logFile);
-        assertThat(lines, both(hasSize(2)).and(contains("Test log1", "Test log2")));
+        assertThat(lines).hasSize(2).contains("Test log1", "Test log2");
     }
 
     @Test
@@ -90,7 +89,7 @@ public class MemoryMappedFileAppenderTest {
         assertEquals(521 + 3 * System.lineSeparator().length(), Files.size(logFile), "Expected file size to shrink");
 
         final List<String> lines = Files.readAllLines(logFile);
-        assertThat(lines, both(hasSize(3)).and(contains("Test log1", str, str)));
+        assertThat(lines).hasSize(3).contains("Test log1", str, str);
     }
 
     @Test
@@ -117,13 +116,11 @@ public class MemoryMappedFileAppenderTest {
 
         final List<String> lines = Files.readAllLines(logFile);
         assertEquals(2, lines.size());
-        assertTrue(
-                lines.get(0)
-                        .endsWith(
-                                "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:105): Test log1"));
-        assertTrue(
-                lines.get(1)
-                        .endsWith(
-                                "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:108): Test log2"));
+        assertThat(lines.get(0))
+                .endsWith("org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation"
+                        + "(MemoryMappedFileAppenderTest.java:103): Test log1");
+        assertThat(lines.get(1))
+                .endsWith("org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation"
+                        + "(MemoryMappedFileAppenderTest.java:106): Test log2");
     }
 }
