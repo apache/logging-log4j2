@@ -24,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-
 class ThreadContextInitializer implements BeforeAllCallback, BeforeEachCallback {
 
     @Override
@@ -46,13 +45,14 @@ class ThreadContextInitializer implements BeforeAllCallback, BeforeEachCallback 
         // We use `CloseableResource` instead of `afterAll` to reset the
         // ThreadContextFactory
         // *after* the `@SetSystemProperty` extension has restored the properties
-        ExtensionContextAnchor.setAttribute(ThreadContext.class, new CloseableResource() {
-            @Override
-            public void close() throws Throwable {
-                ThreadContextUtilityClass.reset();
-            }
-
-        }, context);
+        ExtensionContextAnchor.setAttribute(
+                ThreadContext.class,
+                new CloseableResource() {
+                    @Override
+                    public void close() throws Throwable {
+                        ThreadContextUtilityClass.reset();
+                    }
+                },
+                context);
     }
-
 }

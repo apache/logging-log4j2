@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.test.junit;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import org.apache.logging.log4j.status.StatusListener;
-import org.apache.logging.log4j.test.ListStatusListener;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import org.apache.logging.log4j.status.StatusListener;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Configures and injects a {@link StatusListener} of type
@@ -34,10 +33,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * context.
  */
 @Retention(RUNTIME)
-@Target({ TYPE, METHOD })
+@Target({TYPE, METHOD})
 @Documented
 @ExtendWith(ExtensionContextAnchor.class)
 @ExtendWith(TestPropertyResolver.class)
 @ExtendWith(StatusLoggerExtension.class)
-public @interface UsingStatusListener {
-}
+public @interface UsingStatusListener {}

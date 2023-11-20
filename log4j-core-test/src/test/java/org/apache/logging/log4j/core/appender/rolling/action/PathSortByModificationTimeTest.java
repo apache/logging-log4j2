@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-
 import org.apache.logging.log4j.core.test.appender.rolling.action.DummyFileAttributes;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code PathSortByModificationTime} class.
@@ -89,5 +88,4 @@ public class PathSortByModificationTimeTest {
     private PathWithAttributes path(final Path path, final DummyFileAttributes attributes) {
         return new PathWithAttributes(path, attributes);
     }
-
 }

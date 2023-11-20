@@ -22,7 +22,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 
@@ -49,8 +48,7 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
 
     public StringBuilderEncoder(final Charset charset, final int charBufferSize, final int byteBufferSize) {
         this.charset = Objects.requireNonNull(charset, "charset");
-        this.charsetEncoder = charset
-                .newEncoder()
+        this.charsetEncoder = charset.newEncoder()
                 .onMalformedInput(CodingErrorAction.REPLACE)
                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
         this.charBuffer = CharBuffer.allocate(charBufferSize);
@@ -79,5 +77,4 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
             byteBuffer.clear();
         }
     }
-
 }

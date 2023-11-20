@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME;
+import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME;
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.WaitStrategy;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Integers;
@@ -28,10 +31,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyKey;
-
-import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME;
-import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME;
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * Utility methods for getting Disruptor related configuration.
@@ -50,33 +49,35 @@ final class DisruptorUtil {
      */
     static final boolean ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
             .getBooleanProperty(Log4jPropertyKey.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
+
     static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
             .getBooleanProperty(Log4jPropertyKey.ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
 
-    private DisruptorUtil() {
-    }
+    private DisruptorUtil() {}
 
-    static WaitStrategy createWaitStrategy(final PropertyKey key,
-                                           final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
+    static WaitStrategy createWaitStrategy(
+            final PropertyKey key, final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
 
         if (asyncWaitStrategyFactory == null) {
             LOGGER.debug("No AsyncWaitStrategyFactory was configured in the configuration, using default factory...");
             return new DefaultAsyncWaitStrategyFactory(key).createWaitStrategy();
         }
-        LOGGER.debug("Using configured AsyncWaitStrategyFactory {}", asyncWaitStrategyFactory.getClass().getName());
+        LOGGER.debug(
+                "Using configured AsyncWaitStrategyFactory {}",
+                asyncWaitStrategyFactory.getClass().getName());
         return asyncWaitStrategyFactory.createWaitStrategy();
     }
 
     static int calculateRingBufferSize(final PropertyKey key) {
         int ringBufferSize = isThreadLocalsEnabled() ? RINGBUFFER_NO_GC_DEFAULT_SIZE : RINGBUFFER_DEFAULT_SIZE;
-        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(key,
-                String.valueOf(ringBufferSize));
+        final String userPreferredRBSize =
+                PropertiesUtil.getProperties().getStringProperty(key, String.valueOf(ringBufferSize));
         try {
             int size = Integer.parseInt(userPreferredRBSize);
             if (size < RINGBUFFER_MIN_SIZE) {
                 size = RINGBUFFER_MIN_SIZE;
-                LOGGER.warn("Invalid RingBufferSize {}, using minimum size {}.", userPreferredRBSize,
-                        RINGBUFFER_MIN_SIZE);
+                LOGGER.warn(
+                        "Invalid RingBufferSize {}, using minimum size {}.", userPreferredRBSize, RINGBUFFER_MIN_SIZE);
             }
             ringBufferSize = size;
         } catch (final Exception ex) {
@@ -121,8 +122,8 @@ final class DisruptorUtil {
         try {
             return result.get();
         } catch (final Exception ex) {
-            final String msg = "Could not obtain executor thread Id. "
-                    + "Giving up to avoid the risk of application deadlock.";
+            final String msg =
+                    "Could not obtain executor thread Id. " + "Giving up to avoid the risk of application deadlock.";
             throw new IllegalStateException(msg, ex);
         }
     }

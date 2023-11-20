@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 public class SocketAppenderBuilderTest {
 
@@ -27,7 +27,8 @@ public class SocketAppenderBuilderTest {
      */
     @Test
     public void testDefaultImmediateFlush() {
-        assertTrue(SocketAppender.newBuilder().isImmediateFlush(),
+        assertTrue(
+                SocketAppender.newBuilder().isImmediateFlush(),
                 "Regression of LOG4J2-1620: default value for immediateFlush should be true");
     }
 }

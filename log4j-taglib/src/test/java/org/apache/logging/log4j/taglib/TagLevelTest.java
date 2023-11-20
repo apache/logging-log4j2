@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.Level;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class TagLevelTest {
@@ -39,7 +38,7 @@ public class TagLevelTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{
+        return Arrays.asList(new Object[][] {
             {DebugTag.class, Level.DEBUG},
             {ErrorTag.class, Level.ERROR},
             {FatalTag.class, Level.FATAL},

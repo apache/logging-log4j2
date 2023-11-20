@@ -16,27 +16,26 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 /**
  * LOG4J2-1804.
  */
 public class RollingAppenderCronAndSizeTest extends AbstractRollingListenerTest {
 
-  private static final String CONFIG = "log4j-rolling-cron-and-size.xml";
+    private static final String CONFIG = "log4j-rolling-cron-and-size.xml";
 
     private static final String DIR = "target/rolling-cron-size";
     // we'll probably roll over more than 30 times, but that's a sufficient amount of test data
@@ -45,10 +44,11 @@ public class RollingAppenderCronAndSizeTest extends AbstractRollingListenerTest 
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager)
+            throws Exception {
         manager.addRolloverListener(this);
         final Random rand = new Random(currentTimeMillis.get());
-        for (int j=0; j < 100; ++j) {
+        for (int j = 0; j < 100; ++j) {
             final int count = rand.nextInt(100);
             for (int i = 0; i < count; ++i) {
                 logger.debug("This is test message number {}", i);
@@ -66,15 +66,16 @@ public class RollingAppenderCronAndSizeTest extends AbstractRollingListenerTest 
         Arrays.sort(files);
         int fileCounter = 0;
         String previous = "";
-        for (final File file: files) {
+        for (final File file : files) {
             final String actual = file.getName();
             final String[] fileParts = actual.split("[_.]");
             fileCounter = previous.equals(fileParts[1]) ? ++fileCounter : 1;
             previous = fileParts[1];
-            assertEquals(Integer.toString(fileCounter), fileParts[2],
+            assertEquals(
+                    Integer.toString(fileCounter),
+                    fileParts[2],
                     "Incorrect file name. Expected counter value of " + fileCounter + " in " + actual);
         }
-
     }
 
     @Override

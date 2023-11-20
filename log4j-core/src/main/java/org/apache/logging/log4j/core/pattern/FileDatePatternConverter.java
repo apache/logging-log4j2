@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -29,7 +28,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace("FileConverter")
 @Plugin("FileDatePatternConverter")
-@ConverterKeys({ "d", "date" })
+@ConverterKeys({"d", "date"})
 @PerformanceSensitive("allocation")
 public final class FileDatePatternConverter implements ArrayPatternConverter {
 
@@ -83,5 +82,4 @@ public final class FileDatePatternConverter implements ArrayPatternConverter {
     public TimeZone getTimeZone() {
         return delegate.getTimeZone();
     }
-
 }

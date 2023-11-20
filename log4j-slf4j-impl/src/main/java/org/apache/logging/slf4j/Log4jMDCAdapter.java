@@ -17,7 +17,6 @@
 package org.apache.logging.slf4j;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.spi.MDCAdapter;
 

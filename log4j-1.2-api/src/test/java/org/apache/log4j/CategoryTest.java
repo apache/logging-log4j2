@@ -16,13 +16,14 @@
  */
 package org.apache.log4j;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.spi.LoggingEvent;
@@ -43,8 +44,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * Tests of Category.
  */
@@ -59,7 +58,8 @@ public class CategoryTest {
     public static void setupClass() {
         appender.start();
         version1Appender.setName(VERSION1_APPENDER_NAME);
-        System.setProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
+        System.setProperty(
+                Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
                 BasicConfigurationFactory.class.getName());
     }
 
@@ -231,7 +231,8 @@ public class CategoryTest {
     @Test
     public void testClassName() {
         final Category category = Category.getInstance("TestCategory");
-        final Layout layout = PatternLayout.newBuilder().setPattern("%d %p %C{1.} [%t] %m%n").build();
+        final Layout layout =
+                PatternLayout.newBuilder().setPattern("%d %p %C{1.} [%t] %m%n").build();
         final ListAppender appender = new ListAppender("List2", null, layout, false, false);
         appender.start();
         category.setAdditivity(false);
@@ -243,7 +244,8 @@ public class CategoryTest {
         appender.clear();
         final String threadName = Thread.currentThread().getName();
         final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + Strings.LINE_SEPARATOR;
-        assertTrue(msg.endsWith(expected),
+        assertTrue(
+                msg.endsWith(expected),
                 "Incorrect message " + Strings.dquote(msg) + " expected " + Strings.dquote(expected));
     }
 
@@ -251,9 +253,7 @@ public class CategoryTest {
     public void testStringLog() {
         final String payload = "payload";
         testMessageImplementation(
-                payload,
-                SimpleMessage.class,
-                message -> assertEquals(message.getFormattedMessage(), payload));
+                payload, SimpleMessage.class, message -> assertEquals(message.getFormattedMessage(), payload));
     }
 
     @Test
@@ -279,7 +279,6 @@ public class CategoryTest {
             public String toString() {
                 return "abc";
             }
-
         };
         testMessageImplementation(
                 payload,
@@ -292,30 +291,22 @@ public class CategoryTest {
         final String key = "key";
         final Object value = 0xDEADBEEF;
         final Map<String, Object> payload = Collections.singletonMap(key, value);
-        testMessageImplementation(
-                payload,
-                MapMessage.class,
-                message -> assertEquals(message.getData(), payload));
+        testMessageImplementation(payload, MapMessage.class, message -> assertEquals(message.getData(), payload));
     }
 
     @Test
     public void testObjectLog() {
         final Object payload = new Object();
         testMessageImplementation(
-                payload,
-                ObjectMessage.class,
-                message -> assertEquals(message.getParameter(), payload));
+                payload, ObjectMessage.class, message -> assertEquals(message.getParameter(), payload));
     }
 
     private <M extends Message> void testMessageImplementation(
-            final Object messagePayload,
-            final Class<M> expectedMessageClass,
-            final Consumer<M> messageTester) {
+            final Object messagePayload, final Class<M> expectedMessageClass, final Consumer<M> messageTester) {
 
         // Setup the logger and the appender.
         final Category category = Category.getInstance("TestCategory");
-        final org.apache.logging.log4j.core.Logger logger =
-                (org.apache.logging.log4j.core.Logger) category.getLogger();
+        final org.apache.logging.log4j.core.Logger logger = (org.apache.logging.log4j.core.Logger) category.getLogger();
         logger.addAppender(appender);
 
         // Log the message payload.
@@ -329,11 +320,11 @@ public class CategoryTest {
         // Verify the collected message.
         final Message message = logEvent.getMessage();
         final Class<? extends Message> actualMessageClass = message.getClass();
-        assertTrue(expectedMessageClass.isAssignableFrom(actualMessageClass),
+        assertTrue(
+                expectedMessageClass.isAssignableFrom(actualMessageClass),
                 "was expecting message to be instance of " + expectedMessageClass + ", found: " + actualMessageClass);
         final M typedMessage = Cast.cast(message);
         messageTester.accept(typedMessage);
-
     }
 
     @Test
@@ -368,23 +359,26 @@ public class CategoryTest {
     public void testGetAppender() {
         try {
             final Logger rootLogger = LogManager.getRootLogger();
-            final org.apache.logging.log4j.core.Logger v2RootLogger = (org.apache.logging.log4j.core.Logger) rootLogger
-                    .getLogger();
+            final org.apache.logging.log4j.core.Logger v2RootLogger =
+                    (org.apache.logging.log4j.core.Logger) rootLogger.getLogger();
             v2RootLogger.addAppender(AppenderAdapter.adapt(version1Appender));
             v2RootLogger.addAppender(appender);
             final List<Appender> rootAppenders = Collections.list(rootLogger.getAllAppenders());
             assertEquals(1, rootAppenders.size(), "only v1 appenders");
             assertTrue(rootAppenders.get(0) instanceof org.apache.log4j.ListAppender, "appender is a v1 ListAppender");
-            assertEquals(VERSION1_APPENDER_NAME, rootLogger.getAppender(VERSION1_APPENDER_NAME).getName(),
+            assertEquals(
+                    VERSION1_APPENDER_NAME,
+                    rootLogger.getAppender(VERSION1_APPENDER_NAME).getName(),
                     "explicitly named appender");
             final Appender v2ListAppender = rootLogger.getAppender(VERSION2_APPENDER_NAME);
             assertTrue(v2ListAppender instanceof AppenderWrapper, "explicitly named appender");
-            assertTrue(((AppenderWrapper) v2ListAppender).getAppender() instanceof ListAppender,
+            assertTrue(
+                    ((AppenderWrapper) v2ListAppender).getAppender() instanceof ListAppender,
                     "appender is a v2 ListAppender");
 
             final Logger logger = LogManager.getLogger(CategoryTest.class);
-            final org.apache.logging.log4j.core.Logger v2Logger = (org.apache.logging.log4j.core.Logger) logger
-                    .getLogger();
+            final org.apache.logging.log4j.core.Logger v2Logger =
+                    (org.apache.logging.log4j.core.Logger) logger.getLogger();
             final org.apache.log4j.ListAppender loggerAppender = new org.apache.log4j.ListAppender();
             loggerAppender.setName("appender2");
             v2Logger.addAppender(AppenderAdapter.adapt(loggerAppender));

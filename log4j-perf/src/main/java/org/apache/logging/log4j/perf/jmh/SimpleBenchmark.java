@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,8 +62,7 @@ public class SimpleBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void testBaselineThroughput(final Blackhole bh) {
-    }
+    public void testBaselineThroughput(final Blackhole bh) {}
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
@@ -87,7 +85,6 @@ public class SimpleBenchmark {
         logger.debug(msg);
     }
 
-
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
@@ -98,8 +95,7 @@ public class SimpleBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @Benchmark
-    public void testBaselineResponseTime(final Blackhole bh) {
-    }
+    public void testBaselineResponseTime(final Blackhole bh) {}
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -128,7 +124,7 @@ public class SimpleBenchmark {
     public void testDebugDisabledMessageResponseTime(final Blackhole bh) {
         logger.debug((Message) new SimpleMessage(msg));
     }
-/*
+    /*
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @Benchmark

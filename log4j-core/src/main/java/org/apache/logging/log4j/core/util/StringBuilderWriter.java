@@ -118,7 +118,6 @@ public class StringBuilderWriter extends Writer {
         // no-op
     }
 
-
     /**
      * Writes a String to the {@link StringBuilder}.
      *

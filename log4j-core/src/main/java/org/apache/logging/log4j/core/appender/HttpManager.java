@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;

@@ -33,7 +33,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("RootThrowablePatternConverter")
-@ConverterKeys({ "rEx", "rThrowable", "rException" })
+@ConverterKeys({"rEx", "rThrowable", "rException"})
 public final class RootThrowablePatternConverter extends ThrowablePatternConverter {
 
     /**
@@ -70,7 +70,8 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
                 super.format(event, toAppendTo);
                 return;
             }
-            final String trace = proxy.getCauseStackTraceAsString(options.getIgnorePackages(), options.getTextRenderer(), getSuffix(event), options.getSeparator());
+            final String trace = proxy.getCauseStackTraceAsString(
+                    options.getIgnorePackages(), options.getTextRenderer(), getSuffix(event), options.getSeparator());
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');

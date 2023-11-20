@@ -67,7 +67,6 @@ public class SizeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         this.manager = aManager;
     }
 
-
     /**
      * Returns true if a rollover should occur.
      * @param event   A reference to the currently event.
@@ -98,5 +97,4 @@ public class SizeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         final long maxSize = size == null ? MAX_FILE_SIZE : FileSize.parse(size, MAX_FILE_SIZE);
         return new SizeBasedTriggeringPolicy(maxSize);
     }
-
 }

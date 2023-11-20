@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.layout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -39,7 +38,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Configurable(elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 @Plugin
-public class LevelPatternSelector implements PatternSelector{
+public class LevelPatternSelector implements PatternSelector {
 
     /**
      * Custom MarkerPatternSelector builder. Use the {@link LevelPatternSelector#newBuilder() builder factory method} to create this.
@@ -72,8 +71,8 @@ public class LevelPatternSelector implements PatternSelector{
                 LOGGER.warn("No marker patterns were provided with PatternMatch");
                 return null;
             }
-            return new LevelPatternSelector(properties, defaultPattern, alwaysWriteExceptions, disableAnsi,
-                    noConsoleNoAnsi, configuration);
+            return new LevelPatternSelector(
+                    properties, defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, configuration);
         }
 
         public Builder setProperties(final PatternMatch[] properties) {
@@ -106,7 +105,6 @@ public class LevelPatternSelector implements PatternSelector{
             this.configuration = configuration;
             return this;
         }
-
     }
 
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
@@ -121,15 +119,19 @@ public class LevelPatternSelector implements PatternSelector{
 
     private final boolean requiresLocation;
 
-    private LevelPatternSelector(final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean disableAnsi,
-                                 final boolean noConsoleNoAnsi, final Configuration config) {
+    private LevelPatternSelector(
+            final PatternMatch[] properties,
+            final String defaultPattern,
+            final boolean alwaysWriteExceptions,
+            final boolean disableAnsi,
+            final boolean noConsoleNoAnsi,
+            final Configuration config) {
         boolean needsLocation = false;
         final PatternParser parser = PatternLayout.createPatternParser(config);
         for (final PatternMatch property : properties) {
             try {
-                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions,
-                        disableAnsi, noConsoleNoAnsi);
+                final List<PatternFormatter> list =
+                        parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
                 final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
                 formatterMap.put(property.getKey(), formatters);
                 for (int i = 0; !needsLocation && i < formatters.length; ++i) {
@@ -142,8 +144,8 @@ public class LevelPatternSelector implements PatternSelector{
             }
         }
         try {
-            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi,
-                    noConsoleNoAnsi);
+            final List<PatternFormatter> list =
+                    parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[0]);
             this.defaultPattern = defaultPattern;
             for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
@@ -192,7 +194,11 @@ public class LevelPatternSelector implements PatternSelector{
             if (!first) {
                 sb.append(", ");
             }
-            sb.append("key=\"").append(entry.getKey()).append("\", pattern=\"").append(entry.getValue()).append("\"");
+            sb.append("key=\"")
+                    .append(entry.getKey())
+                    .append("\", pattern=\"")
+                    .append(entry.getValue())
+                    .append("\"");
             first = false;
         }
         if (!first) {

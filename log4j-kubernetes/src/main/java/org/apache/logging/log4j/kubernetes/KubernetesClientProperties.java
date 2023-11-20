@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.kubernetes;
 
-import java.time.Duration;
-
 import io.fabric8.kubernetes.client.Config;
+import java.time.Duration;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
@@ -61,10 +60,10 @@ public class KubernetesClientProperties {
         this.base = base;
     }
 
-
     public String getApiVersion() {
         return props.getStringProperty(PREFIXES, API_VERSION, base::getApiVersion);
     }
+
     public String getCaCertFile() {
         return props.getStringProperty(PREFIXES, CA_CERT_FILE, base::getCaCertFile);
     }

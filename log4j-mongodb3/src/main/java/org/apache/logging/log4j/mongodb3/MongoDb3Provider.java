@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.mongodb3;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoDatabase;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
@@ -56,13 +55,13 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
 
         // @formatter:off
         private static final CodecRegistry CODEC_REGISTRIES = CodecRegistries.fromRegistries(
-                        CodecRegistries.fromCodecs(MongoDb3LevelCodec.INSTANCE),
-                        MongoClient.getDefaultCodecRegistry(),
-                        CodecRegistries.fromCodecs(new MongoDb3DocumentObjectCodec()));
+                CodecRegistries.fromCodecs(MongoDb3LevelCodec.INSTANCE),
+                MongoClient.getDefaultCodecRegistry(),
+                CodecRegistries.fromCodecs(new MongoDb3DocumentObjectCodec()));
         // @formatter:on
 
-        private static WriteConcern toWriteConcern(final String writeConcernConstant,
-                final String writeConcernConstantClassName) {
+        private static WriteConcern toWriteConcern(
+                final String writeConcernConstant, final String writeConcernConstantClassName) {
             WriteConcern writeConcern;
             if (Strings.isNotEmpty(writeConcernConstant)) {
                 if (Strings.isNotEmpty(writeConcernConstantClassName)) {
@@ -71,8 +70,10 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
                         final Field field = writeConcernConstantClass.getField(writeConcernConstant);
                         writeConcern = (WriteConcern) field.get(null);
                     } catch (final Exception e) {
-                        LOGGER.error("Write concern constant [{}.{}] not found, using default.",
-                                writeConcernConstantClassName, writeConcernConstant);
+                        LOGGER.error(
+                                "Write concern constant [{}.{}] not found, using default.",
+                                writeConcernConstantClassName,
+                                writeConcernConstant);
                         writeConcern = DEFAULT_WRITE_CONCERN;
                     }
                 } else {
@@ -149,17 +150,23 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
                         if (Strings.isNotEmpty(databaseName)) {
                             database = ((MongoClient) object).getDatabase(databaseName);
                         } else {
-                            LOGGER.error("The factory method [{}.{}()] returned a MongoClient so the database name is "
-                                    + "required.", factoryClassName, factoryMethodName);
+                            LOGGER.error(
+                                    "The factory method [{}.{}()] returned a MongoClient so the database name is "
+                                            + "required.",
+                                    factoryClassName,
+                                    factoryMethodName);
                             return null;
                         }
                     } else if (object == null) {
-                        LOGGER.error("The factory method [{}.{}()] returned null.", factoryClassName,
-                                factoryMethodName);
+                        LOGGER.error(
+                                "The factory method [{}.{}()] returned null.", factoryClassName, factoryMethodName);
                         return null;
                     } else {
-                        LOGGER.error("The factory method [{}.{}()] returned an unsupported type [{}].",
-                                factoryClassName, factoryMethodName, object.getClass().getName());
+                        LOGGER.error(
+                                "The factory method [{}.{}()] returned an unsupported type [{}].",
+                                factoryClassName,
+                                factoryMethodName,
+                                object.getClass().getName());
                         return null;
                     }
 
@@ -169,12 +176,18 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
                     LOGGER.error("The factory class [{}] could not be loaded.", factoryClassName, e);
                     return null;
                 } catch (final NoSuchMethodException e) {
-                    LOGGER.error("The factory class [{}] does not have a no-arg method named [{}].", factoryClassName,
-                            factoryMethodName, e);
+                    LOGGER.error(
+                            "The factory class [{}] does not have a no-arg method named [{}].",
+                            factoryClassName,
+                            factoryMethodName,
+                            e);
                     return null;
                 } catch (final Exception e) {
-                    LOGGER.error("The factory method [{}.{}()] could not be invoked.", factoryClassName,
-                            factoryMethodName, e);
+                    LOGGER.error(
+                            "The factory method [{}.{}()] could not be invoked.",
+                            factoryClassName,
+                            factoryMethodName,
+                            e);
                     return null;
                 }
             } else if (Strings.isNotEmpty(databaseName)) {
@@ -188,7 +201,8 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
                     final TypeConverter<Integer> converter = typeConverterFactory.getTypeConverter(Integer.class);
                     final int portInt = converter.convert(port, DEFAULT_PORT);
                     description += ", server=" + server + ", port=" + portInt;
-                    final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
+                    final WriteConcern writeConcern =
+                            toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
                     // @formatter:off
                     final MongoClientOptions options = MongoClientOptions.builder()
                             .codecRegistry(CODEC_REGISTRIES)
@@ -196,15 +210,19 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
                             .build();
                     // @formatter:on
                     final ServerAddress serverAddress = new ServerAddress(server, portInt);
-                    mongoClient = mongoCredential == null ?
-                    // @formatter:off
-                            new MongoClient(serverAddress, options) :
-                            new MongoClient(serverAddress, mongoCredential, options);
+                    mongoClient = mongoCredential == null
+                            ?
+                            // @formatter:off
+                            new MongoClient(serverAddress, options)
+                            : new MongoClient(serverAddress, mongoCredential, options);
                     // @formatter:on
                     database = mongoClient.getDatabase(databaseName);
                 } catch (final Exception e) {
-                    LOGGER.error("Failed to obtain a database instance from the MongoClient at server [{}] and "
-                            + "port [{}].", server, port);
+                    LOGGER.error(
+                            "Failed to obtain a database instance from the MongoClient at server [{}] and "
+                                    + "port [{}].",
+                            server,
+                            port);
                     close(mongoClient);
                     return null;
                 }
@@ -318,8 +336,12 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
     private final MongoClient mongoClient;
     private final MongoDatabase mongoDatabase;
 
-    private MongoDb3Provider(final MongoClient mongoClient, final MongoDatabase mongoDatabase,
-            final String collectionName, final boolean isCapped, final Integer collectionSize,
+    private MongoDb3Provider(
+            final MongoClient mongoClient,
+            final MongoDatabase mongoDatabase,
+            final String collectionName,
+            final boolean isCapped,
+            final Integer collectionSize,
             final String description) {
         this.mongoClient = mongoClient;
         this.mongoDatabase = mongoDatabase;

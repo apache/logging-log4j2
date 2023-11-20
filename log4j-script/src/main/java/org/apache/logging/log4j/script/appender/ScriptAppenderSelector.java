@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.script.appender;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -90,8 +89,12 @@ public final class ScriptAppenderSelector extends AbstractAppender {
                 return null;
             }
             final ScriptBindings bindings = scriptManager.createBindings(script);
-            AbstractLifeCycle.LOGGER.debug("ScriptAppenderSelector '{}' executing {} '{}': {}", name, script.getLanguage(),
-                    script.getName(), script.getScriptText());
+            AbstractLifeCycle.LOGGER.debug(
+                    "ScriptAppenderSelector '{}' executing {} '{}': {}",
+                    name,
+                    script.getLanguage(),
+                    script.getName(),
+                    script.getScriptText());
             final Object object = scriptManager.execute(script.getName(), bindings);
             final String actualAppenderName = Objects.toString(object, null);
             AbstractLifeCycle.LOGGER.debug("ScriptAppenderSelector '{}' selected '{}'", name, actualAppenderName);
@@ -133,7 +136,6 @@ public final class ScriptAppenderSelector extends AbstractAppender {
             this.script = script;
             return this;
         }
-
     }
 
     @PluginFactory
@@ -149,5 +151,4 @@ public final class ScriptAppenderSelector extends AbstractAppender {
     public void append(final LogEvent event) {
         // Do nothing: This appender is only used to discover and build another appender
     }
-
 }

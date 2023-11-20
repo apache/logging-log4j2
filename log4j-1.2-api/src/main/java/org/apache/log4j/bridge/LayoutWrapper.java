@@ -55,7 +55,7 @@ public class LayoutWrapper extends Layout {
 
     @Override
     public String format(final LoggingEvent event) {
-        return layout.toSerializable(((LogEventAdapter)event).getEvent()).toString();
+        return layout.toSerializable(((LogEventAdapter) event).getEvent()).toString();
     }
 
     /**

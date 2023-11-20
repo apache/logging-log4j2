@@ -16,10 +16,12 @@
  */
 package org.apache.log4j.builders.filter;
 
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -31,9 +33,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a String match filter.
@@ -67,7 +66,6 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
                     case ACCEPT_ON_MATCH:
                         acceptOnMatch.set(getBooleanValueAttribute(currentElement));
                         break;
-
                 }
             }
         });
@@ -87,8 +85,8 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
             return null;
         }
         final org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
-        ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
-        : org.apache.logging.log4j.core.Filter.Result.DENY;
+                ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
+                : org.apache.logging.log4j.core.Filter.Result.DENY;
         return FilterWrapper.adapt(StringMatchFilter.newBuilder()
                 .setMatchString(text)
                 .setOnMatch(onMatch)

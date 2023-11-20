@@ -28,5 +28,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface FactoryType {
-}
+public @interface FactoryType {}

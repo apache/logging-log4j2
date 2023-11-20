@@ -19,7 +19,6 @@ package org.apache.logging.log4j.status;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -64,8 +63,7 @@ public class StatusConsoleListener implements StatusListener {
     StatusConsoleListener(final Level level, final PrintStream stream, final StatusLoggerFactory loggerFactory) {
         this.level = Objects.requireNonNull(level, "level");
         this.stream = Objects.requireNonNull(stream, "stream");
-        this.logger = Objects
-                .requireNonNull(loggerFactory, "loggerFactory")
+        this.logger = Objects.requireNonNull(loggerFactory, "loggerFactory")
                 .createSimpleLogger("StatusConsoleListener", level, stream);
     }
 
@@ -131,5 +129,4 @@ public class StatusConsoleListener implements StatusListener {
             this.stream.close();
         }
     }
-
 }

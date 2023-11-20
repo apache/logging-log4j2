@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Disabled
 public class StoreConfigurationTest<T extends StoreConfiguration<?>> {

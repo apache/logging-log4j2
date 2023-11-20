@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.script.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -25,7 +27,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.LongSupplier;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.script.ScriptPropertyKey;
@@ -35,8 +36,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  *
  */
@@ -45,7 +44,8 @@ public class RollingAppenderDeleteScriptFri13thTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-script-fri13th.xml";
     private static final String DIR = "target/rolling-with-delete-script-fri13th/test";
 
-    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @BeforeClass
     public static void beforeClass() {
@@ -79,8 +79,10 @@ public class RollingAppenderDeleteScriptFri13thTest {
         }
 
         try (final var stream = Files.list(dir)) {
-            assertThat(stream.map(path -> path.getFileName().toString())).allSatisfy(name ->
-                    assertThat(name).startsWith("test-").endsWith(".log").doesNotContain("20151113"));
+            assertThat(stream.map(path -> path.getFileName().toString())).allSatisfy(name -> assertThat(name)
+                    .startsWith("test-")
+                    .endsWith(".log")
+                    .doesNotContain("20151113"));
         }
     }
 

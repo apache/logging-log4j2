@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -29,10 +32,6 @@ import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Tag("async")
 @UsingStatusListener
@@ -59,13 +58,17 @@ public class AsyncLoggerConfig4Test {
         reader.close();
         file.delete();
 
-        assertThat(line1,
+        assertThat(
+                line1,
                 equalTo("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertThat(line2,
+        assertThat(
+                line2,
                 equalTo("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertThat(line3,
+        assertThat(
+                line3,
                 equalTo("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertThat(line4,
+        assertThat(
+                line4,
                 equalTo("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
         assertNull(line5, "Expected only four lines to be logged");
     }

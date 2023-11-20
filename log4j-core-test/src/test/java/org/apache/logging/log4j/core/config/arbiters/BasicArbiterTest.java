@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -23,10 +27,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests basic condition processing.
@@ -62,7 +62,8 @@ public class BasicArbiterTest {
         assertTrue(app instanceof ConsoleAppender);
     }
 
-    @Test void classArbiterTest() {
+    @Test
+    void classArbiterTest() {
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         Appender app = loggerContext.getConfiguration().getAppender("ShouldExist");

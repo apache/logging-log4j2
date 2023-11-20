@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.io.PrintWriter;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.PrintWriter;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -111,13 +110,11 @@ public final class LowLevelLogUtil {
         } finally {
             guard.set(false);
         }
-
     }
 
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "Log4j prints stacktraces only to logs, which should be private."
-    )
+            justification = "Log4j prints stacktraces only to logs, which should be private.")
     public static void logException(final Throwable exception) {
         if (guard.get()) {
             return;
@@ -144,6 +141,5 @@ public final class LowLevelLogUtil {
         }
     }
 
-    private LowLevelLogUtil() {
-    }
+    private LowLevelLogUtil() {}
 }

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Arrays;
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 import com.lmax.disruptor.EventFactory;
+import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -42,8 +43,6 @@ import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
@@ -92,11 +91,22 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
 
     private AsyncLogger asyncLogger;
 
-    public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
-                          final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-                          final StringMap mutableContextData, final ContextStack aContextStack, final long threadId,
-                          final String threadName, final int threadPriority, final StackTraceElement aLocation,
-                          final Clock clock, final NanoClock nanoClock) {
+    public void setValues(
+            final AsyncLogger anAsyncLogger,
+            final String aLoggerName,
+            final Marker aMarker,
+            final String theFqcn,
+            final Level aLevel,
+            final Message msg,
+            final Throwable aThrowable,
+            final StringMap mutableContextData,
+            final ContextStack aContextStack,
+            final long threadId,
+            final String threadName,
+            final int threadPriority,
+            final StackTraceElement aLocation,
+            final Clock clock,
+            final NanoClock nanoClock) {
         this.threadPriority = threadPriority;
         this.threadId = threadId;
         this.level = aLevel;
@@ -431,7 +441,9 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
 
     @Override
     public long getTimeMillis() {
-        return message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : instant.getEpochMillisecond();
+        return message instanceof TimestampMessage
+                ? ((TimestampMessage) message).getTimestamp()
+                : instant.getEpochMillisecond();
     }
 
     @Override
@@ -535,5 +547,4 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
                 .setInstant(instant) //
         ;
     }
-
 }

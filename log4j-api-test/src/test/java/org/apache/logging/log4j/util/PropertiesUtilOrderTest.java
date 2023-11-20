@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.InputStream;
 import java.util.Properties;
-
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.PropertyComponent;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,10 +32,6 @@ import org.junit.jupiter.api.parallel.Resources;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SystemStubsExtension.class)
 @ResourceLock(value = Resources.SYSTEM_PROPERTIES)
@@ -61,7 +60,6 @@ public class PropertiesUtilOrderTest {
         public boolean containsProperty(final String key) {
             return getProperty(key) != null;
         }
-
     }
 
     public static class NullPropertySource implements PropertySource {
@@ -70,7 +68,6 @@ public class PropertiesUtilOrderTest {
         public int getPriority() {
             return Integer.MIN_VALUE;
         }
-
     }
 
     private final Properties properties = new Properties();
@@ -83,8 +80,8 @@ public class PropertiesUtilOrderTest {
     }
 
     /*
-        Verify that system properties and environment variables override properties provided in files.
-     */
+       Verify that system properties and environment variables override properties provided in files.
+    */
     @Test
     public void testOrderOfProperties(final EnvironmentVariables env, final SystemProperties sysProps) {
         env.set("log4j2.*.Configuration.statusLoggerLevel", "ERROR");
@@ -105,7 +102,9 @@ public class PropertiesUtilOrderTest {
         // System property value should be recognized.
         assertEquals("false", util.getStringProperty(TestProperty.JNDI_JMS, "true"));
         // Context system property should override Context property from file.
-        assertEquals("org.apache.CustomMergeStrategy", contextProperties.getStringProperty(TestProperty.CONFIG_MERGE_STRATEGY));
+        assertEquals(
+                "org.apache.CustomMergeStrategy",
+                contextProperties.getStringProperty(TestProperty.CONFIG_MERGE_STRATEGY));
         // Recognize system-wide environment variable.
         assertEquals("200", util.getStringProperty(LoggingSystemProperty.STATUS_MAX_ENTRIES));
         // Context properties in file should override system-wide system property.
@@ -120,7 +119,6 @@ public class PropertiesUtilOrderTest {
         assertEquals("Groovy,JavaScript", contextProperties.getStringProperty(TestProperty.SCRIPT_LANGUAGES));
         // No property should be found.
         assertFalse(util.hasProperty(TestProperty.SCRIPT_LANGUAGES));
-
     }
 
     public enum TestProperty implements PropertyKey {
@@ -140,7 +138,6 @@ public class PropertiesUtilOrderTest {
             this.key = key;
         }
 
-
         @Override
         public String getComponent() {
             return component.getName();
@@ -151,5 +148,4 @@ public class PropertiesUtilOrderTest {
             return key;
         }
     }
-
 }

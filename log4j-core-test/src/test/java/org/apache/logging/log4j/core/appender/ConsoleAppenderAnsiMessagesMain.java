@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -40,8 +39,8 @@ public class ConsoleAppenderAnsiMessagesMain {
 
     public static void main(final String[] args) {
         System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
-        try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
-                "target/test-classes/log4j2-console.xml")) {
+        try (final LoggerContext ctx = Configurator.initialize(
+                ConsoleAppenderAnsiMessagesMain.class.getName(), "target/test-classes/log4j2-console.xml")) {
             LOG.fatal("\u001b[1;35mFatal message.\u001b[0m");
             LOG.error("\u001b[1;31mError message.\u001b[0m");
             LOG.warn("\u001b[0;33mWarning message.\u001b[0m");
@@ -51,5 +50,4 @@ public class ConsoleAppenderAnsiMessagesMain {
             LOG.error("\u001b[1;31mError message.\u001b[0m", new IOException("test"));
         }
     }
-
 }

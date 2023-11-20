@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Inject;
@@ -48,8 +47,7 @@ import org.apache.logging.log4j.util.InternalApi;
  */
 @InternalApi
 public final class BeanUtils {
-    private BeanUtils() {
-    }
+    private BeanUtils() {}
 
     public static String decapitalize(final String string) {
         if (string.isEmpty()) {
@@ -78,25 +76,25 @@ public final class BeanUtils {
 
     private static Optional<Executable> findStaticFactoryMethod(final Class<?> clazz) {
         return Stream.of(clazz.getDeclaredMethods())
-                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
-                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
-                .min(Comparator.comparingInt(Method::getParameterCount).thenComparing(Method::getReturnType, (c1, c2) -> {
-                    if (c1.equals(c2)) {
-                        return 0;
-                    } else if (Supplier.class.isAssignableFrom(c1)) {
-                        return -1;
-                    } else if (Supplier.class.isAssignableFrom(c2)) {
-                        return 1;
-                    } else {
-                        return c1.getName().compareTo(c2.getName());
-                    }
-                }))
+                .filter(method -> Modifier.isStatic(method.getModifiers())
+                        && AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
+                .min(Comparator.comparingInt(Method::getParameterCount)
+                        .thenComparing(Method::getReturnType, (c1, c2) -> {
+                            if (c1.equals(c2)) {
+                                return 0;
+                            } else if (Supplier.class.isAssignableFrom(c1)) {
+                                return -1;
+                            } else if (Supplier.class.isAssignableFrom(c2)) {
+                                return 1;
+                            } else {
+                                return c1.getName().compareTo(c2.getName());
+                            }
+                        }))
                 .map(Executable.class::cast);
     }
 
     public static <T> Constructor<T> getInjectableConstructor(final Key<T> key, final DependencyChain chain) {
-        return findInjectableConstructor(key.getRawType())
-                .orElseThrow(() -> new NotInjectableException(key, chain));
+        return findInjectableConstructor(key.getRawType()).orElseThrow(() -> new NotInjectableException(key, chain));
     }
 
     public static List<Field> getInjectableFields(final Class<?> clazz) {
@@ -132,11 +130,13 @@ public final class BeanUtils {
      * @return whether the class is injectable
      */
     public static boolean isInjectable(final Class<?> clazz) {
-        return findInjectableConstructor(clazz).isPresent() || findStaticFactoryMethod(clazz).isPresent();
+        return findInjectableConstructor(clazz).isPresent()
+                || findStaticFactoryMethod(clazz).isPresent();
     }
 
     public static boolean isInjectable(final Field field) {
-        return field.isAnnotationPresent(Inject.class) || AnnotationUtil.isMetaAnnotationPresent(field, QualifierType.class);
+        return field.isAnnotationPresent(Inject.class)
+                || AnnotationUtil.isMetaAnnotationPresent(field, QualifierType.class);
     }
 
     public static boolean isInjectable(final Method method) {

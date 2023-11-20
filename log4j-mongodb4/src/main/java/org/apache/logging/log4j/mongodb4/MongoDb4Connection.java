@@ -38,8 +38,11 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static MongoCollection<Document> getOrCreateMongoCollection(final MongoDatabase database,
-            final String collectionName, final boolean isCapped, final Integer sizeInBytes) {
+    private static MongoCollection<Document> getOrCreateMongoCollection(
+            final MongoDatabase database,
+            final String collectionName,
+            final boolean isCapped,
+            final Integer sizeInBytes) {
         try {
             LOGGER.debug("Getting collection '{}'...", collectionName);
             // throws IllegalArgumentException if collectionName is invalid
@@ -48,8 +51,8 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
             return found;
         } catch (final IllegalStateException e) {
             LOGGER.debug("Collection '{}' does not exist.", collectionName);
-            final CreateCollectionOptions options = new CreateCollectionOptions().capped(isCapped)
-                    .sizeInBytes(sizeInBytes);
+            final CreateCollectionOptions options =
+                    new CreateCollectionOptions().capped(isCapped).sizeInBytes(sizeInBytes);
             LOGGER.debug("Creating collection '{}' with options {}...", collectionName, options);
             database.createCollection(collectionName, options);
             LOGGER.debug("Created collection.");
@@ -57,19 +60,22 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
             LOGGER.debug("Got created collection {}", created);
             return created;
         }
-
     }
 
     private final ConnectionString connectionString;
     private final MongoCollection<Document> collection;
     private final MongoClient mongoClient;
 
-    public MongoDb4Connection(final ConnectionString connectionString, final MongoClient mongoClient,
-            final MongoDatabase mongoDatabase, final boolean isCapped, final Integer sizeInBytes) {
+    public MongoDb4Connection(
+            final ConnectionString connectionString,
+            final MongoClient mongoClient,
+            final MongoDatabase mongoDatabase,
+            final boolean isCapped,
+            final Integer sizeInBytes) {
         this.connectionString = connectionString;
         this.mongoClient = mongoClient;
-        this.collection = getOrCreateMongoCollection(mongoDatabase, connectionString.getCollection(), isCapped,
-                sizeInBytes);
+        this.collection =
+                getOrCreateMongoCollection(mongoDatabase, connectionString.getCollection(), isCapped, sizeInBytes);
     }
 
     @Override
@@ -96,15 +102,15 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
             final InsertOneResult insertOneResult = this.collection.insertOne(unwrapped);
             LOGGER.debug("Insert MongoDb result {}", insertOneResult);
         } catch (final MongoException e) {
-            throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " + e.getMessage(),
-                    e);
+            throw new AppenderLoggingException(
+                    "Failed to write log event to MongoDB due to error: " + e.getMessage(), e);
         }
     }
 
     @Override
     public String toString() {
-        return String.format("Mongo4Connection [connectionString=%s, collection=%s, mongoClient=%s]", connectionString,
-                collection, mongoClient);
+        return String.format(
+                "Mongo4Connection [connectionString=%s, collection=%s, mongoClient=%s]",
+                connectionString, collection, mongoClient);
     }
-
 }

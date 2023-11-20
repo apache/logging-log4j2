@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystem;
@@ -212,7 +211,7 @@ public final class ThreadContext {
      * @since 2.13.0
      */
     public static void putIfNull(final String key, final String value) {
-        if(!contextMap.containsKey(key)) {
+        if (!contextMap.containsKey(key)) {
             contextMap.put(key, value);
         }
     }

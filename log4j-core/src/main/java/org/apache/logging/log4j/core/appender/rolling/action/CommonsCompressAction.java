@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Objects;
-
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
@@ -64,8 +63,8 @@ public final class CommonsCompressAction extends AbstractAction {
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
      */
-    public CommonsCompressAction(final String name, final File source, final File destination,
-            final boolean deleteSource) {
+    public CommonsCompressAction(
+            final String name, final File source, final File destination, final boolean deleteSource) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
         this.name = name;
@@ -97,18 +96,19 @@ public final class CommonsCompressAction extends AbstractAction {
      * @return true if source file compressed.
      * @throws IOException on IO exception.
      */
-    public static boolean execute(final String name, final File source, final File destination,
-            final boolean deleteSource) throws IOException {
+    public static boolean execute(
+            final String name, final File source, final File destination, final boolean deleteSource)
+            throws IOException {
         if (!source.exists()) {
             return false;
         }
-        LOGGER.debug("Starting {} compression of {}", name, source.getPath() );
+        LOGGER.debug("Starting {} compression of {}", name, source.getPath());
         try (final FileInputStream input = new FileInputStream(source);
-             final FileOutputStream fileOutput = new FileOutputStream(destination);
+                final FileOutputStream fileOutput = new FileOutputStream(destination);
                 final BufferedOutputStream output = new BufferedOutputStream(
                         new CompressorStreamFactory().createCompressorOutputStream(name, fileOutput))) {
             IOUtils.copy(input, output, BUF_SIZE);
-            LOGGER.debug("Finished {} compression of {}", name, source.getPath() );
+            LOGGER.debug("Finished {} compression of {}", name, source.getPath());
         } catch (final CompressorException e) {
             throw new IOException(e);
         }
@@ -118,7 +118,8 @@ public final class CommonsCompressAction extends AbstractAction {
                 if (Files.deleteIfExists(source.toPath())) {
                     LOGGER.debug("Deleted {}", source.toString());
                 } else {
-                    LOGGER.warn("Unable to delete {} after {} compression. File did not exist", source.toString(), name);
+                    LOGGER.warn(
+                            "Unable to delete {} after {} compression. File did not exist", source.toString(), name);
                 }
             } catch (final Exception ex) {
                 LOGGER.warn("Unable to delete {} after {} compression, {}", source.toString(), name, ex.getMessage());
@@ -140,8 +141,8 @@ public final class CommonsCompressAction extends AbstractAction {
 
     @Override
     public String toString() {
-        return CommonsCompressAction.class.getSimpleName() + '[' + source + " to " + destination
-                + ", deleteSource=" + deleteSource + ']';
+        return CommonsCompressAction.class.getSimpleName() + '[' + source + " to " + destination + ", deleteSource="
+                + deleteSource + ']';
     }
 
     public String getName() {

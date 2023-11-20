@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +29,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -36,8 +37,6 @@ import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedF
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -75,7 +74,8 @@ public class RollingAppenderDeleteNestedTest {
         for (final File file : files) {
             final BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
             System.out.println(file + " (" + fileAttributes.size() + "B) "
-                    + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(fileAttributes.lastModifiedTime().toMillis()));
+                    + FixedDateFormat.create(FixedFormat.ABSOLUTE)
+                            .format(fileAttributes.lastModifiedTime().toMillis()));
         }
 
         final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");

@@ -20,7 +20,6 @@ package org.apache.logging.log4j.spi;
  * Components that own properties.
  */
 public enum PropertyComponent {
-
     ASYNC_LOGGER(Constant.ASYNC_LOGGER),
     ASYNC_LOGGER_CONFIG(Constant.ASYNC_LOGGER_CONFIG),
     CONFIGURATION(Constant.CONFIGURATION),

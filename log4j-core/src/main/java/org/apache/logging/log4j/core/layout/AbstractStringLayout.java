@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -64,7 +63,6 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
             this.headerSerializer = headerSerializer;
             return asBuilder();
         }
-
     }
 
     public interface Serializer extends Serializer2 {
@@ -80,7 +78,6 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
             builder.append(toSerializable(event));
             return builder;
         }
-
     }
 
     /**
@@ -88,7 +85,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
      * As of 2.13 this interface was merged into the Serializer interface.
      * @since 2.6
      */
-    public interface Serializer2  {
+    public interface Serializer2 {
         StringBuilder toSerializable(final LogEvent event, final StringBuilder builder);
     }
 
@@ -99,19 +96,16 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
 
     protected static final int MAX_STRING_BUILDER_SIZE = Math.max(
             DEFAULT_STRING_BUILDER_SIZE,
-            PropertiesUtil
-                    .getProperties()
+            PropertiesUtil.getProperties()
                     .getIntegerProperty(
                             Log4jPropertyKey.GC_LAYOUT_STRING_BUILDER_MAX_SIZE,
                             Math.multiplyExact(2, DEFAULT_STRING_BUILDER_SIZE)));
 
     protected static Recycler<StringBuilder> createStringBuilderRecycler(final RecyclerFactory recyclerFactory) {
-        return recyclerFactory.create(
-                () -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE),
-                stringBuilder -> {
-                    StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
-                    stringBuilder.setLength(0);
-                });
+        return recyclerFactory.create(() -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE), stringBuilder -> {
+            StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
+            stringBuilder.setLength(0);
+        });
     }
 
     private final Serializer footerSerializer;
@@ -133,10 +127,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
      * @param footer the footer bytes
      */
     protected AbstractStringLayout(
-            final Configuration configuration,
-            final Charset charset,
-            final byte[] header,
-            final byte[] footer) {
+            final Configuration configuration, final Charset charset, final byte[] header, final byte[] footer) {
         super(configuration, charset, header, footer);
         this.headerSerializer = null;
         this.footerSerializer = null;
@@ -161,13 +152,13 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
         super(configuration, charset, null, null);
         this.headerSerializer = headerSerializer;
         this.footerSerializer = footerSerializer;
-        this.stringBuilderEncoderRecycler = createStringBuilderEncoderRecycler(configuration.getRecyclerFactory(), getCharset());
+        this.stringBuilderEncoderRecycler =
+                createStringBuilderEncoderRecycler(configuration.getRecyclerFactory(), getCharset());
         this.stringBuilderRecycler = createStringBuilderRecycler(configuration.getRecyclerFactory());
     }
 
     private static Recycler<Encoder<StringBuilder>> createStringBuilderEncoderRecycler(
-            final RecyclerFactory recyclerFactory,
-            final Charset charset) {
+            final RecyclerFactory recyclerFactory, final Charset charset) {
         return recyclerFactory.create(() -> new StringBuilderEncoder(charset));
     }
 
@@ -236,7 +227,8 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
         final LoggerConfig rootLogger = config.getRootLogger();
         final LogEventFactory logEventFactory = config.getComponent(LogEventFactory.KEY);
         final String fqcn = getClass().getName();
-        final LogEvent logEvent = logEventFactory.createEvent(rootLogger.getName(), null, fqcn, rootLogger.getLevel(), null, null, null);
+        final LogEvent logEvent =
+                logEventFactory.createEvent(rootLogger.getName(), null, fqcn, rootLogger.getLevel(), null, null, null);
         return serializer.toSerializable(logEvent);
     }
 
@@ -253,5 +245,4 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
 
     @Override
     public abstract String toSerializable(LogEvent event);
-
 }

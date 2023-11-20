@@ -44,25 +44,15 @@ class CharSequencePointerTest {
     }
 
     private static void assertMissingReset(final Runnable runnable) {
-        Assertions
-                .assertThatThrownBy(runnable::run)
+        Assertions.assertThatThrownBy(runnable::run)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("pointer must be reset first");
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "'',0,0,''",
-            "foo,0,1,f",
-            "foo,1,1,''",
-            "foo,1,2,o",
-            "foo,3,3,''"
-    })
+    @CsvSource({"'',0,0,''", "foo,0,1,f", "foo,1,1,''", "foo,1,2,o", "foo,3,3,''"})
     void toString_should_subSequence(
-            final CharSequence delegate,
-            final int startIndex,
-            final int endIndex,
-            final String expectedOutput) {
+            final CharSequence delegate, final int startIndex, final int endIndex, final String expectedOutput) {
         pointer.reset(delegate, startIndex, endIndex);
         Assertions.assertThat(pointer).hasToString(expectedOutput);
     }
@@ -86,37 +76,30 @@ class CharSequencePointerTest {
     }
 
     private static void assertUnsupportedOperation(final Runnable runnable) {
-        Assertions
-                .assertThatThrownBy(runnable::run)
+        Assertions.assertThatThrownBy(runnable::run)
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessage("operation requires allocation, contradicting with the purpose of the class");
     }
 
     @Test
     void reset_should_fail_on_null_delegate() {
-        Assertions
-                .assertThatThrownBy(() -> pointer.reset(null, 0, 0))
+        Assertions.assertThatThrownBy(() -> pointer.reset(null, 0, 0))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("delegate");
     }
 
     @ParameterizedTest
     @CsvSource({
-            "foo,-1,3,invalid start: -1",
-            "foo,4,3,invalid length: -1",
-            "foo,0,-1,invalid length: -1",
-            "foo,1,0,invalid length: -1",
-            "foo,0,4,invalid end: 4"
+        "foo,-1,3,invalid start: -1",
+        "foo,4,3,invalid length: -1",
+        "foo,0,-1,invalid length: -1",
+        "foo,1,0,invalid length: -1",
+        "foo,0,4,invalid end: 4"
     })
     void reset_should_fail_on_invalid_indices(
-            final CharSequence delegate,
-            final int startIndex,
-            final int endIndex,
-            final String expectedErrorMessage) {
-        Assertions
-                .assertThatThrownBy(() -> pointer.reset(delegate, startIndex, endIndex))
+            final CharSequence delegate, final int startIndex, final int endIndex, final String expectedErrorMessage) {
+        Assertions.assertThatThrownBy(() -> pointer.reset(delegate, startIndex, endIndex))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessage(expectedErrorMessage);
     }
-
 }

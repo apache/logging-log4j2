@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
-import java.util.concurrent.BlockingQueue;
-
 import com.conversantmedia.util.concurrent.SpinPolicy;
+import java.util.concurrent.BlockingQueue;
 import org.apache.logging.log4j.core.async.DisruptorBlockingQueueFactory;
 
 public class RunConversant extends AbstractRunQueue {

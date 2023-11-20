@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.HashMap;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link MapLookup}.
@@ -68,17 +67,15 @@ public class MapLookupTest {
 
     @Test
     public void testEventStringMapMessage() {
-      final HashMap<String, String> map = new HashMap<>();
-      map.put("A", "B");
-      final HashMap<String, String> eventMap = new HashMap<>();
-      eventMap.put("A1", "B1");
-      final StringMapMessage message = new StringMapMessage(eventMap);
-      final LogEvent event = Log4jLogEvent.newBuilder()
-                .setMessage(message)
-                .build();
-      final MapLookup lookup = new MapLookup(map);
-      assertEquals("B", lookup.lookup(event, "A"));
-      assertEquals("B1", lookup.lookup(event, "A1"));
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("A", "B");
+        final HashMap<String, String> eventMap = new HashMap<>();
+        eventMap.put("A1", "B1");
+        final StringMapMessage message = new StringMapMessage(eventMap);
+        final LogEvent event = Log4jLogEvent.newBuilder().setMessage(message).build();
+        final MapLookup lookup = new MapLookup(map);
+        assertEquals("B", lookup.lookup(event, "A"));
+        assertEquals("B1", lookup.lookup(event, "A1"));
     }
 
     @Test
@@ -88,9 +85,7 @@ public class MapLookupTest {
         final HashMap<String, Object> eventMap = new HashMap<>();
         eventMap.put("A1", 11);
         final MapMessage message = new MapMessage<>(eventMap);
-        final LogEvent event = Log4jLogEvent.newBuilder()
-                .setMessage(message)
-                .build();
+        final LogEvent event = Log4jLogEvent.newBuilder().setMessage(message).build();
         final MapLookup lookup = new MapLookup(map);
         assertEquals("B", lookup.lookup(event, "A"));
         assertEquals("11", lookup.lookup(event, "A1"));
@@ -104,9 +99,7 @@ public class MapLookupTest {
         final HashMap<String, Object> eventMap = new HashMap<>();
         eventMap.put("A", "AEvent");
         final MapMessage message = new MapMessage<>(eventMap);
-        final LogEvent event = Log4jLogEvent.newBuilder()
-                .setMessage(message)
-                .build();
+        final LogEvent event = Log4jLogEvent.newBuilder().setMessage(message).build();
         final MapLookup lookup = new MapLookup(map);
         assertEquals("AEvent", lookup.lookup(event, "A"));
         assertEquals("BDefault", lookup.lookup(event, "B"));
@@ -114,9 +107,9 @@ public class MapLookupTest {
 
     @Test
     public void testNullEvent() {
-      final HashMap<String, String> map = new HashMap<>();
-      map.put("A", "B");
-      final MapLookup lookup = new MapLookup(map);
-      assertEquals("B", lookup.lookup(null, "A"));
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("A", "B");
+        final MapLookup lookup = new MapLookup(map);
+        assertEquals("B", lookup.lookup(null, "A"));
     }
 }

@@ -52,14 +52,17 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * The default initial capacity.
      */
     private static final int DEFAULT_INITIAL_CAPACITY = 4;
+
     private static final int HASHVAL = 31;
 
-    private static final TriConsumer<String, Object, StringMap> PUT_ALL = (key, value, contextData) -> contextData.putValue(key, value);
+    private static final TriConsumer<String, Object, StringMap> PUT_ALL =
+            (key, value, contextData) -> contextData.putValue(key, value);
 
     /**
      * An empty array instance to share when the table is not inflated.
      */
     private static final String[] EMPTY = Strings.EMPTY_ARRAY;
+
     private static final String FROZEN = "Frozen collection cannot be modified";
 
     private String[] keys = EMPTY;
@@ -77,6 +80,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
     // If table == EMPTY_TABLE then this is the initial capacity at which the
     // table will be created when inflated.
     private int threshold;
+
     private boolean immutable;
     private boolean iterating;
 
@@ -466,5 +470,4 @@ public class SortedArrayStringMap implements IndexedStringMap {
         final int BITS_PER_INT = 32;
         return 1 << (BITS_PER_INT - Integer.numberOfLeadingZeros(x - 1));
     }
-
 }

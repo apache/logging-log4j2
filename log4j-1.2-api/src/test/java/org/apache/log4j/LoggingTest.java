@@ -16,11 +16,11 @@
  */
 package org.apache.log4j;
 
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -37,5 +37,4 @@ public class LoggingTest {
         assertNotNull(parent, "No parent Logger");
         assertEquals("org.apache.test.logging", parent.getName(), "Incorrect parent logger");
     }
-
 }

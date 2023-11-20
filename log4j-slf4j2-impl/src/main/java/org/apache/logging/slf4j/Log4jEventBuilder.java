@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.BridgeAware;
 import org.apache.logging.log4j.CloseableThreadContext;
 import org.apache.logging.log4j.CloseableThreadContext.Instance;
@@ -108,9 +107,7 @@ public class Log4jEventBuilder implements LoggingEventBuilder, CallerBoundaryAwa
 
     @Override
     public void log() {
-        final LogBuilder logBuilder = logger.atLevel(level)
-                .withMarker(marker)
-                .withThrowable(throwable);
+        final LogBuilder logBuilder = logger.atLevel(level).withMarker(marker).withThrowable(throwable);
         if (logBuilder instanceof BridgeAware) {
             ((BridgeAware) logBuilder).setEntryPoint(fqcn);
         }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.jdbc.appender;
 
 import java.sql.PreparedStatement;
 import java.util.Arrays;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -52,7 +51,7 @@ import org.apache.logging.log4j.util.Assert;
 public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseManager> {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-        implements org.apache.logging.log4j.plugins.util.Builder<JdbcAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<JdbcAppender> {
 
         @PluginElement("ConnectionSource")
         @Required(message = "No ConnectionSource provided")
@@ -90,14 +89,23 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
             final String managerName = "JdbcManager{name=" + getName() + ", bufferSize=" + bufferSize + ", tableName="
                     + tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings="
                     + Arrays.toString(columnMappings) + '}';
-            final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
-                    connectionSource, tableName, columnConfigs, columnMappings, immediateFail, reconnectIntervalMillis,
-                    truncateStrings, getConfiguration());
+            final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(
+                    managerName,
+                    bufferSize,
+                    getLayout(),
+                    connectionSource,
+                    tableName,
+                    columnConfigs,
+                    columnMappings,
+                    immediateFail,
+                    reconnectIntervalMillis,
+                    truncateStrings,
+                    getConfiguration());
             if (manager == null) {
                 return null;
             }
-            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(),
-                    manager);
+            return new JdbcAppender(
+                    getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), manager);
         }
 
         public long getReconnectIntervalMillis() {
@@ -174,7 +182,6 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
             this.truncateStrings = truncateStrings;
             return asBuilder();
         }
-
     }
 
     @PluginFactory
@@ -184,8 +191,13 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
     private final String description;
 
-    private JdbcAppender(final String name, final Filter filter, final Layout layout,
-            final boolean ignoreExceptions, final Property[] properties, final JdbcDatabaseManager manager) {
+    private JdbcAppender(
+            final String name,
+            final Filter filter,
+            final Layout layout,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            final JdbcDatabaseManager manager) {
         super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }

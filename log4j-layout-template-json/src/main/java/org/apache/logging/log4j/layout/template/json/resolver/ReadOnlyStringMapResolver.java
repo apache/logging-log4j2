@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.spi.Recycler;
@@ -195,39 +194,27 @@ class ReadOnlyStringMapResolver implements EventResolver {
         final String prefix = config.getString(new String[] {"flatten", "prefix"});
         final String key = config.getString("key");
         if (key != null && flatten) {
-            throw new IllegalArgumentException(
-                    "key and flatten options cannot be combined: " + config);
+            throw new IllegalArgumentException("key and flatten options cannot be combined: " + config);
         }
         final String pattern = config.getString("pattern");
         if (pattern != null && key != null) {
-            throw new IllegalArgumentException(
-                    "pattern and key options cannot be combined: " + config);
+            throw new IllegalArgumentException("pattern and key options cannot be combined: " + config);
         }
         final String replacement = config.getString("replacement");
         if (pattern == null && replacement != null) {
-            throw new IllegalArgumentException(
-                    "replacement cannot be provided without a pattern: " + config);
+            throw new IllegalArgumentException("replacement cannot be provided without a pattern: " + config);
         }
         final boolean stringified = config.getBoolean("stringified", false);
         if (key != null) {
             return createKeyResolver(key, stringified, mapAccessor);
         } else {
             final RecyclerFactory recyclerFactory = context.getConfiguration().getRecyclerFactory();
-            return createResolver(
-                    recyclerFactory,
-                    flatten,
-                    prefix,
-                    pattern,
-                    replacement,
-                    stringified,
-                    mapAccessor);
+            return createResolver(recyclerFactory, flatten, prefix, pattern, replacement, stringified, mapAccessor);
         }
     }
 
     private static EventResolver createKeyResolver(
-            final String key,
-            final boolean stringified,
-            final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
+            final String key, final boolean stringified, final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
         return new EventResolver() {
 
             @Override
@@ -247,7 +234,6 @@ class ReadOnlyStringMapResolver implements EventResolver {
                     jsonWriter.writeValue(value);
                 }
             }
-
         };
     }
 
@@ -261,28 +247,23 @@ class ReadOnlyStringMapResolver implements EventResolver {
             final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
 
         // Compile the pattern.
-        final Pattern compiledPattern =
-                pattern == null
-                        ? null
-                        : Pattern.compile(pattern);
+        final Pattern compiledPattern = pattern == null ? null : Pattern.compile(pattern);
 
         // Create the recycler for the loop context.
-        final Recycler<LoopContext> loopContextRecycler =
-                recyclerFactory.create(() -> {
-                    final LoopContext loopContext = new LoopContext();
-                    if (prefix != null) {
-                        loopContext.prefix = prefix;
-                        loopContext.prefixedKey = new StringBuilder(prefix);
-                    }
-                    loopContext.pattern = compiledPattern;
-                    loopContext.replacement = replacement;
-                    loopContext.stringified = stringified;
-                    return loopContext;
-                });
+        final Recycler<LoopContext> loopContextRecycler = recyclerFactory.create(() -> {
+            final LoopContext loopContext = new LoopContext();
+            if (prefix != null) {
+                loopContext.prefix = prefix;
+                loopContext.prefixedKey = new StringBuilder(prefix);
+            }
+            loopContext.pattern = compiledPattern;
+            loopContext.replacement = replacement;
+            loopContext.stringified = stringified;
+            return loopContext;
+        });
 
         // Create the resolver.
         return createResolver(flatten, loopContextRecycler, mapAccessor);
-
     }
 
     private static EventResolver createResolver(
@@ -308,10 +289,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
             }
 
             @Override
-            public void resolve(
-                    final LogEvent logEvent,
-                    final JsonWriter jsonWriter,
-                    final boolean succeedingEntry) {
+            public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter, final boolean succeedingEntry) {
 
                 // Retrieve the map.
                 final ReadOnlyStringMap map = mapAccessor.apply(logEvent);
@@ -328,7 +306,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
                 }
                 final LoopContext loopContext = loopContextRecycler.acquire();
                 loopContext.jsonWriter = jsonWriter;
-                loopContext.initJsonWriterStringBuilderLength = jsonWriter.getStringBuilder().length();
+                loopContext.initJsonWriterStringBuilderLength =
+                        jsonWriter.getStringBuilder().length();
                 loopContext.succeedingEntry = flatten && succeedingEntry;
                 try {
                     map.forEach(LoopMethod.INSTANCE, loopContext);
@@ -338,9 +317,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
                 if (!flatten) {
                     jsonWriter.writeObjectEnd();
                 }
-
             }
-
         };
     }
 
@@ -361,31 +338,22 @@ class ReadOnlyStringMapResolver implements EventResolver {
         private int initJsonWriterStringBuilderLength;
 
         private boolean succeedingEntry;
-
     }
 
     private enum LoopMethod implements TriConsumer<String, Object, LoopContext> {
-
         INSTANCE;
 
         @Override
-        public void accept(
-                final String key,
-                final Object value,
-                final LoopContext loopContext) {
-            final Matcher matcher = loopContext.pattern != null
-                    ? loopContext.pattern.matcher(key)
-                    : null;
+        public void accept(final String key, final Object value, final LoopContext loopContext) {
+            final Matcher matcher = loopContext.pattern != null ? loopContext.pattern.matcher(key) : null;
             final boolean keyMatched = matcher == null || matcher.matches();
             if (keyMatched) {
-                final String replacedKey =
-                        matcher != null && loopContext.replacement != null
-                                ? matcher.replaceAll(loopContext.replacement)
-                                : key;
-                final boolean succeedingEntry =
-                        loopContext.succeedingEntry ||
-                                loopContext.initJsonWriterStringBuilderLength <
-                                        loopContext.jsonWriter.getStringBuilder().length();
+                final String replacedKey = matcher != null && loopContext.replacement != null
+                        ? matcher.replaceAll(loopContext.replacement)
+                        : key;
+                final boolean succeedingEntry = loopContext.succeedingEntry
+                        || loopContext.initJsonWriterStringBuilderLength
+                                < loopContext.jsonWriter.getStringBuilder().length();
                 if (succeedingEntry) {
                     loopContext.jsonWriter.writeSeparator();
                 }
@@ -404,7 +372,6 @@ class ReadOnlyStringMapResolver implements EventResolver {
                 }
             }
         }
-
     }
 
     @Override
@@ -418,18 +385,12 @@ class ReadOnlyStringMapResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         internalResolver.resolve(logEvent, jsonWriter);
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter,
-            final boolean succeedingEntry) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter, final boolean succeedingEntry) {
         internalResolver.resolve(logEvent, jsonWriter, succeedingEntry);
     }
-
 }

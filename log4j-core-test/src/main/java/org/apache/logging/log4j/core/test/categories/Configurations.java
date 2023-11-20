@@ -21,5 +21,6 @@ package org.apache.logging.log4j.core.test.categories;
  */
 public interface Configurations {
     interface Json {}
+
     interface Yaml {}
 }

@@ -21,20 +21,18 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
-
 /**
  * Formats a logger name.
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("LoggerPatternConverter")
-@ConverterKeys({ "c", "logger" })
+@ConverterKeys({"c", "logger"})
 @PerformanceSensitive("allocation")
 public final class LoggerPatternConverter extends NamePatternConverter {
     /**
      * Singleton.
      */
-    private static final LoggerPatternConverter INSTANCE =
-        new LoggerPatternConverter(null);
+    private static final LoggerPatternConverter INSTANCE = new LoggerPatternConverter(null);
 
     /**
      * Private constructor.
@@ -51,8 +49,7 @@ public final class LoggerPatternConverter extends NamePatternConverter {
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static LoggerPatternConverter newInstance(
-        final String[] options) {
+    public static LoggerPatternConverter newInstance(final String[] options) {
         if (options == null || options.length == 0) {
             return INSTANCE;
         }

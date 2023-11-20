@@ -39,8 +39,8 @@ public final class ExtendedStackTraceElement {
 
     private final StackTraceElement stackTraceElement;
 
-    public ExtendedStackTraceElement(final StackTraceElement stackTraceElement,
-            final ExtendedClassInfo extraClassInfo) {
+    public ExtendedStackTraceElement(
+            final StackTraceElement stackTraceElement, final ExtendedClassInfo extraClassInfo) {
         this.stackTraceElement = stackTraceElement;
         this.extraClassInfo = extraClassInfo;
     }
@@ -48,20 +48,36 @@ public final class ExtendedStackTraceElement {
     /**
      * Called from Jackson for XML and JSON IO.
      */
-    public ExtendedStackTraceElement(final String declaringClass, final String methodName, final String fileName,
-            final int lineNumber, final boolean exact, final String location, final String version) {
-        this(new StackTraceElement(declaringClass, methodName, fileName, lineNumber),
+    public ExtendedStackTraceElement(
+            final String declaringClass,
+            final String methodName,
+            final String fileName,
+            final int lineNumber,
+            final boolean exact,
+            final String location,
+            final String version) {
+        this(
+                new StackTraceElement(declaringClass, methodName, fileName, lineNumber),
                 new ExtendedClassInfo(exact, location, version));
     }
 
     /**
      * Called from Jackson for XML and JSON IO.
      */
-    public ExtendedStackTraceElement(final String classLoaderName, final String moduleName, final String moduleVersion,
-            final String declaringClass, final String methodName, final String fileName, final int lineNumber,
-            final boolean exact, final String location, final String version) {
-        this(new StackTraceElement(classLoaderName, moduleName, moduleVersion, declaringClass, methodName, fileName,
-                        lineNumber),
+    public ExtendedStackTraceElement(
+            final String classLoaderName,
+            final String moduleName,
+            final String moduleVersion,
+            final String declaringClass,
+            final String methodName,
+            final String fileName,
+            final int lineNumber,
+            final boolean exact,
+            final String location,
+            final String version) {
+        this(
+                new StackTraceElement(
+                        classLoaderName, moduleName, moduleVersion, declaringClass, methodName, fileName, lineNumber),
                 new ExtendedClassInfo(exact, location, version));
     }
 
@@ -161,7 +177,8 @@ public final class ExtendedStackTraceElement {
         this.extraClassInfo.renderOn(output, textRenderer);
     }
 
-    private void render(final StackTraceElement stElement, final StringBuilder output, final TextRenderer textRenderer) {
+    private void render(
+            final StackTraceElement stElement, final StringBuilder output, final TextRenderer textRenderer) {
         final String fileName = stElement.getFileName();
         final int lineNumber = stElement.getLineNumber();
         final String moduleName = getModuleName();
@@ -202,5 +219,4 @@ public final class ExtendedStackTraceElement {
         renderOn(sb, PlainTextRenderer.getInstance());
         return sb.toString();
     }
-
 }

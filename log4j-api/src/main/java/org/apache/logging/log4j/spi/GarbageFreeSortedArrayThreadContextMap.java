@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-
-import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
 
 /**
  * {@code SortedArrayStringMap}-based implementation of the {@code ThreadContextMap} interface that attempts not to
@@ -38,7 +37,7 @@ import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
  * </p>
  * @since 2.7
  */
-class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ThreadContextMap  {
+class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ThreadContextMap {
 
     protected final ThreadLocal<StringMap> localMap;
     protected final int initialCapacity;
@@ -46,11 +45,11 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     public GarbageFreeSortedArrayThreadContextMap() {
         this(
                 PropertiesUtil.getProperties().getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE),
-                PropertiesUtil.getProperties().getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY)
-        );
+                PropertiesUtil.getProperties()
+                        .getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY));
     }
 
-    GarbageFreeSortedArrayThreadContextMap(final boolean inheritableMap, final  int initialCapacity) {
+    GarbageFreeSortedArrayThreadContextMap(final boolean inheritableMap, final int initialCapacity) {
         this.localMap = createThreadLocalMap(inheritableMap);
         this.initialCapacity = initialCapacity;
     }

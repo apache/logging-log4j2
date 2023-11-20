@@ -81,7 +81,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  */
 public final class MessageResolver implements EventResolver {
 
-    private static final String[] FORMATS = { "JSON" };
+    private static final String[] FORMATS = {"JSON"};
 
     private final EventResolver internalResolver;
 
@@ -93,23 +93,17 @@ public final class MessageResolver implements EventResolver {
         return "message";
     }
 
-    private static EventResolver createInternalResolver(
-            final TemplateResolverConfig config) {
+    private static EventResolver createInternalResolver(final TemplateResolverConfig config) {
         final boolean stringified = config.getBoolean("stringified", false);
         final String fallbackKey = config.getString("fallbackKey");
         if (stringified && fallbackKey != null) {
-            throw new IllegalArgumentException(
-                    "fallbackKey is not allowed when stringified is enable: " + config);
+            throw new IllegalArgumentException("fallbackKey is not allowed when stringified is enable: " + config);
         }
-        return stringified
-                ? createStringResolver(fallbackKey)
-                : createObjectResolver(fallbackKey);
+        return stringified ? createStringResolver(fallbackKey) : createObjectResolver(fallbackKey);
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         internalResolver.resolve(logEvent, jsonWriter);
     }
 
@@ -118,18 +112,12 @@ public final class MessageResolver implements EventResolver {
                 resolveString(fallbackKey, logEvent, jsonWriter);
     }
 
-    private static void resolveString(
-            final String fallbackKey,
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    private static void resolveString(final String fallbackKey, final LogEvent logEvent, final JsonWriter jsonWriter) {
         final Message message = logEvent.getMessage();
         resolveString(fallbackKey, message, jsonWriter);
     }
 
-    private static void resolveString(
-            final String fallbackKey,
-            final Message message,
-            final JsonWriter jsonWriter) {
+    private static void resolveString(final String fallbackKey, final Message message, final JsonWriter jsonWriter) {
         if (fallbackKey != null) {
             jsonWriter.writeObjectStart();
             jsonWriter.writeObjectKey(fallbackKey);
@@ -164,18 +152,14 @@ public final class MessageResolver implements EventResolver {
                 if (writeObjectMessage(jsonWriter, message)) {
                     return;
                 }
-
             }
 
             // Fallback to plain String serializer.
             resolveString(fallbackKey, logEvent, jsonWriter);
-
         };
     }
 
-    private static boolean writeMultiformatMessage(
-            final JsonWriter jsonWriter,
-            final Message message) {
+    private static boolean writeMultiformatMessage(final JsonWriter jsonWriter, final Message message) {
 
         // Check type.
         if (!(message instanceof MultiformatMessage)) {
@@ -200,12 +184,9 @@ public final class MessageResolver implements EventResolver {
         final String messageJson = multiformatMessage.getFormattedMessage(FORMATS);
         jsonWriter.writeRawString(messageJson);
         return true;
-
     }
 
-    private static boolean writeObjectMessage(
-            final JsonWriter jsonWriter,
-            final Message message) {
+    private static boolean writeObjectMessage(final JsonWriter jsonWriter, final Message message) {
 
         // Check type.
         if (!(message instanceof ObjectMessage)) {
@@ -217,7 +198,5 @@ public final class MessageResolver implements EventResolver {
         final Object object = objectMessage.getParameter();
         jsonWriter.writeValue(object);
         return true;
-
     }
-
 }

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -49,14 +48,14 @@ public final class StructuredDataFilter extends MapFilter {
     private static final int MAX_BUFFER_SIZE = 2048;
     private static final ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
 
-    private StructuredDataFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch,
-                                 final Result onMismatch) {
+    private StructuredDataFilter(
+            final Map<String, List<String>> map, final boolean oper, final Result onMatch, final Result onMismatch) {
         super(map, oper, onMatch, onMismatch);
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-                         final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         if (msg instanceof StructuredDataMessage) {
             return filter((StructuredDataMessage) msg);
         }

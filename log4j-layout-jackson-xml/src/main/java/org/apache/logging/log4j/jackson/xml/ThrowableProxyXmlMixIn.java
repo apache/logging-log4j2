@@ -72,5 +72,4 @@ public abstract class ThrowableProxyXmlMixIn extends ThrowableProxyMixIn {
     @Override
     @JsonIgnore
     public abstract Throwable getThrowable();
-
 }

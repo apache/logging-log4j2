@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.OutputStream;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Property;
@@ -37,7 +36,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
      * @param <B>
      *            The type to build.
      */
-    public static abstract class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+    public abstract static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<OutputStreamAppender> {
 
         private boolean follow = false;
@@ -68,7 +67,8 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         public OutputStreamAppender build() {
             final Layout layout = getOrCreateLayout();
             final OutputStreamManager manager = getManager(getTarget(), isFollow(), layout);
-            return new OutputStreamAppender(getName(), layout, getFilter(), manager, isIgnoreExceptions(), getPropertyArray());
+            return new OutputStreamAppender(
+                    getName(), layout, getFilter(), manager, isIgnoreExceptions(), getPropertyArray());
         }
     }
 
@@ -119,12 +119,12 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
     private static final OutputStreamManagerFactory factory = new OutputStreamManagerFactory();
 
-    private static OutputStreamManager getManager(final OutputStream target, final boolean follow,
-            final Layout layout) {
+    private static OutputStreamManager getManager(
+            final OutputStream target, final boolean follow, final Layout layout) {
         final OutputStream os = target == null ? OutputStream.nullOutputStream() : new CloseShieldOutputStream(target);
         final OutputStream targetRef = target == null ? os : target;
-        final String managerName = targetRef.getClass().getName() + "@" + Integer.toHexString(targetRef.hashCode())
-                + '.' + follow;
+        final String managerName =
+                targetRef.getClass().getName() + "@" + Integer.toHexString(targetRef.hashCode()) + '.' + follow;
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
@@ -132,9 +132,13 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         return new OutputStreamAppenderBuilder();
     }
 
-    private OutputStreamAppender(final String name, final Layout layout, final Filter filter,
-                                 final OutputStreamManager manager, final boolean ignoreExceptions, final Property[] properties) {
+    private OutputStreamAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final OutputStreamManager manager,
+            final boolean ignoreExceptions,
+            final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, null, manager);
     }
-
 }

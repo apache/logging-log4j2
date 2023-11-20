@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -50,8 +49,8 @@ public final class MaxLengthConverter extends LogEventPatternConverter {
      */
     public static MaxLengthConverter newInstance(final Configuration config, final String[] options) {
         if (options.length != 2) {
-            LOGGER.error("Incorrect number of options on maxLength: expected 2 received {}: {}", options.length,
-                options);
+            LOGGER.error(
+                    "Incorrect number of options on maxLength: expected 2 received {}: {}", options.length, options);
             return null;
         }
         if (options[0] == null) {
@@ -66,7 +65,6 @@ public final class MaxLengthConverter extends LogEventPatternConverter {
         final List<PatternFormatter> formatters = parser.parse(options[0]);
         return new MaxLengthConverter(formatters, AbstractAppender.parseInt(options[1], 100));
     }
-
 
     private final List<PatternFormatter> formatters;
     private final int maxLength;
@@ -84,20 +82,19 @@ public final class MaxLengthConverter extends LogEventPatternConverter {
         LOGGER.trace("new MaxLengthConverter with {}", maxLength);
     }
 
-
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final int initialLength = toAppendTo.length();
         for (int i = 0; i < formatters.size(); i++) {
             final PatternFormatter formatter = formatters.get(i);
             formatter.format(event, toAppendTo);
-            if (toAppendTo.length() > initialLength + maxLength) {        // stop early
+            if (toAppendTo.length() > initialLength + maxLength) { // stop early
                 break;
             }
         }
         if (toAppendTo.length() > initialLength + maxLength) {
             toAppendTo.setLength(initialLength + maxLength);
-            if (maxLength > 20) {        // only append ellipses if length is not very short
+            if (maxLength > 20) { // only append ellipses if length is not very short
                 toAppendTo.append("...");
             }
         }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util.internal;
 
 import java.io.File;
 import java.net.URI;
-
 import org.apache.logging.log4j.core.util.Source;
 
 /**

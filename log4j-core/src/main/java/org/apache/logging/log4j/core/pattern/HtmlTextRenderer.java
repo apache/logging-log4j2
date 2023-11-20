@@ -34,5 +34,4 @@ public final class HtmlTextRenderer implements TextRenderer {
     public void render(final StringBuilder input, final StringBuilder output) {
         // TODO Auto-generated method stub
     }
-
 }

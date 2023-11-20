@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MutableThreadContextStackTest {
 
@@ -202,7 +201,7 @@ public class MutableThreadContextStackTest {
     public void testToArray() {
         final MutableThreadContextStack stack = createStack();
 
-        final String[] expecteds = { "msg1", "msg2", "msg3" };
+        final String[] expecteds = {"msg1", "msg2", "msg3"};
         assertArrayEquals(expecteds, stack.toArray());
     }
 
@@ -210,7 +209,7 @@ public class MutableThreadContextStackTest {
     public void testToArrayTArray() {
         final MutableThreadContextStack stack = createStack();
 
-        final String[] expecteds = { "msg1", "msg2", "msg3" };
+        final String[] expecteds = {"msg1", "msg2", "msg3"};
         final String[] result = new String[3];
         assertArrayEquals(expecteds, stack.toArray(result));
         assertSame(result, stack.toArray(result));

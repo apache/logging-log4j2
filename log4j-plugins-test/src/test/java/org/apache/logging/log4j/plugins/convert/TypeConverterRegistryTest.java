@@ -16,32 +16,29 @@
  */
 package org.apache.logging.log4j.plugins.convert;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 
 class TypeConverterRegistryTest {
 
     public static final class CustomTestClass1 {
 
         private CustomTestClass1() {}
-
     }
 
     @TypeConverters
     @Plugin
-    public static final class CustomTestClass1Converter1
-            implements TypeConverter<CustomTestClass1> {
+    public static final class CustomTestClass1Converter1 implements TypeConverter<CustomTestClass1> {
 
         @Override
         public CustomTestClass1 convert(final String ignored) {
             return new CustomTestClass1();
         }
-
     }
 
     @SuppressWarnings("ComparableType")
@@ -60,51 +57,44 @@ class TypeConverterRegistryTest {
         public int compareTo(@SuppressWarnings("NullableProblems") final TypeConverter<?> converter) {
             return -1;
         }
-
     }
 
     @Test
     public void testMultipleComparableConverters() {
-        final TypeConverter<CustomTestClass1> typeConverter = DI.createInitializedFactory()
-                .getTypeConverter(CustomTestClass1.class);
+        final TypeConverter<CustomTestClass1> typeConverter =
+                DI.createInitializedFactory().getTypeConverter(CustomTestClass1.class);
         assertThat(typeConverter, instanceOf(CustomTestClass1Converter2.class));
     }
 
     public static final class CustomTestClass2 {
 
         private CustomTestClass2() {}
-
     }
 
     @TypeConverters
     @Plugin
-    public static final class CustomTestClass2Converter1
-            implements TypeConverter<CustomTestClass2> {
+    public static final class CustomTestClass2Converter1 implements TypeConverter<CustomTestClass2> {
 
         @Override
         public CustomTestClass2 convert(final String ignored) {
             return new CustomTestClass2();
         }
-
     }
 
     @TypeConverters
     @Plugin
-    public static final class CustomTestClass2Converter2
-            implements TypeConverter<CustomTestClass2> {
+    public static final class CustomTestClass2Converter2 implements TypeConverter<CustomTestClass2> {
 
         @Override
         public CustomTestClass2 convert(final String ignored) {
             return new CustomTestClass2();
         }
-
     }
 
     @Test
     public void testMultipleIncomparableConverters() {
-        final TypeConverter<CustomTestClass2> typeConverter = DI.createInitializedFactory()
-                .getTypeConverter(CustomTestClass2.class);
+        final TypeConverter<CustomTestClass2> typeConverter =
+                DI.createInitializedFactory().getTypeConverter(CustomTestClass2.class);
         assertThat(typeConverter, instanceOf(CustomTestClass2Converter1.class));
     }
-
 }

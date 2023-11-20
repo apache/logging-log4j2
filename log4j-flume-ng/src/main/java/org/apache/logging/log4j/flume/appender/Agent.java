@@ -74,8 +74,7 @@ public final class Agent {
      * @return The Agent.
      */
     @PluginFactory
-    public static Agent createAgent(@PluginAttribute("host") String host,
-            @PluginAttribute("port") final String port) {
+    public static Agent createAgent(@PluginAttribute("host") String host, @PluginAttribute("port") final String port) {
         if (host == null) {
             host = DEFAULT_HOST;
         }

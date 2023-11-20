@@ -16,25 +16,27 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import java.util.Properties;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.Properties;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 public class SslConfigurationFactoryTest {
 
     private static void addKeystoreConfiguration(final Properties props) {
-        props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_KEY_STORE_LOCATION, TestConstants.KEYSTORE_FILE_RESOURCE);
+        props.setProperty(
+                Log4jPropertyKey.Constant.TRANSPORT_SECURITY_KEY_STORE_LOCATION, TestConstants.KEYSTORE_FILE_RESOURCE);
         props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_KEY_STORE_TYPE, TestConstants.KEYSTORE_TYPE);
     }
 
     private static void addTruststoreConfiguration(final Properties props) {
-        props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_TRUST_STORE_LOCATION, TestConstants.TRUSTSTORE_FILE_RESOURCE);
+        props.setProperty(
+                Log4jPropertyKey.Constant.TRANSPORT_SECURITY_TRUST_STORE_LOCATION,
+                TestConstants.TRUSTSTORE_FILE_RESOURCE);
         props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_TRUST_STORE_TYPE, TestConstants.TRUSTSTORE_TYPE);
     }
 

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.apache.logging.log4j.core.appender.routing.RoutingAppender.STATIC_VARIABLES_KEY;
+
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -33,8 +34,6 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import static org.apache.logging.log4j.core.appender.routing.RoutingAppender.STATIC_VARIABLES_KEY;
 
 /**
  * Contains the individual Route elements.
@@ -125,7 +124,6 @@ public final class Routes {
             this.routes = routes;
             return this;
         }
-
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -144,7 +142,11 @@ public final class Routes {
     // TODO Why not make this a Map or add a Map.
     private final Route[] routes;
 
-    private Routes(final Configuration configuration, final Script patternScript, final String pattern, final Route... routes) {
+    private Routes(
+            final Configuration configuration,
+            final Script patternScript,
+            final String pattern,
+            final Route... routes) {
         this.configuration = configuration;
         this.patternScript = patternScript;
         this.pattern = pattern;
@@ -208,7 +210,5 @@ public final class Routes {
         }
         sb.append('}');
         return sb.toString();
-
     }
-
 }

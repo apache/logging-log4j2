@@ -32,5 +32,4 @@ public class ContextDataAsEntryListXmlSerializer extends ContextDataAsEntryListS
     protected MapEntry[] createMapEntryArray(final int size) {
         return new XmlMapEntry[size];
     }
-
 }

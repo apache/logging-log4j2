@@ -18,7 +18,6 @@ package org.apache.logging.log4j.perf.jmh;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -45,10 +44,9 @@ public class ParameterizedMessageInliningBenchmark {
     private static final char DELIM_START = '{';
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
-    private static final String[] ARGS = { "arg1", "arg2" };
+    private static final String[] ARGS = {"arg1", "arg2"};
 
-    public static void main(final String[] args) {
-    }
+    public static void main(final String[] args) {}
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
@@ -77,6 +75,7 @@ public class ParameterizedMessageInliningBenchmark {
     public String format0_inlined2() {
         return format0_inlined2("pattern {} with {} two parameters and some text", ARGS);
     }
+
     public static String format(final String messagePattern, final Object[] arguments) {
         if (messagePattern == null || arguments == null || arguments.length == 0) {
             return messagePattern;
@@ -90,7 +89,8 @@ public class ParameterizedMessageInliningBenchmark {
             if (curChar == ESCAPE_CHAR) {
                 escapeCounter++;
             } else {
-                if (curChar == DELIM_START && i < messagePattern.length() - 1
+                if (curChar == DELIM_START
+                        && i < messagePattern.length() - 1
                         && messagePattern.charAt(i + 1) == DELIM_STOP) {
                     // write escaped escape chars
                     final int escapedEscapes = escapeCounter / 2;
@@ -191,7 +191,9 @@ public class ParameterizedMessageInliningBenchmark {
     // 33 bytes
     public static String format0_inlined2(final String messagePattern, final String[] arguments) {
         int len = 0;
-        if (messagePattern == null || (len = messagePattern.length()) == 0 || arguments == null
+        if (messagePattern == null
+                || (len = messagePattern.length()) == 0
+                || arguments == null
                 || arguments.length == 0) {
             return messagePattern;
         }
@@ -254,8 +256,13 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 28 bytes
-    private static int format0_handleMaybeLastChar(final String messagePattern, final int len, final char[] result,
-            int pos, final int escapeCounter, final int i) {
+    private static int format0_handleMaybeLastChar(
+            final String messagePattern,
+            final int len,
+            final char[] result,
+            int pos,
+            final int escapeCounter,
+            final int i) {
         if (i == len - 1) {
             final char curChar = messagePattern.charAt(i);
             pos = format0_handleLastChar(result, pos, escapeCounter, curChar);
@@ -264,7 +271,8 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 28 bytes
-    private static int format0_handleLastChar(final char[] result, int pos, final int escapeCounter, final char curChar) {
+    private static int format0_handleLastChar(
+            final char[] result, int pos, final int escapeCounter, final char curChar) {
         if (curChar == ESCAPE_CHAR) {
             pos = format0_writeUnescapedEscapeChars(escapeCounter + 1, result, pos);
         } else {
@@ -274,7 +282,8 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 16 bytes
-    private static int format0_handleLiteralChar(final char[] result, int pos, final int escapeCounter, final char curChar) {
+    private static int format0_handleLiteralChar(
+            final char[] result, int pos, final int escapeCounter, final char curChar) {
         // any other char beside ESCAPE or DELIM_START/STOP-combo
         // write unescaped escape chars
         pos = format0_writeUnescapedEscapeChars(escapeCounter, result, pos);
@@ -313,7 +322,8 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 25 bytes
-    private static int format0_appendArg(final String[] arguments, final int currentArgument, final char[] result, int pos) {
+    private static int format0_appendArg(
+            final String[] arguments, final int currentArgument, final char[] result, int pos) {
         if (currentArgument < arguments.length) {
             pos = format0_appendArg0(arguments, currentArgument, result, pos);
         } else {
@@ -323,7 +333,8 @@ public class ParameterizedMessageInliningBenchmark {
     }
 
     // 27 bytes
-    private static int format0_appendArg0(final String[] arguments, final int currentArgument, final char[] result, final int pos) {
+    private static int format0_appendArg0(
+            final String[] arguments, final int currentArgument, final char[] result, final int pos) {
         final String arg = arguments[currentArgument];
         final int argLen = arg.length();
         arg.getChars(0, argLen, result, pos);

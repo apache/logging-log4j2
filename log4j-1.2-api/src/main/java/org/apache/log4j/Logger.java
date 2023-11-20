@@ -68,6 +68,4 @@ public class Logger extends Category {
     public void trace(final Object message, final Throwable t) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, t);
     }
-
-
 }

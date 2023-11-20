@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.internal.util;
 import java.util.Collection;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.apache.logging.log4j.plugins.di.Binding;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.util.Cast;

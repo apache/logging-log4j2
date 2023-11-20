@@ -16,9 +16,17 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.lang.reflect.Field;
 import java.util.Base64;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -35,15 +43,6 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class Log4jLogEventTest {
 
     private static final Base64.Decoder decoder = Base64.getDecoder();
@@ -56,7 +55,9 @@ public class Log4jLogEventTest {
 
     @Test
     public void testToImmutableNotSame() {
-        final LogEvent logEvent = new Log4jLogEvent.Builder().setMessage(new ReusableObjectMessage()).build();
+        final LogEvent logEvent = new Log4jLogEvent.Builder()
+                .setMessage(new ReusableObjectMessage())
+                .build();
         final LogEvent immutable = logEvent.toImmutable();
         assertSame(logEvent, immutable);
         assertFalse(immutable.getMessage() instanceof ReusableMessage);
@@ -65,13 +66,15 @@ public class Log4jLogEventTest {
     @Test
     public void testNullLevelReplacedWithOFF() throws Exception {
         final Level NULL_LEVEL = null;
-        final Log4jLogEvent evt = Log4jLogEvent.newBuilder().setLevel(NULL_LEVEL).build();
+        final Log4jLogEvent evt =
+                Log4jLogEvent.newBuilder().setLevel(NULL_LEVEL).build();
         assertEquals(Level.OFF, evt.getLevel());
     }
 
     @Test
     public void testTimestampGeneratedByClock() {
-        final LogEvent evt = Log4jLogEvent.newBuilder().setClock(new FixedTimeClock()).build();
+        final LogEvent evt =
+                Log4jLogEvent.newBuilder().setClock(new FixedTimeClock()).build();
         assertEquals(FixedTimeClock.FIXED_TIME, evt.getTimeMillis());
     }
 
@@ -190,7 +193,7 @@ public class Log4jLogEventTest {
         event.setContextStack(contextStack);
         event.setEndOfBatch(true);
         event.setIncludeLocation(true);
-        //event.setSource(stackTraceElement); // cannot be explicitly set
+        // event.setSource(stackTraceElement); // cannot be explicitly set
         event.setLevel(Level.FATAL);
         event.setLoggerFqcn(fqcn);
         event.setLoggerName(name);
@@ -211,7 +214,7 @@ public class Log4jLogEventTest {
         assertSame(marker, event.getMarker());
         assertSame(message, event.getMessage());
         assertEquals(1234567890L, event.getNanoTime());
-        //assertSame(stackTraceElement, event.getSource()); // don't invoke
+        // assertSame(stackTraceElement, event.getSource()); // don't invoke
         assertSame(threadName, event.getThreadName());
         assertSame(exception, event.getThrown());
         assertEquals(987654321L, event.getTimeMillis());
@@ -227,7 +230,7 @@ public class Log4jLogEventTest {
         assertSame(marker, e2.getMarker());
         assertSame(message, e2.getMessage());
         assertEquals(1234567890L, e2.getNanoTime());
-        //assertSame(stackTraceElement, e2.getSource()); // don't invoke
+        // assertSame(stackTraceElement, e2.getSource()); // don't invoke
         assertSame(threadName, e2.getThreadName());
         assertSame(exception, e2.getThrown());
         assertEquals(987654321L, e2.getTimeMillis());
@@ -323,13 +326,17 @@ public class Log4jLogEventTest {
         different("null fqcn", builder(event).setLoggerFqcn(null), event);
 
         different("different name", builder(event).setLoggerName("different"), event);
-        assertThrows(NullPointerException.class, () -> different("null name", builder(event).setLoggerName(null), event));
+        assertThrows(
+                NullPointerException.class,
+                () -> different("null name", builder(event).setLoggerName(null), event));
 
         different("different marker", builder(event).setMarker(MarkerManager.getMarker("different")), event);
         different("null marker", builder(event).setMarker(null), event);
 
         different("different message", builder(event).setMessage(new ObjectMessage("different")), event);
-        assertThrows(NullPointerException.class, () -> different("null message", builder(event).setMessage(null), event));
+        assertThrows(
+                NullPointerException.class,
+                () -> different("null message", builder(event).setMessage(null), event));
 
         different("different nanoTime", builder(event).setNanoTime(135), event);
         different("different milliTime", builder(event).setTimeMillis(137), event);

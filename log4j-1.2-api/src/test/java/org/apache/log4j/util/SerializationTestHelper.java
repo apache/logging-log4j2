@@ -16,6 +16,9 @@
  */
 package org.apache.log4j.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,11 +26,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import org.apache.commons.io.FileUtils;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Utiities for serialization tests.
@@ -42,7 +41,8 @@ public final class SerializationTestHelper {
      * @param endCompare position to stop comparison.
      * @throws Exception thrown on IO or serialization exception.
      */
-    public static void assertSerializationEquals(final String witness, final Object obj, final int[] skip, final int endCompare) throws Exception {
+    public static void assertSerializationEquals(
+            final String witness, final Object obj, final int[] skip, final int endCompare) throws Exception {
         final ByteArrayOutputStream memOut = new ByteArrayOutputStream();
         try (final ObjectOutputStream objOut = new ObjectOutputStream(memOut)) {
             objOut.writeObject(obj);
@@ -60,7 +60,8 @@ public final class SerializationTestHelper {
      * @param endCompare position to stop comparison.
      * @throws IOException thrown on IO or serialization exception.
      */
-    public static void assertStreamEquals(final String witness, final byte[] actual, final int[] skip, final int endCompare) throws IOException {
+    public static void assertStreamEquals(
+            final String witness, final byte[] actual, final int[] skip, final int endCompare) throws IOException {
         final File witnessFile = new File(witness);
 
         if (witnessFile.exists()) {
@@ -130,6 +131,5 @@ public final class SerializationTestHelper {
     /**
      * Private constructor.
      */
-    private SerializationTestHelper() {
-    }
+    private SerializationTestHelper() {}
 }

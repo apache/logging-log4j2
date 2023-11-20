@@ -19,11 +19,11 @@ package org.apache.logging.log4j.plugins.name;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.util.Strings;
 
-public class NamedQualifierNameProvider implements AnnotatedElementNameProvider<Named>, AnnotatedElementAliasesProvider<Named> {
+public class NamedQualifierNameProvider
+        implements AnnotatedElementNameProvider<Named>, AnnotatedElementAliasesProvider<Named> {
     @Override
     public Optional<String> getSpecifiedName(final Named annotation) {
         final String[] names = annotation.value();

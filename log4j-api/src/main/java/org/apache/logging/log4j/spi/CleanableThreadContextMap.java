@@ -25,5 +25,4 @@ package org.apache.logging.log4j.spi;
  * @deprecated use {@link ThreadContextMap} directly
  */
 @Deprecated(since = "3.0.0")
-public interface CleanableThreadContextMap extends ThreadContextMap2 {
-}
+public interface CleanableThreadContextMap extends ThreadContextMap2 {}

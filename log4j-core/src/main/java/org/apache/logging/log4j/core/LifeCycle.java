@@ -77,5 +77,4 @@ public interface LifeCycle {
      * @since 2.7
      */
     boolean stop(long timeout, TimeUnit timeUnit);
-
 }

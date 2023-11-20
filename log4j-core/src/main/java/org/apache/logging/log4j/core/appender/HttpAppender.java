@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -32,7 +31,6 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
 
 /**
  * Sends log events over HTTP.
@@ -72,9 +70,19 @@ public final class HttpAppender extends AbstractAppender {
 
         @Override
         public HttpAppender build() {
-            final HttpManager httpManager = new HttpURLConnectionManager(getConfiguration(), getConfiguration().getLoggerContext(),
-                getName(), url, method, connectTimeoutMillis, readTimeoutMillis, headers, sslConfiguration, verifyHostname);
-            return new HttpAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), httpManager, getPropertyArray());
+            final HttpManager httpManager = new HttpURLConnectionManager(
+                    getConfiguration(),
+                    getConfiguration().getLoggerContext(),
+                    getName(),
+                    url,
+                    method,
+                    connectTimeoutMillis,
+                    readTimeoutMillis,
+                    headers,
+                    sslConfiguration,
+                    verifyHostname);
+            return new HttpAppender(
+                    getName(), getLayout(), getFilter(), isIgnoreExceptions(), httpManager, getPropertyArray());
         }
 
         public URL getUrl() {
@@ -151,8 +159,13 @@ public final class HttpAppender extends AbstractAppender {
 
     private final HttpManager manager;
 
-    private HttpAppender(final String name, final Layout layout, final Filter filter,
-                         final boolean ignoreExceptions, final HttpManager manager, final Property[] properties) {
+    private HttpAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final HttpManager manager,
+            final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         Objects.requireNonNull(layout, "layout");
         this.manager = Objects.requireNonNull(manager, "manager");
@@ -184,9 +197,6 @@ public final class HttpAppender extends AbstractAppender {
 
     @Override
     public String toString() {
-        return "HttpAppender{" +
-            "name=" + getName() +
-            ", state=" + getState() +
-            '}';
+        return "HttpAppender{" + "name=" + getName() + ", state=" + getState() + '}';
     }
 }

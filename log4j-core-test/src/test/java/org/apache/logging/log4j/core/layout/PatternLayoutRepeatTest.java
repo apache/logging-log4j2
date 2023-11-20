@@ -36,5 +36,4 @@ public class PatternLayoutRepeatTest {
         final String string = listAppender.getMessages().get(0);
         Assertions.assertTrue(string.contains("##########"), "Incorrect result: " + string);
     }
-
 }

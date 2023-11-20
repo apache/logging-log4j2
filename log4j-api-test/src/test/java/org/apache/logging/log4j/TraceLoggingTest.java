@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
@@ -27,8 +29,6 @@ import org.apache.logging.log4j.message.ReusableParameterizedMessageTest;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class TraceLoggingTest extends AbstractLogger {
     static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
@@ -77,47 +77,49 @@ public class TraceLoggingTest extends AbstractLogger {
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
         return true;
-//        assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
-//        if (marker == null) {
-//            if (currentEvent.markerName != null) {
-//                fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
-//            }
-//        } else {
-//            if (currentEvent.markerName == null) {
-//                fail("Incorrect marker. Expected null. Actual is " + marker.getName());
-//            } else {
-//                assertTrue("Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
-//                    marker.getName(), currentEvent.markerName.equals(marker.getName()));
-//            }
-//        }
-//        if (data == null) {
-//            if (currentEvent.data != null) {
-//                fail("Incorrect message. Expected " + currentEvent.data + ", actual is null");
-//            }
-//        } else {
-//            if (currentEvent.data == null) {
-//                fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
-//            } else {
-//                assertTrue("Incorrect message type. Expected " + currentEvent.data + ", actual " + data,
-//                    data.getClass().isAssignableFrom(currentEvent.data.getClass()));
-//                assertTrue("Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-//                    data.getFormattedMessage(),
-//                    currentEvent.data.getFormattedMessage().equals(data.getFormattedMessage()));
-//            }
-//        }
-//        if (t == null) {
-//            if (currentEvent.t != null) {
-//                fail("Incorrect Throwable. Expected " + currentEvent.t + ", actual is null");
-//            }
-//        } else {
-//            if (currentEvent.t == null) {
-//                fail("Incorrect Throwable. Expected null. Actual is " + t);
-//            } else {
-//                assertTrue("Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t,
-//                    currentEvent.t.equals(t));
-//            }
-//        }
-//        return true;
+        //        assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level,
+        // level.equals(currentLevel));
+        //        if (marker == null) {
+        //            if (currentEvent.markerName != null) {
+        //                fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
+        //            }
+        //        } else {
+        //            if (currentEvent.markerName == null) {
+        //                fail("Incorrect marker. Expected null. Actual is " + marker.getName());
+        //            } else {
+        //                assertTrue("Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
+        //                    marker.getName(), currentEvent.markerName.equals(marker.getName()));
+        //            }
+        //        }
+        //        if (data == null) {
+        //            if (currentEvent.data != null) {
+        //                fail("Incorrect message. Expected " + currentEvent.data + ", actual is null");
+        //            }
+        //        } else {
+        //            if (currentEvent.data == null) {
+        //                fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
+        //            } else {
+        //                assertTrue("Incorrect message type. Expected " + currentEvent.data + ", actual " + data,
+        //                    data.getClass().isAssignableFrom(currentEvent.data.getClass()));
+        //                assertTrue("Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ",
+        // actual " +
+        //                    data.getFormattedMessage(),
+        //                    currentEvent.data.getFormattedMessage().equals(data.getFormattedMessage()));
+        //            }
+        //        }
+        //        if (t == null) {
+        //            if (currentEvent.t != null) {
+        //                fail("Incorrect Throwable. Expected " + currentEvent.t + ", actual is null");
+        //            }
+        //        } else {
+        //            if (currentEvent.t == null) {
+        //                fail("Incorrect Throwable. Expected null. Actual is " + t);
+        //            } else {
+        //                assertTrue("Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t,
+        //                    currentEvent.t.equals(t));
+        //            }
+        //        }
+        //        return true;
     }
 
     @Override
@@ -148,67 +150,126 @@ public class TraceLoggingTest extends AbstractLogger {
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1) {
+    public boolean isEnabled(
+            final Level level, final Marker marker, final String message, final Object p0, final Object p1) {
         return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1), null);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2), null);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3), null);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4), null);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5), null);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6), null);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7), null);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8), null);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
-        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9),
-                null);
+    public boolean isEnabled(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
+        return isEnabled(
+                level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9), null);
     }
 
     @Override
@@ -217,7 +278,8 @@ public class TraceLoggingTest extends AbstractLogger {
     }
 
     @Override
-    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message data, final Throwable t) {
+    public void logMessage(
+            final String fqcn, final Level level, final Marker marker, final Message data, final Throwable t) {
         assertEquals(level, currentLevel, "Incorrect Level. Expected " + currentLevel + ", actual " + level);
         if (marker == null) {
             if (currentEvent.markerName != null) {
@@ -227,9 +289,10 @@ public class TraceLoggingTest extends AbstractLogger {
             if (currentEvent.markerName == null) {
                 fail("Incorrect marker. Expected null. Actual is " + marker.getName());
             } else {
-                assertEquals(currentEvent.markerName, marker.getName(),
-                        "Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
-                                marker.getName());
+                assertEquals(
+                        currentEvent.markerName,
+                        marker.getName(),
+                        "Incorrect marker. Expected " + currentEvent.markerName + ", actual " + marker.getName());
             }
         }
         if (data == null) {
@@ -243,9 +306,11 @@ public class TraceLoggingTest extends AbstractLogger {
                 assertTrue(
                         data.getClass().isAssignableFrom(currentEvent.data.getClass()),
                         "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
-                assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
-                        "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                                data.getFormattedMessage());
+                assertEquals(
+                        currentEvent.data.getFormattedMessage(),
+                        data.getFormattedMessage(),
+                        "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual "
+                                + data.getFormattedMessage());
             }
         }
         if (t == null) {
@@ -270,8 +335,8 @@ public class TraceLoggingTest extends AbstractLogger {
         currentEvent = new LogEvent(ENTRY_MARKER.getName(), fact.newEntryMessage(paramMsg), null);
         final EntryMessage entry = traceEntry("Tracy {}", "Logan");
 
-        final ReusableParameterizedMessage msg = ReusableParameterizedMessageTest.set(
-                new ReusableParameterizedMessage(), "Tracy {}", "Logan");
+        final ReusableParameterizedMessage msg =
+                ReusableParameterizedMessageTest.set(new ReusableParameterizedMessage(), "Tracy {}", "Logan");
         ReusableParameterizedMessageTest.set(msg, "Some other message {}", 123);
         currentEvent = new LogEvent(null, msg, null);
         trace("Some other message {}", 123);
@@ -294,8 +359,8 @@ public class TraceLoggingTest extends AbstractLogger {
         final ParameterizedMessage paramMsg = new ParameterizedMessage("Tracy {}", "Logan");
         currentEvent = new LogEvent(ENTRY_MARKER.getName(), fact.newEntryMessage(paramMsg), null);
 
-        final ReusableParameterizedMessage msg = ReusableParameterizedMessageTest.set(
-                new ReusableParameterizedMessage(), "Tracy {}", "Logan");
+        final ReusableParameterizedMessage msg =
+                ReusableParameterizedMessageTest.set(new ReusableParameterizedMessage(), "Tracy {}", "Logan");
         final EntryMessage entry = traceEntry(msg);
 
         ReusableParameterizedMessageTest.set(msg, "Some other message {}", 123);

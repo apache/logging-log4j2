@@ -34,8 +34,7 @@ public final class ServiceLoaderUtil {
 
     private static final int MAX_BROKEN_SERVICES = 8;
 
-    private ServiceLoaderUtil() {
-    }
+    private ServiceLoaderUtil() {}
 
     public static <S> Stream<S> safeStream(final ServiceLoader<S> serviceLoader) {
         final Set<Class<?>> classes = new HashSet<>();
@@ -66,7 +65,8 @@ public final class ServiceLoaderUtil {
                 } catch (final ServiceConfigurationError | LinkageError e) {
                     LowLevelLogUtil.logException("Unable to load implementation for " + serviceName, e);
                 } catch (final Throwable e) {
-                    LowLevelLogUtil.logException("Unexpected exception while loading implementation for " + serviceName, e);
+                    LowLevelLogUtil.logException(
+                            "Unexpected exception while loading implementation for " + serviceName, e);
                     throw e;
                 }
             }

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.io;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.CharBuffer;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,8 +52,8 @@ public class LoggerReaderCallerInfoTest extends IoBuilderCallerInfoTesting {
     public void setupReader() {
         final Reader srcReader = new StringReader("a\nb\nc\nd\ne");
         this.logReader = IoBuilder.forLogger(getLogger())
-            .filter(srcReader)
-            .setLevel(LEVEL)
-            .buildReader();
+                .filter(srcReader)
+                .setLevel(LEVEL)
+                .buildReader();
     }
 }

@@ -22,20 +22,20 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
-
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
-@SetTestProperty(key = "LoggerContext.selector", value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+@SetTestProperty(
+        key = "LoggerContext.selector",
+        value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
 @SetTestProperty(key = "AsyncLogger.ringBufferSize", value = "128")
 public class QueueFullAsyncLoggerTest extends QueueFullAbstractTest {
 
     @Override
     @Test
     @LoggerContextSource
-    protected void testNormalQueueFullKeepsMessagesInOrder(final LoggerContext ctx,
-                                                           final @Named(APPENDER_NAME) BlockingAppender blockingAppender)
-            throws Exception {
+    protected void testNormalQueueFullKeepsMessagesInOrder(
+            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
         super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
     }
 

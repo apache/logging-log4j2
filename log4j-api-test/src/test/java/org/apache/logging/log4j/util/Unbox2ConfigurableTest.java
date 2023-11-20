@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.junit.jupiter.api.AfterAll;
@@ -26,8 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests that the Unbox ring buffer size is configurable.
@@ -45,7 +44,7 @@ public class Unbox2ConfigurableTest {
         // make non-private
         final Field field = FieldUtils.getDeclaredField(Unbox.class, "RINGBUFFER_SIZE", true);
         // make non-final
-        FieldUtils.writeDeclaredField(field, "modifiers", field.getModifiers() &~ Modifier.FINAL);
+        FieldUtils.writeDeclaredField(field, "modifiers", field.getModifiers() & ~Modifier.FINAL);
 
         field.set(null, 32); // reset to default
 
@@ -76,9 +75,9 @@ public class Unbox2ConfigurableTest {
             probe[i++] = Unbox.box(Short.MAX_VALUE);
         }
         for (int i = 0; i < probe.length - MAX; i++) {
-            assertSame(probe[i], probe[i + MAX], "probe[" + i +"], probe[" + (i + MAX) +"]");
+            assertSame(probe[i], probe[i + MAX], "probe[" + i + "], probe[" + (i + MAX) + "]");
             for (int j = 1; j < MAX - 1; j++) {
-                assertNotSame(probe[i], probe[i + j], "probe[" + i +"], probe[" + (i + j) +"]");
+                assertNotSame(probe[i], probe[i + j], "probe[" + i + "], probe[" + (i + j) + "]");
             }
         }
     }

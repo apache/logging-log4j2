@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.io;
 
 import java.nio.CharBuffer;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -73,14 +72,14 @@ public class CharStreamLogger {
                 for (int pos = off; pos < end; pos++) {
                     final char c = str.charAt(pos);
                     switch (c) {
-                    case '\r':
-                    case '\n':
-                        this.msg.append(str, start, pos);
-                        start = pos + 1;
-                        if (c == '\n') {
-                            log(fqcn);
-                        }
-                        break;
+                        case '\r':
+                        case '\n':
+                            this.msg.append(str, start, pos);
+                            start = pos + 1;
+                            if (c == '\n') {
+                                log(fqcn);
+                            }
+                            break;
                     }
                 }
                 this.msg.append(str, start, end);
@@ -97,13 +96,13 @@ public class CharStreamLogger {
                     return;
                 }
                 switch (c) {
-                case '\n':
-                    log(fqcn);
-                    break;
-                case '\r':
-                    break;
-                default:
-                    this.msg.append((char) c);
+                    case '\n':
+                        log(fqcn);
+                        break;
+                    case '\r':
+                        break;
+                    default:
+                        this.msg.append((char) c);
                 }
             }
         } else {

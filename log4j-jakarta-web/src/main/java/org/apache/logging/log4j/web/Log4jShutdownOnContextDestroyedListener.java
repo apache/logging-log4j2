@@ -16,17 +16,15 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.util.concurrent.TimeUnit;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 public class Log4jShutdownOnContextDestroyedListener implements ServletContextListener {
 
@@ -43,12 +41,11 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
-        LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() +
-                " ensuring that Log4j started up properly.");
+        LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName()
+                + " ensuring that Log4j started up properly.");
         servletContext = event.getServletContext();
         if (null == servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)) {
-            throw new IllegalStateException(
-                    "Context did not contain required Log4jWebLifeCycle in the "
+            throw new IllegalStateException("Context did not contain required Log4jWebLifeCycle in the "
                     + Log4jWebSupport.SUPPORT_ATTRIBUTE + " attribute.");
         }
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
@@ -60,16 +57,17 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
             LOGGER.warn("Context destroyed before it was initialized.");
             return;
         }
-        LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() +
-                " ensuring that Log4j shuts down properly.");
+        LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName()
+                + " ensuring that Log4j shuts down properly.");
 
         this.initializer.clearLoggerContext(); // the application is finished
         // shutting down now
         final String stopTimeoutStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT);
-        final long stopTimeout = Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT
-                : Long.parseLong(stopTimeoutStr);
+        final long stopTimeout =
+                Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT : Long.parseLong(stopTimeoutStr);
         final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
-        final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
+        final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr)
+                ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
                 : TimeUnit.valueOf(toRootUpperCase(timeoutTimeUnitStr));
         this.initializer.stop(stopTimeout, timeoutTimeUnit);
     }

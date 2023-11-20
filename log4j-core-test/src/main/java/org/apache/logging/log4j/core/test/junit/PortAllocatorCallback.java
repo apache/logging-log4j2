@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -29,9 +28,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 class PortAllocatorCallback implements BeforeEachCallback, AfterEachCallback, BeforeAllCallback, AfterAllCallback {
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
-        AnnotationSupport.findAnnotation(context.getTestClass(), AllocatePorts.class)
-                .map(AllocatePorts::value)
-                .stream()
+        AnnotationSupport.findAnnotation(context.getTestClass(), AllocatePorts.class).map(AllocatePorts::value).stream()
                 .flatMap(Stream::of)
                 .forEach(PortAllocatorCallback::setSystemPropertyToAllocatedPort);
     }
@@ -56,9 +53,7 @@ class PortAllocatorCallback implements BeforeEachCallback, AfterEachCallback, Be
 
     @Override
     public void afterAll(final ExtensionContext context) throws Exception {
-        AnnotationSupport.findAnnotation(context.getTestClass(), AllocatePorts.class)
-                .map(AllocatePorts::value)
-                .stream()
+        AnnotationSupport.findAnnotation(context.getTestClass(), AllocatePorts.class).map(AllocatePorts::value).stream()
                 .flatMap(Stream::of)
                 .forEach(System::clearProperty);
     }

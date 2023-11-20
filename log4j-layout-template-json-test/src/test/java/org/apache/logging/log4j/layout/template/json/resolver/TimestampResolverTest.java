@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.Logger;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 
 class TimestampResolverTest {
 
@@ -35,9 +34,7 @@ class TimestampResolverTest {
     void epoch_nanos_should_not_overlap() {
 
         // Create the template.
-        final Object eventTemplate = asMap(
-                "$resolver", "timestamp",
-                "epoch", asMap("unit", "nanos"));
+        final Object eventTemplate = asMap("$resolver", "timestamp", "epoch", asMap("unit", "nanos"));
 
         // Create the logging context.
         withContextFromTemplate("TimestampResolverTest", eventTemplate, (loggerContext, appender) -> {
@@ -53,9 +50,7 @@ class TimestampResolverTest {
             }
 
             // Read logged events.
-            final List<Long> logEvents = appender
-                    .getData()
-                    .stream()
+            final List<Long> logEvents = appender.getData().stream()
                     .map(jsonBytes -> {
                         final String json = new String(jsonBytes, StandardCharsets.UTF_8);
                         return (long) readJson(json);
@@ -63,13 +58,7 @@ class TimestampResolverTest {
                     .collect(Collectors.toList());
 
             // Verify logged events.
-            Assertions
-                    .assertThat(logEvents)
-                    .hasSize(logEventCount)
-                    .doesNotHaveDuplicates();
-
+            Assertions.assertThat(logEvents).hasSize(logEventCount).doesNotHaveDuplicates();
         });
-
     }
-
 }

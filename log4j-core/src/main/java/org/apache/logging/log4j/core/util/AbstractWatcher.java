@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 
@@ -35,15 +34,17 @@ public abstract class AbstractWatcher implements Watcher {
     private final Configuration configuration;
     private Source source;
 
-    public AbstractWatcher(final Configuration configuration, final Reconfigurable reconfigurable,
-                           final List<Consumer<Reconfigurable>> reconfigurableListeners) {
+    public AbstractWatcher(
+            final Configuration configuration,
+            final Reconfigurable reconfigurable,
+            final List<Consumer<Reconfigurable>> reconfigurableListeners) {
         this.configuration = configuration;
         this.reconfigurable = reconfigurable;
         this.reconfigurableListeners = reconfigurableListeners;
-        this.executor =
-                reconfigurableListeners != null
-                        ? Executors.newCachedThreadPool(Log4jThreadFactory.createDaemonThreadFactory("ConfigurationFileWatcher"))
-                        : null;
+        this.executor = reconfigurableListeners != null
+                ? Executors.newCachedThreadPool(
+                        Log4jThreadFactory.createDaemonThreadFactory("ConfigurationFileWatcher"))
+                : null;
     }
 
     @Override
@@ -75,5 +76,4 @@ public abstract class AbstractWatcher implements Watcher {
     public Source getSource() {
         return source;
     }
-
 }

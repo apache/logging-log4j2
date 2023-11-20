@@ -18,7 +18,6 @@ package org.apache.log4j.rewrite;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.log4j.bridge.LogEventAdapter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
@@ -54,11 +53,10 @@ public class MapRewritePolicy implements RewritePolicy {
     public LoggingEvent rewrite(final LoggingEvent source) {
         final Object msg = source.getMessage();
         if (msg instanceof MapMessage || msg instanceof Map) {
-            final Map<String, String> props = source.getProperties() != null ? new HashMap<>(source.getProperties())
-            : new HashMap<>();
+            final Map<String, String> props =
+                    source.getProperties() != null ? new HashMap<>(source.getProperties()) : new HashMap<>();
             @SuppressWarnings("unchecked")
-            final
-            Map<String, Object> eventProps = msg instanceof Map ? (Map) msg : ((MapMessage) msg).getData();
+            final Map<String, Object> eventProps = msg instanceof Map ? (Map) msg : ((MapMessage) msg).getData();
             //
             //   if the map sent in the logging request
             //      has "message" entry, use that as the message body
@@ -85,8 +83,11 @@ public class MapRewritePolicy implements RewritePolicy {
                         .build();
             } else {
                 final LocationInfo info = source.getLocationInformation();
-                final StackTraceElement element = new StackTraceElement(info.getClassName(), info.getMethodName(),
-                info.getFileName(), Integer.parseInt(info.getLineNumber()));
+                final StackTraceElement element = new StackTraceElement(
+                        info.getClassName(),
+                        info.getMethodName(),
+                        info.getFileName(),
+                        Integer.parseInt(info.getLineNumber()));
                 final Thread thread = getThread(source.getThreadName());
                 final long threadId = thread != null ? thread.getId() : 0;
                 final int threadPriority = thread != null ? thread.getPriority() : 0;
@@ -110,7 +111,6 @@ public class MapRewritePolicy implements RewritePolicy {
             return new LogEventAdapter(event);
         }
         return source;
-
     }
 
     private Thread getThread(final String name) {

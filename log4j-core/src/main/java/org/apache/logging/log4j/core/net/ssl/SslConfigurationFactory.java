@@ -39,13 +39,18 @@ public class SslConfigurationFactory {
                 passwordChars = password.toCharArray();
             }
             try {
-                trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
+                trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(
+                        location,
+                        passwordChars,
                         props.getStringProperty(Log4jPropertyKey.TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_ENV_VAR),
                         props.getStringProperty(Log4jPropertyKey.TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_FILE),
                         props.getStringProperty(Log4jPropertyKey.TRANSPORT_SECURITY_TRUST_STORE_TYPE),
-                        props.getStringProperty(Log4jPropertyKey.TRANSPORT_SECURITY_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM));
+                        props.getStringProperty(
+                                Log4jPropertyKey.TRANSPORT_SECURITY_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM));
             } catch (final Exception ex) {
-                LOGGER.warn("Unable to create trust store configuration due to: {} {}", ex.getClass().getName(),
+                LOGGER.warn(
+                        "Unable to create trust store configuration due to: {} {}",
+                        ex.getClass().getName(),
                         ex.getMessage());
             }
         }
@@ -57,22 +62,27 @@ public class SslConfigurationFactory {
                 passwordChars = password.toCharArray();
             }
             try {
-                keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
+                keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(
+                        location,
+                        passwordChars,
                         props.getStringProperty(Log4jPropertyKey.TRANSPORT_SECURITY_KEY_STORE_PASSWORD_ENV_VAR),
                         props.getStringProperty(Log4jPropertyKey.TRANSPORT_SECURITY_KEY_STORE_PASSWORD_FILE),
                         props.getStringProperty(Log4jPropertyKey.TRANSPORT_SECURITY_KEY_STORE_TYPE),
-                        props.getStringProperty(Log4jPropertyKey.TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM));
+                        props.getStringProperty(
+                                Log4jPropertyKey.TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM));
             } catch (final Exception ex) {
-                LOGGER.warn("Unable to create key store configuration due to: {} {}", ex.getClass().getName(),
+                LOGGER.warn(
+                        "Unable to create key store configuration due to: {} {}",
+                        ex.getClass().getName(),
                         ex.getMessage());
             }
         }
         if (trustStoreConfiguration != null || keyStoreConfiguration != null) {
-            final boolean isVerifyHostName = props.getBooleanProperty(Log4jPropertyKey.TRANSPORT_SECURITY_VERIFY_HOST_NAME, false);
-            return SslConfiguration.createSSLConfiguration(null, keyStoreConfiguration,
-                    trustStoreConfiguration, isVerifyHostName);
+            final boolean isVerifyHostName =
+                    props.getBooleanProperty(Log4jPropertyKey.TRANSPORT_SECURITY_VERIFY_HOST_NAME, false);
+            return SslConfiguration.createSSLConfiguration(
+                    null, keyStoreConfiguration, trustStoreConfiguration, isVerifyHostName);
         }
         return null;
     }
-
 }

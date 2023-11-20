@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -28,8 +29,6 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "log4j2-console.xml")
@@ -46,8 +45,8 @@ public class AsyncLoggerTestArgumentFreedOnErrorTest {
         log.fatal(new ThrowingMessage(garbageCollectionLatch));
         try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
             gcHelper.run();
-            assertTrue(garbageCollectionLatch.await(30, TimeUnit.SECONDS),
-                    "Parameter should have been garbage collected");
+            assertTrue(
+                    garbageCollectionLatch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
         }
     }
 

@@ -29,7 +29,6 @@ public class Log4jMarkerTest {
     @BeforeClass
     public static void startup() {
         markerFactory = ((Log4jLoggerFactory) org.slf4j.LoggerFactory.getILoggerFactory()).getMarkerFactory();
-
     }
 
     @Test

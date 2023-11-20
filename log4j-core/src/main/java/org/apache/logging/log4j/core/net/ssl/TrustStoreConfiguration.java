@@ -19,9 +19,7 @@ package org.apache.logging.log4j.core.net.ssl;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-
 import javax.net.ssl.TrustManagerFactory;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -36,21 +34,28 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     private final String trustManagerFactoryAlgorithm;
 
-    public TrustStoreConfiguration(final String location,
-                                   final PasswordProvider passwordProvider,
-                                   final String keyStoreType,
-                                   final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
+    public TrustStoreConfiguration(
+            final String location,
+            final PasswordProvider passwordProvider,
+            final String keyStoreType,
+            final String trustManagerFactoryAlgorithm)
+            throws StoreConfigurationException {
         super(location, passwordProvider, keyStoreType);
-        this.trustManagerFactoryAlgorithm = trustManagerFactoryAlgorithm == null ? TrustManagerFactory
-                .getDefaultAlgorithm() : trustManagerFactoryAlgorithm;
+        this.trustManagerFactoryAlgorithm = trustManagerFactoryAlgorithm == null
+                ? TrustManagerFactory.getDefaultAlgorithm()
+                : trustManagerFactoryAlgorithm;
     }
 
     /**
      * @deprecated Use {@link #TrustStoreConfiguration(String, PasswordProvider, String, String)} instead
      */
     @Deprecated
-    public TrustStoreConfiguration(final String location, final char[] password, final String keyStoreType,
-            final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
+    public TrustStoreConfiguration(
+            final String location,
+            final char[] password,
+            final String keyStoreType,
+            final String trustManagerFactoryAlgorithm)
+            throws StoreConfigurationException {
         this(location, new MemoryPasswordProvider(password), keyStoreType, trustManagerFactoryAlgorithm);
         if (password != null) {
             Arrays.fill(password, '\0');
@@ -79,11 +84,13 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
             @PluginAttribute final String passwordEnvironmentVariable,
             @PluginAttribute final String passwordFile,
             @PluginAttribute("type") final String keyStoreType,
-            @PluginAttribute final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
-            // @formatter:on
+            @PluginAttribute final String trustManagerFactoryAlgorithm)
+            throws StoreConfigurationException {
+        // @formatter:on
 
         if (password != null && passwordEnvironmentVariable != null && passwordFile != null) {
-            throw new IllegalStateException("You MUST set only one of 'password', 'passwordEnvironmentVariable' or 'passwordFile'.");
+            throw new IllegalStateException(
+                    "You MUST set only one of 'password', 'passwordEnvironmentVariable' or 'passwordFile'.");
         }
         try {
             // @formatter:off
@@ -113,8 +120,8 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result
-                + ((trustManagerFactoryAlgorithm == null) ? 0 : trustManagerFactoryAlgorithm.hashCode());
+        result =
+                prime * result + ((trustManagerFactoryAlgorithm == null) ? 0 : trustManagerFactoryAlgorithm.hashCode());
         return result;
     }
 

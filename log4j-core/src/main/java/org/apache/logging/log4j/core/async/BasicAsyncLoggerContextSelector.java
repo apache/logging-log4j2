@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.net.URI;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.plugins.Inject;

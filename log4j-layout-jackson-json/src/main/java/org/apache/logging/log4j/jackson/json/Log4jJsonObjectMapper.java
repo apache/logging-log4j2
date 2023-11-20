@@ -43,9 +43,13 @@ public class Log4jJsonObjectMapper extends ObjectMapper {
      * @param stacktraceAsString true if the stack trace should be printed as a simple string.
      * @param objectMessageAsJsonObject true if the ObjectMessage should be converted to a JSON object.
      */
-    public Log4jJsonObjectMapper(final boolean encodeThreadContextAsList, final boolean includeStacktrace, final boolean stacktraceAsString, final boolean objectMessageAsJsonObject) {
-        this.registerModule(new Log4jJsonModule(encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject));
+    public Log4jJsonObjectMapper(
+            final boolean encodeThreadContextAsList,
+            final boolean includeStacktrace,
+            final boolean stacktraceAsString,
+            final boolean objectMessageAsJsonObject) {
+        this.registerModule(new Log4jJsonModule(
+                encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject));
         this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
-
 }

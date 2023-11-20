@@ -33,7 +33,7 @@ public final class ObjectArrayMessage implements Message {
 
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
-    private transient final Object[] array;
+    private final transient Object[] array;
     private transient String arrayString;
 
     /**
@@ -116,5 +116,4 @@ public final class ObjectArrayMessage implements Message {
     public String toString() {
         return getFormattedMessage();
     }
-
 }

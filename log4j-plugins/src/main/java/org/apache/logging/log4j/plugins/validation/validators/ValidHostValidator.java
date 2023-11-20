@@ -18,7 +18,6 @@ package org.apache.logging.log4j.plugins.validation.validators;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;

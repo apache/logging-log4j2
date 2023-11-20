@@ -18,13 +18,11 @@ package org.apache.logging.log4j.web;
 
 import java.util.EnumSet;
 import java.util.Set;
-
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -37,10 +35,11 @@ public class Log4jServletContainerInitializer implements ServletContainerInitial
 
     @Override
     public void onStartup(final Set<Class<?>> classes, final ServletContext servletContext) throws ServletException {
-        if (servletContext.getMajorVersion() > 2 && servletContext.getEffectiveMajorVersion() > 2 &&
-                !"true".equalsIgnoreCase(servletContext.getInitParameter(
-                        Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED
-                ))) {
+        if (servletContext.getMajorVersion() > 2
+                && servletContext.getEffectiveMajorVersion() > 2
+                && !"true"
+                        .equalsIgnoreCase(servletContext.getInitParameter(
+                                Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))) {
             final Logger LOGGER = StatusLogger.getLogger();
 
             LOGGER.debug("Log4jServletContainerInitializer starting up Log4j in Servlet 3.0+ environment.");
@@ -48,9 +47,9 @@ public class Log4jServletContainerInitializer implements ServletContainerInitial
             final FilterRegistration.Dynamic filter =
                     servletContext.addFilter("log4jServletFilter", Log4jServletFilter.class);
             if (filter == null) {
-                LOGGER.warn("WARNING: In a Servlet 3.0+ application, you should not define a " +
-                    "log4jServletFilter in web.xml. Log4j 2 normally does this for you automatically. Log4j 2 " +
-                    "web auto-initialization has been canceled.");
+                LOGGER.warn("WARNING: In a Servlet 3.0+ application, you should not define a "
+                        + "log4jServletFilter in web.xml. Log4j 2 normally does this for you automatically. Log4j 2 "
+                        + "web auto-initialization has been canceled.");
                 return;
             }
 
@@ -58,8 +57,9 @@ public class Log4jServletContainerInitializer implements ServletContainerInitial
             initializer.start();
             initializer.setLoggerContext(); // the application is just now starting to start up
 
-            if (!"true".equalsIgnoreCase(servletContext.getInitParameter(
-                    Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED))) {
+            if (!"true"
+                    .equalsIgnoreCase(
+                            servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED))) {
                 servletContext.addListener(new Log4jServletContextListener());
             }
 

@@ -16,91 +16,82 @@
  */
 package org.apache.logging.log4j.plugins.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AnnotationUtilTest {
 
     @Retention(RetentionPolicy.RUNTIME)
-    @interface MetaAnnotation {
-    }
+    @interface MetaAnnotation {}
 
     @Retention(RetentionPolicy.RUNTIME)
     @MetaAnnotation
-    @interface StereotypeAnnotation {
-    }
+    @interface StereotypeAnnotation {}
 
     @Retention(RetentionPolicy.RUNTIME)
     @StereotypeAnnotation
-    @interface AliasedStereotypeAnnotation {
-    }
+    @interface AliasedStereotypeAnnotation {}
 
     @StereotypeAnnotation
-    static class HasMetaAnnotation {
-    }
+    static class HasMetaAnnotation {}
 
     @AliasedStereotypeAnnotation
-    static class HasAliasedMetaAnnotation {
-    }
+    static class HasAliasedMetaAnnotation {}
 
     @TestFactory
     Stream<DynamicTest> isMetaAnnotationPresent() {
-        return Stream.of(HasMetaAnnotation.class, HasAliasedMetaAnnotation.class).map(clazz -> DynamicTest.dynamicTest(
-                "isMetaAnnotationPresent(" + clazz.getSimpleName() + ", MetaAnnotation.class)",
-                () -> assertTrue(AnnotationUtil.isMetaAnnotationPresent(clazz, MetaAnnotation.class))));
+        return Stream.of(HasMetaAnnotation.class, HasAliasedMetaAnnotation.class)
+                .map(clazz -> DynamicTest.dynamicTest(
+                        "isMetaAnnotationPresent(" + clazz.getSimpleName() + ", MetaAnnotation.class)",
+                        () -> assertTrue(AnnotationUtil.isMetaAnnotationPresent(clazz, MetaAnnotation.class))));
     }
 
     @TestFactory
     Stream<DynamicTest> getMetaAnnotation() {
         return Stream.of(HasMetaAnnotation.class, HasAliasedMetaAnnotation.class)
-                .map(clazz -> DynamicTest.dynamicTest("getMetaAnnotation(" + clazz.getSimpleName() + ", MetaAnnotation.class)",
-                        () -> {
-                            final Annotation annotation = AnnotationUtil.getElementAnnotationHavingMetaAnnotation(clazz, MetaAnnotation.class);
+                .map(clazz -> DynamicTest.dynamicTest(
+                        "getMetaAnnotation(" + clazz.getSimpleName() + ", MetaAnnotation.class)", () -> {
+                            final Annotation annotation = AnnotationUtil.getElementAnnotationHavingMetaAnnotation(
+                                    clazz, MetaAnnotation.class);
                             assertNotNull(annotation);
                             assertEquals(StereotypeAnnotation.class, annotation.annotationType());
                         }));
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    @interface LogicalAnnotation {
-    }
+    @interface LogicalAnnotation {}
 
     @Retention(RetentionPolicy.RUNTIME)
     @LogicalAnnotation
-    @interface AliasedAnnotation {
-    }
+    @interface AliasedAnnotation {}
 
     @Retention(RetentionPolicy.RUNTIME)
     @AliasedAnnotation
-    @interface MetaAliasedAnnotation {
-    }
+    @interface MetaAliasedAnnotation {}
 
     @LogicalAnnotation
-    static class HasLogicalAnnotation {
-    }
+    static class HasLogicalAnnotation {}
 
     @AliasedAnnotation
-    static class HasAliasedAnnotation {
-    }
+    static class HasAliasedAnnotation {}
 
     @MetaAliasedAnnotation
-    static class HasMetaAliasedAnnotation {
-    }
+    static class HasMetaAliasedAnnotation {}
 
     @TestFactory
     Stream<DynamicTest> getLogicalAnnotation() {
         return Stream.of(HasLogicalAnnotation.class, HasAliasedAnnotation.class, HasMetaAliasedAnnotation.class)
                 .map(clazz -> DynamicTest.dynamicTest(clazz.getSimpleName(), () -> {
-                    final LogicalAnnotation annotation = AnnotationUtil.getLogicalAnnotation(clazz, LogicalAnnotation.class);
+                    final LogicalAnnotation annotation =
+                            AnnotationUtil.getLogicalAnnotation(clazz, LogicalAnnotation.class);
                     assertNotNull(annotation);
                 }));
     }
@@ -112,22 +103,19 @@ class AnnotationUtilTest {
     static class FirstMethod implements AnnotatedMethod {
         @Override
         @LogicalAnnotation
-        public void method() {
-        }
+        public void method() {}
     }
 
     static class SecondMethod implements AnnotatedMethod {
         @Override
         @AliasedAnnotation
-        public void method() {
-        }
+        public void method() {}
     }
 
     static class ThirdMethod implements AnnotatedMethod {
         @Override
         @MetaAliasedAnnotation
-        public void method() {
-        }
+        public void method() {}
     }
 
     @TestFactory
@@ -135,21 +123,25 @@ class AnnotationUtilTest {
         return Stream.of(FirstMethod.class, SecondMethod.class, ThirdMethod.class)
                 .map(clazz -> DynamicTest.dynamicTest(clazz.getSimpleName(), () -> {
                     final Method method = assertDoesNotThrow(() -> clazz.getMethod("method"));
-                    final LogicalAnnotation annotation = AnnotationUtil.getLogicalAnnotation(method, LogicalAnnotation.class);
+                    final LogicalAnnotation annotation =
+                            AnnotationUtil.getLogicalAnnotation(method, LogicalAnnotation.class);
                     assertNotNull(annotation);
                 }));
     }
 
     static class HasAnnotatedField {
-        @LogicalAnnotation String field;
+        @LogicalAnnotation
+        String field;
     }
 
     static class HasAliasedAnnotatedField {
-        @AliasedAnnotation String field;
+        @AliasedAnnotation
+        String field;
     }
 
     static class HasMetaAliasedAnnotatedField {
-        @MetaAliasedAnnotation String field;
+        @MetaAliasedAnnotation
+        String field;
     }
 
     @TestFactory
@@ -157,7 +149,8 @@ class AnnotationUtilTest {
         return Stream.of(HasAnnotatedField.class, HasAliasedAnnotatedField.class, HasMetaAliasedAnnotatedField.class)
                 .map(clazz -> DynamicTest.dynamicTest(clazz.getSimpleName(), () -> {
                     final Field field = assertDoesNotThrow(() -> clazz.getDeclaredField("field"));
-                    final LogicalAnnotation annotation = AnnotationUtil.getLogicalAnnotation(field, LogicalAnnotation.class);
+                    final LogicalAnnotation annotation =
+                            AnnotationUtil.getLogicalAnnotation(field, LogicalAnnotation.class);
                     assertNotNull(annotation);
                 }));
     }

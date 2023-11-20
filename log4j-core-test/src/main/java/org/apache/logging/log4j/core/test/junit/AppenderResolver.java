@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import java.lang.reflect.Parameter;
+import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 
+import java.lang.reflect.Parameter;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.plugins.di.Keys;
@@ -26,23 +27,21 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
-
 /**
  * Resolves parameters that implement {@link Appender} and have a {@link org.apache.logging.log4j.plugins.Named}
  * value of the name of the appender.
  */
 class AppenderResolver implements ParameterResolver {
     @Override
-    public boolean supportsParameter(
-            final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
+    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
+            throws ParameterResolutionException {
         final Parameter parameter = parameterContext.getParameter();
         return Appender.class.isAssignableFrom(parameter.getType()) && Keys.hasName(parameter);
     }
 
     @Override
-    public Object resolveParameter(
-            final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
+    public Object resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
+            throws ParameterResolutionException {
         final LoggerContext loggerContext = getLoggerContext(extensionContext);
         if (loggerContext == null) {
             throw new ParameterResolutionException("No LoggerContext defined");

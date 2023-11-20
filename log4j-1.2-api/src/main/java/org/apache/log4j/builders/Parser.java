@@ -43,5 +43,4 @@ public interface Parser<T> extends Builder<T> {
      * @return parse result.
      */
     T parse(PropertiesConfiguration config);
-
 }

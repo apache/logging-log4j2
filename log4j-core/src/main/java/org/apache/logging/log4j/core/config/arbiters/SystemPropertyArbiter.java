@@ -36,7 +36,6 @@ public class SystemPropertyArbiter implements Arbiter {
         this.propertyValue = propertyValue;
     }
 
-
     /**
      * Returns true if either the property name is defined (it has any value) or the property value
      * matches the requested value.

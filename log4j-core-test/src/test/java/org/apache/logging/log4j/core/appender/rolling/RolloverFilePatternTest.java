@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.util.regex.Matcher;
-
-import org.junit.Test;
-
 import static org.junit.Assert.*;
+
+import java.util.regex.Matcher;
+import org.junit.Test;
 
 /**
  * Test getEligibleFiles method.
@@ -29,31 +28,31 @@ public class RolloverFilePatternTest {
 
     @Test
     public void testFilePatternWithoutPadding() throws Exception {
-      final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%i.log.gz");
-      assertTrue(matcher.find());
-      assertNull(matcher.group("ZEROPAD"));
-      assertNull(matcher.group("PADDING"));
+        final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%i.log.gz");
+        assertTrue(matcher.find());
+        assertNull(matcher.group("ZEROPAD"));
+        assertNull(matcher.group("PADDING"));
     }
 
     @Test
     public void testFilePatternWithSpacePadding() throws Exception {
-      final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%3i.log.gz");
-      assertTrue(matcher.find());
-      assertNull(matcher.group("ZEROPAD"));
-      assertEquals("3", matcher.group("PADDING"));
+        final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%3i.log.gz");
+        assertTrue(matcher.find());
+        assertNull(matcher.group("ZEROPAD"));
+        assertEquals("3", matcher.group("PADDING"));
     }
 
     @Test
     public void testFilePatternWithZeroPadding() throws Exception {
-      final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%03i.log.gz");
-      assertTrue(matcher.find());
-      assertEquals("0", matcher.group("ZEROPAD"));
-      assertEquals("3", matcher.group("PADDING"));
+        final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%03i.log.gz");
+        assertTrue(matcher.find());
+        assertEquals("0", matcher.group("ZEROPAD"));
+        assertEquals("3", matcher.group("PADDING"));
     }
 
     @Test
     public void testFilePatternUnmatched() throws Exception {
-      final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%n.log.gz");
-      assertFalse(matcher.find());
+        final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%n.log.gz");
+        assertFalse(matcher.find());
     }
 }

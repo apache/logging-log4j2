@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -75,14 +74,21 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             }
             final Layout layout = getOrCreateLayout();
             final boolean immediateFlush = isImmediateFlush();
-            final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(fileName, append,
-                    immediateFlush, getBufferSize(), advertiseURI, layout, null);
+            final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
+                    fileName, append, immediateFlush, getBufferSize(), advertiseURI, layout, null);
             if (manager == null) {
                 return null;
             }
 
-            return new RandomAccessFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(),
-                    immediateFlush, advertise ? getConfiguration().getAdvertiser() : null);
+            return new RandomAccessFileAppender(
+                    name,
+                    layout,
+                    getFilter(),
+                    manager,
+                    fileName,
+                    isIgnoreExceptions(),
+                    immediateFlush,
+                    advertise ? getConfiguration().getAdvertiser() : null);
         }
 
         public B setFileName(final String fileName) {
@@ -104,21 +110,25 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
-
     }
 
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private RandomAccessFileAppender(final String name, final Layout layout,
-            final Filter filter, final RandomAccessFileManager manager, final String filename,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
+    private RandomAccessFileAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final RandomAccessFileManager manager,
+            final String filename,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final Advertiser advertiser) {
 
         super(name, layout, filter, ignoreExceptions, immediateFlush, null, manager);
         if (advertiser != null) {
-            final Map<String, String> configuration = new HashMap<>(
-                    layout.getContentFormat());
+            final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
@@ -164,5 +174,4 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
-
 }

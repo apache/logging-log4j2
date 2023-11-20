@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.ByteBuffer;
-
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
 /**
@@ -71,5 +70,4 @@ public interface ByteBufferDestination {
      * @since 2.9 (see LOG4J2-1874)
      */
     void writeBytes(byte[] data, int offset, int length);
-
 }

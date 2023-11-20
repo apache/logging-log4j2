@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("NanoTimePatternConverter")
-@ConverterKeys({ "N", "nano" })
+@ConverterKeys({"N", "nano"})
 @PerformanceSensitive("allocation")
 public final class NanoTimePatternConverter extends LogEventPatternConverter {
 

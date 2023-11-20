@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,11 +30,9 @@ import java.util.Base64;
 import java.util.Enumeration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
@@ -49,11 +52,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 /**
  * Unit test for simple App.
  */
@@ -69,7 +67,6 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
     static final File targetFile = new File("target/test-classes/testConfig.json");
     static final Path target = targetFile.toPath();
     CountDownLatch updated = new CountDownLatch(1);
-
 
     @BeforeAll
     public static void startServer() throws Exception {
@@ -100,6 +97,7 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
     public static void stopServer() throws Exception {
         server.stop();
     }
+
     @AfterEach
     public void after() {
         try {
@@ -127,7 +125,8 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         final Appender app = loggerContext.getConfiguration().getAppender("List");
         assertNotNull(app);
         assertTrue(app instanceof ListAppender);
-        final MutableThreadContextMapFilter filter = (MutableThreadContextMapFilter) loggerContext.getConfiguration().getFilter();
+        final MutableThreadContextMapFilter filter =
+                (MutableThreadContextMapFilter) loggerContext.getConfiguration().getFilter();
         assertNotNull(filter);
         filter.registerListener(this);
         final Logger logger = loggerContext.getLogger("Test");
@@ -153,8 +152,8 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         private static final long serialVersionUID = -2885158530511450659L;
 
         @Override
-        protected void doGet(final HttpServletRequest request,
-                final HttpServletResponse response) throws ServletException, IOException {
+        protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
+                throws ServletException, IOException {
             final Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
             if (headers == null) {
                 response.sendError(401, "No Auth header");

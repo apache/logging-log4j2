@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.plugins.di.resolver;
 
-import java.util.List;
-
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import java.util.List;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolversPostProcessor;

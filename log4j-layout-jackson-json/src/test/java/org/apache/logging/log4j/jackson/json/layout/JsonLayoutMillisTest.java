@@ -16,8 +16,12 @@
  */
 package org.apache.logging.log4j.jackson.json.layout;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -27,11 +31,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the JsonLayout class with millis.
@@ -70,5 +69,4 @@ public class JsonLayoutMillisTest {
         assertTrue("No timestamp", json.contains("\"timeMillis\":"));
         assertFalse("Instant is present", json.contains("instant:"));
     }
-
 }

@@ -34,7 +34,8 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 @Tag("functional")
 public class AsyncLoggerUseAfterShutdownTest {
     @Test
-    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONTEXT_SELECTOR_CLASS_NAME,
+    @SetSystemProperty(
+            key = Log4jPropertyKey.Constant.CONTEXT_SELECTOR_CLASS_NAME,
             value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
     @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncLoggerTest.xml")
     public void testNoErrorIfLogAfterShutdown() throws Exception {
@@ -47,5 +48,4 @@ public class AsyncLoggerUseAfterShutdownTest {
         // before the LOG4J2-639 fix this would throw a NPE
         ((AbstractLogger) log).logMessage("com.foo.Bar", Level.INFO, null, new SimpleMessage("msg"), null);
     }
-
 }

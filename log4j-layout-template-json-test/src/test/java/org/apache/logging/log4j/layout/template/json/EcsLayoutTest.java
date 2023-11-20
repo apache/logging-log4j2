@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
+
+import co.elastic.logging.log4j2.EcsLayout;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import co.elastic.logging.log4j2.EcsLayout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -30,8 +31,6 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTem
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
 
 @Disabled("")
 class EcsLayoutTest {
@@ -44,28 +43,23 @@ class EcsLayoutTest {
 
     private static final String EVENT_DATASET = SERVICE_NAME + ".log";
 
-    private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout
-            .newBuilder()
+    private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
             .setCharset(CHARSET)
             .setEventTemplateUri("classpath:EcsLayout.json")
-            .setEventTemplateAdditionalFields(
-                    new EventTemplateAdditionalField[]{
-                            EventTemplateAdditionalField
-                                    .newBuilder()
-                                    .setKey("service.name")
-                                    .setValue(SERVICE_NAME)
-                                    .build(),
-                            EventTemplateAdditionalField
-                                    .newBuilder()
-                                    .setKey("event.dataset")
-                                    .setValue(EVENT_DATASET)
-                                    .build()
-                    })
+            .setEventTemplateAdditionalFields(new EventTemplateAdditionalField[] {
+                EventTemplateAdditionalField.newBuilder()
+                        .setKey("service.name")
+                        .setValue(SERVICE_NAME)
+                        .build(),
+                EventTemplateAdditionalField.newBuilder()
+                        .setKey("event.dataset")
+                        .setValue(EVENT_DATASET)
+                        .build()
+            })
             .build();
 
-    private static final EcsLayout ECS_LAYOUT = EcsLayout
-            .newBuilder()
+    private static final EcsLayout ECS_LAYOUT = EcsLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
             .setServiceName(SERVICE_NAME)
             .setEventDataset(EVENT_DATASET)
@@ -100,14 +94,11 @@ class EcsLayoutTest {
         Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(ecsLayoutMap);
     }
 
-    private static Map<String, Object> renderUsingJsonTemplateLayout(
-            final LogEvent logEvent) {
+    private static Map<String, Object> renderUsingJsonTemplateLayout(final LogEvent logEvent) {
         return serializeUsingLayout(logEvent, JSON_TEMPLATE_LAYOUT);
     }
 
-    private static Map<String, Object> renderUsingEcsLayout(
-            final LogEvent logEvent) {
+    private static Map<String, Object> renderUsingEcsLayout(final LogEvent logEvent) {
         return serializeUsingLayout(logEvent, ECS_LAYOUT);
     }
-
 }

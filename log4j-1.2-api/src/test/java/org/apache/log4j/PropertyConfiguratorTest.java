@@ -16,6 +16,12 @@
  */
 package org.apache.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -28,7 +34,6 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
@@ -37,12 +42,6 @@ import org.apache.log4j.spi.RootLogger;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link PropertyConfigurator}.
@@ -55,12 +54,10 @@ public class PropertyConfiguratorTest {
     public static final class FilterBasedTriggeringPolicy extends TriggeringPolicy {
         private Filter filter;
 
-        public FilterBasedTriggeringPolicy() {
-        }
+        public FilterBasedTriggeringPolicy() {}
 
         public Filter getFilter() {
             return filter;
-
         }
 
         public void setFilter(final Filter val) {
@@ -112,8 +109,7 @@ public class PropertyConfiguratorTest {
         private boolean activated = false;
         private boolean showVersion = true;
 
-        public MockThrowableRenderer() {
-        }
+        public MockThrowableRenderer() {}
 
         @Override
         public void activateOptions() {
@@ -146,17 +142,13 @@ public class PropertyConfiguratorTest {
         private TriggeringPolicy triggeringPolicy;
         private boolean append;
 
-        public RollingFileAppender() {
-
-        }
+        public RollingFileAppender() {}
 
         @Override
-        public void append(final LoggingEvent event) {
-        }
+        public void append(final LoggingEvent event) {}
 
         @Override
-        public void close() {
-        }
+        public void close() {}
 
         public boolean getAppend() {
             return append;
@@ -194,9 +186,7 @@ public class PropertyConfiguratorTest {
     public static class RollingPolicy implements OptionHandler {
         private boolean activated = false;
 
-        public RollingPolicy() {
-
-        }
+        public RollingPolicy() {}
 
         @Override
         public void activateOptions() {
@@ -206,7 +196,6 @@ public class PropertyConfiguratorTest {
         public final boolean isActivated() {
             return activated;
         }
-
     }
 
     /**
@@ -215,9 +204,7 @@ public class PropertyConfiguratorTest {
     public static class TriggeringPolicy implements OptionHandler {
         private boolean activated = false;
 
-        public TriggeringPolicy() {
-
-        }
+        public TriggeringPolicy() {}
 
         @Override
         public void activateOptions() {
@@ -227,7 +214,6 @@ public class PropertyConfiguratorTest {
         public final boolean isActivated() {
             return activated;
         }
-
     }
 
     private static final String FILTER1_PROPERTIES = "target/test-classes/log4j1-1.2.17/input/filter1.properties";
@@ -308,9 +294,12 @@ public class PropertyConfiguratorTest {
         assertEquals(Level.WARN, catB.getLevel());
         assertEquals(Level.DEBUG, catC.getLevel());
 
-        assertEquals(Level.WARN, catA.getLoggerRepository().getLogger(CAT_A_NAME).getLevel());
-        assertEquals(Level.WARN, catB.getLoggerRepository().getLogger(CAT_B_NAME).getLevel());
-        assertEquals(Level.DEBUG, catC.getLoggerRepository().getLogger(CAT_C_NAME).getLevel());
+        assertEquals(
+                Level.WARN, catA.getLoggerRepository().getLogger(CAT_A_NAME).getLevel());
+        assertEquals(
+                Level.WARN, catB.getLoggerRepository().getLogger(CAT_B_NAME).getLevel());
+        assertEquals(
+                Level.DEBUG, catC.getLoggerRepository().getLogger(CAT_C_NAME).getLevel());
 
         final Properties repos1Settings = new Properties();
         repos1Settings.put("log4j.logger." + CAT_A_NAME, Level.DEBUG.toString());
@@ -367,9 +356,9 @@ public class PropertyConfiguratorTest {
         final ThrowableRendererSupport repo = (ThrowableRendererSupport) LogManager.getLoggerRepository();
         final MockThrowableRenderer renderer = (MockThrowableRenderer) repo.getThrowableRenderer();
         LogManager.resetConfiguration();
-//        assertNotNull(renderer);
-//        assertEquals(true, renderer.isActivated());
-//        assertEquals(false, renderer.getShowVersion());
+        //        assertNotNull(renderer);
+        //        assertEquals(true, renderer.isActivated());
+        //        assertEquals(false, renderer.getShowVersion());
     }
 
     /**
@@ -413,15 +402,16 @@ public class PropertyConfiguratorTest {
         final Appender appender = logger.getAppender(appenderName);
         assertNotNull(appender);
         // Down-cast?
-//        final RollingFileAppender rfa = (RollingFileAppender) appender;
-//        assertNotNull(appenderName, rfa);
-//        final FixedWindowRollingPolicy rollingPolicy = (FixedWindowRollingPolicy) rfa.getRollingPolicy();
-//        assertEquals("filterBase-test1.log", rollingPolicy.getActiveFileName());
-//        assertEquals("filterBased-test1.%i", rollingPolicy.getFileNamePattern());
-//        assertEquals(0, rollingPolicy.getMinIndex());
-//        assertTrue(rollingPolicy.isActivated());
-//        final FilterBasedTriggeringPolicy triggeringPolicy = (FilterBasedTriggeringPolicy) rfa.getTriggeringPolicy();
-//        final LevelRangeFilter filter = (LevelRangeFilter) triggeringPolicy.getFilter();
-//        assertTrue(Level.INFO.equals(filter.getLevelMin()));
+        //        final RollingFileAppender rfa = (RollingFileAppender) appender;
+        //        assertNotNull(appenderName, rfa);
+        //        final FixedWindowRollingPolicy rollingPolicy = (FixedWindowRollingPolicy) rfa.getRollingPolicy();
+        //        assertEquals("filterBase-test1.log", rollingPolicy.getActiveFileName());
+        //        assertEquals("filterBased-test1.%i", rollingPolicy.getFileNamePattern());
+        //        assertEquals(0, rollingPolicy.getMinIndex());
+        //        assertTrue(rollingPolicy.isActivated());
+        //        final FilterBasedTriggeringPolicy triggeringPolicy = (FilterBasedTriggeringPolicy)
+        // rfa.getTriggeringPolicy();
+        //        final LevelRangeFilter filter = (LevelRangeFilter) triggeringPolicy.getFilter();
+        //        assertTrue(Level.INFO.equals(filter.getLevelMin()));
     }
 }

@@ -23,8 +23,7 @@ package org.apache.log4j.or;
  */
 class DefaultRenderer implements ObjectRenderer {
 
-    DefaultRenderer() {
-    }
+    DefaultRenderer() {}
 
     /**
      * Render the object passed as parameter by calling its {@code toString()} method.

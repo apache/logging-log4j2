@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @LoggerContextSource("log4j-test3.xml")
 public class ShutdownDisabledTest {
@@ -29,5 +29,4 @@ public class ShutdownDisabledTest {
     public void testShutdownFlag(final Configuration config) {
         assertFalse(config.isShutdownHookEnabled(), "Shutdown hook is enabled");
     }
-
 }

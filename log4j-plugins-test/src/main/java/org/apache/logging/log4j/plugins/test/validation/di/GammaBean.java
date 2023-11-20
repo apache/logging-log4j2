@@ -23,5 +23,4 @@ import org.apache.logging.log4j.plugins.Singleton;
 @Namespace("Bean")
 @Plugin("Gamma")
 @Singleton
-public class GammaBean implements BaseBean {
-}
+public class GammaBean implements BaseBean {}

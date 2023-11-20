@@ -20,8 +20,7 @@ import org.apache.log4j.spi.LoggerFactory;
 
 class DefaultCategoryFactory implements LoggerFactory {
 
-    DefaultCategoryFactory() {
-    }
+    DefaultCategoryFactory() {}
 
     @Override
     public Logger makeNewLoggerInstance(final String name) {

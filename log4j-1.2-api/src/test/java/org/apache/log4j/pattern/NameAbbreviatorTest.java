@@ -107,7 +107,6 @@ public class NameAbbreviatorTest extends TestCase {
         buf.append(".");
         abbrev.abbreviate(fieldStart, buf);
         assertEquals("DEBUG - ", buf.toString());
-
     }
 
     /**
@@ -324,5 +323,4 @@ public class NameAbbreviatorTest extends TestCase {
         abbrev.abbreviate(fieldStart, buf);
         assertEquals("DEBUG - ", buf.toString());
     }
-
 }

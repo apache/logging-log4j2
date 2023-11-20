@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.condition;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -29,17 +28,21 @@ public class OnPropertyCondition implements Condition {
 
     @Override
     public boolean matches(final ConditionContext context, final AnnotatedElement element) {
-        return conditionals(element)
-                .allMatch(annotation -> {
-                    final String name = annotation.name();
-                    final String value = annotation.value();
-                    final String property = context.getEnvironment().getStringProperty(name);
-                    final boolean matchIfMissing = annotation.matchIfMissing();
-                    final boolean result = propertyMatches(property, value, matchIfMissing);
-                    LOGGER.debug("ConditionalOnProperty {} for name='{}', value='{}'; property='{}', matchIfMissing={}",
-                            result, name, value, property, matchIfMissing);
-                    return result;
-                });
+        return conditionals(element).allMatch(annotation -> {
+            final String name = annotation.name();
+            final String value = annotation.value();
+            final String property = context.getEnvironment().getStringProperty(name);
+            final boolean matchIfMissing = annotation.matchIfMissing();
+            final boolean result = propertyMatches(property, value, matchIfMissing);
+            LOGGER.debug(
+                    "ConditionalOnProperty {} for name='{}', value='{}'; property='{}', matchIfMissing={}",
+                    result,
+                    name,
+                    value,
+                    property,
+                    matchIfMissing);
+            return result;
+        });
     }
 
     private static Stream<ConditionalOnProperty> conditionals(final AnnotatedElement element) {

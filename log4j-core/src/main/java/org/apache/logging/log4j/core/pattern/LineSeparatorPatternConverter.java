@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("LineSeparatorPatternConverter")
-@ConverterKeys({ "n" })
+@ConverterKeys({"n"})
 @PerformanceSensitive("allocation")
 public final class LineSeparatorPatternConverter extends LogEventPatternConverter {
 

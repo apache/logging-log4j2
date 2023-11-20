@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.test.parser;
 
-import java.util.Arrays;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LogEvent;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+
+import java.util.Arrays;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Subclassed by JSON, XML, and YAML modules.
@@ -42,14 +41,12 @@ public abstract class AbstractLogEventParserTest {
         assertThat(logEvent.getLoggerName(), equalTo("HelloWorld"));
         assertThat(logEvent.getMarker().getName(), equalTo("child"));
         assertThat(logEvent.getMarker().getParents()[0].getName(), equalTo("parent"));
-        assertThat(logEvent.getMarker().getParents()[0].getParents()[0].getName(),
-                equalTo("grandparent"));
+        assertThat(logEvent.getMarker().getParents()[0].getParents()[0].getName(), equalTo("grandparent"));
         assertThat(logEvent.getMessage().getFormattedMessage(), equalTo("Hello, world!"));
         assertThat(logEvent.getThrown(), is(nullValue()));
         assertThat(logEvent.getThrownProxy().getMessage(), equalTo("error message"));
         assertThat(logEvent.getThrownProxy().getName(), equalTo("java.lang.RuntimeException"));
-        assertThat(logEvent.getThrownProxy().getExtendedStackTrace()[0].getClassName(),
-                equalTo("logtest.Main"));
+        assertThat(logEvent.getThrownProxy().getExtendedStackTrace()[0].getClassName(), equalTo("logtest.Main"));
         assertThat(logEvent.getLoggerFqcn(), equalTo("org.apache.logging.log4j.spi.AbstractLogger"));
         assertThat(logEvent.getContextStack().asList(), equalTo(Arrays.asList("one", "two")));
         assertThat(logEvent.getContextData().getValue("foo"), equalTo("FOO"));

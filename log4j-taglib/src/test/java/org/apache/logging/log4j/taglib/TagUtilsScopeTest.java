@@ -16,16 +16,14 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.Collection;
-
 import javax.servlet.jsp.PageContext;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class TagUtilsScopeTest {
@@ -40,7 +38,7 @@ public class TagUtilsScopeTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{
+        return Arrays.asList(new Object[][] {
             {PageContext.APPLICATION_SCOPE, "application"},
             {PageContext.PAGE_SCOPE, "page"},
             {PageContext.REQUEST_SCOPE, "request"},
@@ -53,5 +51,4 @@ public class TagUtilsScopeTest {
     public void testGetScope() throws Exception {
         assertEquals("The scope is not correct.", scope, TagUtils.getScope(scopeName));
     }
-
 }

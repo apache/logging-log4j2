@@ -48,5 +48,4 @@ public abstract class AbstractScript implements org.apache.logging.log4j.core.sc
     public String getName() {
         return this.name;
     }
-
 }

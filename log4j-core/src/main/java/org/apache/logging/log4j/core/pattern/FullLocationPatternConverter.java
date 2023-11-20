@@ -20,19 +20,17 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 
-
 /**
  * Format the event's line location information.
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("FullLocationPatternConverter")
-@ConverterKeys({ "l", "location" })
+@ConverterKeys({"l", "location"})
 public final class FullLocationPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final FullLocationPatternConverter INSTANCE =
-        new FullLocationPatternConverter();
+    private static final FullLocationPatternConverter INSTANCE = new FullLocationPatternConverter();
 
     /**
      * Private constructor.

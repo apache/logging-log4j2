@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.net;
 
 import java.net.Socket;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -94,5 +93,4 @@ public class SocketPerformancePreferences implements Builder<SocketPerformancePr
         return "SocketPerformancePreferences [bandwidth=" + bandwidth + ", connectionTime=" + connectionTime
                 + ", latency=" + latency + "]";
     }
-
 }

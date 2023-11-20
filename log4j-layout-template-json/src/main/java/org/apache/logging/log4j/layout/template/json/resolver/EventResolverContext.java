@@ -20,7 +20,6 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
@@ -179,14 +178,12 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public Builder setResolverFactoryByName(
-                final Map<String, EventResolverFactory> resolverFactoryByName) {
+        public Builder setResolverFactoryByName(final Map<String, EventResolverFactory> resolverFactoryByName) {
             this.resolverFactoryByName = resolverFactoryByName;
             return this;
         }
 
-        public Builder setResolverInterceptors(
-                final List<EventResolverInterceptor> resolverInterceptors) {
+        public Builder setResolverInterceptors(final List<EventResolverInterceptor> resolverInterceptors) {
             this.resolverInterceptors = resolverInterceptors;
             return this;
         }
@@ -258,9 +255,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             Objects.requireNonNull(charset, "charset");
             Objects.requireNonNull(jsonWriter, "jsonWriter");
             if (maxStringByteCount <= 0) {
-                throw new IllegalArgumentException(
-                        "was expecting maxStringByteCount > 0: " +
-                                maxStringByteCount);
+                throw new IllegalArgumentException("was expecting maxStringByteCount > 0: " + maxStringByteCount);
             }
             Objects.requireNonNull(truncatedStringSuffix, "truncatedStringSuffix");
             if (stackTraceEnabled && Strings.isBlank(stackTraceElementTemplate)) {
@@ -270,7 +265,5 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             Objects.requireNonNull(stackTraceElementTemplate, "stackTraceElementTemplate");
             Objects.requireNonNull(eventTemplateAdditionalFields, "eventTemplateAdditionalFields");
         }
-
     }
-
 }

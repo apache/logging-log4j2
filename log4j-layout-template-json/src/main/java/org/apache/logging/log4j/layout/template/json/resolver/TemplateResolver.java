@@ -65,5 +65,4 @@ public interface TemplateResolver<V> {
     default void resolve(final V value, final JsonWriter jsonWriter, final boolean succeedingEntry) {
         resolve(value, jsonWriter);
     }
-
 }

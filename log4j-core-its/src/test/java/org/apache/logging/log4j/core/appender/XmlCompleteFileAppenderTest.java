@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
@@ -37,10 +40,6 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
@@ -117,19 +116,19 @@ public class XmlCompleteFileAppenderTest {
      * Test the indentation of the Events XML.
      * <p>Expected Events XML is as below.</p>
      * <pre>
-&lt;?xml version="1.0" encoding="UTF-8"?>
-&lt;Events xmlns="http://logging.apache.org/log4j/2.0/events">
-
-  &lt;Event xmlns="http://logging.apache.org/log4j/2.0/events" thread="main" level="INFO" loggerName="com.foo.Bar" endOfBatch="true" loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger" threadId="12" threadPriority="5">
-    &lt;Instant epochSecond="1515889414" nanoOfSecond="144000000" epochMillisecond="1515889414144" nanoOfMillisecond="0"/>
-    &lt;Message>First Msg tag must be in level 2 after correct indentation&lt;/Message>
-  &lt;/Event>
-
-  &lt;Event xmlns="http://logging.apache.org/log4j/2.0/events" thread="main" level="INFO" loggerName="com.foo.Bar" endOfBatch="true" loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger" threadId="12" threadPriority="5">
-    &lt;Instant epochSecond="1515889414" nanoOfSecond="144000000" epochMillisecond="1515889414144" nanoOfMillisecond="0"/>
-    &lt;Message>Second Msg tag must also be in level 2 after correct indentation&lt;/Message>
-  &lt;/Event>
-&lt;/Events>
+     * &lt;?xml version="1.0" encoding="UTF-8"?>
+     * &lt;Events xmlns="http://logging.apache.org/log4j/2.0/events">
+     *
+     * &lt;Event xmlns="http://logging.apache.org/log4j/2.0/events" thread="main" level="INFO" loggerName="com.foo.Bar" endOfBatch="true" loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger" threadId="12" threadPriority="5">
+     * &lt;Instant epochSecond="1515889414" nanoOfSecond="144000000" epochMillisecond="1515889414144" nanoOfMillisecond="0"/>
+     * &lt;Message>First Msg tag must be in level 2 after correct indentation&lt;/Message>
+     * &lt;/Event>
+     *
+     * &lt;Event xmlns="http://logging.apache.org/log4j/2.0/events" thread="main" level="INFO" loggerName="com.foo.Bar" endOfBatch="true" loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger" threadId="12" threadPriority="5">
+     * &lt;Instant epochSecond="1515889414" nanoOfSecond="144000000" epochMillisecond="1515889414144" nanoOfMillisecond="0"/>
+     * &lt;Message>Second Msg tag must also be in level 2 after correct indentation&lt;/Message>
+     * &lt;/Event>
+     * &lt;/Events>
      * </pre>
      * @throws Exception
      */
@@ -143,19 +142,25 @@ public class XmlCompleteFileAppenderTest {
         CoreLoggerContexts.stopLoggerContext(false, logFile); // stop async thread
 
         final int[] indentations = {
-            0, //"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            0, //"<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">\n"
+            0, // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            0, // "<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">\n"
             -1, // empty
-            2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n"
-            4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n"
-            4, //"    <Message>First Msg tag must be in level 2 after correct indentation</Message>\n" +
-            2, //"  </Event>\n"
+            2, // "  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\"
+            // loggerName=\"com.foo.Bar\" endOfBatch=\"true\"
+            // loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n"
+            4, // "    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\"
+            // nanoOfMillisecond=\"0\"/>\n"
+            4, // "    <Message>First Msg tag must be in level 2 after correct indentation</Message>\n" +
+            2, // "  </Event>\n"
             -1, // empty
-            2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n" +
-            4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n" +
-            4, //"    <Message>Second Msg tag must also be in level 2 after correct indentation</Message>\n" +
-            2, //"  </Event>\n" +
-            0, //"</Events>\n";
+            2, // "  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\"
+            // loggerName=\"com.foo.Bar\" endOfBatch=\"true\"
+            // loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n" +
+            4, // "    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\"
+            // nanoOfMillisecond=\"0\"/>\n" +
+            4, // "    <Message>Second Msg tag must also be in level 2 after correct indentation</Message>\n" +
+            2, // "  </Event>\n" +
+            0, // "</Events>\n";
         };
         final List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
 
@@ -166,7 +171,8 @@ public class XmlCompleteFileAppenderTest {
                 assertEquals(-1, indentations[i]);
             } else {
                 final String padding = "        ".substring(0, indentations[i]);
-                assertTrue("Expected " + indentations[i] + " leading spaces but got: " + line, line.startsWith(padding));
+                assertTrue(
+                        "Expected " + indentations[i] + " leading spaces but got: " + line, line.startsWith(padding));
             }
         }
     }

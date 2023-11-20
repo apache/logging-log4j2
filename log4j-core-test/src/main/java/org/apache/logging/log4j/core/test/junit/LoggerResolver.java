@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import java.lang.reflect.Parameter;
+import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 
+import java.lang.reflect.Parameter;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.plugins.di.Keys;
@@ -25,8 +26,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
-
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 
 class LoggerResolver implements ParameterResolver {
     @Override

@@ -16,8 +16,15 @@
  */
 package org.apache.logging.log4j.jms.appender;
 
-import java.util.Map;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
+import java.util.Map;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -26,7 +33,6 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -43,14 +49,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
-
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 
 @Category(Appenders.Jms.class)
 public class JmsAppenderTest {
@@ -105,22 +103,21 @@ public class JmsAppenderTest {
                 QUEUE_FACTORY_NAME, connectionFactory,
                 QUEUE_NAME, destination,
                 TOPIC_FACTORY_NAME, connectionFactory,
-                TOPIC_NAME, destination
-        );
+                TOPIC_NAME, destination);
     }
 
-    private  Log4jLogEvent createLogEvent() {
+    private Log4jLogEvent createLogEvent() {
         return createLogEvent(new SimpleMessage(LOG_MESSAGE));
     }
 
     private Log4jLogEvent createLogEvent(final Message message) {
         // @formatter:off
         return Log4jLogEvent.newBuilder()
-            .setLoggerName(JmsAppenderTest.class.getName())
-            .setLoggerFqcn(JmsAppenderTest.class.getName())
-            .setLevel(Level.INFO)
-            .setMessage(message)
-            .build();
+                .setLoggerName(JmsAppenderTest.class.getName())
+                .setLoggerFqcn(JmsAppenderTest.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(message)
+                .build();
         // @formatter:on
     }
 
@@ -186,5 +183,4 @@ public class JmsAppenderTest {
         then(session).should().close();
         then(connection).should().close();
     }
-
 }

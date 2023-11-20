@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Returns the event's level in a StringBuilder.

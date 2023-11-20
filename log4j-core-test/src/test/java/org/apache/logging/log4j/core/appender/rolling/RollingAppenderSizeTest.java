@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +31,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
@@ -42,10 +45,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 @UsingStatusListener
 public class RollingAppenderSizeTest {
 
@@ -53,13 +52,7 @@ public class RollingAppenderSizeTest {
 
     private static final Pattern MESSAGE_PATTERN = Pattern.compile("This is test message numer \\d+.");
 
-    private static final List<String> FILE_EXTENSIONS = Arrays.asList(
-            "gz",
-            "zip",
-            "bz2",
-            "deflate",
-            "pack200",
-            "xz");
+    private static final List<String> FILE_EXTENSIONS = Arrays.asList("gz", "zip", "bz2", "deflate", "pack200", "xz");
 
     static Stream<Arguments> parameters() {
         return FILE_EXTENSIONS.stream().flatMap(fileExtension -> {
@@ -70,11 +63,12 @@ public class RollingAppenderSizeTest {
     @TempLoggingDir
     private static Path loggingPath;
 
-    private static RollingFileAppender createRollingFileAppender(final String fileExtension,
-            final boolean createOnDemand) {
+    private static RollingFileAppender createRollingFileAppender(
+            final String fileExtension, final boolean createOnDemand) {
         final Path folder = loggingPath.resolve(fileExtension);
         final String fileName = folder.resolve("rollingtest.log").toString();
-        final String filePattern = folder.resolve("rollingtest-%i.log." + fileExtension).toString();
+        final String filePattern =
+                folder.resolve("rollingtest-%i.log." + fileExtension).toString();
         final RollingFileAppender appender = RollingFileAppender.newBuilder()
                 .setName("RollingFile")
                 .setFileName(fileName)
@@ -130,7 +124,7 @@ public class RollingAppenderSizeTest {
             final FileExtension ext = FileExtension.lookup(fileExtension);
             if (ext == null || FileExtension.ZIP == ext || FileExtension.PACK200 == ext) {
                 return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these
-                        // formats
+                // formats
             }
 
             for (final Path file : Files.newDirectoryStream(extensionFolder)) {
@@ -143,7 +137,9 @@ public class RollingAppenderSizeTest {
                         assertDoesNotThrow(() -> IOUtils.copy(in, baos));
                         final String text = new String(baos.toByteArray(), Charset.defaultCharset());
                         final String[] lines = text.split("[\\r\\n]+");
-                        assertThat(lines).allMatch(message -> MESSAGE_PATTERN.matcher(message).matches());
+                        assertThat(lines)
+                                .allMatch(message ->
+                                        MESSAGE_PATTERN.matcher(message).matches());
                     }
                 }
             }

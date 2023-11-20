@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.apache.logging.log4j.jackson.MapEntry;
 
-@JsonPropertyOrder({ "key", "value" })
+@JsonPropertyOrder({"key", "value"})
 class XmlMapEntry extends MapEntry {
 
     @JacksonXmlProperty(isAttribute = true)
@@ -35,5 +35,4 @@ class XmlMapEntry extends MapEntry {
     public XmlMapEntry(@JsonProperty("key") final String key, @JsonProperty("value") final String value) {
         super(key, value);
     }
-
 }

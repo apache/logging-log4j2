@@ -17,7 +17,6 @@
 package org.apache.log4j.spi;
 
 import java.io.PrintWriter;
-
 import junit.framework.TestCase;
 
 /**
@@ -43,8 +42,7 @@ public class ThrowableInformationTest extends TestCase {
         /**
          * Create new instance.
          */
-        public OverriddenThrowable() {
-        }
+        public OverriddenThrowable() {}
 
         /**
          * Print stack trace.
@@ -87,8 +85,7 @@ public class ThrowableInformationTest extends TestCase {
         /**
          * Create new instance.
          */
-        public NotOverriddenThrowable() {
-        }
+        public NotOverriddenThrowable() {}
 
         /**
          * Print stack trace.
@@ -145,8 +142,7 @@ public class ThrowableInformationTest extends TestCase {
         /**
          * Create new instance.
          */
-        public NullThrowable() {
-        }
+        public NullThrowable() {}
 
         /**
          * Print stack trace.
@@ -164,7 +160,6 @@ public class ThrowableInformationTest extends TestCase {
     /**
      * Test capturing stack trace from a throwable that passes null to PrintWriter methods.
      */
-
     public void testNull() {
         final ThrowableInformation ti = new ThrowableInformation(new NullThrowable());
         final String[] rep = ti.getThrowableStrRep();
@@ -183,22 +178,19 @@ public class ThrowableInformationTest extends TestCase {
         /**
          * Create new instance.
          */
-        public EmptyThrowable() {
-        }
+        public EmptyThrowable() {}
 
         /**
          * Print stack trace.
          *
          * @param s print writer.
          */
-        public void printStackTrace(final PrintWriter s) {
-        }
+        public void printStackTrace(final PrintWriter s) {}
     }
 
     /**
      * Test capturing stack trace from a throwable that does nothing on a call to printStackTrace.
      */
-
     public void testEmpty() {
         final ThrowableInformation ti = new ThrowableInformation(new EmptyThrowable());
         final String[] rep = ti.getThrowableStrRep();
@@ -258,7 +250,8 @@ public class ThrowableInformationTest extends TestCase {
      * Test parsing of line breaks.
      */
     public void testParsing() {
-        final ThrowableInformation ti = new ThrowableInformation(new StringThrowable("Line1\rLine2\nLine3\r\nLine4\n\rLine6"));
+        final ThrowableInformation ti =
+                new ThrowableInformation(new StringThrowable("Line1\rLine2\nLine3\r\nLine4\n\rLine6"));
         final String[] rep = ti.getThrowableStrRep();
         assertEquals(6, rep.length);
         assertEquals("Line1", rep[0]);
@@ -311,8 +304,7 @@ public class ThrowableInformationTest extends TestCase {
         /**
          * Create new instance.
          */
-        public NastyThrowable() {
-        }
+        public NastyThrowable() {}
 
         /**
          * Print stack trace.
@@ -334,5 +326,4 @@ public class ThrowableInformationTest extends TestCase {
         final String[] rep = ti.getThrowableStrRep();
         assertEquals("NastyException", rep[0]);
     }
-
 }

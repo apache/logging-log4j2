@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *

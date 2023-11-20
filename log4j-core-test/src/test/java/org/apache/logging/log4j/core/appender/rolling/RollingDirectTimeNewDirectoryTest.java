@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
@@ -30,9 +32,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
@@ -47,7 +46,8 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 15)
-    public void streamClosedError(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+    public void streamClosedError(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager)
+            throws Exception {
         manager.addRolloverListener(this);
 
         final Logger logger = context.getLogger(RollingDirectTimeNewDirectoryTest.class.getName());
@@ -93,10 +93,12 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
             }
 
         } catch (AssertionError error) {
-            final StringBuilder sb = new StringBuilder(error.getMessage()).append(" log directory (").append(DIR).append(") contents: [");
+            final StringBuilder sb = new StringBuilder(error.getMessage())
+                    .append(" log directory (")
+                    .append(DIR)
+                    .append(") contents: [");
             final Iterator<File> fileIterator =
-                    FileUtils.iterateFilesAndDirs(
-                            logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
+                    FileUtils.iterateFilesAndDirs(logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
             int totalFileCount = 0;
             while (fileIterator.hasNext()) {
                 totalFileCount++;
@@ -109,12 +111,10 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
             sb.append("] total file count: ").append(totalFileCount);
             throw new AssertionFailedError(sb.toString(), error);
         }
-
     }
 
     @Override
-    public void rolloverTriggered(final String fileName) {
-    }
+    public void rolloverTriggered(final String fileName) {}
 
     @Override
     public void rolloverComplete(final String fileName) {

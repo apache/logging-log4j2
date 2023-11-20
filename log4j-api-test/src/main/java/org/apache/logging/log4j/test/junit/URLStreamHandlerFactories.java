@@ -21,7 +21,6 @@ import java.net.URL;
 import java.net.URLStreamHandlerFactory;
 import java.util.Hashtable;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.opentest4j.TestAbortedException;
 
@@ -29,7 +28,8 @@ public class URLStreamHandlerFactories {
     private static final Field FACTORY_FIELD = Stream.of(URL.class.getDeclaredFields())
             .filter(field -> URLStreamHandlerFactory.class.equals(field.getType()))
             .findFirst()
-            .orElseThrow(() -> new TestAbortedException("java.net.URL does not declare a java.net.URLStreamHandlerFactory field"));
+            .orElseThrow(() ->
+                    new TestAbortedException("java.net.URL does not declare a java.net.URLStreamHandlerFactory field"));
     private static final Field HANDLERS_FIELD = FieldUtils.getDeclaredField(URL.class, "handlers", true);
 
     public static URLStreamHandlerFactory getURLStreamHandlerFactory() {

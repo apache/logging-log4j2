@@ -26,12 +26,12 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 /**
  * <pre>
  * AbstractLogEventMixIn
-*├─ AbstractLogEventXmlMixIn
-*├──── LogEventWithContextListXmlMixIn
-*├──── LogEventWithContextMapXmlMixIn
-*├─ JsonLogEventMixIn
-*├──── JsonLogEventWithContextListMixIn
-*├──── JsonLogEventWithContextMapMixIn
+ *├─ AbstractLogEventXmlMixIn
+ *├──── LogEventWithContextListXmlMixIn
+ *├──── LogEventWithContextMapXmlMixIn
+ *├─ JsonLogEventMixIn
+ *├──── JsonLogEventWithContextListMixIn
+ *├──── JsonLogEventWithContextMapMixIn
  * </pre>
  */
 public abstract class LogEventWithContextListXmlMixIn extends AbstractLogEventXmlMixIn {
@@ -41,5 +41,4 @@ public abstract class LogEventWithContextListXmlMixIn extends AbstractLogEventXm
     @JsonDeserialize(using = ContextDataAsEntryListDeserializer.class)
     @Override
     public abstract ReadOnlyStringMap getContextData();
-
 }

@@ -28,5 +28,4 @@ import org.apache.log4j.Logger;
 public interface LoggerFactory {
 
     Logger makeNewLoggerInstance(String name);
-
 }

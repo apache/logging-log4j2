@@ -52,30 +52,27 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 public final class SourceResolver implements EventResolver {
 
     private static final EventResolver NULL_RESOLVER =
-            (final LogEvent value, final JsonWriter jsonWriter) ->
-                    jsonWriter.writeNull();
+            (final LogEvent value, final JsonWriter jsonWriter) -> jsonWriter.writeNull();
 
-    private static final EventResolver CLASS_NAME_RESOLVER =
-            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final StackTraceElement logEventSource = logEvent.getSource();
-                if (logEventSource == null) {
-                    jsonWriter.writeNull();
-                } else {
-                    final String sourceClassName = logEventSource.getClassName();
-                    jsonWriter.writeString(sourceClassName);
-                }
-            };
+    private static final EventResolver CLASS_NAME_RESOLVER = (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+        final StackTraceElement logEventSource = logEvent.getSource();
+        if (logEventSource == null) {
+            jsonWriter.writeNull();
+        } else {
+            final String sourceClassName = logEventSource.getClassName();
+            jsonWriter.writeString(sourceClassName);
+        }
+    };
 
-    private static final EventResolver FILE_NAME_RESOLVER =
-            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final StackTraceElement logEventSource = logEvent.getSource();
-                if (logEventSource == null) {
-                    jsonWriter.writeNull();
-                } else {
-                    final String sourceFileName = logEventSource.getFileName();
-                    jsonWriter.writeString(sourceFileName);
-                }
-            };
+    private static final EventResolver FILE_NAME_RESOLVER = (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+        final StackTraceElement logEventSource = logEvent.getSource();
+        if (logEventSource == null) {
+            jsonWriter.writeNull();
+        } else {
+            final String sourceFileName = logEventSource.getFileName();
+            jsonWriter.writeString(sourceFileName);
+        }
+    };
 
     private static final EventResolver LINE_NUMBER_RESOLVER =
             (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
@@ -103,16 +100,13 @@ public final class SourceResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    SourceResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    SourceResolver(final EventResolverContext context, final TemplateResolverConfig config) {
         this.locationInfoEnabled = context.isLocationInfoEnabled();
         this.internalResolver = createInternalResolver(context, config);
     }
 
     private static EventResolver createInternalResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+            final EventResolverContext context, final TemplateResolverConfig config) {
         if (!context.isLocationInfoEnabled()) {
             return NULL_RESOLVER;
         }
@@ -144,10 +138,7 @@ public final class SourceResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         internalResolver.resolve(logEvent, jsonWriter);
     }
-
 }

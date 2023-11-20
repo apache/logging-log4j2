@@ -34,5 +34,4 @@ public interface TemplateResolverStringSubstitutor<V> {
     boolean isStable();
 
     String replace(V value, String source);
-
 }

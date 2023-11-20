@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.apache.logging.log4j.core.config.ConfigurationProcessor;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
@@ -27,9 +30,6 @@ import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @StatusLoggerLevel("OFF")
 public class ValidPortValidatorTest {
@@ -63,5 +63,4 @@ public class ValidPortValidatorTest {
         node.getAttributes().put("port", "1234567890");
         assertNull(processor.processNodeTree(node));
     }
-
 }

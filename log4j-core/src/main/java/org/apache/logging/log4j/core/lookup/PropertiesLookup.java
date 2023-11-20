@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.lookup;
 
 import java.util.Collections;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
 
 /**
@@ -40,9 +39,7 @@ public final class PropertiesLookup implements StrLookup {
      * @param properties map these.
      */
     public PropertiesLookup(final Map<String, String> properties) {
-        this.properties = properties == null
-                ? Collections.emptyMap()
-                : properties;
+        this.properties = properties == null ? Collections.emptyMap() : properties;
     }
 
     /**
@@ -77,5 +74,4 @@ public final class PropertiesLookup implements StrLookup {
     public String toString() {
         return "PropertiesLookup{properties=" + properties + '}';
     }
-
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jpa.appender;
 
 import java.lang.reflect.Constructor;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -47,8 +46,12 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
 
     private final String description;
 
-    private JpaAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-            final Property[] properties, final JpaDatabaseManager manager) {
+    private JpaAppender(
+            final String name,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            final JpaDatabaseManager manager) {
         super(name, filter, null, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
@@ -91,12 +94,13 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
 
         try {
             final Class<? extends AbstractLogEventWrapperEntity> entityClass =
-                LoaderUtil.loadClass(entityClassName).asSubclass(AbstractLogEventWrapperEntity.class);
+                    LoaderUtil.loadClass(entityClassName).asSubclass(AbstractLogEventWrapperEntity.class);
 
             try {
                 final Constructor<?> ignored = entityClass.getConstructor();
             } catch (final NoSuchMethodException e) {
-                LOGGER.error("Entity class [{}] does not have a no-arg constructor. The JPA provider will reject it.",
+                LOGGER.error(
+                        "Entity class [{}] does not have a no-arg constructor. The JPA provider will reject it.",
                         entityClassName);
                 return null;
             }
@@ -108,8 +112,7 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
                     + ", persistenceUnitName=" + persistenceUnitName + ", entityClass=" + entityClass.getName() + '}';
 
             final JpaDatabaseManager manager = JpaDatabaseManager.getJPADatabaseManager(
-                    managerName, bufferSizeInt, entityClass, entityConstructor, persistenceUnitName, configuration
-            );
+                    managerName, bufferSizeInt, entityClass, entityConstructor, persistenceUnitName, configuration);
             if (manager == null) {
                 return null;
             }
@@ -119,7 +122,8 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
             LOGGER.error("Could not load entity class [{}].", entityClassName, e);
             return null;
         } catch (final NoSuchMethodException e) {
-            LOGGER.error("Entity class [{}] does not have a constructor with a single argument of type LogEvent.",
+            LOGGER.error(
+                    "Entity class [{}] does not have a constructor with a single argument of type LogEvent.",
                     entityClassName);
             return null;
         } catch (final ClassCastException e) {

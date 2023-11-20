@@ -67,9 +67,11 @@ public class AsyncQueueFullPolicyFactory {
      * @return a new AsyncQueueFullPolicy
      */
     public static AsyncQueueFullPolicy create() {
-        final String router = PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY);
-        if (router == null || isRouterSelected(
-                router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
+        final String router =
+                PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY);
+        if (router == null
+                || isRouterSelected(
+                        router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
             return new DefaultAsyncQueueFullPolicy();
         }
         if (isRouterSelected(
@@ -83,9 +85,10 @@ public class AsyncQueueFullPolicyFactory {
             final String propertyValue,
             final Class<? extends AsyncQueueFullPolicy> policy,
             final String shortPropertyValue) {
-        return propertyValue != null && (shortPropertyValue.equalsIgnoreCase(propertyValue)
-                || policy.getName().equals(propertyValue)
-                || policy.getSimpleName().equals(propertyValue));
+        return propertyValue != null
+                && (shortPropertyValue.equalsIgnoreCase(propertyValue)
+                        || policy.getName().equals(propertyValue)
+                        || policy.getSimpleName().equals(propertyValue));
     }
 
     private static AsyncQueueFullPolicy createCustomRouter(final String router) {
@@ -104,7 +107,8 @@ public class AsyncQueueFullPolicyFactory {
 
     private static AsyncQueueFullPolicy createDiscardingAsyncQueueFullPolicy() {
         final PropertyEnvironment properties = PropertiesUtil.getProperties();
-        final String level = properties.getStringProperty(Log4jPropertyKey.ASYNC_LOGGER_DISCARD_THRESHOLD, Level.INFO.name());
+        final String level =
+                properties.getStringProperty(Log4jPropertyKey.ASYNC_LOGGER_DISCARD_THRESHOLD, Level.INFO.name());
         final Level thresholdLevel = Level.toLevel(level, Level.INFO);
         LOGGER.debug("Creating custom DiscardingAsyncQueueFullPolicy(discardThreshold:{})", thresholdLevel);
         return new DiscardingAsyncQueueFullPolicy(thresholdLevel);

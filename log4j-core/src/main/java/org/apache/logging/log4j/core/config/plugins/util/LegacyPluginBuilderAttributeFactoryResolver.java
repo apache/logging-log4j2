@@ -17,14 +17,14 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.lang.reflect.Type;
-
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.resolver.AbstractAttributeFactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 
 @SuppressWarnings("deprecation")
-public class LegacyPluginBuilderAttributeFactoryResolver<T> extends AbstractAttributeFactoryResolver<T, PluginBuilderAttribute> {
+public class LegacyPluginBuilderAttributeFactoryResolver<T>
+        extends AbstractAttributeFactoryResolver<T, PluginBuilderAttribute> {
     public LegacyPluginBuilderAttributeFactoryResolver() {
         super(PluginBuilderAttribute.class);
     }
@@ -35,8 +35,11 @@ public class LegacyPluginBuilderAttributeFactoryResolver<T> extends AbstractAttr
     }
 
     @Override
-    protected T getDefaultValue(final PluginBuilderAttribute annotation, final StringValueResolver resolver,
-                                final Type type, final TypeConverter<T> typeConverter) {
+    protected T getDefaultValue(
+            final PluginBuilderAttribute annotation,
+            final StringValueResolver resolver,
+            final Type type,
+            final TypeConverter<T> typeConverter) {
         return null;
     }
 }

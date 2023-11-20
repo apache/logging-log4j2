@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.jul.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.MementoLogEvent;
 import org.apache.logging.log4j.jul.ApiLogger;
 import org.apache.logging.log4j.jul.LevelTranslator;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -97,7 +96,10 @@ public abstract class AbstractLoggerTest {
 
     @Test
     public void testAlteringLogFilter() throws Exception {
-        logger.setFilter(record -> { record.setMessage("This is not the message you are looking for."); return true; });
+        logger.setFilter(record -> {
+            record.setMessage("This is not the message you are looking for.");
+            return true;
+        });
         logger.info("Informative message here.");
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events).hasSize(1);
@@ -169,8 +171,8 @@ public abstract class AbstractLoggerTest {
         final Logger flowLogger = Logger.getLogger("TestFlow");
         flowLogger.entering("com.example.TestSourceClass1", "testSourceMethod1(String)");
         flowLogger.entering("com.example.TestSourceClass2", "testSourceMethod2(String)", "TestParam");
-        flowLogger.entering("com.example.TestSourceClass3", "testSourceMethod3(String)",
-                new Object[] { "TestParam0", "TestParam1" });
+        flowLogger.entering(
+                "com.example.TestSourceClass3", "testSourceMethod3(String)", new Object[] {"TestParam0", "TestParam1"});
         final List<LogEvent> events = flowAppender.getEvents();
         assertThat(events).hasSize(3);
         assertThat(events.get(0).getMessage().getFormattedMessage()).isEqualTo("Enter");
@@ -210,5 +212,4 @@ public abstract class AbstractLoggerTest {
             assertThat(message).isEqualTo("Test info " + string);
         }
     }
-
 }

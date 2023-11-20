@@ -26,7 +26,7 @@ abstract class StackTraceElementXmlMixIn extends StackTraceElementMixIn {
 
     @JsonCreator
     protected StackTraceElementXmlMixIn(
-    // @formatter:off
+            // @formatter:off
             @JsonProperty(StackTraceElementConstants.ATTR_CLASS_LOADER_NAME) final String classLoaderName,
             @JsonProperty(StackTraceElementConstants.ATTR_MODULE) final String moduleName,
             @JsonProperty(StackTraceElementConstants.ATTR_MODULE_VERSION) final String moduleVersion,
@@ -34,8 +34,8 @@ abstract class StackTraceElementXmlMixIn extends StackTraceElementMixIn {
             @JsonProperty(StackTraceElementConstants.ATTR_METHOD) final String methodName,
             @JsonProperty(StackTraceElementConstants.ATTR_FILE) final String fileName,
             @JsonProperty(StackTraceElementConstants.ATTR_LINE) final int lineNumber)
-    // @formatter:on
-    {
+                // @formatter:on
+            {
         super(classLoaderName, moduleName, moduleVersion, declaringClass, methodName, fileName, lineNumber);
     }
 
@@ -66,5 +66,4 @@ abstract class StackTraceElementXmlMixIn extends StackTraceElementMixIn {
     @Override
     @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_METHOD, isAttribute = true)
     protected abstract String getMethodName();
-
 }

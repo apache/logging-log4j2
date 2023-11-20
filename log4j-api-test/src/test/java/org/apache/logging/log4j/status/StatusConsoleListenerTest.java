@@ -18,7 +18,6 @@ package org.apache.logging.log4j.status;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.message.Message;
@@ -43,11 +42,7 @@ public class StatusConsoleListenerTest {
         Mockito.when(logBuilder.withThrowable(Mockito.any())).thenReturn(logBuilder);
         Mockito.when(logBuilder.withLocation(Mockito.any())).thenReturn(logBuilder);
         final StatusLoggerFactory loggerFactory = Mockito.mock(StatusLoggerFactory.class);
-        Mockito
-                .when(loggerFactory.createSimpleLogger(
-                        Mockito.any(),
-                        Mockito.any(),
-                        Mockito.any()))
+        Mockito.when(loggerFactory.createSimpleLogger(Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(logger);
 
         // Create the listener.
@@ -59,26 +54,16 @@ public class StatusConsoleListenerTest {
         final StackTraceElement caller = Mockito.mock(StackTraceElement.class);
         final Message message = Mockito.mock(Message.class);
         final Throwable throwable = Mockito.mock(Throwable.class);
-        final StatusData statusData = new StatusData(
-                caller,
-                level,
-                message,
-                throwable,
-                null);
+        final StatusData statusData = new StatusData(caller, level, message, throwable, null);
         listener.log(statusData);
 
         // Verify the call.
-        Mockito
-                .verify(loggerFactory)
-                .createSimpleLogger(
-                        Mockito.eq("StatusConsoleListener"),
-                        Mockito.same(level),
-                        Mockito.same(stream));
+        Mockito.verify(loggerFactory)
+                .createSimpleLogger(Mockito.eq("StatusConsoleListener"), Mockito.same(level), Mockito.same(stream));
         Mockito.verify(logger).atLevel(Mockito.same(level));
         Mockito.verify(logBuilder).withThrowable(Mockito.same(throwable));
         Mockito.verify(logBuilder).withLocation(Mockito.same(caller));
         Mockito.verify(logBuilder).log(Mockito.same(message));
-
     }
 
     @Test
@@ -92,43 +77,41 @@ public class StatusConsoleListenerTest {
 
         // First, log a message that is expected to be logged.
         final RuntimeException expectedThrowable = new RuntimeException("expectedThrowable");
-        expectedThrowable.setStackTrace(new StackTraceElement[]{
-                new StackTraceElement("expectedThrowableClass", "expectedThrowableMethod", "expectedThrowableFile", 1)
+        expectedThrowable.setStackTrace(new StackTraceElement[] {
+            new StackTraceElement("expectedThrowableClass", "expectedThrowableMethod", "expectedThrowableFile", 1)
         });
         final Message expectedMessage = MESSAGE_FACTORY.newMessage("expectedMessage");
         listener.log(new StatusData(
-                null,               // since ignored by `SimpleLogger`
+                null, // since ignored by `SimpleLogger`
                 Level.WARN,
                 expectedMessage,
                 expectedThrowable,
-                null));             // as set by `StatusLogger` itself
+                null)); // as set by `StatusLogger` itself
 
         // Second, log a message that is expected to be discarded due to its insufficient level.
         final RuntimeException discardedThrowable = new RuntimeException("discardedThrowable");
-        discardedThrowable.setStackTrace(new StackTraceElement[]{
-                new StackTraceElement("discardedThrowableClass", "discardedThrowableMethod", "discardedThrowableFile", 2)
+        discardedThrowable.setStackTrace(new StackTraceElement[] {
+            new StackTraceElement("discardedThrowableClass", "discardedThrowableMethod", "discardedThrowableFile", 2)
         });
         final Message discardedMessage = MESSAGE_FACTORY.newMessage("discardedMessage");
         listener.log(new StatusData(
-                null,               // since ignored by `SimpleLogger`
+                null, // since ignored by `SimpleLogger`
                 Level.INFO,
                 discardedMessage,
                 discardedThrowable,
-                null));             // as set by `StatusLogger` itself
+                null)); // as set by `StatusLogger` itself
 
         // Collect the output.
         printStream.flush();
         final String output = outputStream.toString(encoding);
 
         // Verify the output.
-        Assertions
-                .assertThat(output)
+        Assertions.assertThat(output)
                 .isNotBlank()
                 .contains(expectedThrowable.getMessage())
                 .contains(expectedMessage.getFormattedMessage())
                 .doesNotContain(discardedThrowable.getMessage())
                 .doesNotContain(discardedMessage.getFormattedMessage());
-
     }
 
     @Test
@@ -146,18 +129,12 @@ public class StatusConsoleListenerTest {
 
         // Log the message to be filtered.
         final Message message = MESSAGE_FACTORY.newMessage("foo");
-        listener.log(new StatusData(
-                caller,
-                Level.TRACE,
-                message,
-                null,
-                null));             // as set by `StatusLogger` itself
+        listener.log(new StatusData(caller, Level.TRACE, message, null, null)); // as set by `StatusLogger` itself
 
         // Verify the filtering.
         printStream.flush();
         final String output = outputStream.toString(encoding);
         Assertions.assertThat(output).isEmpty();
-
     }
 
     @Test
@@ -167,5 +144,4 @@ public class StatusConsoleListenerTest {
         listener.close();
         Mockito.verify(stream).close();
     }
-
 }

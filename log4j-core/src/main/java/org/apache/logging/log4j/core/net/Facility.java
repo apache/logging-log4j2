@@ -242,5 +242,4 @@ public enum Facility {
     public boolean isEqual(final String name) {
         return this.name().equalsIgnoreCase(name);
     }
-
 }

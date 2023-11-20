@@ -27,9 +27,10 @@ import org.apache.logging.log4j.spi.LoggingSystemProperty;
 public final class Constants {
 
     private static final LazyBoolean isWebApp = new LazyBoolean(() -> PropertiesUtil.getProperties()
-            .getBooleanProperty(LoggingSystemProperty.IS_WEBAPP,
-                    LoaderUtil.isClassAvailable("javax.servlet.Servlet") ||
-                            LoaderUtil.isClassAvailable("jakarta.servlet.Servlet")));
+            .getBooleanProperty(
+                    LoggingSystemProperty.IS_WEBAPP,
+                    LoaderUtil.isClassAvailable("javax.servlet.Servlet")
+                            || LoaderUtil.isClassAvailable("jakarta.servlet.Servlet")));
 
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
@@ -48,8 +49,8 @@ public final class Constants {
         isWebApp.reset();
     }
 
-    private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(
-            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE, true));
+    private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(() -> !isWebApp()
+            && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE, true));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -81,8 +82,8 @@ public final class Constants {
      * </p>
      * @since 2.9
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(LoggingSystemProperty.GC_REUSABLE_MESSAGE_MAX_SIZE,
-            (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE =
+            size(LoggingSystemProperty.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
 
     private static int size(final PropertyKey property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
@@ -101,11 +102,10 @@ public final class Constants {
     /**
      * Prevent class instantiation.
      */
-    private Constants() {
-    }
+    private Constants() {}
 
     private static int getMajorVersion() {
-       return getMajorVersion(System.getProperty("java.version"));
+        return getMajorVersion(System.getProperty("java.version"));
     }
 
     static int getMajorVersion(final String version) {

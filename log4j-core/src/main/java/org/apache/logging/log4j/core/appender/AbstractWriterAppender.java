@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -43,6 +42,7 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
      * application crashes.
      */
     protected final boolean immediateFlush;
+
     private final M manager;
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = readWriteLock.readLock();
@@ -66,8 +66,14 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
      * @param manager
      *            The OutputStreamManager.
      */
-    protected AbstractWriterAppender(final String name, final StringLayout layout, final Filter filter,
-              final boolean ignoreExceptions, final boolean immediateFlush, final Property[] properties, final M manager) {
+    protected AbstractWriterAppender(
+            final String name,
+            final StringLayout layout,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final Property[] properties,
+            final M manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.immediateFlush = immediateFlush;

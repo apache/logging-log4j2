@@ -35,11 +35,11 @@ abstract class InstantXmlMixIn extends InstantMixIn {
 
     @JsonCreator
     protected InstantXmlMixIn(
-    // @formatter:off
+            // @formatter:off
             @JsonProperty(ATTR_EPOCH_SECOND) final long epochSecond,
             @JsonProperty(ATTR_NANO_OF_SECOND) final int nanoOfSecond)
-    // @formatter:on
-    {
+                // @formatter:on
+            {
         super(epochSecond, nanoOfSecond);
     }
 
@@ -50,5 +50,4 @@ abstract class InstantXmlMixIn extends InstantMixIn {
     @Override
     @JacksonXmlProperty(localName = ATTR_NANO_OF_SECOND, isAttribute = true)
     public abstract int getNanoOfSecond();
-
 }

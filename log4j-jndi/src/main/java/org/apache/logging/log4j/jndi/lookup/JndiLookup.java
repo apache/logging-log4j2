@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.jndi.lookup;
 
 import java.util.Objects;
-
 import javax.naming.NamingException;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -37,7 +35,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Lookup
 @Plugin("jndi")
-@RequiredProperty(name = Log4jPropertyKey.Constant.JNDI_ENABLE_LOOKUP, value = "true",
+@RequiredProperty(
+        name = Log4jPropertyKey.Constant.JNDI_ENABLE_LOOKUP,
+        value = "true",
         message = "JNDI must be enabled by setting JNDI.enableLookup=true")
 public class JndiLookup extends AbstractLookup {
 

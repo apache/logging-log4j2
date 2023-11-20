@@ -31,10 +31,10 @@ public final class Cast {
         if (o == null) {
             return null;
         }
-        @SuppressWarnings("unchecked") final T t = (T) o;
+        @SuppressWarnings("unchecked")
+        final T t = (T) o;
         return t;
     }
 
-    private Cast() {
-    }
+    private Cast() {}
 }

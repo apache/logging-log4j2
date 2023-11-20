@@ -16,12 +16,21 @@
  */
 package org.apache.logging.log4j.web;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+
 import java.net.URI;
 import java.net.URL;
 import java.util.HashSet;
-
 import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
@@ -34,18 +43,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-
 @ExtendWith(MockitoExtension.class)
 public class Log4jWebInitializerImplTest {
     /* Marking servletContext lenient because otherwise testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration fails
@@ -53,8 +50,10 @@ public class Log4jWebInitializerImplTest {
      */
     @Mock(lenient = true)
     private ServletContext servletContext;
+
     @Captor
     private ArgumentCaptor<Log4jWebLifeCycle> initializerCaptor;
+
     @Captor
     private ArgumentCaptor<LoggerContext> loggerContextCaptor;
 
@@ -101,15 +100,20 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeWithNoParametersThenSetLoggerContextThenDeinitialize() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED)))
+                .willReturn(null);
         given(servletContext.getServletContextName()).willReturn("helloWorld01");
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
         final org.apache.logging.log4j.spi.LoggerContext loggerContext = loggerContextCaptor.getValue();
 
@@ -138,9 +142,12 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeWithClassLoaderNoParametersThenSetLoggerContextThenDeinitialize() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("false");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED)))
+                .willReturn("false");
         given(servletContext.getServletContextName()).willReturn("helloWorld02");
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         given(servletContext.getClassLoader()).willReturn(getClass().getClassLoader());
@@ -148,7 +155,9 @@ public class Log4jWebInitializerImplTest {
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
         final org.apache.logging.log4j.spi.LoggerContext loggerContext = loggerContextCaptor.getValue();
 
@@ -177,9 +186,12 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeIsIdempotent() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("nothing");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED)))
+                .willReturn("nothing");
         given(servletContext.getServletContextName()).willReturn("helloWorld03");
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         given(servletContext.getClassLoader()).willReturn(getClass().getClassLoader());
@@ -187,7 +199,9 @@ public class Log4jWebInitializerImplTest {
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
 
         this.initializerImpl.start();
@@ -200,9 +214,12 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeFailsAfterDeinitialize() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED)))
+                .willReturn(null);
         given(servletContext.getServletContextName()).willReturn("helloWorld04");
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         given(servletContext.getClassLoader()).willReturn(getClass().getClassLoader());
@@ -210,7 +227,9 @@ public class Log4jWebInitializerImplTest {
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
 
         this.initializerImpl.stop();
@@ -224,9 +243,12 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testDeinitializeIsIdempotent() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED)))
+                .willReturn(null);
         given(servletContext.getServletContextName()).willReturn("helloWorld05");
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         given(servletContext.getClassLoader()).willReturn(getClass().getClassLoader());
@@ -234,7 +256,9 @@ public class Log4jWebInitializerImplTest {
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
 
         this.initializerImpl.stop();
@@ -245,9 +269,12 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeUsingJndiSelectorFails() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("true");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED)))
+                .willReturn("true");
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         assertNull(ContextAnchor.THREAD_CONTEXT.get(), "The context should be null.");
 
@@ -258,15 +285,20 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeUsingJndiSelector() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn("helloWorld06");
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("true");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn("helloWorld06");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED)))
+                .willReturn("true");
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         assertNull(ContextAnchor.THREAD_CONTEXT.get(), "The context should be null.");
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNull(loggerContextCaptor.getValue(), "The context attribute should be null.");
 
         assertNull(ContextAnchor.THREAD_CONTEXT.get(), "The context should still be null.");
@@ -290,16 +322,21 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testWrapExecutionWithNoParameters() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn(null);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED)))
+                .willReturn(null);
         given(servletContext.getServletContextName()).willReturn("helloWorld07");
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         assertNull(ContextAnchor.THREAD_CONTEXT.get(), "The context should be null.");
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
         final org.apache.logging.log4j.spi.LoggerContext loggerContext = loggerContextCaptor.getValue();
 
@@ -332,7 +369,9 @@ public class Log4jWebInitializerImplTest {
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
 
         assertThat(loggerContextCaptor.getValue().getConfigLocation(), is(nullValue()));
@@ -342,33 +381,43 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testMissingLocationParameterWithOneMatchingResourceUsesResourceConfigLocation() throws Exception {
-        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(new HashSet<>(singletonList("/WEB-INF/log4j2.xml")));
+        given(servletContext.getResourcePaths("/WEB-INF/"))
+                .willReturn(new HashSet<>(singletonList("/WEB-INF/log4j2.xml")));
         given(servletContext.getResource("/WEB-INF/log4j2.xml")).willReturn(new URL("file:/a/b/c/WEB-INF/log4j2.xml"));
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
 
-        assertThat(loggerContextCaptor.getValue().getConfigLocation(), is(URI.create("file:/a/b/c/WEB-INF/log4j2.xml")));
+        assertThat(
+                loggerContextCaptor.getValue().getConfigLocation(), is(URI.create("file:/a/b/c/WEB-INF/log4j2.xml")));
 
         this.initializerImpl.stop();
     }
 
     @Test
-    public void testMissingLocationParameterWithManyMatchingResourcesUsesFirstMatchingResourceConfigLocation() throws Exception {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn("mycontext");
-        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(
-                new HashSet<>(asList("/WEB-INF/a.xml", "/WEB-INF/log4j2-mycontext.xml", "/WEB-INF/log4j2.xml")));
-        given(servletContext.getResource("/WEB-INF/log4j2-mycontext.xml")).willReturn(
-                new URL("file:/a/b/c/WEB-INF/log4j2-mycontext.xml"));
+    public void testMissingLocationParameterWithManyMatchingResourcesUsesFirstMatchingResourceConfigLocation()
+            throws Exception {
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn("mycontext");
+        given(servletContext.getResourcePaths("/WEB-INF/"))
+                .willReturn(new HashSet<>(
+                        asList("/WEB-INF/a.xml", "/WEB-INF/log4j2-mycontext.xml", "/WEB-INF/log4j2.xml")));
+        given(servletContext.getResource("/WEB-INF/log4j2-mycontext.xml"))
+                .willReturn(new URL("file:/a/b/c/WEB-INF/log4j2-mycontext.xml"));
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
 
-        assertThat(loggerContextCaptor.getValue().getConfigLocation(),
+        assertThat(
+                loggerContextCaptor.getValue().getConfigLocation(),
                 is(URI.create("file:/a/b/c/WEB-INF/log4j2-mycontext.xml")));
 
         this.initializerImpl.stop();
@@ -376,11 +425,14 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(",,,");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn(",,,");
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
 
         assertThat(loggerContextCaptor.getValue().getConfiguration(), is(instanceOf(DefaultConfiguration.class)));
@@ -390,13 +442,16 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testCompositeLocationParameterSetsCompositeConfiguration() {
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn("mycontext");
-        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(
-                "log4j2-combined.xml,log4j2-override.xml");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
+                .willReturn("mycontext");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
+                .willReturn("log4j2-combined.xml,log4j2-override.xml");
 
         this.initializerImpl.start();
 
-        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        then(servletContext)
+                .should()
+                .setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
         assertNotNull(loggerContextCaptor.getValue(), "The context attribute should not be null.");
 
         assertThat(loggerContextCaptor.getValue().getConfiguration(), is(instanceOf(CompositeConfiguration.class)));

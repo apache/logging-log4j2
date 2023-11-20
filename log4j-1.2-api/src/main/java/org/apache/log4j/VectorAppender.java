@@ -17,7 +17,6 @@
 package org.apache.log4j;
 
 import java.util.Vector;
-
 import org.apache.log4j.spi.LoggingEvent;
 
 /**

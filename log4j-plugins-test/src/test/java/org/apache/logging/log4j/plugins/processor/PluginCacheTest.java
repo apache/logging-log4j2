@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.plugins.processor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.plugins.model.PluginCache;
 import org.apache.logging.log4j.plugins.model.PluginEntry;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.Issue;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PluginCacheTest {
 
@@ -51,7 +50,7 @@ public class PluginCacheTest {
 
     private void createCategory(final PluginCache cache, final String categoryName, final List<String> entryNames) {
         final Map<String, PluginEntry> category = cache.getNamespace(categoryName);
-        for (String entryName: entryNames) {
+        for (String entryName : entryNames) {
             final PluginEntry entry = PluginEntry.builder()
                     .setKey(entryName)
                     .setName(entryName)
@@ -61,5 +60,4 @@ public class PluginCacheTest {
             category.put(entryName, entry);
         }
     }
-
 }

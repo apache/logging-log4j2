@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -29,9 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Tests a "compact" XML file, no extra spaces or end of lines.
  */
@@ -40,8 +39,7 @@ public class XmlCompactFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(),
-                "XmlCompactFileAppenderTest.xml");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "XmlCompactFileAppenderTest.xml");
     }
 
     @Test
@@ -78,5 +76,4 @@ public class XmlCompactFileAppenderTest {
         assertTrue(line1.indexOf('\r') == -1);
         assertTrue(line1.indexOf('\n') == -1);
     }
-
 }

@@ -16,9 +16,9 @@
  */
 package org.apache.log4j.xml;
 
-import org.apache.log4j.Level;
-
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
+import org.apache.log4j.Level;
 
 /**
  * This class introduces a new level called TRACE. TRACE has lower level than DEBUG.
@@ -37,10 +37,10 @@ public class XLevel extends Level {
 
     public static Level toLevel(final int i) throws IllegalArgumentException {
         switch (i) {
-        case TRACE_INT:
-            return XLevel.TRACE;
-        case LETHAL_INT:
-            return XLevel.LETHAL;
+            case TRACE_INT:
+                return XLevel.TRACE;
+            case LETHAL_INT:
+                return XLevel.LETHAL;
         }
         return Level.toLevel(i);
     }
@@ -71,5 +71,4 @@ public class XLevel extends Level {
     protected XLevel(final int level, final String strLevel, final int syslogEquiv) {
         super(level, strLevel, syslogEquiv);
     }
-
 }

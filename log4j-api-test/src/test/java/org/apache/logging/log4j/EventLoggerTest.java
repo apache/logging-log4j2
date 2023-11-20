@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.Locale;
-
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @UsingThreadContextMap
 public class EventLoggerTest {
@@ -50,8 +49,8 @@ public class EventLoggerTest {
         EventLogger.logEvent(msg);
         ThreadContext.clearMap();
         assertThat(results).hasSize(1);
-        final String expected = "EVENT OFF Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
+        final String expected =
+                "EVENT OFF Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
         assertThat(results.get(0)).startsWith(expected);
     }
-
 }

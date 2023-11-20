@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,8 +29,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 @Tag("yaml")
 @LoggerContextSource("log4j2-2134.yml")
 public class JiraLog4j2_2134Test {
@@ -39,17 +39,22 @@ public class JiraLog4j2_2134Test {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
         final PatternLayout layout = PatternLayout.newBuilder()
-        // @formatter:off
+                // @formatter:off
                 .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-        .setConfiguration(config)
-        .build();
+                .setConfiguration(config)
+                .build();
         // @formatter:on
-        final Appender appender = FileAppender.newBuilder().setFileName("target/test.log").setLayout(layout)
-        .setConfiguration(config).setBufferSize(4000).setName("File").build();
+        final Appender appender = FileAppender.newBuilder()
+                .setFileName("target/test.log")
+                .setLayout(layout)
+                .setConfiguration(config)
+                .setBufferSize(4000)
+                .setName("File")
+                .build();
         // appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
-        final AppenderRef[] refs = new AppenderRef[]{ref};
+        final AppenderRef[] refs = new AppenderRef[] {ref};
         final LoggerConfig loggerConfig = LoggerConfig.newBuilder()
                 .setAdditivity(false)
                 .setLevel(Level.INFO)
@@ -104,35 +109,35 @@ public class JiraLog4j2_2134Test {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
         final PatternLayout layout = PatternLayout.newBuilder()
-        .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-        .setPatternSelector(null)
-        .setConfiguration(config)
-        .setRegexReplacement(null)
-        .setCharset(null)
-        .setAlwaysWriteExceptions(false)
-        .setNoConsoleNoAnsi(false)
-        .setHeader(null)
-        .setFooter(null)
-        .build();
+                .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+                .setPatternSelector(null)
+                .setConfiguration(config)
+                .setRegexReplacement(null)
+                .setCharset(null)
+                .setAlwaysWriteExceptions(false)
+                .setNoConsoleNoAnsi(false)
+                .setHeader(null)
+                .setFooter(null)
+                .build();
         // @formatter:off
         final Appender appender = FileAppender.newBuilder()
-        .setFileName("target/test.log")
-        .setAppend(false)
-        .setLocking(false)
-        .setName("File")
-        .setImmediateFlush(true)
-        .setIgnoreExceptions(false)
-        .setBufferedIo(false)
-        .setBufferSize(4000)
-        .setLayout(layout)
-        .setAdvertise(false)
-        .setConfiguration(config)
-        .build();
+                .setFileName("target/test.log")
+                .setAppend(false)
+                .setLocking(false)
+                .setName("File")
+                .setImmediateFlush(true)
+                .setIgnoreExceptions(false)
+                .setBufferedIo(false)
+                .setBufferSize(4000)
+                .setLayout(layout)
+                .setAdvertise(false)
+                .setConfiguration(config)
+                .build();
         // @formatter:on
         appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
-        final AppenderRef[] refs = new AppenderRef[]{ref};
+        final AppenderRef[] refs = new AppenderRef[] {ref};
         final LoggerConfig loggerConfig = LoggerConfig.newBuilder()
                 .setAdditivity(false)
                 .setLevel(Level.INFO)

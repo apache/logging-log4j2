@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Property;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -35,16 +25,29 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
+import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractDatabaseAppenderTest {
     private static class LocalAbstractDatabaseAppender extends AbstractDatabaseAppender<LocalAbstractDatabaseManager> {
 
-        public LocalAbstractDatabaseAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                                             final LocalAbstractDatabaseManager manager) {
+        public LocalAbstractDatabaseAppender(
+                final String name,
+                final Filter filter,
+                final boolean ignoreExceptions,
+                final LocalAbstractDatabaseManager manager) {
             super(name, filter, null, ignoreExceptions, Property.EMPTY_ARRAY, manager);
         }
     }
-    private static abstract class LocalAbstractDatabaseManager extends AbstractDatabaseManager {
+
+    private abstract static class LocalAbstractDatabaseManager extends AbstractDatabaseManager {
         public LocalAbstractDatabaseManager(final String name, final int bufferSize) {
             super(name, bufferSize, null, null);
         }

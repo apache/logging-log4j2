@@ -24,7 +24,6 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.apache.logging.log4j.core.impl.JdkMapAdapterStringMap;
 import org.apache.logging.log4j.layout.template.json.JacksonFixture;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
@@ -38,8 +37,7 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("DoubleBraceInitialization")
 class JsonWriterTest {
 
-    private static final JsonWriter WRITER = JsonWriter
-            .newBuilder()
+    private static final JsonWriter WRITER = JsonWriter.newBuilder()
             .setMaxStringLength(128)
             .setTruncatedStringSuffix("~")
             .build();
@@ -47,6 +45,7 @@ class JsonWriterTest {
     private static final int SURROGATE_CODE_POINT = 65536;
 
     private static final char[] SURROGATE_PAIR = new char[2];
+
     static {
         // noinspection ResultOfMethodCallIgnored
         Character.toChars(SURROGATE_CODE_POINT, SURROGATE_PAIR, 0);
@@ -56,15 +55,13 @@ class JsonWriterTest {
 
     private static final char LO_SURROGATE = SURROGATE_PAIR[1];
 
-    private static synchronized <V> V withLockedWriterReturning(
-            final Function<JsonWriter, V> consumer) {
+    private static synchronized <V> V withLockedWriterReturning(final Function<JsonWriter, V> consumer) {
         synchronized (WRITER) {
             return consumer.apply(WRITER);
         }
     }
 
-    private static synchronized void withLockedWriter(
-            final Consumer<JsonWriter> consumer) {
+    private static synchronized void withLockedWriter(final Consumer<JsonWriter> consumer) {
         synchronized (WRITER) {
             consumer.accept(WRITER);
         }
@@ -91,35 +88,23 @@ class JsonWriterTest {
     }
 
     private static void assertStringBuilderReset(final JsonWriter writer) {
-        Assertions
-                .assertThat(writer.getStringBuilder().capacity())
-                .isEqualTo(writer.getMaxStringLength());
-        Assertions
-                .assertThat(writer.getStringBuilder().length())
-                .isEqualTo(0);
+        Assertions.assertThat(writer.getStringBuilder().capacity()).isEqualTo(writer.getMaxStringLength());
+        Assertions.assertThat(writer.getStringBuilder().length()).isEqualTo(0);
     }
 
     @Test
     void test_surrogate_code_point() {
-        Assertions
-                .assertThat(HI_SURROGATE)
-                .matches(Character::isHighSurrogate, "is high surrogate");
-        Assertions
-                .assertThat(LO_SURROGATE)
-                .matches(Character::isLowSurrogate, "is low surrogate");
-        Assertions
-                .assertThat(Character.isSurrogatePair(HI_SURROGATE, LO_SURROGATE))
+        Assertions.assertThat(HI_SURROGATE).matches(Character::isHighSurrogate, "is high surrogate");
+        Assertions.assertThat(LO_SURROGATE).matches(Character::isLowSurrogate, "is low surrogate");
+        Assertions.assertThat(Character.isSurrogatePair(HI_SURROGATE, LO_SURROGATE))
                 .as("is surrogate pair")
                 .isTrue();
-        Assertions
-                .assertThat(SURROGATE_CODE_POINT)
-                .matches(Character::isDefined, "is defined");
+        Assertions.assertThat(SURROGATE_CODE_POINT).matches(Character::isDefined, "is defined");
     }
 
     @Test
     void test_use_null_Runnable() {
-        Assertions
-                .assertThatThrownBy(() -> withLockedWriter(writer -> writer.use(null)))
+        Assertions.assertThatThrownBy(() -> withLockedWriter(writer -> writer.use(null)))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("runnable");
     }
@@ -129,8 +114,7 @@ class JsonWriterTest {
         final RuntimeException exception = new RuntimeException();
         withLockedWriter(writer -> {
             final int initialLength = writer.getStringBuilder().length();
-            Assertions
-                    .assertThatThrownBy(() -> writer.use(() -> {
+            Assertions.assertThatThrownBy(() -> writer.use(() -> {
                         writer.writeString("extending the buffer");
                         throw exception;
                     }))
@@ -148,8 +132,7 @@ class JsonWriterTest {
     void test_writeValue() {
         final Object value = Collections.singletonMap("a", "b");
         final String expectedJson = "{'a':'b'}".replace('\'', '"');
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeValue(value)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeValue(value)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -162,8 +145,7 @@ class JsonWriterTest {
     void test_writeObject_StringMap() {
         final StringMap map = new JdkMapAdapterStringMap(Collections.singletonMap("a", "b"));
         final String expectedJson = "{'a':'b'}".replace('\'', '"');
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeObject(map)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeObject(map)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -174,14 +156,14 @@ class JsonWriterTest {
 
     @Test
     void test_writeObject_IndexedReadOnlyStringMap() {
-        final IndexedReadOnlyStringMap map =
-                new SortedArrayStringMap(new LinkedHashMap<String, Object>() {{
-                    put("buzz", 1.2D);
-                    put("foo", "bar");
-                }});
+        final IndexedReadOnlyStringMap map = new SortedArrayStringMap(new LinkedHashMap<String, Object>() {
+            {
+                put("buzz", 1.2D);
+                put("foo", "bar");
+            }
+        });
         final String expectedJson = "{'buzz':1.2,'foo':'bar'}".replace('\'', '"');
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeObject(map)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeObject(map)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -192,76 +174,84 @@ class JsonWriterTest {
 
     @Test
     void test_writeObject_Map() {
-        final Map<String, Object> map = new LinkedHashMap<String, Object>() {{
-            put("key1", "val1");
-            put("key2", Collections.singletonMap("key2.1", "val2.1"));
-            put("key3", Arrays.asList(
-                    3,
-                    (byte) 127,
-                    4.5D,
-                    4.6F,
-                    Arrays.asList(true, false),
-                    new BigDecimal("30.12345678901234567890123456789"),
-                    new BigInteger("12345678901234567890123456789"),
-                    Collections.singleton('a'),
-                    Collections.singletonMap("key3.3", "val3.3")));
-            put("key4", new LinkedHashMap<String, Object>() {{
-                put("chars", new char[]{'a', 'b', 'c'});
-                put("booleans", new boolean[]{true, false});
-                put("bytes", new byte[]{1, 2});
-                put("shorts", new short[]{3, 4});
-                put("ints", new int[]{256, 257});
-                put("longs", new long[]{2147483648L, 2147483649L});
-                put("floats", new float[]{1.0F, 1.1F});
-                put("doubles", new double[]{2.0D, 2.1D});
-                put("objects", new Object[]{"foo", "bar"});
-            }});
-            put("key5\t", new Object() {
-                @Override
-                public String toString() {
-                    return "custom-object\r";
-                }
-            });
-            put("key6", Arrays.asList(
-                    new SortedArrayStringMap(new LinkedHashMap<String, Object>() {{
-                        put("buzz", 1.2D);
-                        put("foo", "bar");
-                    }}),
-                    new JdkMapAdapterStringMap(Collections.singletonMap("a", "b"))));
-            put("key7", (StringBuilderFormattable) buffer ->
-                    buffer.append(7.7777777777777D));
-        }};
-        final String expectedJson = ("{" +
-                "'key1':'val1'," +
-                "'key2':{'key2.1':'val2.1'}," +
-                "'key3':[" +
-                "3," +
-                "127," +
-                "4.5," +
-                "4.6," +
-                "[true,false]," +
-                "30.12345678901234567890123456789," +
-                "12345678901234567890123456789," +
-                "['a']," +
-                "{'key3.3':'val3.3'}" +
-                "]," +
-                "'key4':{" +
-                "'chars':['a','b','c']," +
-                "'booleans':[true,false]," +
-                "'bytes':[1,2]," +
-                "'shorts':[3,4]," +
-                "'ints':[256,257]," +
-                "'longs':[2147483648,2147483649]," +
-                "'floats':[1.0,1.1]," +
-                "'doubles':[2.0,2.1]," +
-                "'objects':['foo','bar']" +
-                "}," +
-                "'key5\\t':'custom-object\\r'," +
-                "'key6':[{'buzz':1.2,'foo':'bar'},{'a':'b'}]," +
-                "'key7':'7.7777777777777'" +
-                "}").replace('\'', '"');
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeObject(map)));
+        final Map<String, Object> map = new LinkedHashMap<String, Object>() {
+            {
+                put("key1", "val1");
+                put("key2", Collections.singletonMap("key2.1", "val2.1"));
+                put(
+                        "key3",
+                        Arrays.asList(
+                                3,
+                                (byte) 127,
+                                4.5D,
+                                4.6F,
+                                Arrays.asList(true, false),
+                                new BigDecimal("30.12345678901234567890123456789"),
+                                new BigInteger("12345678901234567890123456789"),
+                                Collections.singleton('a'),
+                                Collections.singletonMap("key3.3", "val3.3")));
+                put("key4", new LinkedHashMap<String, Object>() {
+                    {
+                        put("chars", new char[] {'a', 'b', 'c'});
+                        put("booleans", new boolean[] {true, false});
+                        put("bytes", new byte[] {1, 2});
+                        put("shorts", new short[] {3, 4});
+                        put("ints", new int[] {256, 257});
+                        put("longs", new long[] {2147483648L, 2147483649L});
+                        put("floats", new float[] {1.0F, 1.1F});
+                        put("doubles", new double[] {2.0D, 2.1D});
+                        put("objects", new Object[] {"foo", "bar"});
+                    }
+                });
+                put("key5\t", new Object() {
+                    @Override
+                    public String toString() {
+                        return "custom-object\r";
+                    }
+                });
+                put(
+                        "key6",
+                        Arrays.asList(
+                                new SortedArrayStringMap(new LinkedHashMap<String, Object>() {
+                                    {
+                                        put("buzz", 1.2D);
+                                        put("foo", "bar");
+                                    }
+                                }),
+                                new JdkMapAdapterStringMap(Collections.singletonMap("a", "b"))));
+                put("key7", (StringBuilderFormattable) buffer -> buffer.append(7.7777777777777D));
+            }
+        };
+        final String expectedJson = ("{" + "'key1':'val1',"
+                        + "'key2':{'key2.1':'val2.1'},"
+                        + "'key3':["
+                        + "3,"
+                        + "127,"
+                        + "4.5,"
+                        + "4.6,"
+                        + "[true,false],"
+                        + "30.12345678901234567890123456789,"
+                        + "12345678901234567890123456789,"
+                        + "['a'],"
+                        + "{'key3.3':'val3.3'}"
+                        + "],"
+                        + "'key4':{"
+                        + "'chars':['a','b','c'],"
+                        + "'booleans':[true,false],"
+                        + "'bytes':[1,2],"
+                        + "'shorts':[3,4],"
+                        + "'ints':[256,257],"
+                        + "'longs':[2147483648,2147483649],"
+                        + "'floats':[1.0,1.1],"
+                        + "'doubles':[2.0,2.1],"
+                        + "'objects':['foo','bar']"
+                        + "},"
+                        + "'key5\\t':'custom-object\\r',"
+                        + "'key6':[{'buzz':1.2,'foo':'bar'},{'a':'b'}],"
+                        + "'key7':'7.7777777777777'"
+                        + "}")
+                .replace('\'', '"');
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeObject(map)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -272,13 +262,9 @@ class JsonWriterTest {
 
     @Test
     void test_writeArray_List() {
-        final List<Object> items = Arrays.asList(
-                1, 2, 3,
-                "yo",
-                Collections.singletonMap("foo", "bar"));
+        final List<Object> items = Arrays.asList(1, 2, 3, "yo", Collections.singletonMap("foo", "bar"));
         final String expectedJson = "[1,2,3,\"yo\",{\"foo\":\"bar\"}]";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -289,12 +275,9 @@ class JsonWriterTest {
 
     @Test
     void test_writeArray_Collection() {
-        final Collection<Object> items = Arrays.asList(
-                1, 2, 3,
-                Collections.singletonMap("foo", "bar"));
+        final Collection<Object> items = Arrays.asList(1, 2, 3, Collections.singletonMap("foo", "bar"));
         final String expectedJson = "[1,2,3,{\"foo\":\"bar\"}]";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -307,8 +290,7 @@ class JsonWriterTest {
     void test_writeArray_char() {
         final char[] items = {'\u0000', 'a', 'b', 'c', '\u007f'};
         final String expectedJson = "[\"\\u0000\",\"a\",\"b\",\"c\",\"\u007F\"]";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -321,8 +303,7 @@ class JsonWriterTest {
     void test_writeArray_boolean() {
         final boolean[] items = {true, false};
         final String expectedJson = "[true,false]";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -334,11 +315,8 @@ class JsonWriterTest {
     @Test
     void test_writeArray_byte() {
         final byte[] items = {Byte.MIN_VALUE, -1, 0, 1, Byte.MAX_VALUE};
-        final String expectedJson = Arrays
-                .toString(items)
-                .replaceAll(" ", "");
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String expectedJson = Arrays.toString(items).replaceAll(" ", "");
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -350,11 +328,8 @@ class JsonWriterTest {
     @Test
     void test_writeArray_short() {
         final short[] items = {Short.MIN_VALUE, -1, 0, 1, Short.MAX_VALUE};
-        final String expectedJson = Arrays
-                .toString(items)
-                .replaceAll(" ", "");
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String expectedJson = Arrays.toString(items).replaceAll(" ", "");
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -366,11 +341,8 @@ class JsonWriterTest {
     @Test
     void test_writeArray_int() {
         final int[] items = {Integer.MIN_VALUE, -1, 0, 1, Integer.MAX_VALUE};
-        final String expectedJson = Arrays
-                .toString(items)
-                .replaceAll(" ", "");
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String expectedJson = Arrays.toString(items).replaceAll(" ", "");
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -382,11 +354,8 @@ class JsonWriterTest {
     @Test
     void test_writeArray_long() {
         final long[] items = {Long.MIN_VALUE, -1L, 0L, 1L, Long.MAX_VALUE};
-        final String expectedJson = Arrays
-                .toString(items)
-                .replaceAll(" ", "");
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String expectedJson = Arrays.toString(items).replaceAll(" ", "");
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -398,11 +367,8 @@ class JsonWriterTest {
     @Test
     void test_writeArray_float() {
         final float[] items = {Float.MIN_VALUE, -1F, 0F, 1F, Float.MAX_VALUE};
-        final String expectedJson = Arrays
-                .toString(items)
-                .replaceAll(" ", "");
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String expectedJson = Arrays.toString(items).replaceAll(" ", "");
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -414,11 +380,8 @@ class JsonWriterTest {
     @Test
     void test_writeArray_double() {
         final double[] items = {Double.MIN_VALUE, -1D, 0D, 1D, Double.MAX_VALUE};
-        final String expectedJson = Arrays
-                .toString(items)
-                .replaceAll(" ", "");
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeArray(items)));
+        final String expectedJson = Arrays.toString(items).replaceAll(" ", "");
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeArray(items)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -430,23 +393,14 @@ class JsonWriterTest {
     @Test
     void test_writeArray_Object() {
         final String expectedJson = "[\"foo\",{\"bar\":\"buzz\"},null]";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() ->
-                        writer.writeArray(new Object[]{
-                                "foo",
-                                Collections.singletonMap("bar", "buzz"),
-                                null
-                        })));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(
+                () -> writer.writeArray(new Object[] {"foo", Collections.singletonMap("bar", "buzz"), null})));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     void test_writeString_null_emitter() {
-        Assertions
-                .assertThatThrownBy(() ->
-                        withLockedWriter(writer ->
-                                writer.use(() ->
-                                        writer.writeString(null, 0L))))
+        Assertions.assertThatThrownBy(() -> withLockedWriter(writer -> writer.use(() -> writer.writeString(null, 0L))))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("emitter");
     }
@@ -456,8 +410,8 @@ class JsonWriterTest {
         final String state = "there-is-no-spoon";
         final BiConsumer<StringBuilder, String> emitter = StringBuilder::append;
         final String expectedJson = '"' + state + '"';
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeString(emitter, state)));
+        final String actualJson =
+                withLockedWriterReturning(writer -> writer.use(() -> writer.writeString(emitter, state)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -466,13 +420,10 @@ class JsonWriterTest {
         withLockedWriter(writer -> {
             final int maxStringLength = writer.getMaxStringLength();
             final String excessiveString = "x".repeat(maxStringLength) + 'y';
-            final String expectedJson = '"' +
-                    excessiveString.substring(0, maxStringLength) +
-                    writer.getTruncatedStringSuffix() +
-                    '"';
+            final String expectedJson =
+                    '"' + excessiveString.substring(0, maxStringLength) + writer.getTruncatedStringSuffix() + '"';
             final BiConsumer<StringBuilder, String> emitter = StringBuilder::append;
-            final String actualJson =
-                    writer.use(() -> writer.writeString(emitter, excessiveString));
+            final String actualJson = writer.use(() -> writer.writeString(emitter, excessiveString));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
             assertFormattableBufferReset(writer);
         });
@@ -488,13 +439,10 @@ class JsonWriterTest {
                     .append(HI_SURROGATE)
                     .append(LO_SURROGATE)
                     .toString();
-            final String expectedJson = "\"" +
-                    "x".repeat(maxStringLength - 1) +
-                    writer.getTruncatedStringSuffix() +
-                    '"';
+            final String expectedJson =
+                    "\"" + "x".repeat(maxStringLength - 1) + writer.getTruncatedStringSuffix() + '"';
             final BiConsumer<StringBuilder, String> emitter = StringBuilder::append;
-            final String actualJson =
-                    writer.use(() -> writer.writeString(emitter, excessiveString));
+            final String actualJson = writer.use(() -> writer.writeString(emitter, excessiveString));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
             assertFormattableBufferReset(writer);
         });
@@ -509,9 +457,7 @@ class JsonWriterTest {
     void test_writeString_formattable() {
         final String expectedJson = "\"foo\\tbar\\tbuzz\"";
         final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() ->
-                        writer.writeString(stringBuilder ->
-                                stringBuilder.append("foo\tbar\tbuzz"))));
+                writer.use(() -> writer.writeString(stringBuilder -> stringBuilder.append("foo\tbar\tbuzz"))));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -520,13 +466,10 @@ class JsonWriterTest {
         withLockedWriter(writer -> {
             final int maxStringLength = writer.getMaxStringLength();
             final String excessiveString = "x".repeat(maxStringLength) + 'y';
-            final String expectedJson = '"' +
-                    excessiveString.substring(0, maxStringLength) +
-                    writer.getTruncatedStringSuffix() +
-                    '"';
-            final String actualJson = writer.use(() ->
-                    writer.writeString(stringBuilder ->
-                            stringBuilder.append(excessiveString)));
+            final String expectedJson =
+                    '"' + excessiveString.substring(0, maxStringLength) + writer.getTruncatedStringSuffix() + '"';
+            final String actualJson =
+                    writer.use(() -> writer.writeString(stringBuilder -> stringBuilder.append(excessiveString)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
             assertFormattableBufferReset(writer);
         });
@@ -542,13 +485,10 @@ class JsonWriterTest {
                     .append(HI_SURROGATE)
                     .append(LO_SURROGATE)
                     .toString();
-            final String expectedJson = "\"" +
-                    "x".repeat(maxStringLength - 1) +
-                    writer.getTruncatedStringSuffix() +
-                    '"';
-            final String actualJson = writer.use(() ->
-                    writer.writeString(stringBuilder ->
-                            stringBuilder.append(excessiveString)));
+            final String expectedJson =
+                    "\"" + "x".repeat(maxStringLength - 1) + writer.getTruncatedStringSuffix() + '"';
+            final String actualJson =
+                    writer.use(() -> writer.writeString(stringBuilder -> stringBuilder.append(excessiveString)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
             assertFormattableBufferReset(writer);
         });
@@ -556,12 +496,8 @@ class JsonWriterTest {
 
     private static void assertFormattableBufferReset(final JsonWriter writer) {
         final StringBuilder formattableBuffer = getFormattableBuffer(writer);
-        Assertions
-                .assertThat(formattableBuffer.capacity())
-                .isEqualTo(writer.getMaxStringLength());
-        Assertions
-                .assertThat(formattableBuffer.length())
-                .isEqualTo(0);
+        Assertions.assertThat(formattableBuffer.capacity()).isEqualTo(writer.getMaxStringLength());
+        Assertions.assertThat(formattableBuffer.length()).isEqualTo(0);
     }
 
     private static StringBuilder getFormattableBuffer(final JsonWriter writer) {
@@ -586,18 +522,14 @@ class JsonWriterTest {
 
     @Test
     void test_writeString_seq_negative_offset() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() -> writer.writeString("a", -1, 0)))
+        withLockedWriter(writer -> Assertions.assertThatThrownBy(() -> writer.use(() -> writer.writeString("a", -1, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("offset"));
     }
 
     @Test
     void test_writeString_seq_negative_length() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() -> writer.writeString("a", 0, -1)))
+        withLockedWriter(writer -> Assertions.assertThatThrownBy(() -> writer.use(() -> writer.writeString("a", 0, -1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("length"));
     }
@@ -606,10 +538,8 @@ class JsonWriterTest {
     void test_writeString_excessive_seq() {
         withLockedWriter(writer -> {
             final CharSequence seq = "x".repeat(writer.getMaxStringLength()) + 'y';
-            final String expectedJson = "\"" +
-                    "x".repeat(writer.getMaxStringLength()) +
-                    writer.getTruncatedStringSuffix() +
-                    '"';
+            final String expectedJson =
+                    "\"" + "x".repeat(writer.getMaxStringLength()) + writer.getTruncatedStringSuffix() + '"';
             final String actualJson = writer.use(() -> writer.writeString(seq));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         });
@@ -625,10 +555,8 @@ class JsonWriterTest {
                     .append(HI_SURROGATE)
                     .append(LO_SURROGATE)
                     .toString();
-            final String expectedJson = "\"" +
-                    "x".repeat(maxStringLength - 1) +
-                    writer.getTruncatedStringSuffix() +
-                    '"';
+            final String expectedJson =
+                    "\"" + "x".repeat(maxStringLength - 1) + writer.getTruncatedStringSuffix() + '"';
             final String actualJson = writer.use(() -> writer.writeString(seq));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         });
@@ -641,8 +569,7 @@ class JsonWriterTest {
             // noinspection ResultOfMethodCallIgnored
             Character.toChars(codePoint, surrogates, 0);
             final String s = new String(surrogates);
-            return withLockedWriterReturning(writer ->
-                    writer.use(() -> writer.writeString(s)));
+            return withLockedWriterReturning(writer -> writer.use(() -> writer.writeString(s)));
         });
     }
 
@@ -658,18 +585,16 @@ class JsonWriterTest {
 
     @Test
     void test_writeString_buffer_negative_offset() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() -> writer.writeString(new char[]{'a'}, -1, 0)))
+        withLockedWriter(writer -> Assertions.assertThatThrownBy(
+                        () -> writer.use(() -> writer.writeString(new char[] {'a'}, -1, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("offset"));
     }
 
     @Test
     void test_writeString_buffer_negative_length() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() -> writer.writeString(new char[]{'a'}, 0, -1)))
+        withLockedWriter(writer -> Assertions.assertThatThrownBy(
+                        () -> writer.use(() -> writer.writeString(new char[] {'a'}, 0, -1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("length"));
     }
@@ -677,13 +602,9 @@ class JsonWriterTest {
     @Test
     void test_writeString_excessive_buffer() {
         withLockedWriter(writer -> {
-            final char[] buffer =
-                    ("x".repeat(writer.getMaxStringLength()) + 'y')
-                            .toCharArray();
-            final String expectedJson = "\"" +
-                    "x".repeat(writer.getMaxStringLength()) +
-                    writer.getTruncatedStringSuffix() +
-                    '"';
+            final char[] buffer = ("x".repeat(writer.getMaxStringLength()) + 'y').toCharArray();
+            final String expectedJson =
+                    "\"" + "x".repeat(writer.getMaxStringLength()) + writer.getTruncatedStringSuffix() + '"';
             final String actualJson = writer.use(() -> writer.writeString(buffer));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         });
@@ -700,10 +621,8 @@ class JsonWriterTest {
                     .append(LO_SURROGATE)
                     .toString()
                     .toCharArray();
-            final String expectedJson = "\"" +
-                    "x".repeat(maxStringLength - 1) +
-                    writer.getTruncatedStringSuffix() +
-                    '"';
+            final String expectedJson =
+                    "\"" + "x".repeat(maxStringLength - 1) + writer.getTruncatedStringSuffix() + '"';
             final String actualJson = writer.use(() -> writer.writeString(buffer));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         });
@@ -715,27 +634,23 @@ class JsonWriterTest {
         testQuoting((final Integer codePoint) -> {
             // noinspection ResultOfMethodCallIgnored
             Character.toChars(codePoint, buffer, 0);
-            return withLockedWriterReturning(writer ->
-                    writer.use(() -> writer.writeString(buffer)));
+            return withLockedWriterReturning(writer -> writer.use(() -> writer.writeString(buffer)));
         });
     }
 
-    private static void testQuoting(
-            final Function<Integer, String> quoter) throws IOException {
+    private static void testQuoting(final Function<Integer, String> quoter) throws IOException {
         final SoftAssertions assertions = new SoftAssertions();
         final char[] surrogates = new char[2];
         final Random random = new Random(0);
         for (int codePoint = Character.MIN_CODE_POINT;
-             codePoint <= Character.MAX_CODE_POINT;
-             // Incrementing randomly, since incrementing by one takes almost
-             // two minutes for this test to finish.
-             codePoint += Math.abs(random.nextInt(100))) {
+                codePoint <= Character.MAX_CODE_POINT;
+                // Incrementing randomly, since incrementing by one takes almost
+                // two minutes for this test to finish.
+                codePoint += Math.abs(random.nextInt(100))) {
             // noinspection ResultOfMethodCallIgnored
             Character.toChars(codePoint, surrogates, 0);
             final String s = new String(surrogates);
-            final String expectedJson = JacksonFixture
-                    .getObjectMapper()
-                    .writeValueAsString(s);
+            final String expectedJson = JacksonFixture.getObjectMapper().writeValueAsString(s);
             final String actualJson = quoter.apply(codePoint);
             assertions
                     .assertThat(actualJson)
@@ -752,17 +667,14 @@ class JsonWriterTest {
 
     @Test
     void test_writeNumber_BigDecimal() {
-        for (final BigDecimal number : new BigDecimal[]{
-                BigDecimal.ZERO,
-                BigDecimal.ONE,
-                BigDecimal.TEN,
-                new BigDecimal("" + Long.MAX_VALUE +
-                        "" + Long.MAX_VALUE +
-                        '.' + Long.MAX_VALUE +
-                        "" + Long.MAX_VALUE)}) {
+        for (final BigDecimal number : new BigDecimal[] {
+            BigDecimal.ZERO,
+            BigDecimal.ONE,
+            BigDecimal.TEN,
+            new BigDecimal("" + Long.MAX_VALUE + "" + Long.MAX_VALUE + '.' + Long.MAX_VALUE + "" + Long.MAX_VALUE)
+        }) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = withLockedWriterReturning(writer ->
-                    writer.use(() -> writer.writeNumber(number)));
+            final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(number)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
@@ -774,74 +686,63 @@ class JsonWriterTest {
 
     @Test
     void test_writeNumber_BigInteger() {
-        for (final BigInteger number : new BigInteger[]{
-                BigInteger.ZERO,
-                BigInteger.ONE,
-                BigInteger.TEN,
-                new BigInteger("" + Long.MAX_VALUE + "" + Long.MAX_VALUE)}) {
+        for (final BigInteger number : new BigInteger[] {
+            BigInteger.ZERO, BigInteger.ONE, BigInteger.TEN, new BigInteger("" + Long.MAX_VALUE + "" + Long.MAX_VALUE)
+        }) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = withLockedWriterReturning(writer ->
-                    writer.use(() -> writer.writeNumber(number)));
+            final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(number)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
 
     @Test
     void test_writeNumber_float() {
-        for (final float number : new float[]{Float.MIN_VALUE, -1.0F, 0F, 1.0F, Float.MAX_VALUE}) {
+        for (final float number : new float[] {Float.MIN_VALUE, -1.0F, 0F, 1.0F, Float.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = withLockedWriterReturning(writer ->
-                    writer.use(() -> writer.writeNumber(number)));
+            final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(number)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
 
     @Test
     void test_writeNumber_double() {
-        for (final double number : new double[]{Double.MIN_VALUE, -1.0D, 0D, 1.0D, Double.MAX_VALUE}) {
+        for (final double number : new double[] {Double.MIN_VALUE, -1.0D, 0D, 1.0D, Double.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = withLockedWriterReturning(writer ->
-                    writer.use(() -> writer.writeNumber(number)));
+            final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(number)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
 
     @Test
     void test_writeNumber_short() {
-        for (final short number : new short[]{Short.MIN_VALUE, -1, 0, 1, Short.MAX_VALUE}) {
+        for (final short number : new short[] {Short.MIN_VALUE, -1, 0, 1, Short.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = withLockedWriterReturning(writer ->
-                    writer.use(() -> writer.writeNumber(number)));
+            final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(number)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
 
     @Test
     void test_writeNumber_int() {
-        for (final int number : new int[]{Integer.MIN_VALUE, -1, 0, 1, Integer.MAX_VALUE}) {
+        for (final int number : new int[] {Integer.MIN_VALUE, -1, 0, 1, Integer.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = withLockedWriterReturning(writer ->
-                    writer.use(() -> writer.writeNumber(number)));
+            final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(number)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
 
     @Test
     void test_writeNumber_long() {
-        for (final long number : new long[]{Long.MIN_VALUE, -1L, 0L, 1L, Long.MAX_VALUE}) {
+        for (final long number : new long[] {Long.MIN_VALUE, -1L, 0L, 1L, Long.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = withLockedWriterReturning(writer ->
-                    writer.use(() -> writer.writeNumber(number)));
+            final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(number)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
 
     @Test
     void test_writeNumber_integral_and_negative_fractional() {
-        Assertions
-                .assertThatThrownBy(() ->
-                        withLockedWriter(writer ->
-                                writer.use(() -> writer.writeNumber(0, -1))))
+        Assertions.assertThatThrownBy(() -> withLockedWriter(writer -> writer.use(() -> writer.writeNumber(0, -1))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("was expecting a positive fraction: -1");
     }
@@ -849,32 +750,28 @@ class JsonWriterTest {
     @Test
     void test_writeNumber_integral_and_zero_fractional() {
         final String expectedJson = "123";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeNumber(123L, 0L)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(123L, 0L)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     void test_writeNumber_integral_and_fractional() {
         final String expectedJson = "123.456";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeNumber(123L, 456L)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeNumber(123L, 456L)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     void test_writeBoolean_true() {
         final String expectedJson = "true";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeBoolean(true)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeBoolean(true)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     void test_writeBoolean_false() {
         final String expectedJson = "false";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeBoolean(false)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeBoolean(false)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -885,75 +782,62 @@ class JsonWriterTest {
 
     private void expectNull(final Consumer<JsonWriter> body) {
         final String expectedJson = "null";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> body.accept(writer)));
+        final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> body.accept(writer)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     void test_writeRawString_null_seq() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() ->
-                                writer.writeRawString((String) null)))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessage("seq"));
+        withLockedWriter(
+                writer -> Assertions.assertThatThrownBy(() -> writer.use(() -> writer.writeRawString((String) null)))
+                        .isInstanceOf(NullPointerException.class)
+                        .hasMessage("seq"));
     }
 
     @Test
     void test_writeRawString_seq_negative_offset() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() ->
-                                writer.writeRawString("a", -1, 0)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("offset"));
+        withLockedWriter(
+                writer -> Assertions.assertThatThrownBy(() -> writer.use(() -> writer.writeRawString("a", -1, 0)))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessageContaining("offset"));
     }
 
     @Test
     void test_writeRawString_seq_negative_length() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() ->
-                                writer.writeRawString("a", 0, -1)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("length"));
+        withLockedWriter(
+                writer -> Assertions.assertThatThrownBy(() -> writer.use(() -> writer.writeRawString("a", 0, -1)))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessageContaining("length"));
     }
 
     @Test
     void test_writeRawString_seq() {
         final String expectedJson = "this is not a valid JSON string";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() -> writer.writeRawString(expectedJson)));
+        final String actualJson =
+                withLockedWriterReturning(writer -> writer.use(() -> writer.writeRawString(expectedJson)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     void test_writeRawString_null_buffer() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() ->
-                                writer.writeRawString((char[]) null)))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessage("buffer"));
+        withLockedWriter(
+                writer -> Assertions.assertThatThrownBy(() -> writer.use(() -> writer.writeRawString((char[]) null)))
+                        .isInstanceOf(NullPointerException.class)
+                        .hasMessage("buffer"));
     }
 
     @Test
     void test_writeRawString_buffer_negative_offset() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() ->
-                                writer.writeRawString(new char[]{'a'}, -1, 0)))
+        withLockedWriter(writer -> Assertions.assertThatThrownBy(
+                        () -> writer.use(() -> writer.writeRawString(new char[] {'a'}, -1, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("offset"));
     }
 
     @Test
     void test_writeRawString_buffer_negative_length() {
-        withLockedWriter(writer -> Assertions
-                .assertThatThrownBy(() ->
-                        writer.use(() ->
-                                writer.writeRawString(new char[]{'a'}, 0, -1)))
+        withLockedWriter(writer -> Assertions.assertThatThrownBy(
+                        () -> writer.use(() -> writer.writeRawString(new char[] {'a'}, 0, -1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("length"));
     }
@@ -961,10 +845,8 @@ class JsonWriterTest {
     @Test
     void test_writeRawString_buffer() {
         final String expectedJson = "this is not a valid JSON string";
-        final String actualJson = withLockedWriterReturning(writer ->
-                writer.use(() ->
-                        writer.writeRawString(expectedJson.toCharArray())));
+        final String actualJson = withLockedWriterReturning(
+                writer -> writer.use(() -> writer.writeRawString(expectedJson.toCharArray())));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
-
 }

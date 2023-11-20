@@ -32,13 +32,18 @@ public class Compare {
 
     public static boolean compare(final Class testClass, final String file1, final String file2) throws IOException {
         try (final BufferedReader in1 = new BufferedReader(new FileReader(file1));
-            final BufferedReader in2 = new BufferedReader(new InputStreamReader(open(testClass, file2)))) {
+                final BufferedReader in2 = new BufferedReader(new InputStreamReader(open(testClass, file2)))) {
             return compare(testClass, file1, file2, in1, in2);
         }
     }
 
-    public static boolean compare(final Class testClass, final String file1, final String file2, final BufferedReader in1, final BufferedReader in2)
-        throws IOException {
+    public static boolean compare(
+            final Class testClass,
+            final String file1,
+            final String file2,
+            final BufferedReader in1,
+            final BufferedReader in2)
+            throws IOException {
 
         String s1;
         int lineCounter = 0;
@@ -71,8 +76,9 @@ public class Compare {
         return true;
     }
 
-    static public boolean compare(final String file1, final String file2) throws FileNotFoundException, IOException {
-        try (final BufferedReader in1 = new BufferedReader(new FileReader(file1)); final BufferedReader in2 = new BufferedReader(new FileReader(file2))) {
+    public static boolean compare(final String file1, final String file2) throws FileNotFoundException, IOException {
+        try (final BufferedReader in1 = new BufferedReader(new FileReader(file1));
+                final BufferedReader in2 = new BufferedReader(new FileReader(file2))) {
 
             String s1;
             int lineCounter = 0;
@@ -120,7 +126,8 @@ public class Compare {
      *
      */
     private static void outputFile(final Class testClass, final String file) throws IOException {
-        try (final InputStream is = open(testClass, file); final BufferedReader in1 = new BufferedReader(new InputStreamReader(is))) {
+        try (final InputStream is = open(testClass, file);
+                final BufferedReader in1 = new BufferedReader(new InputStreamReader(is))) {
 
             String s1;
             int lineCounter = 0;
@@ -145,5 +152,4 @@ public class Compare {
             }
         }
     }
-
 }

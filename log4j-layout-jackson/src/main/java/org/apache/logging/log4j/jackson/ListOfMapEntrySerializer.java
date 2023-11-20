@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * <p>
@@ -54,5 +53,4 @@ public class ListOfMapEntrySerializer extends StdSerializer<Map<String, String>>
         }
         jgen.writeObject(pairs);
     }
-
 }

@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.script.appender;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -26,11 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SetSystemProperty(key = ScriptPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "Groovy, Javascript")
 public class ScriptAppenderSelectorTest {
@@ -62,5 +62,4 @@ public class ScriptAppenderSelectorTest {
         logger.error(MarkerManager.getMarker("HEXDUMP"), "DEADBEEF");
         assertThat(listAppender.getEvents(), hasSize(3));
     }
-
 }

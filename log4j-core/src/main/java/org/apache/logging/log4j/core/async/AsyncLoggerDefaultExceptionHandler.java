@@ -19,5 +19,4 @@ package org.apache.logging.log4j.core.async;
 /**
  * Default disruptor exception handler for errors that occur in the AsyncLogger background thread.
  */
-public class AsyncLoggerDefaultExceptionHandler extends AbstractAsyncExceptionHandler<RingBufferLogEvent> {
-}
+public class AsyncLoggerDefaultExceptionHandler extends AbstractAsyncExceptionHandler<RingBufferLogEvent> {}

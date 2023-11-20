@@ -33,8 +33,7 @@ import org.apache.logging.log4j.util.StringMap;
  * the ringbuffer event, the disruptor will update the sequence number so that
  * the event can be consumed by another thread.
  */
-public class RingBufferLogEventTranslator implements
-        EventTranslator<RingBufferLogEvent> {
+public class RingBufferLogEventTranslator implements EventTranslator<RingBufferLogEvent> {
 
     private ContextDataInjector contextDataInjector;
     private AsyncLogger asyncLogger;
@@ -57,11 +56,25 @@ public class RingBufferLogEventTranslator implements
     public void translateTo(final RingBufferLogEvent event, final long sequence) {
         try {
             final ReadOnlyStringMap contextData = event.getContextData();
-            event.setValues(asyncLogger, loggerName, marker, fqcn, level, message, thrown,
+            event.setValues(
+                    asyncLogger,
+                    loggerName,
+                    marker,
+                    fqcn,
+                    level,
+                    message,
+                    thrown,
                     // config properties are taken care of in the EventHandler thread
                     // in the AsyncLogger#actualAsyncLog method
-                    contextDataInjector.injectContextData(null, contextData instanceof StringMap ? (StringMap) contextData : null),
-                    contextStack, threadId, threadName, threadPriority, location, clock, nanoClock);
+                    contextDataInjector.injectContextData(
+                            null, contextData instanceof StringMap ? (StringMap) contextData : null),
+                    contextStack,
+                    threadId,
+                    threadName,
+                    threadPriority,
+                    location,
+                    clock,
+                    nanoClock);
         } finally {
             clear(); // clear the translator
         }
@@ -71,7 +84,8 @@ public class RingBufferLogEventTranslator implements
      * Release references held by this object to allow objects to be garbage-collected.
      */
     void clear() {
-        setBasicValues(null, // asyncLogger
+        setBasicValues(
+                null, // asyncLogger
                 null, // loggerName
                 null, // marker
                 null, // fqcn
@@ -82,14 +96,23 @@ public class RingBufferLogEventTranslator implements
                 null, // location
                 null, // clock
                 null, // nanoClock
-                null  // contextDataInjector
-        );
+                null // contextDataInjector
+                );
     }
 
-    public void setBasicValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
-                               final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-                               final ContextStack aContextStack, final StackTraceElement aLocation,
-                               final Clock aClock, final NanoClock aNanoClock, final ContextDataInjector aContextDataInjector) {
+    public void setBasicValues(
+            final AsyncLogger anAsyncLogger,
+            final String aLoggerName,
+            final Marker aMarker,
+            final String theFqcn,
+            final Level aLevel,
+            final Message msg,
+            final Throwable aThrowable,
+            final ContextStack aContextStack,
+            final StackTraceElement aLocation,
+            final Clock aClock,
+            final NanoClock aNanoClock,
+            final ContextDataInjector aContextDataInjector) {
         this.asyncLogger = anAsyncLogger;
         this.loggerName = aLoggerName;
         this.marker = aMarker;

@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import com.lmax.disruptor.AlertException;
 import com.lmax.disruptor.BatchEventProcessor;
 import com.lmax.disruptor.EventProcessor;
@@ -28,6 +23,10 @@ import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Blocking strategy that uses a lock and condition variable for {@link EventProcessor}s waiting on a barrier.
@@ -104,10 +103,6 @@ class TimeoutBlockingWaitStrategy implements WaitStrategy {
 
     @Override
     public String toString() {
-        return "TimeoutBlockingWaitStrategy{" +
-                "mutex=" + mutex +
-                ", timeoutInNanos=" + timeoutInNanos +
-                '}';
+        return "TimeoutBlockingWaitStrategy{" + "mutex=" + mutex + ", timeoutInNanos=" + timeoutInNanos + '}';
     }
-
 }

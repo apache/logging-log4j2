@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link CloseableThreadContext}.
@@ -50,7 +49,8 @@ public class CloseableThreadContextTest {
     public void shouldAddTwoEntriesToTheMap() {
         final String key2 = "key2";
         final String value2 = "value2";
-        try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value).put(key2, value2)) {
+        try (final CloseableThreadContext.Instance ignored =
+                CloseableThreadContext.put(key, value).put(key2, value2)) {
             assertNotNull(ignored);
             assertEquals(value, ThreadContext.get(key));
             assertEquals(value2, ThreadContext.get(key2));
@@ -90,7 +90,8 @@ public class CloseableThreadContextTest {
         final String oldValue = "oldValue";
         final String secondValue = "innerValue";
         ThreadContext.put(key, oldValue);
-        try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value).put(key, secondValue)) {
+        try (final CloseableThreadContext.Instance ignored =
+                CloseableThreadContext.put(key, value).put(key, secondValue)) {
             assertNotNull(ignored);
             assertEquals(secondValue, ThreadContext.get(key));
         }
@@ -111,7 +112,8 @@ public class CloseableThreadContextTest {
     public void shouldPushAndPopTwoEntriesToTheStack() {
         final String message1 = "message1";
         final String message2 = "message2";
-        try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.push(message1).push(message2)) {
+        try (final CloseableThreadContext.Instance ignored =
+                CloseableThreadContext.push(message1).push(message2)) {
             assertNotNull(ignored);
             assertEquals(message2, ThreadContext.peek());
         }
@@ -123,8 +125,8 @@ public class CloseableThreadContextTest {
         final String parameterizedMessage = "message {}";
         final String parameterizedMessageParameter = "param";
         final String formattedMessage = parameterizedMessage.replace("{}", parameterizedMessageParameter);
-        try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.push(parameterizedMessage,
-                parameterizedMessageParameter)) {
+        try (final CloseableThreadContext.Instance ignored =
+                CloseableThreadContext.push(parameterizedMessage, parameterizedMessageParameter)) {
             assertNotNull(ignored);
             assertEquals(formattedMessage, ThreadContext.peek());
         }
@@ -143,7 +145,8 @@ public class CloseableThreadContextTest {
     @Test
     public void shouldAddEntriesToBothStackAndMap() {
         final String stackValue = "something";
-        try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value).push(stackValue)) {
+        try (final CloseableThreadContext.Instance ignored =
+                CloseableThreadContext.put(key, value).push(stackValue)) {
             assertNotNull(ignored);
             assertEquals(value, ThreadContext.get(key));
             assertEquals(stackValue, ThreadContext.peek());
@@ -156,7 +159,8 @@ public class CloseableThreadContextTest {
     public void canReuseCloseableThreadContext() {
         final String stackValue = "something";
         // Create a ctc and close it
-        final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(stackValue).put(key, value);
+        final CloseableThreadContext.Instance ctc =
+                CloseableThreadContext.push(stackValue).put(key, value);
         assertNotNull(ctc);
         assertEquals(value, ThreadContext.get(key));
         assertEquals(stackValue, ThreadContext.peek());
@@ -188,7 +192,8 @@ public class CloseableThreadContextTest {
 
         final String newMapValue = "temp map value";
         final String newStackValue = "temp stack to keep";
-        final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(newStackValue).put(key, newMapValue);
+        final CloseableThreadContext.Instance ctc =
+                CloseableThreadContext.push(newStackValue).put(key, newMapValue);
         assertNotNull(ctc);
 
         ctc.close();
@@ -214,7 +219,6 @@ public class CloseableThreadContextTest {
             assertEquals(value, ThreadContext.get(key));
         }
         assertEquals(oldValue, ThreadContext.get(key));
-
     }
 
     @Test
@@ -229,7 +233,5 @@ public class CloseableThreadContextTest {
             assertEquals(key, ThreadContext.peek());
         }
         assertEquals("", ThreadContext.peek());
-
     }
-
 }

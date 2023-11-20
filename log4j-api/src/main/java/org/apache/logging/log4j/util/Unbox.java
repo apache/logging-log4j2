@@ -88,12 +88,12 @@ public class Unbox {
             result.setLength(0);
             return result;
         }
-
     }
 
     private static class State {
         private final StringBuilder[] ringBuffer = new StringBuilder[RINGBUFFER_SIZE];
         private int current;
+
         State() {
             for (int i = 0; i < ringBuffer.length; i++) {
                 ringBuffer[i] = new StringBuilder(21);
@@ -105,9 +105,8 @@ public class Unbox {
             result.setLength(0);
             return result;
         }
-
-
     }
+
     private static final ThreadLocal<State> threadLocalState = new ThreadLocal<>();
     private static final WebSafeState webSafeState = new WebSafeState();
 
@@ -116,19 +115,22 @@ public class Unbox {
     }
 
     private static int calculateRingBufferSize(final PropertyKey propertyName) {
-        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
-                String.valueOf(RINGBUFFER_MIN_SIZE));
+        final String userPreferredRBSize =
+                PropertiesUtil.getProperties().getStringProperty(propertyName, String.valueOf(RINGBUFFER_MIN_SIZE));
         try {
             int size = Integer.parseInt(userPreferredRBSize);
             if (size < RINGBUFFER_MIN_SIZE) {
                 size = RINGBUFFER_MIN_SIZE;
-                LOGGER.warn("Invalid {} {}, using minimum size {}.", propertyName, userPreferredRBSize,
+                LOGGER.warn(
+                        "Invalid {} {}, using minimum size {}.",
+                        propertyName,
+                        userPreferredRBSize,
                         RINGBUFFER_MIN_SIZE);
             }
             return ceilingNextPowerOfTwo(size);
         } catch (final Exception ex) {
-            LOGGER.warn("Invalid {} {}, using default size {}.", propertyName, userPreferredRBSize,
-                    RINGBUFFER_MIN_SIZE);
+            LOGGER.warn(
+                    "Invalid {} {}, using default size {}.", propertyName, userPreferredRBSize, RINGBUFFER_MIN_SIZE);
             return RINGBUFFER_MIN_SIZE;
         }
     }

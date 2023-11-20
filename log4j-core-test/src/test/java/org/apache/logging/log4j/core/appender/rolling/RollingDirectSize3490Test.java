@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,16 +25,12 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 /**
  * This test attempts to validate that logging rolls after the max files are already written
@@ -76,8 +74,8 @@ public class RollingDirectSize3490Test implements RolloverListener {
         final File file2 = new File(parent, "app-22.log");
         final Path app2 = file2.toPath();
         Files.write(app2, lines, StandardOpenOption.CREATE_NEW);
-        final LoggerContext context = Configurator.initialize("TestConfig", this.getClass().getClassLoader(),
-        CONFIG);
+        final LoggerContext context =
+                Configurator.initialize("TestConfig", this.getClass().getClassLoader(), CONFIG);
         final RollingFileAppender app = context.getConfiguration().getAppender("RollingFile");
         app.getManager().addRolloverListener(this);
         final Logger logger = context.getLogger("Test");
@@ -86,9 +84,7 @@ public class RollingDirectSize3490Test implements RolloverListener {
     }
 
     @Override
-    public void rolloverTriggered(final String fileName) {
-
-    }
+    public void rolloverTriggered(final String fileName) {}
 
     @Override
     public void rolloverComplete(final String fileName) {

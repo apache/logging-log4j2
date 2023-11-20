@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link Source}.
@@ -50,30 +49,51 @@ public class SourceTest {
     @Test
     @Disabled("File URI is broken.")
     public void testEqualityURIFile() {
-        assertEquals(new Source(Paths.get("foo").toUri()), new Source(Paths.get("./foo").toUri()));
+        assertEquals(
+                new Source(Paths.get("foo").toUri()),
+                new Source(Paths.get("./foo").toUri()));
     }
 
     @Test
     public void testEqualityURIHttp() {
-        assertEquals(new Source(URI.create("http://www.apache.org/index.html")), new Source(URI.create("http://www.apache.org/index.html")));
-        assertEquals(new Source(URI.create("http://www.apache.org/")), new Source(URI.create("http://www.apache.org////")));
-        assertEquals(new Source(URI.create("http://www.apache.org/")), new Source(URI.create("http://www.apache.org/./././.")));
+        assertEquals(
+                new Source(URI.create("http://www.apache.org/index.html")),
+                new Source(URI.create("http://www.apache.org/index.html")));
+        assertEquals(
+                new Source(URI.create("http://www.apache.org/")), new Source(URI.create("http://www.apache.org////")));
+        assertEquals(
+                new Source(URI.create("http://www.apache.org/")),
+                new Source(URI.create("http://www.apache.org/./././.")));
     }
 
     public void testEqualityURLFile() throws MalformedURLException {
-        assertEquals(new Source(Paths.get("foo").toUri().toURL()), new Source(Paths.get("./foo").toUri().toURL()));
+        assertEquals(
+                new Source(Paths.get("foo").toUri().toURL()),
+                new Source(Paths.get("./foo").toUri().toURL()));
     }
 
     public void testEqualityURLHttp() throws MalformedURLException {
-        assertEquals(new Source(URI.create("http://www.apache.org/index.html").toURL()), new Source(URI.create("http://www.apache.org/index.html").toURL()));
-        assertEquals(new Source(URI.create("http://www.apache.org").toURL()), new Source(URI.create("http://www.apache.org////").toURL()));
-        assertEquals(new Source(URI.create("http://www.apache.org").toURL()), new Source(URI.create("http://www.apache.org/./././.").toURL()));
+        assertEquals(
+                new Source(URI.create("http://www.apache.org/index.html").toURL()),
+                new Source(URI.create("http://www.apache.org/index.html").toURL()));
+        assertEquals(
+                new Source(URI.create("http://www.apache.org").toURL()),
+                new Source(URI.create("http://www.apache.org////").toURL()));
+        assertEquals(
+                new Source(URI.create("http://www.apache.org").toURL()),
+                new Source(URI.create("http://www.apache.org/./././.").toURL()));
     }
 
     public void testEqualityURLHttps() throws MalformedURLException {
-        assertEquals(new Source(URI.create("https://www.apache.org/index.html").toURL()), new Source(URI.create("https://www.apache.org/index.html").toURL()));
-        assertEquals(new Source(URI.create("https://www.apache.org").toURL()), new Source(URI.create("https://www.apache.org////").toURL()));
-        assertEquals(new Source(URI.create("https://www.apache.org").toURL()), new Source(URI.create("https://www.apache.org/./././.").toURL()));
+        assertEquals(
+                new Source(URI.create("https://www.apache.org/index.html").toURL()),
+                new Source(URI.create("https://www.apache.org/index.html").toURL()));
+        assertEquals(
+                new Source(URI.create("https://www.apache.org").toURL()),
+                new Source(URI.create("https://www.apache.org////").toURL()));
+        assertEquals(
+                new Source(URI.create("https://www.apache.org").toURL()),
+                new Source(URI.create("https://www.apache.org/./././.").toURL()));
     }
 
     @Test

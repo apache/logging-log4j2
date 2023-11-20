@@ -21,7 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.apache.logging.log4j.plugins.model.PluginService;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.plugins.name.PluginNameProvider;
@@ -60,5 +59,4 @@ public @interface Plugin {
      * @return the name of the plugin.
      */
     String value() default EMPTY;
-
 }

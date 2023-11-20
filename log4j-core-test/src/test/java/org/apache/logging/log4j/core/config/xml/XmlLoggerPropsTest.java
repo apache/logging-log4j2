@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
-import java.util.List;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
+import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 @SetSystemProperty(key = "test", value = "test")
 public class XmlLoggerPropsTest {
@@ -40,27 +39,29 @@ public class XmlLoggerPropsTest {
         final List<String> events = listAppender.getMessages();
         listAppender.clear();
         assertThat(events, hasSize(2));
-        assertThat(events.get(0), allOf(
-                containsString("user="),
-                containsString("phrasex=****"),
-                containsString("test=test"),
-                containsString("test2=test2default"),
-                containsString("test3=Unknown"),
-                containsString("test4=test"),
-                containsString("test5=test"),
-                containsString("attribKey=attribValue"),
-                containsString("duplicateKey=nodeValue")
-        ));
-        assertThat(events.get(1), allOf(
-                containsString("user="),
-                containsString("phrasex=****"),
-                containsString("test=test"),
-                containsString("test2=test2default"),
-                containsString("test3=Unknown"),
-                containsString("test4=test"),
-                containsString("test5=test"),
-                containsString("attribKey=attribValue"),
-                containsString("duplicateKey=nodeValue")
-        ));
+        assertThat(
+                events.get(0),
+                allOf(
+                        containsString("user="),
+                        containsString("phrasex=****"),
+                        containsString("test=test"),
+                        containsString("test2=test2default"),
+                        containsString("test3=Unknown"),
+                        containsString("test4=test"),
+                        containsString("test5=test"),
+                        containsString("attribKey=attribValue"),
+                        containsString("duplicateKey=nodeValue")));
+        assertThat(
+                events.get(1),
+                allOf(
+                        containsString("user="),
+                        containsString("phrasex=****"),
+                        containsString("test=test"),
+                        containsString("test2=test2default"),
+                        containsString("test3=Unknown"),
+                        containsString("test4=test"),
+                        containsString("test5=test"),
+                        containsString("attribKey=attribValue"),
+                        containsString("duplicateKey=nodeValue")));
     }
 }

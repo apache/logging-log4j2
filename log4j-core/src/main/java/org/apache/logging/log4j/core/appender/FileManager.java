@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,14 +37,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.FileUtils;
-
 
 /**
  * Manages actual File I/O for File Appenders.
@@ -67,11 +65,20 @@ public class FileManager extends OutputStreamManager {
      */
     @SuppressFBWarnings(
             value = "OVERLY_PERMISSIVE_FILE_PERMISSION",
-            justification = "File permissions are specified in the configuration file."
-    )
-    protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
-            final boolean createOnDemand, final String advertiseURI, final Layout layout,
-            final String filePermissions, final String fileOwner, final String fileGroup, final boolean writeHeader,
+            justification = "File permissions are specified in the configuration file.")
+    protected FileManager(
+            final LoggerContext loggerContext,
+            final String fileName,
+            final OutputStream os,
+            final boolean append,
+            final boolean locking,
+            final boolean createOnDemand,
+            final String advertiseURI,
+            final Layout layout,
+            final String filePermissions,
+            final String fileOwner,
+            final String fileGroup,
+            final boolean writeHeader,
             final ByteBuffer buffer) {
         super(loggerContext, os, fileName, createOnDemand, layout, writeHeader, buffer);
         this.isAppend = append;
@@ -124,24 +131,46 @@ public class FileManager extends OutputStreamManager {
      * @param configuration The configuration.
      * @return A FileManager for the File.
      */
-    public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
-            final boolean bufferedIo, final boolean createOnDemand, final String advertiseUri,
+    public static FileManager getFileManager(
+            final String fileName,
+            final boolean append,
+            boolean locking,
+            final boolean bufferedIo,
+            final boolean createOnDemand,
+            final String advertiseUri,
             final Layout layout,
-            final int bufferSize, final String filePermissions, final String fileOwner, final String fileGroup,
+            final int bufferSize,
+            final String filePermissions,
+            final String fileOwner,
+            final String fileGroup,
             final Configuration configuration) {
 
         if (locking && bufferedIo) {
             locking = false;
         }
-        return narrow(FileManager.class, getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
-                createOnDemand, advertiseUri, layout, filePermissions, fileOwner, fileGroup, configuration), FACTORY));
+        return narrow(
+                FileManager.class,
+                getManager(
+                        fileName,
+                        new FactoryData(
+                                append,
+                                locking,
+                                bufferedIo,
+                                bufferSize,
+                                createOnDemand,
+                                advertiseUri,
+                                layout,
+                                filePermissions,
+                                fileOwner,
+                                fileGroup,
+                                configuration),
+                        FACTORY));
     }
 
     @Override
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
-            justification = "The destination file is specified in the configuration file."
-    )
+            justification = "The destination file is specified in the configuration file.")
     protected OutputStream createOutputStream() throws IOException {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
@@ -161,8 +190,7 @@ public class FileManager extends OutputStreamManager {
         return fos;
     }
 
-    protected void createParentDir(final File file) {
-    }
+    protected void createParentDir(final File file) {}
 
     protected void defineAttributeView(final Path path) {
         if (attributeViewEnabled) {
@@ -178,8 +206,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     @Override
-    protected void write(final byte[] bytes, final int offset, final int length,
-            final boolean immediateFlush) {
+    protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         if (isLocking) {
             writeLock.lock();
             try {
@@ -360,9 +387,17 @@ public class FileManager extends OutputStreamManager {
          * @param fileGroup File group
          * @param configuration the configuration
          */
-        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIo, final int bufferSize,
-                final boolean createOnDemand, final String advertiseURI, final Layout layout,
-                final String filePermissions, final String fileOwner, final String fileGroup,
+        public FactoryData(
+                final boolean append,
+                final boolean locking,
+                final boolean bufferedIo,
+                final int bufferSize,
+                final boolean createOnDemand,
+                final String advertiseURI,
+                final Layout layout,
+                final String filePermissions,
+                final String fileOwner,
+                final String fileGroup,
                 final Configuration configuration) {
             super(configuration);
             this.append = append;
@@ -392,8 +427,7 @@ public class FileManager extends OutputStreamManager {
         @Override
         @SuppressFBWarnings(
                 value = "PATH_TRAVERSAL_IN",
-                justification = "The destination file should be specified in the configuration file."
-        )
+                justification = "The destination file should be specified in the configuration file.")
         public FileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
             try {
@@ -402,9 +436,20 @@ public class FileManager extends OutputStreamManager {
                 final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);
                 final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
                 final boolean writeHeader = file.exists() && file.length() == 0;
-                final FileManager fm = new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
-                        data.createOnDemand, data.advertiseURI, data.layout,
-                        data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, byteBuffer);
+                final FileManager fm = new FileManager(
+                        data.getLoggerContext(),
+                        name,
+                        fos,
+                        data.append,
+                        data.locking,
+                        data.createOnDemand,
+                        data.advertiseURI,
+                        data.layout,
+                        data.filePermissions,
+                        data.fileOwner,
+                        data.fileGroup,
+                        writeHeader,
+                        byteBuffer);
                 if (fos != null && fm.attributeViewEnabled) {
                     fm.defineAttributeView(file.toPath());
                 }
@@ -415,5 +460,4 @@ public class FileManager extends OutputStreamManager {
             return null;
         }
     }
-
 }

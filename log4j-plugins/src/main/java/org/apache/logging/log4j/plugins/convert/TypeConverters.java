@@ -21,7 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.apache.logging.log4j.plugins.Namespace;
 
 /**
@@ -31,5 +30,4 @@ import org.apache.logging.log4j.plugins.Namespace;
 @Target({ElementType.TYPE, ElementType.TYPE_USE, ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
 @Documented
 @Namespace("TypeConverter")
-public @interface TypeConverters {
-}
+public @interface TypeConverters {}

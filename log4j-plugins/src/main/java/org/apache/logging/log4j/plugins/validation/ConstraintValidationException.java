@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.plugins.validation;
 
-import java.lang.reflect.AnnotatedElement;
-
-import org.apache.logging.log4j.plugins.PluginException;
-
 import static org.apache.logging.log4j.message.ParameterizedMessage.deepToString;
+
+import java.lang.reflect.AnnotatedElement;
+import org.apache.logging.log4j.plugins.PluginException;
 
 public class ConstraintValidationException extends PluginException {
     public ConstraintValidationException(final AnnotatedElement element, final String name, final Object value) {

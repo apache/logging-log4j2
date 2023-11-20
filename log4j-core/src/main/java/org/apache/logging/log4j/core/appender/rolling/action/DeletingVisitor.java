@@ -25,7 +25,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -48,8 +47,8 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
      *            href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
      *            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
      */
-    public DeletingVisitor(final Path basePath, final List<? extends PathCondition> pathConditions,
-            final boolean testMode) {
+    public DeletingVisitor(
+            final Path basePath, final List<? extends PathCondition> pathConditions, final boolean testMode) {
         this.testMode = testMode;
         this.basePath = Objects.requireNonNull(basePath, "basePath");
         this.pathConditions = Objects.requireNonNull(pathConditions, "pathConditions");

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.condition;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class OnMissingBindingConditionTest {
 
@@ -64,8 +64,12 @@ class OnMissingBindingConditionTest {
     }
 
     static class Fixture {
-        @Inject Bean defaultValue;
-        @Namespace("foo") @Named("bar") Bean value;
+        @Inject
+        Bean defaultValue;
+
+        @Namespace("foo")
+        @Named("bar")
+        Bean value;
     }
 
     final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();

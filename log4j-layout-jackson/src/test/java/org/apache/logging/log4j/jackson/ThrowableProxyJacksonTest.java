@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.io.IOException;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -46,5 +45,4 @@ public class ThrowableProxyJacksonTest {
         assertArrayEquals(expected.proxy.getExtendedStackTrace(), actual.proxy.getExtendedStackTrace());
         assertEquals(expected.proxy, actual.proxy);
     }
-
 }

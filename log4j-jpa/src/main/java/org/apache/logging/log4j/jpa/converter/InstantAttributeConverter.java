@@ -18,7 +18,6 @@ package org.apache.logging.log4j.jpa.converter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.util.Strings;

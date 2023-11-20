@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.RuleChainFactory;
@@ -31,25 +34,24 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public class JdbcAppenderColumnMappingPatternTest {
 
     @Rule
     public final RuleChain rules;
+
     private final JdbcRule jdbcRule;
 
     public JdbcAppenderColumnMappingPatternTest() {
-        this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
+        this(new JdbcRule(
+                JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
                 "CREATE TABLE dsMappingLogEntry (id INTEGER, level VARCHAR(10), logger VARCHAR(255), message VARCHAR(1024), exception CLOB)",
                 "DROP TABLE IF EXISTS dsMappingLogEntry"));
     }
 
     protected JdbcAppenderColumnMappingPatternTest(final JdbcRule jdbcRule) {
-        this.rules = RuleChainFactory.create(jdbcRule, new LoggerContextRule(
-                "org/apache/logging/log4j/jdbc/appender/log4j2-dm-column-mapping-pattern.xml"));
+        this.rules = RuleChainFactory.create(
+                jdbcRule,
+                new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-dm-column-mapping-pattern.xml"));
         this.jdbcRule = jdbcRule;
     }
 
@@ -74,15 +76,18 @@ public class JdbcAppenderColumnMappingPatternTest {
 
                 assertEquals("The level column is not correct (1).", "FATAL", resultSet.getNString("level"));
                 assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
-                assertEquals("The message column is not correct (1).", "Error from data source 02.",
+                assertEquals(
+                        "The message column is not correct (1).",
+                        "Error from data source 02.",
                         resultSet.getString("message"));
-                assertEquals("The exception column is not correct (1).", stackTrace,
-                        IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
+                assertEquals(
+                        "The exception column is not correct (1).",
+                        stackTrace,
+                        IOUtils.readStringAndClose(
+                                resultSet.getNClob("exception").getCharacterStream(), -1));
 
                 assertFalse("There should not be two rows.", resultSet.next());
             }
         }
-
     }
-
 }

@@ -25,9 +25,9 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 /**
  * Returns the event's rendered message in a StringBuilder.
  */
-//@Category(PatternConverter.CATEGORY)
-//@Plugin("MessagePatternConverter")
-//@ConverterKeys({ "m", "msg", "message" })
+// @Category(PatternConverter.CATEGORY)
+// @Plugin("MessagePatternConverter")
+// @ConverterKeys({ "m", "msg", "message" })
 public final class NoGcMessagePatternConverter extends LogEventPatternConverter {
 
     private final String[] formats;
@@ -72,8 +72,10 @@ public final class NoGcMessagePatternConverter extends LogEventPatternConverter 
                 result = msg.getFormattedMessage();
             }
             if (result != null) {
-                toAppendTo.append(config != null && result.contains("${") ?
-                        config.getStrSubstitutor().replace(event, result) : result);
+                toAppendTo.append(
+                        config != null && result.contains("${")
+                                ? config.getStrSubstitutor().replace(event, result)
+                                : result);
             } else {
                 toAppendTo.append("null");
             }

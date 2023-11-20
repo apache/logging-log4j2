@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -59,8 +58,14 @@ public final class KafkaManager extends AbstractManager {
     /*
      * The Constructor should have been declared private as all Managers are create by the internal factory;
      */
-    private KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final boolean syncSend,
-            final boolean sendTimestamp, final Property[] properties, final String key) {
+    private KafkaManager(
+            final LoggerContext loggerContext,
+            final String name,
+            final String topic,
+            final boolean syncSend,
+            final boolean sendTimestamp,
+            final Property[] properties,
+            final String key) {
         super(loggerContext, name);
         this.topic = Objects.requireNonNull(topic, "topic");
         this.syncSend = syncSend;
@@ -97,11 +102,13 @@ public final class KafkaManager extends AbstractManager {
         if (producer != null) {
             // This thread is a workaround for this Kafka issue:
             // https://issues.apache.org/jira/browse/KAFKA-1660
-            final Thread closeThread = new Log4jThread(() -> {
-                if (producer != null) {
-                    producer.close();
-                }
-            }, "KafkaManager-CloseThread");
+            final Thread closeThread = new Log4jThread(
+                    () -> {
+                        if (producer != null) {
+                            producer.close();
+                        }
+                    },
+                    "KafkaManager-CloseThread");
             closeThread.setDaemon(true); // avoid blocking JVM shutdown
             closeThread.start();
             try {
@@ -113,12 +120,16 @@ public final class KafkaManager extends AbstractManager {
         }
     }
 
-    public void send(final byte[] msg, final Long eventTimestamp) throws ExecutionException, InterruptedException, TimeoutException {
+    public void send(final byte[] msg, final Long eventTimestamp)
+            throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
             byte[] newKey = null;
 
             if (key != null && key.contains("${")) {
-                newKey = getLoggerContext().getConfiguration().getStrSubstitutor().replace(key)
+                newKey = getLoggerContext()
+                        .getConfiguration()
+                        .getStrSubstitutor()
+                        .replace(key)
                         .getBytes(StandardCharsets.UTF_8);
             } else if (key != null) {
                 newKey = key.getBytes(StandardCharsets.UTF_8);
@@ -150,20 +161,23 @@ public final class KafkaManager extends AbstractManager {
         return topic;
     }
 
-    static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
-            final boolean syncSend, final boolean sendTimestamp, final Property[] properties, final String key) {
+    static KafkaManager getManager(
+            final LoggerContext loggerContext,
+            final String name,
+            final String topic,
+            final boolean syncSend,
+            final boolean sendTimestamp,
+            final Property[] properties,
+            final String key) {
         final StringBuilder sb = new StringBuilder(name);
-        sb.append(" ")
-            .append(topic)
-            .append(" ")
-            .append(syncSend)
-            .append(" ")
-            .append(sendTimestamp);
+        sb.append(" ").append(topic).append(" ").append(syncSend).append(" ").append(sendTimestamp);
         for (Property prop : properties) {
             sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
         }
-        return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, sendTimestamp,
-                properties, key));
+        return getManager(
+                sb.toString(),
+                factory,
+                new FactoryData(loggerContext, topic, syncSend, sendTimestamp, properties, key));
     }
 
     private static class FactoryData {
@@ -174,8 +188,13 @@ public final class KafkaManager extends AbstractManager {
         private final Property[] properties;
         private final String key;
 
-        public FactoryData(final LoggerContext loggerContext, final String topic, final boolean syncSend,
-                final boolean sendTimestamp, final Property[] properties, final String key) {
+        public FactoryData(
+                final LoggerContext loggerContext,
+                final String topic,
+                final boolean syncSend,
+                final boolean sendTimestamp,
+                final Property[] properties,
+                final String key) {
             this.loggerContext = loggerContext;
             this.topic = topic;
             this.syncSend = syncSend;
@@ -183,15 +202,13 @@ public final class KafkaManager extends AbstractManager {
             this.properties = properties;
             this.key = key;
         }
-
     }
 
     private static class KafkaManagerFactory implements ManagerFactory<KafkaManager, FactoryData> {
         @Override
         public KafkaManager createManager(final String name, final FactoryData data) {
-            return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.sendTimestamp,
-                    data.properties, data.key);
+            return new KafkaManager(
+                    data.loggerContext, name, data.topic, data.syncSend, data.sendTimestamp, data.properties, data.key);
         }
     }
-
 }

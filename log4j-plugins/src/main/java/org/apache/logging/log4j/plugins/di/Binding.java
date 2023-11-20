@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.plugins.di;
 
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.util.Lazy;
 
 /**

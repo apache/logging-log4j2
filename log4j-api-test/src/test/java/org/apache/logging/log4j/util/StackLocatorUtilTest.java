@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Deque;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.engine.execution.InterceptingExecutableInvoker;
-import org.junit.jupiter.engine.execution.InvocationInterceptorChain;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.util.Deque;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.engine.execution.InterceptingExecutableInvoker;
+import org.junit.jupiter.engine.execution.InvocationInterceptorChain;
 
 public class StackLocatorUtilTest {
 
@@ -33,10 +32,11 @@ public class StackLocatorUtilTest {
     public void testStackTraceEquivalence() throws Throwable {
         final StackTraceElement[] stackTraceElements = expectedStack(new Throwable().getStackTrace());
         for (int i = 1; i < 10; i++) {
-            final String expected = stackTraceElements[i-1].getClassName();
+            final String expected = stackTraceElements[i - 1].getClassName();
             final String actual = StackLocatorUtil.getCallerClass(i).getName();
             final String fallbackActual = Class.forName(
-                StackLocatorUtil.getStackTraceElement(i).getClassName()).getName();
+                            StackLocatorUtil.getStackTraceElement(i).getClassName())
+                    .getName();
             assertSame(expected, actual);
             assertSame(expected, fallbackActual);
         }
@@ -45,7 +45,7 @@ public class StackLocatorUtilTest {
     private StackTraceElement[] expectedStack(final StackTraceElement[] elements) {
         final StackTraceElement[] elementArray = new StackTraceElement[10];
         int i = 0;
-        for (int index = 0; index < 10;) {
+        for (int index = 0; index < 10; ) {
             if (elements[i].getClassName().startsWith("org.")) {
                 elementArray[index] = elements[i];
                 ++index;
@@ -87,7 +87,8 @@ public class StackLocatorUtilTest {
     @Test
     public void testGetCallerClassViaName() throws Exception {
         final Class<?> expected = InterceptingExecutableInvoker.class;
-        final Class<?> actual = StackLocatorUtil.getCallerClass("org.junit.jupiter.engine.execution.InvocationInterceptorChain");
+        final Class<?> actual =
+                StackLocatorUtil.getCallerClass("org.junit.jupiter.engine.execution.InvocationInterceptorChain");
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
         assertSame(expected, actual);
@@ -115,7 +116,6 @@ public class StackLocatorUtilTest {
         private StackTraceElement foo() {
             return new Bar().bar(); // <--- testCalcLocation() line
         }
-
     }
 
     private final class Bar {
@@ -127,7 +127,6 @@ public class StackLocatorUtilTest {
         private StackTraceElement baz() {
             return quux();
         }
-
     }
 
     private StackTraceElement quux() {
@@ -167,5 +166,4 @@ public class StackLocatorUtilTest {
             return stackLocator.getCallerClass(ClassLocator.class);
         }
     }
-
 }

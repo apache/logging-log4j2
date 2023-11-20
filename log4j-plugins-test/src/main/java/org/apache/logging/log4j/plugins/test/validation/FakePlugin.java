@@ -26,11 +26,10 @@ import org.apache.logging.log4j.plugins.PluginAliases;
  */
 @Configurable(deferChildren = true)
 @Plugin("Fake")
-@PluginAliases({ "AnotherFake", "StillFake" })
+@PluginAliases({"AnotherFake", "StillFake"})
 public class FakePlugin {
 
     @Namespace("Test")
     @Plugin("Nested")
-    public static class Nested {
-    }
+    public static class Nested {}
 }

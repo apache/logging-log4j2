@@ -22,7 +22,6 @@ import java.util.Vector;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.legacy.core.ContextUtil;
@@ -262,16 +261,16 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
         // The accumlation in v is necessary because not all elements in
         // ht are Logger objects as there might be some ProvisionNodes
         // as well.
-//        final Vector v = new Vector(ht.size());
-//
-//        final Enumeration elems = ht.elements();
-//        while (elems.hasMoreElements()) {
-//            final Object o = elems.nextElement();
-//            if (o instanceof Logger) {
-//                v.addElement(o);
-//            }
-//        }
-//        return v.elements();
+        //        final Vector v = new Vector(ht.size());
+        //
+        //        final Enumeration elems = ht.elements();
+        //        while (elems.hasMoreElements()) {
+        //            final Object o = elems.nextElement();
+        //            if (o instanceof Logger) {
+        //                v.addElement(o);
+        //            }
+        //        }
+        //        return v.elements();
 
         return LogManager.getCurrentLoggers(StackLocatorUtil.getCallerClassLoader(2));
     }
@@ -492,37 +491,36 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
      */
     @Override
     public void shutdown() {
-      shutdown(getContext());
-  }
-
-    public void shutdown(final ClassLoader classLoader) {
-      shutdown(org.apache.logging.log4j.LogManager.getContext(classLoader, false));
-  }
-
-    void shutdown(final LoggerContext context) {
-//      final Logger root = getRootLogger();
-//      // begin by closing nested appenders
-//      root.closeNestedAppenders();
-//
-//      synchronized (ht) {
-//          Enumeration cats = this.getCurrentLoggers();
-//          while (cats.hasMoreElements()) {
-//              final Logger c = (Logger) cats.nextElement();
-//              c.closeNestedAppenders();
-//          }
-//
-//          // then, remove all appenders
-//          root.removeAllAppenders();
-//          cats = this.getCurrentLoggers();
-//          while (cats.hasMoreElements()) {
-//              final Logger c = (Logger) cats.nextElement();
-//              c.removeAllAppenders();
-//          }
-//      }
-        getLoggersMap(context).clear();
-          if (LogManager.isLog4jCorePresent()) {
-              ContextUtil.shutdown(context);
-          }
+        shutdown(getContext());
     }
 
+    public void shutdown(final ClassLoader classLoader) {
+        shutdown(org.apache.logging.log4j.LogManager.getContext(classLoader, false));
+    }
+
+    void shutdown(final LoggerContext context) {
+        //      final Logger root = getRootLogger();
+        //      // begin by closing nested appenders
+        //      root.closeNestedAppenders();
+        //
+        //      synchronized (ht) {
+        //          Enumeration cats = this.getCurrentLoggers();
+        //          while (cats.hasMoreElements()) {
+        //              final Logger c = (Logger) cats.nextElement();
+        //              c.closeNestedAppenders();
+        //          }
+        //
+        //          // then, remove all appenders
+        //          root.removeAllAppenders();
+        //          cats = this.getCurrentLoggers();
+        //          while (cats.hasMoreElements()) {
+        //              final Logger c = (Logger) cats.nextElement();
+        //              c.removeAllAppenders();
+        //          }
+        //      }
+        getLoggersMap(context).clear();
+        if (LogManager.isLog4jCorePresent()) {
+            ContextUtil.shutdown(context);
+        }
+    }
 }

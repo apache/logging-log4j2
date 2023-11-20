@@ -115,5 +115,4 @@ public final class ExtendedClassInfo {
         renderOn(sb, PlainTextRenderer.getInstance());
         return sb.toString();
     }
-
 }

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -27,8 +28,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
@@ -54,7 +53,6 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
     protected AbstractRolloverStrategy(final StrSubstitutor strSubstitutor) {
         this.strSubstitutor = strSubstitutor;
     }
-
 
     public StrSubstitutor getStrSubstitutor() {
         return strSubstitutor;
@@ -82,13 +80,11 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         return 0;
     }
 
-
     protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager) {
         return getEligibleFiles(manager, true);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager,
-                                                        final boolean isAscending) {
+    protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager, final boolean isAscending) {
         final StringBuilder buf = new StringBuilder();
         final String pattern = manager.getPatternProcessor().getPattern();
         manager.getPatternProcessor().formatFileName(strSubstitutor, buf, NotANumber.NAN);
@@ -102,10 +98,9 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
 
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
-            justification = "The file path should be specified in the configuration file."
-    )
-    protected SortedMap<Integer, Path> getEligibleFiles(final String currentFile, final String path,
-            final String logfilePattern, final boolean isAscending) {
+            justification = "The file path should be specified in the configuration file.")
+    protected SortedMap<Integer, Path> getEligibleFiles(
+            final String currentFile, final String path, final String logfilePattern, final boolean isAscending) {
         final TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
         final File file = new File(path);
         File parent = file.getParentFile();
@@ -135,14 +130,15 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         LOGGER.debug("Current file: {}", currentFile);
 
         try (final DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-            for (final Path entry: stream) {
+            for (final Path entry : stream) {
                 final Matcher matcher = pattern.matcher(entry.toFile().getName());
                 if (matcher.matches() && !entry.equals(current)) {
                     try {
                         final Integer index = Integer.parseInt(matcher.group(1));
                         eligibleFiles.put(index, entry);
                     } catch (final NumberFormatException ex) {
-                        LOGGER.debug("Ignoring file {} which matches pattern but the index is invalid.",
+                        LOGGER.debug(
+                                "Ignoring file {} which matches pattern but the index is invalid.",
                                 entry.toFile().getName());
                     }
                 }
@@ -150,6 +146,6 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         } catch (final IOException ioe) {
             throw new LoggingException("Error reading folder " + dir + " " + ioe.getMessage(), ioe);
         }
-        return isAscending? eligibleFiles : eligibleFiles.descendingMap();
+        return isAscending ? eligibleFiles : eligibleFiles.descendingMap();
     }
 }

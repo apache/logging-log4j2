@@ -16,9 +16,20 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.eight;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.eleven;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.five;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.four;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.nine;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.one;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.seven;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.six;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.ten;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.three;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.two;
+
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
@@ -37,18 +48,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
-
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.eight;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.eleven;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.five;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.four;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.nine;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.one;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.seven;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.six;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.ten;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.three;
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.two;
 
 /**
  * Tests Log4j2 Async Appender performance.
@@ -152,7 +151,15 @@ public class AsyncAppenderLog4j2Benchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput8Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}", one, two, three, four, five, six, seven,
+        logger.info(
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}",
+                one,
+                two,
+                three,
+                four,
+                five,
+                six,
+                seven,
                 eight);
     }
 
@@ -160,23 +167,53 @@ public class AsyncAppenderLog4j2Benchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput9Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", one, two, three, four, five, six,
-                seven, eight, nine);
+        logger.info(
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}",
+                one,
+                two,
+                three,
+                four,
+                five,
+                six,
+                seven,
+                eight,
+                nine);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput10Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}", one, two, three, four,
-                five, six, seven, eight, nine, ten);
+        logger.info(
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}",
+                one,
+                two,
+                three,
+                four,
+                five,
+                six,
+                seven,
+                eight,
+                nine,
+                ten);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput11Params() {
-        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}, p11={}", one, two, three,
-                four, five, six, seven, eight, nine, ten, eleven);
+        logger.info(
+                "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}, p11={}",
+                one,
+                two,
+                three,
+                four,
+                five,
+                six,
+                seven,
+                eight,
+                nine,
+                ten,
+                eleven);
     }
 }

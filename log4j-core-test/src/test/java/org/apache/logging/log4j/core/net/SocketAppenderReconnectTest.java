@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +40,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,12 +57,6 @@ import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests reconnection support of {@link org.apache.logging.log4j.core.appender.SocketAppender}.
@@ -107,7 +106,6 @@ class SocketAppenderReconnectTest {
             finally {
                 assertTrue(loggerContext.stop(DEFAULT_STOP_MILLIS, TimeUnit.MILLISECONDS));
             }
-
         }
     }
 
@@ -116,11 +114,10 @@ class SocketAppenderReconnectTest {
      */
     @Test
     @UsingStatusListener
-    void reconnect_should_fallback_when_there_are_multiple_resolved_hosts()
-            throws Exception {
+    void reconnect_should_fallback_when_there_are_multiple_resolved_hosts() throws Exception {
         final ListErrorHandler handler = new ListErrorHandler();
         try (final LineReadingTcpServer primaryServer = new LineReadingTcpServer();
-             final LineReadingTcpServer secondaryServer = new LineReadingTcpServer()) {
+                final LineReadingTcpServer secondaryServer = new LineReadingTcpServer()) {
 
             // Start servers.
             primaryServer.start("Primary", EPHEMERAL_PORT);
@@ -133,7 +130,8 @@ class SocketAppenderReconnectTest {
 
                 // Initialize the logger context.
                 final LoggerContext loggerContext = initContext(
-                        // Passing an invalid port, since the resolution is supposed to be performed by the mocked host resolver anyway.
+                        // Passing an invalid port, since the resolution is supposed to be performed by the mocked host
+                        // resolver anyway.
                         // Here, 0 does NOT mean an ephemeral port.
                         0, handler);
                 try {
@@ -141,7 +139,8 @@ class SocketAppenderReconnectTest {
                     // Verify the initial working state on the primary server.
                     verifyLoggingSuccess(primaryServer, handler);
 
-                    // Stop the primary server, and verify the logging success due to fallback on to the secondary server.
+                    // Stop the primary server, and verify the logging success due to fallback on to the secondary
+                    // server.
                     primaryServer.close();
                     verifyLoggingSuccess(secondaryServer, handler);
 
@@ -156,17 +155,16 @@ class SocketAppenderReconnectTest {
                 // Reset the host resolver.
                 TcpSocketManager.setHostResolver(new HostResolver());
             }
-
         }
     }
 
     private static LoggerContext initContext(final int port, final ListErrorHandler handler) {
 
         // Create the configuration builder.
-        final ConfigurationBuilder<BuiltConfiguration> configBuilder = ConfigurationBuilderFactory
-                .newConfigurationBuilder()
-                .setStatusLevel(Level.ERROR)
-                .setConfigurationName(SocketAppenderReconnectTest.class.getSimpleName());
+        final ConfigurationBuilder<BuiltConfiguration> configBuilder =
+                ConfigurationBuilderFactory.newConfigurationBuilder()
+                        .setStatusLevel(Level.ERROR)
+                        .setConfigurationName(SocketAppenderReconnectTest.class.getSimpleName());
 
         // Create the configuration.
         final String appenderName = "Socket";
@@ -179,29 +177,25 @@ class SocketAppenderReconnectTest {
                         .addAttribute("ignoreExceptions", false)
                         .addAttribute("reconnectionDelayMillis", 10)
                         .addAttribute("immediateFlush", true)
-                        .add(configBuilder
-                                .newLayout("PatternLayout")
-                                .addAttribute("pattern", "%m%n")))
+                        .add(configBuilder.newLayout("PatternLayout").addAttribute("pattern", "%m%n")))
                 .add(configBuilder.newLogger("org.apache.logging.log4j", Level.DEBUG))
-                .add(configBuilder
-                        .newRootLogger(Level.ERROR)
-                        .add(configBuilder.newAppenderRef(appenderName)))
+                .add(configBuilder.newRootLogger(Level.ERROR).add(configBuilder.newAppenderRef(appenderName)))
                 .setStatusLevel(Level.OFF)
                 .build(true);
 
         config.getAppender("Socket").setHandler(handler);
         // Initialize the configuration.
         return Configurator.initialize(config);
-
     }
 
     private static void verifyLoggingSuccess(final LineReadingTcpServer server, final ListErrorHandler handler)
             throws Exception {
         final int messageCount = 100;
         // noinspection ConstantConditions
-        assertTrue(messageCount > 1, "was expecting messageCount to be bigger than 1 due to LOG4J2-2829, found: " + messageCount);
-        final List<String> expectedMessages = IntStream
-                .range(0, messageCount)
+        assertTrue(
+                messageCount > 1,
+                "was expecting messageCount to be bigger than 1 due to LOG4J2-2829, found: " + messageCount);
+        final List<String> expectedMessages = IntStream.range(0, messageCount)
                 .mapToObj(messageIndex -> String.format("m%02d", messageIndex))
                 .collect(Collectors.toList());
         final Logger logger = LogManager.getLogger();
@@ -221,8 +215,7 @@ class SocketAppenderReconnectTest {
         // These figures are collected via trial-and-error; nothing scientific to look for here.
         final long pollIntervalMillis = DEFAULT_POLL_MILLIS;
         final long timeoutSeconds = 120L;
-        await()
-                .pollInterval(pollIntervalMillis, TimeUnit.MILLISECONDS)
+        await().pollInterval(pollIntervalMillis, TimeUnit.MILLISECONDS)
                 .atMost(timeoutSeconds, TimeUnit.SECONDS)
                 .until(() -> {
                     runnable.run();
@@ -234,7 +227,9 @@ class SocketAppenderReconnectTest {
         final Logger logger = LogManager.getLogger();
         final int retryCount = 3;
         // noinspection ConstantConditions
-        assertTrue(retryCount > 1, "was expecting retryCount to be bigger than 1 due to LOG4J2-2829, found: " + retryCount);
+        assertTrue(
+                retryCount > 1,
+                "was expecting retryCount to be bigger than 1 due to LOG4J2-2829, found: " + retryCount);
         for (int i = 0; i < retryCount; i++) {
             try {
                 logger.info("should fail #" + i);
@@ -282,15 +277,19 @@ class SocketAppenderReconnectTest {
                         throw new IllegalStateException(e);
                     }
                 }
-                assertNotEquals(UNBOUND_PORT, serverSocket.getLocalPort(),
-                    () -> String.format("Server socket is not bound to port %s (0 = ephemeral). This can only happen if a machine runs out of ports.", port));
+                assertNotEquals(
+                        UNBOUND_PORT,
+                        serverSocket.getLocalPort(),
+                        () -> String.format(
+                                "Server socket is not bound to port %s (0 = ephemeral). This can only happen if a machine runs out of ports.",
+                                port));
             }
         }
 
         private ServerSocket createServerSocket(final int port) throws IOException {
             final ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setReuseAddress(true);
-            serverSocket.setSoTimeout(0);   // Zero indicates accept() will block indefinitely.
+            serverSocket.setSoTimeout(0); // Zero indicates accept() will block indefinitely.
             return serverSocket;
         }
 
@@ -298,7 +297,8 @@ class SocketAppenderReconnectTest {
             final String threadName = "LineReadingTcpSocketServerReader-" + name;
             final Thread thread = new Thread(this::acceptClients, threadName);
             thread.setDaemon(true); // Avoid blocking JVM exit.
-            thread.setUncaughtExceptionHandler((ignored, error) -> LOGGER.error("uncaught reader thread exception", error));
+            thread.setUncaughtExceptionHandler(
+                    (ignored, error) -> LOGGER.error("uncaught reader thread exception", error));
             thread.start();
             return thread;
         }
@@ -322,7 +322,7 @@ class SocketAppenderReconnectTest {
             } catch (SocketException ignored) {
                 return;
             }
-            clientSocket.setSoLinger(true, 0);    // Enable immediate forceful close.
+            clientSocket.setSoLinger(true, 0); // Enable immediate forceful close.
             synchronized (this) {
                 if (running) {
                     this.clientSocket = clientSocket;
@@ -331,8 +331,9 @@ class SocketAppenderReconnectTest {
 
             // Read from the client.
             try (final InputStream clientInputStream = clientSocket.getInputStream();
-                 final InputStreamReader clientReader = new InputStreamReader(clientInputStream, StandardCharsets.UTF_8);
-                 final BufferedReader clientBufferedReader = new BufferedReader(clientReader)) {
+                    final InputStreamReader clientReader =
+                            new InputStreamReader(clientInputStream, StandardCharsets.UTF_8);
+                    final BufferedReader clientBufferedReader = new BufferedReader(clientReader)) {
                 while (running) {
                     final String line = clientBufferedReader.readLine();
                     if (line == null) {
@@ -343,7 +344,8 @@ class SocketAppenderReconnectTest {
             }
 
             // Ignore connection failures.
-            catch (final SocketException ignored) {}
+            catch (final SocketException ignored) {
+            }
 
             // Clean up the client connection.
             finally {
@@ -359,7 +361,6 @@ class SocketAppenderReconnectTest {
                     LOGGER.error("failed closing client socket", error);
                 }
             }
-
         }
 
         @Override
@@ -370,10 +371,12 @@ class SocketAppenderReconnectTest {
             synchronized (this) {
                 if (running) {
                     running = false;
-                    // acceptClient() might have closed the client socket due to a connection failure and haven't created a new one yet.
+                    // acceptClient() might have closed the client socket due to a connection failure and haven't
+                    // created a new one yet.
                     // Hence, here we double-check if the client connection is in place.
                     if (clientSocket != null && !clientSocket.isClosed()) {
-                        // Interrupting a thread is not sufficient to unblock operations waiting on socket I/O: https://stackoverflow.com/a/4426050/1278899
+                        // Interrupting a thread is not sufficient to unblock operations waiting on socket I/O:
+                        // https://stackoverflow.com/a/4426050/1278899
                         // Hence, here we close the client socket to unblock the read from the client socket.
                         clientSocket.close();
                     }
@@ -386,14 +389,15 @@ class SocketAppenderReconnectTest {
             }
 
             // We wait for the termination of the reader thread outside the synchronized block.
-            // Otherwise, there is a chance of deadlock with this join() and the synchronized block inside the acceptClient().
+            // Otherwise, there is a chance of deadlock with this join() and the synchronized block inside the
+            // acceptClient().
             if (stoppedReaderThread != null) {
                 stoppedReaderThread.join();
             }
-
         }
 
-        private List<String> pollLines(@SuppressWarnings("SameParameterValue") final int count) throws InterruptedException, TimeoutException {
+        private List<String> pollLines(@SuppressWarnings("SameParameterValue") final int count)
+                throws InterruptedException, TimeoutException {
             final List<String> polledLines = new ArrayList<>(count);
             for (int i = 0; i < count; i++) {
                 final String polledLine = pollLine();
@@ -409,7 +413,6 @@ class SocketAppenderReconnectTest {
             }
             return line;
         }
-
     }
 
     /**
@@ -424,10 +427,9 @@ class SocketAppenderReconnectTest {
         }
 
         private static FixedHostResolver ofServers(final LineReadingTcpServer... servers) {
-            final List<InetSocketAddress> addresses = Arrays
-            .stream(servers)
-            .map(server -> (InetSocketAddress) server.serverSocket.getLocalSocketAddress())
-            .collect(Collectors.toList());
+            final List<InetSocketAddress> addresses = Arrays.stream(servers)
+                    .map(server -> (InetSocketAddress) server.serverSocket.getLocalSocketAddress())
+                    .collect(Collectors.toList());
             return new FixedHostResolver(addresses);
         }
 
@@ -435,6 +437,5 @@ class SocketAppenderReconnectTest {
         public List<InetSocketAddress> resolveHost(final String ignoredHost, final int ignoredPort) {
             return addresses;
         }
-
     }
 }

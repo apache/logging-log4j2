@@ -16,11 +16,14 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.*;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -44,10 +47,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
-import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.*;
-
 /**
  * Build a File Appender
  */
@@ -60,8 +59,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    public RollingFileAppenderBuilder() {
-    }
+    public RollingFileAppenderBuilder() {}
 
     public RollingFileAppenderBuilder(final String prefix, final Properties properties) {
         super(prefix, properties);
@@ -118,14 +116,30 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                     break;
             }
         });
-        return createAppender(name, config, layout.get(), filter.get(), append.get(), bufferedIo.get(),
-                bufferSize.get(), immediateFlush.get(), fileName.get(), level.get(), maxSize.get(), maxBackups.get(),
+        return createAppender(
+                name,
+                config,
+                layout.get(),
+                filter.get(),
+                append.get(),
+                bufferedIo.get(),
+                bufferSize.get(),
+                immediateFlush.get(),
+                fileName.get(),
+                level.get(),
+                maxSize.get(),
+                maxBackups.get(),
                 config.getComponent(Clock.KEY));
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         final String fileName = getProperty(FILE_PARAM);
@@ -136,14 +150,36 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         final int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 8192);
         final String maxSize = getProperty(MAX_SIZE_PARAM, DEFAULT_MAX_SIZE);
         final String maxBackups = getProperty(MAX_BACKUP_INDEX, DEFAULT_MAX_BACKUPS);
-        return createAppender(name, configuration, layout, filter, append, bufferedIo, bufferSize, immediateFlush,
-                fileName, level, maxSize, maxBackups, configuration.getComponent(Clock.KEY));
+        return createAppender(
+                name,
+                configuration,
+                layout,
+                filter,
+                append,
+                bufferedIo,
+                bufferSize,
+                immediateFlush,
+                fileName,
+                level,
+                maxSize,
+                maxBackups,
+                configuration.getComponent(Clock.KEY));
     }
 
-    private Appender createAppender(final String name, final Log4j1Configuration config, final Layout layout,
-            final Filter filter, final boolean append, final boolean bufferedIo, final int bufferSize,
-            boolean immediateFlush, final String fileName, final String level, final String maxSize,
-            final String maxBackups, final Clock clock) {
+    private Appender createAppender(
+            final String name,
+            final Log4j1Configuration config,
+            final Layout layout,
+            final Filter filter,
+            final boolean append,
+            final boolean bufferedIo,
+            final int bufferSize,
+            boolean immediateFlush,
+            final String fileName,
+            final String level,
+            final String maxSize,
+            final String maxBackups,
+            final Clock clock) {
         final org.apache.logging.log4j.core.Layout fileLayout = LayoutAdapter.adapt(layout);
         if (!bufferedIo) {
             immediateFlush = false;
@@ -154,7 +190,10 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             return null;
         }
         final String filePattern = fileName + ".%i";
-        final TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setClock(clock).setModulate(true).build();
+        final TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder()
+                .setClock(clock)
+                .setModulate(true)
+                .build();
         final SizeBasedTriggeringPolicy sizePolicy = SizeBasedTriggeringPolicy.createPolicy(maxSize);
         final CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(sizePolicy);
         final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()

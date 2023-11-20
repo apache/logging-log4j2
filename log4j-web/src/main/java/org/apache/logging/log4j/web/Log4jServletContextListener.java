@@ -16,17 +16,15 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.util.concurrent.TimeUnit;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * In environments older than Servlet 3.0, this initializer is responsible for starting up Log4j logging before anything
@@ -72,8 +70,7 @@ public class Log4jServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         this.servletContext = event.getServletContext();
-        if ("true".equalsIgnoreCase(servletContext.getInitParameter(
-                Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED))) {
+        if ("true".equalsIgnoreCase(servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED))) {
             throw new IllegalStateException("Do not use " + getClass().getSimpleName() + " when "
                     + Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
                     + Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
@@ -82,7 +79,8 @@ public class Log4jServletContextListener implements ServletContextListener {
 
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
         if (getAndIncrementCount() != 0) {
-            LOGGER.debug("Skipping Log4j context initialization, since {} is registered multiple times.",
+            LOGGER.debug(
+                    "Skipping Log4j context initialization, since {} is registered multiple times.",
                     getClass().getSimpleName());
             return;
         }
@@ -103,7 +101,8 @@ public class Log4jServletContextListener implements ServletContextListener {
         }
 
         if (decrementAndGetCount() != 0) {
-            LOGGER.debug("Skipping Log4j context shutdown, since {} is registered multiple times.",
+            LOGGER.debug(
+                    "Skipping Log4j context shutdown, since {} is registered multiple times.",
                     getClass().getSimpleName());
             return;
         }
@@ -112,10 +111,11 @@ public class Log4jServletContextListener implements ServletContextListener {
             this.initializer.clearLoggerContext(); // the application is finished
             // shutting down now
             final String stopTimeoutStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT);
-            final long stopTimeout = Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT
-                    : Long.parseLong(stopTimeoutStr);
+            final long stopTimeout =
+                    Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT : Long.parseLong(stopTimeoutStr);
             final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
-            final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
+            final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr)
+                    ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
                     : TimeUnit.valueOf(toRootUpperCase(timeoutTimeUnitStr));
             this.initializer.stop(stopTimeout, timeoutTimeUnit);
         } catch (final IllegalStateException e) {

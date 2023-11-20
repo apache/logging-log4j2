@@ -16,6 +16,12 @@
  */
 package org.apache.log4j.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,7 +30,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
@@ -51,47 +56,33 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 public class DOMTestCase {
 
     /**
      * CustomErrorHandler for testCategoryFactory2.
      */
     public static class CustomErrorHandler implements ErrorHandler {
-        public CustomErrorHandler() {
-        }
+        public CustomErrorHandler() {}
 
-        public void activateOptions() {
-        }
+        public void activateOptions() {}
 
         @Override
-        public void error(final String message) {
-        }
+        public void error(final String message) {}
 
         @Override
-        public void error(final String message, final Exception e, final int errorCode) {
-        }
+        public void error(final String message, final Exception e, final int errorCode) {}
 
         @Override
-        public void error(final String message, final Exception e, final int errorCode, final LoggingEvent event) {
-        }
+        public void error(final String message, final Exception e, final int errorCode, final LoggingEvent event) {}
 
         @Override
-        public void setAppender(final Appender appender) {
-        }
+        public void setAppender(final Appender appender) {}
 
         @Override
-        public void setBackupAppender(final Appender appender) {
-        }
+        public void setBackupAppender(final Appender appender) {}
 
         @Override
-        public void setLogger(final Logger logger) {
-        }
+        public void setLogger(final Logger logger) {}
     }
 
     /**
@@ -155,8 +146,7 @@ public class DOMTestCase {
         private boolean activated = false;
         private boolean showVersion = true;
 
-        public MockThrowableRenderer() {
-        }
+        public MockThrowableRenderer() {}
 
         @Override
         public void activateOptions() {
@@ -192,7 +182,8 @@ public class DOMTestCase {
     static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";
     static String TEST1_1A_PAT = "(TRACE|DEBUG|INFO |WARN |ERROR|FATAL) \\w*\\.\\w* - Message \\d";
     static String TEST1_1B_PAT = "(TRACE|DEBUG|INFO |WARN |ERROR|FATAL) root - Message \\d";
-    static String TEST1_2_PAT = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} " + "\\[main]\\ (TRACE|DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d";
+    static String TEST1_2_PAT = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} "
+            + "\\[main]\\ (TRACE|DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d";
 
     private static final boolean Log4j1ActualAppender = false;
 
@@ -253,14 +244,19 @@ public class DOMTestCase {
         DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/DOMTestCase1.xml");
         common();
 
-        final ControlFilter cf1 = new ControlFilter(new String[] {TEST1_1A_PAT, TEST1_1B_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
+        final ControlFilter cf1 = new ControlFilter(
+                new String[] {TEST1_1A_PAT, TEST1_1B_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
 
-        final ControlFilter cf2 = new ControlFilter(new String[] {TEST1_2_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
+        final ControlFilter cf2 = new ControlFilter(
+                new String[] {TEST1_2_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
 
-        Transformer.transform(TEMP_A1, FILTERED_A1, new Filter[] {cf1, new LineNumberFilter(), new SunReflectFilter(), new JunitTestRunnerFilter()});
+        Transformer.transform(TEMP_A1, FILTERED_A1, new Filter[] {
+            cf1, new LineNumberFilter(), new SunReflectFilter(), new JunitTestRunnerFilter()
+        });
 
-        Transformer.transform(TEMP_A2, FILTERED_A2,
-            new Filter[] {cf2, new LineNumberFilter(), new ISO8601Filter(), new SunReflectFilter(), new JunitTestRunnerFilter()});
+        Transformer.transform(TEMP_A2, FILTERED_A2, new Filter[] {
+            cf2, new LineNumberFilter(), new ISO8601Filter(), new SunReflectFilter(), new JunitTestRunnerFilter()
+        });
 
         assertTrue(Compare.compare(FILTERED_A1, "witness/dom.A1.1"));
         assertTrue(Compare.compare(FILTERED_A2, "witness/dom.A2.1"));
@@ -275,15 +271,19 @@ public class DOMTestCase {
         DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/DOMTest4.xml");
         common();
 
-        final ControlFilter cf1 = new ControlFilter(new String[] {TEST1_1A_PAT, TEST1_1B_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
+        final ControlFilter cf1 = new ControlFilter(
+                new String[] {TEST1_1A_PAT, TEST1_1B_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
 
-        final ControlFilter cf2 = new ControlFilter(new String[] {TEST1_2_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
+        final ControlFilter cf2 = new ControlFilter(
+                new String[] {TEST1_2_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
 
-        Transformer.transform(TEMP_A1 + ".4", FILTERED_A1 + ".4",
-            new Filter[] {cf1, new LineNumberFilter(), new SunReflectFilter(), new JunitTestRunnerFilter()});
+        Transformer.transform(TEMP_A1 + ".4", FILTERED_A1 + ".4", new Filter[] {
+            cf1, new LineNumberFilter(), new SunReflectFilter(), new JunitTestRunnerFilter()
+        });
 
-        Transformer.transform(TEMP_A2 + ".4", FILTERED_A2 + ".4",
-            new Filter[] {cf2, new LineNumberFilter(), new ISO8601Filter(), new SunReflectFilter(), new JunitTestRunnerFilter()});
+        Transformer.transform(TEMP_A2 + ".4", FILTERED_A2 + ".4", new Filter[] {
+            cf2, new LineNumberFilter(), new ISO8601Filter(), new SunReflectFilter(), new JunitTestRunnerFilter()
+        });
 
         assertTrue(Compare.compare(FILTERED_A1 + ".4", "witness/dom.A1.4"));
         assertTrue(Compare.compare(FILTERED_A2 + ".4", "witness/dom.A2.4"));
@@ -361,8 +361,8 @@ public class DOMTestCase {
         final File dir = new File("target/output");
         dir.mkdirs();
         try (final InputStream inputStream = new FileInputStream(input);
-            final FileOutputStream out = new FileOutputStream(configJar);
-            final ZipOutputStream zos = new ZipOutputStream(out)) {
+                final FileOutputStream out = new FileOutputStream(configJar);
+                final ZipOutputStream zos = new ZipOutputStream(out)) {
             zos.putNextEntry(new ZipEntry("log4j.xml"));
             int len;
             final byte[] buf = new byte[1024];
@@ -418,7 +418,8 @@ public class DOMTestCase {
                 return value;
             }
         };
-        configurator.doConfigure("src/test/resources/log4j1-1.2.17/input/xml/DOMTestCase1.xml", LogManager.getLoggerRepository());
+        configurator.doConfigure(
+                "src/test/resources/log4j1-1.2.17/input/xml/DOMTestCase1.xml", LogManager.getLoggerRepository());
         final String name = "A1";
         final Appender appender = Logger.getRootLogger().getAppender(name);
         assertNotNull(name, appender);
@@ -430,7 +431,8 @@ public class DOMTestCase {
         } else {
             final AppenderWrapper wrapper = (AppenderWrapper) appender;
             assertNotNull(name, wrapper);
-            final org.apache.logging.log4j.core.appender.FileAppender a1 = (org.apache.logging.log4j.core.appender.FileAppender) wrapper.getAppender();
+            final org.apache.logging.log4j.core.appender.FileAppender a1 =
+                    (org.apache.logging.log4j.core.appender.FileAppender) wrapper.getAppender();
             assertNotNull(wrapper.toString(), a1);
             final String file = a1.getFileName();
             assertNotNull(a1.toString(), file);
@@ -468,5 +470,4 @@ public class DOMTestCase {
             assertEquals(false, renderer.getShowVersion());
         }
     }
-
 }

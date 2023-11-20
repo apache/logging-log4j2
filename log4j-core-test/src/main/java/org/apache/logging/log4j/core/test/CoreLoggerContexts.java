@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.test;
 
 import java.io.File;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
 
@@ -38,7 +37,8 @@ public class CoreLoggerContexts {
         ((LifeCycle) LogManager.getContext(currentContext)).stop(); // stops async thread
     }
 
-    public static void stopLoggerContext(final boolean currentContext, final File checkFilePresence) throws InterruptedException {
+    public static void stopLoggerContext(final boolean currentContext, final File checkFilePresence)
+            throws InterruptedException {
         stopLoggerContext(currentContext);
         sleepAndCheck(checkFilePresence);
     }
@@ -47,5 +47,4 @@ public class CoreLoggerContexts {
         stopLoggerContext();
         sleepAndCheck(checkFilePresence);
     }
-
 }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.flume.test;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -30,8 +29,10 @@ import org.apache.logging.log4j.plugins.Plugin;
 @Plugin
 public class FlumeKeyProvider implements SecretKeyProvider {
 
-    private static final byte[] key = new byte[] {-7, -21, -118, -25, -79, 73, 72, -64, 0, 127, -93, -13, -38,
-        3, -73, -31, -2, -74, 3, 28, 113, -55, -105, 9, -103, 97, -5, -54, 88, -110, 97, -4};
+    private static final byte[] key = new byte[] {
+        -7, -21, -118, -25, -79, 73, 72, -64, 0, 127, -93, -13, -38, 3, -73, -31, -2, -74, 3, 28, 113, -55, -105, 9,
+        -103, 97, -5, -54, 88, -110, 97, -4
+    };
 
     @Override
     public SecretKey getSecretKey() {

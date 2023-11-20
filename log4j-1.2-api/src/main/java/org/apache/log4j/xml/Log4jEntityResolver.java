@@ -18,7 +18,6 @@ package org.apache.log4j.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
@@ -40,7 +39,8 @@ public class Log4jEntityResolver implements EntityResolver {
             final Class<?> clazz = getClass();
             InputStream in = clazz.getResourceAsStream("/org/apache/log4j/xml/log4j.dtd");
             if (in == null) {
-                LOGGER.warn("Could not find [log4j.dtd] using [{}] class loader, parsed without DTD.",
+                LOGGER.warn(
+                        "Could not find [log4j.dtd] using [{}] class loader, parsed without DTD.",
                         clazz.getClassLoader());
                 in = new ByteArrayInputStream(Constants.EMPTY_BYTE_ARRAY);
             }

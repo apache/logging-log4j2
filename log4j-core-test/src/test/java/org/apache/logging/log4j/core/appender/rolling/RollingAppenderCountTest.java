@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -23,15 +25,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Validate rolling with a file pattern that contains leading zeros for the increment.
@@ -65,7 +64,8 @@ public class RollingAppenderCountTest extends AbstractRollingListenerTest {
 
     @Test
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testLog(final @Named("LogTest") Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+    public void testLog(final @Named("LogTest") Logger logger, @Named("RollingFile") final RollingFileManager manager)
+            throws Exception {
         manager.addRolloverListener(this);
         for (long i = 0; i < 60; ++i) {
             logger.info("Sequence: {}", i);

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,8 +27,6 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("async")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncLoggerDefaultLocationTest.xml")
@@ -45,5 +45,4 @@ public class AsyncLoggerDefaultLocationTest {
         assertFalse(event.isIncludeLocation(), "includeLocation should be false");
         assertNull(event.getSource(), "Location data should not be present");
     }
-
 }

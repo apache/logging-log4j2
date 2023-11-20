@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.util.Locale;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Locale;
 import org.apache.logging.log4j.core.appender.rolling.FileSize;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FileSizeTest {
 

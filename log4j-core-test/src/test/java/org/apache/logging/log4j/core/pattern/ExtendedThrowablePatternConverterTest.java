@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,8 +31,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class ExtendedThrowablePatternConverterTest {
 
     @Test
@@ -39,7 +38,8 @@ public class ExtendedThrowablePatternConverterTest {
         final String suffix = "suffix(%mdc{key})";
         ThreadContext.put("key", "test suffix ");
         final String[] options = {suffix};
-        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, options);
+        final ExtendedThrowablePatternConverter converter =
+                ExtendedThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -47,7 +47,8 @@ public class ExtendedThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -58,7 +59,8 @@ public class ExtendedThrowablePatternConverterTest {
     public void testSuffix() {
         final String suffix = "suffix(test suffix)";
         final String[] options = {suffix};
-        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, options);
+        final ExtendedThrowablePatternConverter converter =
+                ExtendedThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -66,7 +68,8 @@ public class ExtendedThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -77,7 +80,8 @@ public class ExtendedThrowablePatternConverterTest {
     public void testSuffixWillIgnoreThrowablePattern() {
         final String suffix = "suffix(%xEx{suffix(inner suffix)})";
         final String[] options = {suffix};
-        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, options);
+        final ExtendedThrowablePatternConverter converter =
+                ExtendedThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -85,7 +89,8 @@ public class ExtendedThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -105,7 +110,8 @@ public class ExtendedThrowablePatternConverterTest {
                 .setMessage(new SimpleMessage("")) //
                 .setThrown(deserializedThrowable) //
                 .setThrownProxy(throwableProxy) //
-                .setTimeMillis(0).build();
+                .setTimeMillis(0)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -117,7 +123,8 @@ public class ExtendedThrowablePatternConverterTest {
     public void testFiltering() {
         final String packages = "filters(org.junit, org.apache.maven, sun.reflect, java.lang.reflect)";
         final String[] options = {packages};
-        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, options);
+        final ExtendedThrowablePatternConverter converter =
+                ExtendedThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -125,7 +132,8 @@ public class ExtendedThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -142,7 +150,8 @@ public class ExtendedThrowablePatternConverterTest {
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent)
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final StringWriter sw = new StringWriter();
@@ -150,14 +159,14 @@ public class ExtendedThrowablePatternConverterTest {
         parent.printStackTrace(pw);
         String result = sb.toString();
         result = result.replaceAll(" ~?\\[.*\\]", Strings.EMPTY);
-        final String expected = sw.toString(); //.replaceAll("\r", Strings.EMPTY);
+        final String expected = sw.toString(); // .replaceAll("\r", Strings.EMPTY);
         assertEquals(expected, result);
     }
 
     @Test
     public void testFiltersAndSeparator() {
-        final ExtendedThrowablePatternConverter exConverter = ExtendedThrowablePatternConverter.newInstance(null,
-                new String[] { "full", "filters(org.junit,org.eclipse)", "separator(|)" });
+        final ExtendedThrowablePatternConverter exConverter = ExtendedThrowablePatternConverter.newInstance(
+                null, new String[] {"full", "filters(org.junit,org.eclipse)", "separator(|)"});
         final ThrowableFormatOptions options = exConverter.getOptions();
         final List<String> ignorePackages = options.getIgnorePackages();
         assertNotNull(ignorePackages);
@@ -166,5 +175,4 @@ public class ExtendedThrowablePatternConverterTest {
         assertTrue(ignorePackages.contains("org.eclipse"), ignorePackagesString);
         assertEquals("|", options.getSeparator());
     }
-
 }

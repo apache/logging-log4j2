@@ -30,10 +30,7 @@ public final class CharSequencePointer implements CharSequence {
 
     private int length = -1;
 
-    public void reset(
-            final CharSequence delegate,
-            final int startIndex,
-            final int endIndex) {
+    public void reset(final CharSequence delegate, final int startIndex, final int endIndex) {
 
         // Check & set the delegate.
         Objects.requireNonNull(delegate, "delegate");
@@ -56,7 +53,6 @@ public final class CharSequencePointer implements CharSequence {
         // Set fields.
         this.delegate = delegate;
         this.startIndex = startIndex;
-
     }
 
     @Override
@@ -102,5 +98,4 @@ public final class CharSequencePointer implements CharSequence {
             throw new IllegalStateException("pointer must be reset first");
         }
     }
-
 }

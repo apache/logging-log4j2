@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jackson.yaml.parser;
 
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.parser.ParseException;
 import org.apache.logging.log4j.core.test.parser.AbstractLogEventParserTest;
@@ -26,48 +25,47 @@ import org.junit.Test;
 
 public class YamlLogEventParserTest extends AbstractLogEventParserTest {
 
-    private static final String YAML = "---\n" +
-            "timeMillis: 1493121664118\n" +
-            "instant:\n" +
-            " epochSecond: 1493121664\n" +
-            " nanoOfSecond: 118000000\n" +
-            "thread: \"main\"\n" +
-            "level: \"INFO\"\n" +
-            "loggerName: \"HelloWorld\"\n" +
-            "marker:\n" +
-            " name: \"child\"\n" +
-            " parents:\n" +
-            " - name: \"parent\"\n" +
-            "   parents:\n" +
-            "   - name: \"grandparent\"\n" +
-            "message: \"Hello, world!\"\n" +
-            "thrown:\n" +
-            " commonElementCount: 0\n" +
-            " message: \"error message\"\n" +
-            " name: \"java.lang.RuntimeException\"\n" +
-            " extendedStackTrace:\n" +
-            " - class: \"logtest.Main\"\n" +
-            "   method: \"main\"\n" +
-            "   file: \"Main.java\"\n" +
-            "   line: 29\n" +
-            "   exact: true\n" +
-            "   location: \"classes/\"\n" +
-            "   version: \"?\"\n" +
-            "contextStack:\n" +
-            "- \"one\"\n" +
-            "- \"two\"\n" +
-            "endOfBatch: false\n" +
-            "loggerFqcn: \"org.apache.logging.log4j.spi.AbstractLogger\"\n" +
-            "contextMap:\n" +
-            " bar: \"BAR\"\n" +
-            " foo: \"FOO\"\n" +
-            "threadId: 1\n" +
-            "threadPriority: 5\n" +
-            "source:\n" +
-            " class: \"logtest.Main\"\n" +
-            " method: \"main\"\n" +
-            " file: \"Main.java\"\n" +
-            " line: 29";
+    private static final String YAML = "---\n" + "timeMillis: 1493121664118\n"
+            + "instant:\n"
+            + " epochSecond: 1493121664\n"
+            + " nanoOfSecond: 118000000\n"
+            + "thread: \"main\"\n"
+            + "level: \"INFO\"\n"
+            + "loggerName: \"HelloWorld\"\n"
+            + "marker:\n"
+            + " name: \"child\"\n"
+            + " parents:\n"
+            + " - name: \"parent\"\n"
+            + "   parents:\n"
+            + "   - name: \"grandparent\"\n"
+            + "message: \"Hello, world!\"\n"
+            + "thrown:\n"
+            + " commonElementCount: 0\n"
+            + " message: \"error message\"\n"
+            + " name: \"java.lang.RuntimeException\"\n"
+            + " extendedStackTrace:\n"
+            + " - class: \"logtest.Main\"\n"
+            + "   method: \"main\"\n"
+            + "   file: \"Main.java\"\n"
+            + "   line: 29\n"
+            + "   exact: true\n"
+            + "   location: \"classes/\"\n"
+            + "   version: \"?\"\n"
+            + "contextStack:\n"
+            + "- \"one\"\n"
+            + "- \"two\"\n"
+            + "endOfBatch: false\n"
+            + "loggerFqcn: \"org.apache.logging.log4j.spi.AbstractLogger\"\n"
+            + "contextMap:\n"
+            + " bar: \"BAR\"\n"
+            + " foo: \"FOO\"\n"
+            + "threadId: 1\n"
+            + "threadPriority: 5\n"
+            + "source:\n"
+            + " class: \"logtest.Main\"\n"
+            + " method: \"main\"\n"
+            + " file: \"Main.java\"\n"
+            + " line: 29";
 
     private YamlLogEventParser parser;
 
@@ -124,5 +122,4 @@ public class YamlLogEventParserTest extends AbstractLogEventParserTest {
     public void testTimeMillisIgnored() throws ParseException {
         parser.parseFrom("---\ntimeMillis: \"foobar\"\n");
     }
-
 }

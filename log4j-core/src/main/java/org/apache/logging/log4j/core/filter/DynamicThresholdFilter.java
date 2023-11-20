@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -58,7 +57,8 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return new Builder();
     }
 
-    public static class Builder extends AbstractFilter.AbstractFilterBuilder<Builder> implements Supplier<DynamicThresholdFilter> {
+    public static class Builder extends AbstractFilter.AbstractFilterBuilder<Builder>
+            implements Supplier<DynamicThresholdFilter> {
         private String key;
         private KeyValuePair[] pairs;
         private Level defaultThreshold;
@@ -93,9 +93,10 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             if (defaultThreshold == null) {
                 defaultThreshold = Level.ERROR;
             }
-            final Map<String, Level> map =
-                    Stream.of(pairs).collect(Collectors.toMap(KeyValuePair::getKey, pair -> Level.toLevel(pair.getValue())));
-            return new DynamicThresholdFilter(key, map, defaultThreshold, getOnMatch(), getOnMismatch(), contextDataInjector);
+            final Map<String, Level> map = Stream.of(pairs)
+                    .collect(Collectors.toMap(KeyValuePair::getKey, pair -> Level.toLevel(pair.getValue())));
+            return new DynamicThresholdFilter(
+                    key, map, defaultThreshold, getOnMatch(), getOnMismatch(), contextDataInjector);
         }
     }
 
@@ -105,13 +106,18 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     private final Map<String, Level> levelMap;
 
     private DynamicThresholdFilter(
-            final String key, final Map<String, Level> pairs, final Level defaultLevel,
-            final Result onMatch, final Result onMismatch, final ContextDataInjector injector) {
+            final String key,
+            final Map<String, Level> pairs,
+            final Level defaultLevel,
+            final Result onMatch,
+            final Result onMismatch,
+            final ContextDataInjector injector) {
         super(onMatch, onMismatch);
         // ContextDataFactory looks up a property. The Spring PropertySource may log which will cause recursion.
         // By initializing the ContextDataFactory here recursion will be prevented.
         final StringMap map = ContextDataFactory.createContextData();
-        LOGGER.debug("Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
+        LOGGER.debug(
+                "Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
                 map.size());
         Objects.requireNonNull(key, "key cannot be null");
         this.key = key;
@@ -166,7 +172,6 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             return level.isMoreSpecificThan(ctxLevel) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
-
     }
 
     @Override
@@ -175,20 +180,20 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-                         final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-                         final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-                         final Object... params) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter(level, currentContextData());
     }
 
@@ -197,71 +202,143 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object p0) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return filter(level, currentContextData());
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return filter(level, currentContextData());
     }
 

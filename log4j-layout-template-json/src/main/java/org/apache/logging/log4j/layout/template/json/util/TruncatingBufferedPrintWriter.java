@@ -18,9 +18,7 @@ package org.apache.logging.log4j.layout.template.json.util;
 
 import java.io.PrintWriter;
 
-public final class TruncatingBufferedPrintWriter
-        extends PrintWriter
-        implements CharSequence {
+public final class TruncatingBufferedPrintWriter extends PrintWriter implements CharSequence {
 
     private final TruncatingBufferedWriter writer;
 
@@ -31,8 +29,7 @@ public final class TruncatingBufferedPrintWriter
 
     public static TruncatingBufferedPrintWriter ofCapacity(final int capacity) {
         if (capacity < 0) {
-            throw new IllegalArgumentException(
-                    "was expecting a non-negative capacity: " + capacity);
+            throw new IllegalArgumentException("was expecting a non-negative capacity: " + capacity);
         }
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(capacity);
         return new TruncatingBufferedPrintWriter(writer);
@@ -94,5 +91,4 @@ public final class TruncatingBufferedPrintWriter
     public String toString() {
         return writer.toString();
     }
-
 }

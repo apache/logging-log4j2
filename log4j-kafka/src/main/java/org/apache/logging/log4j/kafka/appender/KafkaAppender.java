@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -73,10 +72,22 @@ public final class KafkaAppender extends AbstractAppender {
                 AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
                 return null;
             }
-            final KafkaManager kafkaManager = KafkaManager.getManager(getConfiguration().getLoggerContext(), getName(),
-                    topic, syncSend, sendEventTimestamp, getPropertyArray(), key);
-            return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), kafkaManager,
-                    getPropertyArray(), getRetryCount());
+            final KafkaManager kafkaManager = KafkaManager.getManager(
+                    getConfiguration().getLoggerContext(),
+                    getName(),
+                    topic,
+                    syncSend,
+                    sendEventTimestamp,
+                    getPropertyArray(),
+                    key);
+            return new KafkaAppender(
+                    getName(),
+                    layout,
+                    getFilter(),
+                    isIgnoreExceptions(),
+                    kafkaManager,
+                    getPropertyArray(),
+                    getRetryCount());
         }
 
         public Integer getRetryCount() {
@@ -125,10 +136,10 @@ public final class KafkaAppender extends AbstractAppender {
             this.topic = topic;
             return asBuilder();
         }
-
     }
 
-    private static final String[] KAFKA_CLIENT_PACKAGES = new String[] { "org.apache.kafka.common", "org.apache.kafka.clients" };
+    private static final String[] KAFKA_CLIENT_PACKAGES =
+            new String[] {"org.apache.kafka.common", "org.apache.kafka.clients"};
 
     /**
      * Tests if the given log event is from a Kafka Producer implementation.
@@ -137,7 +148,8 @@ public final class KafkaAppender extends AbstractAppender {
      * @return true to avoid recursion and skip logging, false to log.
      */
     private static boolean isRecursive(final LogEvent event) {
-        return Stream.of(KAFKA_CLIENT_PACKAGES).anyMatch(prefix -> event.getLoggerName().startsWith(prefix));
+        return Stream.of(KAFKA_CLIENT_PACKAGES)
+                .anyMatch(prefix -> event.getLoggerName().startsWith(prefix));
     }
 
     /**
@@ -154,9 +166,14 @@ public final class KafkaAppender extends AbstractAppender {
 
     private final KafkaManager manager;
 
-    private KafkaAppender(final String name, final Layout layout, final Filter filter,
-                          final boolean ignoreExceptions, final KafkaManager manager, final Property[] properties,
-                          final int retryCount) {
+    private KafkaAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final KafkaManager manager,
+            final Property[] properties,
+            final int retryCount) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = Objects.requireNonNull(manager, "manager");
         this.retryCount = retryCount;

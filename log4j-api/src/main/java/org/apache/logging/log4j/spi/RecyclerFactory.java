@@ -55,5 +55,4 @@ public interface RecyclerFactory {
      * @return a new recycler for V-type instances
      */
     <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> cleaner);
-
 }

@@ -26,12 +26,12 @@ import org.apache.logging.log4j.message.Message;
 /**
  * <pre>
  * AbstractLogEventMixIn
-*├─ AbstractLogEventXmlMixIn
-*├──── LogEventWithContextListXmlMixIn
-*├──── LogEventWithContextMapXmlMixIn
-*├─ AbstractLogEventJsonMixIn
-*├──── LogEventWithContextListJsonMixIn
-*├──── LogEventWithContextMapJsonMixIn
+ *├─ AbstractLogEventXmlMixIn
+ *├──── LogEventWithContextListXmlMixIn
+ *├──── LogEventWithContextMapXmlMixIn
+ *├─ AbstractLogEventJsonMixIn
+ *├──── LogEventWithContextListJsonMixIn
+ *├──── LogEventWithContextMapJsonMixIn
  * </pre>
  */
 @JsonFilter(AbstractLogEventMixIn.JSON_FILTER_ID)
@@ -70,5 +70,4 @@ public abstract class AbstractLogEventMixIn implements LogEvent {
 
     @Override
     public abstract void setIncludeLocation(boolean locationRequired);
-
 }

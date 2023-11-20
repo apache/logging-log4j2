@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -91,8 +90,7 @@ public class LoggerConfigBenchmark {
     }
 
     @Benchmark
-    public void testBaseline(final Blackhole bh) {
-    }
+    public void testBaseline(final Blackhole bh) {}
 
     private static LogEvent createLogEventWithoutException() {
         return Log4jLogEvent.newBuilder()
@@ -252,5 +250,4 @@ public class LoggerConfigBenchmark {
             control.callAppender(event);
         }
     }
-
 }

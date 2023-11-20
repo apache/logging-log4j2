@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
-import java.util.stream.StreamSupport;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.stream.StreamSupport;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -28,8 +29,6 @@ import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @UsingTestProperties
 public class XmlConfigurationPropsTest {
@@ -47,11 +46,13 @@ public class XmlConfigurationPropsTest {
                 .orElseThrow(() -> new AssertionFailedError("Missing console status listener."));
     }
 
-    private void testConfiguration(final Configuration config,
-                                   final String expectedConfigName,
-                                   final Level expectedStatusLevel,
-                                   final Level expectedRootLevel) {
-        assertThat(config).isInstanceOf(XmlConfiguration.class)
+    private void testConfiguration(
+            final Configuration config,
+            final String expectedConfigName,
+            final Level expectedStatusLevel,
+            final Level expectedRootLevel) {
+        assertThat(config)
+                .isInstanceOf(XmlConfiguration.class)
                 .extracting(Configuration::getName)
                 .isEqualTo(expectedConfigName);
         assertThat(config.getRootLogger().getExplicitLevel()).isEqualTo(expectedRootLevel);

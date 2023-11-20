@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.apache.logging.log4j.Level;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class TagUtilsLevelTest {
@@ -43,7 +42,7 @@ public class TagUtilsLevelTest {
         final Collection<Object[]> params = new ArrayList<>();
         // this is perhaps the laziest way to test all the known levels
         for (final Level level : Level.values()) {
-            params.add(new Object[]{level, toRootLowerCase(level.name())});
+            params.add(new Object[] {level, toRootLowerCase(level.name())});
         }
         return params;
     }
@@ -57,5 +56,4 @@ public class TagUtilsLevelTest {
     public void testResolveLevelEnum() throws Exception {
         assertEquals(level, TagUtils.resolveLevel(level));
     }
-
 }

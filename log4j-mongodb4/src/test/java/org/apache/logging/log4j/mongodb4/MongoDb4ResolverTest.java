@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoIterable;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tests MongoDbRule.
@@ -37,5 +37,4 @@ public class MongoDb4ResolverTest {
         assertNotNull(databaseNames);
         assertNotNull(databaseNames.first());
     }
-
 }

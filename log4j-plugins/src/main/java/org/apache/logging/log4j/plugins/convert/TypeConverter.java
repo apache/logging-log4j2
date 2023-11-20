@@ -48,8 +48,12 @@ public interface TypeConverter<T> {
             try {
                 return convert(string);
             } catch (final Exception e) {
-                StatusLogger.getLogger().warn("Unable to convert string [{}]. Using default value [{}].",
-                        sensitive ? "-redacted-" : string, defaultValue, e);
+                StatusLogger.getLogger()
+                        .warn(
+                                "Unable to convert string [{}]. Using default value [{}].",
+                                sensitive ? "-redacted-" : string,
+                                defaultValue,
+                                e);
             }
         }
         if (defaultValue == null) {

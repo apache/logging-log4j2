@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import static org.junit.Assert.fail;
+
+import com.google.common.base.Preconditions;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,11 +33,8 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-
-import com.google.common.base.Preconditions;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.specific.SpecificResponder;
@@ -54,8 +54,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -89,9 +87,9 @@ public class FlumePersistentPerf {
         deleteFiles(file);
 
         /*
-        * Clear out all other appenders associated with this logger to ensure we're
-        * only hitting the Avro appender.
-        */
+         * Clear out all other appenders associated with this logger to ensure we're
+         * only hitting the Avro appender.
+         */
         final int primaryPort = AvailablePortFinder.getNextAvailable();
         final int altPort = AvailablePortFinder.getNextAvailable();
         System.setProperty("primaryPort", Integer.toString(primaryPort));
@@ -135,7 +133,6 @@ public class FlumePersistentPerf {
         System.out.println("Time to log " + count + " events " + elapsed + "ms");
     }
 
-
     private String getBody(final Event event) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final InputStream is = new GZIPInputStream(new ByteArrayInputStream(event.getBody()));
@@ -144,7 +141,6 @@ public class FlumePersistentPerf {
             baos.write(n);
         }
         return new String(baos.toByteArray());
-
     }
 
     private static boolean deleteFiles(final File file) {
@@ -180,8 +176,8 @@ public class FlumePersistentPerf {
 
         private Server createServer(final AvroSourceProtocol protocol, final int port) throws InterruptedException {
 
-            server = new NettyServer(new SpecificResponder(AvroSourceProtocol.class, protocol),
-                    new InetSocketAddress(HOSTNAME, port));
+            server = new NettyServer(
+                    new SpecificResponder(AvroSourceProtocol.class, protocol), new InetSocketAddress(HOSTNAME, port));
 
             return server;
         }

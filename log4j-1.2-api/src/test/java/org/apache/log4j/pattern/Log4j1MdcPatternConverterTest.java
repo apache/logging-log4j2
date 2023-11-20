@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.pattern;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class Log4j1MdcPatternConverterTest {
 
@@ -73,5 +73,4 @@ public class Log4j1MdcPatternConverterTest {
         converter.format(event, sb);
         assertEquals(expected, sb.toString());
     }
-
 }

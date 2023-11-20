@@ -77,5 +77,4 @@ public class ThreadContextRule extends ExternalResource {
             ThreadContext.clearStack();
         }
     }
-
 }

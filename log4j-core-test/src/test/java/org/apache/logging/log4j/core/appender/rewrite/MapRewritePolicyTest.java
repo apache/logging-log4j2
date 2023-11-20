@@ -16,10 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -34,13 +39,6 @@ import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 public class MapRewritePolicyTest {
     private static final StringMap stringMap = ContextDataFactory.createContextData();
@@ -62,15 +60,18 @@ public class MapRewritePolicyTest {
                 .setThrown(new RuntimeException("test")) //
                 .setThreadName("none")
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 28))
-                .setTimeMillis(2).build();
+                .setTimeMillis(2)
+                .build();
 
-        logEvent1 = ((Log4jLogEvent) logEvent0).asBuilder() //
+        logEvent1 = ((Log4jLogEvent) logEvent0)
+                .asBuilder() //
                 .setMessage(new StringMapMessage(map)) //
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 29)) //
                 .build();
 
         final ThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>(map.values()));
-        logEvent2 = ((Log4jLogEvent) logEvent0).asBuilder() //
+        logEvent2 = ((Log4jLogEvent) logEvent0)
+                .asBuilder() //
                 .setContextStack(stack) //
                 .setMarker(MarkerManager.getMarker("test")) //
                 .setLevel(Level.TRACE) //
@@ -78,14 +79,15 @@ public class MapRewritePolicyTest {
                 .setTimeMillis(20000000) //
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 30)) //
                 .build();
-        logEvent3 = ((Log4jLogEvent) logEvent0).asBuilder() //
+        logEvent3 = ((Log4jLogEvent) logEvent0)
+                .asBuilder() //
                 .setContextStack(stack) //
                 .setLevel(Level.ALL) //
                 .setMessage(new StringMapMessage(map)) //
                 .setTimeMillis(Long.MAX_VALUE) //
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 31)) //
                 .build();
-        rewrite = new KeyValuePair[]{new KeyValuePair("test2", "2"), new KeyValuePair("test3", "three")};
+        rewrite = new KeyValuePair[] {new KeyValuePair("test2", "2"), new KeyValuePair("test3", "three")};
     }
 
     @Test
@@ -97,15 +99,15 @@ public class MapRewritePolicyTest {
 
         rewritten = addPolicy.rewrite(logEvent1);
         compareLogEvents(logEvent1, rewritten);
-        checkAdded(((StringMapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StringMapMessage) rewritten.getMessage()).getData());
 
         rewritten = addPolicy.rewrite(logEvent2);
         compareLogEvents(logEvent2, rewritten);
-        checkAdded(((StructuredDataMessage)rewritten.getMessage()).getData());
+        checkAdded(((StructuredDataMessage) rewritten.getMessage()).getData());
 
         rewritten = addPolicy.rewrite(logEvent3);
         compareLogEvents(logEvent3, rewritten);
-        checkAdded(((StringMapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StringMapMessage) rewritten.getMessage()).getData());
     }
 
     @Test
@@ -117,15 +119,15 @@ public class MapRewritePolicyTest {
 
         rewritten = updatePolicy.rewrite(logEvent1);
         compareLogEvents(logEvent1, rewritten);
-        checkUpdated(((StringMapMessage)rewritten.getMessage()).getData());
+        checkUpdated(((StringMapMessage) rewritten.getMessage()).getData());
 
         rewritten = updatePolicy.rewrite(logEvent2);
         compareLogEvents(logEvent2, rewritten);
-        checkUpdated(((StructuredDataMessage)rewritten.getMessage()).getData());
+        checkUpdated(((StructuredDataMessage) rewritten.getMessage()).getData());
 
         rewritten = updatePolicy.rewrite(logEvent3);
         compareLogEvents(logEvent3, rewritten);
-        checkUpdated(((StringMapMessage)rewritten.getMessage()).getData());
+        checkUpdated(((StringMapMessage) rewritten.getMessage()).getData());
     }
 
     @Test
@@ -137,15 +139,15 @@ public class MapRewritePolicyTest {
 
         rewritten = addPolicy.rewrite(logEvent1);
         compareLogEvents(logEvent1, rewritten);
-        checkAdded(((StringMapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StringMapMessage) rewritten.getMessage()).getData());
 
         rewritten = addPolicy.rewrite(logEvent2);
         compareLogEvents(logEvent2, rewritten);
-        checkAdded(((StructuredDataMessage)rewritten.getMessage()).getData());
+        checkAdded(((StructuredDataMessage) rewritten.getMessage()).getData());
 
         rewritten = addPolicy.rewrite(logEvent3);
         compareLogEvents(logEvent3, rewritten);
-        checkAdded(((StringMapMessage)rewritten.getMessage()).getData());
+        checkAdded(((StringMapMessage) rewritten.getMessage()).getData());
     }
 
     private void checkAdded(final Map<String, String> addedMap) {
@@ -170,7 +172,7 @@ public class MapRewritePolicyTest {
         assertEquals(orig.getLevel(), changed.getLevel(), "Level changed");
         assertArrayEquals(
                 orig.getThrown() == null ? null : orig.getThrownProxy().getExtendedStackTrace(),
-            changed.getThrown() == null ? null : changed.getThrownProxy().getExtendedStackTrace(),
+                changed.getThrown() == null ? null : changed.getThrownProxy().getExtendedStackTrace(),
                 "Throwable changed");
         assertEquals(orig.getContextData(), changed.getContextData(), "ContextData changed");
         assertEquals(orig.getContextStack(), changed.getContextStack(), "ContextStack changed");

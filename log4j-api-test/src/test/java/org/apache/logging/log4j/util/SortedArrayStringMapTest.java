@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,6 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the SortedArrayStringMap class.
@@ -72,7 +71,6 @@ public class SortedArrayStringMapTest {
         original.putValue("3", "3value");
         assertEquals("{3=3value, B=Bvalue, a=avalue}", original.toString());
     }
-
 
     @Test
     public void testPutAll() {
@@ -423,7 +421,7 @@ public class SortedArrayStringMapTest {
         assertEquals(5, original.size(), "size");
 
         final SortedArrayStringMap other = new SortedArrayStringMap();
-        for (int i = 0 ; i < 500; i++) {
+        for (int i = 0; i < 500; i++) {
             other.putValue(String.valueOf(i), String.valueOf(i));
         }
         other.putValue(null, "otherVal");
@@ -435,7 +433,7 @@ public class SortedArrayStringMapTest {
         assertEquals("bbb", original.getValue("b"));
         assertEquals("ccc", original.getValue("c"));
         assertEquals("ddd", original.getValue("d"));
-        for (int i = 0 ; i < 500; i++) {
+        for (int i = 0; i < 500; i++) {
             assertEquals(String.valueOf(i), original.getValue(String.valueOf(i)));
         }
     }
@@ -460,14 +458,18 @@ public class SortedArrayStringMapTest {
     public void testConcurrentModificationBiConsumerPut() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o) -> original.putValue("c", "other")));
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> original.forEach((s, o) -> original.putValue("c", "other")));
     }
 
     @Test
     public void testConcurrentModificationBiConsumerPutValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o) -> original.putValue("c", "other")));
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> original.forEach((s, o) -> original.putValue("c", "other")));
     }
 
     @Test
@@ -488,28 +490,35 @@ public class SortedArrayStringMapTest {
     public void testConcurrentModificationTriConsumerPut() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o, o2) -> original.putValue("c", "other"), null));
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> original.forEach((s, o, o2) -> original.putValue("c", "other"), null));
     }
 
     @Test
     public void testConcurrentModificationTriConsumerPutValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o, o2) -> original.putValue("c", "other"), null));
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> original.forEach((s, o, o2) -> original.putValue("c", "other"), null));
     }
 
     @Test
     public void testConcurrentModificationTriConsumerRemove() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o, o2) -> original.remove("a"), null));
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> original.forEach((s, o, o2) -> original.remove("a"), null));
     }
 
     @Test
     public void testConcurrentModificationTriConsumerClear() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o, o2) -> original.clear(), null));
+        assertThrows(
+                ConcurrentModificationException.class, () -> original.forEach((s, o, o2) -> original.clear(), null));
     }
 
     @Test
@@ -537,7 +546,9 @@ public class SortedArrayStringMapTest {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("b", "bbb");
         original.freeze();
-        assertThrows(UnsupportedOperationException.class, () -> original.remove("b")); // existing key: modifies the collection
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> original.remove("b")); // existing key: modifies the collection
     }
 
     @Test
@@ -944,6 +955,7 @@ public class SortedArrayStringMapTest {
 
         original.forEach(new BiConsumer<String, String>() {
             int count = 0;
+
             @Override
             public void accept(final String key, final String value) {
                 assertEquals(key, original.getKeyAt(count), "key");
@@ -958,12 +970,12 @@ public class SortedArrayStringMapTest {
         SortedArrayStringMap data;
         int count;
     }
+
     static TriConsumer<String, String, State> COUNTER = (key, value, state) -> {
         assertEquals(key, state.data.getKeyAt(state.count), "key");
         assertEquals(value, state.data.getValueAt(state.count), "val");
         state.count++;
-        assertTrue(
-                state.count <= state.data.size(), "count should not exceed size but was " + state.count);
+        assertTrue(state.count <= state.data.size(), "count should not exceed size but was " + state.count);
     };
 
     @Test

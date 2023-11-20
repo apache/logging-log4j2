@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @Tag("async")
 public class AsyncLoggerThreadNameStrategyTest {
@@ -75,5 +75,4 @@ public class AsyncLoggerThreadNameStrategyTest {
         Thread.currentThread().setName(name2);
         assertEquals(original, ThreadNameCachingStrategy.CACHED.getThreadName());
     }
-
 }

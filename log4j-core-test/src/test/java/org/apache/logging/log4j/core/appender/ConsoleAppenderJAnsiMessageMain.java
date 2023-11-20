@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.Map.Entry;
+import static org.fusesource.jansi.Ansi.Color.CYAN;
+import static org.fusesource.jansi.Ansi.Color.RED;
+import static org.fusesource.jansi.Ansi.ansi;
 
+import java.util.Map.Entry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -27,10 +30,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.fusesource.jansi.Ansi.Color.CYAN;
-import static org.fusesource.jansi.Ansi.Color.RED;
-import static org.fusesource.jansi.Ansi.ansi;
 
 /**
  * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
@@ -69,10 +68,10 @@ public class ConsoleAppenderJAnsiMessageMain {
     public void test(final String[] args) {
         System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
         // System.out.println(System.getProperty("java.class.path"));
-        final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-msg-ansi.xml"
-                : args[0];
-        try (final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
-                config)) {
+        final String config =
+                args == null || args.length == 0 ? "target/test-classes/log4j2-console-msg-ansi.xml" : args[0];
+        try (final LoggerContext ctx =
+                Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config)) {
             final Logger logger = LogManager.getLogger(ConsoleAppenderJAnsiMessageMain.class);
             logger.info(ansi().fg(RED).a("Hello").fg(CYAN).a(" World").reset());
             // JAnsi format:
@@ -82,5 +81,4 @@ public class ConsoleAppenderJAnsiMessageMain {
             }
         }
     }
-
 }

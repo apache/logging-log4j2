@@ -20,10 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
-
 import org.apache.logging.log4j.core.test.net.ssl.LegacyBsdTlsSyslogInputStreamReader;
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogInputStreamReader;
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogInputStreamReaderBase;
@@ -42,7 +40,9 @@ public class MockTlsSyslogServer extends MockSyslogServer {
     private TlsSyslogMessageFormat messageFormat = TlsSyslogMessageFormat.SYSLOG;
     private final int numberOfMessageToReceive;
 
-    public MockTlsSyslogServer(final int numberOfMessagesToReceive, final TlsSyslogMessageFormat format,
+    public MockTlsSyslogServer(
+            final int numberOfMessagesToReceive,
+            final TlsSyslogMessageFormat format,
             final SSLServerSocket serverSocket) {
         this.messageFormat = format;
         this.numberOfMessageToReceive = numberOfMessagesToReceive;
@@ -94,7 +94,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
     }
 
     private void waitForConnection() throws IOException {
-        clientSocket =  (SSLSocket) serverSocket.accept();
+        clientSocket = (SSLSocket) serverSocket.accept();
         final InputStream clientSocketInputStream = clientSocket.getInputStream();
         syslogReader = createTLSSyslogReader(clientSocketInputStream);
     }
@@ -111,11 +111,10 @@ public class MockTlsSyslogServer extends MockSyslogServer {
     }
 
     private void closeSockets() {
-        if(clientSocket != null) {
+        if (clientSocket != null) {
             try {
                 clientSocket.close();
-            }
-            catch(final Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
         }
@@ -142,8 +141,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
                 }
             }
             this.notify();
-        }
-        catch(final Exception e) {
+        } catch (final Exception e) {
             this.notify();
             throw new IOException(e);
         }

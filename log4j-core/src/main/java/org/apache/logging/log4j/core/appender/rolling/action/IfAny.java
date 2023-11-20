@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Objects;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -76,8 +75,7 @@ public final class IfAny implements PathCondition {
      * @return A Composite PathCondition.
      */
     @PluginFactory
-    public static IfAny createOrCondition(
-            @PluginElement("PathConditions") final PathCondition... components) {
+    public static IfAny createOrCondition(@PluginElement("PathConditions") final PathCondition... components) {
         return new IfAny(components);
     }
 

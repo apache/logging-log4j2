@@ -28,8 +28,7 @@ import java.util.Map;
  */
 public class NoOpThreadContextMap implements ThreadContextMap {
     @Override
-    public void clear() {
-    }
+    public void clear() {}
 
     @Override
     public boolean containsKey(final String key) {
@@ -57,20 +56,16 @@ public class NoOpThreadContextMap implements ThreadContextMap {
     }
 
     @Override
-    public void put(final String key, final String value) {
-    }
+    public void put(final String key, final String value) {}
 
     @Override
-    public void remove(final String key) {
-    }
+    public void remove(final String key) {}
 
     @Override
-    public void putAll(final Map<String, String> map) {
-    }
+    public void putAll(final Map<String, String> map) {}
 
     @Override
-    public void removeAll(final Iterable<String> keys) {
-    }
+    public void removeAll(final Iterable<String> keys) {}
 
     @Override
     public <V> V getValue(final String key) {
@@ -78,10 +73,8 @@ public class NoOpThreadContextMap implements ThreadContextMap {
     }
 
     @Override
-    public <V> void putValue(final String key, final V value) {
-    }
+    public <V> void putValue(final String key, final V value) {}
 
     @Override
-    public <V> void putAllValues(final Map<String, V> values) {
-    }
+    public <V> void putAllValues(final Map<String, V> values) {}
 }

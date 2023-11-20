@@ -16,12 +16,14 @@
  */
 package org.apache.log4j.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -31,9 +33,6 @@ import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Test configuration from XML.
@@ -46,12 +45,10 @@ public class AsyncAppenderTest {
 
     static Stream<String> testAsyncAppender() {
         return Stream.of("/log4j1-async.xml", "/log4j1-async.properties")
-                .map(config ->
-                        assertDoesNotThrow(() -> {
-                            final URI uri = AsyncAppenderTest.class.getResource(config).toURI();
-                            return Paths.get(uri).toString();
-                        })
-                );
+                .map(config -> assertDoesNotThrow(() -> {
+                    final URI uri = AsyncAppenderTest.class.getResource(config).toURI();
+                    return Paths.get(uri).toString();
+                }));
     }
 
     @ParameterizedTest
@@ -60,7 +57,8 @@ public class AsyncAppenderTest {
         try (final LoggerContext loggerContext = TestConfigurator.configure(configLocation)) {
             final Logger logger = LogManager.getLogger("test");
             logger.debug("This is a test of the root logger");
-            final AppenderAdapter.Adapter adapter = loggerContext.getConfiguration().getAppender("list");
+            final AppenderAdapter.Adapter adapter =
+                    loggerContext.getConfiguration().getAppender("list");
             assertThat(adapter).isNotNull();
             final ListAppender appender = (ListAppender) adapter.getAppender();
             final List<String> messages = appender.getMessages(1, DEFAULT_TIMEOUT_MS, TimeUnit.MILLISECONDS);

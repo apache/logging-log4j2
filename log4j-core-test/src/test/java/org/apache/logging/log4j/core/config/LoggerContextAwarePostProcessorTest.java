@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class LoggerContextAwarePostProcessorTest {
     static class TestBean implements LoggerContextAware {

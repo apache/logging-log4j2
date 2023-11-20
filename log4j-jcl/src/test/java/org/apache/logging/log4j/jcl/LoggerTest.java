@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.jcl;
 
-import java.util.List;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.*;
 
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -25,10 +28,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -45,7 +44,7 @@ public class LoggerTest {
         final Log logger = LogFactory.getLog("LoggerTest");
         logger.debug("Test message");
         verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}" + Strings.LINE_SEPARATOR);
-        logger.debug("Exception: " , new NullPointerException("Test"));
+        logger.debug("Exception: ", new NullPointerException("Test"));
         verify("List", "o.a.l.l.j.LoggerTest Exception:  MDC{}" + Strings.LINE_SEPARATOR);
         logger.info("Info Message");
         verify("List", "o.a.l.l.j.LoggerTest Info Message MDC{}" + Strings.LINE_SEPARATOR);
@@ -61,5 +60,4 @@ public class LoggerTest {
         assertThat(actual, equalTo(expected));
         listApp.clear();
     }
-
 }

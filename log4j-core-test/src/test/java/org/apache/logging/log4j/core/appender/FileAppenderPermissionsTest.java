@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +28,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
@@ -43,10 +46,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.apache.logging.log4j.util.Unbox.box;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 /**
  * Tests {@link FileAppender}.
  */
@@ -61,26 +60,27 @@ public class FileAppenderPermissionsTest {
     }
 
     @ParameterizedTest
-    @CsvSource({ "rwxrwxrwx,true,2", "rw-r--r--,false,3", "rw-------,true,4", "rw-rw----,false,5" })
+    @CsvSource({"rwxrwxrwx,true,2", "rw-r--r--,false,3", "rw-------,true,4", "rw-rw----,false,5"})
     @Tag("sleepy")
     public void testFilePermissionsAPI(final String filePermissions, final boolean createOnDemand, final int fileIndex)
             throws Exception {
         final File file = new File(DIR, "AppenderTest-" + fileIndex + ".log");
         final Path path = file.toPath();
-        final Layout layout = PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+        final Layout layout = PatternLayout.newBuilder()
+                .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .setFileName(file.getAbsolutePath())
-            .setName("test")
-            .setImmediateFlush(false)
-            .setIgnoreExceptions(false)
-            .setBufferedIo(false)
-            .setBufferSize(1)
-            .setLayout(layout)
-            .setCreateOnDemand(createOnDemand)
-            .setFilePermissions(filePermissions)
-            .build();
+                .setFileName(file.getAbsolutePath())
+                .setName("test")
+                .setImmediateFlush(false)
+                .setIgnoreExceptions(false)
+                .setBufferedIo(false)
+                .setBufferSize(1)
+                .setLayout(layout)
+                .setCreateOnDemand(createOnDemand)
+                .setFilePermissions(filePermissions)
+                .build();
         // @formatter:on
         try {
             appender.start();
@@ -90,10 +90,14 @@ public class FileAppenderPermissionsTest {
             long prevLen = curLen;
             assertEquals(curLen, 0, "File length: " + curLen);
             for (int i = 0; i < 100; ++i) {
-                final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
-                        .setLoggerFqcn(FileAppenderPermissionsTest.class.getName()).setLevel(Level.INFO) //
-                        .setMessage(new SimpleMessage("Test")).setThreadName(this.getClass().getSimpleName()) //
-                        .setTimeMillis(System.currentTimeMillis()).build();
+                final LogEvent event = Log4jLogEvent.newBuilder()
+                        .setLoggerName("TestLogger") //
+                        .setLoggerFqcn(FileAppenderPermissionsTest.class.getName())
+                        .setLevel(Level.INFO) //
+                        .setMessage(new SimpleMessage("Test"))
+                        .setThreadName(this.getClass().getSimpleName()) //
+                        .setTimeMillis(System.currentTimeMillis())
+                        .build();
                 try {
                     appender.append(event);
                     curLen = file.length();
@@ -113,10 +117,9 @@ public class FileAppenderPermissionsTest {
     }
 
     @ParameterizedTest
-    @CsvSource({ "rwxrwxrwx,2", "rw-r--r--,3", "rw-------,4", "rw-rw----,5" })
+    @CsvSource({"rwxrwxrwx,2", "rw-r--r--,3", "rw-------,4", "rw-rw----,5"})
     @Tag("sleepy")
-    public void testFileUserGroupAPI(final String filePermissions, final int fileIndex)
-            throws Exception {
+    public void testFileUserGroupAPI(final String filePermissions, final int fileIndex) throws Exception {
         final File file = new File(DIR, "AppenderTest-" + (1000 + fileIndex) + ".log");
         final Path path = file.toPath();
         final String user = findAUser();
@@ -124,21 +127,22 @@ public class FileAppenderPermissionsTest {
         final String group = findAGroup(user);
         assertNotNull(group);
 
-        final Layout layout = PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+        final Layout layout = PatternLayout.newBuilder()
+                .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .setFileName(file.getAbsolutePath())
-            .setName("test")
-            .setImmediateFlush(true)
-            .setIgnoreExceptions(false)
-            .setBufferedIo(false)
-            .setBufferSize(1)
-            .setLayout(layout)
-            .setFilePermissions(filePermissions)
-            .setFileOwner(user)
-            .setFileGroup(group)
-            .build();
+                .setFileName(file.getAbsolutePath())
+                .setName("test")
+                .setImmediateFlush(true)
+                .setIgnoreExceptions(false)
+                .setBufferedIo(false)
+                .setBufferSize(1)
+                .setLayout(layout)
+                .setFilePermissions(filePermissions)
+                .setFileOwner(user)
+                .setFileGroup(group)
+                .build();
         // @formatter:on
         try {
             appender.start();
@@ -147,10 +151,14 @@ public class FileAppenderPermissionsTest {
             long prevLen = curLen;
             assertEquals(curLen, 0, file + " File length: " + curLen);
             for (int i = 0; i < 100; ++i) {
-                final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
-                        .setLoggerFqcn(FileAppenderPermissionsTest.class.getName()).setLevel(Level.INFO) //
-                        .setMessage(new SimpleMessage("Test")).setThreadName(this.getClass().getSimpleName()) //
-                        .setTimeMillis(System.currentTimeMillis()).build();
+                final LogEvent event = Log4jLogEvent.newBuilder()
+                        .setLoggerName("TestLogger") //
+                        .setLoggerFqcn(FileAppenderPermissionsTest.class.getName())
+                        .setLevel(Level.INFO) //
+                        .setMessage(new SimpleMessage("Test"))
+                        .setThreadName(this.getClass().getSimpleName()) //
+                        .setTimeMillis(System.currentTimeMillis())
+                        .build();
                 try {
                     appender.append(event);
                     curLen = file.length();
@@ -164,7 +172,11 @@ public class FileAppenderPermissionsTest {
             }
             assertEquals(filePermissions, PosixFilePermissions.toString(Files.getPosixFilePermissions(path)));
             assertEquals(user, Files.getOwner(path).getName());
-            assertEquals(group, Files.readAttributes(path, PosixFileAttributes.class).group().getName());
+            assertEquals(
+                    group,
+                    Files.readAttributes(path, PosixFileAttributes.class)
+                            .group()
+                            .getName());
         } finally {
             appender.stop();
         }
@@ -199,6 +211,4 @@ public class FileAppenderPermissionsTest {
         // On jenkins build within ubuntu, it is not possible to chmod to another user
         return System.getProperty("user.name");
     }
-
-
 }

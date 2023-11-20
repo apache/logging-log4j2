@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.lang.reflect.Method;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -62,8 +61,11 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
 
             return (Long) getStartTime.invoke(runtimeMXBean);
         } catch (final Throwable t) {
-            StatusLogger.getLogger().error("Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), "
-                    + "using system time for OnStartupTriggeringPolicy", t);
+            StatusLogger.getLogger()
+                    .error(
+                            "Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), "
+                                    + "using system time for OnStartupTriggeringPolicy",
+                            t);
             // We have little option but to declare "now" as the beginning of time.
             return System.currentTimeMillis();
         }
@@ -102,8 +104,7 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     @PluginFactory
-    public static OnStartupTriggeringPolicy createPolicy(
-            @PluginAttribute(defaultLong = 1) final long minSize) {
+    public static OnStartupTriggeringPolicy createPolicy(@PluginAttribute(defaultLong = 1) final long minSize) {
         return new OnStartupTriggeringPolicy(minSize);
     }
 }

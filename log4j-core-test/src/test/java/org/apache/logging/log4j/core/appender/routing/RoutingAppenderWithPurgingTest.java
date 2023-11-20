@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -32,8 +33,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Tag;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests Routing appender purge facilities
@@ -56,17 +55,18 @@ public class RoutingAppenderWithPurgingTest {
     private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain = loggerContextRule.withCleanFilesRule(IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3,
-            MANUAL_LOG_FILE1, MANUAL_LOG_FILE2, MANUAL_LOG_FILE3);
-
+    public RuleChain chain = loggerContextRule.withCleanFilesRule(
+            IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3, MANUAL_LOG_FILE1, MANUAL_LOG_FILE2, MANUAL_LOG_FILE3);
 
     @Before
     public void setUp() throws Exception {
         this.app = this.loggerContextRule.getListAppender("List");
-        this.routingAppenderIdle = this.loggerContextRule.getRequiredAppender("RoutingPurgeIdle", RoutingAppender.class);
-        this.routingAppenderIdleWithHangingAppender =
-                this.loggerContextRule.getRequiredAppender("RoutingPurgeIdleWithHangingAppender", RoutingAppender.class);
-        this.routingAppenderManual = this.loggerContextRule.getRequiredAppender("RoutingPurgeManual", RoutingAppender.class);
+        this.routingAppenderIdle =
+                this.loggerContextRule.getRequiredAppender("RoutingPurgeIdle", RoutingAppender.class);
+        this.routingAppenderIdleWithHangingAppender = this.loggerContextRule.getRequiredAppender(
+                "RoutingPurgeIdleWithHangingAppender", RoutingAppender.class);
+        this.routingAppenderManual =
+                this.loggerContextRule.getRequiredAppender("RoutingPurgeManual", RoutingAppender.class);
     }
 
     @After
@@ -94,40 +94,68 @@ public class RoutingAppenderWithPurgingTest {
         expectedAppenderKeys.add("3");
         assertEquals(expectedAppenderKeys, routingAppenderManual.getAppenders().keySet());
 
-        assertFalse(((ListAppender) loggerContextRule.getAppender("ReferencedList")).getEvents().isEmpty());
+        assertFalse(((ListAppender) loggerContextRule.getAppender("ReferencedList"))
+                .getEvents()
+                .isEmpty());
 
-        assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 2, routingAppenderIdle.getAppenders().size());
-        assertEquals("Incorrect number of appenders with IdlePurgePolicy with HangingAppender.",
-                2, routingAppenderIdleWithHangingAppender.getAppenders().size());
-        assertEquals("Incorrect number of appenders manual purge.", 2, routingAppenderManual.getAppenders().size());
+        assertEquals(
+                "Incorrect number of appenders with IdlePurgePolicy.",
+                2,
+                routingAppenderIdle.getAppenders().size());
+        assertEquals(
+                "Incorrect number of appenders with IdlePurgePolicy with HangingAppender.",
+                2,
+                routingAppenderIdleWithHangingAppender.getAppenders().size());
+        assertEquals(
+                "Incorrect number of appenders manual purge.",
+                2,
+                routingAppenderManual.getAppenders().size());
 
         Thread.sleep(3000);
         EventLogger.logEvent(msg);
 
-        assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
-        assertEquals("Incorrect number of appenders with manual purge.", 2, routingAppenderManual.getAppenders().size());
+        assertEquals(
+                "Incorrect number of appenders with IdlePurgePolicy.",
+                1,
+                routingAppenderIdle.getAppenders().size());
+        assertEquals(
+                "Incorrect number of appenders with manual purge.",
+                2,
+                routingAppenderManual.getAppenders().size());
 
         routingAppenderManual.deleteAppender("1");
         routingAppenderManual.deleteAppender("2");
         routingAppenderManual.deleteAppender("3");
 
-        assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
-        assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
+        assertEquals(
+                "Incorrect number of appenders with IdlePurgePolicy.",
+                1,
+                routingAppenderIdle.getAppenders().size());
+        assertEquals(
+                "Incorrect number of appenders with manual purge.",
+                0,
+                routingAppenderManual.getAppenders().size());
 
-        assertFalse("Reference based routes should not be stoppable",
+        assertFalse(
+                "Reference based routes should not be stoppable",
                 loggerContextRule.getAppender("ReferencedList").isStopped());
 
         msg = new StructuredDataMessage("5", "This is a test 5", "Service");
         EventLogger.logEvent(msg);
 
-        assertEquals("Incorrect number of appenders with manual purge.", 1, routingAppenderManual.getAppenders().size());
+        assertEquals(
+                "Incorrect number of appenders with manual purge.",
+                1,
+                routingAppenderManual.getAppenders().size());
 
         routingAppenderManual.deleteAppender("5");
         routingAppenderManual.deleteAppender("5");
 
-        assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
+        assertEquals(
+                "Incorrect number of appenders with manual purge.",
+                0,
+                routingAppenderManual.getAppenders().size());
     }
-
 
     private void assertFileExistance(final String... files) {
         for (final String file : files) {

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.junit.CleanFolders;
@@ -33,40 +32,39 @@ import org.junit.Test;
  */
 public class RollingAppenderDirectWriteStartupSizeTest {
 
-  private static final String CONFIG = "log4j-rolling-direct-startup-size.xml";
+    private static final String CONFIG = "log4j-rolling-direct-startup-size.xml";
 
-  private static final String DIR = "target/rolling-direct-startup-size";
+    private static final String DIR = "target/rolling-direct-startup-size";
 
-  private static final String FILE = "size-test.log";
+    private static final String FILE = "size-test.log";
 
-  private static final String MESSAGE = "test message";
+    private static final String MESSAGE = "test message";
 
-  @Rule
-  public LoggerContextRule loggerContextRule = LoggerContextRule
-      .createShutdownTimeoutLoggerContextRule(CONFIG);
+    @Rule
+    public LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
-  @Rule
-  public CleanFolders cleanFolders = new CleanFolders(false, true, 10, DIR);
+    @Rule
+    public CleanFolders cleanFolders = new CleanFolders(false, true, 10, DIR);
 
-  @BeforeClass
-  public static void beforeClass() throws Exception {
-      final Path log = Paths.get(DIR, FILE);
-    if (Files.exists(log)) {
-        Files.delete(log);
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        final Path log = Paths.get(DIR, FILE);
+        if (Files.exists(log)) {
+            Files.delete(log);
+        }
+
+        Files.createDirectories(log.getParent());
+        Files.createFile(log);
+        Files.write(log, MESSAGE.getBytes());
     }
 
-    Files.createDirectories(log.getParent());
-    Files.createFile(log);
-    Files.write(log, MESSAGE.getBytes());
-  }
+    @Test
+    public void testRollingFileAppenderWithReconfigure() throws Exception {
+        final RollingFileAppender rfAppender =
+                loggerContextRule.getRequiredAppender("RollingFile", RollingFileAppender.class);
+        final RollingFileManager manager = rfAppender.getManager();
 
-  @Test
-  public void testRollingFileAppenderWithReconfigure() throws Exception {
-    final RollingFileAppender rfAppender = loggerContextRule.getRequiredAppender("RollingFile",
-        RollingFileAppender.class);
-    final RollingFileManager manager = rfAppender.getManager();
-
-    Assert.assertNotNull(manager);
-    Assert.assertEquals("Existing file size not preserved on startup", MESSAGE.getBytes().length, manager.size);
-  }
+        Assert.assertNotNull(manager);
+        Assert.assertEquals("Existing file size not preserved on startup", MESSAGE.getBytes().length, manager.size);
+    }
 }

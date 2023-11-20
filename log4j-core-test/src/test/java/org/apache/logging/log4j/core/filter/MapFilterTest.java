@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,14 +35,12 @@ import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class MapFilterTest {
 
     @Test
     public void testFilter() {
-        final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("FromAccount", "211000"),
-                                                    new KeyValuePair("ToAccount", "123456")};
+        final KeyValuePair[] pairs =
+                new KeyValuePair[] {new KeyValuePair("FromAccount", "211000"), new KeyValuePair("ToAccount", "123456")};
         MapFilter filter = MapFilter.createFilter(pairs, "and", null, null);
         assertNotNull(filter);
         filter.start();
@@ -71,7 +70,7 @@ public class MapFilterTest {
     public void testConfig(final Configuration config, @Named("LIST") final ListAppender app) {
         final Filter filter = config.getFilter();
         assertNotNull(filter, "No MapFilter");
-        assertTrue(filter instanceof  MapFilter, "Not a MapFilter");
+        assertTrue(filter instanceof MapFilter, "Not a MapFilter");
         final MapFilter mapFilter = (MapFilter) filter;
         assertFalse(mapFilter.isAnd(), "Should not be And filter");
         final IndexedReadOnlyStringMap map = mapFilter.getStringMap();

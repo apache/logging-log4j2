@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.apache.logging.log4j.core.filter.LevelRangeFilter.createFilter;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,9 +28,6 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.apache.logging.log4j.core.filter.LevelRangeFilter.createFilter;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class LevelRangeFilterTest {
 
@@ -78,16 +78,10 @@ class LevelRangeFilterTest {
             assertions.assertThat(filter.filter(createEvent(level))).isEqualTo(expectedResult);
         }
         assertions.assertAll();
-
     }
 
     private static LogEvent createEvent(final Level level) {
         final SimpleMessage message = new SimpleMessage("test message at level " + level);
-        return Log4jLogEvent
-                .newBuilder()
-                .setLevel(level)
-                .setMessage(message)
-                .build();
+        return Log4jLogEvent.newBuilder().setLevel(level).setMessage(message).build();
     }
-
 }

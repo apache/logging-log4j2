@@ -33,6 +33,7 @@ public final class Strings {
      * The empty string.
      */
     public static final String EMPTY = "";
+
     private static final String COMMA_DELIMITED_RE = "\\s*,\\s*";
 
     /**
@@ -319,5 +320,4 @@ public final class Strings {
     public static String[] splitList(final String string) {
         return string != null ? string.split(COMMA_DELIMITED_RE) : new String[0];
     }
-
 }

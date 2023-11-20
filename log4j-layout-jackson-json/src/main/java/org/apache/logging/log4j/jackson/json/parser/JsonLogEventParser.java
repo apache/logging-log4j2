@@ -28,5 +28,4 @@ public class JsonLogEventParser extends AbstractJacksonLogEventParser {
     public JsonLogEventParser() {
         super(new Log4jJsonObjectMapper());
     }
-
 }

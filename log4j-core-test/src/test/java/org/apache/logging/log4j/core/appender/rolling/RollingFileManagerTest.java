@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -76,7 +75,7 @@ public class RollingFileManagerTest {
 
             Assert.assertNotNull(appender);
             final String testContent = "Test";
-            try(final RollingFileManager manager = appender.getManager()) {
+            try (final RollingFileManager manager = appender.getManager()) {
                 Assert.assertEquals(file.getAbsolutePath(), manager.getFileName());
                 manager.writeToDestination(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
             }

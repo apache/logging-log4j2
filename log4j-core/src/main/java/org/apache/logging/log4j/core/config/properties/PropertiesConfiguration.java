@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.properties;
 
 import java.io.IOException;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -32,7 +31,8 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 public class PropertiesConfiguration extends BuiltConfiguration implements Reconfigurable {
 
     // ctor is called through reflection.
-    public PropertiesConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component root) {
+    public PropertiesConfiguration(
+            final LoggerContext loggerContext, final ConfigurationSource source, final Component root) {
         super(loggerContext, source, root);
     }
 
@@ -51,6 +51,4 @@ public class PropertiesConfiguration extends BuiltConfiguration implements Recon
         }
         return null;
     }
-
-
 }

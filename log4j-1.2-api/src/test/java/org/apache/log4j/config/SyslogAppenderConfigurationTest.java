@@ -16,10 +16,13 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.SyslogAppender;
@@ -32,10 +35,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.WritesSystemProperty;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests configuring a Syslog appender.
@@ -69,7 +68,8 @@ public class SyslogAppenderConfigurationTest {
         @SuppressWarnings("resource")
         final AbstractSocketManager manager = syslogAppender.getManager();
         final String prefix = expected + ":";
-        assertTrue(manager.getName().startsWith(prefix),
+        assertTrue(
+                manager.getName().startsWith(prefix),
                 () -> String.format("'%s' does not start with '%s'", manager.getName(), prefix));
         // Threshold
         final ThresholdFilter filter = (ThresholdFilter) syslogAppender.getFilter();

@@ -36,5 +36,4 @@ public class Log4j2_1482_Slf4jTest extends Log4j2_1482_Test {
         logger.info("Info Message!", val1, val2, val3);
         logger.info("Info Message!", val1, val2, val3);
     }
-
 }

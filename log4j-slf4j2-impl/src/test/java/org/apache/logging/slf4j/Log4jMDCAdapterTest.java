@@ -16,15 +16,14 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class Log4jMDCAdapterTest {
 
@@ -59,5 +58,4 @@ public class Log4jMDCAdapterTest {
         assertThat(MDC_ADAPTER.getCopyOfDequeByKey(key)).containsExactlyElementsOf(expectedValues);
         assertThat(popDeque(key)).containsExactlyElementsOf(expectedValues);
     }
-
 }

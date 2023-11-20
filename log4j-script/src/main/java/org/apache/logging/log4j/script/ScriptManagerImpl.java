@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
-
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -37,7 +36,6 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.script.Script;
@@ -67,11 +65,9 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
             bindings.put(KEY_STATUS_LOGGER, logger);
             return bindings;
         }
-
     }
 
-    private static class ScriptBindingsImpl extends SimpleBindings implements ScriptBindings {
-    }
+    private static class ScriptBindingsImpl extends SimpleBindings implements ScriptBindings {}
 
     private static final String KEY_THREADING = "THREADING";
     private static final Logger logger = StatusLogger.getLogger();
@@ -89,7 +85,8 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
         this.configuration = configuration;
         this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
-        allowedLanguages = Arrays.stream(Strings.splitList(scriptLanguages)).map(String::toLowerCase)
+        allowedLanguages = Arrays.stream(Strings.splitList(scriptLanguages))
+                .map(String::toLowerCase)
                 .collect(Collectors.toSet());
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
@@ -113,9 +110,15 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
                 boolean compiled = false;
                 try {
                     compiled = factory.getScriptEngine() instanceof Compilable;
-                    logger.debug("{} version: {}, language: {}, threading: {}, compile: {}, names: {}, factory class: {}",
-                            factory.getEngineName(), factory.getEngineVersion(), factory.getLanguageName(), threading,
-                            compiled, languageNames, factory.getClass().getName());
+                    logger.debug(
+                            "{} version: {}, language: {}, threading: {}, compile: {}, names: {}, factory class: {}",
+                            factory.getEngineName(),
+                            factory.getEngineVersion(),
+                            factory.getLanguageName(),
+                            threading,
+                            compiled,
+                            languageNames,
+                            factory.getClass().getName());
                     if (sb.length() > 0) {
                         sb.append(", ");
                     }
@@ -123,7 +126,6 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
                 } catch (RuntimeException ex) {
                     logger.warn("Error accessing scriptEngine for {}: {}", factory.getEngineName(), ex.getMessage());
                 }
-
             }
             languages = sb.toString();
         } else {
@@ -153,7 +155,8 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
     public void addScripts(final Node child) {
         for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
             if (script instanceof ScriptRef) {
-                logger.error("Script reference to {} not added. Scripts definition cannot contain script references",
+                logger.error(
+                        "Script reference to {} not added. Scripts definition cannot contain script references",
                         script.getName());
             } else {
                 addScript(script);
@@ -165,8 +168,8 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
         if (allowedLanguages.contains(script.getLanguage().toLowerCase(Locale.ROOT))) {
             final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
             if (engine == null) {
-                logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: "
-                        + languages);
+                logger.error("No ScriptEngine found for language " + script.getLanguage()
+                        + ". Available languages are: " + languages);
                 return false;
             }
             if (engine.getFactory().getParameter(KEY_THREADING) == null) {
@@ -183,8 +186,10 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
                 }
             }
         } else {
-            logger.error("Unable to add script {}, {} has not been configured as an allowed language",
-                    script.getName(), script.getLanguage());
+            logger.error(
+                    "Unable to add script {}, {} has not been configured as an allowed language",
+                    script.getName(),
+                    script.getLanguage());
             return false;
         }
         return true;
@@ -217,7 +222,6 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
         } else {
             scriptRunners.put(script.getName(), new MainScriptRunner(engine, script));
         }
-
     }
 
     public Object execute(final String name, final ScriptBindings bindings) {

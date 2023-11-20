@@ -20,7 +20,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Key;
@@ -43,10 +42,10 @@ public interface ContextSelector {
      * @param allContexts if true all LoggerContexts that can be located will be shutdown.
      * @since 2.13.0
      */
-    default void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                          final boolean allContexts) {
+    default void shutdown(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
         if (hasContext(fqcn, loader, currentContext)) {
-           getContext(fqcn, loader, currentContext).stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+            getContext(fqcn, loader, currentContext).stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -82,14 +81,17 @@ public interface ContextSelector {
      * for the caller if a more appropriate Context can be determined.
      * @return The LoggerContext.
      */
-    default LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry, final boolean currentContext) {
+    default LoggerContext getContext(
+            final String fqcn,
+            final ClassLoader loader,
+            final Map.Entry<String, Object> entry,
+            final boolean currentContext) {
         final LoggerContext lc = getContext(fqcn, loader, currentContext);
         if (entry != null) {
             lc.putObject(entry.getKey(), entry.getValue());
         }
         return lc;
     }
-
 
     /**
      * Returns the LoggerContext.
@@ -111,8 +113,12 @@ public interface ContextSelector {
      * @param configLocation The location of the configuration for the LoggerContext.
      * @return The LoggerContext.
      */
-    default LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
-            final boolean currentContext, final URI configLocation) {
+    default LoggerContext getContext(
+            final String fqcn,
+            final ClassLoader loader,
+            final Map.Entry<String, Object> entry,
+            final boolean currentContext,
+            final URI configLocation) {
         final LoggerContext lc = getContext(fqcn, loader, currentContext, configLocation);
         if (entry != null) {
             lc.putObject(entry.getKey(), entry.getValue());

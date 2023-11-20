@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Factory;
 
@@ -33,6 +32,5 @@ public abstract class AbstractRollingListenerTest implements RolloverListener {
     }
 
     @Override
-    public void rolloverTriggered(final String fileName) {
-    }
+    public void rolloverTriggered(final String fileName) {}
 }

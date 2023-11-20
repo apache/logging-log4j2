@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,10 +32,7 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
-
 import javax.net.ssl.HttpsURLConnection;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -59,6 +57,7 @@ public class ConfigurationSource {
      * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
      */
     public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(new byte[0], null, 0);
+
     private static final String HTTPS = "https";
     private static final String HTTP = "http";
 
@@ -300,7 +299,8 @@ public class ConfigurationSource {
             return fromResource(path, loader);
         }
         if (!configLocation.isAbsolute()) { // LOG4J2-704 avoid confusing error message thrown by uri.toURL()
-            ConfigurationFactory.LOGGER.error("File not found in file system or classpath: {}", configLocation.toString());
+            ConfigurationFactory.LOGGER.error(
+                    "File not found in file system or classpath: {}", configLocation.toString());
             return null;
         }
         try {
@@ -327,8 +327,7 @@ public class ConfigurationSource {
 
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
-            justification = "The name of the accessed files is based on a configuration value."
-    )
+            justification = "The name of the accessed files is based on a configuration value.")
     private static ConfigurationSource getConfigurationSource(final URL url) {
         try {
             final URLConnection urlConnection = url.openConnection();
@@ -352,20 +351,21 @@ public class ConfigurationSource {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
                 } else if (urlConnection instanceof JarURLConnection) {
                     // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
-                    URL jarFileUrl = ((JarURLConnection)urlConnection).getJarFileURL();
+                    URL jarFileUrl = ((JarURLConnection) urlConnection).getJarFileURL();
                     File jarFile = new File(jarFileUrl.getFile());
                     long lastModified = jarFile.lastModified();
                     return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
                 } else {
-                    return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
+                    return new ConfigurationSource(
+                            urlConnection.getInputStream(), url, urlConnection.getLastModified());
                 }
             } catch (final FileNotFoundException ex) {
                 ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
                 return null;
             }
         } catch (final IOException | URISyntaxException ex) {
-            ConfigurationFactory.LOGGER.warn("Error accessing {} due to {}, ignoring.", url.toString(),
-                    ex.getMessage());
+            ConfigurationFactory.LOGGER.warn(
+                    "Error accessing {} due to {}, ignoring.", url.toString(), ex.getMessage());
             return null;
         }
     }

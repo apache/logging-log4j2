@@ -25,9 +25,9 @@ import org.apache.logging.log4j.core.config.builder.api.KeyValuePairComponentBui
 class DefaultKeyValuePairComponentBuilder extends DefaultComponentAndConfigurationBuilder<KeyValuePairComponentBuilder>
         implements KeyValuePairComponentBuilder {
 
-    public DefaultKeyValuePairComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
-                                               final String key, final String value) {
-        super(builder,"KeyValuePair");
+    public DefaultKeyValuePairComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String key, final String value) {
+        super(builder, "KeyValuePair");
         addAttribute("key", key);
         addAttribute("value", value);
     }

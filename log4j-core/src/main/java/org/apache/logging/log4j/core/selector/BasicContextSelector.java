@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.selector;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
@@ -47,7 +46,8 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     }
 
     @Override
-    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
+    public void shutdown(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
         final LoggerContext ctx = getContext(fqcn, loader, currentContext);
         if (ctx != null && ctx.isStarted()) {
             ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -73,8 +73,8 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-            final URI configLocation) {
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
         if (currentContext) {
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             if (ctx != null) {
@@ -87,7 +87,9 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
                 LOGGER.debug("Setting configuration to {}", configLocation);
                 ctx.setConfigLocation(configLocation);
             } else if (!ctx.getConfigLocation().equals(configLocation)) {
-                LOGGER.warn("getContext called with URI {}. Existing LoggerContext has URI {}", configLocation,
+                LOGGER.warn(
+                        "getContext called with URI {}. Existing LoggerContext has URI {}",
+                        configLocation,
                         ctx.getConfigLocation());
             }
         }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.plugins.model;
 
 import java.lang.ref.WeakReference;
-
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Strings;
@@ -39,8 +38,7 @@ public class PluginType<T> {
      * @param pluginClass The plugin Class.
      * @since 3.0.0
      */
-    public PluginType(
-            final PluginEntry pluginEntry, final Class<T> pluginClass) {
+    public PluginType(final PluginEntry pluginEntry, final Class<T> pluginClass) {
         this.pluginEntry = pluginEntry;
         this.pluginClass = Lazy.value(pluginClass);
     }
@@ -62,8 +60,8 @@ public class PluginType<T> {
             try {
                 return Cast.cast(loader.loadClass(className));
             } catch (final ClassNotFoundException e) {
-                throw new IllegalStateException("No class named " + className +
-                        " located for element " + pluginEntry.getName(), e);
+                throw new IllegalStateException(
+                        "No class named " + className + " located for element " + pluginEntry.getName(), e);
             }
         });
     }
@@ -116,12 +114,11 @@ public class PluginType<T> {
 
     @Override
     public String toString() {
-        return "PluginType [pluginClass=" + pluginClass.toString() +
-                ", key=" + pluginEntry.getKey() +
-                ", elementType=" + pluginEntry.getElementType() +
-                ", isObjectPrintable=" + pluginEntry.isPrintable() +
-                ", isDeferChildren==" + pluginEntry.isDeferChildren() +
-                ", namespace=" + pluginEntry.getNamespace() +
-                "]";
+        return "PluginType [pluginClass=" + pluginClass.toString() + ", key="
+                + pluginEntry.getKey() + ", elementType="
+                + pluginEntry.getElementType() + ", isObjectPrintable="
+                + pluginEntry.isPrintable() + ", isDeferChildren=="
+                + pluginEntry.isDeferChildren() + ", namespace="
+                + pluginEntry.getNamespace() + "]";
     }
 }

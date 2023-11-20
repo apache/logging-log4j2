@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -25,16 +27,12 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.xml.sax.SAXException;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractLog4j1ConfigurationConverterTest {
@@ -61,7 +59,8 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
     public void test() throws Exception {
         final Path tempFile = Files.createTempFile("log4j2", ".xml");
         try {
-            final Log4j1ConfigurationConverter.CommandLineArguments cla = new Log4j1ConfigurationConverter.CommandLineArguments();
+            final Log4j1ConfigurationConverter.CommandLineArguments cla =
+                    new Log4j1ConfigurationConverter.CommandLineArguments();
             cla.setPathIn(pathIn);
             cla.setPathOut(tempFile);
             Log4j1ConfigurationConverter.run(cla);
@@ -76,10 +75,12 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
         for (String line : Files.readAllLines(tempFile)) {
             assertFalse(line.endsWith("&#xd;"));
         }
-
     }
 
-    private void checkWellFormedXml(final Path xmlFilePath) throws SAXException, IOException, ParserConfigurationException {
-        DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFilePath.toUri().toString());
+    private void checkWellFormedXml(final Path xmlFilePath)
+            throws SAXException, IOException, ParserConfigurationException {
+        DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder()
+                .parse(xmlFilePath.toUri().toString());
     }
 }

@@ -16,22 +16,21 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.Assert.assertEquals;
 
 public class PropertiesPropertySourceTest {
 
     private final PropertySource source = new PropertiesPropertySource(new Properties());
 
     public static Object[][] data() {
-        return new Object[][]{
+        return new Object[][] {
             {"log4j2.configuration.file", Arrays.asList("configuration", "file")},
             {"log4j2.foo.bar.property", Arrays.asList("foo", "bar", "property")},
             {"log4j2.LOWER", Collections.singletonList("LOWER")},

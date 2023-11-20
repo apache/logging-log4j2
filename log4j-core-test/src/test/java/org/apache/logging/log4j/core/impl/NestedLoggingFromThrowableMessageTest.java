@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -31,9 +33,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test for LOG4J2-2368.
@@ -51,6 +50,7 @@ public class NestedLoggingFromThrowableMessageTest {
 
     @Rule
     public LoggerContextRule context = new LoggerContextRule("log4j-nested-logging-throwable-message.xml");
+
     private Logger logger;
 
     @Before

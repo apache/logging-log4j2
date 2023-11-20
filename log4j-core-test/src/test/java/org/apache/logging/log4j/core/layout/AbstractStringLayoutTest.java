@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.nio.charset.Charset;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.charset.Charset;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests AbstractStringLayout.
@@ -70,7 +69,8 @@ public class AbstractStringLayoutTest {
             final String largeMessage = new String(new char[LARGE]);
             sb2.append(largeMessage);
             assertTrue(sb2.capacity() >= LARGE, "capacity grown to fit msg length");
-            assertTrue(sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE,
+            assertTrue(
+                    sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE,
                     "capacity is now greater than max length");
             assertEquals(LARGE, sb2.length(), "length=msg length");
             sb2.setLength(0); // set 0 before next getStringBuilder() call
@@ -82,13 +82,13 @@ public class AbstractStringLayoutTest {
 
         final StringBuilder sb3 = layout.stringBuilderRecycler.acquire();
         try {
-            assertEquals(ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, sb3.capacity(),
+            assertEquals(
+                    ConcreteStringLayout.MAX_STRING_BUILDER_SIZE,
+                    sb3.capacity(),
                     "capacity, trimmed to MAX_STRING_BUILDER_SIZE");
             assertEquals(0, sb3.length(), "empty, ready for use");
         } finally {
             layout.stringBuilderRecycler.release(sb3);
         }
-
     }
-
 }

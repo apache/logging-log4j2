@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -30,8 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
@@ -40,8 +39,7 @@ public class XmlFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(),
-                "XmlFileAppenderTest.xml");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "XmlFileAppenderTest.xml");
     }
 
     @Test
@@ -66,7 +64,8 @@ public class XmlFileAppenderTest {
         };
 
         for (int i = 0; i < expect.length; i++) {
-            assertTrue("Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i),
+            assertTrue(
+                    "Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i),
                     lines.get(i).contains(expect[i]));
         }
 

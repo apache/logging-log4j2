@@ -38,14 +38,14 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
-* <pre>AbstractLogEventMixIn
-*├─ XmlLogEventMixIn
-*├──── XmlLogEventWithContextListMixIn
-*├──── XmlLogEventWithContextMapMixIn
-*├─ JsonLogEventMixIn
-*├──── JsonLogEventWithContextListMixIn
-*├──── JsonLogEventWithContextMapMixIn</pre>
-*/
+ * <pre>AbstractLogEventMixIn
+ *├─ XmlLogEventMixIn
+ *├──── XmlLogEventWithContextListMixIn
+ *├──── XmlLogEventWithContextMapMixIn
+ *├─ JsonLogEventMixIn
+ *├──── JsonLogEventWithContextListMixIn
+ *├──── JsonLogEventWithContextMapMixIn</pre>
+ */
 @JacksonXmlRootElement(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_EVENT)
 @JsonFilter(AbstractLogEventMixIn.JSON_FILTER_ID)
 @JsonPropertyOrder({
@@ -61,8 +61,9 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
     AbstractLogEventXmlMixIn.ELT_THROWN,
     XmlConstants.ELT_CONTEXT_MAP,
     XmlConstants.ELT_CONTEXT_STACK,
-    XmlConstants.ELT_SOURCE})
-    // @formatter:on
+    XmlConstants.ELT_SOURCE
+})
+// @formatter:on
 public abstract class AbstractLogEventXmlMixIn extends AbstractLogEventMixIn {
 
     public static final String ELT_THROWN = "Thrown";
@@ -128,5 +129,4 @@ public abstract class AbstractLogEventXmlMixIn extends AbstractLogEventMixIn {
     @JacksonXmlProperty(isAttribute = true)
     @Override
     public abstract boolean isEndOfBatch();
-
 }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.jdbc.appender.internal;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.jdbc.appender.DataSourceConnectionSource;
 import org.apache.logging.log4j.jndi.JndiManager;
@@ -30,13 +29,13 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class JndiUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private JndiUtil() {
-    }
+    private JndiUtil() {}
 
     public static DataSource getDataSource(final String jndiName) {
         try {
-            final DataSource dataSource =
-                    JndiManager.getDefaultManager(DataSourceConnectionSource.class.getCanonicalName()).lookup(jndiName);
+            final DataSource dataSource = JndiManager.getDefaultManager(
+                            DataSourceConnectionSource.class.getCanonicalName())
+                    .lookup(jndiName);
             if (dataSource == null) {
                 LOGGER.error("No data source found with JNDI name [" + jndiName + "].");
                 return null;

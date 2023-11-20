@@ -20,7 +20,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
-
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**

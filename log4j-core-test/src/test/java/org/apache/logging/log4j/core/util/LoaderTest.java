@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the Loader class.
@@ -28,12 +28,14 @@ public class LoaderTest {
     @Test
     public void testLoadClassWithNullClassloaderReturnNull() throws Exception {
         assertNull(
-                Loader.loadClass(Loader.class.getCanonicalName(), null), "Expect null return value for null ClassLoader.");
+                Loader.loadClass(Loader.class.getCanonicalName(), null),
+                "Expect null return value for null ClassLoader.");
     }
 
     @Test
     public void testLoadClassReturnClassForExistingClass() throws Exception {
-        assertEquals(Loader.class,
+        assertEquals(
+                Loader.class,
                 Loader.loadClass(Loader.class.getCanonicalName(), Loader.getClassLoader()),
                 "Expect Class return value for null ClassLoader.");
     }

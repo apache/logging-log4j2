@@ -43,7 +43,7 @@ public class ObjectArrayIterator<E> implements /*Resettable*/ Iterator<E> {
     /** The current iterator index */
     int index = 0;
 
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     /**
      * Constructs an ObjectArrayIterator that will iterate over the values in the
      * specified array.
@@ -101,7 +101,7 @@ public class ObjectArrayIterator<E> implements /*Resettable*/ Iterator<E> {
     }
 
     // Iterator interface
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     /**
      * Returns true if there are more elements to return from the array.
@@ -139,7 +139,7 @@ public class ObjectArrayIterator<E> implements /*Resettable*/ Iterator<E> {
     }
 
     // Properties
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     /**
      * Gets the array that this iterator is iterating over.
@@ -171,9 +171,8 @@ public class ObjectArrayIterator<E> implements /*Resettable*/ Iterator<E> {
     /**
      * Resets the iterator back to the start index.
      */
-    //@Override
+    // @Override
     public void reset() {
         this.index = this.startIndex;
     }
-
 }

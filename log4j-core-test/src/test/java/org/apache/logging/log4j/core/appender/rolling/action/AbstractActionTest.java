@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @StatusLoggerLevel("WARN")
 public class AbstractActionTest {
@@ -44,11 +43,13 @@ public class AbstractActionTest {
         final StatusData statusData = statusDataList.get(0);
         assertEquals(Level.WARN, statusData.getLevel());
         final String formattedMessage = statusData.getFormattedStatus();
-        assertThat(formattedMessage, containsString("Exception reported by action 'class org.apache."
-                + "logging.log4j.core.appender.rolling.action.AbstractActionTest$TestAction' java.io.IOException: "
-                + "failed" + System.lineSeparator()
-                + "\tat org.apache.logging.log4j.core.appender.rolling.action.AbstractActionTest"
-                + "$TestAction.execute(AbstractActionTest.java:"));
+        assertThat(
+                formattedMessage,
+                containsString("Exception reported by action 'class org.apache."
+                        + "logging.log4j.core.appender.rolling.action.AbstractActionTest$TestAction' java.io.IOException: "
+                        + "failed" + System.lineSeparator()
+                        + "\tat org.apache.logging.log4j.core.appender.rolling.action.AbstractActionTest"
+                        + "$TestAction.execute(AbstractActionTest.java:"));
     }
 
     @Test

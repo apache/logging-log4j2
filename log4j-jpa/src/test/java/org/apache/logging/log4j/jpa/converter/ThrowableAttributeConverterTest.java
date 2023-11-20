@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.jpa.converter;
 
-import java.sql.SQLException;
+import static org.junit.Assert.*;
 
+import java.sql.SQLException;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(Appenders.Jpa.class)
 public class ThrowableAttributeConverterTest {

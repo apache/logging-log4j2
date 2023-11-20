@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.test.layout;
 
-import java.io.IOException;
+import static org.junit.Assert.*;
 
+import java.io.IOException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -28,8 +29,6 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
-
-import static org.junit.Assert.*;
 
 public class LogEventFixtures {
 
@@ -74,15 +73,22 @@ public class LogEventFixtures {
                 .setContextStack(contextStack) //
                 .setThreadName("MyThreadName") //
                 .setSource(source) //
-                .setTimeMillis(1).build();
+                .setTimeMillis(1)
+                .build();
         // validate event?
         return expected;
     }
 
-    public static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
-            final boolean includeContext, final boolean includeStacktrace) {
+    public static void assertEqualLogEvents(
+            final LogEvent expected,
+            final LogEvent actual,
+            final boolean includeSource,
+            final boolean includeContext,
+            final boolean includeStacktrace) {
         assertEquals(expected.getClass(), actual.getClass());
-        assertEquals(includeContext ? expected.getContextData() : ContextDataFactory.createContextData(), actual.getContextData());
+        assertEquals(
+                includeContext ? expected.getContextData() : ContextDataFactory.createContextData(),
+                actual.getContextData());
         assertEquals(expected.getContextStack(), actual.getContextStack());
         assertEquals(expected.getLevel(), actual.getLevel());
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
@@ -105,5 +111,4 @@ public class LogEventFixtures {
         assertNotEquals(expected.hashCode(), actual.hashCode());
         assertNotEquals(expected, actual);
     }
-
 }

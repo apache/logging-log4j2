@@ -97,13 +97,10 @@ public class CyclicBufferTestCase extends TestCase {
         for (int j = 0; j < len; j++) {
             assertEquals(cb.get(j), e[offset + j]);
         }
-
     }
 
     @Override
-    public void setUp() {
-
-    }
+    public void setUp() {}
 
     public void test0() {
         final int size = 2;
@@ -128,7 +125,6 @@ public class CyclicBufferTestCase extends TestCase {
         assertEquals(cb.length(), 0);
         assertNull(cb.get());
         assertEquals(cb.length(), 0);
-
     }
 
     /**

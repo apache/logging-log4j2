@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.util.Locale;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Locale;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class FormattedMessageTest {
@@ -71,7 +70,7 @@ public class FormattedMessageTest {
         final String testMsg = "Test message {0,number,currency}";
         final FormattedMessage msg = new FormattedMessage(Locale.FRANCE, testMsg, 12);
         final String result = msg.getFormattedMessage();
-        final String expected = "Test message 12,00" + SPACE +"€";
+        final String expected = "Test message 12,00" + SPACE + "€";
         assertEquals(expected, result);
     }
 

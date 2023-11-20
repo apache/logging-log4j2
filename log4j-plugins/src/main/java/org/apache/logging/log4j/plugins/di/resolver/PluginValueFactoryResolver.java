@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.di.resolver;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginValue;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
@@ -52,7 +51,8 @@ public class PluginValueFactoryResolver implements FactoryResolver<String> {
     }
 
     @Override
-    public Supplier<String> getFactory(final ResolvableKey<String> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<String> getFactory(
+            final ResolvableKey<String> resolvableKey, final InstanceFactory instanceFactory) {
         return () -> {
             final Node node = instanceFactory.getInstance(Node.CURRENT_NODE);
             final String name = resolvableKey.getKey().getName();
@@ -61,10 +61,13 @@ public class PluginValueFactoryResolver implements FactoryResolver<String> {
                     .filter(Strings::isNotEmpty);
             final String rawValue;
             if (Strings.isNotEmpty(nodeValue)) {
-                attributeValue.ifPresent(attribute -> StatusLogger.getLogger().error(
-                        "Configuration contains {} with both attribute value ({}) AND element value ({}). " +
-                                "Please specify only one value. Using the element value.",
-                        node.getName(), attribute, nodeValue));
+                attributeValue.ifPresent(attribute -> StatusLogger.getLogger()
+                        .error(
+                                "Configuration contains {} with both attribute value ({}) AND element value ({}). "
+                                        + "Please specify only one value. Using the element value.",
+                                node.getName(),
+                                attribute,
+                                nodeValue));
                 rawValue = nodeValue;
             } else {
                 rawValue = attributeValue.orElse(null);

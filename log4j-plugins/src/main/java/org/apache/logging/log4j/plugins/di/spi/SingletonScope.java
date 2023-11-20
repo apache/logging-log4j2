@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.di.spi;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Lazy;

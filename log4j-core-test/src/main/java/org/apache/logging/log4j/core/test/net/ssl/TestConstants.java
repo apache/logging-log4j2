@@ -18,22 +18,30 @@ package org.apache.logging.log4j.core.test.net.ssl;
 
 public class TestConstants {
 
-    public static final String SOURCE_FOLDER =  "src/test/resources/";
-    public static final String RESOURCE_ROOT =  "org/apache/logging/log4j/core/net/ssl/";
+    public static final String SOURCE_FOLDER = "src/test/resources/";
+    public static final String RESOURCE_ROOT = "org/apache/logging/log4j/core/net/ssl/";
 
-    public static final String PATH =  SOURCE_FOLDER + RESOURCE_ROOT;
+    public static final String PATH = SOURCE_FOLDER + RESOURCE_ROOT;
     public static final String TRUSTSTORE_PATH = PATH;
     public static final String TRUSTSTORE_RESOURCE = RESOURCE_ROOT;
     public static final String TRUSTSTORE_FILE = TRUSTSTORE_PATH + "truststore.jks";
     public static final String TRUSTSTORE_FILE_RESOURCE = TRUSTSTORE_RESOURCE + "truststore.jks";
-    public static final char[] TRUSTSTORE_PWD() { return "changeit".toCharArray(); }
+
+    public static final char[] TRUSTSTORE_PWD() {
+        return "changeit".toCharArray();
+    }
+
     public static final String TRUSTSTORE_TYPE = "JKS";
 
     public static final String KEYSTORE_PATH = PATH;
     public static final String KEYSTORE_RESOURCE = RESOURCE_ROOT;
     public static final String KEYSTORE_FILE = KEYSTORE_PATH + "client.log4j2-keystore.jks";
     public static final String KEYSTORE_FILE_RESOURCE = KEYSTORE_RESOURCE + "client.log4j2-keystore.jks";
-    public static final char[] KEYSTORE_PWD() { return "changeit".toCharArray(); }
+
+    public static final char[] KEYSTORE_PWD() {
+        return "changeit".toCharArray();
+    }
+
     public static final String KEYSTORE_TYPE = "JKS";
 
     public static final char[] NULL_PWD = null;

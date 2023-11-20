@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.net.URI;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.net.URI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -28,9 +30,6 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ContextSelectorType(NamedLoggerContextPropertiesTest.TestContextSelector.class)
 public class NamedLoggerContextPropertiesTest {

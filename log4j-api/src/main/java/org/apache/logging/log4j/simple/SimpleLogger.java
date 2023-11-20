@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.simple;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -47,6 +46,7 @@ public class SimpleLogger extends AbstractLogger {
      * </p>
      */
     private final DateFormat dateFormatter;
+
     private final Lock dateFormatterLock = new ReentrantLock();
 
     private Level level;
@@ -59,8 +59,11 @@ public class SimpleLogger extends AbstractLogger {
 
     private final String logName;
 
-    public SimpleLogger(final String name, final MessageFactory messageFactory, final PrintStream stream,
-                        final SimpleLoggerConfiguration configuration) {
+    public SimpleLogger(
+            final String name,
+            final MessageFactory messageFactory,
+            final PrintStream stream,
+            final SimpleLoggerConfiguration configuration) {
         super(name, messageFactory);
         level = configuration.getLoggerLevel(name);
         if (configuration.isShortNameShown()) {
@@ -79,8 +82,13 @@ public class SimpleLogger extends AbstractLogger {
 
     // exposed for use in StatusLoggerFactory
     @InternalApi
-    public SimpleLogger(final String name, final MessageFactory messageFactory, final PrintStream stream,
-                        final Level level, final DateFormat dateFormatter, final boolean showDateTime) {
+    public SimpleLogger(
+            final String name,
+            final MessageFactory messageFactory,
+            final PrintStream stream,
+            final Level level,
+            final DateFormat dateFormatter,
+            final boolean showDateTime) {
         super(name, messageFactory);
         this.stream = stream;
         this.level = level;
@@ -127,65 +135,124 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1) {
+    public boolean isEnabled(
+            final Level testLevel, final Marker marker, final String message, final Object p0, final Object p1) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
@@ -197,9 +264,12 @@ public class SimpleLogger extends AbstractLogger {
     @Override
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "Log4j prints stacktraces only to logs, which should be private."
-    )
-    public void logMessage(final String fqcn, final Level mgsLevel, final Marker marker, final Message msg,
+            justification = "Log4j prints stacktraces only to logs, which should be private.")
+    public void logMessage(
+            final String fqcn,
+            final Level mgsLevel,
+            final Marker marker,
+            final Message msg,
             final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();
         // Append date-time if so configured
@@ -233,7 +303,9 @@ public class SimpleLogger extends AbstractLogger {
         }
         final Object[] params = msg.getParameters();
         final Throwable t;
-        if (throwable == null && params != null && params.length > 0
+        if (throwable == null
+                && params != null
+                && params.length > 0
                 && params[params.length - 1] instanceof Throwable) {
             t = (Throwable) params[params.length - 1];
         } else {
@@ -255,5 +327,4 @@ public class SimpleLogger extends AbstractLogger {
     public void setStream(final PrintStream stream) {
         this.stream = stream;
     }
-
 }

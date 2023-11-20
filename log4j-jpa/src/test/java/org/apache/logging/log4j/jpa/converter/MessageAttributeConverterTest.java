@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.jpa.converter;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(Appenders.Jpa.class)
 public class MessageAttributeConverterTest {

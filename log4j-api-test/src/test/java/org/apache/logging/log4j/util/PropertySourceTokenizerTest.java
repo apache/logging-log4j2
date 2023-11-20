@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PropertySourceTokenizerTest {
 
     public static Object[][] data() {
-        return new Object[][]{
+        return new Object[][] {
             {"log4j.simple", Arrays.asList("log4j", "simple")},
             {"log4j_simple", Arrays.asList("log4j", "simple")},
             {"log4j-simple", Collections.singletonList("log4j-simple")},
@@ -43,7 +42,10 @@ public class PropertySourceTokenizerTest {
             {"LOG4J_SIMPLE_PROPERTY", Arrays.asList("LOG4J", "SIMPLE", "PROPERTY")},
             {"log4j2-dashed-propertyName", Collections.singletonList("log4j2-dashed-propertyName")},
             {"Log4jProperty_with.all-the/separators", Arrays.asList("Log4jProperty", "with", "all-the", "separators")},
-            {"org.apache.logging.log4j.config.property", Arrays.asList("org", "apache", "logging", "log4j", "config", "property")},
+            {
+                "org.apache.logging.log4j.config.property",
+                Arrays.asList("org", "apache", "logging", "log4j", "config", "property")
+            },
             {"level", Collections.singletonList("level")},
             {"user.home", Arrays.asList("user", "home")},
             {"CATALINA_BASE", Arrays.asList("CATALINA", "BASE")}

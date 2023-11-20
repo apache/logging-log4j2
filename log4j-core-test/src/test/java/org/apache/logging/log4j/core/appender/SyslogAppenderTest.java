@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat.LEGACY_BSD;
+import static org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat.SYSLOG;
+
 import java.io.IOException;
 import java.net.SocketException;
-
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.net.Facility;
@@ -28,9 +30,6 @@ import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat.LEGACY_BSD;
-import static org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat.SYSLOG;
 
 public abstract class SyslogAppenderTest extends SyslogAppenderTestBase {
 
@@ -111,13 +110,13 @@ public abstract class SyslogAppenderTest extends SyslogAppenderTestBase {
         initRootLogger(appender);
     }
 
-    protected SyslogAppender createAppender(final Protocol protocol, final TlsSyslogMessageFormat format,
-            final int port) {
+    protected SyslogAppender createAppender(
+            final Protocol protocol, final TlsSyslogMessageFormat format, final int port) {
         return newSyslogAppenderBuilder(protocol, format, includeNewLine, port).build();
     }
 
-    protected Builder<?> newSyslogAppenderBuilder(final Protocol protocol, final TlsSyslogMessageFormat format,
-            final boolean newLine, final int port) {
+    protected Builder<?> newSyslogAppenderBuilder(
+            final Protocol protocol, final TlsSyslogMessageFormat format, final boolean newLine, final int port) {
         // @formatter:off
         return SyslogAppender.newSyslogAppenderBuilder()
                 .setConfiguration(new DefaultConfiguration())

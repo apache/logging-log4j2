@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -45,7 +44,7 @@ public final class CustomLevels {
      * @return A CustomLevels object.
      */
     @PluginFactory
-    public static CustomLevels createCustomLevels(//
+    public static CustomLevels createCustomLevels( //
             @PluginElement("CustomLevels") final CustomLevelConfig[] customLevels) {
         return new CustomLevels(customLevels == null ? new CustomLevelConfig[0] : customLevels);
     }

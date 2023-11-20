@@ -37,8 +37,7 @@ public final class Constants {
      * @return true if the feature is available.
      */
     private static boolean isJndiEnabled(final PropertyKey key) {
-        return PropertiesUtil.getProperties().getBooleanProperty(key, false)
-                && isClassAvailable(JNDI_MANAGER_CLASS);
+        return PropertiesUtil.getProperties().getBooleanProperty(key, false) && isClassAvailable(JNDI_MANAGER_CLASS);
     }
 
     public static boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_CONTEXT_SELECTOR);
@@ -64,8 +63,8 @@ public final class Constants {
     /**
      * Supports user request LOG4J2-898 to have the option to format a message in the background thread.
      */
-    public static final boolean FORMAT_MESSAGES_IN_BACKGROUND = PropertiesUtil.getProperties().getBooleanProperty(
-            Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, false);
+    public static final boolean FORMAT_MESSAGES_IN_BACKGROUND = PropertiesUtil.getProperties()
+            .getBooleanProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, false);
 
     /**
      * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into
@@ -78,10 +77,11 @@ public final class Constants {
      *
      * @since 2.6
      */
-    public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties().getBooleanProperty(
-            Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS, true); // enable GC-free text encoding by default
-            // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
-            //AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
+    public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties()
+            .getBooleanProperty(
+                    Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS, true); // enable GC-free text encoding by default
+    // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
+    // AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
 
     /**
      * Initial StringBuilder size used in RingBuffer LogEvents to store the contents of reusable Messages.
@@ -90,7 +90,8 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int INITIAL_REUSABLE_MESSAGE_SIZE = size(Log4jPropertyKey.GC_INITIAL_REUSABLE_MESSAGE_SIZE, 128);
+    public static final int INITIAL_REUSABLE_MESSAGE_SIZE =
+            size(Log4jPropertyKey.GC_INITIAL_REUSABLE_MESSAGE_SIZE, 128);
 
     /**
      * Maximum size of the StringBuilders used in RingBuffer LogEvents to store the contents of reusable Messages.
@@ -101,7 +102,8 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(Log4jPropertyKey.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE =
+            size(Log4jPropertyKey.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
 
     /**
      * Size of CharBuffers used by text encoders.
@@ -121,7 +123,6 @@ public final class Constants {
      * @since 2.6
      */
     public static final int ENCODER_BYTE_BUFFER_SIZE = size(Log4jPropertyKey.GC_ENCODER_BYTE_BUFFER_SIZE, 8 * 1024);
-
 
     private static int size(final PropertyKey property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
@@ -144,6 +145,5 @@ public final class Constants {
     /**
      * Prevent class instantiation.
      */
-    private Constants() {
-    }
+    private Constants() {}
 }

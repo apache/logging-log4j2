@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the Unbox class.
@@ -54,9 +54,9 @@ public class Unbox1Test {
             probe[i++] = Unbox.box(Short.MAX_VALUE);
         }
         for (int i = 0; i < probe.length - MAX; i++) {
-            assertSame(probe[i], probe[i + MAX], "probe[" + i +"], probe[" + (i + MAX) +"]");
+            assertSame(probe[i], probe[i + MAX], "probe[" + i + "], probe[" + (i + MAX) + "]");
             for (int j = 1; j < MAX - 1; j++) {
-                assertNotSame(probe[i], probe[i + j], "probe[" + i +"], probe[" + (i + j) +"]");
+                assertNotSame(probe[i], probe[i + j], "probe[" + i + "], probe[" + (i + j) + "]");
             }
         }
     }
@@ -86,15 +86,23 @@ public class Unbox1Test {
     @Test
     public void testBoxDouble() {
         assertEquals("3.14", Unbox.box(3.14).toString());
-        assertEquals(new Double(Double.MAX_VALUE).toString(), Unbox.box(Double.MAX_VALUE).toString());
-        assertEquals(new Double(Double.MIN_VALUE).toString(), Unbox.box(Double.MIN_VALUE).toString());
+        assertEquals(
+                new Double(Double.MAX_VALUE).toString(),
+                Unbox.box(Double.MAX_VALUE).toString());
+        assertEquals(
+                new Double(Double.MIN_VALUE).toString(),
+                Unbox.box(Double.MIN_VALUE).toString());
     }
 
     @Test
     public void testBoxFloat() {
         assertEquals("3.14", Unbox.box(3.14F).toString());
-        assertEquals(new Float(Float.MAX_VALUE).toString(), Unbox.box(Float.MAX_VALUE).toString());
-        assertEquals(new Float(Float.MIN_VALUE).toString(), Unbox.box(Float.MIN_VALUE).toString());
+        assertEquals(
+                new Float(Float.MAX_VALUE).toString(),
+                Unbox.box(Float.MAX_VALUE).toString());
+        assertEquals(
+                new Float(Float.MIN_VALUE).toString(),
+                Unbox.box(Float.MIN_VALUE).toString());
     }
 
     @Test
@@ -104,8 +112,12 @@ public class Unbox1Test {
         assertEquals("127", Unbox.box(127).toString());
         assertEquals("-1", Unbox.box(-1).toString());
         assertEquals("-128", Unbox.box(-128).toString());
-        assertEquals(new Integer(Integer.MAX_VALUE).toString(), Unbox.box(Integer.MAX_VALUE).toString());
-        assertEquals(new Integer(Integer.MIN_VALUE).toString(), Unbox.box(Integer.MIN_VALUE).toString());
+        assertEquals(
+                new Integer(Integer.MAX_VALUE).toString(),
+                Unbox.box(Integer.MAX_VALUE).toString());
+        assertEquals(
+                new Integer(Integer.MIN_VALUE).toString(),
+                Unbox.box(Integer.MIN_VALUE).toString());
     }
 
     @Test
@@ -115,8 +127,10 @@ public class Unbox1Test {
         assertEquals("127", Unbox.box(127L).toString());
         assertEquals("-1", Unbox.box(-1L).toString());
         assertEquals("-128", Unbox.box(-128L).toString());
-        assertEquals(new Long(Long.MAX_VALUE).toString(), Unbox.box(Long.MAX_VALUE).toString());
-        assertEquals(new Long(Long.MIN_VALUE).toString(), Unbox.box(Long.MIN_VALUE).toString());
+        assertEquals(
+                new Long(Long.MAX_VALUE).toString(), Unbox.box(Long.MAX_VALUE).toString());
+        assertEquals(
+                new Long(Long.MIN_VALUE).toString(), Unbox.box(Long.MIN_VALUE).toString());
     }
 
     @Test
@@ -126,8 +140,12 @@ public class Unbox1Test {
         assertEquals("127", Unbox.box((short) 127).toString());
         assertEquals("-1", Unbox.box((short) -1).toString());
         assertEquals("-128", Unbox.box((short) -128).toString());
-        assertEquals(new Short(Short.MAX_VALUE).toString(), Unbox.box(Short.MAX_VALUE).toString());
-        assertEquals(new Short(Short.MIN_VALUE).toString(), Unbox.box(Short.MIN_VALUE).toString());
+        assertEquals(
+                new Short(Short.MAX_VALUE).toString(),
+                Unbox.box(Short.MAX_VALUE).toString());
+        assertEquals(
+                new Short(Short.MIN_VALUE).toString(),
+                Unbox.box(Short.MIN_VALUE).toString());
     }
 
     @Test
@@ -143,7 +161,9 @@ public class Unbox1Test {
         for (int i = 0; i < probe.length - 16; i++) {
             for (int j = 1; j < 16; j++) {
                 assertNotSame(
-                        probe[i], probe[i + j], "probe[" + i +"]=" + probe[i] + ", probe[" + (i + j) +"]=" + probe[i + j]);
+                        probe[i],
+                        probe[i + j],
+                        "probe[" + i + "]=" + probe[i] + ", probe[" + (i + j) + "]=" + probe[i + j]);
             }
         }
     }

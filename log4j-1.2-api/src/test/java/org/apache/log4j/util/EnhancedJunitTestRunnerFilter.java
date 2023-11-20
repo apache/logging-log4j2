@@ -19,14 +19,21 @@ package org.apache.log4j.util;
 import org.apache.oro.text.perl.Perl5Util;
 
 public class EnhancedJunitTestRunnerFilter implements Filter {
-    private static final String[] PATTERNS = {"at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner", "at org.apache.tools.ant",
-        "at junit.textui.TestRunner", "at com.intellij.rt.execution.junit", "at java.lang.reflect.Method.invoke", "at org.apache.maven.", "at org.codehaus.",
-        "at org.junit.internal.runners.", "at junit.framework.JUnit4TestAdapter"};
+    private static final String[] PATTERNS = {
+        "at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
+        "at org.apache.tools.ant",
+        "at junit.textui.TestRunner",
+        "at com.intellij.rt.execution.junit",
+        "at java.lang.reflect.Method.invoke",
+        "at org.apache.maven.",
+        "at org.codehaus.",
+        "at org.junit.internal.runners.",
+        "at junit.framework.JUnit4TestAdapter"
+    };
 
     private final Perl5Util util = new Perl5Util();
 
-    public EnhancedJunitTestRunnerFilter() {
-    }
+    public EnhancedJunitTestRunnerFilter() {}
 
     /**
      * Filter out stack trace lines coming from the various JUnit TestRunners.

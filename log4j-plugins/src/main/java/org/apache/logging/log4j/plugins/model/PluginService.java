@@ -35,7 +35,8 @@ public abstract class PluginService {
         final ClassLoader classLoader = getClass().getClassLoader();
         for (PluginEntry entry : entries) {
             final String namespace = entry.getNamespace();
-            namespaces.computeIfAbsent(namespace.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, namespace))
+            namespaces
+                    .computeIfAbsent(namespace.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, namespace))
                     .merge(entry.getKey(), new PluginType<>(entry, classLoader));
         }
     }
@@ -51,10 +52,6 @@ public abstract class PluginService {
     }
 
     public int size() {
-        return namespaces.values()
-                .stream()
-                .mapToInt(PluginNamespace::size)
-                .sum();
+        return namespaces.values().stream().mapToInt(PluginNamespace::size).sum();
     }
-
 }

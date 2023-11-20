@@ -19,5 +19,4 @@ package org.apache.logging.log4j.plugins.test.validation.di;
 import org.apache.logging.log4j.plugins.Namespace;
 
 @Namespace("Bean")
-public interface BaseBean {
-}
+public interface BaseBean {}

@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.time;
 
+import static java.time.temporal.ChronoField.INSTANT_SECONDS;
+import static java.time.temporal.ChronoField.MICRO_OF_SECOND;
+import static java.time.temporal.ChronoField.MILLI_OF_SECOND;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
+import static java.time.temporal.ChronoUnit.NANOS;
+
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
@@ -23,15 +29,8 @@ import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
-
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
-import static java.time.temporal.ChronoField.INSTANT_SECONDS;
-import static java.time.temporal.ChronoField.MICRO_OF_SECOND;
-import static java.time.temporal.ChronoField.MILLI_OF_SECOND;
-import static java.time.temporal.ChronoField.NANO_OF_SECOND;
-import static java.time.temporal.ChronoUnit.NANOS;
 
 /**
  * An instantaneous point on the timeline, used for high-precision log event timestamps.
@@ -72,7 +71,7 @@ public class MutableInstant implements Instant, TemporalAccessor {
     @Override
     public int getNanoOfMillisecond() {
         final int millis = nanoOfSecond / NANOS_PER_MILLI;
-         // cheaper than nanoOfSecond % NANOS_PER_MILLI
+        // cheaper than nanoOfSecond % NANOS_PER_MILLI
         return nanoOfSecond - (millis * NANOS_PER_MILLI);
     }
 
@@ -89,7 +88,8 @@ public class MutableInstant implements Instant, TemporalAccessor {
     public void initFromEpochMilli(final long epochMilli, final int nanoOfMillisecond) {
         validateNanoOfMillisecond(nanoOfMillisecond);
         this.epochSecond = epochMilli / MILLIS_PER_SECOND;
-        this.nanoOfSecond = (int) (epochMilli - (epochSecond * MILLIS_PER_SECOND)) * NANOS_PER_MILLI + nanoOfMillisecond;
+        this.nanoOfSecond =
+                (int) (epochMilli - (epochSecond * MILLIS_PER_SECOND)) * NANOS_PER_MILLI + nanoOfMillisecond;
     }
 
     private void validateNanoOfMillisecond(final int nanoOfMillisecond) {
@@ -140,10 +140,10 @@ public class MutableInstant implements Instant, TemporalAccessor {
     @Override
     public boolean isSupported(final TemporalField field) {
         if (field instanceof ChronoField) {
-            return field == INSTANT_SECONDS ||
-                    field == NANO_OF_SECOND ||
-                    field == MICRO_OF_SECOND ||
-                    field == MILLI_OF_SECOND;
+            return field == INSTANT_SECONDS
+                    || field == NANO_OF_SECOND
+                    || field == MICRO_OF_SECOND
+                    || field == MILLI_OF_SECOND;
         }
         return field != null && field.isSupportedBy(this);
     }
@@ -152,10 +152,14 @@ public class MutableInstant implements Instant, TemporalAccessor {
     public long getLong(final TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case NANO_OF_SECOND: return nanoOfSecond;
-                case MICRO_OF_SECOND: return nanoOfSecond / 1000;
-                case MILLI_OF_SECOND: return nanoOfSecond / 1000_000;
-                case INSTANT_SECONDS: return epochSecond;
+                case NANO_OF_SECOND:
+                    return nanoOfSecond;
+                case MICRO_OF_SECOND:
+                    return nanoOfSecond / 1000;
+                case MILLI_OF_SECOND:
+                    return nanoOfSecond / 1000_000;
+                case INSTANT_SECONDS:
+                    return epochSecond;
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -171,10 +175,14 @@ public class MutableInstant implements Instant, TemporalAccessor {
     public int get(final TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case NANO_OF_SECOND: return nanoOfSecond;
-                case MICRO_OF_SECOND: return nanoOfSecond / 1000;
-                case MILLI_OF_SECOND: return nanoOfSecond / 1000_000;
-                case INSTANT_SECONDS: INSTANT_SECONDS.checkValidIntValue(epochSecond);
+                case NANO_OF_SECOND:
+                    return nanoOfSecond;
+                case MICRO_OF_SECOND:
+                    return nanoOfSecond / 1000;
+                case MILLI_OF_SECOND:
+                    return nanoOfSecond / 1000_000;
+                case INSTANT_SECONDS:
+                    INSTANT_SECONDS.checkValidIntValue(epochSecond);
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -187,12 +195,12 @@ public class MutableInstant implements Instant, TemporalAccessor {
             return Cast.cast(NANOS);
         }
         // inline TemporalAccessor.super.query(query) as an optimization
-        if (query == TemporalQueries.chronology() ||
-                query == TemporalQueries.zoneId() ||
-                query == TemporalQueries.zone() ||
-                query == TemporalQueries.offset() ||
-                query == TemporalQueries.localDate() ||
-                query == TemporalQueries.localTime()) {
+        if (query == TemporalQueries.chronology()
+                || query == TemporalQueries.zoneId()
+                || query == TemporalQueries.zone()
+                || query == TemporalQueries.offset()
+                || query == TemporalQueries.localDate()
+                || query == TemporalQueries.localTime()) {
             return null;
         }
         return query.queryFrom(this);
@@ -227,7 +235,10 @@ public class MutableInstant implements Instant, TemporalAccessor {
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-        buffer.append("MutableInstant[epochSecond=").append(epochSecond).append(", nano=").append(nanoOfSecond).append("]");
+        buffer.append("MutableInstant[epochSecond=")
+                .append(epochSecond)
+                .append(", nano=")
+                .append(nanoOfSecond)
+                .append("]");
     }
-
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;

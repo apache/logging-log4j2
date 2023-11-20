@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 
-
 /**
  *
  */
@@ -40,6 +39,7 @@ public class PatternFormatter {
             formatWithInfo(event, buf);
         }
     }
+
     private void formatWithInfo(final LogEvent event, final StringBuilder buf) {
         final int startField = buf.length();
         converter.format(event, buf);

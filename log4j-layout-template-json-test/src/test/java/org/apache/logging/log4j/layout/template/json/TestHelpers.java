@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -40,8 +39,7 @@ public final class TestHelpers {
 
     public static final Configuration CONFIGURATION = new DefaultConfiguration();
 
-    private static final JsonWriter JSON_WRITER = JsonWriter
-            .newBuilder()
+    private static final JsonWriter JSON_WRITER = JsonWriter.newBuilder()
             .setMaxStringLength(10_000)
             .setTruncatedStringSuffix("…")
             .build();
@@ -49,9 +47,7 @@ public final class TestHelpers {
     private TestHelpers() {}
 
     @SuppressWarnings("unchecked")
-    static Map<String, Object> serializeUsingLayout(
-            final LogEvent logEvent,
-            final Layout layout) {
+    static Map<String, Object> serializeUsingLayout(final LogEvent logEvent, final Layout layout) {
         final String json = layout.toSerializable(logEvent);
         return (Map<String, Object>) JsonReader.read(json);
     }
@@ -70,9 +66,7 @@ public final class TestHelpers {
     }
 
     public static void usingSerializedLogEventAccessor(
-            final Layout layout,
-            final LogEvent logEvent,
-            final Consumer<MapAccessor> accessorConsumer) {
+            final Layout layout, final LogEvent logEvent, final Consumer<MapAccessor> accessorConsumer) {
         final String serializedLogEventJson = layout.toSerializable(logEvent);
         @SuppressWarnings("unchecked")
         final Map<String, Object> deserializedLogEvent = (Map<String, Object>) readJson(serializedLogEventJson);
@@ -117,10 +111,10 @@ public final class TestHelpers {
             final BiConsumer<LoggerContext, ListAppender> consumer) {
 
         // Create the configuration builder.
-        final ConfigurationBuilder<BuiltConfiguration> configBuilder = ConfigurationBuilderFactory
-                .newConfigurationBuilder()
-                .setStatusLevel(Level.ERROR)
-                .setConfigurationName(configName);
+        final ConfigurationBuilder<BuiltConfiguration> configBuilder =
+                ConfigurationBuilderFactory.newConfigurationBuilder()
+                        .setStatusLevel(Level.ERROR)
+                        .setConfigurationName(configName);
 
         // Create the configuration.
         final String eventTemplateJson = writeJson(eventTemplate);
@@ -131,12 +125,8 @@ public final class TestHelpers {
                         .addAttribute("raw", true)
                         .add(configBuilder
                                 .newLayout("JsonTemplateLayout")
-                                .addAttribute(
-                                        "eventTemplate",
-                                        eventTemplateJson)))
-                .add(configBuilder
-                        .newRootLogger(Level.ALL)
-                        .add(configBuilder.newAppenderRef(appenderName)))
+                                .addAttribute("eventTemplate", eventTemplateJson)))
+                .add(configBuilder.newRootLogger(Level.ALL).add(configBuilder.newAppenderRef(appenderName)))
                 .build(false);
 
         // Initialize the configuration and pass it to the consumer.
@@ -144,7 +134,6 @@ public final class TestHelpers {
             final ListAppender appender = loggerContext.getConfiguration().getAppender("List");
             consumer.accept(loggerContext, appender);
         }
-
     }
 
     public static void uncheckedSleep(final long millis) {
@@ -155,5 +144,4 @@ public final class TestHelpers {
             throw new RuntimeException("interrupted");
         }
     }
-
 }

@@ -21,7 +21,6 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -53,8 +52,7 @@ public final class UuidUtil {
     private static final long LEAST = initialize(NetUtils.getMacAddress());
 
     /* This class cannot be instantiated */
-    private UuidUtil() {
-    }
+    private UuidUtil() {}
 
     /**
      * Initializes this class
@@ -133,8 +131,9 @@ public final class UuidUtil {
      */
     public static UUID getTimeBasedUuid() {
 
-        final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) +
-            NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) + (COUNT.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
+        final long time =
+                ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH)
+                        + (COUNT.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
         final long timeLow = (time & LOW_MASK) << SHIFT_4;
         final long timeMid = (time & MID_MASK) >> SHIFT_2;
         final long timeHi = (time & HIGH_MASK) >> SHIFT_6;

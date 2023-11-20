@@ -19,7 +19,6 @@ package org.apache.logging.log4j.osgi.tests;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
@@ -62,8 +61,7 @@ public class CustomConfiguration extends AbstractConfiguration {
     }
 
     @Override
-    protected void doConfigure() {
-    }
+    protected void doConfigure() {}
 
     public List<LogEvent> getEvents() {
         return appender.getEvents();
@@ -103,12 +101,10 @@ public class CustomConfiguration extends AbstractConfiguration {
         }
 
         @Override
-        public void setHandler(final ErrorHandler handler) {
-        }
+        public void setHandler(final ErrorHandler handler) {}
 
         public List<LogEvent> getEvents() {
             return events;
         }
-
     }
 }

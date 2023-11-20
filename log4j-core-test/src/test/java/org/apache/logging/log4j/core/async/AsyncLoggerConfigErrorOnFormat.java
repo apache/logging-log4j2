@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -31,14 +35,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @Tag("async")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncLoggerConfigErrorOnFormat.xml")
-@SetSystemProperty(key = Log4jPropertyKey.Constant.LOG_EVENT_FACTORY_CLASS_NAME, value = "org.apache.logging.log4j.core.impl.DefaultLogEventFactory")
+@SetSystemProperty(
+        key = Log4jPropertyKey.Constant.LOG_EVENT_FACTORY_CLASS_NAME,
+        value = "org.apache.logging.log4j.core.impl.DefaultLogEventFactory")
 public class AsyncLoggerConfigErrorOnFormat {
 
     @Test
@@ -64,7 +65,8 @@ public class AsyncLoggerConfigErrorOnFormat {
 
         @Override
         public String getFormattedMessage() {
-            throw new Error("getFormattedMessage invoked on " + Thread.currentThread().getName());
+            throw new Error(
+                    "getFormattedMessage invoked on " + Thread.currentThread().getName());
         }
 
         @Override

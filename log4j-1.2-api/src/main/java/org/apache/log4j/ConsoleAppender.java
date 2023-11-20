@@ -37,8 +37,7 @@ public class ConsoleAppender extends WriterAppender {
     /**
      * Constructs a non-configured appender.
      */
-    public ConsoleAppender() {
-    }
+    public ConsoleAppender() {}
 
     /**
      * Constructs a configured appender.
@@ -136,5 +135,4 @@ public class ConsoleAppender extends WriterAppender {
         StatusLogger.getLogger().warn("[" + val + "] should be System.out or System.err.");
         StatusLogger.getLogger().warn("Using previously set target, System.out by default.");
     }
-
 }

@@ -16,15 +16,18 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.sql.DataSource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,11 +43,6 @@ import org.junit.rules.RuleChain;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 /**
  * Unit tests {@link MapMessage}s for JdbcAppender using a {@link DataSource} configuration.
  */
@@ -52,6 +50,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
 
     @Rule
     public final RuleChain rules;
+
     private final JdbcRule jdbcRule;
 
     @BeforeClass
@@ -60,8 +59,9 @@ public class JdbcAppenderMapMessageDataSourceTest {
     }
 
     public JdbcAppenderMapMessageDataSourceTest() {
-        this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
-        // @formatter:off
+        this(new JdbcRule(
+                JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
+                // @formatter:off
                 "CREATE TABLE dsLogEntry (Id INTEGER, ColumnA VARCHAR(255), ColumnB VARCHAR(255))",
                 "DROP TABLE IF EXISTS dsLogEntry"));
         // @formatter:on
@@ -72,7 +72,8 @@ public class JdbcAppenderMapMessageDataSourceTest {
         this.rules = RuleChain.emptyRuleChain()
                 .around(new JndiRule("java:/comp/env/jdbc/TestDataSourceAppender", createMockDataSource()))
                 .around(jdbcRule)
-                .around(new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-data-source-map-message.xml"));
+                .around(new LoggerContextRule(
+                        "org/apache/logging/log4j/jdbc/appender/log4j2-data-source-map-message.xml"));
         // @formatter:on
         this.jdbcRule = jdbcRule;
     }
@@ -110,8 +111,8 @@ public class JdbcAppenderMapMessageDataSourceTest {
             logger.info(mapMessage);
 
             try (final Statement statement = connection.createStatement();
-                    final ResultSet resultSet = statement
-                            .executeQuery("SELECT Id, ColumnA, ColumnB FROM dsLogEntry ORDER BY Id")) {
+                    final ResultSet resultSet =
+                            statement.executeQuery("SELECT Id, ColumnA, ColumnB FROM dsLogEntry ORDER BY Id")) {
 
                 assertTrue("There should be at least one row.", resultSet.next());
 
@@ -134,8 +135,8 @@ public class JdbcAppenderMapMessageDataSourceTest {
             mapMessage.with("ColumnB", StringUtils.repeat('B', 1000));
             logger.info(mapMessage);
             try (final Statement statement = connection.createStatement();
-                    final ResultSet resultSet = statement
-                            .executeQuery("SELECT Id, ColumnA, ColumnB FROM dsLogEntry ORDER BY Id")) {
+                    final ResultSet resultSet =
+                            statement.executeQuery("SELECT Id, ColumnA, ColumnB FROM dsLogEntry ORDER BY Id")) {
 
                 assertTrue("There should be at least one row.", resultSet.next());
 

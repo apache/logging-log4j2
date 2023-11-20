@@ -25,7 +25,6 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 
 /**
@@ -48,12 +47,12 @@ public final class LoaderUtil {
 
     static {
         if (System.getSecurityManager() != null) {
-            LowLevelLogUtil.log("A custom SecurityManager was detected; Log4j no longer supports security permissions.");
+            LowLevelLogUtil.log(
+                    "A custom SecurityManager was detected; Log4j no longer supports security permissions.");
         }
     }
 
-    private LoaderUtil() {
-    }
+    private LoaderUtil() {}
 
     /**
      * Returns the ClassLoader to use.
@@ -145,7 +144,8 @@ public final class LoaderUtil {
         return LoaderUtil.class.getClassLoader();
     }
 
-    private static void accumulateLayerClassLoaders(final ModuleLayer layer, final Collection<ClassLoader> classLoaders) {
+    private static void accumulateLayerClassLoaders(
+            final ModuleLayer layer, final Collection<ClassLoader> classLoaders) {
         for (final Module module : layer.modules()) {
             accumulateClassLoaders(module.getClassLoader(), classLoaders);
         }
@@ -300,8 +300,9 @@ public final class LoaderUtil {
      * @throws InvocationTargetException   if an exception is thrown by the constructor
      * @since 2.1
      */
-    public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
-            InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public static <T> T newInstanceOf(final String className)
+            throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException,
+                    NoSuchMethodException {
         final Class<T> clazz = Cast.cast(loadClass(className));
         return newInstanceOf(clazz);
     }
@@ -376,8 +377,9 @@ public final class LoaderUtil {
      * @throws InvocationTargetException   if there was an exception whilst constructing the class
      * @since 2.1
      */
-    public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz) throws ClassNotFoundException,
-            InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+    public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
+            throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException,
+                    NoSuchMethodException {
         return newInstanceOf(loadClass(className).asSubclass(clazz));
     }
 
@@ -408,7 +410,8 @@ public final class LoaderUtil {
     private static boolean isIgnoreTccl() {
         // we need to lazily initialize this, but concurrent access is not an issue
         if (ignoreTCCL == null) {
-            final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(LoggingSystemProperty.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null);
+            final String ignoreTccl = PropertiesUtil.getProperties()
+                    .getStringProperty(LoggingSystemProperty.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null);
             ignoreTCCL = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim());
         }
         return ignoreTCCL;

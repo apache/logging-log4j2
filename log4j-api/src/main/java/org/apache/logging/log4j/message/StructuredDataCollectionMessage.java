@@ -19,14 +19,13 @@ package org.apache.logging.log4j.message;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * A collection of StructuredDataMessages.
  */
-public class StructuredDataCollectionMessage implements StringBuilderFormattable,
-        MessageCollectionMessage<StructuredDataMessage> {
+public class StructuredDataCollectionMessage
+        implements StringBuilderFormattable, MessageCollectionMessage<StructuredDataMessage> {
 
     private final List<StructuredDataMessage> structuredDataMessageList;
 
@@ -81,9 +80,9 @@ public class StructuredDataCollectionMessage implements StringBuilderFormattable
         final Object[] objects = new Object[count];
         int index = 0;
         for (final Object[] objs : objectList) {
-           for (final Object obj : objs) {
-               objects[index++] = obj;
-           }
+            for (final Object obj : objs) {
+                objects[index++] = obj;
+            }
         }
         return objects;
     }

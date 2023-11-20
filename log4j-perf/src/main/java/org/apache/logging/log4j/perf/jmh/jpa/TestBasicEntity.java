@@ -22,7 +22,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.jpa.appender.BasicLogEventEntity;
 
@@ -51,5 +50,4 @@ public class TestBasicEntity extends BasicLogEventEntity {
     public void setId(final long id) {
         this.id = id;
     }
-
 }

@@ -47,5 +47,4 @@ public class NoOpTriggeringPolicy extends AbstractTriggeringPolicy {
         // Never triggers.
         return false;
     }
-
 }

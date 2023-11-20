@@ -16,10 +16,16 @@
  */
 package org.apache.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -32,13 +38,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Used for internal unit testing the Logger class.
@@ -66,7 +65,8 @@ public class LoggerTest {
         rbCH = ResourceBundle.getBundle("L7D", new Locale("fr", "CH"));
         assertNotNull(rbCH, "Got a null resource bundle.");
 
-        System.setProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
+        System.setProperty(
+                Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
                 BasicConfigurationFactory.class.getName());
     }
 
@@ -85,35 +85,35 @@ public class LoggerTest {
     /**
      * Add an appender and see if it can be retrieved.
      *  Skipping this test as the Appender interface isn't compatible with legacy Log4j.
-    public void testAppender1() {
-        logger = Logger.getLogger("test");
-        a1 = new ListAppender("testAppender1");
-        logger.addAppender(a1);
-
-        Enumeration enumeration = logger.getAllAppenders();
-        Appender aHat = (Appender) enumeration.nextElement();
-        assertEquals(a1, aHat);
-    } */
+     * public void testAppender1() {
+     * logger = Logger.getLogger("test");
+     * a1 = new ListAppender("testAppender1");
+     * logger.addAppender(a1);
+     *
+     * Enumeration enumeration = logger.getAllAppenders();
+     * Appender aHat = (Appender) enumeration.nextElement();
+     * assertEquals(a1, aHat);
+     * } */
 
     /**
      * Add an appender X, Y, remove X and check if Y is the only
      * remaining appender.
      * Skipping this test as the Appender interface isn't compatible with legacy Log4j.
-    public void testAppender2() {
-        a1 = new FileAppender();
-        a1.setName("testAppender2.1");
-        a2 = new FileAppender();
-        a2.setName("testAppender2.2");
-
-        logger = Logger.getLogger("test");
-        logger.addAppender(a1);
-        logger.addAppender(a2);
-        logger.removeAppender("testAppender2.1");
-        Enumeration enumeration = logger.getAllAppenders();
-        Appender aHat = (Appender) enumeration.nextElement();
-        assertEquals(a2, aHat);
-        assertTrue(!enumeration.hasMoreElements());
-    }  */
+     * public void testAppender2() {
+     * a1 = new FileAppender();
+     * a1.setName("testAppender2.1");
+     * a2 = new FileAppender();
+     * a2.setName("testAppender2.2");
+     *
+     * logger = Logger.getLogger("test");
+     * logger.addAppender(a1);
+     * logger.addAppender(a2);
+     * logger.removeAppender("testAppender2.1");
+     * Enumeration enumeration = logger.getAllAppenders();
+     * Appender aHat = (Appender) enumeration.nextElement();
+     * assertEquals(a2, aHat);
+     * assertTrue(!enumeration.hasMoreElements());
+     * }  */
 
     /**
      * Test if logger a.b inherits its appender from a.
@@ -181,7 +181,8 @@ public class LoggerTest {
         } finally {
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).removeAppender(ca1);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).removeAppender(ca2);
-        }}
+        }
+    }
 
     /**
      * Test additivity flag.
@@ -232,7 +233,8 @@ public class LoggerTest {
             ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(caRoot);
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).removeAppender(caA);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).removeAppender(caABC);
-        }}
+        }
+    }
 
     /* Don't support getLoggerRepository
     public void testDisable1() {
@@ -470,7 +472,8 @@ public class LoggerTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testLog() {
-        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%d %C %L %m").build();
+        final PatternLayout layout =
+                PatternLayout.newBuilder().setPattern("%d %C %L %m").build();
         final ListAppender appender = new ListAppender("List", null, layout, false, false);
         appender.start();
         final Logger root = Logger.getRootLogger();

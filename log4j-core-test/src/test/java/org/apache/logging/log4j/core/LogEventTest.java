@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  *
@@ -71,8 +71,12 @@ public class LogEventTest {
         private static final String FQCN = TestClass.class.getName();
 
         public StackTraceElement getEventSource(final String loggerName) {
-            final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(loggerName)
-                    .setLoggerFqcn(FQCN).setLevel(Level.INFO).setMessage(MESSAGE).build();
+            final LogEvent event = Log4jLogEvent.newBuilder()
+                    .setLoggerName(loggerName)
+                    .setLoggerFqcn(FQCN)
+                    .setLevel(Level.INFO)
+                    .setMessage(MESSAGE)
+                    .build();
             event.setIncludeLocation(true);
             return event.getSource();
         }

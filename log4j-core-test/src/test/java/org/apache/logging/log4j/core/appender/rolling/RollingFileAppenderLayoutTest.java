@@ -33,7 +33,8 @@ public class RollingFileAppenderLayoutTest {
                 .setFilePattern("FilePattern")
                 .setPolicy(OnStartupTriggeringPolicy.createPolicy(1))
                 .setCreateOnDemand(true) // no need to clutter up test folder with another file
-                .build().getLayout());
+                .build()
+                .getLayout());
         // @formatter:on
     }
 }

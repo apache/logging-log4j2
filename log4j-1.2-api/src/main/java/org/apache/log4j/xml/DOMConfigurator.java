@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.xml;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,10 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-
 import javax.xml.parsers.FactoryConfigurationError;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
@@ -56,9 +54,9 @@ import org.w3c.dom.Element;
  * attribute in the <code>log4j:configuration</code> element. As in
  *
  * <pre>
-&lt;log4j:configuration <b>debug="true"</b> xmlns:log4j="http://jakarta.apache.org/log4j/">
-...
-&lt;/log4j:configuration>
+ * &lt;log4j:configuration <b>debug="true"</b> xmlns:log4j="http://jakarta.apache.org/log4j/">
+ * ...
+ * &lt;/log4j:configuration>
  * </pre>
  *
  * <p>
@@ -68,13 +66,9 @@ import org.w3c.dom.Element;
  */
 public class DOMConfigurator {
 
-    public static void configure(final Element element) {
-    }
+    public static void configure(final Element element) {}
 
-    @SuppressFBWarnings(
-            value = "PATH_TRAVERSAL_IN",
-            justification = "The filename comes from a system property."
-    )
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "The filename comes from a system property.")
     public static void configure(final String fileName) throws FactoryConfigurationError {
         final Path path = Paths.get(fileName);
         try (final InputStream inputStream = Files.newInputStream(path)) {
@@ -104,13 +98,12 @@ public class DOMConfigurator {
         xdog.start();
     }
 
-    public static Object parseElement(final Element element, final Properties props, @SuppressWarnings("rawtypes") final Class expectedClass) {
+    public static Object parseElement(
+            final Element element, final Properties props, @SuppressWarnings("rawtypes") final Class expectedClass) {
         return null;
     }
 
-    public static void setParameter(final Element elem, final PropertySetter propSetter, final Properties props) {
-
-    }
+    public static void setParameter(final Element elem, final PropertySetter propSetter, final Properties props) {}
 
     public static String subst(final String value, final Properties props) {
         return OptionConverter.substVars(value, props);
@@ -123,10 +116,10 @@ public class DOMConfigurator {
         Configurator.reconfigure(configuration);
     }
 
-    public void doConfigure(final Element element, final LoggerRepository repository) {
-    }
+    public void doConfigure(final Element element, final LoggerRepository repository) {}
 
-    public void doConfigure(final InputStream inputStream, final LoggerRepository repository) throws FactoryConfigurationError {
+    public void doConfigure(final InputStream inputStream, final LoggerRepository repository)
+            throws FactoryConfigurationError {
         try {
             doConfigure(new ConfigurationSource(inputStream));
         } catch (final IOException e) {

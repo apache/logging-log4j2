@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -33,8 +34,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @LoggerContextSource("org/apache/logging/log4j/core/test/LogBuilderTest.xml")
 public class LogBuilderTest {
 
@@ -43,9 +42,7 @@ public class LogBuilderTest {
     private static final String STRING = "String";
     private static final Message MESSAGE = new SimpleMessage();
     private static final Throwable THROWABLE = new RuntimeException();
-    private static final Object[] P = {
-            "p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9"
-    };
+    private static final Object[] P = {"p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9"};
     private static final Object OBJECT = "Object";
 
     private Logger logger;
@@ -58,7 +55,8 @@ public class LogBuilderTest {
     }
 
     static Stream<Consumer<LogBuilder>> testMarkerFilter() {
-        return Stream.of(logBuilder -> logBuilder.log(),
+        return Stream.of(
+                logBuilder -> logBuilder.log(),
                 logBuilder -> logBuilder.log(CHAR_SEQUENCE),
                 logBuilder -> logBuilder.log(MESSAGE),
                 logBuilder -> logBuilder.log(OBJECT),
@@ -73,7 +71,8 @@ public class LogBuilderTest {
                 logBuilder -> logBuilder.log(STRING, P[0], P[1], P[2], P[3], P[4], P[5], P[6], P[7]),
                 logBuilder -> logBuilder.log(STRING, P[0], P[1], P[2], P[3], P[4], P[5], P[6], P[7], P[8]),
                 logBuilder -> logBuilder.log(STRING, P[0], P[1], P[2], P[3], P[4], P[5], P[6], P[7], P[8], P[9]),
-                logBuilder -> logBuilder.log(STRING, P), logBuilder -> logBuilder.log(STRING, () -> OBJECT),
+                logBuilder -> logBuilder.log(STRING, P),
+                logBuilder -> logBuilder.log(STRING, () -> OBJECT),
                 logBuilder -> logBuilder.log(() -> MESSAGE));
     }
 

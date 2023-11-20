@@ -18,7 +18,6 @@ package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
-
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
@@ -68,8 +67,7 @@ public class ClocksBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void baseline() {
-    }
+    public void baseline() {}
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
@@ -154,15 +152,17 @@ public class ClocksBenchmark {
         private volatile short count;
 
         private OldCachedClock() {
-            final Thread updater = new Thread(() -> {
-                while (true) {
-                    final long time = System.currentTimeMillis();
-                    millis = time;
+            final Thread updater = new Thread(
+                    () -> {
+                        while (true) {
+                            final long time = System.currentTimeMillis();
+                            millis = time;
 
-                    // avoid explicit dependency on sun.misc.Util
-                    LockSupport.parkNanos(1000 * 1000);
-                }
-            }, "Clock Updater Thread");
+                            // avoid explicit dependency on sun.misc.Util
+                            LockSupport.parkNanos(1000 * 1000);
+                        }
+                    },
+                    "Clock Updater Thread");
             updater.setDaemon(true);
             updater.start();
         }

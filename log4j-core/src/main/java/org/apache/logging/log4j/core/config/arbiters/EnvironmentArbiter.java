@@ -36,7 +36,6 @@ public class EnvironmentArbiter implements Arbiter {
         this.propertyValue = propertyValue;
     }
 
-
     /**
      * Returns true if either the environment variable is defined (it has any value) or the property value
      * matches the requested value.

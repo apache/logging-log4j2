@@ -20,7 +20,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
@@ -30,10 +29,10 @@ public class PluginOptionalSupplierFactoryResolver<T>
     @Override
     protected boolean supportsType(final Type rawType, final Type... typeArguments) {
         final Type typeArgument = typeArguments[0];
-        return Optional.class == rawType &&
-                TypeUtil.isAssignable(Supplier.class, typeArgument) &&
-                typeArgument instanceof ParameterizedType &&
-                ((ParameterizedType) typeArgument).getActualTypeArguments().length == 1;
+        return Optional.class == rawType
+                && TypeUtil.isAssignable(Supplier.class, typeArgument)
+                && typeArgument instanceof ParameterizedType
+                && ((ParameterizedType) typeArgument).getActualTypeArguments().length == 1;
     }
 
     @Override
@@ -44,6 +43,7 @@ public class PluginOptionalSupplierFactoryResolver<T>
         final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
         final ParameterizedType supplierType = (ParameterizedType) containerType.getActualTypeArguments()[0];
         final Type componentType = supplierType.getActualTypeArguments()[0];
-        return () -> Plugins.<T>streamPluginFactoriesMatching(instanceFactory, namespace, componentType).findFirst();
+        return () -> Plugins.<T>streamPluginFactoriesMatching(instanceFactory, namespace, componentType)
+                .findFirst();
     }
 }

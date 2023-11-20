@@ -77,7 +77,6 @@ public final class SpringProfileArbiter implements Arbiter {
         @PluginConfiguration
         private Configuration configuration;
 
-
         /**
          * Sets the Profile Name or Names.
          * @param name the profile name(s).
@@ -103,8 +102,8 @@ public final class SpringProfileArbiter implements Arbiter {
         }
 
         public SpringProfileArbiter build() {
-            final String[] profileNames = StringUtils.trimArrayElements(
-                    StringUtils.commaDelimitedListToStringArray(configuration.getStrSubstitutor().replace(name)));
+            final String[] profileNames = StringUtils.trimArrayElements(StringUtils.commaDelimitedListToStringArray(
+                    configuration.getStrSubstitutor().replace(name)));
             Environment environment = null;
             if (loggerContext != null) {
                 environment = (Environment) loggerContext.getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);

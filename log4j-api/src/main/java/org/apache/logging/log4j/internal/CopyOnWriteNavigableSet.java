@@ -112,7 +112,8 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public NavigableSet<E> subSet(final E fromElement, final boolean fromInclusive, final E toElement, final boolean toInclusive) {
+    public NavigableSet<E> subSet(
+            final E fromElement, final boolean fromInclusive, final E toElement, final boolean toInclusive) {
         return set.subSet(fromElement, fromInclusive, toElement, toInclusive);
     }
 

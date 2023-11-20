@@ -21,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -55,7 +54,7 @@ public class TimeFormatBenchmark {
         }
     };
     FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
-    FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported(new String[]{"ABSOLUTE"});
+    FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported(new String[] {"ABSOLUTE"});
     volatile long midnightToday;
     volatile long midnightTomorrow;
 

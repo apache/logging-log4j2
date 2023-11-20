@@ -45,8 +45,7 @@ public class Log4jLogEventBenchmark {
     }
 
     @Benchmark
-    public void testBaseline(final Blackhole bh) {
-    }
+    public void testBaseline(final Blackhole bh) {}
 
     @Benchmark
     public LogEvent createLogEventWithoutExceptionUsingBuilder() {

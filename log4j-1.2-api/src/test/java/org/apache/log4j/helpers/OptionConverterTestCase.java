@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -54,7 +53,6 @@ public class OptionConverterTestCase extends TestCase {
         // Log4J will throw an Error without this:
         props.put("java.home", System.getProperty("java.home"));
         System.setProperties(props);
-
     }
 
     public void tearDown() {
@@ -168,5 +166,4 @@ public class OptionConverterTestCase extends TestCase {
         suite.addTest(new OptionConverterTestCase("toLevelTest5"));
         return suite;
     }
-
 }

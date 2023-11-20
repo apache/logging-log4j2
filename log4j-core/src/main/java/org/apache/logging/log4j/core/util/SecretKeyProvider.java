@@ -18,9 +18,7 @@ package org.apache.logging.log4j.core.util;
 
 import java.util.Map;
 import java.util.function.Supplier;
-
 import javax.crypto.SecretKey;
-
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Key;
 

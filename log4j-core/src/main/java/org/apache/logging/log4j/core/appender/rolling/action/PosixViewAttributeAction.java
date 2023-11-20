@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -28,8 +29,6 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 import java.util.Set;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -66,10 +65,15 @@ public class PosixViewAttributeAction extends AbstractPathAction {
      */
     private final String fileGroup;
 
-    private PosixViewAttributeAction(final String basePath, final boolean followSymbolicLinks,
-            final int maxDepth, final PathCondition[] pathConditions, final StrSubstitutor subst,
+    private PosixViewAttributeAction(
+            final String basePath,
+            final boolean followSymbolicLinks,
+            final int maxDepth,
+            final PathCondition[] pathConditions,
+            final StrSubstitutor subst,
             final Set<PosixFilePermission> filePermissions,
-            final String fileOwner, final String fileGroup) {
+            final String fileOwner,
+            final String fileGroup) {
         super(basePath, followSymbolicLinks, maxDepth, pathConditions, subst);
         this.filePermissions = filePermissions;
         this.fileOwner = fileOwner;
@@ -118,16 +122,17 @@ public class PosixViewAttributeAction extends AbstractPathAction {
         @Override
         @SuppressFBWarnings(
                 value = "OVERLY_PERMISSIVE_FILE_PERMISSION",
-                justification = "File permissions are specified in a configuration file."
-        )
+                justification = "File permissions are specified in a configuration file.")
         public PosixViewAttributeAction build() {
             if (Strings.isEmpty(basePath)) {
                 LOGGER.error("Posix file attribute view action not valid because base path is empty.");
                 return null;
             }
 
-            if (filePermissions == null && Strings.isEmpty(filePermissionsString)
-                        && Strings.isEmpty(fileOwner) && Strings.isEmpty(fileGroup)) {
+            if (filePermissions == null
+                    && Strings.isEmpty(filePermissionsString)
+                    && Strings.isEmpty(fileOwner)
+                    && Strings.isEmpty(fileGroup)) {
                 LOGGER.error("Posix file attribute view not valid because nor permissions, user or group defined.");
                 return null;
             }
@@ -137,10 +142,17 @@ public class PosixViewAttributeAction extends AbstractPathAction {
                 return null;
             }
 
-            return new PosixViewAttributeAction(basePath, followLinks, maxDepth, pathConditions,
+            return new PosixViewAttributeAction(
+                    basePath,
+                    followLinks,
+                    maxDepth,
+                    pathConditions,
                     subst != null ? subst : configuration.getStrSubstitutor(),
-                    filePermissions != null ? filePermissions :
-                                filePermissionsString != null ? PosixFilePermissions.fromString(filePermissionsString) : null,
+                    filePermissions != null
+                            ? filePermissions
+                            : filePermissionsString != null
+                                    ? PosixFilePermissions.fromString(filePermissionsString)
+                                    : null,
                     fileOwner,
                     fileGroup);
         }
@@ -254,8 +266,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
     }
 
     @Override
-    protected FileVisitor<Path> createFileVisitor(final Path basePath,
-            final List<PathCondition> conditions) {
+    protected FileVisitor<Path> createFileVisitor(final Path basePath, final List<PathCondition> conditions) {
         return new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
@@ -309,5 +320,4 @@ public class PosixViewAttributeAction extends AbstractPathAction {
                 + ", getMaxDepth()=" + getMaxDepth() + ", getPathConditions()="
                 + getPathConditions() + "]";
     }
-
 }

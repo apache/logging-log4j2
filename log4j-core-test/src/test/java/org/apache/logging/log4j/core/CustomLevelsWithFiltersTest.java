@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -25,8 +27,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-customLevelsWithFilters.xml")
 public class CustomLevelsWithFiltersTest {
@@ -70,5 +70,4 @@ public class CustomLevelsWithFiltersTest {
         assertNotNull(infom1Level);
         assertNotNull(infop1Level);
     }
-
 }

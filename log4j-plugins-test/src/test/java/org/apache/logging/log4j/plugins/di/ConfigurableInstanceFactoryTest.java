@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
@@ -38,9 +40,6 @@ import org.apache.logging.log4j.plugins.test.validation.di.GammaBean;
 import org.apache.logging.log4j.plugins.test.validation.di.PrototypeBean;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ConfigurableInstanceFactoryTest {
 
@@ -69,8 +68,7 @@ class ConfigurableInstanceFactoryTest {
     }
 
     static class UnknownInstance {
-        UnknownInstance(@Named String ignored) {
-        }
+        UnknownInstance(@Named String ignored) {}
     }
 
     @Test
@@ -123,8 +121,8 @@ class ConfigurableInstanceFactoryTest {
     @Test
     void testDeferredSupplierNotInvokedUntilInitiallyProvided() {
         final AtomicInteger counter = new AtomicInteger();
-        final DeferredSupplierBean bean = DI
-                .createInitializedFactory(Binding.from(int.class).to(counter::incrementAndGet))
+        final DeferredSupplierBean bean = DI.createInitializedFactory(
+                        Binding.from(int.class).to(counter::incrementAndGet))
                 .getInstance(DeferredSupplierBean.class);
         assertThat(counter.get()).isEqualTo(0);
         assertThat(bean.singletonSupplier.get().id).isEqualTo(1);
@@ -146,30 +144,33 @@ class ConfigurableInstanceFactoryTest {
 
     static class AliasBundle {
         @Factory
-        @Named({ "foo", "bar" })
+        @Named({"foo", "bar"})
         String foo() {
             return "bar";
         }
     }
 
     static class Aliases {
-        @Named String foo;
+        @Named
+        String foo;
 
-        @Named String bar;
+        @Named
+        String bar;
 
-        @Named({ "invalid", "foo" }) String baz;
+        @Named({"invalid", "foo"})
+        String baz;
 
         final String constructed;
 
         String methodInjected;
 
         @Inject
-        Aliases(@Named({ "", "foo" }) final String constructed) {
+        Aliases(@Named({"", "foo"}) final String constructed) {
             this.constructed = constructed;
         }
 
         @Inject
-        void setMethodInjected(@Named({ "baz", "bar" }) final String methodInjected) {
+        void setMethodInjected(@Named({"baz", "bar"}) final String methodInjected) {
             this.methodInjected = methodInjected;
         }
     }
@@ -254,25 +255,63 @@ class ConfigurableInstanceFactoryTest {
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3496">LOG4J2-3496</a>
      */
     static class ContainerPluginBeanInjection {
-        @Namespace("Bean") @Inject Optional<BaseBean> optional;
-        @Namespace("Bean") @Inject Collection<BaseBean> collection;
-        @Namespace("Bean") @Inject Collection<Supplier<BaseBean>> collectionFactory;
-        @Namespace("Bean") @Inject Iterable<BaseBean> iterable;
-        @Namespace("Bean") @Inject Iterable<Supplier<BaseBean>> iterableFactory;
-        @Namespace("Bean") @Inject Set<BaseBean> set;
-        @Namespace("Bean") @Inject Set<Supplier<BaseBean>> setFactory;
-        @Namespace("Bean") @Inject Stream<BaseBean> stream;
-        @Namespace("Bean") @Inject Stream<Supplier<BaseBean>> streamFactory;
-        @Namespace("Bean") @Inject List<BaseBean> list;
-        @Namespace("Bean") @Inject List<Supplier<BaseBean>> listFactory;
-        @Namespace("Bean") @Inject Map<String, BaseBean> map;
-        @Namespace("Bean") @Inject Map<String, Supplier<BaseBean>> mapFactory;
+        @Namespace("Bean")
+        @Inject
+        Optional<BaseBean> optional;
+
+        @Namespace("Bean")
+        @Inject
+        Collection<BaseBean> collection;
+
+        @Namespace("Bean")
+        @Inject
+        Collection<Supplier<BaseBean>> collectionFactory;
+
+        @Namespace("Bean")
+        @Inject
+        Iterable<BaseBean> iterable;
+
+        @Namespace("Bean")
+        @Inject
+        Iterable<Supplier<BaseBean>> iterableFactory;
+
+        @Namespace("Bean")
+        @Inject
+        Set<BaseBean> set;
+
+        @Namespace("Bean")
+        @Inject
+        Set<Supplier<BaseBean>> setFactory;
+
+        @Namespace("Bean")
+        @Inject
+        Stream<BaseBean> stream;
+
+        @Namespace("Bean")
+        @Inject
+        Stream<Supplier<BaseBean>> streamFactory;
+
+        @Namespace("Bean")
+        @Inject
+        List<BaseBean> list;
+
+        @Namespace("Bean")
+        @Inject
+        List<Supplier<BaseBean>> listFactory;
+
+        @Namespace("Bean")
+        @Inject
+        Map<String, BaseBean> map;
+
+        @Namespace("Bean")
+        @Inject
+        Map<String, Supplier<BaseBean>> mapFactory;
     }
 
     @Test
     void namespaceQualifierInjection() {
-        final ContainerPluginBeanInjection instance = DI.createInitializedFactory()
-                .getInstance(ContainerPluginBeanInjection.class);
+        final ContainerPluginBeanInjection instance =
+                DI.createInitializedFactory().getInstance(ContainerPluginBeanInjection.class);
         assertThat(instance.list).hasSize(3).first().isInstanceOf(BetaBean.class);
         assertThat(instance.collection).containsExactlyElementsOf(instance.list);
         assertThat(instance.iterable).containsExactlyElementsOf(instance.list);

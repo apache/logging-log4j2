@@ -43,19 +43,16 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     /**
      * Create new instance.
      */
-    public AppenderSkeleton() {
-    }
+    public AppenderSkeleton() {}
 
-    protected AppenderSkeleton(final boolean isActive) {
-    }
+    protected AppenderSkeleton(final boolean isActive) {}
 
     @Override
-    public void activateOptions() {
-    }
+    public void activateOptions() {}
 
     @Override
     public void addFilter(final Filter newFilter) {
-        if(headFilter == null) {
+        if (headFilter == null) {
             headFilter = tailFilter = newFilter;
         } else {
             tailFilter.setNext(newFilter);
@@ -71,8 +68,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     }
 
     @Override
-    public void finalize() {
-    }
+    public void finalize() {}
 
     @Override
     public ErrorHandler getErrorHandler() {
@@ -140,33 +136,21 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
     public static class NoOpErrorHandler implements ErrorHandler {
         @Override
-        public void setLogger(final Logger logger) {
-
-        }
+        public void setLogger(final Logger logger) {}
 
         @Override
-        public void error(final String message, final Exception e, final int errorCode) {
-
-        }
+        public void error(final String message, final Exception e, final int errorCode) {}
 
         @Override
-        public void error(final String message) {
-
-        }
+        public void error(final String message) {}
 
         @Override
-        public void error(final String message, final Exception e, final int errorCode, final LoggingEvent event) {
-
-        }
+        public void error(final String message, final Exception e, final int errorCode, final LoggingEvent event) {}
 
         @Override
-        public void setAppender(final Appender appender) {
-
-        }
+        public void setAppender(final Appender appender) {}
 
         @Override
-        public void setBackupAppender(final Appender appender) {
-
-        }
+        public void setBackupAppender(final Appender appender) {}
     }
 }

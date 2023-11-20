@@ -54,7 +54,6 @@ public class Component {
         this.value = null;
     }
 
-
     public String addAttribute(final String key, final String newValue) {
         return attributes.put(key, newValue);
     }
@@ -78,4 +77,4 @@ public class Component {
     public String getValue() {
         return value;
     }
- }
+}

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("MarkerPatternConverter")
-@ConverterKeys({ "marker" })
+@ConverterKeys({"marker"})
 @PerformanceSensitive("allocation")
 public final class MarkerPatternConverter extends LogEventPatternConverter {
 

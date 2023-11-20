@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.CharBuffer;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -32,13 +31,22 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 public class InternalBufferedReader extends BufferedReader {
     private static final String FQCN = InternalBufferedReader.class.getName();
 
-    public InternalBufferedReader(final Reader reader, final ExtendedLogger logger, final String fqcn,
-                                   final Level level, final Marker marker) {
+    public InternalBufferedReader(
+            final Reader reader,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(new InternalLoggerReader(reader, logger, fqcn == null ? FQCN : fqcn, level, marker));
     }
 
-    public InternalBufferedReader(final Reader reader, final int size, final ExtendedLogger logger, final String fqcn,
-                                   final Level level, final Marker marker) {
+    public InternalBufferedReader(
+            final Reader reader,
+            final int size,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(new InternalLoggerReader(reader, logger, fqcn == null ? FQCN : fqcn, level, marker), size);
     }
 

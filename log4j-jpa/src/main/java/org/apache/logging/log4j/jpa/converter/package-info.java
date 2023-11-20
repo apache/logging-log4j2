@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 // Lines too long...
-//CHECKSTYLE:OFF
+// CHECKSTYLE:OFF
 /**
  * The converters in this package implement the JPA 2.1 mechanism for converting non-standard types to and from
  * database fields. Most of these types are capable of two-way conversion and can be used to both persist and retrieve
@@ -27,7 +27,7 @@
  * and {@link org.apache.logging.log4j.jpa.converter.ContextStackJsonAttributeConverter ContextStackJsonAttributeConverter}
  * instead, which require the Jackson Data Processor dependency to also be on your class path.
  */
-//CHECKSTYLE:ON
+// CHECKSTYLE:ON
 @Export
 @Open("org.apache.logging.log4j.core")
 @Version("1.0.0")

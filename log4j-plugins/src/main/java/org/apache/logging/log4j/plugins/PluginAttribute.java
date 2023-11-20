@@ -22,7 +22,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.resolver.PluginAttributeFactoryResolver;
 import org.apache.logging.log4j.plugins.name.NameProvider;
@@ -142,5 +141,4 @@ public @interface PluginAttribute {
      * @return true if the attribute should be considered sensitive.
      */
     boolean sensitive() default false;
-
 }

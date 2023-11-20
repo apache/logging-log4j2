@@ -25,5 +25,4 @@ public class MarkerMixInJsonTest extends AbstractMarkerMixInTest {
     protected ObjectMapper newObjectMapper() {
         return new Log4jJsonObjectMapper();
     }
-
 }

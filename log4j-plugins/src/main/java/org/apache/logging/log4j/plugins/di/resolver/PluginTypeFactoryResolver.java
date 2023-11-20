@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.di.resolver;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.NotInjectableException;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
@@ -37,7 +36,8 @@ public class PluginTypeFactoryResolver<T> extends AbstractPluginFactoryResolver<
     }
 
     @Override
-    public Supplier<PluginType<T>> getFactory(final ResolvableKey<PluginType<T>> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<PluginType<T>> getFactory(
+            final ResolvableKey<PluginType<T>> resolvableKey, final InstanceFactory instanceFactory) {
         final ParameterizedType type = (ParameterizedType) resolvableKey.getType();
         final String namespace = resolvableKey.getNamespace();
         final Type requestedType = type.getActualTypeArguments()[0];

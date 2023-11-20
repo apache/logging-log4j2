@@ -17,7 +17,6 @@
 package org.apache.log4j.pattern;
 
 import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
@@ -26,19 +25,17 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
 
-
 /**
  * Returns the event's NDC in a StringBuilder.
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("Log4j1NdcPatternConverter")
-@ConverterKeys({ "ndc" })
+@ConverterKeys({"ndc"})
 public final class Log4j1NdcPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final Log4j1NdcPatternConverter INSTANCE =
-        new Log4j1NdcPatternConverter();
+    private static final Log4j1NdcPatternConverter INSTANCE = new Log4j1NdcPatternConverter();
 
     /**
      * Private constructor.

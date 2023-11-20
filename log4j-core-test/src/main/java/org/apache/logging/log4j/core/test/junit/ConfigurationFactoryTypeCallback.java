@@ -34,7 +34,8 @@ class ConfigurationFactoryTypeCallback implements BeforeAllCallback, AfterAllCal
                 .map(ConfigurationFactoryType::value)
                 .ifPresent(configurationFactoryType -> {
                     final ConfigurableInstanceFactory factory = DI.createInitializedFactory();
-                    factory.registerBinding(Binding.from(ConfigurationFactory.KEY).to(factory.getFactory(configurationFactoryType)));
+                    factory.registerBinding(
+                            Binding.from(ConfigurationFactory.KEY).to(factory.getFactory(configurationFactoryType)));
                     final Log4jContextFactory contextFactory = factory.getInstance(Log4jContextFactory.class);
                     LoggingSystem.getInstance().setLoggerContextFactory(contextFactory);
                 });

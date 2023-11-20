@@ -28,14 +28,13 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("ThreadPriorityPatternConverter")
-@ConverterKeys({ "tp", "threadPriority" })
+@ConverterKeys({"tp", "threadPriority"})
 @PerformanceSensitive("allocation")
 public final class ThreadPriorityPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final ThreadPriorityPatternConverter INSTANCE =
-        new ThreadPriorityPatternConverter();
+    private static final ThreadPriorityPatternConverter INSTANCE = new ThreadPriorityPatternConverter();
 
     /**
      * Private constructor.
@@ -50,8 +49,7 @@ public final class ThreadPriorityPatternConverter extends LogEventPatternConvert
      * @param options options, currently ignored, may be null.
      * @return instance of ThreadPatternConverter.
      */
-    public static ThreadPriorityPatternConverter newInstance(
-        final String[] options) {
+    public static ThreadPriorityPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 

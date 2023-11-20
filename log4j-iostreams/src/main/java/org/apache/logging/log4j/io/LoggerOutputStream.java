@@ -19,7 +19,6 @@ package org.apache.logging.log4j.io;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.io.internal.InternalOutputStream;
@@ -38,8 +37,12 @@ public class LoggerOutputStream extends OutputStream {
 
     private final InternalOutputStream logger;
 
-    protected LoggerOutputStream(final ExtendedLogger logger, final Level level, final Marker marker,
-                                 final Charset charset, final String fqcn) {
+    protected LoggerOutputStream(
+            final ExtendedLogger logger,
+            final Level level,
+            final Marker marker,
+            final Charset charset,
+            final String fqcn) {
         this.logger = new InternalOutputStream(logger, level, marker, charset, fqcn == null ? FQCN : fqcn);
     }
 

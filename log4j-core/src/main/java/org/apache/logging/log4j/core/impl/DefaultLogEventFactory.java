@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -44,8 +43,7 @@ public class DefaultLogEventFactory implements LogEventFactory {
     private final NanoClock nanoClock;
 
     @Inject
-    public DefaultLogEventFactory(
-            final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock) {
+    public DefaultLogEventFactory(final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock) {
         this.injector = injector;
         this.clock = clock;
         this.nanoClock = nanoClock;
@@ -68,9 +66,14 @@ public class DefaultLogEventFactory implements LogEventFactory {
      * @return The LogEvent.
      */
     @Override
-    public LogEvent createEvent(final String loggerName, final Marker marker,
-                                final String fqcn, final Level level, final Message data,
-                                final List<Property> properties, final Throwable t) {
+    public LogEvent createEvent(
+            final String loggerName,
+            final Marker marker,
+            final String fqcn,
+            final Level level,
+            final Message data,
+            final List<Property> properties,
+            final Throwable t) {
         return Log4jLogEvent.newBuilder()
                 .setNanoTime(nanoClock.nanoTime())
                 .setClock(clock)
@@ -98,9 +101,15 @@ public class DefaultLogEventFactory implements LogEventFactory {
      * @return The LogEvent.
      */
     @Override
-    public LogEvent createEvent(final String loggerName, final Marker marker, final String fqcn,
-            final StackTraceElement location, final Level level, final Message data,
-            final List<Property> properties, final Throwable t) {
+    public LogEvent createEvent(
+            final String loggerName,
+            final Marker marker,
+            final String fqcn,
+            final StackTraceElement location,
+            final Level level,
+            final Message data,
+            final List<Property> properties,
+            final Throwable t) {
         return Log4jLogEvent.newBuilder()
                 .setNanoTime(nanoClock.nanoTime())
                 .setClock(clock)

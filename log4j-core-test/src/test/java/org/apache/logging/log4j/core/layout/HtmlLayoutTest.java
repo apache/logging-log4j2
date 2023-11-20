@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
@@ -26,7 +29,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.*;
@@ -41,9 +43,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Test;
-
-import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 @ConfigurationFactoryType(BasicConfigurationFactory.class)
@@ -79,7 +78,8 @@ public class HtmlLayoutTest {
     private final LoggerContext ctx = LoggerContext.getContext();
     private final Logger root = ctx.getRootLogger();
 
-    private static final String body = "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
+    private static final String body =
+            "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
 
     private static final String multiLine = "<td title=\"Message\">First line<br />Second line</td>";
 
@@ -93,11 +93,11 @@ public class HtmlLayoutTest {
     public void testContentType() {
         final HtmlLayout layout = HtmlLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
-            .setContentType("text/html; charset=UTF-16")
-            .build();
+                .setContentType("text/html; charset=UTF-16")
+                .build();
         assertEquals("text/html; charset=UTF-16", layout.getContentType());
         // TODO: make sure this following bit works as well
-//        assertEquals(Charset.forName("UTF-16"), layout.getCharset());
+        //        assertEquals(Charset.forName("UTF-16"), layout.getCharset());
     }
 
     @Test
@@ -127,8 +127,8 @@ public class HtmlLayoutTest {
         // set up appender
         final HtmlLayout layout = HtmlLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
-            .setLocationInfo(includeLocation)
-            .build();
+                .setLocationInfo(includeLocation)
+                .build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -180,7 +180,9 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithoutDataPattern() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).build();
+        final HtmlLayout layout = HtmlLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
+                .build();
 
         final MyLogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));
@@ -191,7 +193,10 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithDatePatternJvmElapseTime() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern("JVM_ELAPSE_TIME").build();
+        final HtmlLayout layout = HtmlLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
+                .setDatePattern("JVM_ELAPSE_TIME")
+                .build();
 
         final MyLogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));
@@ -202,7 +207,10 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithDatePatternUnix() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern("UNIX").build();
+        final HtmlLayout layout = HtmlLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
+                .setDatePattern("UNIX")
+                .build();
 
         final MyLogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));
@@ -212,7 +220,10 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithDatePatternUnixMillis() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern("UNIX_MILLIS").build();
+        final HtmlLayout layout = HtmlLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
+                .setDatePattern("UNIX_MILLIS")
+                .build();
 
         final MyLogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));
@@ -234,14 +245,18 @@ public class HtmlLayoutTest {
     }
 
     private void testLayoutWithDatePatternFixedFormat(final FixedFormat format, final String timezone) {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern(format.name()).setTimezone(timezone).build();
+        final HtmlLayout layout = HtmlLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
+                .setDatePattern(format.name())
+                .setTimezone(timezone)
+                .build();
 
         final LogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));
 
         // build expected date string
-        final java.time.Instant instant =
-        java.time.Instant.ofEpochSecond(event.getInstant().getEpochSecond(), event.getInstant().getNanoOfSecond());
+        final java.time.Instant instant = java.time.Instant.ofEpochSecond(
+                event.getInstant().getEpochSecond(), event.getInstant().getNanoOfSecond());
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
         if (timezone != null) {
             zonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of(timezone));
@@ -258,20 +273,26 @@ public class HtmlLayoutTest {
         // Pattern letter 'S' means fraction-of-second, 'n' means nano-of-second. Log4j2 needs S.
         // Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
         // whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'. Log4j2 needs x.
-        final DateTimeFormatter dateTimeFormatter =
-        DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
+        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
+                format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
         String expected = zonedDateTime.format(dateTimeFormatter);
 
         final String offset = zonedDateTime.getOffset().toString();
 
-        //Truncate minutes if timeZone format is HH and timeZone has minutes. This is required because according to DateTimeFormatter,
-        //One letter outputs just the hour, such as '+01', unless the minute is non-zero in which case the minute is also output, such as '+0130'
-        //ref : https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
-        if (FixedDateFormat.FixedTimeZoneFormat.HH.equals(format.getTimeZoneFormat()) && offset.contains(":") && !"00".equals(offset.split(":")[1])) {
+        // Truncate minutes if timeZone format is HH and timeZone has minutes. This is required because according to
+        // DateTimeFormatter,
+        // One letter outputs just the hour, such as '+01', unless the minute is non-zero in which case the minute is
+        // also output, such as '+0130'
+        // ref : https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
+        if (FixedDateFormat.FixedTimeZoneFormat.HH.equals(format.getTimeZoneFormat())
+                && offset.contains(":")
+                && !"00".equals(offset.split(":")[1])) {
             expected = expected.substring(0, expected.length() - 2);
         }
 
-        assertEquals("<td>" + expected + "</td>", actual,
-            MessageFormat.format("Incorrect date={0}, format={1}, timezone={2}", actual, format.name(), timezone));
+        assertEquals(
+                "<td>" + expected + "</td>",
+                actual,
+                MessageFormat.format("Incorrect date={0}, format={1}, timezone={2}", actual, format.name(), timezone));
     }
 }

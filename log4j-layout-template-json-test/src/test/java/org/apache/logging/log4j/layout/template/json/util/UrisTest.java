@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.assertj.core.api.Assertions;
@@ -35,9 +34,7 @@ class UrisTest {
 
     @Test
     void testClassPathResource() {
-        final String content = Uris.readUri(
-                "classpath:JsonLayout.json",
-                StandardCharsets.US_ASCII);
+        final String content = Uris.readUri("classpath:JsonLayout.json", StandardCharsets.US_ASCII);
         Assertions.assertThat(content).startsWith("{");
     }
 
@@ -59,5 +56,4 @@ class UrisTest {
             }
         }
     }
-
 }

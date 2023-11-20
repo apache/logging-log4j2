@@ -69,14 +69,12 @@ public interface Appender {
      */
     void doAppend(LoggingEvent event);
 
-
     /**
      * Get the name of this appender.
      *
      * @return name, may be null.
      */
     String getName();
-
 
     /**
      * Set the {@link ErrorHandler} for this appender.
@@ -109,7 +107,6 @@ public interface Appender {
      * @since 1.1
      */
     Layout getLayout();
-
 
     /**
      * Set the name of this appender. The name is used by other

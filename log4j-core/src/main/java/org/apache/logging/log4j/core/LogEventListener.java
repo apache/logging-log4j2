@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core;
 
 import java.util.EventListener;
-
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**

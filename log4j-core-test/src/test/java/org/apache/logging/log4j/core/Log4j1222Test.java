@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -24,14 +26,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 /**
  * Tests logging during shutdown.
  */
 @Tag("functional")
-public class Log4j1222Test
-{
+public class Log4j1222Test {
 
     @Test
     @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "log4j2-console.xml")
@@ -46,15 +45,16 @@ public class Log4j1222Test
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             super.run();
             trigger();
         }
 
         private void trigger() {
             Holder.LOGGER.info("Attempt to trigger");
-            assertTrue(Holder.LOGGER instanceof TestLogger, "Logger is of type " + Holder.LOGGER.getClass().getName());
+            assertTrue(
+                    Holder.LOGGER instanceof TestLogger,
+                    "Logger is of type " + Holder.LOGGER.getClass().getName());
             if (((TestLogger) Holder.LOGGER).getEntries().size() == 0) {
                 System.out.println("Logger contains no messages");
             }

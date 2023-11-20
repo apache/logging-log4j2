@@ -33,7 +33,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.ScopeType;
@@ -80,15 +79,15 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
                 parent.bindings.newChildMap(),
                 parent.scopes.newChildMap(),
                 parent.factoryResolvers,
-                parent.instancePostProcessors
-        );
+                parent.instancePostProcessors);
         this.agent = parent.agent;
     }
 
-    private DefaultInstanceFactory(final BindingMap bindings,
-                                   final HierarchicalMap<Class<? extends Annotation>, Scope> scopes,
-                                   final List<FactoryResolver<?>> factoryResolvers,
-                                   final Collection<InstancePostProcessor> instancePostProcessors) {
+    private DefaultInstanceFactory(
+            final BindingMap bindings,
+            final HierarchicalMap<Class<? extends Annotation>, Scope> scopes,
+            final List<FactoryResolver<?>> factoryResolvers,
+            final Collection<InstancePostProcessor> instancePostProcessors) {
         this.bindings = bindings;
         this.scopes = scopes;
         this.factoryResolvers = factoryResolvers;
@@ -107,8 +106,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         if (existingBinding != null) {
             return existingBinding;
         }
-        final Supplier<T> unscoped = resolveKey(resolvableKey)
-                .orElseGet(() -> createDefaultFactory(resolvableKey));
+        final Supplier<T> unscoped = resolveKey(resolvableKey).orElseGet(() -> createDefaultFactory(resolvableKey));
         final Scope scope = getScopeForType(key.getRawType());
         final Supplier<T> scoped = scope.get(key, unscoped);
         final Binding<T> binding = Binding.from(key).to(scoped);
@@ -151,10 +149,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         validate(rawType, resolvableKey.getName(), rawType);
         final Executable factory = BeanUtils.getInjectableFactory(resolvableKey);
         final Key<T> key = resolvableKey.getKey();
-        final DependencyChain updatedChain = resolvableKey.getDependencyChain()
-                .withDependency(key);
-        final Object[] arguments = InjectionPoint.fromExecutable(factory)
-                .stream()
+        final DependencyChain updatedChain = resolvableKey.getDependencyChain().withDependency(key);
+        final Object[] arguments = InjectionPoint.fromExecutable(factory).stream()
                 .map(point -> getArgumentFactory(point, updatedChain).get())
                 .toArray();
         return invokeFactory(factory, arguments);
@@ -184,9 +180,10 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         }
     }
 
-    protected List<Supplier<?>> getArgumentFactories(final Key<?> key,
-                                                     final List<InjectionPoint<?>> argumentInjectionPoints,
-                                                     final DependencyChain dependencyChain) {
+    protected List<Supplier<?>> getArgumentFactories(
+            final Key<?> key,
+            final List<InjectionPoint<?>> argumentInjectionPoints,
+            final DependencyChain dependencyChain) {
         final DependencyChain newChain = dependencyChain.withDependency(key);
         return argumentInjectionPoints.stream()
                 .map(injectionPoint -> getArgumentFactory(injectionPoint, newChain))
@@ -235,7 +232,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     }
 
     protected Scope getScopeForMethod(final Method method) {
-        final Annotation methodScopeType = AnnotationUtil.getElementAnnotationHavingMetaAnnotation(method, ScopeType.class);
+        final Annotation methodScopeType =
+                AnnotationUtil.getElementAnnotationHavingMetaAnnotation(method, ScopeType.class);
         final Scope methodScope = methodScopeType != null ? getRegisteredScope(methodScopeType.annotationType()) : null;
         return methodScope != null ? methodScope : getScopeForType(method.getReturnType());
     }
@@ -244,24 +242,26 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     public void registerBundle(final Object bundle) {
         final Object bundleInstance = bundle instanceof Class<?> ? getInstance((Class<?>) bundle) : bundle;
         final Class<?> bundleClass = bundleInstance.getClass();
-        final Set<? extends Class<? extends Condition>> conditionalClasses =
-                AnnotationUtil.findLogicalAnnotations(bundleClass, Conditional.class)
-                        .map(Conditional::value)
-                        .collect(Collectors.toSet());
-        final List<? extends Condition> globalConditions = conditionalClasses.stream()
-                .map(this::getInstance)
-                .collect(Collectors.toList());
+        final Set<? extends Class<? extends Condition>> conditionalClasses = AnnotationUtil.findLogicalAnnotations(
+                        bundleClass, Conditional.class)
+                .map(Conditional::value)
+                .collect(Collectors.toSet());
+        final List<? extends Condition> globalConditions =
+                conditionalClasses.stream().map(this::getInstance).collect(Collectors.toList());
         final ConditionContext context = ConditionContext.of(this);
         final List<Method> factoryMethods = new ArrayList<>();
         for (final Method method : AnnotationUtil.getDeclaredMethodsMetaAnnotatedWith(bundleClass, FactoryType.class)) {
-            if (bundleClass.equals(method.getDeclaringClass()) || factoryMethods.stream().noneMatch(m ->
-                    method.getName().equals(m.getName()) && Arrays.equals(method.getParameterTypes(), m.getParameterTypes()))) {
-                final Stream<? extends Condition> localConditions =
-                        AnnotationUtil.findLogicalAnnotations(method, Conditional.class)
-                                .map(Conditional::value)
-                                .filter(conditionalClass -> !conditionalClasses.contains(conditionalClass))
-                                .map(this::getInstance);
-                final Stream<Condition> applicableConditions = Stream.concat(globalConditions.stream(), localConditions);
+            if (bundleClass.equals(method.getDeclaringClass())
+                    || factoryMethods.stream()
+                            .noneMatch(m -> method.getName().equals(m.getName())
+                                    && Arrays.equals(method.getParameterTypes(), m.getParameterTypes()))) {
+                final Stream<? extends Condition> localConditions = AnnotationUtil.findLogicalAnnotations(
+                                method, Conditional.class)
+                        .map(Conditional::value)
+                        .filter(conditionalClass -> !conditionalClasses.contains(conditionalClass))
+                        .map(this::getInstance);
+                final Stream<Condition> applicableConditions =
+                        Stream.concat(globalConditions.stream(), localConditions);
                 if (applicableConditions.allMatch(condition -> condition.matches(context, method))) {
                     LOGGER.debug("Registering binding for bundle ({}) method: {}", bundleClass, method);
                     registerBundleMethod(bundleInstance, method);
@@ -282,9 +282,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
                 getArgumentFactories(primaryKey, injectionPoints, DependencyChain.empty());
         final ResolvableKey<T> resolvableKey = ResolvableKey.of(primaryKey);
         final Supplier<T> unscoped = () -> {
-            final Object[] arguments = argumentFactories.stream()
-                    .map(Supplier::get)
-                    .toArray();
+            final Object[] arguments =
+                    argumentFactories.stream().map(Supplier::get).toArray();
             T instance = Cast.cast(agent.invokeMethod(method, bundleInstance, arguments));
             instance = postProcessBeforeInitialization(resolvableKey, instance);
             injectMembers(primaryKey, instance, DependencyChain.empty());

@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * PropertySource backed by a properties file. Follows the same conventions as {@link PropertiesPropertySource}.
@@ -40,8 +39,7 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
 
     @SuppressFBWarnings(
             value = "URLCONNECTION_SSRF_FD",
-            justification = "This property source should only be used with hardcoded file names."
-    )
+            justification = "This property source should only be used with hardcoded file names.")
     static Properties loadPropertiesFile(final String fileName) {
         final Properties props = new Properties();
         for (final URL url : LoaderUtil.findResources(fileName)) {
@@ -53,5 +51,4 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
         }
         return props;
     }
-
 }

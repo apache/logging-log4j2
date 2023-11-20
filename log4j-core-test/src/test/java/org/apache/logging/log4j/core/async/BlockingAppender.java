@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -74,9 +73,7 @@ public class BlockingAppender extends AbstractAppender {
 
     @PluginFactory
     public static BlockingAppender createAppender(
-            @PluginAttribute
-            @Required(message = "No name provided for HangingAppender")
-            final String name,
+            @PluginAttribute @Required(message = "No name provided for HangingAppender") final String name,
             @PluginElement final Layout layout,
             @PluginElement final Filter filter) {
         return new BlockingAppender(name);

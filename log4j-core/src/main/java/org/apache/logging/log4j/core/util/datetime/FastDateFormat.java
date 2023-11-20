@@ -21,7 +21,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.core.time.internal.format.*;
 
 /**
@@ -37,68 +36,85 @@ public class FastDateFormat extends Format implements DatePrinter {
     }
 
     public static FastDateFormat getInstance(final String pattern) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(pattern));
+        return new FastDateFormat(
+                org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(pattern));
     }
 
     public static FastDateFormat getInstance(final String pattern, final TimeZone timeZone) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(pattern, timeZone));
+        return new FastDateFormat(
+                org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(pattern, timeZone));
     }
 
     public static FastDateFormat getInstance(final String pattern, final Locale locale) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(pattern, locale));
+        return new FastDateFormat(
+                org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(pattern, locale));
     }
 
     public static FastDateFormat getInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(pattern, timeZone, locale));
+        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(
+                pattern, timeZone, locale));
     }
 
     public static FastDateFormat getDateInstance(final int style) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateInstance(style));
+        return new FastDateFormat(
+                org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateInstance(style));
     }
 
     public static FastDateFormat getDateInstance(final int style, final Locale locale) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateInstance(style, locale));
+        return new FastDateFormat(
+                org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateInstance(style, locale));
     }
 
     public static FastDateFormat getDateInstance(final int style, final TimeZone timeZone) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateInstance(style, timeZone));
+        return new FastDateFormat(
+                org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateInstance(style, timeZone));
     }
 
     public static FastDateFormat getDateInstance(final int style, final TimeZone timeZone, final Locale locale) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateInstance(style, timeZone, locale));
+        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateInstance(
+                style, timeZone, locale));
     }
 
     public static FastDateFormat getTimeInstance(final int style) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getTimeInstance(style));
+        return new FastDateFormat(
+                org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getTimeInstance(style));
     }
 
     public static FastDateFormat getTimeInstance(final int style, final Locale locale) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getTimeInstance(style, locale));
+        return new FastDateFormat(
+                org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getTimeInstance(style, locale));
     }
 
     public static FastDateFormat getTimeInstance(final int style, final TimeZone timeZone) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getTimeInstance(style, timeZone));
+        return new FastDateFormat(
+                org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getTimeInstance(style, timeZone));
     }
 
     public static FastDateFormat getTimeInstance(final int style, final TimeZone timeZone, final Locale locale) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getTimeInstance(style, timeZone, locale));
+        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getTimeInstance(
+                style, timeZone, locale));
     }
 
     public static FastDateFormat getDateTimeInstance(final int dateStyle, final int timeStyle) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(dateStyle, timeStyle));
+        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(
+                dateStyle, timeStyle));
     }
 
     public static FastDateFormat getDateTimeInstance(final int dateStyle, final int timeStyle, final Locale locale) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(dateStyle, timeStyle, locale));
+        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(
+                dateStyle, timeStyle, locale));
     }
 
-    public static FastDateFormat getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(dateStyle, timeStyle, timeZone));
+    public static FastDateFormat getDateTimeInstance(
+            final int dateStyle, final int timeStyle, final TimeZone timeZone) {
+        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(
+                dateStyle, timeStyle, timeZone));
     }
 
     public static FastDateFormat getDateTimeInstance(
             final int dateStyle, final int timeStyle, final TimeZone timeZone, final Locale locale) {
-        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(dateStyle, timeStyle, timeZone, locale));
+        return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(
+                dateStyle, timeStyle, timeZone, locale));
     }
 
     private FastDateFormat(final org.apache.logging.log4j.core.time.internal.format.FastDateFormat formatter) {
@@ -106,13 +122,14 @@ public class FastDateFormat extends Format implements DatePrinter {
     }
 
     protected FastDateFormat(final String pattern, final TimeZone timeZone, final Locale locale) {
-        formatter = org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(pattern,
-                timeZone, locale);
+        formatter = org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getInstance(
+                pattern, timeZone, locale);
     }
 
-    protected FastDateFormat(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
-        formatter = org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(pattern,
-                timeZone, locale, centuryStart);
+    protected FastDateFormat(
+            final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
+        formatter = org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(
+                pattern, timeZone, locale, centuryStart);
     }
 
     @Override

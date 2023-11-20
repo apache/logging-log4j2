@@ -21,7 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
@@ -46,30 +45,43 @@ public class WatcherFactory {
         plugins = watcherPlugins;
     }
 
-    public Watcher newWatcher(final Source source, final Configuration configuration, final Reconfigurable reconfigurable,
-                              final List<Consumer<Reconfigurable>> configurationListeners, final long lastModifiedMillis) {
+    public Watcher newWatcher(
+            final Source source,
+            final Configuration configuration,
+            final Reconfigurable reconfigurable,
+            final List<Consumer<Reconfigurable>> configurationListeners,
+            final long lastModifiedMillis) {
         if (source.getFile() != null) {
-            return new ConfigurationFileWatcher(configuration, reconfigurable, configurationListeners,
-                lastModifiedMillis);
+            return new ConfigurationFileWatcher(
+                    configuration, reconfigurable, configurationListeners, lastModifiedMillis);
         } else {
             final String name = source.getURI().getScheme();
             final PluginType<?> pluginType = plugins.get(name);
             if (pluginType != null) {
-                return instantiate(name, pluginType.getPluginClass().asSubclass(Watcher.class), configuration,
-                    reconfigurable, configurationListeners, lastModifiedMillis);
+                return instantiate(
+                        name,
+                        pluginType.getPluginClass().asSubclass(Watcher.class),
+                        configuration,
+                        reconfigurable,
+                        configurationListeners,
+                        lastModifiedMillis);
             }
             LOGGER.info("No Watcher plugin is available for protocol '{}'", name);
             return null;
         }
     }
 
-    public static <T extends Watcher> T instantiate(final String name, final Class<T> clazz,
-                                                    final Configuration configuration, final Reconfigurable reconfigurable,
-                                                    final List<Consumer<Reconfigurable>> listeners, final long lastModifiedMillis) {
+    public static <T extends Watcher> T instantiate(
+            final String name,
+            final Class<T> clazz,
+            final Configuration configuration,
+            final Reconfigurable reconfigurable,
+            final List<Consumer<Reconfigurable>> listeners,
+            final long lastModifiedMillis) {
         Objects.requireNonNull(clazz, "No class provided");
         try {
-            final Constructor<T> constructor = clazz
-                .getConstructor(Configuration.class, Reconfigurable.class, List.class, long.class);
+            final Constructor<T> constructor =
+                    clazz.getConstructor(Configuration.class, Reconfigurable.class, List.class, long.class);
             return constructor.newInstance(configuration, reconfigurable, listeners, lastModifiedMillis);
         } catch (final NoSuchMethodException ex) {
             throw new IllegalArgumentException("No valid constructor for Watcher plugin " + name, ex);

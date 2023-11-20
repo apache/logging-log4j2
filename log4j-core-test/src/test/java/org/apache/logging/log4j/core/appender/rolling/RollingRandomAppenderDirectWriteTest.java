@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -45,7 +44,7 @@ public class RollingRandomAppenderDirectWriteTest {
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
     public void testAppender(final Logger logger) throws Exception {
-        for (int i=0; i < 100; ++i) {
+        for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
         Thread.sleep(50);

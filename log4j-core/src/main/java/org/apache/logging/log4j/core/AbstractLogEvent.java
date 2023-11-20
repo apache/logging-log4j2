@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
-
 /**
  * An abstract log event implementation with default values for all methods. The setters are no-ops.
  */

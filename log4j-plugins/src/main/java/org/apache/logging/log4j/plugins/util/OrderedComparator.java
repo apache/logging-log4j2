@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Comparator;
 import java.util.OptionalInt;
-
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.util.Strings;

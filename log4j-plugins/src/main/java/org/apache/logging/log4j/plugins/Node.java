@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.util.Cast;
@@ -62,7 +61,6 @@ public class Node {
     private final Map<String, String> attributes = new HashMap<>();
     private final List<Node> children = new ArrayList<>();
     private Object object;
-
 
     /**
      * Creates a new instance of {@code Node} and initializes it
@@ -206,8 +204,9 @@ public class Node {
         if (object == null) {
             return "null";
         }
-        return type.isObjectPrintable() ? object.toString() :
-            type.getPluginClass().getName() + " with name " + name;
+        return type.isObjectPrintable()
+                ? object.toString()
+                : type.getPluginClass().getName() + " with name " + name;
     }
 
     public static Builder newBuilder() {

@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.cassandra;
 
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.datastax.driver.core.BatchStatement;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
@@ -56,10 +55,15 @@ public class CassandraManager extends AbstractDatabaseManager {
     private Session session;
     private PreparedStatement preparedStatement;
 
-    private CassandraManager(final String name, final int bufferSize, final Cluster cluster,
-                             final String keyspace, final String insertQueryTemplate,
-                             final List<ColumnMapping> columnMappings, final BatchStatement batchStatement,
-                             final Configuration configuration) {
+    private CassandraManager(
+            final String name,
+            final int bufferSize,
+            final Cluster cluster,
+            final String keyspace,
+            final String insertQueryTemplate,
+            final List<ColumnMapping> columnMappings,
+            final BatchStatement batchStatement,
+            final Configuration configuration) {
         super(name, bufferSize, null, configuration);
         this.cluster = cluster;
         this.keyspace = keyspace;
@@ -92,14 +96,17 @@ public class CassandraManager extends AbstractDatabaseManager {
         for (int i = 0; i < columnMappings.size(); i++) {
             final ColumnMapping columnMapping = columnMappings.get(i);
             if (ThreadContextMap.class.isAssignableFrom(columnMapping.getType())
-                || ReadOnlyStringMap.class.isAssignableFrom(columnMapping.getType())) {
+                    || ReadOnlyStringMap.class.isAssignableFrom(columnMapping.getType())) {
                 values[i] = event.getContextData().toMap();
             } else if (ThreadContextStack.class.isAssignableFrom(columnMapping.getType())) {
                 values[i] = event.getContextStack().asList();
             } else if (Date.class.isAssignableFrom(columnMapping.getType())) {
-                values[i] = DateTypeConverter.fromMillis(event.getTimeMillis(), columnMapping.getType().asSubclass(Date.class));
+                values[i] = DateTypeConverter.fromMillis(
+                        event.getTimeMillis(), columnMapping.getType().asSubclass(Date.class));
             } else {
-                values[i] = columnMapping.getTypeConverter().convert(columnMapping.getLayout().toSerializable(event), null);
+                values[i] = columnMapping
+                        .getTypeConverter()
+                        .convert(columnMapping.getLayout().toSerializable(event), null);
             }
         }
         final BoundStatement boundStatement = preparedStatement.bind(values);
@@ -118,16 +125,38 @@ public class CassandraManager extends AbstractDatabaseManager {
         return true;
     }
 
-    public static CassandraManager getManager(final String name, final SocketAddress[] contactPoints,
-                                              final ColumnMapping[] columns, final boolean useTls,
-                                              final String clusterName, final String keyspace, final String table,
-                                              final String username, final String password,
-                                              final boolean useClockForTimestampGenerator, final int bufferSize,
-                                              final boolean batched, final BatchStatement.Type batchType,
-                                              final Configuration configuration) {
-        return getManager(name,
-            new FactoryData(contactPoints, columns, useTls, clusterName, keyspace, table, username, password,
-                useClockForTimestampGenerator, bufferSize, batched, batchType, configuration), CassandraManagerFactory.INSTANCE);
+    public static CassandraManager getManager(
+            final String name,
+            final SocketAddress[] contactPoints,
+            final ColumnMapping[] columns,
+            final boolean useTls,
+            final String clusterName,
+            final String keyspace,
+            final String table,
+            final String username,
+            final String password,
+            final boolean useClockForTimestampGenerator,
+            final int bufferSize,
+            final boolean batched,
+            final BatchStatement.Type batchType,
+            final Configuration configuration) {
+        return getManager(
+                name,
+                new FactoryData(
+                        contactPoints,
+                        columns,
+                        useTls,
+                        clusterName,
+                        keyspace,
+                        table,
+                        username,
+                        password,
+                        useClockForTimestampGenerator,
+                        bufferSize,
+                        batched,
+                        batchType,
+                        configuration),
+                CassandraManagerFactory.INSTANCE);
     }
 
     private static class CassandraManagerFactory implements ManagerFactory<CassandraManager, FactoryData> {
@@ -137,8 +166,8 @@ public class CassandraManager extends AbstractDatabaseManager {
         @Override
         public CassandraManager createManager(final String name, final FactoryData data) {
             final Cluster.Builder builder = Cluster.builder()
-                .addContactPointsWithPorts(data.contactPoints)
-                .withClusterName(data.clusterName);
+                    .addContactPointsWithPorts(data.contactPoints)
+                    .withClusterName(data.clusterName);
             if (data.useTls) {
                 builder.withSSL();
             }
@@ -150,7 +179,8 @@ public class CassandraManager extends AbstractDatabaseManager {
             }
             final Cluster cluster = builder.build();
 
-            final StringBuilder sb = new StringBuilder("INSERT INTO ").append(data.table).append(" (");
+            final StringBuilder sb =
+                    new StringBuilder("INSERT INTO ").append(data.table).append(" (");
             for (final ColumnMapping column : data.columns) {
                 sb.append(column.getName()).append(',');
             }
@@ -169,8 +199,15 @@ public class CassandraManager extends AbstractDatabaseManager {
             sb.setCharAt(sb.length() - 1, ')');
             final String insertQueryTemplate = sb.toString();
             LOGGER.debug("Using CQL for appender {}: {}", name, insertQueryTemplate);
-            return new CassandraManager(name, data.getBufferSize(), cluster, data.keyspace, insertQueryTemplate,
-                columnMappings, data.batched ? new BatchStatement(data.batchType) : null, data.getConfiguration());
+            return new CassandraManager(
+                    name,
+                    data.getBufferSize(),
+                    cluster,
+                    data.keyspace,
+                    insertQueryTemplate,
+                    columnMappings,
+                    data.batched ? new BatchStatement(data.batchType) : null,
+                    data.getConfiguration());
         }
     }
 
@@ -187,10 +224,20 @@ public class CassandraManager extends AbstractDatabaseManager {
         private final boolean batched;
         private final BatchStatement.Type batchType;
 
-        private FactoryData(final SocketAddress[] contactPoints, final ColumnMapping[] columns, final boolean useTls,
-                            final String clusterName, final String keyspace, final String table, final String username,
-                            final String password, final boolean useClockForTimestampGenerator, final int bufferSize,
-                            final boolean batched, final BatchStatement.Type batchType, final Configuration configuration) {
+        private FactoryData(
+                final SocketAddress[] contactPoints,
+                final ColumnMapping[] columns,
+                final boolean useTls,
+                final String clusterName,
+                final String keyspace,
+                final String table,
+                final String username,
+                final String password,
+                final boolean useClockForTimestampGenerator,
+                final int bufferSize,
+                final boolean batched,
+                final BatchStatement.Type batchType,
+                final Configuration configuration) {
             super(configuration, bufferSize, null);
             this.contactPoints = convertAndAddDefaultPorts(contactPoints);
             this.columns = columns;
@@ -210,8 +257,8 @@ public class CassandraManager extends AbstractDatabaseManager {
             for (int i = 0; i < inetSocketAddresses.length; i++) {
                 final SocketAddress socketAddress = socketAddresses[i];
                 inetSocketAddresses[i] = socketAddress.getPort() == 0
-                    ? new InetSocketAddress(socketAddress.getAddress(), DEFAULT_PORT)
-                    : socketAddress.getSocketAddress();
+                        ? new InetSocketAddress(socketAddress.getAddress(), DEFAULT_PORT)
+                        : socketAddress.getSocketAddress();
             }
             return inetSocketAddresses;
         }

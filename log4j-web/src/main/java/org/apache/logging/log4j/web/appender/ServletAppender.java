@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.web.appender;
 
 import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -55,8 +54,8 @@ public final class ServletAppender extends AbstractAppender {
                 return null;
             }
             Layout layout = getOrCreateLayout();
-            return new ServletAppender(name, layout, getFilter(), servletContext, isIgnoreExceptions(), logThrowables,
-                    getPropertyArray());
+            return new ServletAppender(
+                    name, layout, getFilter(), servletContext, isIgnoreExceptions(), logThrowables, getPropertyArray());
         }
 
         /**
@@ -74,7 +73,6 @@ public final class ServletAppender extends AbstractAppender {
         public void setLogThrowables(final boolean logThrowables) {
             this.logThrowables = logThrowables;
         }
-
     }
 
     @PluginFactory
@@ -85,9 +83,14 @@ public final class ServletAppender extends AbstractAppender {
     private final ServletContext servletContext;
     private final boolean logThrowables;
 
-    private ServletAppender(final String name, final Layout layout, final Filter filter,
-                            final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables,
-                            Property[] properties) {
+    private ServletAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final ServletContext servletContext,
+            final boolean ignoreExceptions,
+            final boolean logThrowables,
+            Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.servletContext = servletContext;
         this.logThrowables = logThrowables;
@@ -102,5 +105,4 @@ public final class ServletAppender extends AbstractAppender {
             servletContext.log(serialized);
         }
     }
-
 }

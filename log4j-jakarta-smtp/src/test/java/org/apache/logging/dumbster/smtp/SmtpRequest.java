@@ -16,9 +16,9 @@
  */
 package org.apache.logging.dumbster.smtp;
 
-import org.apache.logging.log4j.util.Strings;
-
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Contains an SMTP client request. Handles state transitions using the following state transition table.
@@ -145,8 +145,8 @@ public class SmtpRequest {
                 }
             } else if (SmtpActionType.QUIT == action) {
                 if (SmtpState.QUIT == state) {
-                    response = new SmtpResponse(221, "localhost Dumbster service closing transmission channel",
-                        SmtpState.CONNECT);
+                    response = new SmtpResponse(
+                            221, "localhost Dumbster service closing transmission channel", SmtpState.CONNECT);
                 } else {
                     response = new SmtpResponse(503, "Bad sequence of commands: " + action, this.state);
                 }

@@ -34,14 +34,27 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 @JsonRootName(XmlConstants.ELT_EVENT)
 @JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
-@JsonPropertyOrder({ "timeMillis", XmlConstants.ELT_INSTANT, "threadName", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
-        JsonConstants.ELT_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
+@JsonPropertyOrder({
+    "timeMillis",
+    XmlConstants.ELT_INSTANT,
+    "threadName",
+    "level",
+    "loggerName",
+    "marker",
+    "message",
+    "thrown",
+    XmlConstants.ELT_CONTEXT_MAP,
+    JsonConstants.ELT_CONTEXT_STACK,
+    "loggerFQCN",
+    "Source",
+    "endOfBatch"
+})
 abstract class LogEventWithContextListMixIn implements LogEvent {
 
     @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
     @JsonSerialize(using = ContextDataAsEntryListSerializer.class)
     @JsonDeserialize(using = ContextDataAsEntryListDeserializer.class)
-//    @JsonIgnore
+    //    @JsonIgnore
     @Override
     public abstract ReadOnlyStringMap getContextData();
 
@@ -117,5 +130,4 @@ abstract class LogEventWithContextListMixIn implements LogEvent {
 
     @Override
     public abstract void setIncludeLocation(boolean locationRequired);
-
 }

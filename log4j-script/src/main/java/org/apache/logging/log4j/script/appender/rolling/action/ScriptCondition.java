@@ -19,7 +19,6 @@ package org.apache.logging.log4j.script.appender.rolling.action;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -68,7 +67,8 @@ public class ScriptCondition implements ScriptConditional {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<PathWithAttributes> selectFilesToDelete(final Path basePath, final List<PathWithAttributes> candidates) {
+    public List<PathWithAttributes> selectFilesToDelete(
+            final Path basePath, final List<PathWithAttributes> candidates) {
         final ScriptBindings bindings = ScriptManagerImpl.createBindings();
         bindings.put("basePath", basePath);
         bindings.put("pathList", candidates);
@@ -100,8 +100,8 @@ public class ScriptCondition implements ScriptConditional {
      * @return A ScriptCondition.
      */
     @PluginFactory
-    public static ScriptCondition createCondition(@PluginElement("Script") final Script script,
-            @PluginConfiguration final Configuration configuration) {
+    public static ScriptCondition createCondition(
+            @PluginElement("Script") final Script script, @PluginConfiguration final Configuration configuration) {
 
         if (script == null) {
             LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptCondition");

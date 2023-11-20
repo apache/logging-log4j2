@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.async;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
@@ -42,6 +41,7 @@ public class Log4j2Jira1688Test {
 
     @Rule
     public LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
+
     private ListAppender listAppender;
 
     @Before
@@ -73,5 +73,4 @@ public class Log4j2Jira1688Test {
         log4JLogger.logIfEnabled("test", Level.ERROR, null, "test {}", args);
         Assert.assertArrayEquals(Arrays.toString(args), originalArgs, args);
     }
-
 }

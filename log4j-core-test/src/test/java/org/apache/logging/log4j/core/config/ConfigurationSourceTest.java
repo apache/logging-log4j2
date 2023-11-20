@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import com.sun.management.UnixOperatingSystemMXBean;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,25 +37,18 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-
-import com.sun.management.UnixOperatingSystemMXBean;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 public class ConfigurationSourceTest {
     private static final Path JAR_FILE = Paths.get("target", "test-classes", "jarfile.jar");
-    private static final Path CONFIG_FILE = Paths.get("target","test-classes", "log4j2-console.xml");
+    private static final Path CONFIG_FILE = Paths.get("target", "test-classes", "log4j2-console.xml");
     private static final byte[] buffer = new byte[1024];
 
     @Test
     public void testJira_LOG4J2_2770_byteArray() throws Exception {
-        final ConfigurationSource configurationSource = new ConfigurationSource(new ByteArrayInputStream(new byte[]{'a', 'b'}));
+        final ConfigurationSource configurationSource =
+                new ConfigurationSource(new ByteArrayInputStream(new byte[] {'a', 'b'}));
         assertNotNull(configurationSource.resetInputStream());
     }
 
@@ -109,8 +109,8 @@ public class ConfigurationSourceTest {
             final Manifest manifest = new Manifest();
             manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
             try (final OutputStream os = Files.newOutputStream(JAR_FILE);
-            final JarOutputStream jar = new JarOutputStream(os, manifest);
-            final InputStream config = Files.newInputStream(CONFIG_FILE)) {
+                    final JarOutputStream jar = new JarOutputStream(os, manifest);
+                    final InputStream config = Files.newInputStream(CONFIG_FILE)) {
                 final JarEntry jarEntry = new JarEntry("config/console.xml");
                 jar.putNextEntry(jarEntry);
                 int len;
@@ -122,5 +122,4 @@ public class ConfigurationSourceTest {
         }
         return new URL("jar:" + JAR_FILE.toUri().toURL() + "!/config/console.xml");
     }
-
 }

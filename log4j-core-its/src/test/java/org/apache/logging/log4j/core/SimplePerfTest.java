@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core;
 
 import java.util.Random;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -54,13 +53,13 @@ public class SimplePerfTest {
             LoggerContext.getContext().start(new DefaultConfiguration());
         }
 
-        for (int i=0; i < WARMUP; ++i) {
+        for (int i = 0; i < WARMUP; ++i) {
             overhead();
         }
         System.gc();
         final Timer timer = new Timer("Setup", LOOP_CNT);
         timer.start();
-        for (int i=0; i < (LOOP_CNT / 150); ++i) {
+        for (int i = 0; i < (LOOP_CNT / 150); ++i) {
             overhead();
         }
         timer.stop();
@@ -166,6 +165,7 @@ public class SimplePerfTest {
          * Generated serial version ID.
          */
         private static final long serialVersionUID = 3517002855516031846L;
+
         private int low = 5;
         private int high = 55;
 
@@ -185,9 +185,9 @@ public class SimplePerfTest {
         final int length = array.length;
         for (int i = 0; i < length; i++) {
             for (int j = 1; j < length - i; j++) {
-                if (array[j-1] > array[j]) {
-                    final int temp = array[j-1];
-                    array[j-1] = array[j];
+                if (array[j - 1] > array[j]) {
+                    final int temp = array[j - 1];
+                    array[j - 1] = array[j];
                     array[j] = temp;
                 }
             }

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.test.junit.Resources;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ_WRITE)
 public class MarkerTest {
@@ -91,7 +91,6 @@ public class MarkerTest {
         assertTrue(test1.isInstanceOf(parent), "TEST1 is not an instance of PARENT");
         assertTrue(test1.isInstanceOf(existing), "TEST1 is not an instance of EXISTING");
     }
-
 
     @Test
     public void testDuplicateParents() {

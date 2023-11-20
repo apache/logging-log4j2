@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
-import java.util.function.Supplier;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.from;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.test.validation.di.CustomQualifier;
 import org.apache.logging.log4j.plugins.test.validation.di.SingletonBean;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.from;
 
 class QualifierInjectionTest {
     static class TestBundle {
@@ -52,12 +51,13 @@ class QualifierInjectionTest {
         final SingletonBean qualifiedBean;
 
         @Inject
-        TestBean(final Supplier<SingletonBean> defaultBeanFactory,
-                 final SingletonBean defaultBean,
-                 @Named("alpha") final Supplier<SingletonBean> alphaBeanFactory,
-                 @Named("alpha") final SingletonBean alphaBean,
-                 @CustomQualifier final Supplier<SingletonBean> qualifiedBeanFactory,
-                 @CustomQualifier final SingletonBean qualifiedBean) {
+        TestBean(
+                final Supplier<SingletonBean> defaultBeanFactory,
+                final SingletonBean defaultBean,
+                @Named("alpha") final Supplier<SingletonBean> alphaBeanFactory,
+                @Named("alpha") final SingletonBean alphaBean,
+                @CustomQualifier final Supplier<SingletonBean> qualifiedBeanFactory,
+                @CustomQualifier final SingletonBean qualifiedBean) {
             this.defaultBeanFactory = defaultBeanFactory;
             this.defaultBean = defaultBean;
             this.alphaBeanFactory = alphaBeanFactory;
@@ -73,26 +73,11 @@ class QualifierInjectionTest {
     void qualifiedInjection() {
         instanceFactory.registerBundle(TestBundle.class);
         final TestBean bean = instanceFactory.getInstance(TestBean.class);
-        assertThat(bean.defaultBean)
-                .isNotNull()
-                .isNotSameAs(bean.alphaBean)
-                .isNotSameAs(bean.qualifiedBean);
-        assertThat(bean.defaultBeanFactory)
-                .isNotNull()
-                .returns(bean.defaultBean, from(Supplier::get));
-        assertThat(bean.alphaBean)
-                .isNotNull()
-                .isNotSameAs(bean.defaultBean)
-                .isNotSameAs(bean.qualifiedBean);
-        assertThat(bean.alphaBeanFactory)
-                .isNotNull()
-                .returns(bean.alphaBean, from(Supplier::get));
-        assertThat(bean.qualifiedBean)
-                .isNotNull()
-                .isNotSameAs(bean.defaultBean)
-                .isNotSameAs(bean.alphaBean);
-        assertThat(bean.qualifiedBeanFactory)
-                .isNotNull()
-                .returns(bean.qualifiedBean, from(Supplier::get));
+        assertThat(bean.defaultBean).isNotNull().isNotSameAs(bean.alphaBean).isNotSameAs(bean.qualifiedBean);
+        assertThat(bean.defaultBeanFactory).isNotNull().returns(bean.defaultBean, from(Supplier::get));
+        assertThat(bean.alphaBean).isNotNull().isNotSameAs(bean.defaultBean).isNotSameAs(bean.qualifiedBean);
+        assertThat(bean.alphaBeanFactory).isNotNull().returns(bean.alphaBean, from(Supplier::get));
+        assertThat(bean.qualifiedBean).isNotNull().isNotSameAs(bean.defaultBean).isNotSameAs(bean.alphaBean);
+        assertThat(bean.qualifiedBeanFactory).isNotNull().returns(bean.qualifiedBean, from(Supplier::get));
     }
 }

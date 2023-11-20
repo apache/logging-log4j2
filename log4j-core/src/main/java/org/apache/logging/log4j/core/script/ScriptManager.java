@@ -17,10 +17,8 @@
 package org.apache.logging.log4j.core.script;
 
 import java.util.Set;
-
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Key;
-
 
 /**
  * Script Manager.

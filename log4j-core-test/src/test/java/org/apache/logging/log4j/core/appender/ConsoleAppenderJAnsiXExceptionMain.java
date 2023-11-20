@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -63,8 +62,8 @@ public class ConsoleAppenderJAnsiXExceptionMain {
     public void test(final String[] args) {
         System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
         // System.out.println(System.getProperty("java.class.path"));
-        final String config = args == null || args.length == 0 ? "target/test-classes/log4j2-console-xex-ansi.xml"
-                : args[0];
+        final String config =
+                args == null || args.length == 0 ? "target/test-classes/log4j2-console-xex-ansi.xml" : args[0];
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
         final Logger logger = LogManager.getLogger(ConsoleAppenderJAnsiXExceptionMain.class);
         try {
@@ -76,5 +75,4 @@ public class ConsoleAppenderJAnsiXExceptionMain {
             Configurator.shutdown(ctx);
         }
     }
-
 }

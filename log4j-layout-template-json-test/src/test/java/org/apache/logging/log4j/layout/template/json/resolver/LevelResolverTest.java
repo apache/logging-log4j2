@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -24,9 +27,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
-import static org.assertj.core.api.Assertions.assertThat;
-
 class LevelResolverTest {
 
     @Test
@@ -34,13 +34,13 @@ class LevelResolverTest {
 
         // Create the event template
         final String eventTemplate = writeJson(asMap(
-                "level", asMap(
+                "level",
+                asMap(
                         "$resolver", "level",
                         "field", "name")));
 
         // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -48,15 +48,10 @@ class LevelResolverTest {
         // Create the log event.
         final Marker marker = MarkerManager.getMarker("MARKER");
         Level level = Level.forName("CUSTOM_LEVEL", 250);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setLevel(level)
-                .build();
+        final LogEvent logEvent = Log4jLogEvent.newBuilder().setLevel(level).build();
 
         // Check the serialized event.
-        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
-                assertThat(accessor.getString("level")).isEqualTo(level.name()));
-
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> assertThat(accessor.getString("level"))
+                .isEqualTo(level.name()));
     }
-
 }

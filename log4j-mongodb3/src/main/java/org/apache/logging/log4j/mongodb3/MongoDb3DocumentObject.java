@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.mongodb3;
 
 import java.util.Arrays;
-
 import org.apache.logging.log4j.core.appender.nosql.NoSqlObject;
 import org.bson.Document;
 

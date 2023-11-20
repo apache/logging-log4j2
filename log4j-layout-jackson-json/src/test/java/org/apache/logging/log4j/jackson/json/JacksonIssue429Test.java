@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.jackson.json;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import java.io.IOException;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,23 +42,22 @@ public class JacksonIssue429Test {
         }
 
         @Override
-        public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
-                JsonProcessingException {
+        public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt)
+                throws IOException, JsonProcessingException {
             jp.skipChildren();
             return new StackTraceElement("a", "b", "b", StackTraceBean.NUM);
         }
-
     }
 
     static class StackTraceBean {
-        public final static int NUM = 13;
+        public static final int NUM = 13;
 
         @JsonProperty("Location")
         @JsonDeserialize(using = Jackson429StackTraceElementDeserializer.class)
         private StackTraceElement location;
     }
 
-    private final static ObjectMapper SHARED_MAPPER = new ObjectMapper();
+    private static final ObjectMapper SHARED_MAPPER = new ObjectMapper();
 
     private final ObjectMapper MAPPER = objectMapper();
 

@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -82,8 +81,8 @@ public class PluginElementFactoryResolver<T> implements FactoryResolver<T> {
             if (nodeElementMatchesNameOrType(child, name, aliases, componentType)) {
                 final Object value = child.getObject();
                 if (value == null) {
-                    LOGGER.error("Skipping null child object with name {} in element {}",
-                            child.getName(), node.getName());
+                    LOGGER.error(
+                            "Skipping null child object with name {} in element {}", child.getName(), node.getName());
                     continue;
                 }
                 iterator.remove();
@@ -123,9 +122,12 @@ public class PluginElementFactoryResolver<T> implements FactoryResolver<T> {
     }
 
     private static boolean pluginTypeMatchesNameOrType(
-            final PluginType<?> pluginType, final String name, final Collection<String> aliases,
+            final PluginType<?> pluginType,
+            final String name,
+            final Collection<String> aliases,
             final Class<?> targetType) {
-        return elementNameMatches(pluginType, name, aliases) || targetType.isAssignableFrom(pluginType.getPluginClass());
+        return elementNameMatches(pluginType, name, aliases)
+                || targetType.isAssignableFrom(pluginType.getPluginClass());
     }
 
     private static boolean elementNameMatches(

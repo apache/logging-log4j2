@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.LogEvent;
@@ -67,6 +66,7 @@ public class ListErrorHandler implements ErrorHandler {
     }
 
     public Stream<StatusData> findStatusData(String regex) {
-        return getStatusData().filter(data -> data.getMessage().getFormattedMessage().matches(regex));
+        return getStatusData()
+                .filter(data -> data.getMessage().getFormattedMessage().matches(regex));
     }
 }

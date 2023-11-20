@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.di;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverterFactory;
 import org.apache.logging.log4j.plugins.di.spi.DependencyChain;
@@ -55,7 +54,8 @@ public interface InstanceFactory {
      * @param <T>             return type of factory
      * @return a factory for the provided key with the given dependency chain context
      */
-    default <T> Supplier<T> getFactory(final Key<T> key, final Collection<String> aliases, final DependencyChain dependencyChain) {
+    default <T> Supplier<T> getFactory(
+            final Key<T> key, final Collection<String> aliases, final DependencyChain dependencyChain) {
         return getFactory(ResolvableKey.of(key, aliases, dependencyChain));
     }
 
@@ -136,7 +136,8 @@ public interface InstanceFactory {
      * @param <T>             type of instance
      * @return an instance matching the provided key
      */
-    default <T> T getInstance(final Key<T> key, final Collection<String> aliases, final DependencyChain dependencyChain) {
+    default <T> T getInstance(
+            final Key<T> key, final Collection<String> aliases, final DependencyChain dependencyChain) {
         return getFactory(ResolvableKey.of(key, aliases, dependencyChain)).get();
     }
 
@@ -163,7 +164,8 @@ public interface InstanceFactory {
      * @return an instance of the provided class
      */
     default <T> T getInstance(final Class<T> clazz, final DependencyChain dependencyChain) {
-        return getFactory(ResolvableKey.of(Key.forClass(clazz), dependencyChain)).get();
+        return getFactory(ResolvableKey.of(Key.forClass(clazz), dependencyChain))
+                .get();
     }
 
     /**

@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Log4jContextFactoryTest {
 
@@ -33,9 +33,11 @@ public class Log4jContextFactoryTest {
         Log4jContextFactory factory = new Log4jContextFactory(new BasicContextSelector(DI.createInitializedFactory()));
         assertEquals(BasicContextSelector.class, factory.getSelector().getClass());
         factory = new Log4jContextFactory(factory);
-        assertEquals(Log4jContextFactory.class, factory.getShutdownCallbackRegistry().getClass());
+        assertEquals(
+                Log4jContextFactory.class, factory.getShutdownCallbackRegistry().getClass());
         factory = new Log4jContextFactory(new BasicContextSelector(DI.createInitializedFactory()), factory);
         assertEquals(BasicContextSelector.class, factory.getSelector().getClass());
-        assertEquals(Log4jContextFactory.class, factory.getShutdownCallbackRegistry().getClass());
+        assertEquals(
+                Log4jContextFactory.class, factory.getShutdownCallbackRegistry().getClass());
     }
 }

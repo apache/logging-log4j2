@@ -19,14 +19,12 @@ package org.apache.logging.log4j.core.appender;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -47,8 +45,8 @@ public class XmlCompactFileAsyncAppenderValidationTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(),
-                "XmlCompactFileAsyncAppenderValidationTest.xml");
+        System.setProperty(
+                Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "XmlCompactFileAsyncAppenderValidationTest.xml");
     }
 
     @Test
@@ -79,5 +77,4 @@ public class XmlCompactFileAsyncAppenderValidationTest {
         final Validator validator = schema.newValidator();
         validator.validate(xmlFile);
     }
-
 }

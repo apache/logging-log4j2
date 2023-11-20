@@ -17,7 +17,6 @@
 package org.apache.logging.slf4j;
 
 import java.util.Arrays;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -66,5 +65,4 @@ public class Log4j2Jira1688Test {
         }
         return args;
     }
-
 }

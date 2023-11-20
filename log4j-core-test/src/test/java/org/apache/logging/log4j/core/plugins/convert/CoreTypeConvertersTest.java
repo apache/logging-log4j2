@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.plugins.convert;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CoreTypeConvertersTest {
 
@@ -63,7 +63,9 @@ public class CoreTypeConvertersTest {
     }
 
     public enum Foo {
-        I, PITY, THE
+        I,
+        PITY,
+        THE
     }
 
     @Test
@@ -74,5 +76,4 @@ public class CoreTypeConvertersTest {
         assertEquals(Foo.PITY, fooTypeConverter.convert("pity"));
         assertEquals(Foo.THE, fooTypeConverter.convert("THE"));
     }
-
 }

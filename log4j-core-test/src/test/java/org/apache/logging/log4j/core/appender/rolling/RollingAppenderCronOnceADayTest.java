@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -23,7 +27,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.CronExpression;
@@ -34,10 +37,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("flaky")
 @Disabled("https://issues.apache.org/jira/browse/LOG4J2-3633")
@@ -55,7 +54,6 @@ public class RollingAppenderCronOnceADayTest extends AbstractRollingListenerTest
     private static Duration remainingTime;
     private final CountDownLatch rollover = new CountDownLatch(1);
 
-
     @BeforeAll
     public static void beforeClass() throws Exception {
         final Path src = FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG);
@@ -72,7 +70,8 @@ public class RollingAppenderCronOnceADayTest extends AbstractRollingListenerTest
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG_TARGET, timeout = 10)
-    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager)
+            throws Exception {
         manager.addRolloverListener(this);
         final File file = new File(FILE);
         assertTrue(file.exists(), "Log file does not exist");
@@ -100,7 +99,8 @@ public class RollingAppenderCronOnceADayTest extends AbstractRollingListenerTest
             currentTimeMillis.addAndGet(1000);
         }
         assertThat(dir).isDirectoryContaining("glob:**.gz");
-        assertThat(dir.listFiles(pathname -> pathname.getName().endsWith(".gz"))).hasSize(1);
+        assertThat(dir.listFiles(pathname -> pathname.getName().endsWith(".gz")))
+                .hasSize(1);
     }
 
     @Override

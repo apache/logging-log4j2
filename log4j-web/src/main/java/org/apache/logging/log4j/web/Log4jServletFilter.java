@@ -18,7 +18,6 @@ package org.apache.logging.log4j.web;
 
 import java.io.IOException;
 import java.util.function.BiConsumer;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -26,7 +25,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -59,8 +57,8 @@ public class Log4jServletFilter implements Filter {
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
         this.initializer.clearLoggerContext(); // the application is mostly finished starting up now
 
-        filterConfig.getServletContext().setAttribute("log4j.requestExecutor",
-                (BiConsumer<ServletRequest, Runnable>) (request, command) -> {
+        filterConfig.getServletContext().setAttribute("log4j.requestExecutor", (BiConsumer<ServletRequest, Runnable>)
+                (request, command) -> {
                     try {
                         Log4jServletFilter.this.initializer.setLoggerContext();
                         CURRENT_REQUEST.set(request);

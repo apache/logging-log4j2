@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.smtp.appender;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -28,11 +33,6 @@ import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 /**
  * Unit tests for {@link SmtpManager}.
  */
@@ -40,25 +40,57 @@ public class SmtpManagerTest {
 
     @Test
     void testCreateManagerName() {
-        final String managerName = SmtpManager.createManagerName("to", "cc", null, "from", null, "LOG4J2-3107",
-            "proto", "smtp.log4j.com", 4711, "username", false, "filter");
+        final String managerName = SmtpManager.createManagerName(
+                "to",
+                "cc",
+                null,
+                "from",
+                null,
+                "LOG4J2-3107",
+                "proto",
+                "smtp.log4j.com",
+                4711,
+                "username",
+                false,
+                "filter");
         assertEquals("SMTP:to:cc::from::LOG4J2-3107:proto:smtp.log4j.com:4711:username::filter", managerName);
     }
 
     private void testAdd(final LogEvent event) {
-        final SmtpManager smtpManager = SmtpManager.getSmtpManager(new DefaultConfiguration(), "to", "cc", "bcc", "from", "replyTo", "subject", "protocol", "host", 0, "username", "password", false, "filterName", 10, null);
+        final SmtpManager smtpManager = SmtpManager.getSmtpManager(
+                new DefaultConfiguration(),
+                "to",
+                "cc",
+                "bcc",
+                "from",
+                "replyTo",
+                "subject",
+                "protocol",
+                "host",
+                0,
+                "username",
+                "password",
+                false,
+                "filterName",
+                10,
+                null);
         smtpManager.removeAllBufferedEvents(); // in case this smtpManager is reused
         smtpManager.add(event);
 
         final LogEvent[] bufferedEvents = smtpManager.removeAllBufferedEvents();
         assertThat("unexpected number of buffered events", bufferedEvents.length, is(1));
-        assertThat("expected the immutable version of the event to be buffered", bufferedEvents[0].getMessage(), is(instanceOf(MementoMessage.class)));
+        assertThat(
+                "expected the immutable version of the event to be buffered",
+                bufferedEvents[0].getMessage(),
+                is(instanceOf(MementoMessage.class)));
     }
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
     void testAdd_WhereLog4jLogEventWithReusableMessage() {
-        final LogEvent event = new Log4jLogEvent.Builder().setMessage(getReusableMessage("test message")).build();
+        final LogEvent event = new Log4jLogEvent.Builder()
+                .setMessage(getReusableMessage("test message"))
+                .build();
         testAdd(event);
     }
 
@@ -73,7 +105,22 @@ public class SmtpManagerTest {
     @Test
     void testAdd_WhereRingBufferLogEvent() {
         final RingBufferLogEvent event = new RingBufferLogEvent();
-        event.setValues(null, null, null, null, null, getReusableMessage("test message"), null, null, null, 0, null, 0, null, ClockFactory.getClock(), new DummyNanoClock());
+        event.setValues(
+                null,
+                null,
+                null,
+                null,
+                null,
+                getReusableMessage("test message"),
+                null,
+                null,
+                null,
+                0,
+                null,
+                0,
+                null,
+                ClockFactory.getClock(),
+                new DummyNanoClock());
         testAdd(event);
     }
 
@@ -82,5 +129,4 @@ public class SmtpManagerTest {
         message.set(text);
         return message;
     }
-
 }

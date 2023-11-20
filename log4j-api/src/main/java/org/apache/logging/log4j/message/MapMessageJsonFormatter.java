@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -46,7 +45,8 @@ import org.apache.logging.log4j.util.StringBuilders;
  * It supports nesting up to a maximum depth of 8, which is set by the
  * {@value LoggingSystemProperty#LOGGER_MAP_MESSAGE_JSON_FORMATTER_MAX_DEPTH} property.
  */
-enum MapMessageJsonFormatter {;
+enum MapMessageJsonFormatter {
+    ;
 
     public static final int MAX_DEPTH = readMaxDepth();
 
@@ -65,12 +65,10 @@ enum MapMessageJsonFormatter {;
     private static final char COLON = ':';
 
     private static int readMaxDepth() {
-        final int maxDepth = PropertiesUtil
-                .getProperties()
+        final int maxDepth = PropertiesUtil.getProperties()
                 .getIntegerProperty(LoggingSystemProperty.LOGGER_MAP_MESSAGE_JSON_FORMATTER_MAX_DEPTH, 8);
         if (maxDepth < 0) {
-            throw new IllegalArgumentException(
-                    "was expecting a positive maxDepth, found: " + maxDepth);
+            throw new IllegalArgumentException("was expecting a positive maxDepth, found: " + maxDepth);
         }
         return maxDepth;
     }
@@ -79,10 +77,7 @@ enum MapMessageJsonFormatter {;
         format(sb, object, 0);
     }
 
-    private static void format(
-            final StringBuilder sb,
-            final Object object,
-            final int depth) {
+    private static void format(final StringBuilder sb, final Object object, final int depth) {
 
         if (depth >= MAX_DEPTH) {
             throw new IllegalArgumentException("maxDepth has been exceeded");
@@ -163,13 +158,9 @@ enum MapMessageJsonFormatter {;
         else {
             formatString(sb, object);
         }
-
     }
 
-    private static void formatIndexedStringMap(
-            final StringBuilder sb,
-            final IndexedStringMap map,
-            final int depth) {
+    private static void formatIndexedStringMap(final StringBuilder sb, final IndexedStringMap map, final int depth) {
         sb.append(LCURLY);
         final int nextDepth = depth + 1;
         for (int entryIndex = 0; entryIndex < map.size(); entryIndex++) {
@@ -188,10 +179,7 @@ enum MapMessageJsonFormatter {;
         sb.append(RCURLY);
     }
 
-    private static void formatMap(
-            final StringBuilder sb,
-            final Map<Object, Object> map,
-            final int depth) {
+    private static void formatMap(final StringBuilder sb, final Map<Object, Object> map, final int depth) {
         sb.append(LCURLY);
         final int nextDepth = depth + 1;
         final boolean[] firstEntry = {true};
@@ -215,10 +203,7 @@ enum MapMessageJsonFormatter {;
         sb.append(RCURLY);
     }
 
-    private static void formatList(
-            final StringBuilder sb,
-            final List<Object> items,
-            final int depth) {
+    private static void formatList(final StringBuilder sb, final List<Object> items, final int depth) {
         sb.append(LBRACE);
         final int nextDepth = depth + 1;
         for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
@@ -231,10 +216,7 @@ enum MapMessageJsonFormatter {;
         sb.append(RBRACE);
     }
 
-    private static void formatCollection(
-            final StringBuilder sb,
-            final Collection<Object> items,
-            final int depth) {
+    private static void formatCollection(final StringBuilder sb, final Collection<Object> items, final int depth) {
         sb.append(LBRACE);
         final int nextDepth = depth + 1;
         final boolean[] firstItem = {true};
@@ -259,10 +241,10 @@ enum MapMessageJsonFormatter {;
         } else if (number instanceof Float) {
             final float floatNumber = (float) number;
             sb.append(floatNumber);
-        } else if (number instanceof Byte ||
-                number instanceof Short ||
-                number instanceof Integer ||
-                number instanceof Long) {
+        } else if (number instanceof Byte
+                || number instanceof Short
+                || number instanceof Integer
+                || number instanceof Long) {
             final long longNumber = number.longValue();
             sb.append(longNumber);
         } else {
@@ -280,9 +262,7 @@ enum MapMessageJsonFormatter {;
         sb.append(booleanValue);
     }
 
-    private static void formatFormattable(
-            final StringBuilder sb,
-            final StringBuilderFormattable formattable) {
+    private static void formatFormattable(final StringBuilder sb, final StringBuilderFormattable formattable) {
         sb.append(DQUOTE);
         final int startIndex = sb.length();
         formattable.formatTo(sb);
@@ -378,9 +358,7 @@ enum MapMessageJsonFormatter {;
         sb.append(RBRACE);
     }
 
-    private static void formatDoubleArray(
-            final StringBuilder sb,
-            final double[] items) {
+    private static void formatDoubleArray(final StringBuilder sb, final double[] items) {
         sb.append(LBRACE);
         for (int itemIndex = 0; itemIndex < items.length; itemIndex++) {
             if (itemIndex > 0) {
@@ -392,10 +370,7 @@ enum MapMessageJsonFormatter {;
         sb.append(RBRACE);
     }
 
-    private static void formatObjectArray(
-            final StringBuilder sb,
-            final Object[] items,
-            final int depth) {
+    private static void formatObjectArray(final StringBuilder sb, final Object[] items, final int depth) {
         sb.append(LBRACE);
         final int nextDepth = depth + 1;
         for (int itemIndex = 0; itemIndex < items.length; itemIndex++) {
@@ -416,5 +391,4 @@ enum MapMessageJsonFormatter {;
         StringBuilders.escapeJson(sb, startIndex);
         sb.append(DQUOTE);
     }
-
 }

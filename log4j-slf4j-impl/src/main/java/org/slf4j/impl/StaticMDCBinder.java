@@ -31,8 +31,7 @@ public final class StaticMDCBinder {
 
     private final MDCAdapter mdcAdapter = new Log4jMDCAdapter();
 
-    private StaticMDCBinder() {
-    }
+    private StaticMDCBinder() {}
 
     /**
      * Returns the {@link #SINGLETON} {@link StaticMDCBinder}.

@@ -36,12 +36,11 @@ public class ISO8601DateFormat extends AbsoluteTimeDateFormat {
 
     private static final long serialVersionUID = -759840745298755296L;
 
-    static private long lastTime;
+    private static long lastTime;
 
-    static private char[] lastTimeString = new char[20];
+    private static char[] lastTimeString = new char[20];
 
-    public ISO8601DateFormat() {
-    }
+    public ISO8601DateFormat() {}
 
     public ISO8601DateFormat(final TimeZone timeZone) {
         super(timeZone);
@@ -72,45 +71,45 @@ public class ISO8601DateFormat extends AbsoluteTimeDateFormat {
 
             String month;
             switch (calendar.get(Calendar.MONTH)) {
-            case Calendar.JANUARY:
-                month = "-01-";
-                break;
-            case Calendar.FEBRUARY:
-                month = "-02-";
-                break;
-            case Calendar.MARCH:
-                month = "-03-";
-                break;
-            case Calendar.APRIL:
-                month = "-04-";
-                break;
-            case Calendar.MAY:
-                month = "-05-";
-                break;
-            case Calendar.JUNE:
-                month = "-06-";
-                break;
-            case Calendar.JULY:
-                month = "-07-";
-                break;
-            case Calendar.AUGUST:
-                month = "-08-";
-                break;
-            case Calendar.SEPTEMBER:
-                month = "-09-";
-                break;
-            case Calendar.OCTOBER:
-                month = "-10-";
-                break;
-            case Calendar.NOVEMBER:
-                month = "-11-";
-                break;
-            case Calendar.DECEMBER:
-                month = "-12-";
-                break;
-            default:
-                month = "-NA-";
-                break;
+                case Calendar.JANUARY:
+                    month = "-01-";
+                    break;
+                case Calendar.FEBRUARY:
+                    month = "-02-";
+                    break;
+                case Calendar.MARCH:
+                    month = "-03-";
+                    break;
+                case Calendar.APRIL:
+                    month = "-04-";
+                    break;
+                case Calendar.MAY:
+                    month = "-05-";
+                    break;
+                case Calendar.JUNE:
+                    month = "-06-";
+                    break;
+                case Calendar.JULY:
+                    month = "-07-";
+                    break;
+                case Calendar.AUGUST:
+                    month = "-08-";
+                    break;
+                case Calendar.SEPTEMBER:
+                    month = "-09-";
+                    break;
+                case Calendar.OCTOBER:
+                    month = "-10-";
+                    break;
+                case Calendar.NOVEMBER:
+                    month = "-11-";
+                    break;
+                case Calendar.DECEMBER:
+                    month = "-12-";
+                    break;
+                default:
+                    month = "-NA-";
+                    break;
             }
             sbuf.append(month);
 

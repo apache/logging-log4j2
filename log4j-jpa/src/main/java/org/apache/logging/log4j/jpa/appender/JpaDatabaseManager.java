@@ -17,12 +17,10 @@
 package org.apache.logging.log4j.jpa.appender;
 
 import java.lang.reflect.Constructor;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
@@ -44,10 +42,13 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
     private EntityManager entityManager;
     private EntityTransaction transaction;
 
-    private JpaDatabaseManager(final String name, final int bufferSize,
-                               final Class<? extends AbstractLogEventWrapperEntity> entityClass,
-                               final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
-                               final String persistenceUnitName, final Configuration configuration) {
+    private JpaDatabaseManager(
+            final String name,
+            final int bufferSize,
+            final Class<? extends AbstractLogEventWrapperEntity> entityClass,
+            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
+            final String persistenceUnitName,
+            final Configuration configuration) {
         super(name, bufferSize, null, configuration);
         this.entityClassName = entityClass.getName();
         this.entityConstructor = entityConstructor;
@@ -79,14 +80,16 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
             this.transaction.begin();
         } catch (final Exception e) {
             throw new AppenderLoggingException(
-                    "Cannot write logging event or flush buffer; manager cannot create EntityManager or transaction.", e
-            );
+                    "Cannot write logging event or flush buffer; manager cannot create EntityManager or transaction.",
+                    e);
         }
     }
 
     @Override
     protected void writeInternal(final LogEvent event) {
-        if (!this.isRunning() || this.entityManagerFactory == null || this.entityManager == null
+        if (!this.isRunning()
+                || this.entityManagerFactory == null
+                || this.entityManager == null
                 || this.transaction == null) {
             throw new AppenderLoggingException(
                     "Cannot write logging event; JPA manager not connected to the database.");
@@ -106,8 +109,8 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
                 this.transaction.rollback();
                 this.transaction = null;
             }
-            throw new AppenderLoggingException("Failed to insert record for log event in JPA manager: " +
-                    e.getMessage(), e);
+            throw new AppenderLoggingException(
+                    "Failed to insert record for log event in JPA manager: " + e.getMessage(), e);
         }
     }
 
@@ -149,17 +152,18 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
      * @param persistenceUnitName The name of the JPA persistence unit that should be used for persisting log events.
      * @return a new or existing JPA manager as applicable.
      */
-    public static JpaDatabaseManager getJPADatabaseManager(final String name, final int bufferSize,
-                                                           final Class<? extends AbstractLogEventWrapperEntity>
-                                                                   entityClass,
-                                                           final Constructor<? extends AbstractLogEventWrapperEntity>
-                                                                   entityConstructor,
-                                                           final String persistenceUnitName,
-                                                           final Configuration configuration) {
+    public static JpaDatabaseManager getJPADatabaseManager(
+            final String name,
+            final int bufferSize,
+            final Class<? extends AbstractLogEventWrapperEntity> entityClass,
+            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
+            final String persistenceUnitName,
+            final Configuration configuration) {
 
         return AbstractDatabaseManager.getManager(
-                name, new FactoryData(bufferSize, entityClass, entityConstructor, persistenceUnitName, configuration), FACTORY
-        );
+                name,
+                new FactoryData(bufferSize, entityClass, entityConstructor, persistenceUnitName, configuration),
+                FACTORY);
     }
 
     /**
@@ -170,9 +174,12 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
         private final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor;
         private final String persistenceUnitName;
 
-        protected FactoryData(final int bufferSize, final Class<? extends AbstractLogEventWrapperEntity> entityClass,
-                              final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
-                              final String persistenceUnitName, final Configuration configuration) {
+        protected FactoryData(
+                final int bufferSize,
+                final Class<? extends AbstractLogEventWrapperEntity> entityClass,
+                final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
+                final String persistenceUnitName,
+                final Configuration configuration) {
             super(configuration, bufferSize, null);
 
             this.entityClass = entityClass;
@@ -188,9 +195,12 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
         @Override
         public JpaDatabaseManager createManager(final String name, final FactoryData data) {
             return new JpaDatabaseManager(
-                    name, data.getBufferSize(), data.entityClass, data.entityConstructor, data.persistenceUnitName,
-                    data.getConfiguration()
-            );
+                    name,
+                    data.getBufferSize(),
+                    data.entityClass,
+                    data.entityConstructor,
+                    data.persistenceUnitName,
+                    data.getConfiguration());
         }
     }
 }

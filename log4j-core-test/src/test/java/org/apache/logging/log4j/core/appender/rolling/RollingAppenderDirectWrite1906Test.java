@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,7 +27,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -35,9 +37,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -57,7 +56,8 @@ public class RollingAppenderDirectWrite1906Test implements RolloverListener {
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+    public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager)
+            throws Exception {
         manager.addRolloverListener(this);
         final var logger = context.getLogger(getClass());
         final int count = 100;
@@ -75,21 +75,22 @@ public class RollingAppenderDirectWrite1906Test implements RolloverListener {
             assertThat(files).allSatisfy(file -> {
                 final String expected = file.getFileName().toString();
                 try (final Stream<String> stream = Files.lines(file)) {
-                    final List<String> lines = stream
-                            .map(line -> String.format("rollingfile.%s.log", line.substring(0, line.indexOf(' '))))
+                    final List<String> lines = stream.map(
+                                    line -> String.format("rollingfile.%s.log", line.substring(0, line.indexOf(' '))))
                             .collect(Collectors.toList());
                     found.addAndGet(lines.size());
                     assertThat(lines).allSatisfy(actual -> assertThat(actual).isEqualTo(expected));
                 }
             });
-            assertEquals(count, found.get(), "Incorrect number of events read. Expected " + count + ", Actual " + found.get());
+            assertEquals(
+                    count,
+                    found.get(),
+                    "Incorrect number of events read. Expected " + count + ", Actual " + found.get());
         }
     }
 
     @Override
-    public void rolloverTriggered(final String fileName) {
-
-    }
+    public void rolloverTriggered(final String fileName) {}
 
     @Override
     public void rolloverComplete(final String fileName) {
@@ -98,9 +99,7 @@ public class RollingAppenderDirectWrite1906Test implements RolloverListener {
 
     private static class NoopStatusListener implements StatusListener {
         @Override
-        public void log(final StatusData data) {
-
-        }
+        public void log(final StatusData data) {}
 
         @Override
         public Level getStatusLevel() {
@@ -108,8 +107,6 @@ public class RollingAppenderDirectWrite1906Test implements RolloverListener {
         }
 
         @Override
-        public void close() throws IOException {
-
-        }
+        public void close() throws IOException {}
     }
 }

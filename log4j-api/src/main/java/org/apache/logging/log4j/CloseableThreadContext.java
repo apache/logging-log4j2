@@ -36,8 +36,7 @@ import java.util.Map;
  */
 public class CloseableThreadContext {
 
-    private CloseableThreadContext() {
-    }
+    private CloseableThreadContext() {}
 
     /**
      * Pushes new diagnostic context information on to the Thread Context Stack. The information will be popped off when
@@ -105,8 +104,7 @@ public class CloseableThreadContext {
         private int pushCount = 0;
         private final Map<String, String> originalValues = new HashMap<>();
 
-        private Instance() {
-        }
+        private Instance() {}
 
         /**
          * Pushes new diagnostic context information on to the Thread Context Stack. The information will be popped off when
@@ -204,7 +202,9 @@ public class CloseableThreadContext {
         }
 
         private void closeMap() {
-            for (final Iterator<Map.Entry<String, String>> it = originalValues.entrySet().iterator(); it.hasNext(); ) {
+            for (final Iterator<Map.Entry<String, String>> it =
+                            originalValues.entrySet().iterator();
+                    it.hasNext(); ) {
                 final Map.Entry<String, String> entry = it.next();
                 final String key = entry.getKey();
                 final String originalValue = entry.getValue();

@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -24,17 +28,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -55,7 +54,6 @@ public class RollingAppenderCronOnStartupTest {
             cleanDir(dir);
             dir.delete();
         }
-
     }
 
     @AfterEach
@@ -89,8 +87,7 @@ public class RollingAppenderCronOnStartupTest {
         logger.info("This is line 3");
         final File[] files = dir.listFiles();
         assertNotNull("No files", files);
-        assertEquals("Unexpected number of files. Expected 2 but found " + files.length, 2,
-                files.length);
+        assertEquals("Unexpected number of files. Expected 2 but found " + files.length, 2, files.length);
         List<String> lines = Files.readAllLines(file.toPath());
         assertEquals("Unexpected number of lines. Expected 2: Actual: " + lines.size(), 2, lines.size());
         lines = Files.readAllLines(rolled.toPath());
@@ -103,5 +100,4 @@ public class RollingAppenderCronOnStartupTest {
             Arrays.stream(files).forEach(File::delete);
         }
     }
-
 }

@@ -16,5 +16,4 @@
  */
 package org.apache.logging.log4j.test;
 
-public class Service2 implements BetterService {
-}
+public class Service2 implements BetterService {}

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.test;
 
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
@@ -38,6 +37,7 @@ public interface ListStatusListener extends StatusListener {
     }
 
     default Stream<StatusData> findStatusData(Level level, String regex) {
-        return findStatusData(level).filter(data -> data.getMessage().getFormattedMessage().matches(regex));
+        return findStatusData(level)
+                .filter(data -> data.getMessage().getFormattedMessage().matches(regex));
     }
 }

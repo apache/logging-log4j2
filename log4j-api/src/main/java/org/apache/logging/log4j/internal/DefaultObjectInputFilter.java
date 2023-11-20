@@ -22,22 +22,15 @@ import java.util.List;
 
 public class DefaultObjectInputFilter implements ObjectInputFilter {
 
-
     private static final List<String> REQUIRED_JAVA_CLASSES = Arrays.asList(
             "java.math.BigDecimal",
             "java.math.BigInteger",
             // for Message delegate
             "java.rmi.MarshalledObject",
-            "[B"
-    );
+            "[B");
 
     private static final List<String> REQUIRED_JAVA_PACKAGES = Arrays.asList(
-            "java.lang.",
-            "java.time",
-            "java.util.",
-            "org.apache.logging.log4j.",
-            "[Lorg.apache.logging.log4j."
-    );
+            "java.lang.", "java.time", "java.util.", "org.apache.logging.log4j.", "[Lorg.apache.logging.log4j.");
 
     private final ObjectInputFilter delegate;
 
@@ -57,7 +50,6 @@ public class DefaultObjectInputFilter implements ObjectInputFilter {
     public static DefaultObjectInputFilter newInstance(final ObjectInputFilter filter) {
         return new DefaultObjectInputFilter(filter);
     }
-
 
     @Override
     public Status checkInput(final FilterInfo filterInfo) {

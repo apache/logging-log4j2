@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -41,7 +41,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testZeroLength() {
         final String testMsg = "";
-        ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[]{"arg"});
+        ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[] {"arg"});
         String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
         final Object[] array = null;
@@ -53,7 +53,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testOneCharLength() {
         final String testMsg = "d";
-        ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[]{"arg"});
+        ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[] {"arg"});
         String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
         final Object[] array = null;
@@ -65,7 +65,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testFormat3StringArgs() {
         final String testMsg = "Test message {}{} {}";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message ab c", result);
     }
@@ -73,7 +73,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testFormatNullArgs() {
         final String testMsg = "Test message {} {} {} {} {} {}";
-        final String[] args = { "a", null, "c", null, null, null };
+        final String[] args = {"a", null, "c", null, null, null};
         final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message a null c null null null", result);
     }
@@ -81,7 +81,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testFormatStringArgsIgnoresSuperfluousArgs() {
         final String testMsg = "Test message {}{} {}";
-        final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
+        final String[] args = {"a", "b", "c", "unnecessary", "superfluous"};
         final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message ab c", result);
     }
@@ -89,7 +89,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testFormatStringArgsWithEscape() {
         final String testMsg = "Test message \\{}{} {}";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message {}a b", result);
     }
@@ -97,7 +97,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testFormatStringArgsWithTrailingEscape() {
         final String testMsg = "Test message {}{} {}\\";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message ab c\\", result);
     }
@@ -105,7 +105,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testFormatStringArgsWithTrailingText() {
         final String testMsg = "Test message {}{} {}Text";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message ab cText", result);
     }
@@ -113,7 +113,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testFormatStringArgsWithTrailingEscapedEscape() {
         final String testMsg = "Test message {}{} {}\\\\";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message ab c\\\\", result);
     }
@@ -121,7 +121,7 @@ public class ParameterizedMessageTest {
     @Test
     public void testFormatStringArgsWithEscapedEscape() {
         final String testMsg = "Test message \\\\{}{} {}";
-        final String[] args = { "a", "b", "c" };
+        final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message \\ab c", result);
     }

@@ -20,7 +20,6 @@ import javax.persistence.Basic;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;

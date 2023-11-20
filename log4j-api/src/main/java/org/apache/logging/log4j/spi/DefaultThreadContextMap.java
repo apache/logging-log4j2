@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_INHERITABLE;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
-
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_INHERITABLE;
 
 /**
  * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored is always
@@ -40,7 +39,8 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     private final boolean useMap;
     private final ThreadLocal<Map<String, String>> localMap;
 
-    static ThreadLocal<Map<String, String>> createThreadLocalMap(final boolean isMapEnabled, final boolean inheritableMap) {
+    static ThreadLocal<Map<String, String>> createThreadLocalMap(
+            final boolean isMapEnabled, final boolean inheritableMap) {
         if (inheritableMap) {
             return new InheritableThreadLocal<>() {
                 @Override
@@ -139,7 +139,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             return;
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
-            //BiConsumer should be able to handle values of any type V. In our case the values are of type String.
+            // BiConsumer should be able to handle values of any type V. In our case the values are of type String.
             final V value = Cast.cast(entry.getValue());
             action.accept(entry.getKey(), value);
         }
@@ -152,7 +152,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             return;
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
-            //TriConsumer should be able to handle values of any type V. In our case the values are of type String.
+            // TriConsumer should be able to handle values of any type V. In our case the values are of type String.
             final V value = Cast.cast(entry.getValue());
             action.accept(entry.getKey(), value, state);
         }

@@ -53,8 +53,7 @@ class PerfTestResultFormatter {
 
     private final Map<String, Map<String, Stats>> results = new TreeMap<>();
 
-    public PerfTestResultFormatter() {
-    }
+    public PerfTestResultFormatter() {}
 
     public String format(final String text) throws ParseException {
         results.clear();
@@ -71,7 +70,11 @@ class PerfTestResultFormatter {
         final char[] tabs = new char[subKeys.size()];
         Arrays.fill(tabs, '\t');
         final String sep = new String(tabs);
-        sb.append("\tAverage latency").append(sep).append("99% less than").append(sep).append("99.99% less than");
+        sb.append("\tAverage latency")
+                .append(sep)
+                .append("99% less than")
+                .append(sep)
+                .append("99.99% less than");
         sb.append(LF);
         for (int i = 0; i < 3; i++) {
             for (final String subKey : subKeys) {
@@ -86,15 +89,15 @@ class PerfTestResultFormatter {
                 for (final String subKey : sub.keySet()) {
                     final Stats stats = sub.get(subKey);
                     switch (i) {
-                    case 0:
-                        sb.append('\t').append((long) stats.avgLatency);
-                        break;
-                    case 1:
-                        sb.append('\t').append((long) stats.latency99Pct);
-                        break;
-                    case 2:
-                        sb.append('\t').append((long) stats.latency99_99Pct);
-                        break;
+                        case 0:
+                            sb.append('\t').append((long) stats.avgLatency);
+                            break;
+                        case 1:
+                            sb.append('\t').append((long) stats.latency99Pct);
+                            break;
+                        case 2:
+                            sb.append('\t').append((long) stats.latency99_99Pct);
+                            break;
                     }
                 }
             }
@@ -127,15 +130,12 @@ class PerfTestResultFormatter {
     private void process(final String line) throws ParseException {
         final String key = line.substring(line.indexOf('.') + 1, line.indexOf('('));
         final String sub = line.substring(line.indexOf('(') + 1, line.indexOf(')'));
-        final String throughput = line.substring(line.indexOf("throughput: ")
-                + "throughput: ".length(), line.indexOf(" ops"));
-        final String avg = line.substring(line.indexOf("avg=") + "avg=".length(),
-                line.indexOf(" 99%"));
-        final String pct99 = line.substring(
-                line.indexOf("99% < ") + "99% < ".length(),
-                line.indexOf(" 99.99%"));
-        final String pct99_99 = line.substring(line.indexOf("99.99% < ")
-                + "99.99% < ".length(), line.lastIndexOf('(') - 1);
+        final String throughput =
+                line.substring(line.indexOf("throughput: ") + "throughput: ".length(), line.indexOf(" ops"));
+        final String avg = line.substring(line.indexOf("avg=") + "avg=".length(), line.indexOf(" 99%"));
+        final String pct99 = line.substring(line.indexOf("99% < ") + "99% < ".length(), line.indexOf(" 99.99%"));
+        final String pct99_99 =
+                line.substring(line.indexOf("99.99% < ") + "99.99% < ".length(), line.lastIndexOf('(') - 1);
         final Stats stats = new Stats(throughput, avg, pct99, pct99_99);
         Map<String, Stats> map = results.get(key.trim());
         if (map == null) {
@@ -151,9 +151,8 @@ class PerfTestResultFormatter {
 
     private Comparator<String> sort() {
         return new Comparator<String>() {
-            final List<String> expected = Arrays.asList("1 thread", "2 threads",
-                    "4 threads", "8 threads", "16 threads", "32 threads",
-                    "64 threads");
+            final List<String> expected = Arrays.asList(
+                    "1 thread", "2 threads", "4 threads", "8 threads", "16 threads", "32 threads", "64 threads");
 
             @Override
             public int compare(final String o1, final String o2) {
@@ -169,8 +168,7 @@ class PerfTestResultFormatter {
 
     public static void main(final String[] args) throws Exception {
         final PerfTestResultFormatter fmt = new PerfTestResultFormatter();
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(
-                System.in));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String line;
         while ((line = reader.readLine()) != null) {
             fmt.process(line);

@@ -24,7 +24,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
-
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.NetUtils;
 
@@ -37,7 +36,8 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
     private final KeyStore keyStore;
     private final String keyStoreType;
 
-    public AbstractKeyStoreConfiguration(final String location, final PasswordProvider passwordProvider, final String keyStoreType)
+    public AbstractKeyStoreConfiguration(
+            final String location, final PasswordProvider passwordProvider, final String keyStoreType)
             throws StoreConfigurationException {
         super(location, passwordProvider);
         this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
@@ -66,10 +66,17 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
                 return ks;
             }
         } catch (final CertificateException e) {
-            LOGGER.error("No Provider supports a KeyStoreSpi implementation for the specified type {} for location {}", this.keyStoreType, loadLocation, e);
+            LOGGER.error(
+                    "No Provider supports a KeyStoreSpi implementation for the specified type {} for location {}",
+                    this.keyStoreType,
+                    loadLocation,
+                    e);
             throw new StoreConfigurationException(loadLocation, e);
         } catch (final NoSuchAlgorithmException e) {
-            LOGGER.error("The algorithm used to check the integrity of the keystore cannot be found for location {}", loadLocation, e);
+            LOGGER.error(
+                    "The algorithm used to check the integrity of the keystore cannot be found for location {}",
+                    loadLocation,
+                    e);
             throw new StoreConfigurationException(loadLocation, e);
         } catch (final KeyStoreException e) {
             LOGGER.error("KeyStoreException for location {}", loadLocation, e);
@@ -78,7 +85,10 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             LOGGER.error("The keystore file {} is not found", loadLocation, e);
             throw new StoreConfigurationException(loadLocation, e);
         } catch (final IOException e) {
-            LOGGER.error("Something is wrong with the format of the keystore or the given password for location {}", loadLocation, e);
+            LOGGER.error(
+                    "Something is wrong with the format of the keystore or the given password for location {}",
+                    loadLocation,
+                    e);
             throw new StoreConfigurationException(loadLocation, e);
         }
     }
@@ -132,5 +142,4 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
     public String getKeyStoreType() {
         return keyStoreType;
     }
-
 }

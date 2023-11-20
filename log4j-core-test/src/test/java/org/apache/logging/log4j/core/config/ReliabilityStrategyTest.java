@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -23,15 +25,15 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_RELIABILITY_STRATEGY,
+@SetSystemProperty(
+        key = Log4jPropertyKey.Constant.CONFIG_RELIABILITY_STRATEGY,
         value = "org.apache.logging.log4j.core.config.MockReliabilityStrategy")
 class ReliabilityStrategyTest {
 
     @Test
     @LoggerContextSource("ReliabilityStrategyTest.xml")
-    void beforeStopAppendersCalledBeforeAsyncAppendersStopped(@Named final AsyncAppender async, final Configuration config) {
+    void beforeStopAppendersCalledBeforeAsyncAppendersStopped(
+            @Named final AsyncAppender async, final Configuration config) {
         assertTrue(async.isStarted());
         final MockReliabilityStrategy reliabilityStrategy =
                 (MockReliabilityStrategy) config.getRootLogger().getReliabilityStrategy();

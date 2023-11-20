@@ -16,10 +16,12 @@
  */
 package org.apache.log4j.builders.filter;
 
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -31,9 +33,6 @@ import org.apache.logging.log4j.core.filter.LevelRangeFilter;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
-
-import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a Level range filter.
@@ -49,8 +48,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
     private static final String LEVEL_MIN = "LevelMin";
     private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
 
-    public LevelRangeFilterBuilder() {
-    }
+    public LevelRangeFilterBuilder() {}
 
     public LevelRangeFilterBuilder(final String prefix, final Properties props) {
         super(prefix, props);
@@ -91,16 +89,18 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
         Level max = Level.FATAL;
         Level min = Level.TRACE;
         if (levelMax != null) {
-            max = OptionConverter.toLevel(levelMax, org.apache.log4j.Level.FATAL).getVersion2Level();
+            max = OptionConverter.toLevel(levelMax, org.apache.log4j.Level.FATAL)
+                    .getVersion2Level();
         }
         if (levelMin != null) {
-            min = OptionConverter.toLevel(levelMin, org.apache.log4j.Level.DEBUG).getVersion2Level();
+            min = OptionConverter.toLevel(levelMin, org.apache.log4j.Level.DEBUG)
+                    .getVersion2Level();
         }
         final org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
-        ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
-        : org.apache.logging.log4j.core.Filter.Result.NEUTRAL;
+                ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
+                : org.apache.logging.log4j.core.Filter.Result.NEUTRAL;
 
-        return FilterWrapper.adapt(LevelRangeFilter.createFilter(min, max, onMatch,
-                org.apache.logging.log4j.core.Filter.Result.DENY));
+        return FilterWrapper.adapt(
+                LevelRangeFilter.createFilter(min, max, onMatch, org.apache.logging.log4j.core.Filter.Result.DENY));
     }
 }

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.lookup;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -119,5 +118,4 @@ public class MapLookup implements StrLookup {
         }
         return map.get(key);
     }
-
 }

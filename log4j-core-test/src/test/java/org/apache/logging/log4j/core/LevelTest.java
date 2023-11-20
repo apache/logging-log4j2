@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -28,10 +31,6 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-Level.xml")
 public class LevelTest {
@@ -44,9 +43,13 @@ public class LevelTest {
     private final ListAppender listError;
     private final ListAppender listFatal;
 
-    public LevelTest(@Named("ListAll") final ListAppender listAll, @Named("ListTrace") final ListAppender listTrace,
-            @Named("ListDebug") final ListAppender listDebug, @Named("ListInfo") final ListAppender listInfo,
-            @Named("ListWarn") final ListAppender listWarn, @Named("ListError") final ListAppender listError,
+    public LevelTest(
+            @Named("ListAll") final ListAppender listAll,
+            @Named("ListTrace") final ListAppender listTrace,
+            @Named("ListDebug") final ListAppender listDebug,
+            @Named("ListInfo") final ListAppender listInfo,
+            @Named("ListWarn") final ListAppender listWarn,
+            @Named("ListError") final ListAppender listError,
             @Named("ListFatal") final ListAppender listFatal) {
         this.listAll = listAll.clear();
         this.listTrace = listTrace.clear();
@@ -77,9 +80,16 @@ public class LevelTest {
         final Marker marker = MarkerManager.getMarker("marker");
         final Message msg = new ObjectMessage("msg");
         final Throwable t = new Throwable("test");
-        final Level[] levels = new Level[] { Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.FATAL };
-        final String[] names = new String[] { "levelTest", "levelTest.Trace", "levelTest.Debug", "levelTest.Info",
-                "levelTest.Warn", "levelTest.Error", "levelTest.Fatal" };
+        final Level[] levels = new Level[] {Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.FATAL};
+        final String[] names = new String[] {
+            "levelTest",
+            "levelTest.Trace",
+            "levelTest.Debug",
+            "levelTest.Info",
+            "levelTest.Warn",
+            "levelTest.Error",
+            "levelTest.Fatal"
+        };
         for (final Level level : levels) {
             for (final String name : names) {
                 final Logger logger = context.getLogger(name);
@@ -104,13 +114,13 @@ public class LevelTest {
 
         final int UNIT = 14;
         final Expected[] expectedResults = new Expected[] { //
-        new Expected(listAll, UNIT * levelCount, "TRACE", "All"), //
-                new Expected(listTrace, UNIT * levelCount--, "TRACE", "Trace"), //
-                new Expected(listDebug, UNIT * levelCount--, "DEBUG", "Debug"), //
-                new Expected(listInfo, UNIT * levelCount--, "INFO", "Info"), //
-                new Expected(listWarn, UNIT * levelCount--, "WARN", "Warn"), //
-                new Expected(listError, UNIT * levelCount--, "ERROR", "Error"), //
-                new Expected(listFatal, UNIT * levelCount--, "FATAL", "Fatal"), //
+            new Expected(listAll, UNIT * levelCount, "TRACE", "All"), //
+            new Expected(listTrace, UNIT * levelCount--, "TRACE", "Trace"), //
+            new Expected(listDebug, UNIT * levelCount--, "DEBUG", "Debug"), //
+            new Expected(listInfo, UNIT * levelCount--, "INFO", "Info"), //
+            new Expected(listWarn, UNIT * levelCount--, "WARN", "Warn"), //
+            new Expected(listError, UNIT * levelCount--, "ERROR", "Error"), //
+            new Expected(listFatal, UNIT * levelCount--, "FATAL", "Fatal"), //
         };
         for (final Expected expected : expectedResults) {
             final String description = expected.description;
@@ -119,8 +129,10 @@ public class LevelTest {
             assertThat(events, hasSize(expected.expectedEventCount));
             final LogEvent event = events.get(0);
             assertEquals(
-                    event.getLevel().name(), expected.expectedInitialEventLevel,
-                    description + ": Expected level " + expected.expectedInitialEventLevel + ", got" + event.getLevel());
+                    event.getLevel().name(),
+                    expected.expectedInitialEventLevel,
+                    description + ": Expected level " + expected.expectedInitialEventLevel + ", got"
+                            + event.getLevel());
         }
     }
 }

@@ -26,14 +26,13 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("ThreadPatternConverter")
-@ConverterKeys({ "t", "tn", "thread", "threadName" })
+@ConverterKeys({"t", "tn", "thread", "threadName"})
 @PerformanceSensitive("allocation")
 public final class ThreadNamePatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final ThreadNamePatternConverter INSTANCE =
-        new ThreadNamePatternConverter();
+    private static final ThreadNamePatternConverter INSTANCE = new ThreadNamePatternConverter();
 
     /**
      * Private constructor.
@@ -48,8 +47,7 @@ public final class ThreadNamePatternConverter extends LogEventPatternConverter {
      * @param options options, currently ignored, may be null.
      * @return instance of ThreadPatternConverter.
      */
-    public static ThreadNamePatternConverter newInstance(
-        final String[] options) {
+    public static ThreadNamePatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 

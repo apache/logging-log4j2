@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +35,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -140,6 +139,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * The Advertiser which exposes appender configurations to external systems.
      */
     private Advertiser advertiser = new DefaultAdvertiser();
+
     private Node advertiserNode;
     private Object advertisement;
     private String name;
@@ -277,8 +277,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 // Cause the class to be initialized if it isn't already.
                 Class.forName(pluginClass.getName(), true, pluginClass.getClassLoader());
             } catch (final Exception e) {
-                LOGGER.error("Unable to initialize {} due to {}", pluginClass.getName(), e.getClass()
-                        .getSimpleName(), e);
+                LOGGER.error(
+                        "Unable to initialize {} due to {}",
+                        pluginClass.getName(),
+                        e.getClass().getSimpleName(),
+                        e);
             }
         });
         setup();
@@ -290,7 +293,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     private void initializeScriptManager() {
         try {
-            ServiceLoaderUtil.safeStream(ServiceLoader.load(ScriptManagerFactory.class, AbstractConfiguration.class.getClassLoader()))
+            ServiceLoaderUtil.safeStream(ServiceLoader.load(
+                            ScriptManagerFactory.class, AbstractConfiguration.class.getClassLoader()))
                     .findFirst()
                     .ifPresent(factory -> setScriptManager(factory.createScriptManager(this, getWatchManager())));
         } catch (final LinkageError | Exception e) {
@@ -299,23 +303,27 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-    protected void initializeWatchers(final Reconfigurable reconfigurable, final ConfigurationSource configSource,
-                 final int monitorIntervalSeconds) {
+    protected void initializeWatchers(
+            final Reconfigurable reconfigurable,
+            final ConfigurationSource configSource,
+            final int monitorIntervalSeconds) {
         if (configSource != null && (configSource.getFile() != null || configSource.getURL() != null)) {
             if (monitorIntervalSeconds > 0) {
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
                 if (configSource.getFile() != null) {
                     final Source cfgSource = new Source(configSource);
                     final long lastModified = configSource.getFile().lastModified();
-                    final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
-                            listeners, lastModified);
+                    final ConfigurationFileWatcher watcher =
+                            new ConfigurationFileWatcher(this, reconfigurable, listeners, lastModified);
                     watchManager.watch(cfgSource, watcher);
                 } else {
                     if (configSource.getURL() != null) {
                         monitorSource(reconfigurable, configSource);
                     }
                 }
-            } else if (watchManager.hasEventListeners() && configSource.getURL() != null && monitorIntervalSeconds >= 0) {
+            } else if (watchManager.hasEventListeners()
+                    && configSource.getURL() != null
+                    && monitorIntervalSeconds >= 0) {
                 monitorSource(reconfigurable, configSource);
             }
         }
@@ -324,7 +332,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void monitorSource(final Reconfigurable reconfigurable, final ConfigurationSource configSource) {
         if (configSource.getLastModified() > 0) {
             final Source cfgSource = new Source(configSource);
-            final Watcher watcher = instanceFactory.getInstance(WatcherFactory.class)
+            final Watcher watcher = instanceFactory
+                    .getInstance(WatcherFactory.class)
                     .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
             if (watcher != null) {
                 watchManager.watch(cfgSource, watcher);
@@ -406,8 +415,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         root.getReliabilityStrategy().beforeStopConfiguration(this);
 
         final String cls = getClass().getSimpleName();
-        LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggerConfigs.size()
-                + 1);
+        LOGGER.trace(
+                "{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggerConfigs.size() + 1);
 
         if (!loggerConfigs.isEmpty()) {
             LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggerConfigs.size());
@@ -505,8 +514,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return instanceFactory.getInstance(Constants.DEFAULT_STATUS_LEVEL_KEY);
     }
 
-    protected void createAdvertiser(final String advertiserString, final ConfigurationSource configSource,
-            final byte[] buffer, final String contentType) {
+    protected void createAdvertiser(
+            final String advertiserString,
+            final ConfigurationSource configSource,
+            final byte[] buffer,
+            final String contentType) {
         if (advertiserString != null) {
             final Node node = new Node(null, advertiserString, null);
             final Map<String, String> attributes = node.getAttributes();
@@ -564,7 +576,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-
     /**
      * Process conditions by evaluating them and including the children of conditions that are true
      * and discarding those that are not.
@@ -590,13 +601,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                                 processConditionals(child);
                             }
                         } catch (final Exception inner) {
-                            LOGGER.error("Exception processing {}: Ignoring and including children",
-                                    type.getPluginClass());
+                            LOGGER.error(
+                                    "Exception processing {}: Ignoring and including children", type.getPluginClass());
                             processConditionals(child);
                         }
                     } else {
-                        LOGGER.error("Encountered Condition Plugin that does not implement Condition: {}",
-                                child.getName());
+                        LOGGER.error(
+                                "Encountered Condition Plugin that does not implement Condition: {}", child.getName());
                         processConditionals(child);
                     }
                 } else {
@@ -634,8 +645,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     final Arbiter condition = configurationProcessor.processNodeTree(child);
                     conditions.add(condition);
                 } else {
-                    LOGGER.error("Invalid Node {} for Select. Must be a Condition",
-                            child.getName());
+                    LOGGER.error("Invalid Node {} for Select. Must be a Condition", child.getName());
                 }
             } else {
                 LOGGER.error("No PluginType for node {}", child.getName());
@@ -652,7 +662,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         return addList;
     }
-
 
     protected void doConfigure() {
         instanceFactory.registerBinding(Binding.from(StringValueResolver.KEY).toInstance(configurationStrSubstitutor));
@@ -715,10 +724,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
                 asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
             } else {
-                final List<String> expected = Arrays.asList("\"Appenders\"", "\"Loggers\"", "\"Properties\"",
-                        "\"Scripts\"", "\"CustomLevels\"");
-                LOGGER.error("Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
-                        child.getName(), child.getObject().getClass().getName(), expected);
+                final List<String> expected = Arrays.asList(
+                        "\"Appenders\"", "\"Loggers\"", "\"Properties\"", "\"Scripts\"", "\"CustomLevels\"");
+                LOGGER.error(
+                        "Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
+                        child.getName(),
+                        child.getObject().getClass().getName(),
+                        expected);
             }
         }
 
@@ -727,7 +739,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             setToDefault();
             return;
         } else if (!setRoot) {
-            LOGGER.warn("No Root logger was configured, creating default ERROR-level Root logger with Console appender");
+            LOGGER.warn(
+                    "No Root logger was configured, creating default ERROR-level Root logger with Console appender");
             setToDefault();
             // return; // LOG4J2-219: creating default root=ok, but don't exclude configured Loggers
         }
@@ -739,11 +752,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 if (app != null) {
                     loggerConfig.addAppender(app, ref.getLevel(), ref.getFilter());
                 } else {
-                    LOGGER.error("Unable to locate appender \"{}\" for logger config \"{}\"", ref.getRef(),
-                            loggerConfig);
+                    LOGGER.error(
+                            "Unable to locate appender \"{}\" for logger config \"{}\"", ref.getRef(), loggerConfig);
                 }
             }
-
         }
 
         setParents();
@@ -763,8 +775,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         rootLoggerConfig.addAppender(appender, null, null);
 
         final Level defaultLevel = Level.ERROR;
-        final String levelName = contextProperties.getStringProperty(Log4jPropertyKey.CONFIG_DEFAULT_LEVEL,
-                defaultLevel.name());
+        final String levelName =
+                contextProperties.getStringProperty(Log4jPropertyKey.CONFIG_DEFAULT_LEVEL, defaultLevel.name());
         final Level level = Level.valueOf(levelName);
         rootLoggerConfig.setLevel(level != null ? level : defaultLevel);
     }
@@ -882,8 +894,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param appender The Appender.
      */
     @Override
-    public void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
-            final Appender appender) {
+    public void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger, final Appender appender) {
         if (appender == null || logger == null) {
             return;
         }
@@ -1114,7 +1125,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     public Object createPluginObject(final Node node) {
         if (this.getState().equals(State.INITIALIZING)) {
-            instanceFactory.registerBinding(Binding.from(StringValueResolver.KEY).toInstance(configurationStrSubstitutor));
+            instanceFactory.registerBinding(
+                    Binding.from(StringValueResolver.KEY).toInstance(configurationStrSubstitutor));
             try {
                 return configurationProcessor.processNodeTree(node);
             } finally {

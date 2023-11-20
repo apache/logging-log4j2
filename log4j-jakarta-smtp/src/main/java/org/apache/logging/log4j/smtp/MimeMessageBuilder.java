@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.smtp;
 
-import java.nio.charset.StandardCharsets;
-
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.plugins.util.Builder;
 
 /**
@@ -62,7 +60,7 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
     }
 
     public MimeMessageBuilder setRecipients(final Message.RecipientType recipientType, final String recipients)
-        throws MessagingException {
+            throws MessagingException {
         final InternetAddress[] addresses = parseAddresses(recipients);
 
         if (null != addresses) {

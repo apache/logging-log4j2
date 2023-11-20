@@ -18,7 +18,6 @@ package org.apache.log4j.jmx;
 
 import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.DynamicMBean;
@@ -31,7 +30,6 @@ import javax.management.MBeanServer;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.RuntimeOperationsException;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 
@@ -44,15 +42,17 @@ public abstract class AbstractDynamicMBean implements DynamicMBean, MBeanRegistr
      * @return name.
      * @since 1.2.16
      */
-    static protected String getAppenderName(final Appender appender) {
+    protected static String getAppenderName(final Appender appender) {
         String name = appender.getName();
         if (name == null || name.trim().length() == 0) {
-            // try to get some form of a name, because null is not allowed (exception), and empty string certainly isn't useful in
+            // try to get some form of a name, because null is not allowed (exception), and empty string certainly isn't
+            // useful in
             // JMX..
             name = appender.toString();
         }
         return name;
     }
+
     String dClassName;
     MBeanServer server;
 
@@ -66,7 +66,9 @@ public abstract class AbstractDynamicMBean implements DynamicMBean, MBeanRegistr
 
         // Check attributeNames is not null to avoid NullPointerException later on
         if (attributeNames == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("attributeNames[] cannot be null"), "Cannot invoke a getter of " + dClassName);
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("attributeNames[] cannot be null"),
+                    "Cannot invoke a getter of " + dClassName);
         }
 
         final AttributeList resultList = new AttributeList();
@@ -98,8 +100,7 @@ public abstract class AbstractDynamicMBean implements DynamicMBean, MBeanRegistr
     }
 
     @Override
-    public void postRegister(final java.lang.Boolean registrationDone) {
-    }
+    public void postRegister(final java.lang.Boolean registrationDone) {}
 
     /**
      * Performs cleanup for deregistering this MBean. Default implementation unregisters MBean instances which are
@@ -133,7 +134,7 @@ public abstract class AbstractDynamicMBean implements DynamicMBean, MBeanRegistr
      * Registers MBean instance in the attached server. Must <em>NOT</em> be called before registration of this instance.
      */
     protected void registerMBean(final Object mbean, final ObjectName objectName)
-        throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
+            throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
         server.registerMBean(mbean, objectName);
         mbeanList.add(objectName);
     }
@@ -146,8 +147,9 @@ public abstract class AbstractDynamicMBean implements DynamicMBean, MBeanRegistr
 
         // Check attributes is not null to avoid NullPointerException later on
         if (attributes == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("AttributeList attributes cannot be null"),
-                "Cannot invoke a setter of " + dClassName);
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("AttributeList attributes cannot be null"),
+                    "Cannot invoke a setter of " + dClassName);
         }
         final AttributeList resultList = new AttributeList();
 
@@ -172,5 +174,4 @@ public abstract class AbstractDynamicMBean implements DynamicMBean, MBeanRegistr
         }
         return (resultList);
     }
-
 }

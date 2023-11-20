@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
@@ -52,7 +51,8 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private final StrSubstitutor substitutor;
 
     @Inject
-    public DefaultConfigurationFactory(final ConfigurableInstanceFactory instanceFactory, final StrSubstitutor substitutor) {
+    public DefaultConfigurationFactory(
+            final ConfigurableInstanceFactory instanceFactory, final StrSubstitutor substitutor) {
         configurationFactories = Lazy.lazy(() -> loadConfigurationFactories(instanceFactory));
         this.substitutor = substitutor;
     }
@@ -65,7 +65,8 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
      * @return The Configuration.
      */
     @Override
-    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+    public Configuration getConfiguration(
+            final LoggerContext loggerContext, final String name, final URI configLocation) {
 
         if (configLocation == null) {
             PropertyEnvironment properties = loggerContext.getProperties();
@@ -164,12 +165,13 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         if (config != null) {
             return config;
         }
-        LOGGER.warn("No Log4j 2 configuration file found. " +
-                "Using default configuration (logging only errors to the console), " +
-                "or user programmatically provided configurations. " +
-                "Set system property 'log4j2.*.{}' " +
-                "to show Log4j 2 internal initialization logging. " +
-                "See https://logging.apache.org/log4j/2.x/manual/configuration.html for instructions on how to configure Log4j 2",
+        LOGGER.warn(
+                "No Log4j 2 configuration file found. "
+                        + "Using default configuration (logging only errors to the console), "
+                        + "or user programmatically provided configurations. "
+                        + "Set system property 'log4j2.*.{}' "
+                        + "to show Log4j 2 internal initialization logging. "
+                        + "See https://logging.apache.org/log4j/2.x/manual/configuration.html for instructions on how to configure Log4j 2",
                 LoggingSystemProperty.STATUS_LOGGER_DEBUG);
         return new DefaultConfiguration();
     }
@@ -179,8 +181,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     }
 
     private Configuration getConfiguration(
-            final String requiredVersion, final LoggerContext loggerContext,
-            final String configLocationStr) {
+            final String requiredVersion, final LoggerContext loggerContext, final String configLocationStr) {
         ConfigurationSource source = null;
         try {
             source = ConfigurationSource.fromUri(NetUtils.toURI(configLocationStr));
@@ -229,7 +230,9 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 final ConfigurationSource source = ConfigurationSource.fromResource(configName, loader);
                 if (source != null) {
                     if (!factory.isActive()) {
-                        LOGGER.warn("Found configuration file {} for inactive ConfigurationFactory {}", configName,
+                        LOGGER.warn(
+                                "Found configuration file {} for inactive ConfigurationFactory {}",
+                                configName,
                                 factory.getClass().getName());
                     }
                     return factory.getConfiguration(loggerContext, source);
@@ -284,7 +287,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
             }
             return locations.toArray(new String[0]);
         }
-        return new String[] { uris[0] };
+        return new String[] {uris[0]};
     }
 
     private String[] parseConfigLocations(final String configLocations) {
@@ -297,13 +300,15 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         } catch (final URISyntaxException ex) {
             LOGGER.warn("Error parsing URI {}", configLocations);
         }
-        return new String[] { configLocations };
+        return new String[] {configLocations};
     }
 
-    private static List<ConfigurationFactory> loadConfigurationFactories(final ConfigurableInstanceFactory instanceFactory) {
+    private static List<ConfigurationFactory> loadConfigurationFactories(
+            final ConfigurableInstanceFactory instanceFactory) {
         final List<ConfigurationFactory> factories = new ArrayList<>();
 
-        Optional.ofNullable(PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME))
+        Optional.ofNullable(PropertiesUtil.getProperties()
+                        .getStringProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME))
                 .flatMap(DefaultConfigurationFactory::tryLoadFactoryClass)
                 .map(clazz -> {
                     try {

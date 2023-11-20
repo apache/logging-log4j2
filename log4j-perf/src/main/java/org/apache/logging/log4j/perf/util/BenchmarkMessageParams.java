@@ -22,11 +22,13 @@ import java.util.Arrays;
  * Created by remko on 5/5/2016.
  */
 public class BenchmarkMessageParams {
-    final static char[] CHARS = new char[16];
+    static final char[] CHARS = new char[16];
+
     static {
         Arrays.fill(CHARS, 'a');
     }
-    public final static String TEST = new String(CHARS);
+
+    public static final String TEST = new String(CHARS);
 
     public static volatile String one = "1";
     public static volatile String two = "2";

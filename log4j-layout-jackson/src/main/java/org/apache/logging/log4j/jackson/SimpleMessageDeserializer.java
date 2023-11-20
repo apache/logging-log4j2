@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+import java.io.IOException;
 import org.apache.logging.log4j.message.SimpleMessage;
 
 /**
@@ -42,5 +41,4 @@ public final class SimpleMessageDeserializer extends StdScalarDeserializer<Simpl
             throws IOException, JsonProcessingException {
         return new SimpleMessage(jsonParser.getValueAsString());
     }
-
 }

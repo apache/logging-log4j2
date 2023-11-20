@@ -19,7 +19,6 @@ package org.apache.logging.log4j.io;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,8 +61,7 @@ public class LoggerBufferedInputStreamCallerInfoTest extends IoBuilderCallerInfo
     @Before
     public void setupStreams() {
         final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
-        this.logIn = (BufferedInputStream)
-            IoBuilder.forLogger(getLogger())
+        this.logIn = (BufferedInputStream) IoBuilder.forLogger(getLogger())
                 .filter(srcInputStream)
                 .setLevel(LEVEL)
                 .setBuffered(true)

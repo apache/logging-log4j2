@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Objects;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
-
 import com.lmax.disruptor.EventTranslatorVararg;
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
@@ -30,6 +23,12 @@ import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import java.util.Objects;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -63,9 +62,11 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private int ringBufferSize;
     private WaitStrategy waitStrategy;
 
-    AsyncLoggerDisruptor(final String contextName, final Supplier<AsyncWaitStrategyFactory> waitStrategyFactorySupplier) {
+    AsyncLoggerDisruptor(
+            final String contextName, final Supplier<AsyncWaitStrategyFactory> waitStrategyFactorySupplier) {
         this.contextName = contextName;
-        this.waitStrategyFactorySupplier = Objects.requireNonNull(waitStrategyFactorySupplier, "waitStrategyFactorySupplier");
+        this.waitStrategyFactorySupplier =
+                Objects.requireNonNull(waitStrategyFactorySupplier, "waitStrategyFactorySupplier");
     }
 
     // package-protected for testing
@@ -107,21 +108,23 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             setStarting();
             LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
             ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE);
-            final AsyncWaitStrategyFactory factory = waitStrategyFactorySupplier.get(); // get factory from configuration
+            final AsyncWaitStrategyFactory factory =
+                    waitStrategyFactorySupplier.get(); // get factory from configuration
             waitStrategy = DisruptorUtil.createWaitStrategy(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY, factory);
 
-            final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLogger[" + contextName + "]", true, Thread.NORM_PRIORITY) {
-                @Override
-                public Thread newThread(final Runnable r) {
-                    final Thread result = super.newThread(r);
-                    backgroundThreadId = result.getId();
-                    return result;
-                }
-            };
+            final ThreadFactory threadFactory =
+                    new Log4jThreadFactory("AsyncLogger[" + contextName + "]", true, Thread.NORM_PRIORITY) {
+                        @Override
+                        public Thread newThread(final Runnable r) {
+                            final Thread result = super.newThread(r);
+                            backgroundThreadId = result.getId();
+                            return result;
+                        }
+                    };
             asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
-            disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, threadFactory, ProducerType.MULTI,
-                    waitStrategy);
+            disruptor = new Disruptor<>(
+                    RingBufferLogEvent.FACTORY, ringBufferSize, threadFactory, ProducerType.MULTI, waitStrategy);
 
             final ExceptionHandler<RingBufferLogEvent> errorHandler = DisruptorUtil.getAsyncLoggerExceptionHandler();
             disruptor.setDefaultExceptionHandler(errorHandler);
@@ -129,13 +132,19 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             final RingBufferLogEventHandler[] handlers = {new RingBufferLogEventHandler()};
             disruptor.handleEventsWith(handlers);
 
-            LOGGER.debug("[{}] Starting AsyncLogger disruptor for this context with ringbufferSize={}, waitStrategy={}, "
-                    + "exceptionHandler={}...", contextName, disruptor.getRingBuffer().getBufferSize(), waitStrategy
-                    .getClass().getSimpleName(), errorHandler);
+            LOGGER.debug(
+                    "[{}] Starting AsyncLogger disruptor for this context with ringbufferSize={}, waitStrategy={}, "
+                            + "exceptionHandler={}...",
+                    contextName,
+                    disruptor.getRingBuffer().getBufferSize(),
+                    waitStrategy.getClass().getSimpleName(),
+                    errorHandler);
             disruptor.start();
 
-            LOGGER.trace("[{}] AsyncLoggers use a {} translator", contextName, useThreadLocalTranslator ? "threadlocal"
-                    : "vararg");
+            LOGGER.trace(
+                    "[{}] AsyncLoggers use a {} translator",
+                    contextName,
+                    useThreadLocalTranslator ? "threadlocal" : "vararg");
             super.start();
         } finally {
             startLock.unlock();
@@ -179,7 +188,9 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         LOGGER.trace("[{}] AsyncLoggerDisruptor: disruptor has been shut down.", contextName);
 
         if (DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy) > 0) {
-            LOGGER.trace("AsyncLoggerDisruptor: {} discarded {} events.", asyncQueueFullPolicy,
+            LOGGER.trace(
+                    "AsyncLoggerDisruptor: {} discarded {} events.",
+                    asyncQueueFullPolicy,
                     DiscardingAsyncQueueFullPolicy.getDiscardCount(asyncQueueFullPolicy));
         }
         setStopped();
@@ -220,9 +231,9 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         }
         return (int) temp.getRingBuffer().remainingCapacity();
     }
-        /**
-         * Returns {@code true} if the specified disruptor is null.
-         */
+    /**
+     * Returns {@code true} if the specified disruptor is null.
+     */
     private boolean hasLog4jBeenShutDown(final Disruptor<RingBufferLogEvent> aDisruptor) {
         if (aDisruptor == null) { // LOG4J2-639
             LOGGER.warn("Ignoring log event after log4j was shut down");
@@ -281,26 +292,32 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             if (synchronizeEnqueueWhenQueueFull()) {
                 queueFullEnqueueLock.lock();
                 try {
-                    disruptor.getRingBuffer().publishEvent(translator,
-                            asyncLogger, // asyncLogger: 0
-                            location, // location: 1
-                            fqcn, // 2
-                            level, // 3
-                            marker, // 4
-                            msg, // 5
-                            thrown); // 6
+                    disruptor
+                            .getRingBuffer()
+                            .publishEvent(
+                                    translator,
+                                    asyncLogger, // asyncLogger: 0
+                                    location, // location: 1
+                                    fqcn, // 2
+                                    level, // 3
+                                    marker, // 4
+                                    msg, // 5
+                                    thrown); // 6
                 } finally {
                     queueFullEnqueueLock.unlock();
                 }
             } else {
-                disruptor.getRingBuffer().publishEvent(translator,
-                        asyncLogger, // asyncLogger: 0
-                        location, // location: 1
-                        fqcn, // 2
-                        level, // 3
-                        marker, // 4
-                        msg, // 5
-                        thrown); // 6
+                disruptor
+                        .getRingBuffer()
+                        .publishEvent(
+                                translator,
+                                asyncLogger, // asyncLogger: 0
+                                location, // location: 1
+                                fqcn, // 2
+                                level, // 3
+                                marker, // 4
+                                msg, // 5
+                                thrown); // 6
             }
         } catch (final NullPointerException npe) {
             // LOG4J2-639: catch NPE if disruptor field was set to null in stop()
@@ -326,8 +343,13 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
 
     private void logWarningOnNpeFromDisruptorPublish(
             final Level level, final String fqcn, final Message msg, final Throwable thrown) {
-        LOGGER.warn("[{}] Ignoring log event after log4j was shut down: {} [{}] {}{}", contextName,
-                level, fqcn, msg.getFormattedMessage(), thrown == null ? "" : Throwables.toStringList(thrown));
+        LOGGER.warn(
+                "[{}] Ignoring log event after log4j was shut down: {} [{}] {}{}",
+                contextName,
+                level,
+                fqcn,
+                msg.getFormattedMessage(),
+                thrown == null ? "" : Throwables.toStringList(thrown));
     }
 
     /**
@@ -354,7 +376,9 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
      */
     public void setUseThreadLocals(final boolean allow) {
         useThreadLocalTranslator = allow;
-        LOGGER.trace("[{}] AsyncLoggers have been modified to use a {} translator", contextName,
+        LOGGER.trace(
+                "[{}] AsyncLoggers have been modified to use a {} translator",
+                contextName,
                 useThreadLocalTranslator ? "threadlocal" : "vararg");
     }
 }

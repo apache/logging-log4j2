@@ -32,8 +32,7 @@ public class LayoutTest extends TestCase {
         /**
          * {@inheritDoc}
          */
-        public void activateOptions() {
-        }
+        public void activateOptions() {}
 
         /**
          * {@inheritDoc}
@@ -92,8 +91,12 @@ public class LayoutTest extends TestCase {
      * @param expectedHeader expected value for getHeader().
      * @param expectedFooter expected value for getFooter().
      */
-    protected LayoutTest(final String testName, final String expectedContentType, final boolean expectedIgnoresThrowable, final String expectedHeader,
-        final String expectedFooter) {
+    protected LayoutTest(
+            final String testName,
+            final String expectedContentType,
+            final boolean expectedIgnoresThrowable,
+            final String expectedHeader,
+            final String expectedFooter) {
         super(testName);
         contentType = expectedContentType;
         ignoresThrowable = expectedIgnoresThrowable;
@@ -117,7 +120,8 @@ public class LayoutTest extends TestCase {
      */
     public void testFormat() throws Exception {
         final Logger logger = Logger.getLogger("org.apache.log4j.LayoutTest");
-        final LoggingEvent event = new LoggingEvent("org.apache.log4j.Logger", logger, Level.INFO, "Hello, World", null);
+        final LoggingEvent event =
+                new LoggingEvent("org.apache.log4j.Logger", logger, Level.INFO, "Hello, World", null);
         final String result = createLayout().format(event);
         assertEquals("Mock", result);
     }

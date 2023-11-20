@@ -19,7 +19,6 @@ package org.apache.logging.log4j.script.layout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -106,8 +105,14 @@ public final class ScriptPatternSelector implements PatternSelector {
                 LOGGER.warn("No marker patterns were provided");
                 return null;
             }
-            return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, disableAnsi,
-                    noConsoleNoAnsi, configuration);
+            return new ScriptPatternSelector(
+                    script,
+                    properties,
+                    defaultPattern,
+                    alwaysWriteExceptions,
+                    disableAnsi,
+                    noConsoleNoAnsi,
+                    configuration);
         }
 
         public Builder setScript(final AbstractScript script) {
@@ -159,16 +164,22 @@ public final class ScriptPatternSelector implements PatternSelector {
     private final Configuration configuration;
     private final boolean requiresLocation;
 
-    private ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean disableAnsi,
-                                 final boolean noConsoleNoAnsi, final Configuration config) {
+    private ScriptPatternSelector(
+            final AbstractScript script,
+            final PatternMatch[] properties,
+            final String defaultPattern,
+            final boolean alwaysWriteExceptions,
+            final boolean disableAnsi,
+            final boolean noConsoleNoAnsi,
+            final Configuration config) {
         this.script = script;
         this.configuration = config;
         final PatternParser parser = PatternLayout.createPatternParser(config);
         boolean needsLocation = false;
         for (final PatternMatch property : properties) {
             try {
-                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
+                final List<PatternFormatter> list =
+                        parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
                 final PatternFormatter[] formatters = list.toArray(new PatternFormatter[list.size()]);
                 formatterMap.put(property.getKey(), formatters);
                 patternMap.put(property.getKey(), property.getPattern());
@@ -180,7 +191,8 @@ public final class ScriptPatternSelector implements PatternSelector {
             }
         }
         try {
-            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
+            final List<PatternFormatter> list =
+                    parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
             this.defaultPattern = defaultPattern;
             for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
@@ -212,7 +224,6 @@ public final class ScriptPatternSelector implements PatternSelector {
         return patternFormatter == null ? defaultFormatters : patternFormatter;
     }
 
-
     /**
      * Creates a builder for a custom ScriptPatternSelector.
      *
@@ -231,7 +242,11 @@ public final class ScriptPatternSelector implements PatternSelector {
             if (!first) {
                 sb.append(", ");
             }
-            sb.append("key=\"").append(entry.getKey()).append("\", pattern=\"").append(entry.getValue()).append("\"");
+            sb.append("key=\"")
+                    .append(entry.getKey())
+                    .append("\", pattern=\"")
+                    .append(entry.getValue())
+                    .append("\"");
             first = false;
         }
         if (!first) {

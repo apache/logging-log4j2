@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.net;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -102,5 +101,4 @@ public class SocketAddress {
     public String toString() {
         return socketAddress.toString();
     }
-
 }

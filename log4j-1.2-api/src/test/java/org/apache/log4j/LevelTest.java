@@ -16,14 +16,12 @@
  */
 package org.apache.log4j;
 
-import java.util.Locale;
-
-import org.apache.log4j.util.SerializationTestHelper;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+import org.apache.log4j.util.SerializationTestHelper;
+import org.junit.Test;
 
 /**
  * Tests of Level.
@@ -39,10 +37,9 @@ public class LevelTest {
      */
     @Test
     public void testSerializeINFO() throws Exception {
-        final int[] skip = new int[]{};
+        final int[] skip = new int[] {};
         SerializationTestHelper.assertSerializationEquals(
-            "target/test-classes/witness/serialization/info.bin",
-            Level.INFO, skip, Integer.MAX_VALUE);
+                "target/test-classes/witness/serialization/info.bin", Level.INFO, skip, Integer.MAX_VALUE);
     }
 
     /**
@@ -53,8 +50,7 @@ public class LevelTest {
     @Test
     public void testDeserializeINFO() throws Exception {
         final Object obj =
-            SerializationTestHelper.deserializeStream(
-                "target/test-classes/witness/serialization/info.bin");
+                SerializationTestHelper.deserializeStream("target/test-classes/witness/serialization/info.bin");
         assertTrue(obj instanceof Level);
         final Level info = (Level) obj;
         assertEquals("INFO", info.toString());
@@ -97,8 +93,7 @@ public class LevelTest {
          * Create an instance of CustomLevel.
          */
         public CustomLevel() {
-            super(
-                Level.INFO.level, Level.INFO.levelStr, Level.INFO.syslogEquivalent);
+            super(Level.INFO.level, Level.INFO.levelStr, Level.INFO.syslogEquivalent);
         }
     }
 
@@ -228,7 +223,6 @@ public class LevelTest {
         assertEquals("FATAL", level.toString());
     }
 
-
     /**
      * Tests Level.toLevel(Level.OFF_INT).
      */
@@ -278,6 +272,4 @@ public class LevelTest {
         Locale.setDefault(defaultLocale);
         assertEquals("INFO", level.toString());
     }
-
-
 }

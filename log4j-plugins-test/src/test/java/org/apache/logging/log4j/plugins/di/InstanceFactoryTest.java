@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
-import java.util.function.Supplier;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.plugins.test.validation.di.PrototypeBean;
 import org.apache.logging.log4j.plugins.test.validation.di.SingletonBean;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class InstanceFactoryTest {
     final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();

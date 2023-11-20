@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -41,8 +40,10 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
     }
 
     private static long sleepMillis() {
-        return PropertiesUtil.getProperties().getLongProperty(Log4jPropertyKey.CONFIG_RELIABILITY_STRATEGY_AWAIT_UNCONDITIONALLY_MILLIS,
-                DEFAULT_SLEEP_MILLIS);
+        return PropertiesUtil.getProperties()
+                .getLongProperty(
+                        Log4jPropertyKey.CONFIG_RELIABILITY_STRATEGY_AWAIT_UNCONDITIONALLY_MILLIS,
+                        DEFAULT_SLEEP_MILLIS);
     }
 
     /*
@@ -53,8 +54,14 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
      * org.apache.logging.log4j.message.Message, java.lang.Throwable)
      */
     @Override
-    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn, final Marker marker, final Level level,
-            final Message data, final Throwable t) {
+    public void log(
+            final Supplier<LoggerConfig> reconfigured,
+            final String loggerName,
+            final String fqcn,
+            final Marker marker,
+            final Level level,
+            final Message data,
+            final Throwable t) {
         loggerConfig.log(loggerName, fqcn, marker, level, data, t);
     }
 
@@ -66,8 +73,14 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
      * org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable)
      */
     @Override
-    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn,
-            final StackTraceElement location, final Marker marker, final Level level, final Message data,
+    public void log(
+            final Supplier<LoggerConfig> reconfigured,
+            final String loggerName,
+            final String fqcn,
+            final StackTraceElement location,
+            final Marker marker,
+            final Level level,
+            final Message data,
             final Throwable t) {
         loggerConfig.log(loggerName, fqcn, location, marker, level, data, t);
     }
@@ -133,5 +146,4 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
             }
         }
     }
-
 }

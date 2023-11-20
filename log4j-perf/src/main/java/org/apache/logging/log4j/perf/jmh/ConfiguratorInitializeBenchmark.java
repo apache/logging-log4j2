@@ -19,7 +19,6 @@ package org.apache.logging.log4j.perf.jmh;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -40,17 +39,18 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Thread)
 public class ConfiguratorInitializeBenchmark {
 
-    private static final String inlineConfigurationXML = "<Configuration name='ConfiguratorInitializeTest' status='off'>"
-            + "<Appenders>"
-            + "<Console name='STDOUT'>"
-            + "<PatternLayout pattern='%m%n'/>"
-            + "</Console>"
-            + "</Appenders>"
-            + "<Loggers>"
-            + "<Root level='error'>"
-            + "<AppenderRef ref='STDOUT'/>"
-            + "</Root>"
-            + "</Loggers>" + "</Configuration>";
+    private static final String inlineConfigurationXML =
+            "<Configuration name='ConfiguratorInitializeTest' status='off'>"
+                    + "<Appenders>"
+                    + "<Console name='STDOUT'>"
+                    + "<PatternLayout pattern='%m%n'/>"
+                    + "</Console>"
+                    + "</Appenders>"
+                    + "<Loggers>"
+                    + "<Root level='error'>"
+                    + "<AppenderRef ref='STDOUT'/>"
+                    + "</Root>"
+                    + "</Loggers>" + "</Configuration>";
 
     private ConfigurationSource configurationSource;
 
@@ -65,5 +65,4 @@ public class ConfiguratorInitializeBenchmark {
     public LoggerContext initializeLoggerContext() {
         return Configurator.initialize(null, configurationSource);
     }
-
 }

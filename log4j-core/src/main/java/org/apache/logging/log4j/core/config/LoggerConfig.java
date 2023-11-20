@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
@@ -90,6 +89,7 @@ public class LoggerConfig extends AbstractFilterable {
 
         @PluginBuilderAttribute
         private Boolean additivity;
+
         private Level level;
         private String levelAndRefs;
         private String loggerName;
@@ -197,8 +197,16 @@ public class LoggerConfig extends AbstractFilterable {
             final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
             final LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
             final boolean useLocation = includeLocation(includeLocation, config);
-            return new LoggerConfig(name, container.refs, filter, container.level, isAdditivity(), properties, config,
-                    useLocation, logEventFactory);
+            return new LoggerConfig(
+                    name,
+                    container.refs,
+                    filter,
+                    container.level,
+                    isAdditivity(),
+                    properties,
+                    config,
+                    useLocation,
+                    logEventFactory);
         }
 
         @SuppressWarnings("unchecked")
@@ -239,9 +247,15 @@ public class LoggerConfig extends AbstractFilterable {
     }
 
     protected LoggerConfig(
-            final String name, final List<AppenderRef> appenders, final Filter filter,
-            final Level level, final boolean additive, final Property[] properties, final Configuration config,
-            final boolean includeLocation, final LogEventFactory logEventFactory) {
+            final String name,
+            final List<AppenderRef> appenders,
+            final Filter filter,
+            final Level level,
+            final boolean additive,
+            final Property[] properties,
+            final Configuration config,
+            final boolean includeLocation,
+            final LogEventFactory logEventFactory) {
         super(filter, null);
         this.logEventFactory = logEventFactory != null ? logEventFactory : DefaultLogEventFactory.newInstance();
         this.name = name;
@@ -468,11 +482,16 @@ public class LoggerConfig extends AbstractFilterable {
      * @param t A Throwable or null.
      */
     @PerformanceSensitive("allocation")
-    public void log(final String loggerName, final String fqcn, final Marker marker, final Level level,
-            final Message data, final Throwable t) {
+    public void log(
+            final String loggerName,
+            final String fqcn,
+            final Marker marker,
+            final Level level,
+            final Message data,
+            final Throwable t) {
         final List<Property> props = getProperties(loggerName, fqcn, marker, level, data, t);
-        final LogEvent logEvent = logEventFactory.createEvent(
-                loggerName, marker, fqcn, location(fqcn), level, data, props, t);
+        final LogEvent logEvent =
+                logEventFactory.createEvent(loggerName, marker, fqcn, location(fqcn), level, data, props, t);
         try {
             log(logEvent, LoggerConfigPredicate.ALL);
         } finally {
@@ -482,8 +501,7 @@ public class LoggerConfig extends AbstractFilterable {
     }
 
     private StackTraceElement location(final String fqcn) {
-        return requiresLocation() ?
-                StackLocatorUtil.calcLocation(fqcn) : null;
+        return requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
     }
 
     /**
@@ -498,10 +516,17 @@ public class LoggerConfig extends AbstractFilterable {
      * @param t A Throwable or null.
      */
     @PerformanceSensitive("allocation")
-    public void log(final String loggerName, final String fqcn, final StackTraceElement location, final Marker marker,
-        final Level level, final Message data, final Throwable t) {
+    public void log(
+            final String loggerName,
+            final String fqcn,
+            final StackTraceElement location,
+            final Marker marker,
+            final Level level,
+            final Message data,
+            final Throwable t) {
         final List<Property> props = getProperties(loggerName, fqcn, marker, level, data, t);
-        final LogEvent logEvent = logEventFactory.createEvent(loggerName, marker, fqcn, location, level, data, props, t);
+        final LogEvent logEvent =
+                logEventFactory.createEvent(loggerName, marker, fqcn, location, level, data, props, t);
         try {
             log(logEvent, LoggerConfigPredicate.ALL);
         } finally {
@@ -644,7 +669,8 @@ public class LoggerConfig extends AbstractFilterable {
 
     // Note: for asynchronous loggers, includeLocation default is FALSE,
     // for synchronous loggers, includeLocation default is TRUE.
-    protected static boolean includeLocation(final String includeLocationConfigValue, final Configuration configuration) {
+    protected static boolean includeLocation(
+            final String includeLocationConfigValue, final Configuration configuration) {
         if (includeLocationConfigValue == null) {
             LoggerContext context = null;
             if (configuration != null) {
@@ -779,8 +805,16 @@ public class LoggerConfig extends AbstractFilterable {
             @Override
             public LoggerConfig build() {
                 final LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
-                return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, filter, container.level,
-                        additivity, properties, config, includeLocation(includeLocation, config), logEventFactory);
+                return new LoggerConfig(
+                        LogManager.ROOT_LOGGER_NAME,
+                        container.refs,
+                        filter,
+                        container.level,
+                        additivity,
+                        properties,
+                        config,
+                        includeLocation(includeLocation, config),
+                        logEventFactory);
             }
 
             @SuppressWarnings("unchecked")
@@ -788,12 +822,10 @@ public class LoggerConfig extends AbstractFilterable {
                 return (B) this;
             }
         }
-
-
     }
 
-    protected static LevelAndRefs getLevelAndRefs(final Level level, final AppenderRef[] refs, final String levelAndRefs,
-            final Configuration config) {
+    protected static LevelAndRefs getLevelAndRefs(
+            final Level level, final AppenderRef[] refs, final String levelAndRefs, final Configuration config) {
         final LevelAndRefs result = new LevelAndRefs();
         if (levelAndRefs != null) {
             if (config instanceof PropertiesConfiguration) {
@@ -807,8 +839,9 @@ public class LoggerConfig extends AbstractFilterable {
                 result.level = Level.getLevel(parts[0]);
                 if (parts.length > 1) {
                     final List<AppenderRef> refList = new ArrayList<>();
-                    Arrays.stream(parts).skip(1).forEach((ref) ->
-                            refList.add(AppenderRef.createAppenderRef(ref, null, null)));
+                    Arrays.stream(parts)
+                            .skip(1)
+                            .forEach((ref) -> refList.add(AppenderRef.createAppenderRef(ref, null, null)));
                     result.refs = refList;
                 }
             } else {

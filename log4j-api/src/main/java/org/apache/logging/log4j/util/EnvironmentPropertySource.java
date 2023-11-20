@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Properties;
-
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import java.util.Properties;
 
 /**
  * PropertySource implementation that uses environment variables as a source.

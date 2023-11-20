@@ -26,8 +26,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class PluginCache {
-    private final Map<String, Map<String, PluginEntry>> namespaces =
-        new TreeMap<>();
+    private final Map<String, Map<String, PluginEntry>> namespaces = new TreeMap<>();
 
     /**
      * Returns all namespaces of plugins in this cache.

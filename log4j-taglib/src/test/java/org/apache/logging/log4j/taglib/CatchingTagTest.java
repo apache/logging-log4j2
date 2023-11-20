@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
-
 import javax.servlet.jsp.tagext.Tag;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -28,8 +28,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.mock.web.MockPageContext;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -79,13 +77,10 @@ public class CatchingTagTest {
     private void verify(final String expected) {
         final ListAppender listApp = context.getListAppender("List");
         final List<String> events = listApp.getMessages();
-        try
-        {
+        try {
             assertEquals("Incorrect number of messages.", 1, events.size());
             assertEquals("Incorrect message.", "o.a.l.l.t.CatchingTagTest " + expected, events.get(0));
-        }
-        finally
-        {
+        } finally {
             listApp.clear();
         }
     }

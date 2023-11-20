@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.layout;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
@@ -25,8 +27,6 @@ import org.apache.logging.log4j.test.junit.ThreadContextRule;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class Log4j1XmlLayoutTest {
 
@@ -46,10 +46,10 @@ public class Log4j1XmlLayoutTest {
 
         final String result = layout.toSerializable(event);
 
-        final String expected =
-                "<log4j:event logger=\"a.B\" timestamp=\"" + event.getTimeMillis() + "\" level=\"INFO\" thread=\"main\">\r\n" +
-                "<log4j:message><![CDATA[Hello, World]]></log4j:message>\r\n" +
-                "</log4j:event>\r\n\r\n";
+        final String expected = "<log4j:event logger=\"a.B\" timestamp=\"" + event.getTimeMillis()
+                + "\" level=\"INFO\" thread=\"main\">\r\n"
+                + "<log4j:message><![CDATA[Hello, World]]></log4j:message>\r\n"
+                + "</log4j:event>\r\n\r\n";
 
         assertEquals(expected, result);
     }
@@ -73,17 +73,16 @@ public class Log4j1XmlLayoutTest {
 
         final String result = layout.toSerializable(event);
 
-        final String expected =
-                "<log4j:event logger=\"a.B\" timestamp=\"" + event.getTimeMillis() + "\" level=\"INFO\" thread=\"main\">\r\n" +
-                "<log4j:message><![CDATA[Hello, World]]></log4j:message>\r\n" +
-                "<log4j:locationInfo class=\"pack.MyClass\" method=\"myMethod\" file=\"MyClass.java\" line=\"17\"/>\r\n" +
-                "<log4j:properties>\r\n" +
-                "<log4j:data name=\"key1\" value=\"value1\"/>\r\n" +
-                "<log4j:data name=\"key2\" value=\"value2\"/>\r\n" +
-                "</log4j:properties>\r\n"+
-                "</log4j:event>\r\n\r\n";
+        final String expected = "<log4j:event logger=\"a.B\" timestamp=\"" + event.getTimeMillis()
+                + "\" level=\"INFO\" thread=\"main\">\r\n"
+                + "<log4j:message><![CDATA[Hello, World]]></log4j:message>\r\n"
+                + "<log4j:locationInfo class=\"pack.MyClass\" method=\"myMethod\" file=\"MyClass.java\" line=\"17\"/>\r\n"
+                + "<log4j:properties>\r\n"
+                + "<log4j:data name=\"key1\" value=\"value1\"/>\r\n"
+                + "<log4j:data name=\"key2\" value=\"value2\"/>\r\n"
+                + "</log4j:properties>\r\n"
+                + "</log4j:event>\r\n\r\n";
 
         assertEquals(expected, result);
     }
-
 }

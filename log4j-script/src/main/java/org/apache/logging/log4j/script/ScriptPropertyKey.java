@@ -24,7 +24,6 @@ import org.apache.logging.log4j.util.PropertyKey;
  * Properties used by the JUL support.
  */
 public enum ScriptPropertyKey implements PropertyKey {
-
     SCRIPT_ENABLE_LANGUAGES(PropertyComponent.SCRIPT, ScriptPropertyKey.Constant.ENABLE_LANGUAGES);
 
     private final PropertyComponent component;
@@ -74,7 +73,8 @@ public enum ScriptPropertyKey implements PropertyKey {
         private static final String DELIM = ".";
         static final String ENABLE_LANGUAGES = "enableLanguages";
         public static final String SCRIPT_ENABLE_LANGUAGES = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
-                + PropertyComponent.Constant.SCRIPT + DELIM + ENABLE_LANGUAGES;
+                + PropertyComponent.Constant.SCRIPT
+                + DELIM
+                + ENABLE_LANGUAGES;
     }
-
 }

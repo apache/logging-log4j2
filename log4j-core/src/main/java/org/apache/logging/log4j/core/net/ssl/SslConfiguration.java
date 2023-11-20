@@ -20,7 +20,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
-
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -28,7 +27,6 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -49,8 +47,11 @@ public class SslConfiguration {
     private final String protocol;
     private final boolean verifyHostName;
 
-    private SslConfiguration(final String protocol, final KeyStoreConfiguration keyStoreConfig,
-            final TrustStoreConfiguration trustStoreConfig, final boolean verifyHostName) {
+    private SslConfiguration(
+            final String protocol,
+            final KeyStoreConfiguration keyStoreConfig,
+            final TrustStoreConfiguration trustStoreConfig,
+            final boolean verifyHostName) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
         this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
@@ -84,11 +85,9 @@ public class SslConfiguration {
         try {
             context = createSslContextBasedOnConfiguration();
             LOGGER.debug("Creating SSLContext with the given parameters");
-        }
-        catch (final TrustStoreConfigurationException e) {
+        } catch (final TrustStoreConfigurationException e) {
             context = createSslContextWithTrustStoreFailure();
-        }
-        catch (final KeyStoreConfigurationException e) {
+        } catch (final KeyStoreConfigurationException e) {
             context = createSslContextWithKeyStoreFailure();
         }
         return context;
@@ -100,8 +99,7 @@ public class SslConfiguration {
         try {
             context = createSslContextWithDefaultTrustManagerFactory();
             LOGGER.debug("Creating SSLContext with default truststore");
-        }
-        catch (final KeyStoreConfigurationException e) {
+        } catch (final KeyStoreConfigurationException e) {
             context = createDefaultSslContext();
             LOGGER.debug("Creating SSLContext with default configuration");
         }
@@ -114,15 +112,15 @@ public class SslConfiguration {
         try {
             context = createSslContextWithDefaultKeyManagerFactory();
             LOGGER.debug("Creating SSLContext with default keystore");
-        }
-        catch (final TrustStoreConfigurationException e) {
+        } catch (final TrustStoreConfigurationException e) {
             context = createDefaultSslContext();
             LOGGER.debug("Creating SSLContext with default configuration");
         }
         return context;
     }
 
-    private SSLContext createSslContextBasedOnConfiguration() throws KeyStoreConfigurationException, TrustStoreConfigurationException {
+    private SSLContext createSslContextBasedOnConfiguration()
+            throws KeyStoreConfigurationException, TrustStoreConfigurationException {
         return createSslContext(false, false);
     }
 
@@ -130,16 +128,15 @@ public class SslConfiguration {
         try {
             return createSslContext(true, false);
         } catch (final KeyStoreConfigurationException dummy) {
-             LOGGER.debug("Exception occurred while using default keystore. This should be a BUG");
-             return null;
+            LOGGER.debug("Exception occurred while using default keystore. This should be a BUG");
+            return null;
         }
     }
 
     private SSLContext createSslContextWithDefaultTrustManagerFactory() throws KeyStoreConfigurationException {
         try {
             return createSslContext(false, true);
-        }
-        catch (final TrustStoreConfigurationException dummy) {
+        } catch (final TrustStoreConfigurationException dummy) {
             LOGGER.debug("Exception occurred while using default truststore. This should be a BUG");
             return null;
         }
@@ -154,7 +151,8 @@ public class SslConfiguration {
         }
     }
 
-    private SSLContext createSslContext(final boolean loadDefaultKeyManagerFactory, final boolean loadDefaultTrustManagerFactory)
+    private SSLContext createSslContext(
+            final boolean loadDefaultKeyManagerFactory, final boolean loadDefaultTrustManagerFactory)
             throws KeyStoreConfigurationException, TrustStoreConfigurationException {
         try {
             KeyManager[] kManagers = null;
@@ -172,12 +170,10 @@ public class SslConfiguration {
 
             newSslContext.init(kManagers, tManagers, null);
             return newSslContext;
-        }
-        catch (final NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             LOGGER.error("No Provider supports a TrustManagerFactorySpi implementation for the specified protocol", e);
             throw new TrustStoreConfigurationException(e);
-        }
-        catch (final KeyManagementException e) {
+        } catch (final KeyManagementException e) {
             LOGGER.error("Failed to initialize the SSLContext", e);
             throw new KeyStoreConfigurationException(e);
         }
@@ -190,8 +186,7 @@ public class SslConfiguration {
 
         try {
             return trustStoreConfig.initTrustManagerFactory();
-        }
-        catch (final NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             LOGGER.error("The specified algorithm is not available from the specified provider", e);
             throw new TrustStoreConfigurationException(e);
         } catch (final KeyStoreException e) {
@@ -207,8 +202,7 @@ public class SslConfiguration {
 
         try {
             return keyStoreConfig.initKeyManagerFactory();
-        }
-        catch (final NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             LOGGER.error("The specified algorithm is not available from the specified provider", e);
             throw new KeyStoreConfigurationException(e);
         } catch (final KeyStoreException e) {
@@ -234,7 +228,7 @@ public class SslConfiguration {
             @PluginAttribute final String protocol,
             @PluginElement final KeyStoreConfiguration keyStoreConfig,
             @PluginElement final TrustStoreConfiguration trustStoreConfig) {
-            // @formatter:on
+        // @formatter:on
         return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, false);
     }
 

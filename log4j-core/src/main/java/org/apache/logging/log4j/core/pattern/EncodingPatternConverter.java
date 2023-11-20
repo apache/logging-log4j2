@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -46,8 +45,7 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
      * @param formatters   the PatternFormatters to generate the text to manipulate.
      * @param escapeFormat the escape format strategy to use for encoding output of formatters
      */
-    private EncodingPatternConverter(final List<PatternFormatter> formatters,
-                                     final EscapeFormat escapeFormat) {
+    private EncodingPatternConverter(final List<PatternFormatter> formatters, final EscapeFormat escapeFormat) {
         super("encode", "encode");
         this.formatters = formatters;
         this.escapeFormat = escapeFormat;
@@ -55,9 +53,10 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
 
     @Override
     public boolean handlesThrowable() {
-        return formatters != null && formatters.stream()
-                .map(PatternFormatter::getConverter)
-                .anyMatch(LogEventPatternConverter::handlesThrowable);
+        return formatters != null
+                && formatters.stream()
+                        .map(PatternFormatter::getConverter)
+                        .anyMatch(LogEventPatternConverter::handlesThrowable);
     }
 
     /**
@@ -69,16 +68,16 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
      */
     public static EncodingPatternConverter newInstance(final Configuration config, final String[] options) {
         if (options.length > 2 || options.length == 0) {
-            LOGGER.error("Incorrect number of options on escape. Expected 1 or 2, but received {}",
-                options.length);
+            LOGGER.error("Incorrect number of options on escape. Expected 1 or 2, but received {}", options.length);
             return null;
         }
         if (options[0] == null) {
             LOGGER.error("No pattern supplied on escape");
             return null;
         }
-        final EscapeFormat escapeFormat = options.length < 2 ? EscapeFormat.HTML
-            : EnglishEnums.valueOf(EscapeFormat.class, options[1], EscapeFormat.HTML);
+        final EscapeFormat escapeFormat = options.length < 2
+                ? EscapeFormat.HTML
+                : EnglishEnums.valueOf(EscapeFormat.class, options[1], EscapeFormat.HTML);
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
         return new EncodingPatternConverter(formatters, escapeFormat);

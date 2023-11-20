@@ -35,10 +35,9 @@ public class RunLog4j2 implements IPerfTestRunner {
         histogram.addObservation(opsPerSec);
     }
 
-
     @Override
-    public void runLatencyTest(final int samples, final Histogram histogram,
-            final long nanoTimeCost, final int threadCount) {
+    public void runLatencyTest(
+            final int samples, final Histogram histogram, final long nanoTimeCost, final int threadCount) {
         final Logger logger = LOGGER;
         for (int i = 0; i < samples; i++) {
             final long s1 = System.nanoTime();
@@ -57,12 +56,10 @@ public class RunLog4j2 implements IPerfTestRunner {
         }
     }
 
-
     @Override
     public void shutdown() {
         CoreLoggerContexts.stopLoggerContext(); // stop async thread
     }
-
 
     @Override
     public void log(final String finalMessage) {

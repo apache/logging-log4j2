@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -27,9 +29,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @LoggerContextSource("log4j-test2.xml")
 public class LoggerUpdateTest {
@@ -53,7 +52,7 @@ public class LoggerUpdateTest {
            LoggerConfig loggerConfig = getLoggerConfig("com.apache.test");
         */
         loggerConfig.setLevel(Level.DEBUG);
-        context.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
+        context.updateLoggers(); // This causes all Loggers to refetch information from their LoggerConfig.
         logger.traceEntry();
         events = app.getEvents();
         assertThat(events).isEmpty();

@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
@@ -362,5 +361,4 @@ public final class Level implements Comparable<Level> {
     public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name) {
         return Enum.valueOf(enumType, name);
     }
-
 }

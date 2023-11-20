@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core;
 
 import java.util.Locale;
-
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;

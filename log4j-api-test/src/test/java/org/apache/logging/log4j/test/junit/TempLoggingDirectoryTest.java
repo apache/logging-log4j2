@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.apache.logging.log4j.test.TestProperties;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @UsingTestProperties
 public class TempLoggingDirectoryTest {
@@ -32,16 +31,14 @@ public class TempLoggingDirectoryTest {
 
     @TempLoggingDir
     private static Path staticLoggingPath;
+
     @TempLoggingDir
     private Path instanceLoggingPath;
 
     @Test
     void testInjectedFields(final @TempLoggingDir Path parameterLoggingPath, final TestProperties props) {
-        assertThat(staticLoggingPath).exists()
-                .endsWith(PER_CLASS_PATH);
-        assertThat(instanceLoggingPath).exists()
-                .startsWith(staticLoggingPath)
-                .endsWith(PER_TEST_PATH);
+        assertThat(staticLoggingPath).exists().endsWith(PER_CLASS_PATH);
+        assertThat(instanceLoggingPath).exists().startsWith(staticLoggingPath).endsWith(PER_TEST_PATH);
         assertThat(parameterLoggingPath).isEqualTo(instanceLoggingPath);
         assertThat(props.getProperty(TestProperties.LOGGING_PATH)).isEqualTo(instanceLoggingPath.toString());
     }

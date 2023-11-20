@@ -57,13 +57,14 @@ public final class JsonUtils {
     /**
      * Temporary buffer used for composing quote/escape sequences
      */
-    private final static Recycler<char[]> qbufRecycler = LoggingSystem.getRecyclerFactory().create(() -> {
-        char[] qbuf = new char[6];
-        qbuf[0] = '\\';
-        qbuf[2] = '0';
-        qbuf[3] = '0';
-        return qbuf;
-    });
+    private static final Recycler<char[]> qbufRecycler = LoggingSystem.getRecyclerFactory()
+            .create(() -> {
+                char[] qbuf = new char[6];
+                qbuf[0] = '\\';
+                qbuf[2] = '0';
+                qbuf[3] = '0';
+                return qbuf;
+            });
 
     /**
      * Quote text contents using JSON standard quoting, and append results to a supplied {@link StringBuilder}.
@@ -92,9 +93,7 @@ public final class JsonUtils {
                 // something to escape; 2 or 6-char variant?
                 final char d = input.charAt(inPtr++);
                 final int escCode = escCodes[d];
-                final int length = (escCode < 0)
-                        ? _appendNumeric(d, qbuf)
-                        : _appendNamed(escCode, qbuf);
+                final int length = (escCode < 0) ? _appendNumeric(d, qbuf) : _appendNamed(escCode, qbuf);
 
                 output.append(qbuf, 0, length);
             }
@@ -115,5 +114,4 @@ public final class JsonUtils {
         qbuf[1] = (char) esc;
         return 2;
     }
-
 }

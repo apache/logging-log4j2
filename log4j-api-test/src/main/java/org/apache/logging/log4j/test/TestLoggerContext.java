@@ -18,7 +18,6 @@ package org.apache.logging.log4j.test;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
@@ -64,5 +63,4 @@ public class TestLoggerContext implements LoggerContext {
     public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         return false;
     }
-
 }

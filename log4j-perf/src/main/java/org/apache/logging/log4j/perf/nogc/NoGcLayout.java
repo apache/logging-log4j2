@@ -18,7 +18,6 @@ package org.apache.logging.log4j.perf.nogc;
 
 import java.nio.charset.Charset;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
@@ -76,9 +75,8 @@ public class NoGcLayout implements Layout, Encoder<LogEvent> {
         private final PatternFormatter[] formatters;
 
         PatternSerializer2() {
-            this(new PatternFormatter[]{
-                    new PatternFormatter(NoGcMessagePatternConverter.newInstance(null, null),
-                            FormattingInfo.getDefault()),
+            this(new PatternFormatter[] {
+                new PatternFormatter(NoGcMessagePatternConverter.newInstance(null, null), FormattingInfo.getDefault()),
             });
         }
 
@@ -88,7 +86,7 @@ public class NoGcLayout implements Layout, Encoder<LogEvent> {
         }
 
         public StringBuilder toSerializable(final LogEvent event, final StringBuilder buf) {
-            //final StringBuilder buf = getStringBuilder();
+            // final StringBuilder buf = getStringBuilder();
             final int len = formatters.length;
             for (int i = 0; i < len; i++) {
                 formatters[i].format(event, buf);

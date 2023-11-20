@@ -23,7 +23,6 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.io.internal.InternalPrintStream;
@@ -41,16 +40,27 @@ public class LoggerPrintStream extends PrintStream {
     private static final String FQCN = LoggerPrintStream.class.getName();
     private final InternalPrintStream psLogger;
 
-    protected LoggerPrintStream(final ExtendedLogger logger, final boolean autoFlush, final Charset charset,
-                                final String fqcn, final Level level, final Marker marker)
-        throws UnsupportedEncodingException {
+    protected LoggerPrintStream(
+            final ExtendedLogger logger,
+            final boolean autoFlush,
+            final Charset charset,
+            final String fqcn,
+            final Level level,
+            final Marker marker)
+            throws UnsupportedEncodingException {
         super(new PrintStream(new ByteArrayOutputStream()));
         psLogger = new InternalPrintStream(logger, autoFlush, charset, fqcn == null ? FQCN : fqcn, level, marker);
     }
 
-    protected LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
-                                final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker)
-        throws UnsupportedEncodingException {
+    protected LoggerPrintStream(
+            final OutputStream out,
+            final boolean autoFlush,
+            final Charset charset,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker)
+            throws UnsupportedEncodingException {
         super(new PrintStream(out));
         psLogger = new InternalPrintStream(out, autoFlush, charset, logger, fqcn == null ? FQCN : fqcn, level, marker);
     }

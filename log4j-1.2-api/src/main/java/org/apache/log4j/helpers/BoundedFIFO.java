@@ -106,7 +106,7 @@ public class BoundedFIFO {
      *
      * @since 1.1
      */
-    synchronized public void resize(final int newSize) {
+    public synchronized void resize(final int newSize) {
         if (newSize == maxSize) {
             return;
         }
@@ -159,5 +159,4 @@ public class BoundedFIFO {
     public boolean wasFull() {
         return numElements + 1 == maxSize;
     }
-
 }

@@ -134,7 +134,7 @@ public class LogLog {
      *
      * @param enabled Enable or disable.
      */
-    static public void setInternalDebugging(final boolean enabled) {
+    public static void setInternalDebugging(final boolean enabled) {
         debugEnabled = enabled;
     }
 

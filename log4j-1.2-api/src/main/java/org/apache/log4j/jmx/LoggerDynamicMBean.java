@@ -19,7 +19,6 @@ package org.apache.log4j.jmx;
 import java.lang.reflect.Constructor;
 import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.management.Attribute;
 import javax.management.AttributeNotFoundException;
 import javax.management.InvalidAttributeValueException;
@@ -37,7 +36,6 @@ import javax.management.NotificationListener;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.management.RuntimeOperationsException;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -54,7 +52,8 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
 
     private final String dClassName = this.getClass().getName();
 
-    private final String dDescription = "This MBean acts as a management facade for a org.apache.log4j.Logger instance.";
+    private final String dDescription =
+            "This MBean acts as a management facade for a org.apache.log4j.Logger instance.";
 
     // We wrap this Logger instance.
     private final Logger logger;
@@ -66,7 +65,8 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
 
     void addAppender(final String appenderClass, final String appenderName) {
         cat.debug("addAppender called with " + appenderClass + ", " + appenderName);
-        final Appender appender = (Appender) OptionConverter.instantiateByClassName(appenderClass, org.apache.log4j.Appender.class, null);
+        final Appender appender =
+                (Appender) OptionConverter.instantiateByClassName(appenderClass, org.apache.log4j.Appender.class, null);
         appender.setName(appenderName);
         logger.addAppender(appender);
 
@@ -84,26 +84,32 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
 
     private void buildDynamicMBeanInfo() {
         final Constructor[] constructors = this.getClass().getConstructors();
-        dConstructors[0] = new MBeanConstructorInfo("HierarchyDynamicMBean(): Constructs a HierarchyDynamicMBean instance", constructors[0]);
+        dConstructors[0] = new MBeanConstructorInfo(
+                "HierarchyDynamicMBean(): Constructs a HierarchyDynamicMBean instance", constructors[0]);
 
-        dAttributes.add(new MBeanAttributeInfo("name", "java.lang.String", "The name of this Logger.", true, false, false));
+        dAttributes.add(
+                new MBeanAttributeInfo("name", "java.lang.String", "The name of this Logger.", true, false, false));
 
-        dAttributes.add(new MBeanAttributeInfo("priority", "java.lang.String", "The priority of this logger.", true, true, false));
+        dAttributes.add(new MBeanAttributeInfo(
+                "priority", "java.lang.String", "The priority of this logger.", true, true, false));
 
         final MBeanParameterInfo[] params = new MBeanParameterInfo[2];
         params[0] = new MBeanParameterInfo("class name", "java.lang.String", "add an appender to this logger");
         params[1] = new MBeanParameterInfo("appender name", "java.lang.String", "name of the appender");
 
-        dOperations[0] = new MBeanOperationInfo("addAppender", "addAppender(): add an appender", params, "void", MBeanOperationInfo.ACTION);
+        dOperations[0] = new MBeanOperationInfo(
+                "addAppender", "addAppender(): add an appender", params, "void", MBeanOperationInfo.ACTION);
     }
 
     @Override
-    public Object getAttribute(final String attributeName) throws AttributeNotFoundException, MBeanException, ReflectionException {
+    public Object getAttribute(final String attributeName)
+            throws AttributeNotFoundException, MBeanException, ReflectionException {
 
         // Check attributeName is not null to avoid NullPointerException later on
         if (attributeName == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Attribute name cannot be null"),
-                "Cannot invoke a getter of " + dClassName + " with null attribute name");
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Attribute name cannot be null"),
+                    "Cannot invoke a getter of " + dClassName + " with null attribute name");
         }
 
         // Check for a recognized attributeName and call the corresponding getter
@@ -128,7 +134,6 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
 
         // If attributeName has not been recognized throw an AttributeNotFoundException
         throw (new AttributeNotFoundException("Cannot find " + attributeName + " attribute in " + dClassName));
-
     }
 
     @Override
@@ -143,7 +148,8 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
         final MBeanAttributeInfo[] attribs = new MBeanAttributeInfo[dAttributes.size()];
         dAttributes.toArray(attribs);
 
-        final MBeanInfo mb = new MBeanInfo(dClassName, dDescription, attribs, dConstructors, dOperations, new MBeanNotificationInfo[0]);
+        final MBeanInfo mb = new MBeanInfo(
+                dClassName, dDescription, attribs, dConstructors, dOperations, new MBeanNotificationInfo[0]);
         // cat.debug("getMBeanInfo exit.");
         return mb;
     }
@@ -152,11 +158,11 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
     public void handleNotification(final Notification notification, final Object handback) {
         cat.debug("Received notification: " + notification.getType());
         registerAppenderMBean((Appender) notification.getUserData());
-
     }
 
     @Override
-    public Object invoke(final String operationName, final Object params[], final String signature[]) throws MBeanException, ReflectionException {
+    public Object invoke(final String operationName, final Object params[], final String signature[])
+            throws MBeanException, ReflectionException {
 
         if (operationName.equals("addAppender")) {
             addAppender((String) params[0], (String) params[1]);
@@ -180,7 +186,13 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
             objectName = new ObjectName("log4j", "appender", name);
             if (!server.isRegistered(objectName)) {
                 registerMBean(appenderMBean, objectName);
-                dAttributes.add(new MBeanAttributeInfo("appender=" + name, "javax.management.ObjectName", "The " + name + " appender.", true, true, false));
+                dAttributes.add(new MBeanAttributeInfo(
+                        "appender=" + name,
+                        "javax.management.ObjectName",
+                        "The " + name + " appender.",
+                        true,
+                        true,
+                        false));
             }
 
         } catch (final JMException e) {
@@ -193,19 +205,22 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
     }
 
     @Override
-    public void setAttribute(final Attribute attribute) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
+    public void setAttribute(final Attribute attribute)
+            throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
 
         // Check attribute is not null to avoid NullPointerException later on
         if (attribute == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Attribute cannot be null"),
-                "Cannot invoke a setter of " + dClassName + " with null attribute");
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Attribute cannot be null"),
+                    "Cannot invoke a setter of " + dClassName + " with null attribute");
         }
         final String name = attribute.getName();
         final Object value = attribute.getValue();
 
         if (name == null) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Attribute name cannot be null"),
-                "Cannot invoke the setter of " + dClassName + " with null attribute name");
+            throw new RuntimeOperationsException(
+                    new IllegalArgumentException("Attribute name cannot be null"),
+                    "Cannot invoke the setter of " + dClassName + " with null attribute name");
         }
 
         if (name.equals("priority")) {
@@ -220,7 +235,8 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
                 logger.setLevel(p);
             }
         } else {
-            throw (new AttributeNotFoundException("Attribute " + name + " not found in " + this.getClass().getName()));
+            throw (new AttributeNotFoundException(
+                    "Attribute " + name + " not found in " + this.getClass().getName()));
         }
     }
 }

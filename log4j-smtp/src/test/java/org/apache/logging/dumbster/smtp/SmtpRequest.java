@@ -143,8 +143,8 @@ public class SmtpRequest {
                 }
             } else if (SmtpActionType.QUIT == action) {
                 if (SmtpState.QUIT == state) {
-                    response = new SmtpResponse(221, "localhost Dumbster service closing transmission channel",
-                        SmtpState.CONNECT);
+                    response = new SmtpResponse(
+                            221, "localhost Dumbster service closing transmission channel", SmtpState.CONNECT);
                 } else {
                     response = new SmtpResponse(503, "Bad sequence of commands: " + action, this.state);
                 }

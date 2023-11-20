@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
@@ -79,29 +78,41 @@ public class AsyncLoggerConfig extends LoggerConfig {
         @Override
         public LoggerConfig build() {
             final String name = getLoggerName().equals(ROOT) ? Strings.EMPTY : getLoggerName();
-            final LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
-                    getConfig());
-            return new AsyncLoggerConfig(name, container.refs,getFilter(), container.level, isAdditivity(),
-                    getProperties(), getConfig(), includeLocation(getIncludeLocation()), getLogEventFactory());
+            final LevelAndRefs container =
+                    LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(), getConfig());
+            return new AsyncLoggerConfig(
+                    name,
+                    container.refs,
+                    getFilter(),
+                    container.level,
+                    isAdditivity(),
+                    getProperties(),
+                    getConfig(),
+                    includeLocation(getIncludeLocation()),
+                    getLogEventFactory());
         }
     }
 
     protected AsyncLoggerConfig(
             final String name,
-            final List<AppenderRef> appenders, final Filter filter,
-            final Level level, final boolean additive,
-            final Property[] properties, final Configuration config,
-            final boolean includeLocation, final LogEventFactory logEventFactory) {
-        super(name, appenders, filter, level, additive, properties, config,
-                includeLocation, logEventFactory);
+            final List<AppenderRef> appenders,
+            final Filter filter,
+            final Level level,
+            final boolean additive,
+            final Property[] properties,
+            final Configuration config,
+            final boolean includeLocation,
+            final LogEventFactory logEventFactory) {
+        super(name, appenders, filter, level, additive, properties, config, includeLocation, logEventFactory);
         delegate = config.getAsyncLoggerConfigDelegate();
         delegate.setLogEventFactory(getLogEventFactory());
     }
 
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         // See LOG4J2-2301
-        if (predicate == LoggerConfigPredicate.ALL &&
-                ASYNC_LOGGER_ENTERED.get() == Boolean.FALSE &&
+        if (predicate == LoggerConfigPredicate.ALL
+                && ASYNC_LOGGER_ENTERED.get() == Boolean.FALSE
+                &&
                 // Optimization: AsyncLoggerConfig is identical to LoggerConfig
                 // when no appenders are present. Avoid splitting for synchronous
                 // and asynchronous execution paths until encountering an
@@ -231,13 +242,19 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
             @Override
             public LoggerConfig build() {
-                final LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
-                        getConfig());
-                return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, getFilter(), container.level,
-                        isAdditivity(), getProperties(), getConfig(),
-                        AsyncLoggerConfig.includeLocation(getIncludeLocation()), getLogEventFactory());
+                final LevelAndRefs container =
+                        LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(), getConfig());
+                return new AsyncLoggerConfig(
+                        LogManager.ROOT_LOGGER_NAME,
+                        container.refs,
+                        getFilter(),
+                        container.level,
+                        isAdditivity(),
+                        getProperties(),
+                        getConfig(),
+                        AsyncLoggerConfig.includeLocation(getIncludeLocation()),
+                        getLogEventFactory());
             }
         }
-
     }
 }

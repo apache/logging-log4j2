@@ -29,7 +29,8 @@ final class MongoDb4DocumentObjectCodec implements Codec<MongoDb4DocumentObject>
     private final Codec<Document> documentCodec = new DocumentCodec();
 
     @Override
-    public void encode(final BsonWriter writer, final MongoDb4DocumentObject value, final EncoderContext encoderContext) {
+    public void encode(
+            final BsonWriter writer, final MongoDb4DocumentObject value, final EncoderContext encoderContext) {
         documentCodec.encode(writer, value.unwrap(), encoderContext);
     }
 
@@ -41,7 +42,8 @@ final class MongoDb4DocumentObjectCodec implements Codec<MongoDb4DocumentObject>
     @Override
     public MongoDb4DocumentObject decode(final BsonReader reader, final DecoderContext decoderContext) {
         final MongoDb4DocumentObject object = new MongoDb4DocumentObject();
-        documentCodec.decode(reader, decoderContext).entrySet().stream().forEach(entry -> object.set(entry.getKey(), entry.getValue()));
+        documentCodec.decode(reader, decoderContext).entrySet().stream()
+                .forEach(entry -> object.set(entry.getKey(), entry.getValue()));
         return object;
     }
 }

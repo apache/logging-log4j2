@@ -50,17 +50,15 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  */
 public final class LoggerResolver implements EventResolver {
 
-    private static final EventResolver NAME_RESOLVER =
-            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final String loggerName = logEvent.getLoggerName();
-                jsonWriter.writeString(loggerName);
-            };
+    private static final EventResolver NAME_RESOLVER = (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+        final String loggerName = logEvent.getLoggerName();
+        jsonWriter.writeString(loggerName);
+    };
 
-    private static final EventResolver FQCN_RESOLVER =
-            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final String loggerFqcn = logEvent.getLoggerFqcn();
-                jsonWriter.writeString(loggerFqcn);
-            };
+    private static final EventResolver FQCN_RESOLVER = (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+        final String loggerFqcn = logEvent.getLoggerFqcn();
+        jsonWriter.writeString(loggerFqcn);
+    };
 
     private final EventResolver internalResolver;
 
@@ -68,8 +66,7 @@ public final class LoggerResolver implements EventResolver {
         this.internalResolver = createInternalResolver(config);
     }
 
-    private static EventResolver createInternalResolver(
-            final TemplateResolverConfig config) {
+    private static EventResolver createInternalResolver(final TemplateResolverConfig config) {
         final String fieldName = config.getString("field");
         if ("name".equals(fieldName)) {
             return NAME_RESOLVER;
@@ -84,10 +81,7 @@ public final class LoggerResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         internalResolver.resolve(logEvent, jsonWriter);
     }
-
 }

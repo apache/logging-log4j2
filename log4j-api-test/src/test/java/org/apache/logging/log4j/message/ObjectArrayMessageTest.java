@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @since 2.4
  */
 public class ObjectArrayMessageTest {
 
-    private static final Object[] ARRAY = { "A", "B", "C" };
+    private static final Object[] ARRAY = {"A", "B", "C"};
     private static final ObjectArrayMessage OBJECT_ARRAY_MESSAGE = new ObjectArrayMessage(ARRAY);
 
     @Test
@@ -38,5 +38,4 @@ public class ObjectArrayMessageTest {
     public void testGetThrowable() {
         assertNull(OBJECT_ARRAY_MESSAGE.getThrowable());
     }
-
 }

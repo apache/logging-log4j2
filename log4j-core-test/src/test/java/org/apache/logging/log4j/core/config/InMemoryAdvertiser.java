@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -28,8 +27,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 public class InMemoryAdvertiser implements Advertiser {
     private static final Map<Object, Map<String, String>> PROPERTIES = new HashMap<>();
 
-    public static Map<Object, Map<String, String>> getAdvertisedEntries()
-    {
+    public static Map<Object, Map<String, String>> getAdvertisedEntries() {
         return Map.copyOf(PROPERTIES);
     }
 

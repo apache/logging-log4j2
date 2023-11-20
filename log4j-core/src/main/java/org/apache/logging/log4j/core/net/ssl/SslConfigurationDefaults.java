@@ -26,5 +26,4 @@ public class SslConfigurationDefaults {
     public static final String KEYSTORE_TYPE = KeyStore.getDefaultType();
     // "TLS" uses all protocols available except those excluded in "jdk.tls.disabledAlgorithms"
     public static final String PROTOCOL = "TLS";
-
 }

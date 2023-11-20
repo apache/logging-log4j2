@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
-import java.io.File;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -26,9 +28,6 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.env.MockEnvironment;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests basic condition processing.
@@ -45,7 +44,6 @@ public class SpringProfileTest {
         env = new MockEnvironment();
         loggerContext.putObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY, env);
     }
-
 
     @Test
     public void prodTest() {

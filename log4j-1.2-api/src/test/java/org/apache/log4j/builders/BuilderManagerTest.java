@@ -16,8 +16,9 @@
  */
 package org.apache.log4j.builders;
 
-import java.util.Properties;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Properties;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -26,8 +27,6 @@ import org.apache.log4j.varia.StringMatchFilter;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BuilderManagerTest {
 
@@ -45,12 +44,12 @@ public class BuilderManagerTest {
         props.setProperty("FILE", FileAppender.class.getName());
         props.setProperty("FILE.filter.1", StringMatchFilter.class.getName());
         // Parse an invalid StringMatchFilter
-        final Filter filter = manager.parse(StringMatchFilter.class.getName(), "FILE.filter", props, config,
-                BuilderManager.INVALID_FILTER);
+        final Filter filter = manager.parse(
+                StringMatchFilter.class.getName(), "FILE.filter", props, config, BuilderManager.INVALID_FILTER);
         assertEquals(BuilderManager.INVALID_FILTER, filter);
         // Parse an invalid FileAppender
-        final Appender appender = manager.parseAppender("FILE", FileAppender.class.getName(), "FILE", "FILE.layout",
-                "FILE.filter.", props, config);
+        final Appender appender = manager.parseAppender(
+                "FILE", FileAppender.class.getName(), "FILE", "FILE.layout", "FILE.filter.", props, config);
         assertEquals(BuilderManager.INVALID_APPENDER, appender);
     }
 }

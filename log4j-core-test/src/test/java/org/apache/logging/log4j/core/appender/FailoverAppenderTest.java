@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,9 +31,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @LoggerContextSource("log4j-failover.xml")
 @Tag("sleepy")
 public class FailoverAppenderTest {
@@ -40,7 +39,9 @@ public class FailoverAppenderTest {
     private final Logger logger;
     private final Logger onceLogger;
 
-    public FailoverAppenderTest(final LoggerContext context, @Named("List") final ListAppender app,
+    public FailoverAppenderTest(
+            final LoggerContext context,
+            @Named("List") final ListAppender app,
             @Named("Once") final FailOnceAppender foApp) {
         this.app = app;
         this.foApp = foApp;

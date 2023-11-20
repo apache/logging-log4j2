@@ -16,13 +16,16 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.testUtil.StringListAppender;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.util.Date;
 import java.util.List;
-
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.testUtil.StringListAppender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -34,10 +37,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.MDC;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -103,8 +102,10 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatch() {
-        final Logger testLogger = testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatch",
-            StringFormatterMessageFactory.INSTANCE, ParameterizedMessageFactory.INSTANCE);
+        final Logger testLogger = testMessageFactoryMismatch(
+                "getLogger_String_MessageFactoryMismatch",
+                StringFormatterMessageFactory.INSTANCE,
+                ParameterizedMessageFactory.INSTANCE);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertThat(list.strList, hasSize(1));
         assertThat(list.strList, hasItem(String.format("%,d", Integer.MAX_VALUE)));
@@ -112,14 +113,15 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatchNull() {
-        final Logger testLogger = testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatchNull",
-            StringFormatterMessageFactory.INSTANCE, null);
+        final Logger testLogger = testMessageFactoryMismatch(
+                "getLogger_String_MessageFactoryMismatchNull", StringFormatterMessageFactory.INSTANCE, null);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertThat(list.strList, hasSize(1));
         assertThat(list.strList, hasItem(String.format("%,d", Integer.MAX_VALUE)));
     }
 
-    private Logger testMessageFactoryMismatch(final String name, final MessageFactory messageFactory1, final MessageFactory messageFactory2) {
+    private Logger testMessageFactoryMismatch(
+            final String name, final MessageFactory messageFactory1, final MessageFactory messageFactory2) {
         final Logger testLogger = LogManager.getLogger(name, messageFactory1);
         assertThat(testLogger, is(notNullValue()));
         checkMessageFactory(messageFactory1, testLogger);
@@ -162,18 +164,15 @@ public class LoggerTest {
     @Test
     public void paramIncludesSubstitutionMarker_nonLocationAware() {
         final org.slf4j.Logger slf4jLogger = CTX.getLogger();
-        final Logger nonLocationAwareLogger = new SLF4JLogger(
-        slf4jLogger.getName(),
-        (org.slf4j.Logger) Proxy.newProxyInstance(
-        getClass().getClassLoader(),
-        new Class<?>[]{org.slf4j.Logger.class},
-        (proxy, method, args) -> {
-            try {
-                return method.invoke(slf4jLogger, args);
-            } catch (InvocationTargetException e) {
-                throw e.getCause();
-            }
-        }));
+        final Logger nonLocationAwareLogger =
+                new SLF4JLogger(slf4jLogger.getName(), (org.slf4j.Logger) Proxy.newProxyInstance(
+                        getClass().getClassLoader(), new Class<?>[] {org.slf4j.Logger.class}, (proxy, method, args) -> {
+                            try {
+                                return method.invoke(slf4jLogger, args);
+                            } catch (InvocationTargetException e) {
+                                throw e.getCause();
+                            }
+                        }));
         nonLocationAwareLogger.info("Hello, {}", "foo {} bar");
         assertThat(list.strList, hasSize(1));
         final String message = list.strList.get(0);

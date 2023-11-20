@@ -41,8 +41,12 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 @Plugin("Cassandra")
 public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager> {
 
-    private CassandraAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-            final Property[] properties, final CassandraManager manager) {
+    private CassandraAppender(
+            final String name,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            final CassandraManager manager) {
         super(name, filter, null, ignoreExceptions, properties, manager);
     }
 
@@ -52,7 +56,7 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
     }
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-        implements org.apache.logging.log4j.plugins.util.Builder<CassandraAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<CassandraAppender> {
 
         /**
          * List of Cassandra node contact points. Addresses without a port (or port set to 0) will use the default
@@ -60,7 +64,7 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
          */
         @PluginElement("ContactPoints")
         @Required(message = "No Cassandra servers provided")
-        private SocketAddress[] contactPoints = new SocketAddress[]{SocketAddress.getLoopback()};
+        private SocketAddress[] contactPoints = new SocketAddress[] {SocketAddress.getLoopback()};
 
         /**
          * List of column mappings to convert a LogEvent into a database row.
@@ -176,12 +180,22 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
 
         @Override
         public CassandraAppender build() {
-            final CassandraManager manager = CassandraManager.getManager(getName(), contactPoints, columns, useTls,
-                clusterName, keyspace, table, username, password, useClockForTimestampGenerator, bufferSize, batched,
-                batchType, getConfiguration());
+            final CassandraManager manager = CassandraManager.getManager(
+                    getName(),
+                    contactPoints,
+                    columns,
+                    useTls,
+                    clusterName,
+                    keyspace,
+                    table,
+                    username,
+                    password,
+                    useClockForTimestampGenerator,
+                    bufferSize,
+                    batched,
+                    batchType,
+                    getConfiguration());
             return new CassandraAppender(getName(), getFilter(), isIgnoreExceptions(), getPropertyArray(), manager);
         }
-
     }
-
 }

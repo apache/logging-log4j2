@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.util;
 
 import java.net.URLConnection;
-
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;

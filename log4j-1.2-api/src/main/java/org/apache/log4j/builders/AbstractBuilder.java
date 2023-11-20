@@ -16,13 +16,15 @@
  */
 package org.apache.log4j.builders;
 
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.helpers.OptionConverter;
@@ -33,9 +35,6 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
-
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 
 /**
  * Base class for Log4j 1 component builders.
@@ -76,8 +75,10 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
     protected static org.apache.logging.log4j.core.Filter buildFilters(final String level, final Filter filter) {
         Filter head = null;
         if (level != null) {
-            final org.apache.logging.log4j.core.Filter thresholdFilter = ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
-                org.apache.logging.log4j.core.Filter.Result.NEUTRAL, org.apache.logging.log4j.core.Filter.Result.DENY);
+            final org.apache.logging.log4j.core.Filter thresholdFilter = ThresholdFilter.createFilter(
+                    OptionConverter.convertLevel(level, Level.TRACE),
+                    org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
+                    org.apache.logging.log4j.core.Filter.Result.DENY);
             head = new FilterWrapper(thresholdFilter);
         }
         if (filter != null) {
@@ -190,7 +191,13 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
             try {
                 ref.set(Integer.parseInt(value));
             } catch (NumberFormatException e) {
-                LOGGER.warn("{} parsing {} parameter, using default {}: {}", e.getClass().getName(), name, ref, e.getMessage(), e);
+                LOGGER.warn(
+                        "{} parsing {} parameter, using default {}: {}",
+                        e.getClass().getName(),
+                        name,
+                        ref,
+                        e.getMessage(),
+                        e);
             }
         }
     }

@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -43,22 +42,17 @@ public final class InstantFormatter {
      * The list of formatter factories in decreasing efficiency order.
      */
     private static final FormatterFactory[] FORMATTER_FACTORIES = {
-            new Log4jFixedFormatterFactory(),
-            new Log4jFastFormatterFactory(),
-            new JavaDateTimeFormatterFactory()
+        new Log4jFixedFormatterFactory(), new Log4jFastFormatterFactory(), new JavaDateTimeFormatterFactory()
     };
 
     private final Formatter formatter;
 
     private InstantFormatter(final Builder builder) {
-        this.formatter = Arrays
-                .stream(FORMATTER_FACTORIES)
+        this.formatter = Arrays.stream(FORMATTER_FACTORIES)
                 .map(formatterFactory -> {
                     try {
                         return formatterFactory.createIfSupported(
-                                builder.getPattern(),
-                                builder.getLocale(),
-                                builder.getTimeZone());
+                                builder.getPattern(), builder.getLocale(), builder.getTimeZone());
                     } catch (final Exception error) {
                         LOGGER.warn("skipping the failed formatter factory \"{}\"", formatterFactory, error);
                         return null;
@@ -150,16 +144,11 @@ public final class InstantFormatter {
             Objects.requireNonNull(locale, "locale");
             Objects.requireNonNull(timeZone, "timeZone");
         }
-
     }
 
     private interface FormatterFactory {
 
-        Formatter createIfSupported(
-                String pattern,
-                Locale locale,
-                TimeZone timeZone);
-
+        Formatter createIfSupported(String pattern, Locale locale, TimeZone timeZone);
     }
 
     private interface Formatter {
@@ -169,19 +158,14 @@ public final class InstantFormatter {
         void format(Instant instant, StringBuilder stringBuilder);
 
         boolean isInstantMatching(Instant instant1, Instant instant2);
-
     }
 
     private static final class JavaDateTimeFormatterFactory implements FormatterFactory {
 
         @Override
-        public Formatter createIfSupported(
-                final String pattern,
-                final Locale locale,
-                final TimeZone timeZone) {
+        public Formatter createIfSupported(final String pattern, final Locale locale, final TimeZone timeZone) {
             return new JavaDateTimeFormatter(pattern, locale, timeZone);
         }
-
     }
 
     private static final class JavaDateTimeFormatter implements Formatter {
@@ -190,14 +174,9 @@ public final class InstantFormatter {
 
         private final MutableInstant mutableInstant;
 
-        private JavaDateTimeFormatter(
-                final String pattern,
-                final Locale locale,
-                final TimeZone timeZone) {
-            this.formatter = DateTimeFormatter
-                    .ofPattern(pattern)
-                    .withLocale(locale)
-                    .withZone(timeZone.toZoneId());
+        private JavaDateTimeFormatter(final String pattern, final Locale locale, final TimeZone timeZone) {
+            this.formatter =
+                    DateTimeFormatter.ofPattern(pattern).withLocale(locale).withZone(timeZone.toZoneId());
             this.mutableInstant = new MutableInstant();
         }
 
@@ -207,9 +186,7 @@ public final class InstantFormatter {
         }
 
         @Override
-        public void format(
-                final Instant instant,
-                final StringBuilder stringBuilder) {
+        public void format(final Instant instant, final StringBuilder stringBuilder) {
             if (instant instanceof MutableInstant) {
                 formatMutableInstant((MutableInstant) instant, stringBuilder);
             } else {
@@ -217,41 +194,30 @@ public final class InstantFormatter {
             }
         }
 
-        private void formatMutableInstant(
-                final MutableInstant instant,
-                final StringBuilder stringBuilder) {
+        private void formatMutableInstant(final MutableInstant instant, final StringBuilder stringBuilder) {
             formatter.formatTo(instant, stringBuilder);
         }
 
-        private void formatInstant(
-                final Instant instant,
-                final StringBuilder stringBuilder) {
+        private void formatInstant(final Instant instant, final StringBuilder stringBuilder) {
             mutableInstant.initFrom(instant);
             formatMutableInstant(mutableInstant, stringBuilder);
         }
 
         @Override
         public boolean isInstantMatching(final Instant instant1, final Instant instant2) {
-            return instant1.getEpochSecond() == instant2.getEpochSecond() &&
-                    instant1.getNanoOfSecond() == instant2.getNanoOfSecond();
+            return instant1.getEpochSecond() == instant2.getEpochSecond()
+                    && instant1.getNanoOfSecond() == instant2.getNanoOfSecond();
         }
-
     }
 
     private static final class Log4jFastFormatterFactory implements FormatterFactory {
 
         @Override
-        public Formatter createIfSupported(
-                final String pattern,
-                final Locale locale,
-                final TimeZone timeZone) {
-            final Log4jFastFormatter formatter =
-                    new Log4jFastFormatter(pattern, locale, timeZone);
-            final boolean patternSupported =
-                    patternSupported(pattern, locale, timeZone, formatter);
+        public Formatter createIfSupported(final String pattern, final Locale locale, final TimeZone timeZone) {
+            final Log4jFastFormatter formatter = new Log4jFastFormatter(pattern, locale, timeZone);
+            final boolean patternSupported = patternSupported(pattern, locale, timeZone, formatter);
             return patternSupported ? formatter : null;
         }
-
     }
 
     private static final class Log4jFastFormatter implements Formatter {
@@ -260,10 +226,7 @@ public final class InstantFormatter {
 
         private final Calendar calendar;
 
-        private Log4jFastFormatter(
-                final String pattern,
-                final Locale locale,
-                final TimeZone timeZone) {
+        private Log4jFastFormatter(final String pattern, final Locale locale, final TimeZone timeZone) {
             this.formatter = FastDateFormat.getInstance(pattern, timeZone, locale);
             this.calendar = Calendar.getInstance(timeZone, locale);
         }
@@ -274,9 +237,7 @@ public final class InstantFormatter {
         }
 
         @Override
-        public void format(
-                final Instant instant,
-                final StringBuilder stringBuilder) {
+        public void format(final Instant instant, final StringBuilder stringBuilder) {
             calendar.setTimeInMillis(instant.getEpochMillisecond());
             formatter.format(calendar, stringBuilder);
         }
@@ -285,28 +246,20 @@ public final class InstantFormatter {
         public boolean isInstantMatching(final Instant instant1, final Instant instant2) {
             return instant1.getEpochMillisecond() == instant2.getEpochMillisecond();
         }
-
     }
 
     private static final class Log4jFixedFormatterFactory implements FormatterFactory {
 
         @Override
-        public Formatter createIfSupported(
-                final String pattern,
-                final Locale locale,
-                final TimeZone timeZone) {
-            final FixedDateFormat internalFormatter =
-                    FixedDateFormat.createIfSupported(pattern, timeZone.getID());
+        public Formatter createIfSupported(final String pattern, final Locale locale, final TimeZone timeZone) {
+            final FixedDateFormat internalFormatter = FixedDateFormat.createIfSupported(pattern, timeZone.getID());
             if (internalFormatter == null) {
                 return null;
             }
-            final Log4jFixedFormatter formatter =
-                    new Log4jFixedFormatter(internalFormatter);
-            final boolean patternSupported =
-                    patternSupported(pattern, locale, timeZone, formatter);
+            final Log4jFixedFormatter formatter = new Log4jFixedFormatter(internalFormatter);
+            final boolean patternSupported = patternSupported(pattern, locale, timeZone, formatter);
             return patternSupported ? formatter : null;
         }
-
     }
 
     private static final class Log4jFixedFormatter implements Formatter {
@@ -326,9 +279,7 @@ public final class InstantFormatter {
         }
 
         @Override
-        public void format(
-                final Instant instant,
-                final StringBuilder stringBuilder) {
+        public void format(final Instant instant, final StringBuilder stringBuilder) {
             final int length = formatter.formatInstant(instant, buffer, 0);
             stringBuilder.append(buffer, 0, length);
         }
@@ -341,26 +292,21 @@ public final class InstantFormatter {
                     instant2.getEpochSecond(),
                     instant2.getNanoOfSecond());
         }
-
     }
 
     /**
      * Checks if the provided formatter output matches with the one generated by {@link DateTimeFormatter}.
      */
     private static boolean patternSupported(
-            final String pattern,
-            final Locale locale,
-            final TimeZone timeZone,
-            final Formatter formatter) {
-        final DateTimeFormatter javaFormatter = DateTimeFormatter
-                .ofPattern(pattern)
-                .withLocale(locale)
-                .withZone(timeZone.toZoneId());
+            final String pattern, final Locale locale, final TimeZone timeZone, final Formatter formatter) {
+        final DateTimeFormatter javaFormatter =
+                DateTimeFormatter.ofPattern(pattern).withLocale(locale).withZone(timeZone.toZoneId());
         final MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(
                 // 2021-05-17 21:41:10
                 1621280470,
-                // Using the highest nanosecond precision possible to differentiate formatters only supporting millisecond precision.
+                // Using the highest nanosecond precision possible to differentiate formatters only supporting
+                // millisecond precision.
                 123_456_789);
         final String expectedFormat = javaFormatter.format(instant);
         final StringBuilder stringBuilder = new StringBuilder();
@@ -368,5 +314,4 @@ public final class InstantFormatter {
         final String actualFormat = stringBuilder.toString();
         return expectedFormat.equals(actualFormat);
     }
-
 }

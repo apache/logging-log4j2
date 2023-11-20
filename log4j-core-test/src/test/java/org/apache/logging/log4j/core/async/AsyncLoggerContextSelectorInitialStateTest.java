@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.plugins.di.DI;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
 public class AsyncLoggerContextSelectorInitialStateTest {

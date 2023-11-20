@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import java.io.IOException;
+import java.util.Map;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
@@ -48,8 +47,9 @@ public class ContextDataAsEntryListSerializer extends StdSerializer<ReadOnlyStri
     }
 
     @Override
-    public void serialize(final ReadOnlyStringMap contextData, final JsonGenerator jgen,
-            final SerializerProvider provider) throws IOException, JsonGenerationException {
+    public void serialize(
+            final ReadOnlyStringMap contextData, final JsonGenerator jgen, final SerializerProvider provider)
+            throws IOException, JsonGenerationException {
 
         final MapEntry[] pairs = createMapEntryArray(contextData.size());
         contextData.forEach(new BiConsumer<String, Object>() {

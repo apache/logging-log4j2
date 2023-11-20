@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link MarkerLookup}.
@@ -45,7 +45,8 @@ public class MarkerLookupTest {
                 .setMarker(marker) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .build();
         final String value = strLookup.lookup(event, marker.getName());
         assertEquals(markerName, value);
     }
@@ -56,7 +57,8 @@ public class MarkerLookupTest {
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .build();
         final String value = strLookup.lookup(event, ABSENT_MARKER_NAME);
         assertNull(value);
     }
@@ -69,7 +71,8 @@ public class MarkerLookupTest {
                 .setMarker(marker) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .build();
         final String value = strLookup.lookup(event, ABSENT_MARKER_NAME);
         assertEquals(markerName, value);
     }
@@ -82,7 +85,8 @@ public class MarkerLookupTest {
 
     @Test
     public void testLookupExistant() {
-        final String value = strLookup.lookup(MarkerManager.getMarker(markerName).getName());
+        final String value =
+                strLookup.lookup(MarkerManager.getMarker(markerName).getName());
         assertEquals(markerName, value);
     }
 
@@ -91,5 +95,4 @@ public class MarkerLookupTest {
         final String value = strLookup.lookup(ABSENT_MARKER_NAME);
         assertNull(value);
     }
-
 }

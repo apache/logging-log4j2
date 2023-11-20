@@ -24,5 +24,4 @@ package org.apache.logging.log4j.message;
  * @since 2.6
  */
 @Deprecated
-public interface MessageFactory2 extends MessageFactory {
-}
+public interface MessageFactory2 extends MessageFactory {}

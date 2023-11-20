@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,9 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentLinkedDeque;
-
-import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
@@ -57,8 +56,7 @@ public class ThreadContextDataInjector {
     /**
      * ContextDataProviders loaded externally.
      */
-    public static Collection<ContextDataProvider> contextDataProviders =
-            new ConcurrentLinkedDeque<>();
+    public static Collection<ContextDataProvider> contextDataProviders = new ConcurrentLinkedDeque<>();
 
     private static final List<ContextDataProvider> SERVICE_PROVIDERS = getServiceProviders();
 
@@ -66,15 +64,13 @@ public class ThreadContextDataInjector {
         final List<ContextDataProvider> providers = new ArrayList<>();
         final ServiceLoader<ContextDataProvider> serviceLoader =
                 ServiceLoader.load(ContextDataProvider.class, ThreadContextDataInjector.class.getClassLoader());
-        ServiceLoaderUtil.safeStream(serviceLoader)
-                .forEachOrdered(provider -> {
-                    if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
-                        providers.add(provider);
-                    }
-                });
+        ServiceLoaderUtil.safeStream(serviceLoader).forEachOrdered(provider -> {
+            if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
+                providers.add(provider);
+            }
+        });
         return Collections.unmodifiableList(providers);
     }
-
 
     /**
      * Default {@code ContextDataInjector} for the legacy {@code Map<String, String>}-based ThreadContext (which is

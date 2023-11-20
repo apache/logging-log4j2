@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
-import java.io.Serializable;
+import static org.junit.Assert.fail;
 
+import java.io.Serializable;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
-
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Strings;
@@ -32,8 +32,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.zapodot.junit.ldap.EmbeddedLdapRule;
 import org.zapodot.junit.ldap.EmbeddedLdapRuleBuilder;
-
-import static org.junit.Assert.fail;
 
 /**
  * JndiLookupTest
@@ -49,8 +47,10 @@ public class JndiRestrictedLookupTest {
     private static final String DOMAIN = "apache.org";
 
     @Rule
-    public EmbeddedLdapRule embeddedLdapRule = EmbeddedLdapRuleBuilder.newInstance().usingDomainDsn(DOMAIN_DSN)
-            .importingLdifs("JndiRestrictedLookup.ldif").build();
+    public EmbeddedLdapRule embeddedLdapRule = EmbeddedLdapRuleBuilder.newInstance()
+            .usingDomainDsn(DOMAIN_DSN)
+            .importingLdifs("JndiRestrictedLookup.ldif")
+            .build();
 
     @BeforeClass
     public static void beforeClass() {
@@ -62,10 +62,10 @@ public class JndiRestrictedLookupTest {
     public void testBadUriLookup() throws Exception {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
-        context.bind(   "cn=" + RESOURCE +"," + DOMAIN_DSN, new Fruit("Test Message"));
+        context.bind("cn=" + RESOURCE + "," + DOMAIN_DSN, new Fruit("Test Message"));
         final StrLookup lookup = new JndiLookup();
-        final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN
-            + "?Type=A Type&Name=1100110&Char=!");
+        final String result = lookup.lookup(
+                LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN + "?Type=A Type&Name=1100110&Char=!");
         if (result != null) {
             fail("Lookup returned an object");
         }
@@ -76,7 +76,7 @@ public class JndiRestrictedLookupTest {
     public void testReferenceLookup() throws Exception {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
-        context.bind(   "cn=" + RESOURCE +"," + DOMAIN_DSN, new Fruit("Test Message"));
+        context.bind("cn=" + RESOURCE + "," + DOMAIN_DSN, new Fruit("Test Message"));
         final StrLookup lookup = new JndiLookup();
         final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN);
         if (result != null) {
@@ -89,7 +89,7 @@ public class JndiRestrictedLookupTest {
     public void testSerializableLookup() throws Exception {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
-        context.bind(   "cn=" + TEST_STRING +"," + DOMAIN_DSN, "Test Message");
+        context.bind("cn=" + TEST_STRING + "," + DOMAIN_DSN, "Test Message");
         final StrLookup lookup = new JndiLookup();
         final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_STRING + "," + DOMAIN_DSN);
         if (result != null) {
@@ -102,7 +102,7 @@ public class JndiRestrictedLookupTest {
     public void testBadSerializableLookup() throws Exception {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
-        context.bind(   "cn=" + TEST_MESSAGE +"," + DOMAIN_DSN, new SerializableMessage("Test Message"));
+        context.bind("cn=" + TEST_MESSAGE + "," + DOMAIN_DSN, new SerializableMessage("Test Message"));
         final StrLookup lookup = new JndiLookup();
         final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_MESSAGE + "," + DOMAIN_DSN);
         if (result != null) {
@@ -121,14 +121,18 @@ public class JndiRestrictedLookupTest {
 
     static class Fruit implements Referenceable {
         String fruit;
+
         public Fruit(final String f) {
             fruit = f;
         }
 
         public Reference getReference() throws NamingException {
 
-            return new Reference(Fruit.class.getName(), new StringRefAddr("fruit",
-                    fruit), JndiExploit.class.getName(), null); // factory location
+            return new Reference(
+                    Fruit.class.getName(),
+                    new StringRefAddr("fruit", fruit),
+                    JndiExploit.class.getName(),
+                    null); // factory location
         }
 
         public String toString() {
@@ -163,5 +167,4 @@ public class JndiRestrictedLookupTest {
             return null;
         }
     }
-
 }

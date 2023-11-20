@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.web.appender;
 
 import jakarta.servlet.ServletContext;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -73,7 +72,6 @@ public final class ServletAppender extends AbstractAppender {
         public void setLogThrowables(final boolean logThrowables) {
             this.logThrowables = logThrowables;
         }
-
     }
 
     @Factory
@@ -84,8 +82,13 @@ public final class ServletAppender extends AbstractAppender {
     private final ServletContext servletContext;
     private final boolean logThrowables;
 
-    private ServletAppender(final String name, final Layout layout, final Filter filter,
-                            final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables) {
+    private ServletAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final ServletContext servletContext,
+            final boolean ignoreExceptions,
+            final boolean logThrowables) {
         super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         this.servletContext = servletContext;
         this.logThrowables = logThrowables;

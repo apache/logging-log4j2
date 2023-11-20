@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @UsingTestProperties
 public class TestPropertySourceTest {

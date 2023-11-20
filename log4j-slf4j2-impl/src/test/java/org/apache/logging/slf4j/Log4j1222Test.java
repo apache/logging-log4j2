@@ -16,21 +16,19 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 /**
  * Tests logging during shutdown.
  */
-public class Log4j1222Test
-{
+public class Log4j1222Test {
 
     @Test
-    public void homepageRendersSuccessfully()
-    {
+    public void homepageRendersSuccessfully() {
         System.setProperty("log4j.configurationFile", "log4j2-console.xml");
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
@@ -42,8 +40,7 @@ public class Log4j1222Test
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             super.run();
             trigger();
         }
@@ -51,7 +48,6 @@ public class Log4j1222Test
         private void trigger() {
             Holder.LOGGER.info("Attempt to trigger");
             assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof Log4jLogger);
-
         }
     }
 }

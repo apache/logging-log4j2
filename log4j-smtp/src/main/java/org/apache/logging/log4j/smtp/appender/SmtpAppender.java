@@ -59,8 +59,13 @@ public final class SmtpAppender extends AbstractAppender {
     /** The SMTP Manager */
     private final SmtpManager manager;
 
-    private SmtpAppender(final String name, final Filter filter, final Layout layout, final boolean ignoreExceptions,
-                         Property[] properties, final SmtpManager manager) {
+    private SmtpAppender(
+            final String name,
+            final Filter filter,
+            final Layout layout,
+            final boolean ignoreExceptions,
+            Property[] properties,
+            final SmtpManager manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
@@ -234,10 +239,25 @@ public final class SmtpAppender extends AbstractAppender {
             if (getFilter() == null) {
                 setFilter(ThresholdFilter.createFilter(null, null, null));
             }
-            final SmtpManager smtpManager = SmtpManager.getSmtpManager(getConfiguration(), to, cc, bcc, from, replyTo,
-                    subject, smtpProtocol, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpDebug,
-                    getFilter().toString(), bufferSize, sslConfiguration);
-            return new SmtpAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), smtpManager);
+            final SmtpManager smtpManager = SmtpManager.getSmtpManager(
+                    getConfiguration(),
+                    to,
+                    cc,
+                    bcc,
+                    from,
+                    replyTo,
+                    subject,
+                    smtpProtocol,
+                    smtpHost,
+                    smtpPort,
+                    smtpUsername,
+                    smtpPassword,
+                    smtpDebug,
+                    getFilter().toString(),
+                    bufferSize,
+                    sslConfiguration);
+            return new SmtpAppender(
+                    getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), smtpManager);
         }
     }
 

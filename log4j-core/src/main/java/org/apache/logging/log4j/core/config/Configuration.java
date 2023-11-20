@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -257,5 +256,4 @@ public interface Configuration extends Filterable {
     default RecyclerFactory getRecyclerFactory() {
         return getComponent(Key.forClass(RecyclerFactory.class));
     }
-
 }

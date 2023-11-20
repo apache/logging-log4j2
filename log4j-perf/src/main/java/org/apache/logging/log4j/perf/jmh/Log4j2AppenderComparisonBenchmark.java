@@ -18,7 +18,6 @@ package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -107,13 +106,27 @@ public class Log4j2AppenderComparisonBenchmark {
         noopLogger = LogManager.getLogger("NoopLogger");
         rewriteLogger = LogManager.getLogger("RewriteLogger");
 
-        fileAppender = ((org.apache.logging.log4j.core.Logger) fileLogger).getAppenders().get("File");
-        rafAppender = ((org.apache.logging.log4j.core.Logger) rafLogger).getAppenders().get("RandomAccessFile");
-        mmapAppender = ((org.apache.logging.log4j.core.Logger) mmapLogger).getAppenders().get("MemoryMappedFile");
-        consoleAppender = ((org.apache.logging.log4j.core.Logger) consoleLogger).getAppenders().get("Console");
-        directConsoleAppender = ((org.apache.logging.log4j.core.Logger) directConsoleLogger).getAppenders().get("DirectConsole");
-        noopAppender = ((org.apache.logging.log4j.core.Logger) noopLogger).getAppenders().get("NoOp");
-        rewriteAppender = ((org.apache.logging.log4j.core.Logger) rewriteLogger).getAppenders().get("Rewrite");
+        fileAppender = ((org.apache.logging.log4j.core.Logger) fileLogger)
+                .getAppenders()
+                .get("File");
+        rafAppender = ((org.apache.logging.log4j.core.Logger) rafLogger)
+                .getAppenders()
+                .get("RandomAccessFile");
+        mmapAppender = ((org.apache.logging.log4j.core.Logger) mmapLogger)
+                .getAppenders()
+                .get("MemoryMappedFile");
+        consoleAppender = ((org.apache.logging.log4j.core.Logger) consoleLogger)
+                .getAppenders()
+                .get("Console");
+        directConsoleAppender = ((org.apache.logging.log4j.core.Logger) directConsoleLogger)
+                .getAppenders()
+                .get("DirectConsole");
+        noopAppender = ((org.apache.logging.log4j.core.Logger) noopLogger)
+                .getAppenders()
+                .get("NoOp");
+        rewriteAppender = ((org.apache.logging.log4j.core.Logger) rewriteLogger)
+                .getAppenders()
+                .get("Rewrite");
     }
 
     @TearDown
@@ -123,19 +136,18 @@ public class Log4j2AppenderComparisonBenchmark {
     }
 
     private void deleteLogFiles() {
-        final File log4j2File = new File ("target/testlog4j2.log");
+        final File log4j2File = new File("target/testlog4j2.log");
         log4j2File.delete();
-        final File log4jRandomFile = new File ("target/testRandomlog4j2.log");
+        final File log4jRandomFile = new File("target/testRandomlog4j2.log");
         log4jRandomFile.delete();
-        final File mmapFile = new File ("target/MemoryMappedFileAppenderTest.log");
+        final File mmapFile = new File("target/MemoryMappedFileAppenderTest.log");
         mmapFile.delete();
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void baseline() {
-    }
+    public void baseline() {}
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
@@ -150,7 +162,6 @@ public class Log4j2AppenderComparisonBenchmark {
     public void appenderRAF() {
         rafAppender.append(EVENT);
     }
-
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)

@@ -33,17 +33,17 @@ import org.apache.logging.log4j.Marker;
  * Example XML:
  * </p>
  * <pre>
-&lt;Marker name=&quot;Marker1&quot;&gt;
-    &lt;Parents&gt;
-        &lt;Marker name=&quot;ParentMarker1&quot;&gt;
-            &lt;Parents&gt;
-                &lt;Marker name=&quot;GrandMotherMarker&quot;/&gt;
-                &lt;Marker name=&quot;GrandFatherMarker&quot;/&gt;
-            &lt;/Parents&gt;
-        &lt;/Marker&gt;
-        &lt;Marker name=&quot;ParentMarker2&quot;/&gt;
-    &lt;/Parents&gt;
-&lt;/Marker&gt;
+ * &lt;Marker name=&quot;Marker1&quot;&gt;
+ * &lt;Parents&gt;
+ * &lt;Marker name=&quot;ParentMarker1&quot;&gt;
+ * &lt;Parents&gt;
+ * &lt;Marker name=&quot;GrandMotherMarker&quot;/&gt;
+ * &lt;Marker name=&quot;GrandFatherMarker&quot;/&gt;
+ * &lt;/Parents&gt;
+ * &lt;/Marker&gt;
+ * &lt;Marker name=&quot;ParentMarker2&quot;/&gt;
+ * &lt;/Parents&gt;
+ * &lt;/Marker&gt;
  * </pre>
  *
  * @see Marker
@@ -65,5 +65,4 @@ public abstract class MarkerMixIn implements Marker {
     @Override
     @JsonProperty(JsonConstants.ELT_PARENTS)
     public abstract Marker[] getParents();
-
 }

@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.jackson.xml.layout;
 
-import javax.xml.stream.XMLStreamException;
-
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
+import javax.xml.stream.XMLStreamException;
 import org.codehaus.stax2.XMLStreamWriter2;
 
 /**
@@ -52,5 +51,4 @@ class Log4jXmlPrettyPrinter extends DefaultXmlPrettyPrinter {
     public void writePrologLinefeed(final XMLStreamWriter2 sw) throws XMLStreamException {
         // nothing
     }
-
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.lang.reflect.Field;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -37,8 +36,7 @@ public class ReconfigureAppenderTest {
     private RollingFileAppender appender;
 
     @Test
-    public void addAndRemoveAppenderTest()
-    {
+    public void addAndRemoveAppenderTest() {
         // this will create a rolling file appender and add it to the logger
         // of this class. The file manager is created for the first time.
         // see AbstractManager.getManager(...).
@@ -92,7 +90,8 @@ public class ReconfigureAppenderTest {
         // 1) create the RollingFileManager and set it's name to FILE PATTERN when using DirectWriteRolloverStrategy
         // 2) when stopping the appender (and thus the manager), remove on FILE PATTERN if DirectWriteRolloverStrategy
         // 3) on OutputStreamManager.getOutputStream(), determine if the output stream is closed, and if it is create
-        //              a new one. Note that this isn't really desirable as the only fix as if the file pattern had to change
+        //              a new one. Note that this isn't really desirable as the only fix as if the file pattern had to
+        // change
         //              an instance of file manager would still exist in MAP, causing a resource leak.
 
         // now the obvious problem here is that if multiple file appenders use the same rolling file manager. We may run
@@ -101,25 +100,21 @@ public class ReconfigureAppenderTest {
         // but based on the code it would be possible. I have also not tested this scenario out as it is not the
         // scenario we would ever use, but it should be considered while fixing this issue.
     }
-    private void removeManagerUsingReflection()
-    {
-        try
-        {
+
+    private void removeManagerUsingReflection() {
+        try {
             final Field field = AbstractManager.class.getDeclaredField("REGISTRY");
             field.setAccessible(true);
             final ManagerRegistry registry = (ManagerRegistry) field.get(null);
 
             final RollingFileManager manager = appender.getManager();
             registry.removeManager(manager.getName(), manager);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void removeAppender()
-    {
+    private void removeAppender() {
         final Logger logger = (Logger) LogManager.getLogger(this.getClass());
 
         // This call attempts to remove the file manager, but uses the name of the appender
@@ -129,10 +124,9 @@ public class ReconfigureAppenderTest {
         logger.removeAppender(appender);
     }
 
-    private void createAndAddAppender()
-    {
+    private void createAndAddAppender() {
         final ConfigurationBuilder<BuiltConfiguration> config_builder =
-        ConfigurationBuilderFactory.newConfigurationBuilder();
+                ConfigurationBuilderFactory.newConfigurationBuilder();
 
         // All loggers must have a root logger. The default root logger logs ERRORs to the console.
         // Override this with a root logger that does not log anywhere as we leave it up the
@@ -140,32 +134,28 @@ public class ReconfigureAppenderTest {
         config_builder.add(config_builder.newRootLogger(Level.INFO));
 
         // Initialise the logger context.
-        final LoggerContext logger_context =
-        Configurator.initialize(config_builder.build());
+        final LoggerContext logger_context = Configurator.initialize(config_builder.build());
 
         // Retrieve the logger.
         final Logger logger = (Logger) LogManager.getLogger(this.getClass());
 
-        final Builder pattern_builder = PatternLayout.newBuilder().setPattern(
-        "[%d{dd-MM-yy HH:mm:ss}] %p %m %throwable %n");
+        final Builder pattern_builder =
+                PatternLayout.newBuilder().setPattern("[%d{dd-MM-yy HH:mm:ss}] %p %m %throwable %n");
 
         final PatternLayout pattern_layout = (PatternLayout) pattern_builder.build();
 
-        appender = RollingFileAppender
-            .newBuilder()
-            .setLayout(pattern_layout)
-            .setName("rollingfileappender")
-            .setFilePattern("target/filepattern.%i.log")
-            .setPolicy(SizeBasedTriggeringPolicy.createPolicy("5 MB"))
-            .setAppend(true)
-            .setStrategy(
-                DirectWriteRolloverStrategy
-                    .newBuilder()
-                    .setConfig(logger_context.getConfiguration())
-                    .setMaxFiles("5")
-                    .build())
-            .setConfiguration(logger_context.getConfiguration())
-            .build();
+        appender = RollingFileAppender.newBuilder()
+                .setLayout(pattern_layout)
+                .setName("rollingfileappender")
+                .setFilePattern("target/filepattern.%i.log")
+                .setPolicy(SizeBasedTriggeringPolicy.createPolicy("5 MB"))
+                .setAppend(true)
+                .setStrategy(DirectWriteRolloverStrategy.newBuilder()
+                        .setConfig(logger_context.getConfiguration())
+                        .setMaxFiles("5")
+                        .build())
+                .setConfiguration(logger_context.getConfiguration())
+                .build();
 
         appender.start();
 

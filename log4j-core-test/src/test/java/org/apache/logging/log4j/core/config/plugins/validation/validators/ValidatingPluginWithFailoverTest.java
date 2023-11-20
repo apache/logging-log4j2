@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.FailoverAppender;
@@ -37,10 +41,6 @@ import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
-
 @StatusLoggerLevel("OFF")
 public class ValidatingPluginWithFailoverTest {
 
@@ -57,7 +57,7 @@ public class ValidatingPluginWithFailoverTest {
         final AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
         node = new Node(null, "failover", plugin);
         final Node failoversNode = new Node(node, "Failovers", category.get("Failovers"));
-        final Node appenderRefNode  = new Node(failoversNode, "appenderRef", category.get("appenderRef"));
+        final Node appenderRefNode = new Node(failoversNode, "appenderRef", category.get("appenderRef"));
         appenderRefNode.getAttributes().put("ref", "file");
         appenderRefNode.setObject(appenderRef);
         failoversNode.getChildren().add(appenderRefNode);

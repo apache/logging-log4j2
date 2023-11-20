@@ -18,9 +18,7 @@ package org.apache.logging.log4j.core.test.net.mock;
 
 import java.io.IOException;
 import java.net.SocketException;
-
 import javax.net.ssl.SSLServerSocket;
-
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
 
 public class MockSyslogServerFactory {
@@ -43,7 +41,10 @@ public class MockSyslogServerFactory {
         return new MockTcpSyslogServer();
     }
 
-    public static MockSyslogServer createTLSSyslogServer(final int numberOfMessagesToReceive, final TlsSyslogMessageFormat format, final SSLServerSocket serverSocket) {
+    public static MockSyslogServer createTLSSyslogServer(
+            final int numberOfMessagesToReceive,
+            final TlsSyslogMessageFormat format,
+            final SSLServerSocket serverSocket) {
         return new MockTlsSyslogServer(numberOfMessagesToReceive, format, serverSocket);
-   }
+    }
 }

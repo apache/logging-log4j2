@@ -28,14 +28,13 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("EndOfBatchPatternConverter")
-@ConverterKeys({ "endOfBatch" })
+@ConverterKeys({"endOfBatch"})
 @PerformanceSensitive("allocation")
 public final class EndOfBatchPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final EndOfBatchPatternConverter INSTANCE =
-        new EndOfBatchPatternConverter();
+    private static final EndOfBatchPatternConverter INSTANCE = new EndOfBatchPatternConverter();
 
     /**
      * Private constructor.
@@ -50,8 +49,7 @@ public final class EndOfBatchPatternConverter extends LogEventPatternConverter {
      * @param options options, currently ignored, may be null.
      * @return instance of EndOfBatchPatternConverter.
      */
-    public static EndOfBatchPatternConverter newInstance(
-        final String[] options) {
+    public static EndOfBatchPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 

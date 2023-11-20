@@ -93,10 +93,7 @@ public class MapAccessor {
         if (!(value instanceof List)) {
             final String message = String.format(
                     "was expecting a List<%s> at path %s: %s (of type %s)",
-                    clazz,
-                    Arrays.asList(path),
-                    value,
-                    value.getClass().getCanonicalName());
+                    clazz, Arrays.asList(path), value, value.getClass().getCanonicalName());
             throw new IllegalArgumentException(message);
         }
 
@@ -121,7 +118,6 @@ public class MapAccessor {
         @SuppressWarnings("unchecked")
         final List<E> typedItems = (List<E>) items;
         return typedItems;
-
     }
 
     public Object getObject(final String key) {
@@ -188,5 +184,4 @@ public class MapAccessor {
     public String toString() {
         return map.toString();
     }
-
 }

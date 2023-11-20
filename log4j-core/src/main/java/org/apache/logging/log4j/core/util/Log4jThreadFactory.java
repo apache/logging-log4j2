@@ -90,5 +90,4 @@ public class Log4jThreadFactory implements ThreadFactory {
         }
         return thread;
     }
-
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.couchdb;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.nosql.AbstractNoSqlConnection;
 import org.apache.logging.log4j.core.appender.nosql.DefaultNoSqlObject;
@@ -56,8 +55,8 @@ public final class CouchDbConnection extends AbstractNoSqlConnection<Map<String,
                         "Failed to write log event to CouchDB due to error: " + response.getError() + '.');
             }
         } catch (final Exception e) {
-            throw new AppenderLoggingException("Failed to write log event to CouchDB due to error: " + e.getMessage(),
-                    e);
+            throw new AppenderLoggingException(
+                    "Failed to write log event to CouchDB due to error: " + e.getMessage(), e);
         }
     }
 
@@ -65,5 +64,4 @@ public final class CouchDbConnection extends AbstractNoSqlConnection<Map<String,
     protected void closeImpl() {
         this.client.shutdown();
     }
-
 }

@@ -24,7 +24,8 @@ import java.io.PrintStream;
 
 public class Transformer {
 
-    public static void transform(final String in, final String out, final Filter filter) throws IOException, UnexpectedFormatException {
+    public static void transform(final String in, final String out, final Filter filter)
+            throws IOException, UnexpectedFormatException {
 
         String line;
         final BufferedReader input = new BufferedReader(new FileReader(in));
@@ -37,7 +38,8 @@ public class Transformer {
         }
     }
 
-    public static void transform(final String in, final String out, final Filter[] filters) throws IOException, UnexpectedFormatException {
+    public static void transform(final String in, final String out, final Filter[] filters)
+            throws IOException, UnexpectedFormatException {
 
         String line;
         final BufferedReader input = new BufferedReader(new FileReader(in));
@@ -54,5 +56,4 @@ public class Transformer {
             }
         }
     }
-
 }

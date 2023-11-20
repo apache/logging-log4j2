@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.categories.PerformanceTests;
@@ -51,27 +50,28 @@ public class ThreadedTest {
     // this would look pretty sweet with lambdas
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(new TestRule() {
-        @Override
-        public Statement apply(final Statement base, final Description description) {
-            return new Statement() {
                 @Override
-                public void evaluate() throws Throwable {
-                    deleteDir();
-                    try {
-                        base.evaluate();
-                    } finally {
-                        deleteDir();
-                    }
+                public Statement apply(final Statement base, final Description description) {
+                    return new Statement() {
+                        @Override
+                        public void evaluate() throws Throwable {
+                            deleteDir();
+                            try {
+                                base.evaluate();
+                            } finally {
+                                deleteDir();
+                            }
+                        }
+                    };
                 }
-            };
-        }
-    }).around(context);
+            })
+            .around(context);
 
     @Test
     public void testDeadlock() throws Exception {
         final ExecutorService pool = Executors.newFixedThreadPool(THREADS * 2);
         final State state = new State();
-        for (int count=0; count < THREADS; ++count) {
+        for (int count = 0; count < THREADS; ++count) {
             pool.execute(new LoggingRunnable(state));
             pool.execute(new StateSettingRunnable(state));
         }
@@ -86,22 +86,25 @@ public class ThreadedTest {
         public LoggingRunnable(final State state) {
             this.state = state;
         }
+
         @Override
         public void run() {
-            for (int i=0; i < LOOP_CNT; ++i) {
+            for (int i = 0; i < LOOP_CNT; ++i) {
                 logger.debug(state);
             }
         }
     }
+
     public class StateSettingRunnable implements Runnable {
         private final State state;
 
         public StateSettingRunnable(final State state) {
             this.state = state;
         }
+
         @Override
         public void run() {
-            for (int i=0; i < LOOP_CNT*4; ++i) {
+            for (int i = 0; i < LOOP_CNT * 4; ++i) {
                 Thread.yield();
                 state.setState();
             }

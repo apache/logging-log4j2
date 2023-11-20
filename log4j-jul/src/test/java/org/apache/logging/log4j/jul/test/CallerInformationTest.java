@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.jul.test;
 
+import static org.junit.Assert.*;
+
 import java.net.URI;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.jul.LogManager;
 import org.junit.After;
@@ -28,8 +29,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class CallerInformationTest {
 
     // config from log4j-core test-jar
@@ -37,7 +36,6 @@ public class CallerInformationTest {
 
     private LoggerContext ctx;
     private ListAppender app;
-
 
     @BeforeClass
     public static void setUpClass() {
@@ -52,7 +50,7 @@ public class CallerInformationTest {
     @Before
     public void beforeEach() throws Exception {
         final URI uri = this.getClass().getClassLoader().getResource(CONFIG).toURI();
-        ctx = (LoggerContext)org.apache.logging.log4j.LogManager.getContext(null, false, uri);
+        ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(null, false, uri);
         assertNotNull("No LoggerContext", ctx);
     }
 

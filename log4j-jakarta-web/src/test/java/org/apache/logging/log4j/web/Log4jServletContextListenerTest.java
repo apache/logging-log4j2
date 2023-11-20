@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.web;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.apache.logging.log4j.web.Log4jServletContextListener.DEFAULT_STOP_TIMEOUT;
 import static org.apache.logging.log4j.web.Log4jServletContextListener.DEFAULT_STOP_TIMEOUT_TIMEUNIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +25,15 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @ExtendWith(MockitoExtension.class)
 public class Log4jServletContextListenerTest {
     /* event and servletContext are marked lenient because they aren't used in the
@@ -42,8 +41,10 @@ public class Log4jServletContextListenerTest {
      */
     @Mock(lenient = true)
     private ServletContextEvent event;
+
     @Mock(lenient = true)
     private ServletContext servletContext;
+
     @Mock
     private Log4jWebLifeCycle initializer;
 
@@ -100,11 +101,10 @@ public class Log4jServletContextListenerTest {
             this.listener.contextInitialized(this.event);
             fail("Expected a RuntimeException.");
         } catch (final RuntimeException e) {
-            final String expectedMessage =
-                    "Do not use " + Log4jServletContextListener.class.getSimpleName() + " when "
-                            + Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
-                            + Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
-                            + Log4jServletContextListener.class.getSimpleName() + ".";
+            final String expectedMessage = "Do not use " + Log4jServletContextListener.class.getSimpleName() + " when "
+                    + Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
+                    + Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
+                    + Log4jServletContextListener.class.getSimpleName() + ".";
 
             assertEquals(expectedMessage, e.getMessage(), "The message is not correct");
         }

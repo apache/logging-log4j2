@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,7 +36,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.file.PathUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -41,13 +47,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Tag;
 import org.junit.rules.RuleChain;
-
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @Tag("sleepy")
 public class RollingAppenderRestartTest implements RolloverListener {
@@ -63,9 +62,8 @@ public class RollingAppenderRestartTest implements RolloverListener {
             LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain =
-            loggerContextRule.withCleanFoldersRule(
-                    false, true, 5, DIR.toAbsolutePath().toString());
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(
+            false, true, 5, DIR.toAbsolutePath().toString());
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -73,9 +71,7 @@ public class RollingAppenderRestartTest implements RolloverListener {
         Files.createDirectories(DIR);
         Files.write(FILE, "Hello, world".getBytes(), StandardOpenOption.CREATE);
         final FileTime newTime = FileTime.from(Instant.now().minus(2, ChronoUnit.DAYS));
-        Files
-                .getFileAttributeView(FILE, BasicFileAttributeView.class)
-                .setTimes(newTime, newTime, newTime);
+        Files.getFileAttributeView(FILE, BasicFileAttributeView.class).setTimes(newTime, newTime, newTime);
     }
 
     @AfterClass
@@ -103,9 +99,7 @@ public class RollingAppenderRestartTest implements RolloverListener {
     }
 
     @Override
-    public void rolloverTriggered(final String fileName) {
-
-    }
+    public void rolloverTriggered(final String fileName) {}
 
     @Override
     public void rolloverComplete(final String fileName) {

@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.jpa.converter;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(Appenders.Jpa.class)
 public class MarkerAttributeConverterTest {
@@ -51,13 +51,16 @@ public class MarkerAttributeConverterTest {
 
     @Test
     public void testConvert02() {
-        Marker marker = MarkerManager.getMarker("anotherConvert02").setParents(MarkerManager.getMarker("finalConvert03"));
+        Marker marker =
+                MarkerManager.getMarker("anotherConvert02").setParents(MarkerManager.getMarker("finalConvert03"));
         marker = MarkerManager.getMarker("testConvert02").setParents(marker);
 
         final String converted = this.converter.convertToDatabaseColumn(marker);
 
         assertNotNull("The converted value should not be null.", converted);
-        assertEquals("The converted value is not correct.", "testConvert02[ anotherConvert02[ finalConvert03 ] ]",
+        assertEquals(
+                "The converted value is not correct.",
+                "testConvert02[ anotherConvert02[ finalConvert03 ] ]",
                 converted);
 
         final Marker reversed = this.converter.convertToEntityAttribute(converted);

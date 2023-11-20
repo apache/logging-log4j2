@@ -27,8 +27,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 @Plugin("CounterResolverFactory")
 public final class CounterResolverFactory implements EventResolverFactory {
 
-    private static final CounterResolverFactory INSTANCE =
-            new CounterResolverFactory();
+    private static final CounterResolverFactory INSTANCE = new CounterResolverFactory();
 
     private CounterResolverFactory() {}
 
@@ -43,10 +42,7 @@ public final class CounterResolverFactory implements EventResolverFactory {
     }
 
     @Override
-    public CounterResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public CounterResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
         return new CounterResolver(context, config);
     }
-
 }

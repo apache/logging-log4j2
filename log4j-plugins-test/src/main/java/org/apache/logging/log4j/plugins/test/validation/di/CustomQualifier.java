@@ -18,10 +18,8 @@ package org.apache.logging.log4j.plugins.test.validation.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
 import org.apache.logging.log4j.plugins.QualifierType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @QualifierType
-public @interface CustomQualifier {
-}
+public @interface CustomQualifier {}

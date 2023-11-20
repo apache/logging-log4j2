@@ -53,7 +53,7 @@ public class Priority {
      * application.
      */
     public static final int DEBUG_INT = 10000;
-    //public final static int FINE_INT = DEBUG_INT;
+    // public final static int FINE_INT = DEBUG_INT;
     /**
      * The <code>ALL</code> has the lowest possible rank and is intended to
      * turn on all logging.
@@ -144,8 +144,7 @@ public class Priority {
      * Returns the syslog equivalent of this priority as an integer.
      * @return The equivalent syslog value.
      */
-    public
-    final int getSyslogEquivalent() {
+    public final int getSyslogEquivalent() {
         return syslogEquivalent;
     }
 
@@ -182,10 +181,8 @@ public class Priority {
      */
     @Deprecated
     public static Priority[] getAllPossiblePriorities() {
-        return new Priority[]{Priority.FATAL, Priority.ERROR, Level.WARN,
-            Priority.INFO, Priority.DEBUG};
+        return new Priority[] {Priority.FATAL, Priority.ERROR, Level.WARN, Priority.INFO, Priority.DEBUG};
     }
-
 
     /**
      * Returns the string representation of this priority.

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.time.internal;
 
 import java.util.concurrent.locks.LockSupport;
-
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.plugins.Factory;
@@ -38,14 +37,16 @@ public final class CachedClock implements Clock {
     private short count = 0;
 
     private CachedClock() {
-        final Thread updater = new Log4jThread(() -> {
-            while (true) {
-                millis = System.currentTimeMillis();
+        final Thread updater = new Log4jThread(
+                () -> {
+                    while (true) {
+                        millis = System.currentTimeMillis();
 
-                // avoid explicit dependency on sun.misc.Util
-                LockSupport.parkNanos(1000 * 1000);
-            }
-        }, "CachedClock Updater Thread");
+                        // avoid explicit dependency on sun.misc.Util
+                        LockSupport.parkNanos(1000 * 1000);
+                    }
+                },
+                "CachedClock Updater Thread");
         updater.setDaemon(true);
         updater.start();
     }

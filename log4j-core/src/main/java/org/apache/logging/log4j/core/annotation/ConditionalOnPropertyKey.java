@@ -21,7 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.plugins.condition.Conditional;
 
@@ -29,7 +28,7 @@ import org.apache.logging.log4j.plugins.condition.Conditional;
  * Checks if a Log4j property is present or matches a specific non-empty value.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Documented
 @Conditional(OnPropertyKeyCondition.class)
 public @interface ConditionalOnPropertyKey {

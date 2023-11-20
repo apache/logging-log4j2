@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiConsumer;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -137,5 +136,4 @@ public class PluginNamespace extends AbstractCollection<PluginType<?>> {
     public void forEach(final BiConsumer<? super String, ? super PluginType<?>> biConsumer) {
         plugins.forEach(biConsumer);
     }
-
 }

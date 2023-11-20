@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -31,7 +35,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
@@ -43,10 +46,6 @@ import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * LOG4J2-1766.
@@ -77,23 +76,27 @@ public class RollingAppenderTempCompressedFilePatternTest {
                 logger.debug(message);
             }
             if (!context.stop(30, TimeUnit.SECONDS)) {
-                LOGGER.error("Could not stop logger context {} cleanly in {}.", context.getName(),
+                LOGGER.error(
+                        "Could not stop logger context {} cleanly in {}.",
+                        context.getName(),
                         getClass().getSimpleName());
             }
 
             int gzippedFiles = 0;
-            final List<Path> files = StreamSupport.stream(Files.newDirectoryStream(logsDir).spliterator(), false)
+            final List<Path> files = StreamSupport.stream(
+                            Files.newDirectoryStream(logsDir).spliterator(), false)
                     .collect(Collectors.toList());
             for (final Path file : files) {
                 final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                final FileExtension ext = FileExtension.lookupForFile(file.getFileName().toString());
+                final FileExtension ext =
+                        FileExtension.lookupForFile(file.getFileName().toString());
                 if (ext != null) {
                     gzippedFiles++;
                 }
                 try (final InputStream fis = Files.newInputStream(file);
-                        final InputStream in = ext != null ? new CompressorStreamFactory()
-                                .createCompressorInputStream(toRootLowerCase(ext.name()),
-                                        fis)
+                        final InputStream in = ext != null
+                                ? new CompressorStreamFactory()
+                                        .createCompressorInputStream(toRootLowerCase(ext.name()), fis)
                                 : fis) {
                     assertThat(in).as("compressed input stream").isNotNull();
                     assertDoesNotThrow(() -> IOUtils.copy(in, baos));
@@ -118,7 +121,10 @@ public class RollingAppenderTempCompressedFilePatternTest {
                     temporaryFilesCreated++;
                 }
             }
-            assertThat(temporaryFilesCreated).as("Temporary files created").isGreaterThan(0).isEqualTo(gzippedFiles);
+            assertThat(temporaryFilesCreated)
+                    .as("Temporary files created")
+                    .isGreaterThan(0)
+                    .isEqualTo(gzippedFiles);
         }
     }
 }

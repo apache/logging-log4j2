@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A convenience class to convert property values to specific types.
@@ -46,8 +45,7 @@ public final class OptionConverter {
     /**
      * OptionConverter is a static class.
      */
-    private OptionConverter() {
-    }
+    private OptionConverter() {}
 
     public static String[] concatenateArrays(final String[] l, final String[] r) {
         final int len = l.length + r.length;
@@ -103,8 +101,8 @@ public final class OptionConverter {
         return sbuf.toString();
     }
 
-    public static Object instantiateByKey(final Properties props, final String key, final Class<?> superClass,
-            final Object defaultValue) {
+    public static Object instantiateByKey(
+            final Properties props, final String key, final Class<?> superClass, final Object defaultValue) {
 
         // Get the value of the property in string form
         final String className = findAndSubst(key, props);
@@ -113,8 +111,7 @@ public final class OptionConverter {
             return defaultValue;
         }
         // Trim className to avoid trailing spaces that cause problems.
-        return OptionConverter.instantiateByClassName(className.trim(), superClass,
-                defaultValue);
+        return OptionConverter.instantiateByClassName(className.trim(), superClass, defaultValue);
     }
 
     /**
@@ -161,7 +158,7 @@ public final class OptionConverter {
     }
 
     public static Level toLevel(String value, Level defaultValue) {
-        if(value == null) {
+        if (value == null) {
             return defaultValue;
         }
 
@@ -169,7 +166,7 @@ public final class OptionConverter {
 
         final int hashIndex = value.indexOf('#');
         if (hashIndex == -1) {
-            if("NULL".equalsIgnoreCase(value)) {
+            if ("NULL".equalsIgnoreCase(value)) {
                 return null;
             } else {
                 // no class name specified : use standard Level class
@@ -183,44 +180,42 @@ public final class OptionConverter {
         final String levelName = value.substring(0, hashIndex);
 
         // This is degenerate case but you never know.
-        if("NULL".equalsIgnoreCase(levelName)) {
+        if ("NULL".equalsIgnoreCase(levelName)) {
             return null;
         }
 
-        LOGGER.debug("toLevel" + ":class=[" + clazz + "]"
-                + ":pri=[" + levelName + "]");
+        LOGGER.debug("toLevel" + ":class=[" + clazz + "]" + ":pri=[" + levelName + "]");
 
         try {
             final Class<?> customLevel = Loader.loadClass(clazz);
 
             // get a ref to the specified class' static method
             // toLevel(String, org.apache.log4j.Level)
-            final Class<?>[] paramTypes = new Class[]{String.class, Level.class};
-            final java.lang.reflect.Method toLevelMethod =
-                    customLevel.getMethod("toLevel", paramTypes);
+            final Class<?>[] paramTypes = new Class[] {String.class, Level.class};
+            final java.lang.reflect.Method toLevelMethod = customLevel.getMethod("toLevel", paramTypes);
 
             // now call the toLevel method, passing level string + default
-            final Object[] params = new Object[]{levelName, defaultValue};
+            final Object[] params = new Object[] {levelName, defaultValue};
             final Object o = toLevelMethod.invoke(null, params);
 
             result = (Level) o;
-        } catch(ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             LOGGER.warn("custom level class [" + clazz + "] not found.");
-        } catch(NoSuchMethodException e) {
-            LOGGER.warn("custom level class [" + clazz + "]"
-                    + " does not have a class function toLevel(String, Level)", e);
-        } catch(java.lang.reflect.InvocationTargetException e) {
+        } catch (NoSuchMethodException e) {
+            LOGGER.warn(
+                    "custom level class [" + clazz + "]" + " does not have a class function toLevel(String, Level)", e);
+        } catch (java.lang.reflect.InvocationTargetException e) {
             if (e.getTargetException() instanceof InterruptedException
                     || e.getTargetException() instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
             LOGGER.warn("custom level class [" + clazz + "]" + " could not be instantiated", e);
-        } catch(ClassCastException e) {
+        } catch (ClassCastException e) {
             LOGGER.warn("class [" + clazz + "] is not a subclass of org.apache.log4j.Level", e);
-        } catch(IllegalAccessException e) {
-            LOGGER.warn("class ["+clazz+ "] cannot be instantiated due to access restrictions", e);
-        } catch(RuntimeException e) {
-            LOGGER.warn("class ["+clazz+"], level [" + levelName + "] conversion failed.", e);
+        } catch (IllegalAccessException e) {
+            LOGGER.warn("class [" + clazz + "] cannot be instantiated due to access restrictions", e);
+        } catch (RuntimeException e) {
+            LOGGER.warn("class [" + clazz + "], level [" + levelName + "] conversion failed.", e);
         }
         return result;
     }
@@ -292,16 +287,20 @@ public final class OptionConverter {
      * @param defaultValue The object to return in case of non-fulfillment
      * @return The created object.
      */
-    public static Object instantiateByClassName(final String className, final Class<?> superClass,
-            final Object defaultValue) {
+    public static Object instantiateByClassName(
+            final String className, final Class<?> superClass, final Object defaultValue) {
         if (className != null) {
             try {
                 final Class<?> classObj = Loader.loadClass(className);
                 if (!superClass.isAssignableFrom(classObj)) {
-                    LOGGER.error("A \"{}\" object is not assignable to a \"{}\" variable.", className,
-                            superClass.getName());
-                    LOGGER.error("The class \"{}\" was loaded by [{}] whereas object of type [{}] was loaded by [{}].",
-                            superClass.getName(), superClass.getClassLoader(), classObj.getTypeName(), classObj.getName());
+                    LOGGER.error(
+                            "A \"{}\" object is not assignable to a \"{}\" variable.", className, superClass.getName());
+                    LOGGER.error(
+                            "The class \"{}\" was loaded by [{}] whereas object of type [{}] was loaded by [{}].",
+                            superClass.getName(),
+                            superClass.getClassLoader(),
+                            classObj.getTypeName(),
+                            classObj.getName());
                     return defaultValue;
                 }
                 return LoaderUtil.newInstanceOf(classObj);
@@ -311,7 +310,6 @@ public final class OptionConverter {
         }
         return defaultValue;
     }
-
 
     /**
      * Perform variable substitution in string <code>val</code> from the
@@ -349,8 +347,7 @@ public final class OptionConverter {
      * @return The String after substitution.
      * @throws IllegalArgumentException if <code>val</code> is malformed.
      */
-    public static String substVars(final String val, final Properties props) throws
-            IllegalArgumentException {
+    public static String substVars(final String val, final Properties props) throws IllegalArgumentException {
         return substVars(val, props, new ArrayList<>());
     }
 
@@ -377,9 +374,8 @@ public final class OptionConverter {
             sbuf.append(val.substring(i, j));
             k = val.indexOf(DELIM_STOP, j);
             if (k == -1) {
-                throw new IllegalArgumentException(Strings.dquote(val)
-                        + " has no closing brace. Opening brace at position " + j
-                        + '.');
+                throw new IllegalArgumentException(
+                        Strings.dquote(val) + " has no closing brace. Opening brace at position " + j + '.');
             }
             j += DELIM_START_LEN;
             final String key = val.substring(j, k);
@@ -405,7 +401,6 @@ public final class OptionConverter {
                 } else {
                     sbuf.append(replacement);
                 }
-
             }
             i = k + DELIM_STOP_LEN;
         }

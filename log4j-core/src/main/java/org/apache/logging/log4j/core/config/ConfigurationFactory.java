@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.net.URI;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
@@ -128,7 +127,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      * @param configLocation The configuration location.
      * @return The Configuration.
      */
-    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+    public Configuration getConfiguration(
+            final LoggerContext loggerContext, final String name, final URI configLocation) {
         if (!isActive()) {
             return null;
         }
@@ -151,7 +151,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      *
      * @return The Configuration.
      */
-    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation, final ClassLoader loader) {
+    public Configuration getConfiguration(
+            final LoggerContext loggerContext, final String name, final URI configLocation, final ClassLoader loader) {
         if (!isActive()) {
             return null;
         }
@@ -182,5 +183,4 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     static String extractClassLoaderUriPath(final URI uri) {
         return uri.getScheme() == null ? uri.getPath() : uri.getSchemeSpecificPart();
     }
-
 }

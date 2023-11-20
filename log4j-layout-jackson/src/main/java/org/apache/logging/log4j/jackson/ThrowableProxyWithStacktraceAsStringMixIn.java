@@ -64,5 +64,4 @@ public abstract class ThrowableProxyWithStacktraceAsStringMixIn {
 
     @JsonIgnore
     public abstract Throwable getThrowable();
-
 }

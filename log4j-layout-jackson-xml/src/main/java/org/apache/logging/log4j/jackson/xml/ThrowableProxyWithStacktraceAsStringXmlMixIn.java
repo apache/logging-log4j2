@@ -71,5 +71,4 @@ public abstract class ThrowableProxyWithStacktraceAsStringXmlMixIn extends Throw
     @Override
     @JsonIgnore
     public abstract Throwable getThrowable();
-
 }

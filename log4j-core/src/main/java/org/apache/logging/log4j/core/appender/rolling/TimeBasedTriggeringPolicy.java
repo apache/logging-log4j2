@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -34,7 +33,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 @Configurable(printObject = true)
 @Plugin
 public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
-
 
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<TimeBasedTriggeringPolicy> {
 
@@ -71,17 +69,17 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
             return clock;
         }
 
-        public Builder setInterval(final int interval){
+        public Builder setInterval(final int interval) {
             this.interval = interval;
             return this;
         }
 
-        public Builder setModulate(final boolean modulate){
+        public Builder setModulate(final boolean modulate) {
             this.modulate = modulate;
             return this;
         }
 
-        public Builder setMaxRandomDelay(final int maxRandomDelay){
+        public Builder setMaxRandomDelay(final int maxRandomDelay) {
             this.maxRandomDelay = maxRandomDelay;
             return this;
         }
@@ -135,7 +133,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         aManager.getPatternProcessor().setTimeBased(true);
 
         nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
-            + aManager.getPatternProcessor().getNextTime(current, interval, modulate);
+                + aManager.getPatternProcessor().getNextTime(current, interval, modulate);
     }
 
     /**
@@ -166,5 +164,4 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         return "TimeBasedTriggeringPolicy(nextRolloverMillis=" + nextRolloverMillis + ", interval=" + interval
                 + ", modulate=" + modulate + ")";
     }
-
 }

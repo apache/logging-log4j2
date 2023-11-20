@@ -31,9 +31,9 @@ public enum Rfc1349TrafficClass {
     // @formatter:off
     IPTOS_NORMAL(0x00),
     IPTOS_LOWCOST(0x02),
-    IPTOS_LOWDELAY (0x10),
-    IPTOS_RELIABILITY (0x04),
-    IPTOS_THROUGHPUT (0x08);
+    IPTOS_LOWDELAY(0x10),
+    IPTOS_RELIABILITY(0x04),
+    IPTOS_THROUGHPUT(0x08);
     // @formatter:on
 
     private final int trafficClass;

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Node;
@@ -144,9 +143,8 @@ public class ConfigurationProcessor {
             for (final Node child : node.getChildren()) {
                 final String nodeType = node.getType().getElementType();
                 final String name = node.getName();
-                final String context = nodeType.equalsIgnoreCase(name) || Strings.isBlank(nodeType)
-                        ? name
-                        : nodeType + ' ' + name;
+                final String context =
+                        nodeType.equalsIgnoreCase(name) || Strings.isBlank(nodeType) ? name : nodeType + ' ' + name;
                 LOGGER.error("{} has no field or parameter that matches element {}", context, child.getName());
             }
         }

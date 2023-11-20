@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.di.spi;
 
-import java.util.ServiceLoader;
-
 import aQute.bnd.annotation.spi.ServiceConsumer;
+import java.util.ServiceLoader;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 
@@ -37,5 +36,4 @@ public interface ConfigurableInstanceFactoryPostProcessor {
      * @param factory the instance factory to post-process
      */
     void postProcessFactory(final ConfigurableInstanceFactory factory);
-
 }

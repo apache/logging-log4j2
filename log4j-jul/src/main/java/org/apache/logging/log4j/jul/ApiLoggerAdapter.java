@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jul;
 
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFormatMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;

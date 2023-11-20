@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -23,7 +25,6 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -42,8 +43,6 @@ import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @UsingStatusListener
 @UsingTestProperties
@@ -89,14 +88,13 @@ class JsonTemplateLayoutNullEventDelimiterTest {
 
         // Set the expected bytes.
         final byte[] expectedBytes = {
-                '"', 'f', 'o', 'o', '"', '\0',
-                '"', 'b', 'a', 'r', '"', '\0'
+            '"', 'f', 'o', 'o', '"', '\0',
+            '"', 'b', 'a', 'r', '"', '\0'
         };
 
         // Wait for the log events.
         try {
-            Awaitility
-                    .await()
+            Awaitility.await()
                     .atMost(TIMEOUT_MS, TimeUnit.MILLISECONDS)
                     .until(() -> server.getTotalReadByteCount() >= expectedBytes.length);
         } catch (final ConditionTimeoutException e) {
@@ -185,7 +183,5 @@ class JsonTemplateLayoutNullEventDelimiterTest {
                 Thread.currentThread().interrupt();
             }
         }
-
     }
-
 }

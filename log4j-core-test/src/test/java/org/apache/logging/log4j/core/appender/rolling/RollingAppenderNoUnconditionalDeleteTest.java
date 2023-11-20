@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
@@ -31,9 +33,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.Tag;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -48,11 +47,11 @@ public class RollingAppenderNoUnconditionalDeleteTest {
     @Parameterized.Parameters(name = "{0} \u2192 {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { //
-                // @formatter:off
-                {"log4j-rolling-with-custom-delete-unconditional1.xml", "target/rolling-unconditional-delete1/test"}, //
-                {"log4j-rolling-with-custom-delete-unconditional2.xml", "target/rolling-unconditional-delete2/test"}, //
-                {"log4j-rolling-with-custom-delete-unconditional3.xml", "target/rolling-unconditional-delete3/test"}, //
-                // @formatter:on
+            // @formatter:off
+            {"log4j-rolling-with-custom-delete-unconditional1.xml", "target/rolling-unconditional-delete1/test"}, //
+            {"log4j-rolling-with-custom-delete-unconditional2.xml", "target/rolling-unconditional-delete2/test"}, //
+            {"log4j-rolling-with-custom-delete-unconditional3.xml", "target/rolling-unconditional-delete3/test"}, //
+            // @formatter:on
         });
     }
 

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util;
 
 import java.net.URLConnection;
 import java.util.Base64;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -42,12 +41,12 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
     private String authString = null;
 
     public BasicAuthorizationProvider(final PropertyEnvironment props) {
-        final String userName = props.getStringProperty(PREFIXES,AUTH_USER_NAME,
-                () -> props.getStringProperty(CONFIG_USER_NAME));
-        String password = props.getStringProperty(PREFIXES, AUTH_PASSWORD,
-                () -> props.getStringProperty(CONFIG_PASSWORD));
-        final String decryptor = props.getStringProperty(PREFIXES, AUTH_PASSWORD_DECRYPTOR,
-                () -> props.getStringProperty(PASSWORD_DECRYPTOR));
+        final String userName =
+                props.getStringProperty(PREFIXES, AUTH_USER_NAME, () -> props.getStringProperty(CONFIG_USER_NAME));
+        String password =
+                props.getStringProperty(PREFIXES, AUTH_PASSWORD, () -> props.getStringProperty(CONFIG_PASSWORD));
+        final String decryptor = props.getStringProperty(
+                PREFIXES, AUTH_PASSWORD_DECRYPTOR, () -> props.getStringProperty(PASSWORD_DECRYPTOR));
         if (decryptor != null) {
             try {
                 final Object obj = LoaderUtil.newInstanceOf(decryptor);

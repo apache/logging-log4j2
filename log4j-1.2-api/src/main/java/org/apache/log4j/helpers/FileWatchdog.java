@@ -16,9 +16,8 @@
  */
 package org.apache.log4j.helpers;
 
-import java.io.File;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.File;
 
 /**
  * Checks every now and then that a certain file has not changed. If it has, then call the {@link #doOnChange} method.
@@ -30,7 +29,7 @@ public abstract class FileWatchdog extends Thread {
     /**
      * The default delay between every file modification check, set to 60 seconds.
      */
-    static final public long DEFAULT_DELAY = 60_000;
+    public static final long DEFAULT_DELAY = 60_000;
 
     /**
      * The name of the file to observe for changes.
@@ -47,10 +46,7 @@ public abstract class FileWatchdog extends Thread {
     boolean warnedAlready;
     boolean interrupted;
 
-    @SuppressFBWarnings(
-            value = "PATH_TRAVERSAL_IN",
-            justification = "The filename comes from a system property."
-    )
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "The filename comes from a system property.")
     protected FileWatchdog(final String fileName) {
         super("FileWatchdog");
         this.filename = fileName;
@@ -84,7 +80,7 @@ public abstract class FileWatchdog extends Thread {
         }
     }
 
-    abstract protected void doOnChange();
+    protected abstract void doOnChange();
 
     @Override
     public void run() {

@@ -16,13 +16,12 @@
  */
 package org.apache.log4j.layout;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -60,7 +59,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
             @PluginAttribute(value = "locationInfo") final boolean locationInfo,
             @PluginAttribute(value = "properties") final boolean properties
             // @formatter:on
-    ) {
+            ) {
         return new Log4j1XmlLayout(configuration, locationInfo, properties);
     }
 
@@ -107,8 +106,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
 
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
-            justification = "The throwable is formatted into a log file, which should be private."
-    )
+            justification = "The throwable is formatted into a log file, which should be private.")
     private void formatTo(final LogEvent event, final StringBuilder buf) {
         buf.append("<log4j:event logger=\"");
         buf.append(Transform.escapeHtmlTags(event.getLoggerName()));
@@ -185,5 +183,4 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         buf.append(EOL);
         buf.append(EOL);
     }
-
 }

@@ -27,9 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-
 import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -103,10 +101,10 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             super.setStarting();
 
             this.name = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONTEXT_NAME));
-            final String location = this.substitutor.replace(this.servletContext
-                    .getInitParameter(LOG4J_CONFIG_LOCATION));
-            final boolean isJndi = "true".equalsIgnoreCase(this.servletContext
-                    .getInitParameter(IS_LOG4J_CONTEXT_SELECTOR_NAMED));
+            final String location =
+                    this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONFIG_LOCATION));
+            final boolean isJndi =
+                    "true".equalsIgnoreCase(this.servletContext.getInitParameter(IS_LOG4J_CONTEXT_SELECTOR_NAMED));
 
             if (isJndi) {
                 this.initializeJndi(location);
@@ -135,8 +133,8 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
             if (selector instanceof NamedContextSelector) {
                 this.namedContextSelector = (NamedContextSelector) selector;
-                context = this.namedContextSelector.locateContext(this.name,
-                        WebLoggerContextUtils.createExternalEntry(this.servletContext), configLocation);
+                context = this.namedContextSelector.locateContext(
+                        this.name, WebLoggerContextUtils.createExternalEntry(this.servletContext), configLocation);
                 ContextAnchor.THREAD_CONTEXT.set(context);
                 if (context.isInitialized()) {
                     context.start();
@@ -151,7 +149,10 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             return;
         }
         this.loggerContext = context;
-        LOGGER.debug("Created logger context for [{}] using [{}].", this.name, context.getClass().getClassLoader());
+        LOGGER.debug(
+                "Created logger context for [{}] using [{}].",
+                this.name,
+                context.getClass().getClassLoader());
     }
 
     private void initializeNonJndi(final String location) {
@@ -169,14 +170,17 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         }
         if (location != null && location.contains(",")) {
             final List<URI> uris = getConfigURIs(location);
-            this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uris,
+            this.loggerContext = Configurator.initialize(
+                    this.name,
+                    this.getClassLoader(),
+                    uris,
                     WebLoggerContextUtils.createExternalEntry(this.servletContext));
             return;
         }
 
         final URI uri = getConfigURI(location);
-        this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uri,
-                WebLoggerContextUtils.createExternalEntry(this.servletContext));
+        this.loggerContext = Configurator.initialize(
+                this.name, this.getClassLoader(), uri, WebLoggerContextUtils.createExternalEntry(this.servletContext));
     }
 
     private List<URI> getConfigURIs(final String location) {
@@ -196,7 +200,10 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             String configLocation = location;
             if (configLocation == null) {
                 final String[] paths = prefixSet(servletContext.getResourcePaths(WEB_INF), WEB_INF + "log4j2");
-                LOGGER.debug("getConfigURI found resource paths {} in servletContext at [{}]", Arrays.toString(paths), WEB_INF);
+                LOGGER.debug(
+                        "getConfigURI found resource paths {} in servletContext at [{}]",
+                        Arrays.toString(paths),
+                        WEB_INF);
                 if (paths.length == 1) {
                     configLocation = paths[0];
                 } else if (paths.length > 1) {
@@ -249,10 +256,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         if (set == null) {
             return Strings.EMPTY_ARRAY;
         }
-        return set
-                .stream()
-                .filter(string -> string.startsWith(prefix))
-                .toArray(String[]::new);
+        return set.stream().filter(string -> string.startsWith(prefix)).toArray(String[]::new);
     }
 
     @Override
@@ -313,5 +317,4 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             return LoaderUtil.getThreadContextClassLoader();
         }
     }
-
 }

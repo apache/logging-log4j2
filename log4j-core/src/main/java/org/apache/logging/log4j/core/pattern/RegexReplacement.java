@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -71,8 +70,7 @@ public final class RegexReplacement {
      */
     @PluginFactory
     public static RegexReplacement createRegexReplacement(
-            @PluginAttribute final Pattern regex,
-            @PluginAttribute final String replacement) {
+            @PluginAttribute final Pattern regex, @PluginAttribute final String replacement) {
         if (regex == null) {
             LOGGER.error("A regular expression is required for replacement");
             return null;
@@ -83,5 +81,4 @@ public final class RegexReplacement {
         // FIXME: should we use Matcher.quoteReplacement() here?
         return new RegexReplacement(regex, replacement);
     }
-
 }

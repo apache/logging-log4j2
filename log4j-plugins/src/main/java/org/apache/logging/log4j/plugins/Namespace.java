@@ -29,7 +29,14 @@ import java.lang.annotation.Target;
  * This can be annotated on another annotation to create an alias annotation for a common namespace.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE, ElementType.TYPE_USE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Target({
+    ElementType.FIELD,
+    ElementType.PARAMETER,
+    ElementType.TYPE,
+    ElementType.TYPE_USE,
+    ElementType.ANNOTATION_TYPE,
+    ElementType.METHOD
+})
 @Documented
 public @interface Namespace {
     /**

@@ -32,15 +32,13 @@ public class SyslogAppenderCustomLayoutTest extends SyslogAppenderTest {
     }
 
     @Override
-    protected Builder<?> newSyslogAppenderBuilder(final Protocol protocol, final TlsSyslogMessageFormat format,
-            final boolean newLine, final int port) {
+    protected Builder<?> newSyslogAppenderBuilder(
+            final Protocol protocol, final TlsSyslogMessageFormat format, final boolean newLine, final int port) {
         final Layout layout = SyslogLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setFacility(Facility.LOCAL3)
                 .setIncludeNewLine(true)
                 .build();
-        return super.newSyslogAppenderBuilder(protocol, format, newLine, port)
-                .setLayout(layout);
+        return super.newSyslogAppenderBuilder(protocol, format, newLine, port).setLayout(layout);
     }
-
 }
