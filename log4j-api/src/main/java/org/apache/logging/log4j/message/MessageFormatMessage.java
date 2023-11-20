@@ -100,7 +100,7 @@ public class MessageFormatMessage implements Message {
             final MessageFormat temp = new MessageFormat(msgPattern, locale);
             return temp.format(args);
         } catch (final IllegalFormatException ife) {
-            LOGGER.error("Unable to format msg: " + msgPattern, ife);
+            LOGGER.error("Unable to format msg: {}", msgPattern, ife);
             return msgPattern;
         }
     }
