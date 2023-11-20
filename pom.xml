@@ -875,6 +875,41 @@
       </build>
     </profile>
 
+    <profile>
+      <id>rewrite</id>
+
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+
+      <build>
+        <defaultGoal>clean package rewrite:runNoFork spotless:apply</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.openrewrite.maven</groupId>
+            <artifactId>rewrite-maven-plugin</artifactId>
+            <version>5.13.0</version>
+            <configuration>
+              <activeRecipes>
+                <activeRecipe>org.openrewrite.java.logging.log4j.ParameterizedLogging</activeRecipe>
+              </activeRecipes>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.openrewrite.recipe</groupId>
+                <artifactId>rewrite-migrate-java</artifactId>
+                <version>2.3.0</version>
+              </dependency>
+              <dependency>
+                <groupId>org.openrewrite.recipe</groupId>
+                <artifactId>rewrite-logging-frameworks</artifactId>
+                <version>2.1.0</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
 </project>
