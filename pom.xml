@@ -247,7 +247,6 @@
     <module>log4j-jndi-test</module>
     <module>log4j-jpl</module>
     <module>log4j-jul</module>
-    <module>log4j-kafka</module>
     <module>log4j-kubernetes</module>
     <module>log4j-layout-jackson</module>
     <module>log4j-layout-jackson-json</module>
@@ -439,12 +438,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jul</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-kafka</artifactId>
         <version>${project.version}</version>
       </dependency>
 

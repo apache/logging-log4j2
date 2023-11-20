@@ -24,8 +24,6 @@ public interface Appenders {
 
     interface AsyncJcTools {}
 
-    interface Kafka {}
-
     interface MongoDb {}
 
     interface ZeroMq {}

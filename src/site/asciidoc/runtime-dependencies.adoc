@@ -503,13 +503,6 @@ the exact list of JAR files needed for these features.
 |Async Loggers
 |http://lmax-exchange.github.io/disruptor/[LMAX Disruptor]
 
-|Kafka Appender
-|http://kafka.apache.org/[Kafka client library].
-[NOTE]
-====
-You need to use a version of the Kafka client library matching the Kafka server used.
-====
-
 |Windows console color support
 |http://jansi.fusesource.org/[Jansi]
 

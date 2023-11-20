@@ -48,8 +48,7 @@ per logging call vs 1.5 microseconds when writing to the file.
 1. When performing audit logging using a framework such as log4j-audit guaranteed delivery of the audit events
 is required. Many of the options for writing the output, including writing to the standard output stream, do
 not guarantee delivery. In these cases the event must be delivered to a "forwarder" that acknowledges receipt
-only when it has placed the event in durable storage, such as what [Apache Flume](https://flume.apache.org/) 
-or [Apache Kafka](https://kafka.apache.org/) will do.
+only when it has placed the event in durable storage, such as what [Apache Flume](https://flume.apache.org/) will do.
 
 ## Logging Approaches
 
@@ -114,7 +113,7 @@ for failover if the primary aggregator fails the SocketAppender must be enclosed
 which would also have the secondary aggregator configured. Another option is to have the SocketAppender 
 point to a highly available proxy that can forward to the Log Aggregator.
 
-If the log aggregator used is Apache Flume or Apache Kafka (or similar) the Appenders for these support 
+If the log aggregator used is Apache Flume (or similar) the Appenders for these support 
 being configured with a list of hosts and ports so high availability is not an issue. 
 
 ![Aggregator](../images/LoggerAggregator.png "Application Logging to an Aggregator via TCP")
@@ -515,9 +514,6 @@ directory in the Log4j [source repository](https://github.com/apache/logging-log
 |Flume Embedded |||||
 | - RFC5424               |3.58      |2.10       |2.10       |2.70       |
 | - JSON                  |4.20      |2.49       |3.53       |2.90       |
-|Kafka Local JSON |||||
-| - sendSync true         |58.46     |38.55      |19.59      |19.01      |
-| - sendSync false        |9.8       |10.8       |12.23      |11.36      |
 |Console|||||
 | - JSON / Kubernetes     |3.03      |3.11       |3.04       |2.51       |
 | - JSON                  |2.80      |2.74       |2.54       |2.35       |
@@ -538,8 +534,6 @@ acknowledges the batch was written to its channel. These number seem to indicate
 benefit from using a pool of RPCClients, at least for a batchSize of 1.
 1. Flume Embedded - This is essentially asynchronous as it writes to an in-memory buffer. It is
 unclear why the performance isn't closer to the AsyncLogger results.
-1. Kafka was run in standalone mode on the same laptop as the application. See  sendSync set to true
-requires waiting for an ack from Kafka for each log event. 
 1. Console - System.out is redirected to a file by Docker. Testing shows that it would be much
 slower if it was writing to the terminal screen.
 1. Rolling File - Test uses the default buffer size of 8K.
@@ -558,8 +552,8 @@ circular buffer the overhead of logging will almost be unnoticeable to the appli
 be processed properly then log via TCP to a companion container that acts as a log forwarder or directly
 to a log aggregator as shown above in [Logging with ELK](#ELK). Use the  
 Log4j Docker Lookup to add the container information to each log event.
-1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such 
-as the Kafka Appender with syncSend set to true that only return control after the downstream agent 
+1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another
+that only return control after the downstream agent 
 acknowledges receipt of the event. Beware that using an Appender that writes each event individually should 
 be kept to a minimum since it is much slower than sending buffered events. 
 1. Logging to files within the container is discouraged. Doing so requires that a volume be declared in 

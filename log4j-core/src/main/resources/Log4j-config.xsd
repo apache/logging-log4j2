@@ -647,7 +647,6 @@
          <element name="Console" type="tns:ConsoleAppenderType" minOccurs="0" />
          <element name="Flume" type="tns:FlumeAppenderType" minOccurs="0" />
          <element name="JeroMQ" type="tns:JeroMQAppenderType" minOccurs="0" />
-         <element name="Kafka" type="tns:KafkaAppenderType" minOccurs="0" />
          <element name="Rewrite" type="tns:RewriteAppenderType" minOccurs="0" />
          <element name="Routing" type="tns:RoutingAppenderType" minOccurs="0" />
          <element name="File" type="tns:FileAppenderType" minOccurs="0" />
@@ -831,18 +830,6 @@
       <complexContent>
          <extension base="tns:AbstractAppenderType">
             <anyAttribute processContents="lax" />
-         </extension>
-      </complexContent>
-   </complexType>
-
-   <complexType name="KafkaAppenderType">
-      <complexContent>
-         <extension base="tns:AbstractAppenderType">
-            <attribute name="key" type="string" />
-            <attribute name="retryCount" type="int" />
-            <attribute name="syncSend" type="boolean" />
-            <attribute name="sendEventTimestamp" type="boolean" />
-            <attribute name="topic" type="string" />
          </extension>
       </complexContent>
    </complexType>

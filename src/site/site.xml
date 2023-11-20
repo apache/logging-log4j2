@@ -155,7 +155,6 @@
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
         <item name="HTTP" href="/manual/appenders.html#HttpAppender"/>
-        <item name="Kafka" href="/manual/appenders.html#KafkaAppender"/>
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
         <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
         <item name="NoSQL for MongoDB" href="/manual/appenders.html#NoSQLAppenderMongoDB"/>
