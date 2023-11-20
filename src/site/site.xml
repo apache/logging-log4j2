@@ -127,15 +127,6 @@
         <item name="Logging in the Cloud" href="/manual/cloud.html"/>
       </item>
 
-      <item name="Web Applications and JSPs" href="/manual/webapp.html" collapse="true">
-        <item name="Servlet 3.0 and Newer" href="/manual/webapp.html#Servlet-3.0" />
-        <item name="Servlet 2.5" href="/manual/webapp.html#Servlet-2.5" />
-        <item name="Context Parameters" href="/manual/webapp.html#ContextParams" />
-        <item name="Configuration Lookups" href="/manual/webapp.html#WebLookup" />
-        <item name="JavaServer Pages Logging" href="/manual/webapp.html#JspLogging" />
-        <item name="Asynchronous Requests" href="/manual/webapp.html#Async" />
-      </item>
-
       <item name="Lookups" href="/manual/lookups.html" collapse="true">
         <item name="Context Map" href="/manual/lookups.html#ContextMapLookup"/>
         <item name="Date" href="/manual/lookups.html#DateLookup"/>
@@ -154,7 +145,6 @@
         <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>
         <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>
         <item name="Upper" href="/manual/lookups.html#UpperLookup"/>
-        <item name="Web" href="/manual/lookups.html#WebLookup"/>
       </item>
 
       <item name="Appenders" href="/manual/appenders.html" collapse="true">
@@ -165,7 +155,6 @@
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
-        <item name="JPA" href="/manual/appenders.html#JPAAppender"/>
         <item name="HTTP" href="/manual/appenders.html#HttpAppender"/>
         <item name="Kafka" href="/manual/appenders.html#KafkaAppender"/>
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
@@ -180,7 +169,6 @@
         <item name="Rolling File" href="/manual/appenders.html#RollingFileAppender"/>
         <item name="Rolling Random Access File" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
         <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
-        <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="ScriptAppenderSelector" href="/manual/appenders.html#ScriptAppenderSelector"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="SSL" href="/manual/appenders.html#SSL"/>
@@ -312,9 +300,6 @@
       <item name="JDBC Appender" href="log4j-jdbc-dbcp2.html"/>
       <item name="ZeroMQ Appender" href="log4j-jeromq.html"/>
       <item name="Apache Flume Appender" href="log4j-flume-ng.html"/>
-      <item name="Tag Library" href="log4j-taglib.html"/>
-      <item name="Web Application Support" href="log4j-web.html"/>
-      <item name="Jakarta Web Application Support" href="log4j-jakarta-web.html"/>
       <item name="Application Server Integration" href="log4j-appserver.html"/>
       <item name="CouchDB appender" href="log4j-couchdb.html"/>
       <item name="MongoDB3 appender" href="log4j-mongodb3.html"/>

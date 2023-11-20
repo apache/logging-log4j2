@@ -225,30 +225,6 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    <!-- log4j-jakarta-web -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jakarta-web</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jakarta-web</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <!-- log4j-jakarta-smtp -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jakarta-smtp</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jakarta-smtp</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
     <!-- log4j-jcl -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -306,18 +282,6 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jndi</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <!-- log4j-jpa -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jpa</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jpa</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
@@ -549,18 +513,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- log4j-smtp -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-smtp</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-smtp</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
     <!-- log4j-spring-boot -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -585,18 +537,6 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    <!-- log4j-taglib -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-taglib</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-taglib</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
     <!-- log4j-to-jul -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -618,18 +558,6 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-to-slf4j</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <!-- log4j-web -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-web</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-web</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>

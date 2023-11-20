@@ -31,7 +31,7 @@ become more apparent, changes were necessariy in Log4j's design:
 * With the introduction of the Java Platform Module System (JPMS) changes were needed to how the various log4j modules
 are packaged. While not every log4j module is now a fully compliant JPMS module with its own module-info.java file,
 all the modules likely to be used in a JPMS environment are.
-* Many optional components, such as Scripting, JNDI, JPA and JMS, have been moved to their own modules. This makes
+* Many optional components, such as Scripting and JNDI have been moved to their own modules. This makes
 Log4j-core slightly smaller in 3.x and aids in security by not having jars with unwanted behaviors present, making
 disabling them via system properties unnecessary.
 * All plugins constructed using Log4j 3.x are now located using Java's ServiceLoader. This avoids many of the problems

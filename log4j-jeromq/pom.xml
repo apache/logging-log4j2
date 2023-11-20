@@ -30,7 +30,7 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j ZeroMQ using JeroMQ Documentation</docLabel>
-    <projectDir>/log4j-jpa</projectDir>
+    <projectDir>/log4j-jeromq</projectDir>
     <!--
       ~ OSGi and JPMS options
       -->

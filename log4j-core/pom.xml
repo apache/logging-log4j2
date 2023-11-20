@@ -48,7 +48,6 @@
       <!-- java.sql -->
       java.sql.*;resolution:=optional,
       <!-- java.xml -->
-      javax.xml.*;resolution:=optional,
       org.w3c.*;resolution:=optional,
       org.xml.*;resolution:=optional,
       <!-- jdk.unsupported -->
@@ -139,18 +138,6 @@
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>
-    </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>javax.activation-api</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <!-- POM for jackson-dataformat-xml depends on woodstox-core -->
     <dependency>

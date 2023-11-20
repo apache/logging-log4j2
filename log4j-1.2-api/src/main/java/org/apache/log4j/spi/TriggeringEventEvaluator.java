@@ -19,12 +19,6 @@ package org.apache.log4j.spi;
 /**
  * Implementors decide when to perform an appender specific action.
  *
- * <p>
- * For example, the {@code org.apache.log4j.net.SMTPAppender} sends an email when the
- * {@link #isTriggeringEvent(LoggingEvent)} method returns {@code true} and adds the event to an internal buffer when
- * the returned result is {@code false}.
- * </p>
- *
  * @since version 1.0
  */
 public interface TriggeringEventEvaluator {

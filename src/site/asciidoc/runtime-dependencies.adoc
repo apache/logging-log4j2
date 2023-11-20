@@ -250,20 +250,8 @@ The module info definition may be modified in the future to export these only to
 |org.apache.logging.log4j.iostreams
 |Automatic Module
 
-|log4j-jakarta-smtp
-|org.apache.logging.log4j.smtp
-|Automatic Module
-
-|log4j-jakarta-web
-|org.apache.logging.log4j.web
-|Automatic Module
-
 |log4j-jcl
 |org.apache.logging.log4j.jcl
-|Automatic Module
-
-|log4j-jmx-gui
-|org.apache.logging.log4j.jmx.gui
 |Automatic Module
 
 |log4j-jpl
@@ -479,13 +467,6 @@ The module info definition may be modified in the future to export these only to
 |org.apache.logging.log4j.slf4j
 |Automatic Module
 
-|log4j-taglib
-|org.apache.logging.log4j.taglib
-|Automatic Module
-
-|log4j-web
-|org.apache.logging.log4j.web
-|Automatic Module
 |===
 
 
@@ -542,10 +523,6 @@ You need to use a version of the Kafka client library matching the Kafka server 
 
 |JDBC Appender
 |a JDBC driver for the database you choose to write events to
-
-|JPA Appender
-|the Java Persistence API classes, a JPA provider implementation, and a decorated entity that the user implements.
-It also requires an appropriate JDBC driver
 
 |NoSQL Appender with MongoDB provider
 |MongoDB Java Client driver and Log4j MongoDB library
@@ -639,13 +616,6 @@ but applications do not have to be packaged as a Spring Boot application.
 See link:log4j-spring-cloud-config/log4j-spring-cloud-config-client/dependencies.html#Dependency_Tree[Dependency Tree]
 for the exact list of JAR files needed.
 
-|log4j-taglib[[log4j-taglib]]
-|The Log4j link:log4j-taglib/index.html[Log Tag Library] requires the
-http://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Taglib] and
-the Servlet API. See the
-link:log4j-taglib/dependencies.html#Dependency_Tree[Dependency Tree] for
-the exact list of JAR files needed.
-
 |log4j-to-slf4j[[log4j-to-slf4j]]
 |The link:log4j-to-slf4j/index.html[Log4j 2 to SLF4J Adapter] requires
 the http://www.slf4j.org/[SLF4J] API and an SLF4J implementation. See
@@ -653,14 +623,5 @@ the link:log4j-to-slf4j/dependencies.html#Dependency_Tree[Dependency
 Tree] for the exact list of JAR files needed.
 
 WARNING: Do not use this with the link:#log4j-slf4j-impl[log4j-slf4j-impl] module.
-
-|log4j-web[[log4j-web]]
-|The Log4j link:log4j-web/index.html[Web] module requires the Servlet
-API. See the link:log4j-web/dependencies.html#Dependency_Tree[Dependency
-Tree] for the exact list of JAR files needed. Note that this works with
-the Servlet 2.5 API as well as the Servlet 3.x API.
-
-|log4j-jakarta-web[[log4j-jakarta-web]]
-|The Log4j Jakarta-Web[[log4j-jakarta-web]] module for Jakarta EE 9+ web servlet containers requires the Servlet API and `log4j-core`.
 
 |===

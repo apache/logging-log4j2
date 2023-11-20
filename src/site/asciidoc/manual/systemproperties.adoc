@@ -709,7 +709,7 @@ JMX notifications.
 |NBSP
 |System/Application
 |false
-|When true, the use of JNDI the JMS Appender is enabled if the log4j-jndi and log4j-jms jars are present on the
+|When true, the use of JNDI the JMS Appender is enabled if the log4j-jndi and log4j-jakarta-jms jars are present on the
 classpath.
 
 |JNDI
@@ -757,7 +757,7 @@ the `AsyncLoggerContextSelector` is used.)
 |true
 |Overrides the global flag forwhether or not a shutdown hook should be used to stop a
 `LoggerContext`. By default, this is enabled and can be
-disabled on a per-configuration basis. When running with the `log4j-web`
+disabled on a per-configuration basis. When running with the `log4j-jakarta-web`
 module, this is automatically disabled.
 
 |LoggerContext
