@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
@@ -23,6 +27,9 @@ import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -31,14 +38,6 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.junit.jupiter.api.Test;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Tests {@link ThreadContextMapFilter} using a WireMock stub.
  */
@@ -46,7 +45,8 @@ public class HttpThreadContextMapFilterTest {
 
     @Test
     @LoggerContextSource("HttpThreadContextMapFilterTest.xml")
-    public void wireMock_logs_should_be_filtered_on_MDC(final LoggerContext loggerContext, @Named("List") final ListAppender appender) throws Exception {
+    public void wireMock_logs_should_be_filtered_on_MDC(
+            final LoggerContext loggerContext, @Named("List") final ListAppender appender) throws Exception {
 
         // Create the logger
         final ExtendedLogger logger = loggerContext.getLogger(HttpThreadContextMapFilterTest.class);
@@ -58,7 +58,11 @@ public class HttpThreadContextMapFilterTest {
             private final AtomicInteger invocationCounter = new AtomicInteger();
 
             @Override
-            public Response transform(final Request request, final Response response, final FileSource files, final Parameters parameters) {
+            public Response transform(
+                    final Request request,
+                    final Response response,
+                    final FileSource files,
+                    final Parameters parameters) {
                 final int invocationCount = invocationCounter.getAndIncrement();
                 ThreadContext.put("invocationCount", "" + invocationCount);
                 logger.info("transforming request #{}", invocationCount);
@@ -69,11 +73,11 @@ public class HttpThreadContextMapFilterTest {
             public String getName() {
                 return "mdc-writer";
             }
-
         };
 
         // Create the WireMock server extended using the response transformer.
-        final WireMockServer wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().extensions(wireMockResponseTransformer));
+        final WireMockServer wireMockServer =
+                new WireMockServer(WireMockConfiguration.wireMockConfig().extensions(wireMockResponseTransformer));
         wireMockServer.stubFor(get("/").willReturn(ok().withTransformers(wireMockResponseTransformer.getName())));
 
         wireMockServer.start();
@@ -95,7 +99,6 @@ public class HttpThreadContextMapFilterTest {
         } finally {
             wireMockServer.stop();
         }
-
     }
 
     private static void httpGet(String url) throws Exception {
@@ -107,5 +110,4 @@ public class HttpThreadContextMapFilterTest {
             connection.disconnect();
         }
     }
-
 }
