@@ -453,18 +453,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- log4j-spring-boot -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-spring-boot</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-spring-boot</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
     <!-- log4j-spring-cloud-config-client -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

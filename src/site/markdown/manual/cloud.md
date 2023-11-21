@@ -451,9 +451,9 @@ to multiple servers at the same time. Trying to achieve this via REST calls coul
   
 Since its first release Log4j has supported reconfiguration through a file.
 Beginning with Log4j 2.12.0 Log4j also supports accessing the configuration via HTTP(S) and monitoring the file 
-for changes by using the HTTP "If-Modified-Since" header. A patch has also been integrated into Spring Cloud Config
+for changes by using the HTTP "If-Modified-Since" header. A patch has also been integrated into Spring Cloud Config Client
 starting with versions 2.0.3 and 2.1.1 for it to honor the If-Modified-Since header. In addition, the 
-log4j-spring-cloud-config project will listen for update events published by Spring Cloud Bus and then verify
+log4j-spring-cloud-config-client project will listen for update events published by Spring Cloud Bus and then verify
 that the configuration file has been modified, so polling via HTTP is not required.
 
 Log4j also supports composite configurations. A distributed application spread across microservices could 
@@ -464,7 +464,7 @@ While the standard Spring Boot REST endpoints to update logging will still work 
 REST endpoints will be lost if Log4j reconfigures itself do to changes in the logging configuration file.
 
 Further information regarding integration of the log4j-spring-cloud-config-client can be found at 
-[Log4j Spring Cloud Config Client](../log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html).
+[Log4j Spring Cloud Config Client](../log4j-spring-cloud-config-client.html).
 
 ## Integration with Spring Boot
 
@@ -500,7 +500,7 @@ by VMWare Fusion and had 4 CPUs and 2 GB of RAM. These number should be used for
 as the results on another system may vary considerably.
 
 The sample application used can be found under the log4j-spring-cloud-config/log4j-spring-cloud-config-samples
-directory in the Log4j [source repository](https://github.com/apache/logging-log4j2).
+directory in [the Log4j Samples repository](https://github.com/apache/logging-log4j-samples).
 
 | Test                    | 1 Thread | 2 Threads | 4 Threads | 8 Threads |
 |------------------------ |---------:|----------:|----------:|----------:|

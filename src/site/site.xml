@@ -141,7 +141,6 @@
         <item name="Lower" href="/manual/lookups.html#LowerLookup"/>
         <item name="Main Arguments" href="/manual/lookups.html#AppMainArgsLookup"/>
         <item name="Map" href="/manual/lookups.html#MapLookup"/>
-        <item name="Spring" href="/manual/lookups.html#SpringLookup"/>
         <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>
         <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>
         <item name="Upper" href="/manual/lookups.html#UpperLookup"/>
@@ -300,7 +299,6 @@
       <item name="IO Streams" href="log4j-iostreams.html"/>
       <item name="Docker Support" href="log4j-docker.html"/>
       <item name="Kubernetes Support" href="log4j-kubernetes.html"/>
-      <item name="Log4j Spring Boot" href="log4j-spring-boot.html"/>
       <item name="Spring Cloud Config Client" href="log4j-spring-cloud-config-client.html"/>
       <item name="Log4j Transformation Tools" href="log4j-transform"/>
     </menu>

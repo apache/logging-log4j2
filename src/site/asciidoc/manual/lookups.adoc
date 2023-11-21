@@ -616,32 +616,6 @@ while "type" would have to be an item in the Map in a MapMessage.
 </Routing>
 ----
 
-[#SpringLookup]
-== Spring Boot Lookup
-
-
-The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as
-values of the active and default profiles. Specifying a key of `profiles.active` will reutrn the active
-profiles while a key of `profiles.default` will return the default profiles. The default and active
-profiles can be an array. If more than one profile is present they will be returned as a comma separated
-list. To retrieve a single item from the array append `[{index}]` to the key. For example, to return the
-first active profile in the list specify `profiles.active[0]`.
-
-This Lookup will return null values until Spring Boot initializes application logging. The Spring Boot
-Lookup requires the `log4j-spring-boot` jar be included as a dependency.
-
-
-[source,xml]
-----
-<File name="Application" fileName="application-${spring:profiles.active[0]}.log">
-  <PatternLayout>
-    <pattern>%d %p %c{1.} [%t] $${spring:spring.application.name} %m%n</pattern>
-  </PatternLayout>
-</File>
-----
-
-This Lookup requires log4j-spring-cloud-config-client be included in the application.
-
 [#SystemPropertiesLookup]
 == System Properties Lookup
 
