@@ -1886,11 +1886,9 @@ alternatives.
 | Feature
 | `JsonTemplateLayout`
 | link:layouts.html#JSONLayout[`JsonLayout`]
-| link:layouts.html#GELFLayout[`GelfLayout`]
 | https://github.com/elastic/java-ecs-logging/tree/master/log4j2-ecs-layout[`EcsLayout`]
 
 | Java version
-| 8
 | 8
 | 8
 | 6
@@ -1899,11 +1897,9 @@ alternatives.
 | None
 | Jackson
 | None
-| None
 
 | Schema customization?
 | ✓
-| ✕
 | ✕
 | ✕
 
@@ -1911,17 +1907,14 @@ alternatives.
 | ✓
 | ✕
 | ✕
-| ✕
 
 | (Almost) garbage-free?
 | ✓
 | ✕
 | ✓
-| ✓
 
 | Custom typed `Message` serialization?
 | ✓
-| ✕
 | ✕
 | ?footnote:[Only for ``ObjectMessage``s and if Jackson is in the classpath.]
 
@@ -1929,17 +1922,14 @@ alternatives.
 | ✓
 | ✕
 | ✕
-| ✕
 
 | Rendering stack traces as array?
 | ✓
 | ✓
-| ✕
 | ✓
 
 | Stack trace truncation?
 | ✓
-| ✕
 | ✕
 | ✕
 
@@ -1947,10 +1937,8 @@ alternatives.
 | ✕
 | ✓
 | ✕
-| ✕
 
 | Additional string fields?
-| ✓
 | ✓
 | ✓
 | ✓
@@ -1959,11 +1947,9 @@ alternatives.
 | ✓
 | ✕
 | ✕
-| ✕
 
 | Custom resolvers?
 | ✓
-| ✕
 | ✕
 | ✕
 |===

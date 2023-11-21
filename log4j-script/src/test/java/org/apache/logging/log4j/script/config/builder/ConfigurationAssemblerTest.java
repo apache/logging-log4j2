@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.CustomLevelConfig;
@@ -39,7 +38,6 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Test;
 
 public class ConfigurationAssemblerTest {
@@ -88,8 +86,6 @@ public class ConfigurationAssemblerTest {
         final Map<String, Appender> appenders = config.getAppenders();
         assertNotNull(appenders);
         assertEquals(appenders.size(), 1, "Incorrect number of Appenders: " + appenders.size());
-        final ConsoleAppender consoleAppender = (ConsoleAppender) appenders.get("Stdout");
-        final PatternLayout gelfLayout = (PatternLayout) consoleAppender.getLayout();
         final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertNotNull(loggers);
         assertEquals(loggers.size(), 2, "Incorrect number of LoggerConfigs: " + loggers.size());

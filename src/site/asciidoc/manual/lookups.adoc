@@ -338,28 +338,7 @@ Log4j Kubernetes provides access to the following container attributes:
 |podId|The pod's ip number
 |podIp|The pod's ip address
 |podName|The name of the pod
-
-      <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true" compressionType="OFF">
-        <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
-        <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
-        <KeyValuePair key="docker.containerId" value="${docker:containerId:-}"/>
-        <KeyValuePair key="application" value="$${lower:${spring:spring.application.name}}"/>
-        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-        <KeyValuePair key="kubernetes.clusterName" value="${k8s:clusterName:-}/>
-        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
-        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
-        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
-        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
-        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
-        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
-        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
-        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
-        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
-        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
-        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
-        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
-        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
-      </GelfLayout>]]></pre>
+|===
 
 This Lookup is subject to the configuration requirements listed at link:../log4j-kubernetes/index.html[Log4j Kubernetes Support]
 

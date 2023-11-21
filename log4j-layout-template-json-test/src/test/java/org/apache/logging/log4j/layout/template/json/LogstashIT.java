@@ -41,7 +41,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -81,14 +80,6 @@ class LogstashIT {
     private static final String SERVICE_NAME = "LogstashIT";
 
     private static final String EVENT_DATASET = SERVICE_NAME + ".log";
-
-    private static final GelfLayout GELF_LAYOUT = GelfLayout.newBuilder()
-            .setConfiguration(CONFIGURATION)
-            .setCharset(CHARSET)
-            .setCompressionType(GelfLayout.CompressionType.OFF)
-            .setIncludeNullDelimiter(true)
-            .setHost(HOST_NAME)
-            .build();
 
     private static final JsonTemplateLayout JSON_TEMPLATE_GELF_LAYOUT = JsonTemplateLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
@@ -264,32 +255,6 @@ class LogstashIT {
                 appender.stop();
             }
         }
-    }
-
-    @Test
-    void test_GelfLayout() throws IOException {
-
-        // Create log events.
-        final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
-
-        // Append log events and collect persisted sources.
-        final Function<Map<String, Object>, Integer> keyMapper = (final Map<String, Object> source) -> {
-            final String timestamp = (String) source.get("timestamp");
-            final String shortMessage = (String) source.get("short_message");
-            final String fullMessage = (String) source.get("full_message");
-            return Objects.hash(timestamp, shortMessage, fullMessage);
-        };
-        final Map<Integer, Object> expectedSourceByKey = appendAndCollect(
-                logEvents, GELF_LAYOUT, MavenHardcodedConstants.LS_GELF_INPUT_PORT, keyMapper, Collections.emptySet());
-        final Map<Integer, Object> actualSourceByKey = appendAndCollect(
-                logEvents,
-                JSON_TEMPLATE_GELF_LAYOUT,
-                MavenHardcodedConstants.LS_GELF_INPUT_PORT,
-                keyMapper,
-                Collections.emptySet());
-
-        // Compare persisted sources.
-        Assertions.assertThat(actualSourceByKey).isEqualTo(expectedSourceByKey);
     }
 
     @Test

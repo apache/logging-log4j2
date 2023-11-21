@@ -557,67 +557,6 @@
       </complexContent>
    </complexType>
 
-   <complexType name="GelfLayoutType">
-      <sequence minOccurs="0">
-         <choice minOccurs="0">
-            <element name="LevelPatternSelector">
-               <complexType>
-                  <sequence>
-                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
-                  </sequence>
-                  <anyAttribute processContents="lax" />
-               </complexType>
-            </element>
-            <element name="MarkerPatternSelector">
-               <complexType>
-                  <sequence>
-                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
-                  </sequence>
-                  <anyAttribute processContents="lax" />
-               </complexType>
-            </element>
-            <element name="ScriptPatternSelector">
-               <complexType>
-                  <sequence>
-                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
-                  </sequence>
-                  <anyAttribute processContents="lax" />
-               </complexType>
-            </element>
-            <element name="MessagePattern" type="string" minOccurs="0" />
-         </choice>
-         <element name="KeyValuePair" type="tns:KeyValuePairType" minOccurs="0" maxOccurs="unbounded">
-            <annotation>
-               <documentation>
-                  One or more KeyValuePair elements that define custom field in the output.
-               </documentation>
-            </annotation>
-         </element>
-      </sequence>
-      <attribute name="host" type="string" />
-      <attribute name="compressionType">
-         <simpleType>
-            <restriction base="string">
-               <enumeration value="GZIP" />
-               <enumeration value="ZLIB" />
-               <enumeration value="OFF" />
-            </restriction>
-         </simpleType>
-      </attribute>
-      <attribute name="compressionThreshold" type="tns:IntegerType" />
-      <attribute name="includeNullDelimiter" type="tns:BooleanType" />
-      <attribute name="includeStacktrace" type="tns:BooleanType" />
-      <attribute name="includeThreadContext" type="tns:BooleanType" />
-      <attribute name="messagePattern" type="string" />
-      <attribute name="threadContextExcludes" type="string" />
-      <attribute name="threadContextIncludes" type="string" />
-      <attribute name="threadContextPrefix" type="string" />
-      <attribute name="mapMessageExcludes" type="string" />
-      <attribute name="mapMessageIncludes" type="string" />
-      <attribute name="mapPrefix" type="string" />
-      <attribute name="omitEmptyFields" type="tns:BooleanType" />
-   </complexType>
-
    <complexType name="JsonLayoutType">
       <complexContent>
          <extension base="tns:AbstractJsonLayoutType">
@@ -694,7 +633,6 @@
          <choice minOccurs="0">
             <element name="Layout" type="tns:LayoutType" />
             <element name="CsvParameterLayout" type="tns:JCsvParameterLayoutType" />
-            <element name="GelfLayout" type="tns:GelfLayoutType" />
             <element name="HtmlLayout" type="tns:HtmlLayoutType" />
             <element name="JsonLayout" type="tns:JsonLayoutType" />
             <element name="MessageLayout" type="tns:MessageLayoutType" />

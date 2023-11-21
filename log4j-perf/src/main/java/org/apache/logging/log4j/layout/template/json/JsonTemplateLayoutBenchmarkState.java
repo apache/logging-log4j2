@@ -25,9 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.openjdk.jmh.annotations.Scope;
@@ -48,15 +46,11 @@ public class JsonTemplateLayoutBenchmarkState {
 
     private final Layout jtl4EcsLayout;
 
-    private final Layout jtl4GelfLayout;
-
     private final Layout defaultJsonLayout;
 
     private final Layout customJsonLayout;
 
     private final Layout ecsLayout;
-
-    private final Layout gelfLayout;
 
     private final List<LogEvent> fullLogEvents;
 
@@ -68,11 +62,9 @@ public class JsonTemplateLayoutBenchmarkState {
         this.byteBufferDestination = new BlackHoleByteBufferDestination(1024 * 512);
         this.jtl4JsonLayout = createJtl4JsonLayout();
         this.jtl4EcsLayout = createJtl4EcsLayout();
-        this.jtl4GelfLayout = createJtl4GelfLayout();
         this.defaultJsonLayout = createDefaultJsonLayout();
         this.customJsonLayout = createCustomJsonLayout();
         this.ecsLayout = createEcsLayout();
-        this.gelfLayout = createGelfLayout();
         this.fullLogEvents = LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
         this.liteLogEvents = LogEventFixture.createLiteLogEvents(LOG_EVENT_COUNT);
     }
@@ -97,23 +89,6 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:EcsLayout.json")
                 .setEventTemplateAdditionalFields(additionalFields)
-                .build();
-    }
-
-    private static JsonTemplateLayout createJtl4GelfLayout() {
-        return JsonTemplateLayout.newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setCharset(CHARSET)
-                .setEventTemplateUri("classpath:GelfLayout.json")
-                .setEventTemplateAdditionalFields(new EventTemplateAdditionalField[] {
-                    // Adding "host" as a constant rather than using
-                    // the "hostName" property lookup at runtime, which
-                    // is what GelfLayout does as well.
-                    EventTemplateAdditionalField.newBuilder()
-                            .setKey("host")
-                            .setValue(NetUtils.getLocalHostname())
-                            .build()
-                })
                 .build();
     }
 
@@ -147,14 +122,6 @@ public class JsonTemplateLayoutBenchmarkState {
         return layout;
     }
 
-    private static GelfLayout createGelfLayout() {
-        return GelfLayout.newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setCharset(CHARSET)
-                .setCompressionType(GelfLayout.CompressionType.OFF)
-                .build();
-    }
-
     ByteBufferDestination getByteBufferDestination() {
         return byteBufferDestination;
     }
@@ -167,10 +134,6 @@ public class JsonTemplateLayoutBenchmarkState {
         return jtl4EcsLayout;
     }
 
-    Layout getJtl4GelfLayout() {
-        return jtl4GelfLayout;
-    }
-
     Layout getDefaultJsonLayout() {
         return defaultJsonLayout;
     }
@@ -181,10 +144,6 @@ public class JsonTemplateLayoutBenchmarkState {
 
     Layout getEcsLayout() {
         return ecsLayout;
-    }
-
-    Layout getGelfLayout() {
-        return gelfLayout;
     }
 
     List<LogEvent> getFullLogEvents() {

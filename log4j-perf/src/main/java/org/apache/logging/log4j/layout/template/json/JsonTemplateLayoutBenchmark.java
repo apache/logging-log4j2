@@ -64,16 +64,6 @@ public class JsonTemplateLayoutBenchmark {
     }
 
     @Benchmark
-    public static int fullJtl4GelfLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getJtl4GelfLayout(), state.getFullLogEvents());
-    }
-
-    @Benchmark
-    public static int liteJtl4GelfLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getJtl4GelfLayout(), state.getLiteLogEvents());
-    }
-
-    @Benchmark
     public static int fullDefaultJsonLayout(final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(state, state.getDefaultJsonLayout(), state.getFullLogEvents());
     }
@@ -101,16 +91,6 @@ public class JsonTemplateLayoutBenchmark {
     @Benchmark
     public static int liteEcsLayout(final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(state, state.getEcsLayout(), state.getLiteLogEvents());
-    }
-
-    @Benchmark
-    public static int fullGelfLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getGelfLayout(), state.getFullLogEvents());
-    }
-
-    @Benchmark
-    public static int liteGelfLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getGelfLayout(), state.getLiteLogEvents());
     }
 
     private static int benchmark(

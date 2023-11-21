@@ -70,8 +70,7 @@ The Log4j team does not recommend this approach for performance reasons.
 ### Logging to the Standard Output Stream with the Docker Fluentd Logging Driver
 
 Docker provides alternate [logging drivers](https://docs.docker.com/config/containers/logging/configure/), 
-such as [gelf](https://docs.docker.com/config/containers/logging/gelf/) or 
-[fluentd](https://docs.docker.com/config/containers/logging/fluentd/), that
+such as [fluentd](https://docs.docker.com/config/containers/logging/fluentd/), that
 can be used to redirect the standard output stream to a log forwarder or log aggregator. 
 
 When routing to a log forwarder it is expected that the forwarder will have the same lifetime as the 
@@ -324,34 +323,6 @@ message would be redundant.
       }
     }
 
-    
-Finally, the GelfLayout can be used to generate GELF compliant output. Unlike the JsonTemplateLayout it 
-adheres closely to the GELF spec.    
-
-    <Socket name="Elastic" host="${sys:elastic.search.host}" port="12222" protocol="tcp" bufferedIo="true">
-      <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true"
-                  compressionType="OFF">
-        <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
-        <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
-        <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
-        <KeyValuePair key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
-        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
-        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
-        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
-        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
-        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
-        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
-        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
-        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
-        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
-        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
-        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
-        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
-        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
-      </GelfLayout>
-    </Socket>
-
 #### Logstash Configuration with Gelf
 
 We will configure Logstash to listen on TCP port 12345 for payloads of type JSON
@@ -431,7 +402,7 @@ the configuration of filebeat is straightforward.
 
 
 ### Kibana
-Using the EnhancedGelf template, the GelfLayout or the custom template the above configurations the message 
+Using the EnhancedGelf template or the custom template the above configurations the message 
 field will contain a fully formatted log event just as it would  appear in a file Appender. The ThreadContext 
 attributes, custome fields, thread name, etc. will all be available as attributes on each log event that can 
 be used for filtering. The result will resemble

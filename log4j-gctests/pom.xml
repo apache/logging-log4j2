@@ -218,12 +218,6 @@
       <artifactId>jmdns</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--  GELF -->
-    <dependency>
-      <groupId>net.javacrumbs.json-unit</groupId>
-      <artifactId>json-unit</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Log4j 1.2 tests -->
     <dependency>
       <groupId>log4j</groupId>
