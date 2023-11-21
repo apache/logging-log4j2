@@ -225,18 +225,6 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    <!-- log4j-jeromq -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jeromq</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jeromq</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
     <!-- log4j-jndi -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

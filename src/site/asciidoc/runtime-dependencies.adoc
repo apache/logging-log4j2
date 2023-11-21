@@ -509,10 +509,6 @@ the exact list of JAR files needed for these features.
 |http://commons.apache.org/proper/commons-compress/[Apache Commons Compress].
 In addition, XZ requires http://tukaani.org/xz/java.html[XZ for Java].
 
-|ZeroMQ Appender
-|The ZeroMQ appender uses the https://github.com/zeromq/jeromq[JeroMQ] library which is licensed under the terms of the Mozilla Public License Version 2.0 (MPLv2).
-For details see the file https://github.com/zeromq/jeromq/blob/master/LICENSE[LICENSE] included with the JeroMQ distribution.
-
 |log4j-1.2-api[[log4j-1.2-api]]
 |The link:log4j-1.2-api/index.html[Log4j 1.2 Bridge] has no external
 dependencies. This only requires the Log4j API. Including Log4j Core provides optional, extra functionality.

@@ -167,7 +167,6 @@
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="SSL" href="/manual/appenders.html#SSL"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
-        <item name="ZeroMQ/JeroMQ" href="/manual/appenders.html#JeroMQAppender"/>
       </item>
 
       <item name="Layouts" href="/manual/layouts.html" collapse="true">
@@ -290,7 +289,6 @@
       <item name="JDK Platform Logger" href="log4j-jpl.html"/>
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j.html"/>
       <item name="JDBC Appender" href="log4j-jdbc-dbcp2.html"/>
-      <item name="ZeroMQ Appender" href="log4j-jeromq.html"/>
       <item name="Apache Flume Appender" href="log4j-flume-ng.html"/>
       <item name="Application Server Integration" href="log4j-appserver.html"/>
       <item name="MongoDB 4 appender" href="log4j-mongodb4.html"/>
