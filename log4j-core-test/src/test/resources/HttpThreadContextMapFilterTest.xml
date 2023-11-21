@@ -15,21 +15,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration name="ConfigTest" status="ERROR">
-  <MutableThreadContextMapFilter configLocation="${sys:configLocation}" pollInterval="1" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+<Configuration status="OFF" name="HttpThreadContextMapFilterTest">
+
+  <ContextMapFilter onMatch="ACCEPT" operator="or">
+    <KeyValuePair key="invocationCount" value="0"/>
+    <KeyValuePair key="invocationCount" value="2"/>
+  </ContextMapFilter>
+
   <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
     <List name="List">
+      <PatternLayout pattern="%m"/>
     </List>
   </Appenders>
+
   <Loggers>
-    <Logger name="Test" level="error">
+    <Root level="ALL">
       <AppenderRef ref="List"/>
-    </Logger>
-    <Root level="error">
-      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
+
 </Configuration>
