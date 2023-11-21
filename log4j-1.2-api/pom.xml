@@ -99,18 +99,6 @@
       <artifactId>jackson-dataformat-xml</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>javax.activation-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>

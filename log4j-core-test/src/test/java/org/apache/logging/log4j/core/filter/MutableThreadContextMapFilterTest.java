@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
  */
 public class MutableThreadContextMapFilterTest implements MutableThreadContextMapFilter.FilterConfigUpdateListener {
 
-    static final String CONFIG = "log4j2-mutableFilter.xml";
+    static final String CONFIG = "MutableThreadContextMapFilterTest.xml";
     static LoggerContext loggerContext = null;
     static File targetFile = new File("target/test-classes/testConfig.json");
     static Path target = targetFile.toPath();

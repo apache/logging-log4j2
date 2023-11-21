@@ -23,5 +23,4 @@
   org.osgi.core;static=true;transitive=false,\
   org.osgi.framework;static=true;transitive=false,\
   org.apache.logging.log4j;substitute="log4j-api",\
-  org.apache.logging.log4j.core;substitute="log4j-core";transitive=false;static=true,\
-  javax.jms.api;substitute="javax.jms-api"
+  org.apache.logging.log4j.core;substitute="log4j-core";transitive=false;static=true

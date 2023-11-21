@@ -226,7 +226,7 @@ Otherwise, the Map will be formatted as `"key1=value1 key2=value2 ..."`.
 
 Some Appenders make special use of `MapMessage` objects:
 
-* When a link:appenders.html#JMSAppender[JMS Appender] is configured
+* When a JMS Appender is configured
 with a no layout, it converts a Log4j `MapMessage` to a JMS
 `javax.jms.MapMessage`.
 * When a link:appenders.html#JDBCAppender[JDBC Appender] is configured

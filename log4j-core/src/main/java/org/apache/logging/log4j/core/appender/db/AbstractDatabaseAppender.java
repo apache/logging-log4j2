@@ -94,7 +94,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     }
 
     /**
-     * This always returns {@code null}, as database appenders do not use a single layout. The JPA and NoSQL appenders
+     * This always returns {@code null}, as database appenders do not use a single layout. NoSQL appenders
      * do not use a layout at all. The JDBC appender has a layout-per-column pattern.
      *
      * @return {@code null}.

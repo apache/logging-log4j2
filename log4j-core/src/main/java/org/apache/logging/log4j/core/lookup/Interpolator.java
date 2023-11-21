@@ -124,9 +124,10 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
                         + "JMX lookups will not be available, continuing configuration. Ignoring " + t);
                 break;
             case LOOKUP_KEY_WEB:
-                LOGGER.info("Log4j appears to be running in a Servlet environment, but there's no log4j-web module "
-                        + "available. If you want better web container support, please add the log4j-web JAR to your "
-                        + "web archive or server lib directory.");
+                LOGGER.info(
+                        "Log4j appears to be running in a Servlet environment, but there's no `log4j-jakarta-web` module "
+                                + "available. If you want better web container support, please add the `log4j-jakarta-web` JAR to your "
+                                + "web archive or server lib directory.");
                 break;
             case LOOKUP_KEY_DOCKER:
             case LOOKUP_KEY_SPRING:

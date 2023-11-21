@@ -59,10 +59,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-layout-jackson-json</artifactId>
     </dependency>
     <dependency>
@@ -104,11 +100,6 @@
       <artifactId>jackson-databind</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Used for JPA appenders (needs an implementation of course) -->
-    <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>javax.persistence-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
@@ -134,10 +125,6 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>org.eclipse.persistence.jpa</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

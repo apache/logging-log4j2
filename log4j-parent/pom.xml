@@ -89,14 +89,12 @@
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
-    <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.1.2</surefire.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>5.18.2</activemq.version>
     <angus-activation.version>2.0.1</angus-activation.version>
     <angus-mail.version>2.0.2</angus-mail.version>
     <assertj.version>3.24.2</assertj.version>
@@ -128,21 +126,8 @@
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.7.2</hsqldb.version>
     <jackson-bom.version>2.15.2</jackson-bom.version>
-    <!-- Override the version in Jakarta EE 9 BOM: -->
-    <jakarta-activation.version>2.1.2</jakarta-activation.version>
-    <jakarta-mail.version>2.1.2</jakarta-mail.version>
-    <!-- BOM with Jakarta EE 9 APIs: -->
-    <jakartaee-bom.version>9.1.0</jakartaee-bom.version>
-    <!-- No BOM for Java EE 8 APIs, so we list them separately: -->
-    <javax-activation.version>1.2.0</javax-activation.version>
-    <javax-inject.version>1</javax-inject.version>
-    <javax-jaxb.version>2.3.1</javax-jaxb.version>
-    <javax-jms.version>2.0.1</javax-jms.version>
-    <javax-mail.version>1.6.2</javax-mail.version>
-    <javax-persistence.version>2.2</javax-persistence.version>
-    <javax-servlet.version>4.0.1</javax-servlet.version>
-    <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <jansi.version>2.4.0</jansi.version>
+    <javax-jms.version>2.0.1</javax-jms.version>
     <java-allocation-instrumenter.version>3.3.3</java-allocation-instrumenter.version>
     <jctools.version>3.3.0</jctools.version>
     <je.version>18.3.12</je.version>
@@ -169,7 +154,6 @@
     <netty.version>4.1.97.Final</netty.version>
     <opentest4j.version>1.3.0</opentest4j.version>
     <org.eclipse.osgi.version>3.18.400</org.eclipse.osgi.version>
-    <org.eclipse.persistence.version>2.7.11</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
     <osgi.framework.version>1.10.0</osgi.framework.version>
@@ -255,14 +239,6 @@
       </dependency>
 
       <dependency>
-        <groupId>jakarta.platform</groupId>
-        <artifactId>jakarta.jakartaee-bom</artifactId>
-        <version>${jakartaee-bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-bom</artifactId>
         <version>${jetty.version}</version>
@@ -308,13 +284,6 @@
         <version>${spring-framework.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-
-
-      <dependency>
-        <groupId>org.apache.activemq</groupId>
-        <artifactId>activemq-broker</artifactId>
-        <version>${activemq.version}</version>
       </dependency>
 
       <dependency>
@@ -667,24 +636,6 @@
       </dependency>
 
       <dependency>
-        <groupId>jakarta.activation</groupId>
-        <artifactId>jakarta.activation-api</artifactId>
-        <version>${jakarta-activation.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.angus</groupId>
-        <artifactId>jakarta.mail</artifactId>
-        <version>${angus-mail.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>jakarta.mail</groupId>
-        <artifactId>jakarta.mail-api</artifactId>
-        <version>${jakarta-mail.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
         <version>${jansi.version}</version>
@@ -697,64 +648,11 @@
         <version>${java-allocation-instrumenter.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>com.sun.activation</groupId>
-        <artifactId>javax.activation</artifactId>
-        <version>${javax-activation.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.activation</groupId>
-        <artifactId>javax.activation-api</artifactId>
-        <version>${javax-activation.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
-        <version>${javax-inject.version}</version>
-      </dependency>
-
+      <!-- used by `log4j-1.2-api`: -->
       <dependency>
         <groupId>javax.jms</groupId>
         <artifactId>javax.jms-api</artifactId>
         <version>${javax-jms.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.sun.mail</groupId>
-        <artifactId>javax.mail</artifactId>
-        <version>${javax-mail.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.mail</groupId>
-        <artifactId>javax.mail-api</artifactId>
-        <version>${javax-mail.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.persistence</groupId>
-        <artifactId>javax.persistence-api</artifactId>
-        <version>${javax-persistence.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.servlet.jsp</groupId>
-        <artifactId>javax.servlet.jsp-api</artifactId>
-        <version>${javax-servlet-jsp.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>${javax-servlet.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>${javax-jaxb.version}</version>
       </dependency>
 
       <dependency>
@@ -944,19 +842,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.eclipse.persistence</groupId>
-        <artifactId>org.eclipse.persistence.jpa</artifactId>
-        <version>${org.eclipse.persistence.version}</version>
-        <exclusions>
-          <!-- A copy of `javax.persistence:javax.persistence-api`: -->
-          <exclusion>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>jakarta.persistence</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.framework</artifactId>
         <version>${osgi.framework.version}</version>
@@ -1088,14 +973,6 @@
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
         <version>${xmlunit.version}</version>
-        <!-- This POM bumps these deps to Jakartified versions.
-             Using the corresponding `javax.*` deps is safer. -->
-        <exclusions>
-          <exclusion>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>

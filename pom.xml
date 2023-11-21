@@ -241,16 +241,12 @@
     <module>log4j-flume-ng</module>
     <module>log4j-gctests</module>
     <module>log4j-iostreams</module>
-    <module>log4j-jakarta-smtp</module>
-    <module>log4j-jakarta-web</module>
     <module>log4j-jcl</module>
     <module>log4j-jdbc</module>
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-jeromq</module>
-    <module>log4j-jms</module>
     <module>log4j-jndi</module>
     <module>log4j-jndi-test</module>
-    <module>log4j-jpa</module>
     <module>log4j-jpl</module>
     <module>log4j-jul</module>
     <module>log4j-kafka</module>
@@ -271,13 +267,10 @@
     <module>log4j-script</module>
     <module>log4j-slf4j2-impl</module>
     <module>log4j-slf4j-impl</module>
-    <module>log4j-smtp</module>
     <module>log4j-spring-boot</module>
     <module>log4j-spring-cloud-config</module>
-    <module>log4j-taglib</module>
     <module>log4j-to-jul</module>
     <module>log4j-to-slf4j</module>
-    <module>log4j-web</module>
   </modules>
 
   <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
@@ -417,18 +410,6 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jakarta-smtp</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jakarta-web</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jcl</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -451,12 +432,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jms</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
       <!-- JNDI -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -466,12 +441,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jndi-test</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -579,12 +548,6 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-smtp</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-spring-boot</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -592,12 +555,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-spring-cloud-config-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-taglib</artifactId>
         <version>${project.version}</version>
       </dependency>
 

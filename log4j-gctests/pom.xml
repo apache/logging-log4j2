@@ -169,12 +169,6 @@
       <artifactId>commons-lang3</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- JNDI and JMS tests -->
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-dateutil</artifactId>
