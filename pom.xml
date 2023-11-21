@@ -832,6 +832,7 @@
             <version>5.13.0</version>
             <configuration>
               <activeRecipes>
+                <activeRecipe>org.openrewrite.java.logging.log4j.ParameterizedLogging</activeRecipe>
                 <activeRecipe>org.openrewrite.java.migrate.Java8toJava11</activeRecipe>
               </activeRecipes>
             </configuration>

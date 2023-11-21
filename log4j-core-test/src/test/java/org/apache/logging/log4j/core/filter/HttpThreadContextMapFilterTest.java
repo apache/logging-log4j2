@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
 public class HttpThreadContextMapFilterTest {
 
     @Test
-    @LoggerContextSource("HttpThreadContextMapFilterTest.xml")
+    @LoggerContextSource
     public void wireMock_logs_should_be_filtered_on_MDC(
             final LoggerContext loggerContext, @Named("List") final ListAppender appender) throws Exception {
 
@@ -76,8 +76,8 @@ public class HttpThreadContextMapFilterTest {
         };
 
         // Create the WireMock server extended using the response transformer.
-        final WireMockServer wireMockServer =
-                new WireMockServer(WireMockConfiguration.wireMockConfig().extensions(wireMockResponseTransformer));
+        final WireMockServer wireMockServer = new WireMockServer(
+                WireMockConfiguration.wireMockConfig().dynamicPort().extensions(wireMockResponseTransformer));
         wireMockServer.stubFor(get("/").willReturn(ok().withTransformers(wireMockResponseTransformer.getName())));
 
         wireMockServer.start();

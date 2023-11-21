@@ -72,7 +72,7 @@ public final class LowLevelLogUtil {
 
         @Override
         public void error(final Throwable throwable) {
-            logger.error(throwable);
+            logger.error("", throwable);
         }
 
         @Override
