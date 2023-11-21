@@ -232,8 +232,7 @@ with a no layout, it converts a Log4j `MapMessage` to a JMS
 * When a link:appenders.html#JDBCAppender[JDBC Appender] is configured
 with no layout, it converts a Log4j `MapMessage` to values in a
 SQL INSERT statement.
-* When a link:appenders.html#NoSQLAppenderMongoDB3[MongoDB3 Appender] or
-link:appenders.html#NoSQLAppenderMongoDB4[MongoDB4 Appender] is
+* When a link:appenders.html#NoSQLAppenderMongoDB4[MongoDB4 Appender] is
 configured with no layout, it converts a Log4j `MapMessage` to
 fields in a MongoDB object.
 

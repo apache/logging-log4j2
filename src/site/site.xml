@@ -158,8 +158,6 @@
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
         <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
         <item name="NoSQL for MongoDB" href="/manual/appenders.html#NoSQLAppenderMongoDB"/>
-        <item name="NoSQL for MongoDB 3" href="/manual/appenders.html#NoSQLAppenderMongoDB3"/>
-        <item name="NoSQL for MongoDB 4" href="/manual/appenders.html#NoSQLAppenderMongoDB4"/>
         <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
@@ -298,8 +296,7 @@
       <item name="ZeroMQ Appender" href="log4j-jeromq.html"/>
       <item name="Apache Flume Appender" href="log4j-flume-ng.html"/>
       <item name="Application Server Integration" href="log4j-appserver.html"/>
-      <item name="MongoDB3 appender" href="log4j-mongodb3.html"/>
-      <item name="MongoDB4 appender" href="log4j-mongodb4.html"/>
+      <item name="MongoDB 4 appender" href="log4j-mongodb4.html"/>
       <item name="IO Streams" href="log4j-iostreams.html"/>
       <item name="Docker Support" href="log4j-docker.html"/>
       <item name="Kubernetes Support" href="log4j-kubernetes.html"/>

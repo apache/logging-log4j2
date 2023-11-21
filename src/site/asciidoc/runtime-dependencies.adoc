@@ -316,10 +316,6 @@ The module info definition may be modified in the future to export these only to
 !
 !===
 
-|log4j-mongodb
-|org.apache.logging.log4j.mongodb
-|Automatic Module
-
 |log4j-osgi
 |org.apache.logging.log4j.osgi
 |Automatic Module. Unclear how OSGi will support Java modules.
@@ -564,8 +560,8 @@ external dependencies. It optionally depends on the
 link:log4j-api/index.html[Log4j Core] library. The only required module
 is the Log4j API.
 
-|log4j-mongodb[[log4j-mongodb]]
-|The Log4j link:log4j-mongodb/index.html[MongoDB] module depends on the
+|log4j-mongodb4[[log4j-mongodb4]]
+|The Log4j link:log4j-mongodb4/index.html[MongoDB] module depends on the
 http://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client
 driver].
 

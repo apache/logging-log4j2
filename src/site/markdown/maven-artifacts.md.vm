@@ -222,7 +222,7 @@ $h3 MongoDB
 
 If your configuration uses the NoSQL MongoDB appender, then add the following.
 
-#dependencies(['log4j-mongodb'])
+#dependencies(['log4j-mongodb4'])
 
 $h3 IO Streams
 

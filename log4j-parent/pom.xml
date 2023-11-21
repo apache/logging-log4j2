@@ -745,12 +745,6 @@
 
       <dependency>
         <groupId>org.mongodb</groupId>
-        <artifactId>mongodb-driver-legacy</artifactId>
-        <version>${mongodb.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-sync</artifactId>
         <version>${mongodb.version}</version>
       </dependency>
