@@ -32,11 +32,16 @@
     <!--
       ~ OSGi and JPMS options
       -->
-    <slf4j.support.bound>3</slf4j.support.bound>
+    <slf4j.support.range>[1.7,3)</slf4j.support.range>
     <bnd-extra-package-options>
       <!-- This bridge also support SLF4J 2.x -->
-      org.slf4j.*;version="${range;[==,${slf4j.support.bound})}"
+      org.slf4j.*;version="${slf4j.support.range}"
     </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- The module descriptor is in `META-INF/versions/9`
+           BND 6.x can not find it -->
+      org.slf4j;substitute="slf4j-api"
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
     <dependency>
