@@ -231,7 +231,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
             }
         } catch (final MissingResourceException ex) {
             if (!loop) {
-                logger.debug("Unable to locate ResourceBundle " + rbBaseName);
+                logger.debug("Unable to locate ResourceBundle {}", rbBaseName);
                 return null;
             }
         }
@@ -247,7 +247,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
                     rb = ResourceBundle.getBundle(substr);
                 }
             } catch (final MissingResourceException ex) {
-                logger.debug("Unable to locate ResourceBundle " + substr);
+                logger.debug("Unable to locate ResourceBundle {}", substr);
             }
         }
         return rb;
