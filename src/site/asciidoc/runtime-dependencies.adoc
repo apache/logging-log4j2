@@ -493,9 +493,6 @@ the exact list of JAR files needed for these features.
 |XML Layout
 |https://github.com/FasterXML/jackson[Jackson core, databind and dataformat XML] and `com.fasterxml.woodstox:woodstox-core:5.0.2`
 
-|YAML Layout
-|https://github.com/FasterXML/jackson[Jackson core, databind] and https://github.com/FasterXML/jackson-dataformat-yaml[YAML data format]
-
 |Async Loggers
 |http://lmax-exchange.github.io/disruptor/[LMAX Disruptor]
 

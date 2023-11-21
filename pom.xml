@@ -251,7 +251,6 @@
     <module>log4j-layout-jackson</module>
     <module>log4j-layout-jackson-json</module>
     <module>log4j-layout-jackson-xml</module>
-    <module>log4j-layout-jackson-yaml</module>
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-test</module>
     <module>log4j-mongodb4</module>
@@ -460,12 +459,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-layout-jackson-xml</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-jackson-yaml</artifactId>
         <version>${project.version}</version>
       </dependency>
 
