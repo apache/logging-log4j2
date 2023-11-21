@@ -2891,12 +2891,12 @@ public class CommandLine {
                 return new ArrayList<Object>();
             }
             // custom Collection implementation class must have default constructor
-            return (Collection<Object>) collectionClass.newInstance();
+            return (Collection<Object>) collectionClass.getDeclaredConstructor().newInstance();
         }
 
         private Map<Object, Object> createMap(final Class<?> mapClass) throws Exception {
             try { // if it is an implementation class, instantiate it
-                return (Map<Object, Object>) mapClass.newInstance();
+                return (Map<Object, Object>) mapClass.getDeclaredConstructor().newInstance();
             } catch (final Exception ignored) {
             }
             return new LinkedHashMap<Object, Object>();
