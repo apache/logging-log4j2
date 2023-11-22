@@ -263,12 +263,6 @@
       <artifactId>slf4j-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Useful mock classes and utilities -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Used for testing HTTP Watcher -->
     <dependency>
       <groupId>com.github.tomakehurst</groupId>

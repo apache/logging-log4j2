@@ -33,8 +33,10 @@
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-cloud.version>2021.0.8</spring-cloud.version>
     <log4jParentDir>${basedir}/..</log4jParentDir>
+    <spring-cloud.version>2021.0.8</spring-cloud.version>
+    <spring-boot.version>2.7.15</spring-boot.version>
+    <spring-framework.version>5.3.29</spring-framework.version>
   </properties>
   <dependencyManagement>
     <dependencies>

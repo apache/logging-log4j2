@@ -55,7 +55,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    <!-- Useful mock classes and utilities -->
+    <!-- `org.springframework:spring-test` is required for `org.springframework.mock.jndi.SimpleNamingContextBuilder`: -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
