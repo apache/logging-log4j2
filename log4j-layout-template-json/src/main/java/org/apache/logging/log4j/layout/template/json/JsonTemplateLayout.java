@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
@@ -248,11 +247,6 @@ public class JsonTemplateLayout implements StringLayout {
     @Override
     public Map<String, String> getContentFormat() {
         return CONTENT_FORMAT;
-    }
-
-    public static JsonTemplateLayout createDefaultLayout() {
-        final DefaultConfiguration configuration = new DefaultConfiguration();
-        return JsonTemplateLayout.newBuilder().setConfiguration(configuration).build();
     }
 
     @Factory
