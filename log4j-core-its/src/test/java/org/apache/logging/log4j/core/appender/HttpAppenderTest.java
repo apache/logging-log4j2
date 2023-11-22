@@ -162,7 +162,9 @@ public class HttpAppenderTest {
 
     @Before
     public void initLayout() {
-        layout = JsonTemplateLayout.newBuilder().setConfiguration(ctx.getConfiguration()).build();
+        layout = JsonTemplateLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
+                .build();
     }
 
     @Test

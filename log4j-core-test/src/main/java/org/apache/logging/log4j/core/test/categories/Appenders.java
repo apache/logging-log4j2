@@ -23,5 +23,4 @@ public interface Appenders {
     interface AsyncConversant {}
 
     interface AsyncJcTools {}
-
 }
