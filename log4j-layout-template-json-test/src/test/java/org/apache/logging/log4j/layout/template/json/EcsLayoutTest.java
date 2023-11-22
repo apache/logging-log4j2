@@ -32,7 +32,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled("")
+@Disabled(
+        "`co.elastic.logging.log4j2.EcsLayout` requires `org.apache.logging.log4j.core.layout.AbstractStringLayout#getStringBuilder()`, which doesn't exist anymore")
 class EcsLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();

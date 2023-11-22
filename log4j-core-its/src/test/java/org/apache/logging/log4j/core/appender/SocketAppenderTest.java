@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.EOFException;
 import java.io.IOException;
@@ -27,6 +29,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -37,17 +41,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.*;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
-import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -67,6 +67,51 @@ public class SocketAppenderTest {
 
     private static TcpSocketTestServer tcpServer;
     private static UdpSocketTestServer udpServer;
+
+    private static final Layout LAYOUT = JsonTemplateLayout.newBuilder()
+            .setConfiguration(new DefaultConfiguration())
+            .setEventTemplate(LogEventDto.JSON_TEMPLATE)
+            .build();
+
+    public static final class LogEventDto {
+
+        private static final String JSON_TEMPLATE = ("{" + "'message': {'$resolver': 'message', 'stringified': true},"
+                        + "'contextData': {'$resolver': 'mdc'},"
+                        + "'contextStack': {'$resolver': 'ndc'},"
+                        + "'error': {'$resolver': 'exception', 'field': 'message'}"
+                        + "}")
+                .replaceAll("'", "\"");
+
+        private static final ObjectMapper MAPPER = new ObjectMapper();
+
+        private final String message;
+
+        private final Map<String, String> contextData;
+
+        private final List<String> contextStack;
+
+        private final String error;
+
+        @JsonCreator
+        public LogEventDto(
+                @JsonProperty("message") final String message,
+                @JsonProperty("contextData") final Map<String, String> contextData,
+                @JsonProperty("contextStack") final List<String> contextStack,
+                @JsonProperty("error") final String error) {
+            this.message = message;
+            this.contextData = contextData;
+            this.contextStack = contextStack;
+            this.error = error;
+        }
+
+        private static LogEventDto fromJsonBytes(final byte[] jsonBytes) throws IOException {
+            return MAPPER.readValue(jsonBytes, LogEventDto.class);
+        }
+
+        private static Iterator<LogEventDto> fromJsonByteStream(final InputStream stream) throws IOException {
+            return MAPPER.readerFor(LogEventDto.class).readValues(stream);
+        }
+    }
 
     private final LoggerContext context = LoggerContext.getContext();
     private final Logger logger = context.getLogger(SocketAppenderTest.class.getName());
@@ -130,7 +175,7 @@ public class SocketAppenderTest {
                 .setName("test")
                 .setImmediateFail(false)
                 .setBufferSize(bufferSize)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         appender.start();
@@ -155,29 +200,28 @@ public class SocketAppenderTest {
             ThreadContext.pop();
         }
         Thread.sleep(250);
-        LogEvent event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
+        LogEventDto event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertNotNull(event, "No event retrieved");
-        assertEquals("This is a test message", event.getMessage().getFormattedMessage(), "Incorrect event");
+        assertEquals("This is a test message", event.message, "Incorrect event");
         assertTrue(tcpTestServer.getCount() > 0, "Message not delivered via TCP");
-        assertEquals(expectedUuidStr, event.getContextData().getValue(tcKey));
+        assertEquals(expectedUuidStr, event.contextData.get(tcKey));
         event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertNotNull(event, "No event retrieved");
-        assertTrue(event.getMessage().getFormattedMessage().equals("Throwing an exception"), "Incorrect event");
+        assertEquals("Throwing an exception", event.message, "Incorrect event");
         assertTrue(tcpTestServer.getCount() > 1, "Message not delivered via TCP");
-        assertEquals(expectedUuidStr, event.getContextStack().pop());
-        assertNotNull(event.getThrownProxy());
-        assertEquals(expectedExMsg, event.getThrownProxy().getMessage());
+        assertThat(event.contextStack).containsOnly(expectedUuidStr);
+        assertEquals(expectedExMsg, event.error);
     }
 
     @Test
-    public void testDefaultProtocol() throws Exception {
+    public void testDefaultProtocol() {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
                 .setPort(tcpServer.getLocalPort())
                 .setReconnectDelayMillis(-1)
                 .setName("test")
                 .setImmediateFail(false)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         assertNotNull(appender);
@@ -186,11 +230,8 @@ public class SocketAppenderTest {
 
     @Test
     public void testUdpAppender() throws Exception {
-        try {
-            udpServer.latch.await();
-        } catch (final InterruptedException ex) {
-            ex.printStackTrace();
-        }
+        final boolean released = udpServer.latch.await(3, TimeUnit.SECONDS);
+        assertTrue(released);
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
@@ -199,7 +240,7 @@ public class SocketAppenderTest {
                 .setReconnectDelayMillis(-1)
                 .setName("test")
                 .setImmediateFail(false)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         appender.start();
@@ -209,9 +250,9 @@ public class SocketAppenderTest {
         logger.setAdditive(false);
         logger.setLevel(Level.DEBUG);
         logger.debug("This is a udp message");
-        final LogEvent event = udpServer.getQueue().poll(3, TimeUnit.SECONDS);
+        final LogEventDto event = udpServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertNotNull(event, "No event retrieved");
-        assertTrue(event.getMessage().getFormattedMessage().equals("This is a udp message"), "Incorrect event");
+        assertEquals("This is a udp message", event.message, "Incorrect event");
         assertTrue(udpServer.getCount() > 0, "Message not delivered via UDP");
     }
 
@@ -225,7 +266,7 @@ public class SocketAppenderTest {
                 .setReconnectDelayMillis(100)
                 .setName("test")
                 .setImmediateFail(false)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         appender.start();
@@ -240,7 +281,7 @@ public class SocketAppenderTest {
 
             logger.debug("This message is written because a deadlock never.");
 
-            final LogEvent event = tcpSocketServer.getQueue().poll(3, TimeUnit.SECONDS);
+            final LogEventDto event = tcpSocketServer.getQueue().poll(3, TimeUnit.SECONDS);
             assertNotNull(event, "No event retrieved");
         } finally {
             tcpSocketServer.shutdown();
@@ -248,7 +289,7 @@ public class SocketAppenderTest {
     }
 
     @Test
-    public void testTcpAppenderNoWait() throws Exception {
+    public void testTcpAppenderNoWait() {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
                 .setHost("localhost")
@@ -257,7 +298,7 @@ public class SocketAppenderTest {
                 .setName("test")
                 .setImmediateFail(false)
                 .setIgnoreExceptions(false)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         appender.start();
@@ -276,8 +317,7 @@ public class SocketAppenderTest {
         private Thread thread;
         private final CountDownLatch latch = new CountDownLatch(1);
         private final AtomicInteger count = new AtomicInteger();
-        private final BlockingQueue<LogEvent> queue;
-        private final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
+        private final BlockingQueue<LogEventDto> queue;
 
         public UdpSocketTestServer() throws IOException {
             this.sock = new DatagramSocket(PORT);
@@ -309,7 +349,7 @@ public class SocketAppenderTest {
                     latch.countDown();
                     sock.receive(packet);
                     count.incrementAndGet();
-                    final LogEvent event = objectMapper.readValue(packet.getData(), Log4jLogEvent.class);
+                    final LogEventDto event = LogEventDto.fromJsonBytes(packet.getData());
                     queue.add(event);
                 }
             } catch (final Throwable e) {
@@ -324,7 +364,7 @@ public class SocketAppenderTest {
             return count.get();
         }
 
-        public BlockingQueue<LogEvent> getQueue() {
+        public BlockingQueue<LogEventDto> getQueue() {
             return queue;
         }
     }
@@ -334,8 +374,7 @@ public class SocketAppenderTest {
         private final ServerSocket serverSocket;
         private volatile boolean shutdown = false;
         private final AtomicInteger count = new AtomicInteger();
-        private final BlockingQueue<LogEvent> queue;
-        private final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
+        private final BlockingQueue<LogEventDto> queue;
 
         @SuppressWarnings("resource")
         public TcpSocketTestServer(final int port) throws IOException {
@@ -373,10 +412,10 @@ public class SocketAppenderTest {
                     if (socket != null) {
                         final InputStream is = socket.getInputStream();
                         while (!shutdown) {
-                            final MappingIterator<LogEvent> mappingIterator =
-                                    objectMapper.readerFor(Log4jLogEvent.class).readValues(is);
-                            while (mappingIterator.hasNextValue()) {
-                                queue.add(mappingIterator.nextValue());
+                            final Iterator<LogEventDto> it = LogEventDto.fromJsonByteStream(is);
+                            while (it.hasNext()) {
+                                final LogEventDto logEvent = it.next();
+                                queue.add(logEvent);
                                 count.incrementAndGet();
                             }
                         }
@@ -391,7 +430,7 @@ public class SocketAppenderTest {
             }
         }
 
-        public BlockingQueue<LogEvent> getQueue() {
+        public BlockingQueue<LogEventDto> getQueue() {
             return queue;
         }
 

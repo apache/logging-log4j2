@@ -100,8 +100,6 @@
     <assertj.version>3.24.2</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <cassandra.version>3.11.16</cassandra.version>
-    <cassandra-driver.version>3.11.5</cassandra-driver.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-compress.version>1.22</commons-compress.version>
     <commons-csv.version>1.9.0</commons-csv.version>
@@ -131,7 +129,6 @@
     <java-allocation-instrumenter.version>3.3.3</java-allocation-instrumenter.version>
     <jctools.version>3.3.0</jctools.version>
     <je.version>18.3.12</je.version>
-    <jeromq.version>0.5.4</jeromq.version>
     <jetty.version>9.4.52.v20230823</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
     <jmh.version>1.37</jmh.version>
@@ -139,9 +136,7 @@
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.10.0</junit-jupiter.version>
     <junit-pioneer.version>2.0.1</junit-pioneer.version>
-    <kafka.version>1.1.1</kafka.version>
     <kubernetes-client.version>5.12.4</kubernetes-client.version>
-    <lightcouch.version>0.2.0</lightcouch.version>
     <log4j.version>1.2.17</log4j.version>
     <log4j2-custom-layout.version>1.1.0</log4j2-custom-layout.version>
     <log4j2-ecs-layout.version>1.5.0</log4j2-ecs-layout.version>
@@ -161,7 +156,6 @@
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.0</plexus-utils.version>
     <slf4j.version>1.7.36</slf4j.version>
-    <spring-boot.version>2.7.15</spring-boot.version>
     <spring-framework.version>5.3.29</spring-framework.version>
     <system-stubs.version>2.1.3</system-stubs.version>
     <tomcat-juli.version>10.0.23</tomcat-juli.version>
@@ -279,14 +273,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>${spring-framework.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
         <groupId>org.eclipse.angus</groupId>
         <artifactId>angus-activation</artifactId>
         <version>${angus-activation.version}</version>
@@ -314,52 +300,6 @@
         <groupId>org.mongodb</groupId>
         <artifactId>bson</artifactId>
         <version>${mongodb.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.cassandra</groupId>
-        <artifactId>cassandra-all</artifactId>
-        <version>${cassandra.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.datastax.cassandra</groupId>
-        <artifactId>cassandra-driver-core</artifactId>
-        <version>${cassandra-driver.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.cassandra</groupId>
-        <artifactId>cassandra-thrift</artifactId>
-        <version>${cassandra.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -667,12 +607,6 @@
         <version>${je.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.zeromq</groupId>
-        <artifactId>jeromq</artifactId>
-        <version>${jeromq.version}</version>
-      </dependency>
-
       <!-- Zeroconf advertiser tests: -->
       <dependency>
         <groupId>org.jmdns</groupId>
@@ -714,18 +648,6 @@
         <groupId>org.junit-pioneer</groupId>
         <artifactId>junit-pioneer</artifactId>
         <version>${junit-pioneer.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.kafka</groupId>
-        <artifactId>kafka-clients</artifactId>
-        <version>${kafka.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.lightcouch</groupId>
-        <artifactId>lightcouch</artifactId>
-        <version>${lightcouch.version}</version>
       </dependency>
 
       <dependency>
@@ -802,12 +724,6 @@
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-core</artifactId>
-        <version>${mongodb.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>mongodb-driver-legacy</artifactId>
         <version>${mongodb.version}</version>
       </dependency>
 
@@ -908,21 +824,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot</artifactId>
-        <version>${spring-boot.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
-        <version>${spring-boot.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring-framework.version}</version>
       </dependency>
 
       <dependency>

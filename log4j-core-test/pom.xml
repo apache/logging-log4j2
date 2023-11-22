@@ -229,12 +229,6 @@
       <artifactId>jmdns</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--  GELF -->
-    <dependency>
-      <groupId>net.javacrumbs.json-unit</groupId>
-      <artifactId>json-unit</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Log4j 1.2 tests -->
     <dependency>
       <groupId>log4j</groupId>
@@ -283,12 +277,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Useful mock classes and utilities -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

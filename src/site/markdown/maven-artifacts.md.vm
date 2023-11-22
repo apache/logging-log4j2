@@ -218,23 +218,11 @@ to SLF4J. The SLF4J Bridge must NOT be on the class path when this is in use.
 
 #dependencies(['log4j-to-slf4j'])
 
-$h3 CouchDB
-
-If your configuration uses the NoSQL CouchDB appender, then add the following.
-
-#dependencies(['log4j-couchdb'])
-
 $h3 MongoDB
 
 If your configuration uses the NoSQL MongoDB appender, then add the following.
 
-#dependencies(['log4j-mongodb'])
-
-$h3 Cassandra
-
-If your configuration uses the Cassandra appender, then add the following.
-
-#dependencies(['log4j-cassandra'])
+#dependencies(['log4j-mongodb4'])
 
 $h3 IO Streams
 

@@ -42,14 +42,12 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
-import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 
 @Ignore("Fails often on Windows")
 
@@ -160,13 +158,22 @@ public class HttpAppenderTest {
             .keyManagerPassword(String.valueOf(TestConstants.KEYSTORE_PWD()))
             .keystoreType(TestConstants.KEYSTORE_TYPE));
 
+    private JsonTemplateLayout layout;
+
+    @Before
+    public void initLayout() {
+        layout = JsonTemplateLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
+                .build();
+    }
+
     @Test
     public void testAppend() throws Exception {
         wireMockRule.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(SUCCESS_RESPONSE));
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout(JsonLayout.createDefaultLayout())
+                .setLayout(layout)
                 .setConfiguration(ctx.getConfiguration())
                 .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
                 .build();
@@ -184,7 +191,7 @@ public class HttpAppenderTest {
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout(JsonLayout.createDefaultLayout())
+                .setLayout(layout)
                 .setConfiguration(ctx.getConfiguration())
                 .setUrl(new URL("https://localhost:" + wireMockRule.httpsPort() + "/test/log4j/"))
                 .setSslConfiguration(SslConfiguration.createSSLConfiguration(
@@ -219,7 +226,7 @@ public class HttpAppenderTest {
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout(JsonLayout.createDefaultLayout())
+                .setLayout(layout)
                 .setConfiguration(ctx.getConfiguration())
                 .setMethod("PUT")
                 .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/1234"))
@@ -238,7 +245,7 @@ public class HttpAppenderTest {
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout(JsonLayout.createDefaultLayout())
+                .setLayout(layout)
                 .setConfiguration(ctx.getConfiguration())
                 .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
                 .setHeaders(new Property[] {
@@ -281,7 +288,7 @@ public class HttpAppenderTest {
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout(JsonLayout.createDefaultLayout())
+                .setLayout(layout)
                 .setConfiguration(ctx.getConfiguration())
                 .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
                 .build();
@@ -304,7 +311,7 @@ public class HttpAppenderTest {
 
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout(JsonLayout.createDefaultLayout())
+                .setLayout(layout)
                 .setConfiguration(ctx.getConfiguration())
                 .setIgnoreExceptions(false)
                 .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
@@ -316,7 +323,7 @@ public class HttpAppenderTest {
     public void testAppendConnectError() throws Exception {
         final Appender appender = HttpAppender.newBuilder()
                 .setName("Http")
-                .setLayout(JsonLayout.createDefaultLayout())
+                .setLayout(layout)
                 .setConfiguration(ctx.getConfiguration())
                 .setIgnoreExceptions(false)
                 .setUrl(new URL("http://localhost:" + (wireMockRule.port() + 1) + "/test/log4j/"))

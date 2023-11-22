@@ -200,141 +200,6 @@ attribute from AsyncAppender as `LinkedTransferQueue` does not support a
 maximum capacity.
 |=======================================================================
 
-[#CassandraAppender]
-== CassandraAppender
-
-The CassandraAppender writes its output to an
-https://cassandra.apache.org/[Apache Cassandra] database. A keyspace and
-table must be configured ahead of time, and the columns of that table
-are mapped in a configuration file. Each column can specify either a
-link:layouts.html[StringLayout] (e.g., a
-link:layouts.html#PatternLayout[PatternLayout]) along with an optional
-conversion type, or only a conversion type for
-`org.apache.logging.log4j.spi.ThreadContextMap` or
-`org.apache.logging.log4j.spi.ThreadContextStack` to store the
-link:thread-context.html[MDC or NDC] in a map or list column
-respectively. A conversion type compatible with `java.util.Date` will
-use the log event timestamp converted to that type (e.g., use
-`java.util.Date` to fill a `timestamp` column type in Cassandra).
-
-.CassandraAppender Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|batched |boolean |Whether or not to use batch statements to write log
-messages to Cassandra. By default, this is `false`.
-
-|batchType
-|http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/BatchStatement.Type.html[`BatchStatement.Type`]
-|The batch type to use when using batched writes. By default, this is
-`LOGGED`.
-
-|bufferSize |int |The number of log messages to buffer or batch before
-writing. By default, no buffering is done.
-
-|clusterName |String |The name of the Cassandra cluster to connect to.
-
-|columns |ColumnMapping[] |A list of column mapping configurations. Each
-column must specify a column name. Each column can have a conversion
-type specified by its fully qualified class name. By default, the
-conversion type is `String`. If the configured type is
-assignment-compatible with
-link:../log4j-api/apidocs/org/apache/logging/log4j/util/ReadOnlyStringMap.html[`ReadOnlyStringMap`]
-/
-link:../log4j-api/apidocs/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
-or
-link:../log4j-api/apidocs/org/apache/logging/log4j/spi/ThreadContextStack.html[`ThreadContextStack`],
-then that column will be populated with the MDC or NDC respectively. If
-the configured type is assignment-compatible with `java.util.Date`, then
-the log timestamp will be converted to that configured date type. If a
-`literal` attribute is given, then its value will be used as is in the
-`INSERT` query without any escaping. Otherwise, the layout or pattern
-specified will be converted into the configured type and stored in that
-column.
-
-|contactPoints |SocketAddress[] |A list of hosts and ports of Cassandra
-nodes to connect to. These must be valid hostnames or IP addresses. By
-default, if a port is not specified for a host or it is set to 0, then
-the default Cassandra port of 9042 will be used. By default,
-`localhost:9042` will be used.
-
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
-
-|keyspace |String |The name of the keyspace containing the table that
-log messages will be written to.
-
-|name |String |The name of the Appender.
-
-|password |String |The password to use (along with the username) to
-connect to Cassandra.
-
-|table |String |The name of the table to write log messages to.
-
-|useClockForTimestampGenerator |boolean |Whether or not to use the
-configured `org.apache.logging.log4j.core.time.Clock` as a
-http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/TimestampGenerator.html[`TimestampGenerator`].
-By default, this is `false`.
-
-|username |String |The username to use to connect to Cassandra. By
-default, no username or password is used.
-
-|useTls |boolean |Whether or not to use TLS/SSL to connect to Cassandra.
-This is `false` by default.
-|=======================================================================
-
-Here is an example CassandraAppender configuration:
-
-[source,xml]
-----
-<Configuration name="CassandraAppenderTest">
-  <Appenders>
-    <Cassandra name="Cassandra" clusterName="Test Cluster" keyspace="test" table="logs" bufferSize="10" batched="true">
-      <SocketAddress host="localhost" port="9042"/>
-      <ColumnMapping name="id" pattern="%uuid{TIME}" type="java.util.UUID"/>
-      <ColumnMapping name="timeid" literal="now()"/>
-      <ColumnMapping name="message" pattern="%message"/>
-      <ColumnMapping name="level" pattern="%level"/>
-      <ColumnMapping name="marker" pattern="%marker"/>
-      <ColumnMapping name="logger" pattern="%logger"/>
-      <ColumnMapping name="timestamp" type="java.util.Date"/>
-      <ColumnMapping name="mdc" type="org.apache.logging.log4j.spi.ThreadContextMap"/>
-      <ColumnMapping name="ndc" type="org.apache.logging.log4j.spi.ThreadContextStack"/>
-    </Cassandra>
-  </Appenders>
-  <Loggers>
-    <Logger name="org.apache.logging.log4j.cassandra" level="DEBUG">
-      <AppenderRef ref="Cassandra"/>
-    </Logger>
-    <Root level="ERROR"/>
-  </Loggers>
-</Configuration>
-----
-
-This example configuration uses the following table schema:
-
-[source,sql]
-----
-CREATE TABLE logs (
-    id timeuuid PRIMARY KEY,
-    timeid timeuuid,
-    message text,
-    level text,
-    marker text,
-    logger text,
-    timestamp timestamp,
-    mdc map<text,text>,
-    ndc list<text>
-);
-----
-
 [#ConsoleAppender]
 == ConsoleAppender
 
@@ -1316,104 +1181,13 @@ Here is a sample HttpAppender configuration snippet:
   <Appenders>
     <Http name="Http" url="https://localhost:9200/test/log4j/">
       <Property name="X-Java-Runtime" value="$${java:runtime}" />
-      <JsonLayout properties="true"/>
+      <JsonTemplateLayout/>
       <SSL>
         <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
         <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
       </SSL>
     </Http>
   </Appenders>
-----
-
-[#KafkaAppender]
-== KafkaAppender
-
-As of Log4j 2.11.0, https://kafka.apache.org/[Apache Kafka] support has
-moved from the existing module `log4j-core` to the new module
-`log4j-kafka`.
-
-The KafkaAppender logs events to an https://kafka.apache.org/[Apache
-Kafka] topic. Each log event is sent as a Kafka record.
-
-.KafkaAppender Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|topic |String |The Kafka topic to use. Required.
-
-|key |String |The key that will be sent to Kafka with every message.
-Optional value defaulting to `null`. Any of the
-link:./lookups.html[Lookups]) can be included.
-
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|layout |Layout |The Layout to use to format the LogEvent. Required,
-there is no default. _New since 2.9, in previous versions <PatternLayout
-pattern="%m"/> was default._
-
-|name |String |The name of the Appender. Required.
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
-
-|syncSend |boolean |The default is `true`, causing sends to block until
-the record has been acknowledged by the Kafka server. When set to
-`false` sends return immediately, allowing for lower latency and
-significantly higher throughput. _New since 2.8. Be aware that this is a
-new addition, and it has not been extensively tested. Any failure
-sending to Kafka will be reported as error to StatusLogger and the log
-event will be dropped (the ignoreExceptions parameter will not be
-effective). Log events may arrive out of order to the Kafka server._
-
-|properties |Property[] |You can set properties in
-http://kafka.apache.org/documentation.html#producerconfigs[Kafka
-producer properties]. You need to set the `bootstrap.servers` property,
-there are sensible default values for the others. Do not set the
-`value.serializer` nor `key.serializer` properties.
-|=======================================================================
-
-Here is a sample KafkaAppender configuration snippet:
-
-[source,prettyprint,linenums]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-  ...
-  <Appenders>
-    <Kafka name="Kafka" topic="log-test">
-      <PatternLayout pattern="%date %message"/>
-        <Property name="bootstrap.servers">localhost:9092</Property>
-    </Kafka>
-  </Appenders>
-----
-
-This appender is synchronous by default and will block until the record
-has been acknowledged by the Kafka server, timeout for this can be set
-with the `timeout.ms` property (defaults to 30 seconds). Wrap with
-http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender[Async
-appender] and/or set syncSend to `false` to log asynchronously.
-
-This appender requires the http://kafka.apache.org/[Kafka client
-library]. Note that you need to use a version of the Kafka client
-library matching the Kafka server used.
-
-__Note:__Make sure to not let `org.apache.kafka` log to a Kafka appender
-on DEBUG level, since that will cause recursive logging:
-
-[source,prettyprint,linenums]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-  ...
-  <Loggers>
-    <Root level="DEBUG">
-      <AppenderRef ref="Kafka"/>
-    </Root>
-    <Logger name="org.apache.kafka" level="INFO" /> <!-- avoid recursive logging -->
-  </Loggers>
 ----
 
 [#MemoryMappedFileAppender]
@@ -1528,7 +1302,7 @@ Here is a sample MemoryMappedFile configuration:
 
 The NoSQLAppender writes log events to a NoSQL database using an
 internal lightweight provider interface. Provider implementations
-currently exist for MongoDB and Apache CouchDB, and writing a custom
+currently exist for MongoDB, and writing a custom
 provider is quite simple.
 
 .NoSQLAppender Parameters
@@ -1556,12 +1330,12 @@ connections to the chosen NoSQL database.
 |=======================================================================
 
 You specify which NoSQL provider to use by specifying the appropriate
-configuration element within the `<NoSql>` element. The types currently
-supported are `<MongoDb>` and `<CouchDb>`. To create your own custom
+configuration element within the `<NoSql>` element. The only type currently
+supported is `<MongoDb>`. To create your own custom
 provider, read the JavaDoc for the `NoSQLProvider`, `NoSQLConnection`,
 and `NoSQLObject` classes and the documentation about creating Log4j
-plugins. We recommend you review the source code for the MongoDB and
-CouchDB providers as a guide for creating your own provider.
+plugins. We recommend you review the source code for the MongoDB
+providers as a guide for creating your own provider.
 
 The following example demonstrates how log events are persisted in NoSQL
 databases if represented in a JSON format:
@@ -1625,119 +1399,11 @@ databases if represented in a JSON format:
 
 We provide the following MongoDB modules:
 
-* Added in 2.11.0: `log4j-mongodb3` defines the configuration element
-link:#NoSQLAppenderMongoDB3[`MongoDb3`] matching the MongoDB Driver
-version 3.
 * Added in 2.14.0: `log4j-mongodb4` defines the configuration element
 link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver
 version 4.
 
-We no longer provide the modules `log4j-mongodb` and `log4j-mongodb2`.
-
-[#NoSQLAppenderMongoDB3]
-== NoSQLAppenderMongoDB3
-
-This section details specializations of the
-link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
-MongoDB driver version 3. The NoSQLAppender Appender writes log events
-to a NoSQL database using an internal lightweight provider interface.
-
-.MongoDB3 Provider Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|collectionName |String |_Required._ The name of the MongoDB collection
-to insert the events into.
-
-|writeConcernConstant |Field |By default, the MongoDB provider inserts
-records with the instructions `com.mongodb.WriteConcern.ACKNOWLEDGED`.
-Use this optional attribute to specify the name of a constant other than
-`ACKNOWLEDGED`.
-
-|writeConcernConstantClass |Class |If you specify
-`writeConcernConstant`, you can use this attribute to specify a class
-other than `com.mongodb.WriteConcern` to find the constant on (to create
-your own custom instructions).
-
-|factoryClassName |Class |To provide a connection to the MongoDB
-database, you can use this attribute and `factoryMethodName` to specify
-a class and static method to get the connection from. The method must
-return a `com.mongodb.client.MongoDatabase` or a
-`com.mongodb.MongoClient`. If the `com.mongodb.client.MongoDatabase` is
-not authenticated, you must also specify a `username` and `password`. If
-you use the factory method for providing a connection, you must not
-specify the `databaseName`, `server`, or `port` attributes.
-
-|factoryMethodName |Method |See the documentation for attribute
-`factoryClassName`.
-
-|databaseName |String |If you do not specify a `factoryClassName` and
-`factoryMethodName` for providing a MongoDB connection, you must specify
-a MongoDB database name using this attribute. You must also specify a
-`username` and `password`. You can optionally also specify a `server`
-(defaults to localhost), and a `port` (defaults to the default MongoDB
-port).
-
-|server |String |See the documentation for attribute `databaseName`.
-
-|port |int |See the documentation for attribute `databaseName`.
-
-|username |String |See the documentation for attributes `databaseName`
-and `factoryClassName`.
-
-|password |String |See the documentation for attributes `databaseName`
-and `factoryClassName`.
-
-|capped |boolean |Enable support for
-https://docs.mongodb.com/manual/core/capped-collections/[capped
-collections]
-
-|collectionSize |int |Specify the size in bytes of the capped collection
-to use if enabled. The minimum size is 4096 bytes, and larger sizes will
-be increased to the nearest integer multiple of 256. See the capped
-collection documentation linked above for more information.
-|=======================================================================
-
-This appender is link:messages.html#MapMessage[MapMessage]-aware.
-
-Here are a few sample configurations for the NoSQLAppender and MongoDB3
-provider:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <MongoDb3 databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
-               username="loggingUser" password="abc123" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <MongoDb3 collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
-               factoryMethodName="getNewMongoClient" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
+We no longer provide the modules `log4j-mongodb`, `log4j-mongodb2`, `log4j-mongodb3`.
 
 [#NoSQLAppenderMongoDB4]
 == NoSQLAppenderMongoDB4
@@ -1747,7 +1413,7 @@ link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
 MongoDB driver version 4. The NoSQLAppender Appender writes log events
 to a NoSQL database using an internal lightweight provider interface.
 
-.MongoDB3 Provider Parameters
+.MongoDB Provider Parameters
 [cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
@@ -1802,69 +1468,6 @@ provider:
   <Loggers>
     <Root level="ALL">
       <AppenderRef ref="MongoDbAppender" />
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[#NoSQLAppenderCouchDB]
-== NoSQLAppenderCouchDB
-
-This section details specializations of the
-link:#NoSQLAppender[NoSQLAppender] provider for CouchDB. The
-NoSQLAppender writes log events to a NoSQL database using an internal
-lightweight provider interface.
-
-.CouchDB Provider Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|factoryClassName |Class |To provide a connection to the CouchDB
-database, you can use this attribute and `factoryMethodName` to specify
-a class and static method to get the connection from. The method must
-return a `org.lightcouch.CouchDbClient` or a
-`org.lightcouch.CouchDbProperties`. If you use the factory method for
-providing a connection, you must not specify the `databaseName`,
-`protocol`, `server`, `port`, `username`, or `password` attributes.
-
-|factoryMethodName |Method |See the documentation for attribute
-`factoryClassName`.
-
-|databaseName |String |If you do not specify a `factoryClassName` and
-`factoryMethodName` for providing a CouchDB connection, you must specify
-a CouchDB database name using this attribute. You must also specify a
-`username` and `password`. You can optionally also specify a `protocol`
-(defaults to http), `server` (defaults to localhost), and a `port`
-(defaults to 80 for http and 443 for https).
-
-|protocol |String |Must either be "http" or "https." See the
-documentation for attribute `databaseName`.
-
-|server |String |See the documentation for attribute `databaseName`.
-
-|port |int |See the documentation for attribute `databaseName`.
-
-|username |String |See the documentation for attributes `databaseName`.
-
-|password |String |See the documentation for attributes `databaseName`.
-|=======================================================================
-
-Here are a few sample configurations for the NoSQLAppender and CouchDB
-provider:
-
-[source,prettyprint,linenums,lang-xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <CouchDb databaseName="applicationDb" protocol="https" server="couch.example.org"
-               username="loggingUser" password="abc123" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
     </Root>
   </Loggers>
 </Configuration>
@@ -3712,7 +3315,7 @@ This is an unsecured TCP configuration:
 <Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
-      <JsonLayout properties="true"/>
+      <JsonTemplateLayout/>
     </Socket>
   </Appenders>
   <Loggers>
@@ -3731,7 +3334,7 @@ This is a secured link:#SSL[SSL] configuration:
 <Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
-      <JsonLayout properties="true"/>
+      <JsonTemplateLayout/>
       <SSL>
         <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
         <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
@@ -4028,98 +3631,3 @@ conforms with either the BSD Syslog format or the RFC 5424 format.
   </Loggers>
 </Configuration>
 ----
-
-[#JeroMQAppender]
-== JeroMQAppender
-
-As of Log4j 2.11.0, ZeroMQ/JeroMQ support has moved from the existing
-module `log4j-core` to the new module `log4j-jeromq`.
-
-The ZeroMQ appender uses the https://github.com/zeromq/jeromq[JeroMQ]
-library to send log events to one or more ZeroMQ endpoints.
-
-This is a simple JeroMQ configuration:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration name="JeroMQAppenderTest" status="TRACE">
-  <Appenders>
-    <JeroMQ name="JeroMQAppender">
-      <Property name="endpoint">tcp://*:5556</Property>
-      <Property name="endpoint">ipc://info-topic</Property>
-    </JeroMQ>
-  </Appenders>
-  <Loggers>
-    <Root level="info">
-      <AppenderRef ref="JeroMQAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-The table below describes all options. Please consult the JeroMQ and
-ZeroMQ documentation for details.
-
-.JeroMQ Parameters
-[cols="20%,20%,60%",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|name |String |The name of the Appender. Required.
-
-|Layout |layout |The Layout to use to format the LogEvent. If no layout
-is supplied the default pattern layout of "%m%n" will be used.
-
-|Filters |Filter |The Filter(s) of the Appender.
-
-|Properties |Property[] |One or more Property elements, named
-`endpoint`.
-
-|ignoreExceptions |boolean |If true, exceptions will be logged and
-suppressed. If false errors will be logged and then passed to the
-application.
-
-|affinity |long |The ZMQ_AFFINITY option. Defaults to 0.
-
-|backlog |long |The ZMQ_BACKLOG option. Defaults to 100.
-
-|delayAttachOnConnect |boolean |The ZMQ_DELAY_ATTACH_ON_CONNECT option.
-Defaults to false.
-
-|identity |byte[] |The ZMQ_IDENTITY option. Defaults to none.
-
-|ipv4Only |boolean |The ZMQ_IPV4ONLY option. Defaults to true.
-
-|linger |long |The ZMQ_LINGER option. Defaults to -1.
-
-|maxMsgSize |long |The ZMQ_MAXMSGSIZE option. Defaults to -1.
-
-|rcvHwm |long |The ZMQ_RCVHWM option. Defaults to 1000.
-
-|receiveBufferSize |long |The ZMQ_RCVBUF option. Defaults to 0.
-
-|receiveTimeOut |int |The ZMQ_RCVTIMEO option. Defaults to -1.
-
-|reconnectIVL |long |The ZMQ_RECONNECT_IVL option. Defaults to 100.
-
-|reconnectIVLMax |long |The ZMQ_RECONNECT_IVL_MAX option. Defaults to 0.
-
-|sendBufferSize |long |The ZMQ_SNDBUF option. Defaults to 0.
-
-|sendTimeOut |int |The ZMQ_SNDTIMEO option. Defaults to -1.
-
-|sndHwm |long |The ZMQ_SNDHWM option. Defaults to 1000.
-
-|tcpKeepAlive |int |The ZMQ_TCP_KEEPALIVE option. Defaults to -1.
-
-|tcpKeepAliveCount |long |The ZMQ_TCP_KEEPALIVE_CNT option. Defaults to
--1.
-
-|tcpKeepAliveIdle |long |The ZMQ_TCP_KEEPALIVE_IDLE option. Defaults to
--1.
-
-|tcpKeepAliveInterval |long |The ZMQ_TCP_KEEPALIVE_INTVL option.
-Defaults to -1.
-
-|xpubVerbose |boolean |The ZMQ_XPUB_VERBOSE option. Defaults to false.
-|=======================================================================

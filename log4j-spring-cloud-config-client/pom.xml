@@ -24,16 +24,45 @@
     <relativePath>../log4j-parent</relativePath>
   </parent>
 
-  <artifactId>log4j-jndi-test</artifactId>
+  <artifactId>log4j-spring-cloud-config-client</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Log4j JNDI Test Support</name>
-  <description>The Apache Log4j JNDI Test Support</description>
+  <name>Apache Log4j Spring Cloud Config Client Support</name>
+  <description>Apache Log4j Spring Cloud Config Client Support</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>JNDI Documentation</docLabel>
-    <projectDir>/log4j-jndi-test</projectDir>
-    <module.name>org.apache.logging.log4j.jndi.test</module.name>
+    <log4jParentDir>${basedir}/../..</log4jParentDir>
+    <docLabel>Log4j Spring Cloud Config Client Documentation</docLabel>
+    <projectDir>/log4j-spring-cloud-config-client</projectDir>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.spring.cloud.config.client</bnd-module-name>
+    <bnd-extra-module-options>
+      <!-- Correct module names -->
+      spring.cloud.context;substitute="spring-cloud-context"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+    <spring-cloud.version>2021.0.8</spring-cloud.version>
+    <spring-boot.version>2.7.15</spring-boot.version>
   </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -44,30 +73,41 @@
       <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jndi</artifactId>
-    </dependency>
-    <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
     </dependency>
-    <!-- `org.springframework:spring-test` is required for `org.springframework.mock.jndi.SimpleNamingContextBuilder`: -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-bus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-config-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-bootstrap</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api-test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.zapodot</groupId>
-      <artifactId>embedded-ldap-junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -85,5 +125,11 @@
       <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
 </project>

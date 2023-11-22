@@ -23,14 +23,4 @@ public interface Appenders {
     interface AsyncConversant {}
 
     interface AsyncJcTools {}
-
-    interface Cassandra {}
-
-    interface CouchDb {}
-
-    interface Kafka {}
-
-    interface MongoDb {}
-
-    interface ZeroMq {}
 }

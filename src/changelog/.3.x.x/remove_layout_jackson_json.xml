@@ -15,19 +15,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="MyApp">
-  <Appenders>
-    <Socket name="socket" host="localhost" port="${sys:SocketAppenderSocketOptionsTest.port}" protocol="TCP" ignoreExceptions="false">
-      <PatternLayout/>
-      <SocketOptions keepAlive="false" oobInline="false" receiveBufferSize="10000" reuseAddress="false"
-        rfc1349TrafficClass="IPTOS_LOWCOST" sendBufferSize="8000" soLinger="12345" soTimeout="54321" tcpNoDelay="false">
-        <SocketPerformancePreferences bandwidth="100" connectionTime="100" latency="100" />
-      </SocketOptions>
-    </Socket>
-  </Appenders>
-  <Loggers>
-    <Root level="debug">
-      <AppenderRef ref="socket" />
-    </Root>
-  </Loggers>
-</Configuration>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
+       type="removed">
+  <issue id="1951" link="https://github.com/apache/logging-log4j2/pull/1951"/>
+  <description format="asciidoc">Remove `log4j-layout-jackson-json` module (it is superseded by JSON Template Layout)</description>
+</entry>

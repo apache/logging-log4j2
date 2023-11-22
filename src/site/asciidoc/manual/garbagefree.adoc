@@ -182,11 +182,6 @@ them.
 [#Layouts]
 === Supported Layouts
 
-==== GelfLayout
-
-GelfLayout is garbage-free when used with compressionType="OFF", as long
-as no additional field contains '${' (variable substitution).
-
 ==== JsonTemplateLayout
 
 `JsonTemplateLayout` is garbage-free with

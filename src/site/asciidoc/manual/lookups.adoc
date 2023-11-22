@@ -101,11 +101,11 @@ Log4j Docker provides access to the following container attributes:
 |===
 
 ----
-<JsonLayout properties="true" compact="true" eventEol="true">
-  <KeyValuePair key="containerId" value="${docker:containerId}"/>
-  <KeyValuePair key="containerName" value="${docker:containerName}"/>
-  <KeyValuePair key="imageName" value="${docker:imageName}"/>
-</JsonLayout>
+<JsonTemplateLayout>
+  <EventTemplateAdditionalField key="containerId" value="${docker:containerId}"/>
+  <EventTemplateAdditionalField key="containerName" value="${docker:containerName}"/>
+  <EventTemplateAdditionalField key="imageName" value="${docker:imageName}"/>
+</JsonTemplateLayout>
 ----
 
 This Lookup is subject to the requirements listed at link:../log4j-docker/index.html[Log4j Docker Support]
@@ -338,28 +338,7 @@ Log4j Kubernetes provides access to the following container attributes:
 |podId|The pod's ip number
 |podIp|The pod's ip address
 |podName|The name of the pod
-
-      <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true" compressionType="OFF">
-        <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
-        <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
-        <KeyValuePair key="docker.containerId" value="${docker:containerId:-}"/>
-        <KeyValuePair key="application" value="$${lower:${spring:spring.application.name}}"/>
-        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-        <KeyValuePair key="kubernetes.clusterName" value="${k8s:clusterName:-}/>
-        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
-        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
-        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
-        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
-        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
-        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
-        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
-        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
-        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
-        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
-        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
-        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
-        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
-      </GelfLayout>]]></pre>
+|===
 
 This Lookup is subject to the configuration requirements listed at link:../log4j-kubernetes/index.html[Log4j Kubernetes Support]
 
@@ -615,32 +594,6 @@ while "type" would have to be an item in the Map in a MapMessage.
   </Routes>
 </Routing>
 ----
-
-[#SpringLookup]
-== Spring Boot Lookup
-
-
-The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as
-values of the active and default profiles. Specifying a key of `profiles.active` will reutrn the active
-profiles while a key of `profiles.default` will return the default profiles. The default and active
-profiles can be an array. If more than one profile is present they will be returned as a comma separated
-list. To retrieve a single item from the array append `[{index}]` to the key. For example, to return the
-first active profile in the list specify `profiles.active[0]`.
-
-This Lookup will return null values until Spring Boot initializes application logging. The Spring Boot
-Lookup requires the `log4j-spring-boot` jar be included as a dependency.
-
-
-[source,xml]
-----
-<File name="Application" fileName="application-${spring:profiles.active[0]}.log">
-  <PatternLayout>
-    <pattern>%d %p %c{1.} [%t] $${spring:spring.application.name} %m%n</pattern>
-  </PatternLayout>
-</File>
-----
-
-This Lookup requires log4j-spring-cloud-config-client be included in the application.
 
 [#SystemPropertiesLookup]
 == System Properties Lookup

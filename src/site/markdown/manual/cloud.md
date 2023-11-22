@@ -48,8 +48,7 @@ per logging call vs 1.5 microseconds when writing to the file.
 1. When performing audit logging using a framework such as log4j-audit guaranteed delivery of the audit events
 is required. Many of the options for writing the output, including writing to the standard output stream, do
 not guarantee delivery. In these cases the event must be delivered to a "forwarder" that acknowledges receipt
-only when it has placed the event in durable storage, such as what [Apache Flume](https://flume.apache.org/) 
-or [Apache Kafka](https://kafka.apache.org/) will do.
+only when it has placed the event in durable storage, such as what [Apache Flume](https://flume.apache.org/) will do.
 
 ## Logging Approaches
 
@@ -71,8 +70,7 @@ The Log4j team does not recommend this approach for performance reasons.
 ### Logging to the Standard Output Stream with the Docker Fluentd Logging Driver
 
 Docker provides alternate [logging drivers](https://docs.docker.com/config/containers/logging/configure/), 
-such as [gelf](https://docs.docker.com/config/containers/logging/gelf/) or 
-[fluentd](https://docs.docker.com/config/containers/logging/fluentd/), that
+such as [fluentd](https://docs.docker.com/config/containers/logging/fluentd/), that
 can be used to redirect the standard output stream to a log forwarder or log aggregator. 
 
 When routing to a log forwarder it is expected that the forwarder will have the same lifetime as the 
@@ -114,7 +112,7 @@ for failover if the primary aggregator fails the SocketAppender must be enclosed
 which would also have the secondary aggregator configured. Another option is to have the SocketAppender 
 point to a highly available proxy that can forward to the Log Aggregator.
 
-If the log aggregator used is Apache Flume or Apache Kafka (or similar) the Appenders for these support 
+If the log aggregator used is Apache Flume (or similar) the Appenders for these support 
 being configured with a list of hosts and ports so high availability is not an issue. 
 
 ![Aggregator](../images/LoggerAggregator.png "Application Logging to an Aggregator via TCP")
@@ -325,34 +323,6 @@ message would be redundant.
       }
     }
 
-    
-Finally, the GelfLayout can be used to generate GELF compliant output. Unlike the JsonTemplateLayout it 
-adheres closely to the GELF spec.    
-
-    <Socket name="Elastic" host="${sys:elastic.search.host}" port="12222" protocol="tcp" bufferedIo="true">
-      <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true"
-                  compressionType="OFF">
-        <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
-        <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
-        <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
-        <KeyValuePair key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
-        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
-        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
-        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
-        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
-        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
-        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
-        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
-        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
-        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
-        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
-        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
-        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
-        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
-      </GelfLayout>
-    </Socket>
-
 #### Logstash Configuration with Gelf
 
 We will configure Logstash to listen on TCP port 12345 for payloads of type JSON
@@ -432,7 +402,7 @@ the configuration of filebeat is straightforward.
 
 
 ### Kibana
-Using the EnhancedGelf template, the GelfLayout or the custom template the above configurations the message 
+Using the EnhancedGelf template or the custom template the above configurations the message 
 field will contain a fully formatted log event just as it would  appear in a file Appender. The ThreadContext 
 attributes, custome fields, thread name, etc. will all be available as attributes on each log event that can 
 be used for filtering. The result will resemble
@@ -452,9 +422,9 @@ to multiple servers at the same time. Trying to achieve this via REST calls coul
   
 Since its first release Log4j has supported reconfiguration through a file.
 Beginning with Log4j 2.12.0 Log4j also supports accessing the configuration via HTTP(S) and monitoring the file 
-for changes by using the HTTP "If-Modified-Since" header. A patch has also been integrated into Spring Cloud Config
+for changes by using the HTTP "If-Modified-Since" header. A patch has also been integrated into Spring Cloud Config Client
 starting with versions 2.0.3 and 2.1.1 for it to honor the If-Modified-Since header. In addition, the 
-log4j-spring-cloud-config project will listen for update events published by Spring Cloud Bus and then verify
+log4j-spring-cloud-config-client project will listen for update events published by Spring Cloud Bus and then verify
 that the configuration file has been modified, so polling via HTTP is not required.
 
 Log4j also supports composite configurations. A distributed application spread across microservices could 
@@ -465,7 +435,7 @@ While the standard Spring Boot REST endpoints to update logging will still work 
 REST endpoints will be lost if Log4j reconfigures itself do to changes in the logging configuration file.
 
 Further information regarding integration of the log4j-spring-cloud-config-client can be found at 
-[Log4j Spring Cloud Config Client](../log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html).
+[Log4j Spring Cloud Config Client](../log4j-spring-cloud-config-client.html).
 
 ## Integration with Spring Boot
 
@@ -500,8 +470,8 @@ logical cores, 32GB of 2400 MHz DDR4 RAM, and 1TB of Apple SSD storage. The VM u
 by VMWare Fusion and had 4 CPUs and 2 GB of RAM. These number should be used for relative performance comparisons 
 as the results on another system may vary considerably.
 
-The sample application used can be found under the log4j-spring-cloud-config/log4j-spring-cloud-config-samples
-directory in the Log4j [source repository](https://github.com/apache/logging-log4j2).
+The sample application used can be found under the `log4j-spring-cloud-config-samples`
+directory in [the Log4j Samples repository](https://github.com/apache/logging-log4j-samples).
 
 | Test                    | 1 Thread | 2 Threads | 4 Threads | 8 Threads |
 |------------------------ |---------:|----------:|----------:|----------:|
@@ -515,9 +485,6 @@ directory in the Log4j [source repository](https://github.com/apache/logging-log
 |Flume Embedded |||||
 | - RFC5424               |3.58      |2.10       |2.10       |2.70       |
 | - JSON                  |4.20      |2.49       |3.53       |2.90       |
-|Kafka Local JSON |||||
-| - sendSync true         |58.46     |38.55      |19.59      |19.01      |
-| - sendSync false        |9.8       |10.8       |12.23      |11.36      |
 |Console|||||
 | - JSON / Kubernetes     |3.03      |3.11       |3.04       |2.51       |
 | - JSON                  |2.80      |2.74       |2.54       |2.35       |
@@ -538,8 +505,6 @@ acknowledges the batch was written to its channel. These number seem to indicate
 benefit from using a pool of RPCClients, at least for a batchSize of 1.
 1. Flume Embedded - This is essentially asynchronous as it writes to an in-memory buffer. It is
 unclear why the performance isn't closer to the AsyncLogger results.
-1. Kafka was run in standalone mode on the same laptop as the application. See  sendSync set to true
-requires waiting for an ack from Kafka for each log event. 
 1. Console - System.out is redirected to a file by Docker. Testing shows that it would be much
 slower if it was writing to the terminal screen.
 1. Rolling File - Test uses the default buffer size of 8K.
@@ -558,8 +523,8 @@ circular buffer the overhead of logging will almost be unnoticeable to the appli
 be processed properly then log via TCP to a companion container that acts as a log forwarder or directly
 to a log aggregator as shown above in [Logging with ELK](#ELK). Use the  
 Log4j Docker Lookup to add the container information to each log event.
-1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such 
-as the Kafka Appender with syncSend set to true that only return control after the downstream agent 
+1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another
+that only return control after the downstream agent 
 acknowledges receipt of the event. Beware that using an Appender that writes each event individually should 
 be kept to a minimum since it is much slower than sending buffered events. 
 1. Logging to files within the container is discouraged. Doing so requires that a volume be declared in 

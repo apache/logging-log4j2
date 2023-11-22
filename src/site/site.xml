@@ -141,7 +141,6 @@
         <item name="Lower" href="/manual/lookups.html#LowerLookup"/>
         <item name="Main Arguments" href="/manual/lookups.html#AppMainArgsLookup"/>
         <item name="Map" href="/manual/lookups.html#MapLookup"/>
-        <item name="Spring" href="/manual/lookups.html#SpringLookup"/>
         <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>
         <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>
         <item name="Upper" href="/manual/lookups.html#UpperLookup"/>
@@ -149,20 +148,15 @@
 
       <item name="Appenders" href="/manual/appenders.html" collapse="true">
         <item name="Async" href="/manual/appenders.html#AsyncAppender"/>
-        <item name="Cassandra" href="/manual/appenders.html#CassandraAppender"/>
         <item name="Console" href="/manual/appenders.html#ConsoleAppender"/>
         <item name="Failover" href="/manual/appenders.html#FailoverAppender"/>
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
         <item name="HTTP" href="/manual/appenders.html#HttpAppender"/>
-        <item name="Kafka" href="/manual/appenders.html#KafkaAppender"/>
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
         <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
         <item name="NoSQL for MongoDB" href="/manual/appenders.html#NoSQLAppenderMongoDB"/>
-        <item name="NoSQL for MongoDB 3" href="/manual/appenders.html#NoSQLAppenderMongoDB3"/>
-        <item name="NoSQL for MongoDB 4" href="/manual/appenders.html#NoSQLAppenderMongoDB4"/>
-        <item name="NoSQL for CouchDB" href="/manual/appenders.html#NoSQLAppenderCouchDB"/>
         <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
@@ -173,21 +167,17 @@
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="SSL" href="/manual/appenders.html#SSL"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
-        <item name="ZeroMQ/JeroMQ" href="/manual/appenders.html#JeroMQAppender"/>
       </item>
 
       <item name="Layouts" href="/manual/layouts.html" collapse="true">
         <item name="CSV" href="/manual/layouts.html#CSVLayouts"/>
-        <item name="GELF" href="/manual/layouts.html#GELFLayout"/>
         <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>
-        <item name="JSON" href="/manual/layouts.html#JSONLayout"/>
         <item name="JSON Template" href="/manual/json-template-layout.html"/>
         <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>
         <item name="RFC-5424" href="/manual/layouts.html#RFC5424Layout"/>
         <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
         <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>
         <item name="XML" href="/manual/layouts.html#XMLLayout"/>
-        <item name="YAML" href="/manual/layouts.html#YamlLayout"/>
         <item name="Location Information" href="/manual/layouts.html#LocationInformation"/>
       </item>
 
@@ -298,17 +288,12 @@
       <item name="JDK Platform Logger" href="log4j-jpl.html"/>
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j.html"/>
       <item name="JDBC Appender" href="log4j-jdbc-dbcp2.html"/>
-      <item name="ZeroMQ Appender" href="log4j-jeromq.html"/>
       <item name="Apache Flume Appender" href="log4j-flume-ng.html"/>
       <item name="Application Server Integration" href="log4j-appserver.html"/>
-      <item name="CouchDB appender" href="log4j-couchdb.html"/>
-      <item name="MongoDB3 appender" href="log4j-mongodb3.html"/>
-      <item name="MongoDB4 appender" href="log4j-mongodb4.html"/>
-      <item name="Cassandra appender" href="log4j-cassandra.html"/>
+      <item name="MongoDB 4 appender" href="log4j-mongodb4.html"/>
       <item name="IO Streams" href="log4j-iostreams.html"/>
       <item name="Docker Support" href="log4j-docker.html"/>
       <item name="Kubernetes Support" href="log4j-kubernetes.html"/>
-      <item name="Log4j Spring Boot" href="log4j-spring-boot.html"/>
       <item name="Spring Cloud Config Client" href="log4j-spring-cloud-config-client.html"/>
       <item name="Log4j Transformation Tools" href="log4j-transform"/>
     </menu>

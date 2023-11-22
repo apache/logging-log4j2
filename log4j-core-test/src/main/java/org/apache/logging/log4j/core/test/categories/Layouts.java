@@ -24,9 +24,5 @@ public interface Layouts {
 
     interface Jansi {}
 
-    interface Json {}
-
     interface Xml {}
-
-    interface Yaml {}
 }
