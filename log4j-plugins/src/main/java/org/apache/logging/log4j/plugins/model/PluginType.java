@@ -71,7 +71,7 @@ public class PluginType<T> {
     }
 
     public Class<T> getPluginClass() {
-        return pluginClass.value();
+        return pluginClass.get();
     }
 
     public String getElementType() {

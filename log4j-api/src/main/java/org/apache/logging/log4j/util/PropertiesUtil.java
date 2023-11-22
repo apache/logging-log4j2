@@ -168,7 +168,7 @@ public class PropertiesUtil implements PropertyEnvironment {
         if (props != null) {
             return props;
         }
-        return COMPONENT_PROPERTIES.value();
+        return COMPONENT_PROPERTIES.get();
     }
 
     public static PropertyEnvironment getProperties(final String namespace) {

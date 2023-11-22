@@ -110,7 +110,7 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
 
     @Override
     public List<LoggerContext> getLoggerContexts() {
-        return List.of(context.value());
+        return List.of(context.get());
     }
 
     protected LoggerContext createContext() {

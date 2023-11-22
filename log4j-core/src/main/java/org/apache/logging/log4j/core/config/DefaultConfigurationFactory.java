@@ -107,7 +107,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
                 }
             }
-            for (final ConfigurationFactory factory : configurationFactories.value()) {
+            for (final ConfigurationFactory factory : configurationFactories.get()) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -137,7 +137,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 return new CompositeConfiguration(configs);
             }
             final String configLocationStr = configLocation.toString();
-            for (final ConfigurationFactory factory : configurationFactories.value()) {
+            for (final ConfigurationFactory factory : configurationFactories.get()) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -190,7 +190,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
             LOGGER.catching(Level.DEBUG, ex);
         }
         if (source != null) {
-            for (final ConfigurationFactory factory : configurationFactories.value()) {
+            for (final ConfigurationFactory factory : configurationFactories.get()) {
                 if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
                     continue;
                 }
@@ -213,7 +213,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private Configuration getConfiguration(final LoggerContext loggerContext, final boolean isTest, final String name) {
         final boolean named = Strings.isNotEmpty(name);
         final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
-        for (final ConfigurationFactory factory : configurationFactories.value()) {
+        for (final ConfigurationFactory factory : configurationFactories.get()) {
             String configName;
             final String prefix = isTest ? factory.getTestPrefix() : factory.getDefaultPrefix();
             final String[] types = factory.getSupportedTypes();
@@ -251,7 +251,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         if (source != null) {
             final String config = source.getLocation();
-            for (final ConfigurationFactory factory : configurationFactories.value()) {
+            for (final ConfigurationFactory factory : configurationFactories.get()) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {

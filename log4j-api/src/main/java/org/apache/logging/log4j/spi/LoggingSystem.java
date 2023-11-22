@@ -157,7 +157,7 @@ public class LoggingSystem {
      * Gets the LoggingSystem instance.
      */
     public static LoggingSystem getInstance() {
-        return SYSTEM.value();
+        return SYSTEM.get();
     }
 
     /**
@@ -165,33 +165,33 @@ public class LoggingSystem {
      * requested.
      */
     public static LoggerContextFactory getLoggerContextFactory() {
-        return getInstance().loggerContextFactoryLazy.value();
+        return getInstance().loggerContextFactoryLazy.get();
     }
 
     public static MessageFactory getMessageFactory() {
-        return getInstance().messageFactoryLazy.value();
+        return getInstance().messageFactoryLazy.get();
     }
 
     public static FlowMessageFactory getFlowMessageFactory() {
-        return getInstance().flowMessageFactoryLazy.value();
+        return getInstance().flowMessageFactoryLazy.get();
     }
 
     /**
      * Creates a new ThreadContextMap.
      */
     public static ThreadContextMap createContextMap() {
-        return getInstance().threadContextMapFactoryLazy.value().get();
+        return getInstance().threadContextMapFactoryLazy.get().get();
     }
 
     /**
      * Creates a new ThreadContextStack.
      */
     public static ThreadContextStack createContextStack() {
-        return getInstance().threadContextStackFactoryLazy.value().get();
+        return getInstance().threadContextStackFactoryLazy.get().get();
     }
 
     public static RecyclerFactory getRecyclerFactory() {
-        return getInstance().recyclerFactoryLazy.value();
+        return getInstance().recyclerFactoryLazy.get();
     }
 
     private static List<Provider> loadDefaultProviders() {

@@ -53,7 +53,7 @@ public final class CoarseCachedClock implements Clock {
      */
     public static CoarseCachedClock instance() {
         // LOG4J2-819: use lazy initialization of threads
-        return INSTANCE.value();
+        return INSTANCE.get();
     }
 
     /**

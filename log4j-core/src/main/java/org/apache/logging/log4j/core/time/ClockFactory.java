@@ -70,7 +70,7 @@ public final class ClockFactory {
      */
     @Deprecated
     public static Clock getClock() {
-        return FALLBACK.value();
+        return FALLBACK.get();
     }
 
     @ConditionalOnMissingBinding

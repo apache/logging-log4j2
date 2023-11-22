@@ -143,7 +143,7 @@ public class PluginRegistry {
         final var pluginNamespace = new PluginNamespace(namespace);
 
         // First, iterate the PluginService services
-        final Namespaces builtInPlugins = namespacesLazy.value();
+        final Namespaces builtInPlugins = namespacesLazy.get();
         if (builtInPlugins != null) {
             pluginNamespace.mergeAll(builtInPlugins.get(namespace));
         }

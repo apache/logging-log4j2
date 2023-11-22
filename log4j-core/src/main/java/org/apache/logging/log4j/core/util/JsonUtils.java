@@ -72,7 +72,7 @@ public final class JsonUtils {
     public static void quoteAsString(final CharSequence input, final StringBuilder output) {
         final char[] qbuf = qbufRecycler.acquire();
         try {
-            final int[] escCodes = ESC_CODES.value();
+            final int[] escCodes = ESC_CODES.get();
             final int escCodeCount = escCodes.length;
             int inPtr = 0;
             final int inputLen = input.length();

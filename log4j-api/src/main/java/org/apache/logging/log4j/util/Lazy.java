@@ -29,21 +29,14 @@ public interface Lazy<T> extends Supplier<T> {
     /**
      * Returns the value held by this lazy. This may cause the value to initialize if it hasn't been already.
      */
-    T value();
-
-    /**
-     * Returns the value held by this lazy. This may cause the value to initialize if it hasn't been already.
-     */
     @Override
-    default T get() {
-        return value();
-    }
+    T get();
 
     /**
      * Creates a new lazy value derived from this lazy value using the provided value mapping function.
      */
     default <R> Lazy<R> map(final Function<? super T, ? extends R> function) {
-        return lazy(() -> function.apply(value()));
+        return lazy(() -> function.apply(get()));
     }
 
     /**
