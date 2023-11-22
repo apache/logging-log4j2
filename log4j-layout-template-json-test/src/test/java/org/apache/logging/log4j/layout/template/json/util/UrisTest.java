@@ -34,7 +34,7 @@ class UrisTest {
 
     @Test
     void testClassPathResource() {
-        final String content = Uris.readUri("classpath:JsonLayout.json", StandardCharsets.US_ASCII);
+        final String content = Uris.readUri("classpath:EcsLayout.json", StandardCharsets.US_ASCII);
         Assertions.assertThat(content).startsWith("{");
     }
 

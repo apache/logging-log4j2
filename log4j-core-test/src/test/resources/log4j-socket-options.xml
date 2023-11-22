@@ -18,7 +18,7 @@
 <Configuration status="OFF" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="${sys:SocketAppenderSocketOptionsTest.port}" protocol="TCP" ignoreExceptions="false">
-      <JsonLayout properties="true"/>
+      <PatternLayout/>
       <SocketOptions keepAlive="false" oobInline="false" receiveBufferSize="10000" reuseAddress="false"
         rfc1349TrafficClass="IPTOS_LOWCOST" sendBufferSize="8000" soLinger="12345" soTimeout="54321" tcpNoDelay="false">
         <SocketPerformancePreferences bandwidth="100" connectionTime="100" latency="100" />

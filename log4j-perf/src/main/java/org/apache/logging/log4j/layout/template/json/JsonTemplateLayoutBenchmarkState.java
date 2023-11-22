@@ -25,8 +25,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -42,13 +40,7 @@ public class JsonTemplateLayoutBenchmarkState {
 
     private final ByteBufferDestination byteBufferDestination;
 
-    private final Layout jtl4JsonLayout;
-
     private final Layout jtl4EcsLayout;
-
-    private final Layout defaultJsonLayout;
-
-    private final Layout customJsonLayout;
 
     private final Layout ecsLayout;
 
@@ -60,21 +52,10 @@ public class JsonTemplateLayoutBenchmarkState {
 
     public JsonTemplateLayoutBenchmarkState() {
         this.byteBufferDestination = new BlackHoleByteBufferDestination(1024 * 512);
-        this.jtl4JsonLayout = createJtl4JsonLayout();
         this.jtl4EcsLayout = createJtl4EcsLayout();
-        this.defaultJsonLayout = createDefaultJsonLayout();
-        this.customJsonLayout = createCustomJsonLayout();
         this.ecsLayout = createEcsLayout();
         this.fullLogEvents = LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
         this.liteLogEvents = LogEventFixture.createLiteLogEvents(LOG_EVENT_COUNT);
-    }
-
-    private static JsonTemplateLayout createJtl4JsonLayout() {
-        return JsonTemplateLayout.newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setCharset(CHARSET)
-                .setEventTemplateUri("classpath:JsonLayout.json")
-                .build();
     }
 
     private static JsonTemplateLayout createJtl4EcsLayout() {
@@ -89,21 +70,6 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:EcsLayout.json")
                 .setEventTemplateAdditionalFields(additionalFields)
-                .build();
-    }
-
-    private static JsonLayout createDefaultJsonLayout() {
-        return JsonLayout.newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setCharset(CHARSET)
-                .build();
-    }
-
-    private static JsonLayout createCustomJsonLayout() {
-        return JsonLayout.newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setCharset(CHARSET)
-                .setAdditionalFields(new KeyValuePair[] {new KeyValuePair("@version", "\"1\"")})
                 .build();
     }
 
@@ -126,20 +92,8 @@ public class JsonTemplateLayoutBenchmarkState {
         return byteBufferDestination;
     }
 
-    Layout getJtl4JsonLayout() {
-        return jtl4JsonLayout;
-    }
-
     Layout getJtl4EcsLayout() {
         return jtl4EcsLayout;
-    }
-
-    Layout getDefaultJsonLayout() {
-        return defaultJsonLayout;
-    }
-
-    Layout getCustomJsonLayout() {
-        return customJsonLayout;
     }
 
     Layout getEcsLayout() {

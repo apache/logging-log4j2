@@ -101,11 +101,11 @@ Log4j Docker provides access to the following container attributes:
 |===
 
 ----
-<JsonLayout properties="true" compact="true" eventEol="true">
-  <KeyValuePair key="containerId" value="${docker:containerId}"/>
-  <KeyValuePair key="containerName" value="${docker:containerName}"/>
-  <KeyValuePair key="imageName" value="${docker:imageName}"/>
-</JsonLayout>
+<JsonTemplateLayout>
+  <EventTemplateAdditionalField key="containerId" value="${docker:containerId}"/>
+  <EventTemplateAdditionalField key="containerName" value="${docker:containerName}"/>
+  <EventTemplateAdditionalField key="imageName" value="${docker:imageName}"/>
+</JsonTemplateLayout>
 ----
 
 This Lookup is subject to the requirements listed at link:../log4j-docker/index.html[Log4j Docker Support]

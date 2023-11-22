@@ -44,16 +44,6 @@ import org.openjdk.jmh.annotations.Benchmark;
 public class JsonTemplateLayoutBenchmark {
 
     @Benchmark
-    public static int fullJtl4JsonLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getJtl4JsonLayout(), state.getFullLogEvents());
-    }
-
-    @Benchmark
-    public static int liteJtl4JsonLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getJtl4JsonLayout(), state.getLiteLogEvents());
-    }
-
-    @Benchmark
     public static int fullJtl4EcsLayout(final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(state, state.getJtl4EcsLayout(), state.getFullLogEvents());
     }
@@ -61,26 +51,6 @@ public class JsonTemplateLayoutBenchmark {
     @Benchmark
     public static int liteJtl4EcsLayout(final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(state, state.getJtl4EcsLayout(), state.getLiteLogEvents());
-    }
-
-    @Benchmark
-    public static int fullDefaultJsonLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getDefaultJsonLayout(), state.getFullLogEvents());
-    }
-
-    @Benchmark
-    public static int liteDefaultJsonLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getDefaultJsonLayout(), state.getLiteLogEvents());
-    }
-
-    @Benchmark
-    public static int fullCustomJsonLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getCustomJsonLayout(), state.getFullLogEvents());
-    }
-
-    @Benchmark
-    public static int liteCustomJsonLayout(final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(state, state.getCustomJsonLayout(), state.getLiteLogEvents());
     }
 
     @Benchmark

@@ -225,8 +225,13 @@
 
   </mailingLists>
 
-  <!-- Modules in alphabetical order: -->
   <modules>
+
+    <!-- the parent POM must come first: -->
+    <module>log4j-parent</module>
+
+    <!-- Last comes the rest of the modules in alphabetical order.
+         Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
     <module>log4j-1.2-api</module>
     <module>log4j-api</module>
     <module>log4j-api-test</module>
@@ -248,7 +253,6 @@
     <module>log4j-jul</module>
     <module>log4j-kubernetes</module>
     <module>log4j-layout-jackson</module>
-    <module>log4j-layout-jackson-json</module>
     <module>log4j-layout-jackson-xml</module>
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-test</module>
@@ -264,6 +268,7 @@
     <module>log4j-spring-cloud-config</module>
     <module>log4j-to-jul</module>
     <module>log4j-to-slf4j</module>
+
   </modules>
 
   <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
@@ -440,12 +445,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-layout-jackson</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-jackson-json</artifactId>
         <version>${project.version}</version>
       </dependency>
 

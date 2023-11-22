@@ -62,10 +62,13 @@ import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+@Disabled(
+        "`co.elastic.logging.log4j2.EcsLayout` requires `org.apache.logging.log4j.core.layout.AbstractStringLayout#getStringBuilder()`, which doesn't exist anymore")
 @Execution(ExecutionMode.SAME_THREAD)
 class LogstashIT {
 

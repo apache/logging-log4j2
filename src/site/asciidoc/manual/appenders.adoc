@@ -1181,7 +1181,7 @@ Here is a sample HttpAppender configuration snippet:
   <Appenders>
     <Http name="Http" url="https://localhost:9200/test/log4j/">
       <Property name="X-Java-Runtime" value="$${java:runtime}" />
-      <JsonLayout properties="true"/>
+      <JsonTemplateLayout/>
       <SSL>
         <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
         <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
@@ -3315,7 +3315,7 @@ This is an unsecured TCP configuration:
 <Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
-      <JsonLayout properties="true"/>
+      <JsonTemplateLayout/>
     </Socket>
   </Appenders>
   <Loggers>
@@ -3334,7 +3334,7 @@ This is a secured link:#SSL[SSL] configuration:
 <Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
-      <JsonLayout properties="true"/>
+      <JsonTemplateLayout/>
       <SSL>
         <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
         <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>

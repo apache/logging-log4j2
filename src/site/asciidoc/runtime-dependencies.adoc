@@ -487,9 +487,6 @@ the exact list of JAR files needed for these features.
 |CSV Layout
 |https://commons.apache.org/proper/commons-csv/[Apache Commons CSV]
 
-|JSON Layout
-|https://github.com/FasterXML/jackson[Jackson core and databind]
-
 |XML Layout
 |https://github.com/FasterXML/jackson[Jackson core, databind and dataformat XML] and `com.fasterxml.woodstox:woodstox-core:5.0.2`
 

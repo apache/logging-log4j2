@@ -55,12 +55,6 @@
       <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- needed for `JsonLayoutTest` -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-layout-jackson-json</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>

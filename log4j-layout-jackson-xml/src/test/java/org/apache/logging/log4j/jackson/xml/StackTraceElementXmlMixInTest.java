@@ -28,7 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(Layouts.Json.class)
+@Category(Layouts.Xml.class)
 public class StackTraceElementXmlMixInTest {
 
     protected String aposToQuotes(final String json) {

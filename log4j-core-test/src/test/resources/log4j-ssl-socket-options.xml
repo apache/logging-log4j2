@@ -19,7 +19,7 @@
   <Appenders>
     <Socket name="socket" host="localhost" port="${sys:SecureSocketAppenderSocketOptionsTest.port}" protocol="SSL"
       ignoreExceptions="false">
-      <JsonLayout properties="true"/>
+      <JsonTemplateLayout/>
       <SocketOptions keepAlive="false" receiveBufferSize="10000" reuseAddress="false" rfc1349TrafficClass="IPTOS_LOWCOST"
         sendBufferSize="8000" soLinger="12345" soTimeout="54321" tcpNoDelay="false">
         <SocketPerformancePreferences bandwidth="100" connectionTime="100" latency="100" />

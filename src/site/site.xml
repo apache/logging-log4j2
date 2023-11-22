@@ -172,7 +172,6 @@
       <item name="Layouts" href="/manual/layouts.html" collapse="true">
         <item name="CSV" href="/manual/layouts.html#CSVLayouts"/>
         <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>
-        <item name="JSON" href="/manual/layouts.html#JSONLayout"/>
         <item name="JSON Template" href="/manual/json-template-layout.html"/>
         <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>
         <item name="RFC-5424" href="/manual/layouts.html#RFC5424Layout"/>

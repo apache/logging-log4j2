@@ -557,16 +557,6 @@
       </complexContent>
    </complexType>
 
-   <complexType name="JsonLayoutType">
-      <complexContent>
-         <extension base="tns:AbstractJsonLayoutType">
-            <attribute name="propertiesAsList" type="tns:BooleanType" />
-            <attribute name="includeTimeMillis" type="tns:BooleanType" />
-            <attribute name="objectMessageAsJsonObject" type="tns:BooleanType" />
-         </extension>
-      </complexContent>
-   </complexType>
-
    <complexType name="XmlLayoutType">
       <complexContent>
          <extension base="tns:AbstractJsonLayoutType" />
@@ -633,7 +623,6 @@
             <element name="Layout" type="tns:LayoutType" />
             <element name="CsvParameterLayout" type="tns:JCsvParameterLayoutType" />
             <element name="HtmlLayout" type="tns:HtmlLayoutType" />
-            <element name="JsonLayout" type="tns:JsonLayoutType" />
             <element name="MessageLayout" type="tns:MessageLayoutType" />
             <element name="PatternLayout" type="tns:PatternLayoutType" />
             <element name="XmlLayout" type="tns:XmlLayoutType" />
