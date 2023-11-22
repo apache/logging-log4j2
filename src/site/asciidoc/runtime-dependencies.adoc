@@ -564,13 +564,11 @@ for the exact list of JAR files needed.
 WARNING: Do not use this with the link:#log4j-to-slf4j[log4j-to-slf4j] module.
 
 |log4j-spring-cloud-config-client[[log4j-spring-cloud-config-client]]
-|link:log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html[Log4j Spring Cloud Config Client] requires
+|link:log4j-spring-cloud-config-client.html[Log4j Spring Cloud Config Client] requires
 https://spring.io/projects/spring-cloud-config[Spring Cloud Config].
 https://spring.io/projects/spring-cloud-bus[Spring Cloud Bus] is required if notification of logging
 configuration changes is desired. https://spring.io/projects/spring-boot[Spring Boot] is required
 but applications do not have to be packaged as a Spring Boot application.
-See link:log4j-spring-cloud-config/log4j-spring-cloud-config-client/dependencies.html#Dependency_Tree[Dependency Tree]
-for the exact list of JAR files needed.
 
 |log4j-to-slf4j[[log4j-to-slf4j]]
 |The link:log4j-to-slf4j/index.html[Log4j 2 to SLF4J Adapter] requires

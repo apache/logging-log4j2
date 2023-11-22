@@ -470,7 +470,7 @@ logical cores, 32GB of 2400 MHz DDR4 RAM, and 1TB of Apple SSD storage. The VM u
 by VMWare Fusion and had 4 CPUs and 2 GB of RAM. These number should be used for relative performance comparisons 
 as the results on another system may vary considerably.
 
-The sample application used can be found under the log4j-spring-cloud-config/log4j-spring-cloud-config-samples
+The sample application used can be found under the `log4j-spring-cloud-config-samples`
 directory in [the Log4j Samples repository](https://github.com/apache/logging-log4j-samples).
 
 | Test                    | 1 Thread | 2 Threads | 4 Threads | 8 Threads |
