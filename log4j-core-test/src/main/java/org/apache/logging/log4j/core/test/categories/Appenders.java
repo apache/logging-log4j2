@@ -24,5 +24,4 @@ public interface Appenders {
 
     interface AsyncJcTools {}
 
-    interface ZeroMq {}
 }
