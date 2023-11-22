@@ -143,7 +143,7 @@
     <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
     <logback.version>1.2.12</logback.version>
     <maven.version>3.8.6</maven.version>
-    <mockito.version>5.5.0</mockito.version>
+    <mockito.version>5.7.0</mockito.version>
     <mongodb.version>4.11.0</mongodb.version>
     <nashorn.version>15.4</nashorn.version>
     <netty.version>4.1.97.Final</netty.version>
