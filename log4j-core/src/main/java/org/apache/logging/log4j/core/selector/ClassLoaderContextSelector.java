@@ -294,7 +294,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext getDefault() {
-        return defaultContext.value();
+        return defaultContext.get();
     }
 
     protected String defaultContextName() {

@@ -120,7 +120,7 @@ class LazyTest {
                     final AtomicInteger counter = new AtomicInteger();
                     return Lazy.lazy(counter::incrementAndGet);
                 },
-                (lazy, ignored) -> lazy.value(),
+                (lazy, ignored) -> lazy.get(),
                 result -> result.stream().allMatch(i -> i == 1));
     }
 
@@ -130,7 +130,7 @@ class LazyTest {
                 3,
                 5000,
                 () -> Lazy.relaxed(() -> Thread.currentThread().getId()),
-                (lazy, ignored) -> lazy.value(),
+                (lazy, ignored) -> lazy.get(),
                 result -> result.stream().allMatch(v -> Objects.equals(v, result.get(0))));
     }
 

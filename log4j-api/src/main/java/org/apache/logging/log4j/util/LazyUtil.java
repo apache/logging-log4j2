@@ -47,7 +47,7 @@ final class LazyUtil {
         }
 
         @Override
-        public T value() {
+        public T get() {
             return value;
         }
 
@@ -75,7 +75,7 @@ final class LazyUtil {
         }
 
         @Override
-        public T value() {
+        public T get() {
             return reference.get();
         }
 
@@ -91,7 +91,7 @@ final class LazyUtil {
 
         @Override
         public String toString() {
-            return String.valueOf(value());
+            return String.valueOf(get());
         }
     }
 
@@ -105,7 +105,7 @@ final class LazyUtil {
         }
 
         @Override
-        public T value() {
+        public T get() {
             Object value = this.value;
             if (value == null) {
                 lock.lock();
@@ -161,7 +161,7 @@ final class LazyUtil {
         }
 
         @Override
-        public T value() {
+        public T get() {
             final var currentValue = VALUE.getAcquire(this);
             if (currentValue != null) {
                 return unwrapNull(currentValue);
@@ -198,7 +198,7 @@ final class LazyUtil {
         }
 
         @Override
-        public T value() {
+        public T get() {
             Object value = this.value;
             if (value == null) {
                 value = supplier.get();

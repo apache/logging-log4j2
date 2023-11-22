@@ -41,7 +41,7 @@ public class JmxRuntimeInputArgumentsLookup extends MapLookup {
 
     @PluginFactory
     public static JmxRuntimeInputArgumentsLookup getInstance() {
-        return INSTANCE.value();
+        return INSTANCE.get();
     }
 
     /**

@@ -54,7 +54,7 @@ public final class CachedClock implements Clock {
     @Factory
     public static CachedClock instance() {
         // LOG4J2-819: use lazy initialization of threads
-        return INSTANCE.value();
+        return INSTANCE.get();
     }
 
     /**
