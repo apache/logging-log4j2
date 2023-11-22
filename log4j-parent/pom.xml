@@ -134,7 +134,7 @@
     <jmh.version>1.37</jmh.version>
     <json-unit.version>2.38.0</json-unit.version>
     <junit.version>4.13.2</junit.version>
-    <junit-jupiter.version>5.10.0</junit-jupiter.version>
+    <junit-jupiter.version>5.10.1</junit-jupiter.version>
     <junit-pioneer.version>2.2.0</junit-pioneer.version>
     <kubernetes-client.version>5.12.4</kubernetes-client.version>
     <log4j.version>1.2.17</log4j.version>
