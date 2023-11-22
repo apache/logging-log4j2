@@ -31,6 +31,8 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.xml.sax.Attributes;
@@ -40,6 +42,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+@Disabled("Schema will be auto-generated in #1954")
 public class XmlSchemaTest {
 
     private static final String TARGET_NAMESPACE = "http://logging.apache.org/log4j/2.0/config";
