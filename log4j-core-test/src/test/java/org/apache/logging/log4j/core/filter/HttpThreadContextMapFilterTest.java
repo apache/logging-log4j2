@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
 public class HttpThreadContextMapFilterTest {
 
     @Test
-    @LoggerContextSource
+    @LoggerContextSource("HttpThreadContextMapFilterTest.xml")
     public void wireMock_logs_should_be_filtered_on_MDC(
             final LoggerContext loggerContext, @Named("List") final ListAppender appender) throws Exception {
 
