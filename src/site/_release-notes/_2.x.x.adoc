@@ -28,3 +28,9 @@ This releases contains ...
 
 * Update `de.flapdoodle.reverse:de.flapdoodle.reverse` to version `1.7.2` (https://github.com/apache/logging-log4j2/pull/1979[1979])
 * Update `github/codeql-action` to version `2.22.7` (https://github.com/apache/logging-log4j2/pull/1975[1975])
+* Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1984[1984])
+
+[#release-notes-2-x-x-fixed]
+=== Fixed
+
+* Fix `log4j-to-slf4j` JPMS and OSGi descriptors. (https://github.com/apache/logging-log4j2/pull/1983[1983])
