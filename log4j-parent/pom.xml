@@ -127,7 +127,7 @@
     <jansi.version>2.4.0</jansi.version>
     <javax-jms.version>2.0.1</javax-jms.version>
     <java-allocation-instrumenter.version>3.3.3</java-allocation-instrumenter.version>
-    <jctools.version>3.3.0</jctools.version>
+    <jctools.version>4.0.2</jctools.version>
     <je.version>18.3.12</je.version>
     <jetty.version>9.4.52.v20230823</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
