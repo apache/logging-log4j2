@@ -73,7 +73,6 @@
       java.naming;transitive=false,
       org.apache.commons.csv;transitive=false,
       org.fusesource.jansi;transitive=false,
-      org.jctools.core;substitute="jctools-core";transitive=false;static=true,
       <!-- Filebased module names: MUST be static -->
       disruptor;transitive=false;static=true,
       kafka.clients;substitute="kafka-clients";transitive=false;static=true,
