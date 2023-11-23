@@ -34,6 +34,10 @@
       ~ OSGi and JPMS options
       -->
     <bnd-module-name>org.apache.logging.log4j</bnd-module-name>
+    <bnd-extra-package-options>
+      <!-- Optional dependencies -->
+      org.jctools.*;resolution:=optional
+    </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- Used in StringBuilders through reflection -->
       java.sql;static=true
