@@ -29,6 +29,7 @@ This releases contains ...
 * Update `de.flapdoodle.reverse:de.flapdoodle.reverse` to version `1.7.2` (https://github.com/apache/logging-log4j2/pull/1979[1979])
 * Update `github/codeql-action` to version `2.22.7` (https://github.com/apache/logging-log4j2/pull/1975[1975])
 * Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1984[1984])
+* Update `org.springframework.boot:spring-boot` to version `2.7.18` (https://github.com/apache/logging-log4j2/pull/1998[1998])
 
 [#release-notes-2-x-x-fixed]
 === Fixed
