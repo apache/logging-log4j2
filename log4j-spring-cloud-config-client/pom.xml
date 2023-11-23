@@ -43,7 +43,7 @@
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
     <spring-cloud.version>2021.0.8</spring-cloud.version>
-    <spring-boot.version>2.7.15</spring-boot.version>
+    <spring-boot.version>2.7.18</spring-boot.version>
   </properties>
   <dependencyManagement>
     <dependencies>
