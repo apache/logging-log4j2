@@ -18,6 +18,8 @@ package org.apache.logging.log4j.plugins.model;
 
 import static org.apache.logging.log4j.util.Unbox.box;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -38,6 +40,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
  */
 @Singleton
+@ServiceConsumer(value = PluginService.class, cardinality = Cardinality.MULTIPLE)
 public class PluginRegistry {
 
     /**
