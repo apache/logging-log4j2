@@ -48,6 +48,7 @@
       <!-- java.sql -->
       java.sql.*;resolution:=optional,
       <!-- java.xml -->
+      javax.xml.*;resolution:=optional,
       org.w3c.*;resolution:=optional,
       org.xml.*;resolution:=optional,
       <!-- jdk.unsupported -->
