@@ -139,12 +139,6 @@
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- POM for jackson-dataformat-xml depends on woodstox-core -->
-    <dependency>
-      <groupId>com.fasterxml.woodstox</groupId>
-      <artifactId>woodstox-core</artifactId>
-      <scope>runtime</scope>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
