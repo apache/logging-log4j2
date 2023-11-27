@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
+       type="changed">
+  <issue id="2012" link="https://github.com/apache/logging-log4j2/pull/2012"/>
+  <description format="asciidoc">Update `ch.qos.logback:logback-classic` to version `1.3.12`</description>
+</entry>
