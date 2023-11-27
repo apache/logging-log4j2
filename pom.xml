@@ -312,9 +312,15 @@
     <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
     <!-- JDK version of the main Maven process (used in ASF parent POM) -->
     <minimalJavaBuildVersion>[11,12)</minimalJavaBuildVersion>
-    <docLabel>Site Documentation</docLabel>
-    <projectDir />
     <module.name />
+
+    <!-- `project.build.outputTimestamp` is required to be present for reproducible builds.
+         We actually inherit one from the `org.apache:apache` through our parent `org.apache.logging:logging-parent`.
+         Though inheriting this property has two undesired consequences:
+         1. `artifact:compare` dumps an `ERROR` log stating that this `property should not be inherited but defined` (apache/logging-parent#50)
+         2. This value is employed in various places while creating the distribution
+         To mitigate these, we define a *dummy* value here and let the CI replace it during a release.
+         Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
     <project.build.outputTimestamp>2023-10-23T19:03:40Z</project.build.outputTimestamp>
 
     <!-- ========================
@@ -329,6 +335,7 @@
          It is manually enabled only for this root module below. -->
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
+
   </properties>
 
   <dependencyManagement>
@@ -412,12 +419,12 @@
         <version>${project.version}</version>
       </dependency>
 
-      <!-- JNDI -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jndi</artifactId>
         <version>${project.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jndi-test</artifactId>
@@ -533,6 +540,26 @@
 
     <plugins>
 
+      <!-- `cyclonedx-maven-plugin` doesn't exclude not installed/deployed modules: https://github.com/CycloneDX/cyclonedx-maven-plugin/issues/409
+           This `generate-sbom` execution override configures such exclusions. -->
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-sbom</id>
+            <configuration combine.self="append">
+              <excludeArtifactId>log4j-core-its</excludeArtifactId>
+              <excludeArtifactId>log4j-jndi-test</excludeArtifactId>
+              <excludeArtifactId>log4j-layout-template-json-test</excludeArtifactId>
+              <excludeArtifactId>log4j-osgi-test</excludeArtifactId>
+              <excludeArtifactId>log4j-perf-test</excludeArtifactId>
+              <excludeArtifactId>log4j-plugins-test</excludeArtifactId>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Enable BOM flattening -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -595,6 +622,19 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkCount>1C</forkCount>
+          <reuseForks>false</reuseForks>
+          <runOrder>alphabetical</runOrder>
+          <systemPropertyVariables>
+            <java.awt.headless>true</java.awt.headless>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
       <!-- ███████ ████████  █████  ██████  ████████        ███████ ██ ████████ ███████
            ██         ██    ██   ██ ██   ██    ██    ██     ██      ██    ██    ██
            ███████    ██    ███████ ██████     ██           ███████ ██    ██    █████
@@ -638,7 +678,10 @@
             <!-- This execution must be inherited and enabled by modules publishing javadocs: `-api` and `-core`.
                  Such modules enable this execution via `maven.javadoc.skip` property.
                  Hence, don't insert a `<inherited>false</inherited>`, please! -->
-            <configuration>
+            <configuration combine.self="override">
+              <!-- `notimestamp` avoids `diff` noise and is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
+              <notimestamp>true</notimestamp>
+              <skip>${maven.javadoc.skip}</skip>
               <bottom><![CDATA[<p align="center">
               Copyright &copy; {inceptionYear}-{currentYear} {organizationName}.
               All Rights Reserved.<br/>
@@ -805,6 +848,7 @@
            ███████ ██   ████ ██████         ███████ ██    ██    ███████ -->
 
     </plugins>
+
   </build>
 
   <profiles>
@@ -845,4 +889,5 @@
       </build>
     </profile>
   </profiles>
+
 </project>

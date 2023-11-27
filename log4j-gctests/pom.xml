@@ -30,8 +30,6 @@
   <description>Apache Log4j Implementation GC Tests</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Core Documentation</docLabel>
-    <projectDir>/core</projectDir>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
   </properties>

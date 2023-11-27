@@ -29,8 +29,6 @@
 
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Tests for the JSON Template Layout of Apache Log4j</docLabel>
-    <projectDir>/log4j-layout-template-json-test</projectDir>
 
     <!--
       ~ OSGi and JPMS options

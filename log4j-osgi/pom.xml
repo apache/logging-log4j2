@@ -30,8 +30,6 @@
   <description>The Apache Log4j OSGi tests</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>OSGi Documentation</docLabel>
-    <projectDir>/osgi</projectDir>
     <module.name>org.apache.logging.log4j.osgi</module.name>
     <skipTests>true</skipTests>
     <bnd.baseline.skip>true</bnd.baseline.skip>

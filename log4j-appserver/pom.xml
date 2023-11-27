@@ -31,8 +31,6 @@
 
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Web Documentation</docLabel>
-    <projectDir>/log4j-appserver</projectDir>
 
     <!--
       ~ OSGi and JPMS options

@@ -30,8 +30,6 @@
   <description>The Apache Log4j JNDI Support</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>JNDI Documentation</docLabel>
-    <projectDir>/log4j-jndi</projectDir>
     <module.name>org.apache.logging.log4j.jndi</module.name>
   </properties>
   <dependencies>

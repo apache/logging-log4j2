@@ -29,8 +29,6 @@
   <description>Apache Log4j Layout for Jackson.</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Log4j Layout for Jackson Documentation</docLabel>
-    <projectDir>/log4j-layout-jackson</projectDir>
 
     <!--
       ~ OSGi and JPMS options

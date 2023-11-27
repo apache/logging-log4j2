@@ -30,8 +30,6 @@
   <description>The Apache Log4j JNDI Test Support</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>JNDI Documentation</docLabel>
-    <projectDir>/log4j-jndi-test</projectDir>
     <module.name>org.apache.logging.log4j.jndi.test</module.name>
   </properties>
   <dependencies>

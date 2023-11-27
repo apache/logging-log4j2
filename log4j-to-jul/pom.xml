@@ -31,8 +31,6 @@
   <inceptionYear>2022</inceptionYear>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Log4j to JUL Documentation</docLabel>
-    <projectDir>/log4j-to-jul</projectDir>
   </properties>
   <dependencies>
     <dependency>

@@ -30,8 +30,6 @@
   <description>The Apache Log4j streams to log event converters</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Streaming Documentation</docLabel>
-    <projectDir>/log4j-iostreams</projectDir>
   </properties>
   <dependencies>
     <dependency>

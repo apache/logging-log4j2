@@ -30,8 +30,6 @@
   <description>The Apache Log4j 1.x Compatibility API</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Log4j 1.2 Documentation</docLabel>
-    <projectDir>/log4j12-api</projectDir>
 
     <!--
       ~ OSGi and JPMS options

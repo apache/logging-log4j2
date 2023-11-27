@@ -30,8 +30,6 @@
   <description>Log4j Plugin Annotation Processor</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Plugin Documentation</docLabel>
-    <projectDir>/plugins</projectDir>
   </properties>
   <dependencies>
     <dependency>
