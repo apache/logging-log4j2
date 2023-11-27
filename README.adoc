@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-https://github.com/apache/logging-log4j2/actions/workflows/build.yaml[image:https://img.shields.io/github/actions/workflow/status/apache/logging-log4j2/build.yml?branch=2.x&label=build%20%282.x%29[Build (2.x)]]
+https://github.com/apache/logging-log4j2/actions/workflows/build.yaml[image:https://img.shields.io/github/actions/workflow/status/apache/logging-log4j2/build.yaml?branch=2.x&label=build%20%282.x%29[Build (2.x)]]
 https://search.maven.org/artifact/org.apache.logging.log4j/log4j-api[image:https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api?versionPrefix=2.[Maven Central (2.x)]]
 https://libraries.io/maven/org.apache.logging.log4j:log4j-core/2.20.0[image:https://img.shields.io/librariesio/release/maven/org.apache.logging.log4j%3Alog4j-core/2.20.0?label=dependencies%20(2.x)[Libraries.io dependency status for 2.x]]
 https://github.com/apache/logging-log4j2/security/code-scanning[image:https://github.com/apache/logging-log4j2/actions/workflows/codeql-analysis.yaml/badge.svg?branch=2.x[CodeQL (2.x)]]
