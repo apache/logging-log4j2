@@ -621,7 +621,6 @@
             <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
-            <exclude>felix-cache/**</exclude>
             <exclude>**/README.md</exclude>
             <exclude>SECURITY.md</exclude>
             <exclude>**/*.yml</exclude>
@@ -903,6 +902,7 @@
         </plugins>
       </build>
     </profile>
+
   </profiles>
 
 </project>
