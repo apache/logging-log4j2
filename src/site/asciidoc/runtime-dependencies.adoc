@@ -316,10 +316,6 @@ The module info definition may be modified in the future to export these only to
 !
 !===
 
-|log4j-osgi
-|org.apache.logging.log4j.osgi
-|Automatic Module. Unclear how OSGi will support Java modules.
-
 |log4j-plugin-processor
 |org.apache.logging.log4j.plugin.processor
 |
