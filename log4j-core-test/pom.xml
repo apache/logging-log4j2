@@ -107,16 +107,10 @@
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-commons</artifactId>
     </dependency>
-    <!-- Useful mock classes and utilities -->
+    <!-- Needed for JNDI mocks using `org.springframework.mock.jndi` -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-jcl</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- JNDI and JMS tests -->
     <dependency>
