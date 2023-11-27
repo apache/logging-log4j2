@@ -235,41 +235,25 @@
     <module>log4j-core-java9</module>
 
     <!-- Last comes the rest of the modules in alphabetical order.
-         Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
+         1. Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below!
+         2. This list is left incomplete on purpose!
+            See `stable-modules` profile for rest. -->
     <module>log4j-1.2-api</module>
     <module>log4j-api</module>
     <module>log4j-api-test</module>
-    <module>log4j-appserver</module>
-    <module>log4j-cassandra</module>
     <module>log4j-core</module>
     <module>log4j-core-its</module>
     <module>log4j-core-test</module>
-    <module>log4j-couchdb</module>
-    <module>log4j-docker</module>
-    <module>log4j-flume-ng</module>
-    <module>log4j-iostreams</module>
-    <module>log4j-jakarta-smtp</module>
-    <module>log4j-jakarta-web</module>
     <module>log4j-jcl</module>
     <module>log4j-jpa</module>
     <module>log4j-jpl</module>
-    <module>log4j-jdbc-dbcp2</module>
     <module>log4j-jul</module>
-    <module>log4j-kubernetes</module>
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-test</module>
-    <module>log4j-mongodb3</module>
-    <module>log4j-mongodb4</module>
-    <module>log4j-osgi-test</module>
-    <module>log4j-perf-test</module>
     <module>log4j-slf4j-impl</module>
     <module>log4j-slf4j2-impl</module>
-    <module>log4j-spring-boot</module>
-    <module>log4j-spring-cloud-config-client</module>
-    <module>log4j-taglib</module>
     <module>log4j-to-slf4j</module>
     <module>log4j-to-jul</module>
-    <module>log4j-web</module>
 
   </modules>
 
@@ -828,23 +812,30 @@
   <profiles>
 
     <profile>
+
       <id>java8-doclint-disabled</id>
+
       <activation>
         <jdk>[1.8,)</jdk>
       </activation>
+
       <properties>
         <doclint>${javadoc.doclint}</doclint>
       </properties>
+
     </profile>
 
     <profile>
+
       <id>java8-tests</id>
+
       <activation>
         <property>
           <name>env.CI</name>
           <value>true</value>
         </property>
       </activation>
+
       <build>
         <plugins>
           <plugin>
@@ -858,10 +849,13 @@
           </plugin>
         </plugins>
       </build>
+
     </profile>
 
     <profile>
+
       <id>sequential-tests</id>
+
       <build>
         <plugins>
           <plugin>
@@ -873,9 +867,11 @@
           </plugin>
         </plugins>
       </build>
+
     </profile>
 
     <profile>
+
       <id>rewrite</id>
 
       <properties>
@@ -909,7 +905,43 @@
           </plugin>
         </plugins>
       </build>
+
     </profile>
+
+    <!-- This profile is used to toggle certain stable modules to speed up local development -->
+    <profile>
+
+      <id>stable-modules</id>
+
+      <activation>
+        <activeByDefault/>
+      </activation>
+
+      <!-- List of modules in alphabetical order.
+           Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block above! -->
+      <modules>
+        <module>log4j-appserver</module>
+        <module>log4j-cassandra</module>
+        <module>log4j-couchdb</module>
+        <module>log4j-docker</module>
+        <module>log4j-flume-ng</module>
+        <module>log4j-iostreams</module>
+        <module>log4j-jakarta-smtp</module>
+        <module>log4j-jakarta-web</module>
+        <module>log4j-jdbc-dbcp2</module>
+        <module>log4j-kubernetes</module>
+        <module>log4j-mongodb3</module>
+        <module>log4j-mongodb4</module>
+        <module>log4j-osgi-test</module>
+        <module>log4j-perf-test</module>
+        <module>log4j-spring-boot</module>
+        <module>log4j-spring-cloud-config-client</module>
+        <module>log4j-taglib</module>
+        <module>log4j-web</module>
+      </modules>
+
+    </profile>
+
   </profiles>
 
 </project>
