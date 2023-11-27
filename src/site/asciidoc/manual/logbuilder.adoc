@@ -60,7 +60,7 @@ this will result in slower performance.</li>
 === Location Performance
 
 The table below shows some of the results from the FileAppenderBenchmark and FileAppenderWithLocationBenchmark
-classes in the log4j-perf project when configured to use 4 threads. The results show that lazily including
+classes in the log4j-perf-test project when configured to use 4 threads. The results show that lazily including
 the location information is about 8 times slower than not including location information. While using the
 withLocation method of LogBuilder is about 3 times faster than lazily calculating the location information
 it is still about 2.5 times slower than not including location information.

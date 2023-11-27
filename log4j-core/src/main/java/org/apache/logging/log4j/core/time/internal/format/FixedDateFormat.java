@@ -30,8 +30,8 @@ import org.osgi.annotation.versioning.ProviderType;
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
  * in {@link FixedFormat}. For any other date patterns use {@link FastDateFormat}.
  * <p>
- * Related benchmarks: /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/TimeFormatBenchmark.java and
- * /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/ThreadsafeDateFormatBenchmark.java
+ * Related benchmarks: /log4j-perf-test/src/main/java/org/apache/logging/log4j/perf/jmh/TimeFormatBenchmark.java and
+ * /log4j-perf-test/src/main/java/org/apache/logging/log4j/perf/jmh/ThreadsafeDateFormatBenchmark.java
  * </p>
  */
 @ProviderType

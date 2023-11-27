@@ -258,7 +258,7 @@
     <module>log4j-layout-template-json-test</module>
     <module>log4j-mongodb4</module>
     <module>log4j-osgi-test</module>
-    <module>log4j-perf</module>
+    <module>log4j-perf-test</module>
     <module>log4j-plugin-processor</module>
     <module>log4j-plugins</module>
     <module>log4j-plugins-test</module>

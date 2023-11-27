@@ -243,7 +243,7 @@ http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
 harness. See the AsyncAppenderLog4j1Benchmark,
 AsyncAppenderLog4j2Benchmark, AsyncAppenderLogbackBenchmark,
 AsyncLoggersBenchmark and the MemoryHandlerJULBenchmark source code in
-the log4j-perf module.
+the log4j-perf-test module.
 
 [#asyncLoggingWithLocation]
 === Asynchronous Logging with Caller Location Information
@@ -274,7 +274,7 @@ http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
 harness. See the AsyncAppenderLog4j1LocationBenchmark,
 AsyncAppenderLog4j2LocationBenchmark,
 AsyncAppenderLogbackLocationBenchmark, AsyncLoggersLocationBenchmark and
-the MemoryHandlerJULLocationBenchmark source code in the log4j-perf
+the MemoryHandlerJULLocationBenchmark source code in the log4j-perf-test
 module.
 
 [#fileLoggingComparison]
@@ -306,7 +306,7 @@ image:images/SyncThroughputLoggerComparisonLinux.png[image]
 
 The synchronous logging throughput results above are obtained with the
 http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
-harness. See the FileAppenderBenchmark source code in the log4j-perf
+harness. See the FileAppenderBenchmark source code in the log4j-perf-test
 module.
 
 === Synchronous File Logging - Response Time Comparison
@@ -375,7 +375,7 @@ image:images/ThreadContextFilterCostComparison.png[image]
 The Filter comparison results above are obtained with the
 http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
 harness. See the MarkerFilterBenchmark and MDCFilterBenchmark in the
-log4j-perf module for details on these benchmarks.
+log4j-perf-test module for details on these benchmarks.
 
 [#tradeoffs]
 == Trade-offs
@@ -437,7 +437,7 @@ image:images/Log4j2AppenderThroughputComparison-windows.png[image]
 The Log4j 2 appender comparison results above are obtained with the
 http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
 harness. See the Log4j2AppenderComparisonBenchmark source code in the
-log4j-perf module.
+log4j-perf-test module.
 
 ////
 The user should be aware of the following performance issues.

@@ -547,7 +547,7 @@ but on par with 2.5 and much better than alternatives logging libraries]
 
 The results above are obtained with the
 http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
-harness. See the FileAppenderBenchmark source code in the log4j-perf
+harness. See the FileAppenderBenchmark source code in the log4j-perf-test
 module.
 
 [#UnderTheHood]
