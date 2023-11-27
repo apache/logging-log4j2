@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("yaml")
-@LoggerContextSource("log4j2-2134.yml")
+@LoggerContextSource("log4j2-2134.yaml")
 public class JiraLog4j2_2134Test {
 
     @Test

@@ -73,7 +73,7 @@ public class CassandraRule extends ExternalResource {
     protected void before() throws Throwable {
         final Path root = Files.createTempDirectory("cassandra");
         Files.createDirectories(root.resolve("data"));
-        final Path config = root.resolve("cassandra.yml");
+        final Path config = root.resolve("cassandra.yaml");
         Files.copy(getClass().getResourceAsStream("/cassandra.yaml"), config);
         System.setProperty("cassandra.native_transport_port", "0");
         System.setProperty("cassandra.storage_port", "0");
