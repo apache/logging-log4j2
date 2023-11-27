@@ -314,6 +314,14 @@
     <!-- JDK version of the main Maven process (used in ASF parent POM) -->
     <minimalJavaBuildVersion>[11,12)</minimalJavaBuildVersion>
     <module.name />
+
+    <!-- `project.build.outputTimestamp` is required to be present for reproducible builds.
+         We actually inherit one from the `org.apache:apache` through our parent `org.apache.logging:logging-parent`.
+         Though inheriting this property has two undesired consequences:
+         1. `artifact:compare` dumps an `ERROR` log stating that this `property should not be inherited but defined` (apache/logging-parent#50)
+         2. This value is employed in various places while creating the distribution
+         To mitigate these, we define a *dummy* value here and let the CI replace it during a release.
+         Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
     <project.build.outputTimestamp>2023-11-17T08:52:06Z</project.build.outputTimestamp>
 
     <!-- ========================
@@ -328,6 +336,7 @@
          It is manually enabled only for this root module below. -->
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
+
   </properties>
 
   <dependencyManagement>
