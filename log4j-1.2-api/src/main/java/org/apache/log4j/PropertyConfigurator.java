@@ -426,7 +426,7 @@ public class PropertyConfigurator implements Configurator {
         final String value = OptionConverter.findAndSubst(ADDITIVITY_PREFIX + loggerName, properties);
         LogLog.debug("Handling " + ADDITIVITY_PREFIX + loggerName + "=[" + value + "]");
         // touch additivity only if necessary
-        if ((value != null) && (!value.equals(""))) {
+        if (value != null && !value.isEmpty()) {
             final boolean additivity = OptionConverter.toBoolean(value, true);
             LogLog.debug("Setting additivity for \"" + loggerName + "\" to " + additivity);
             logger.setAdditivity(additivity);
@@ -581,7 +581,7 @@ public class PropertyConfigurator implements Configurator {
         // If value is not in the form ", appender.." or "", then we should set
         // the level of the loggeregory.
 
-        if (!(value.startsWith(",") || value.equals(""))) {
+        if (!(value.startsWith(",") || value.isEmpty())) {
 
             // just to be on the safe side...
             if (!st.hasMoreTokens()) {

@@ -390,7 +390,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         final String value = OptionConverter.findAndSubst(key, props);
         LOGGER.debug("Handling {}=[{}]", key, value);
         // touch additivity only if necessary
-        if ((value != null) && (!value.equals(""))) {
+        if (value != null && !value.isEmpty()) {
             additivity = OptionConverter.toBoolean(value, true);
         }
         return additivity;
@@ -412,7 +412,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
 
         // If value is not in the form ", appender.." or "", then we should set the level of the logger.
 
-        if (!(value.startsWith(",") || value.equals(""))) {
+        if (!(value.startsWith(",") || value.isEmpty())) {
 
             // just to be on the safe side...
             if (!st.hasMoreTokens()) {

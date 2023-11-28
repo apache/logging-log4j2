@@ -732,14 +732,14 @@ public class XmlConfiguration extends Log4j1Configuration {
         // if the log4j.dtd is not specified in the XML file, then the
         // "debug" attribute is returned as the empty string.
         String status = "error";
-        if (!debugAttrib.equals("") && !debugAttrib.equals("null")) {
+        if (!debugAttrib.isEmpty() && !debugAttrib.equals("null")) {
             status = OptionConverter.toBoolean(debugAttrib, true) ? "debug" : "error";
         } else {
             LOGGER.debug("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
         }
 
         final String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));
-        if (!confDebug.equals("") && !confDebug.equals("null")) {
+        if (!confDebug.isEmpty() && !confDebug.equals("null")) {
             LOGGER.warn("The \"" + CONFIG_DEBUG_ATTR + "\" attribute is deprecated.");
             LOGGER.warn("Use the \"" + INTERNAL_DEBUG_ATTR + "\" attribute instead.");
             status = OptionConverter.toBoolean(confDebug, true) ? "debug" : "error";
