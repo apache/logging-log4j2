@@ -16,7 +16,6 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -43,7 +42,6 @@ import org.slf4j.MDC;
 @LoggerContextSource
 public class LoggerTest {
 
-    private static final String STRING = "String";
     // Log4j objects
     private Logger logger;
     // Logback objects
@@ -72,7 +70,7 @@ public class LoggerTest {
 
     @Test
     public void simpleFlow() {
-        logger.traceEntry(STRING);
+        logger.traceEntry("foo");
         logger.traceExit(0);
         assertThat(list.strList, hasSize(2));
     }

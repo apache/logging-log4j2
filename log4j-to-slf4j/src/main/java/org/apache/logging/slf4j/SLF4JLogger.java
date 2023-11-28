@@ -29,9 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
-/**
- *
- */
 public class SLF4JLogger extends AbstractLogger {
 
     /**
