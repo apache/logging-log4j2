@@ -4,9 +4,6 @@ Copyright 1999-2023 Apache Software Foundation
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
 
-ResolverUtil.java
-Copyright 2005-2006 Tim Fennell
-
 TypeUtil.java
 Copyright 2002-2012 Ramnivas Laddad, Juergen Hoeller, Chris Beams
 

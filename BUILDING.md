@@ -18,7 +18,6 @@
 # Requirements
 
 * JDK 11+
-* Apache Maven 3.x (optional)
 * A modern Linux, OSX, or Windows host
 
 <a name="building"></a>
