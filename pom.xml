@@ -312,7 +312,7 @@
     <maven.compiler.release>8</maven.compiler.release>
     <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
     <!-- JDK version of the main Maven process (used in ASF parent POM) -->
-    <minimalJavaBuildVersion>[11,12)</minimalJavaBuildVersion>
+    <minimalJavaBuildVersion>[17,18)</minimalJavaBuildVersion>
     <module.name />
 
     <!-- `project.build.outputTimestamp` is required to be present for reproducible builds.

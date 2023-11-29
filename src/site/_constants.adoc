@@ -38,4 +38,4 @@
 :project-name: Log4j
 :project-id: log4j
 :java-target-version: 8
-:java-compiler-version: [11,12)
+:java-compiler-version: [17,18)

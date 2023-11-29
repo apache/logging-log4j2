@@ -34,13 +34,13 @@ jobs:
     with:
       java-version: |
         8
-        11
+        17
 
   merge-dependabot:
     needs: build
     uses: apache/logging-parent/.github/workflows/merge-dependabot-reusable.yaml@main
     with:
-      java-version: 11
+      java-version: 17
     permissions:
       contents: write                                             # to push changelog commits
       pull-requests: write                                        # to close the PR
