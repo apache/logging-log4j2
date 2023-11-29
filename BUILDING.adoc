@@ -1,0 +1,98 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+[#requirements]
+== Requirements
+
+* JDK 11+
+* A modern Linux, OSX, or Windows host
+
+[#building]
+== Building the sources
+
+You can build and verify the sources as follows:
+
+[source,bash]
+----
+./mvnw verify
+----
+
+`verify` goal runs validation and test steps next to building (i.e., compiling) the sources.
+To speed up the build, you can skip verification:
+
+[source,bash]
+----
+./mvnw -DskipTests package
+----
+
+If you want to install generated artifacts to your local Maven repository, replace above `verify` and/or `package` goals with `install`.
+
+[#dns]
+=== DNS lookups in tests
+
+Note that if your `/etc/hosts` file does not include an entry for your computer's hostname, then many unit tests may execute slow due to DNS lookups to translate your hostname to an IP address in `InetAddress.getLocalHost()`.
+To remedy this, you can execute the following:
+
+[source,bash]
+----
+printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
+----
+
+[#website]
+== Building the website and manual
+
+You can build the website and manual as follows:
+
+[source,bash]
+----
+./mvnw site
+----
+
+And view it using a simple HTTP server, e.g., the one comes with the Python:
+
+[source,bash]
+----
+python3 -m http.server -d target/site
+----
+
+[#development]
+== Development
+
+You can follow below steps for casual development needs:
+
+. Make sure you installed everything: `./mvnw install -DskipTests`
+. After making a change to, say, `log4j-core`, install your changes: `./mvnw install -pl :log4j-core -DskipTests`
+. Run all tests associated with `log4j-core`: `./mvnw test -pl :log4j-core-test`
+. Run a particular test: `./mvnw test -pl :log4j-core-test -Dtest=FooBarTest`
+
+You can connect your IDE to a `./mvnw test` run by
+
+. Add `-Dmaven.surefire.debug` to the `./mvnw test` command
+. Use _"Run > Attach to process"_ in IntelliJ IDEA
+
+[#development-faq]
+=== F.A.Q
+
+[#development-faq-idea-plugin-not-found]
+==== Compilation in IntelliJ IDEA fails with `java: plug-in not found: ErrorProne`
+
+Try removing all _"Override compiler parameters per-module"_ entries in _"Settings > Build, Execution, Deployment > Compiler > Java Compiler"_.
+
+[#development-faq-idea-package-plugins]
+==== Compilation in IntelliJ IDEA fails with `java: package org.apache.logging.log4j.plugins.test.validation.plugins does not exist`
+
+We don't know how to fix this.
