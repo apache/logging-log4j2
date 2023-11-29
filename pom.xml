@@ -304,7 +304,7 @@
   <properties>
 
     <!-- project version -->
-    <revision>2.23.0-SNAPSHOT</revision>
+    <revision>2.23.0-j17-SNAPSHOT</revision>
 
     <!-- =================
          Common properties
