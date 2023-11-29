@@ -22,9 +22,6 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- */
 public class SLF4JLoggerContext implements LoggerContext {
     private final LoggerRegistry<ExtendedLogger> loggerRegistry = new LoggerRegistry<>();
 
