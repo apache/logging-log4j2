@@ -22,6 +22,7 @@ import java.util.Collection;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -35,7 +36,7 @@ public class StructuredDataFilterTest {
         final KeyValuePair[] pairs = new KeyValuePair[] {
             new KeyValuePair("id.name", "AccountTransfer"), new KeyValuePair("ToAccount", "123456")
         };
-        StructuredDataFilter filter = StructuredDataFilter.createFilter(pairs, "and", null, null);
+        StructuredDataFilter filter = StructuredDataFilter.createFilter(new DefaultConfiguration(), pairs, "and", null, null);
         assertNotNull(filter);
         filter.start();
         StructuredDataMessage msg = new StructuredDataMessage("AccountTransfer@18060", "Transfer Successful", "Audit");
@@ -46,7 +47,7 @@ public class StructuredDataFilterTest {
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, msg, null));
         msg.put("ToAccount", "111111");
         assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, msg, null));
-        filter = StructuredDataFilter.createFilter(pairs, "or", null, null);
+        filter = StructuredDataFilter.createFilter(new DefaultConfiguration(), pairs, "or", null, null);
         assertNotNull(filter);
         filter.start();
         msg = new StructuredDataMessage("AccountTransfer@18060", "Transfer Successful", "Audit");

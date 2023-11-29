@@ -25,6 +25,8 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -33,6 +35,8 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -46,11 +50,17 @@ import org.apache.logging.log4j.util.StringBuilders;
 public final class StructuredDataFilter extends MapFilter {
 
     private static final int MAX_BUFFER_SIZE = 2048;
-    private static final ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
+
+    private final Recycler<StringBuilder> stringBuilderRecycler;
 
     private StructuredDataFilter(
-            final Map<String, List<String>> map, final boolean oper, final Result onMatch, final Result onMismatch) {
+            final RecyclerFactory recyclerFactory,
+            final Map<String, List<String>> map,
+            final boolean oper,
+            final Result onMatch,
+            final Result onMismatch) {
         super(map, oper, onMatch, onMismatch);
+        this.stringBuilderRecycler = recyclerFactory.create(StringBuilder::new);
     }
 
     @Override
@@ -74,22 +84,29 @@ public final class StructuredDataFilter extends MapFilter {
     protected Result filter(final StructuredDataMessage message) {
         boolean match = false;
         final IndexedReadOnlyStringMap map = getStringMap();
-        for (int i = 0; i < map.size(); i++) {
-            final StringBuilder toMatch = getValue(message, map.getKeyAt(i));
-            if (toMatch != null) {
-                match = listContainsValue((List<String>) map.getValueAt(i), toMatch);
-            } else {
-                match = false;
+        final StringBuilder sb = stringBuilderRecycler.acquire();
+        try {
+            for (int i = 0; i < map.size(); i++) {
+                final StringBuilder toMatch = getValue(sb, message, map.getKeyAt(i));
+                if (toMatch != null) {
+                    final List<String> candidates = map.getValueAt(i);
+                    match = listContainsValue(candidates, toMatch);
+                } else {
+                    match = false;
+                }
+                if ((!isAnd() && match) || (isAnd() && !match)) {
+                    break;
+                }
+                StringBuilders.trimToMaxSize(sb, MAX_BUFFER_SIZE);
+                sb.setLength(0);
             }
-            if ((!isAnd() && match) || (isAnd() && !match)) {
-                break;
-            }
+        } finally {
+            stringBuilderRecycler.release(sb);
         }
         return match ? onMatch : onMismatch;
     }
 
-    private StringBuilder getValue(final StructuredDataMessage data, final String key) {
-        final StringBuilder sb = getStringBuilder();
+    private StringBuilder getValue(final StringBuilder sb, final StructuredDataMessage data, final String key) {
         if (key.equalsIgnoreCase("id")) {
             data.getId().formatTo(sb);
             return sb;
@@ -103,17 +120,6 @@ public final class StructuredDataFilter extends MapFilter {
         } else {
             return appendOrNull(data.get(key), sb);
         }
-    }
-
-    private StringBuilder getStringBuilder() {
-        StringBuilder result = threadLocalStringBuilder.get();
-        if (result == null) {
-            result = new StringBuilder();
-            threadLocalStringBuilder.set(result);
-        }
-        StringBuilders.trimToMaxSize(result, MAX_BUFFER_SIZE);
-        result.setLength(0);
-        return result;
     }
 
     private StringBuilder appendOrNull(final String value, final StringBuilder sb) {
@@ -157,6 +163,7 @@ public final class StructuredDataFilter extends MapFilter {
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static StructuredDataFilter createFilter(
+            @PluginConfiguration final Configuration configuration,
             @PluginElement final KeyValuePair[] pairs,
             @PluginAttribute final String operator,
             @PluginAttribute final Result onMatch,
@@ -191,6 +198,7 @@ public final class StructuredDataFilter extends MapFilter {
             return null;
         }
         final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
-        return new StructuredDataFilter(map, isAnd, onMatch, onMismatch);
+        final RecyclerFactory recyclerFactory = configuration.getRecyclerFactory();
+        return new StructuredDataFilter(recyclerFactory, map, isAnd, onMatch, onMismatch);
     }
 }
