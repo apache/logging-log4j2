@@ -33,7 +33,7 @@ If you need help on building or configuring Log4j or other help on following the
 [TIP]
 ====
 If you need to apply a source code patch, use the building instructions for the Log4j version that you are using.
-These instructions can be found in `BUILDING.md` distributed with the sources.
+These instructions can be found in `BUILDING.adoc` distributed with the sources.
 ====
 
 [#reporting]
