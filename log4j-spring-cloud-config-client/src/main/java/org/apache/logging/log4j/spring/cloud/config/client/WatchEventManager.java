@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spring.cloud.config.client;
 
+import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,12 +24,12 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.core.util.WatchEventService;
 import org.apache.logging.log4j.core.util.WatchManager;
 
-@ServiceProvider(value = WatchEventService.class)
+@ServiceProvider(value = WatchEventService.class, resolution = Resolution.OPTIONAL)
 public class WatchEventManager implements WatchEventService {
     private static final ConcurrentMap<UUID, WatchManager> watchManagers = new ConcurrentHashMap<>();
 
     public static void publishEvent() {
-        for (final WatchManager manager : watchManagers.values()) {
+        for (WatchManager manager : watchManagers.values()) {
             manager.checkFiles();
         }
     }

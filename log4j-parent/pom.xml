@@ -158,6 +158,7 @@
     <slf4j.version>2.0.9</slf4j.version>
     <!-- Last version before a breaking change -->
     <slf4j-ext.version>1.7.25</slf4j-ext.version>
+    <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.31</spring-framework.version>
     <system-stubs.version>2.1.5</system-stubs.version>
     <tomcat-juli.version>10.0.23</tomcat-juli.version>
@@ -823,6 +824,24 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
         <version>${slf4j-ext.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <version>${spring-boot.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
