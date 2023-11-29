@@ -36,7 +36,8 @@ public class StructuredDataFilterTest {
         final KeyValuePair[] pairs = new KeyValuePair[] {
             new KeyValuePair("id.name", "AccountTransfer"), new KeyValuePair("ToAccount", "123456")
         };
-        StructuredDataFilter filter = StructuredDataFilter.createFilter(new DefaultConfiguration(), pairs, "and", null, null);
+        StructuredDataFilter filter =
+                StructuredDataFilter.createFilter(new DefaultConfiguration(), pairs, "and", null, null);
         assertNotNull(filter);
         filter.start();
         StructuredDataMessage msg = new StructuredDataMessage("AccountTransfer@18060", "Transfer Successful", "Audit");
