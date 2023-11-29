@@ -19,7 +19,6 @@
 == Requirements
 
 * JDK 11+
-* JDK 8 (optional)
 * A modern Linux, OSX, or Windows host
 
 [#building]
