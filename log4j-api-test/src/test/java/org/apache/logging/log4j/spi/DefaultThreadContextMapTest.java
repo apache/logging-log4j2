@@ -25,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.test.junit.InitializesThreadContext;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ClearSystemProperty;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.
@@ -228,7 +228,7 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
+    @SetTestProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
     @InitializesThreadContext
     public void testThreadLocalInheritableIfConfigured() {
         ThreadContextMapFactory.init();
