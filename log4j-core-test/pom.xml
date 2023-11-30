@@ -360,15 +360,25 @@
 
   <build>
     <plugins>
+
+      <!-- Relax reflective access constraints for tests: https://junit-pioneer.org/docs/environment-variables/#warnings-for-reflective-access -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>
+            --add-opens java.base/java.lang=ALL-UNNAMED
+            --add-opens java.base/java.net=ALL-UNNAMED
+            --add-opens java.base/java.util=ALL-UNNAMED
+          </argLine>
+        </configuration>
+      </plugin>
+
+      <!-- Enable Log4j plugin processing -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <!--
-            ~ Modules that contain `log4j-core` plugins, must be compiled with:
-            ~
-            ~   org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor
-            -->
           <annotationProcessorPaths combine.children="append">
             <path>
               <groupId>org.apache.logging.log4j</groupId>
@@ -378,6 +388,8 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
+
 </project>
