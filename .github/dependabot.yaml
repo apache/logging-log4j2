@@ -46,9 +46,6 @@ updates:
     # Mockito 5.x requires Java 11
     - dependency-name: "org.mockito:*"
       update-types: ["version-update:semver-major"]
-    # JUnit Pioneer 2.x requires Java 11
-    - dependency-name: "org.junit-pioneer:*"
-      update-types: ["version-update:semver-major"]
     # Apache Cassandra: keep version 3.x
     - dependency-name: "org.apache.cassandra:*"
       versions: ["[4.0.0,)"]
