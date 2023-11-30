@@ -55,7 +55,8 @@ import org.apache.logging.log4j.util.Strings;
 public class Log4jLogEvent implements LogEvent {
 
     private static final long serialVersionUID = -8393305700508709443L;
-    private static final Clock CLOCK = ClockFactory.getClock();
+    @SuppressWarnings("FieldMayBeFinal") // enable mutation for tests
+    private static Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
     private static final ContextDataInjector CONTEXT_DATA_INJECTOR = ContextDataInjectorFactory.createInjector();
 
