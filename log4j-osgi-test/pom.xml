@@ -201,6 +201,8 @@
             <!-- Used in `osgi.properties -->
             <felix.cache.rootdir>${project.build.directory}</felix.cache.rootdir>
           </systemPropertyVariables>
+          <!-- Relax reflective access constraints for tests -->
+          <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
         </configuration>
       </plugin>
 
