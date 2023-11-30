@@ -361,16 +361,14 @@
   <build>
     <plugins>
 
-      <!-- Relax reflective access constraints for tests: https://junit-pioneer.org/docs/environment-variables/#warnings-for-reflective-access -->
+      <!-- Relax reflective access constraints for tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>
-            --add-opens java.base/java.lang=ALL-UNNAMED
+          <argLine>--add-opens java.base/java.lang=ALL-UNNAMED
             --add-opens java.base/java.net=ALL-UNNAMED
-            --add-opens java.base/java.util=ALL-UNNAMED
-          </argLine>
+            --add-opens java.base/java.util=ALL-UNNAMED</argLine>
         </configuration>
       </plugin>
 
