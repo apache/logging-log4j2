@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
@@ -25,14 +32,6 @@ import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedTimeZoneFormat;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 abstract class DatePatternConverterTestBase {
 
@@ -78,7 +77,7 @@ abstract class DatePatternConverterTestBase {
             FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM.name();
 
     private static final String[] ISO8601_FORMAT_OPTIONS = {ISO8601};
-    
+
     private final boolean threadLocalsEnabled;
 
     DatePatternConverterTestBase(final boolean threadLocalsEnabled) {
@@ -437,10 +436,8 @@ abstract class DatePatternConverterTestBase {
                                     milliBuilder.length() - timeZoneFormat.getLength(), milliBuilder.length())
                             : Strings.EMPTY;
                     milliBuilder.setLength(milliBuilder.length() - truncateLen); // truncate millis
-                    final String expected = milliBuilder
-                            .append("987123456", 0, i)
-                            .append(tz)
-                            .toString();
+                    final String expected =
+                            milliBuilder.append("987123456", 0, i).append(tz).toString();
 
                     assertEquals(
                             expected,
