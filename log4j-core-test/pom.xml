@@ -298,11 +298,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openjdk.nashorn</groupId>
-      <artifactId>nashorn-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
       <scope>test</scope>
@@ -381,17 +376,17 @@
 
   <profiles>
 
-    <!-- Relax reflective access constraints for tests -->
+    <!-- Fixes incompatible with Java 8 -->
     <profile>
 
-      <id>reflective-access-fixes</id>
+      <id>java8-incompat-fixes</id>
 
       <!-- CI uses Java 8 for running tests.
-           Though illegal access is disabled by default in Java 16 due to JEP-396.
-           Hence, we assume CI=Java8 and open modules only elsewhere.
+           Hence, we assume CI=Java8 and apply our changes elsewhere.
 
            One might think why not activate using `<jdk>[16,)` instead?
-           This doesn't work, since the match is not against "the JDK used by tests".
+           This doesn't work, since the match is not against "the JDK running tests", but "the JDK running Maven".
+           These two JDKs can differ due to Maven Toolchains.
            See `java8-tests` profile in `/pom.xml` for details. -->
       <activation>
         <property>
@@ -399,6 +394,18 @@
         </property>
       </activation>
 
+      <!-- JEP-335 has deprecated the built-in JavaScript engine (Nashorn) in Java 11, and JEP-372 removed it in Java 15.
+           We are adding it back for tests that use JavaScript. -->
+      <dependencies>
+        <dependency>
+          <groupId>org.openjdk.nashorn</groupId>
+          <artifactId>nashorn-core</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+
+      <!-- Illegal access is disabled by default in Java 16 due to JEP-396.
+           We are relaxing it for tests. -->
       <build>
         <plugins>
           <plugin>
