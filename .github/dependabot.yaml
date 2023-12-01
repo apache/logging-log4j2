@@ -43,6 +43,9 @@ updates:
     # Keep Logback version 1.2.x
     - dependency-name: "ch.qos.logback:*"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]
+    # Mockito 5.x requires Java 11
+    - dependency-name: "org.mockito:*"
+      update-types: ["version-update:semver-major"]
     # Apache Cassandra: keep version 3.x
     - dependency-name: "org.apache.cassandra:*"
       versions: ["[4.0.0,)"]
