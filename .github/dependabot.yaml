@@ -55,9 +55,6 @@ updates:
     # Kubernetes: keep version 5.x
     - dependency-name: "io.fabric8:*"
       versions: ["[6.0.0,)"]
-    # Spotless 2.32.0 requires Java 11
-    - dependency-name: "com.diffplug.spotless:*"
-      versions: ["[2.32.0,)"]
     # `com.conversantmedia:disruptor` 1.2.16 requires Java 9
     - dependency-name: "com.conversantmedia:disruptor"
       versions: ["[1.2.16,)"]
