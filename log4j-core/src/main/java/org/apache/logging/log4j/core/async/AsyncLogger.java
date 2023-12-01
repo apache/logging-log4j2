@@ -69,7 +69,10 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     // immediate inlining instead of waiting until they are designated "hot enough".
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private static final Clock CLOCK = ClockFactory.getClock(); // not reconfigurable
+
+    @SuppressWarnings("FieldMayBeFinal") // enable mutation for tests
+    private static Clock CLOCK = ClockFactory.getClock(); // not reconfigurable
+
     private static final ContextDataInjector CONTEXT_DATA_INJECTOR = ContextDataInjectorFactory.createInjector();
 
     private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();

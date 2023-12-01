@@ -14,26 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
+package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.test.junit.SetTestProperty;
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
-import org.junit.jupiter.api.Test;
+import org.apache.logging.log4j.test.junit.UsingTestProperties;
 
-/**
- * Tests {@link ThreadContext}.
- */
-@SetTestProperty(key = "log4j2.disableThreadContext", value = "true")
-@SetTestProperty(key = "log4j2.disableThreadContextMap", value = "true")
-@UsingThreadContextMap
-public class NoopThreadContextTest {
+@SetTestProperty(key = "log4j2.enable.threadlocals", value = "false")
+@UsingTestProperties
+class DatePatternConverterWithoutThreadLocalsTest extends DatePatternConverterTestBase {
 
-    @Test
-    public void testNoop() {
-        ThreadContext.put("Test", "Test");
-        final String value = ThreadContext.get("Test");
-        assertNull(value, "value was saved");
+    DatePatternConverterWithoutThreadLocalsTest() {
+        super(false);
     }
 }
