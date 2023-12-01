@@ -105,12 +105,12 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatDateStringBuilderDefaultPattern() {
+    public void testFormatDateStringBuilderDefaultPattern() {
         assertDatePattern(null, date(2001, 1, 1), "2001-02-01 14:15:16,123");
     }
 
     @Test
-    void testFormatDateStringBuilderIso8601() {
+    public void testFormatDateStringBuilderIso8601() {
         final DatePatternConverter converter = DatePatternConverter.newInstance(ISO8601_FORMAT_OPTIONS);
         final StringBuilder sb = new StringBuilder();
         converter.format(date(2001, 1, 1), sb);
@@ -120,19 +120,19 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatDateStringBuilderIso8601BasicWithPeriod() {
+    public void testFormatDateStringBuilderIso8601BasicWithPeriod() {
         assertDatePattern(
                 FixedDateFormat.FixedFormat.ISO8601_BASIC_PERIOD.name(), date(2001, 1, 1), "20010201T141516.123");
     }
 
     @Test
-    void testFormatDateStringBuilderIso8601WithPeriod() {
+    public void testFormatDateStringBuilderIso8601WithPeriod() {
         assertDatePattern(
                 FixedDateFormat.FixedFormat.ISO8601_PERIOD.name(), date(2001, 1, 1), "2001-02-01T14:15:16.123");
     }
 
     @Test
-    void testFormatDateStringBuilderIso8601WithPeriodMicroseconds() {
+    public void testFormatDateStringBuilderIso8601WithPeriodMicroseconds() {
         final String[] pattern = {FixedDateFormat.FixedFormat.ISO8601_PERIOD_MICROS.name(), "Z"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
         final StringBuilder sb = new StringBuilder();
@@ -148,12 +148,12 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatDateStringBuilderOriginalPattern() {
+    public void testFormatDateStringBuilderOriginalPattern() {
         assertDatePattern("yyyy/MM/dd HH-mm-ss.SSS", date(2001, 1, 1), "2001/02/01 14-15-16.123");
     }
 
     @Test
-    void testFormatLogEventStringBuilderDefaultPattern() {
+    public void testFormatLogEventStringBuilderDefaultPattern() {
         final LogEvent event = new MyLogEvent();
         final DatePatternConverter converter = DatePatternConverter.newInstance(null);
         final StringBuilder sb = new StringBuilder();
@@ -164,7 +164,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatLogEventStringBuilderIso8601() {
+    public void testFormatLogEventStringBuilderIso8601() {
         final LogEvent event = new MyLogEvent();
         final DatePatternConverter converter = DatePatternConverter.newInstance(ISO8601_FORMAT_OPTIONS);
         final StringBuilder sb = new StringBuilder();
@@ -175,7 +175,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatAmericanPatterns() {
+    public void testFormatAmericanPatterns() {
         final Date date = date(2011, 2, 11);
         assertDatePattern("US_MONTH_DAY_YEAR4_TIME", date, "11/03/2011 14:15:16.123");
         assertDatePattern("US_MONTH_DAY_YEAR2_TIME", date, "11/03/11 14:15:16.123");
@@ -194,7 +194,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatLogEventStringBuilderIso8601TimezoneJST() {
+    public void testFormatLogEventStringBuilderIso8601TimezoneJST() {
         final LogEvent event = new MyLogEvent();
         final String[] optionsWithTimezone = {ISO8601, "JST"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
@@ -212,7 +212,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatLogEventStringBuilderIso8601TimezoneOffsetHHCMM() {
+    public void testFormatLogEventStringBuilderIso8601TimezoneOffsetHHCMM() {
         final LogEvent event = new MyLogEvent();
         final String[] optionsWithTimezone = {ISO8601_OFFSET_DATE_TIME_HHCMM};
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
@@ -226,7 +226,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatLogEventStringBuilderIso8601TimezoneOffsetHHMM() {
+    public void testFormatLogEventStringBuilderIso8601TimezoneOffsetHHMM() {
         final LogEvent event = new MyLogEvent();
         final String[] optionsWithTimezone = {ISO8601_OFFSET_DATE_TIME_HHMM};
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
@@ -240,7 +240,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatLogEventStringBuilderIso8601TimezoneUTC() {
+    public void testFormatLogEventStringBuilderIso8601TimezoneUTC() {
         final LogEvent event = new MyLogEvent();
         final DatePatternConverter converter = DatePatternConverter.newInstance(new String[] {"ISO8601", "UTC"});
         final StringBuilder sb = new StringBuilder();
@@ -256,7 +256,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatLogEventStringBuilderIso8601TimezoneZ() {
+    public void testFormatLogEventStringBuilderIso8601TimezoneZ() {
         final LogEvent event = new MyLogEvent();
         final String[] optionsWithTimezone = {ISO8601, "Z"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
@@ -273,7 +273,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatObjectStringBuilderDefaultPattern() {
+    public void testFormatObjectStringBuilderDefaultPattern() {
         final DatePatternConverter converter = DatePatternConverter.newInstance(null);
         final StringBuilder sb = new StringBuilder();
         converter.format("nondate", sb);
@@ -283,7 +283,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatStringBuilderObjectArrayDefaultPattern() {
+    public void testFormatStringBuilderObjectArrayDefaultPattern() {
         final DatePatternConverter converter = DatePatternConverter.newInstance(null);
         final StringBuilder sb = new StringBuilder();
         converter.format(sb, date(2001, 1, 1), date(2002, 2, 2), date(2003, 3, 3));
@@ -293,7 +293,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testFormatStringBuilderObjectArrayIso8601() {
+    public void testFormatStringBuilderObjectArrayIso8601() {
         final DatePatternConverter converter = DatePatternConverter.newInstance(ISO8601_FORMAT_OPTIONS);
         final StringBuilder sb = new StringBuilder();
         converter.format(sb, date(2001, 1, 1), date(2002, 2, 2), date(2003, 3, 3));
@@ -303,49 +303,49 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testGetPatternReturnsDefaultForEmptyOptionsArray() {
+    public void testGetPatternReturnsDefaultForEmptyOptionsArray() {
         assertEquals(
                 DEFAULT_PATTERN,
                 DatePatternConverter.newInstance(Strings.EMPTY_ARRAY).getPattern());
     }
 
     @Test
-    void testGetPatternReturnsDefaultForInvalidPattern() {
+    public void testGetPatternReturnsDefaultForInvalidPattern() {
         final String[] invalid = {"ABC I am not a valid date pattern"};
         assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(invalid).getPattern());
     }
 
     @Test
-    void testGetPatternReturnsDefaultForNullOptions() {
+    public void testGetPatternReturnsDefaultForNullOptions() {
         assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(null).getPattern());
     }
 
     @Test
-    void testGetPatternReturnsDefaultForSingleNullElementOptionsArray() {
+    public void testGetPatternReturnsDefaultForSingleNullElementOptionsArray() {
         assertEquals(
                 DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[1]).getPattern());
     }
 
     @Test
-    void testGetPatternReturnsDefaultForTwoNullElementsOptionsArray() {
+    public void testGetPatternReturnsDefaultForTwoNullElementsOptionsArray() {
         assertEquals(
                 DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[2]).getPattern());
     }
 
     @Test
-    void testGetPatternReturnsNullForUnix() {
+    public void testGetPatternReturnsNullForUnix() {
         final String[] options = {"UNIX"};
         assertNull(DatePatternConverter.newInstance(options).getPattern());
     }
 
     @Test
-    void testGetPatternReturnsNullForUnixMillis() {
+    public void testGetPatternReturnsNullForUnixMillis() {
         final String[] options = {"UNIX_MILLIS"};
         assertNull(DatePatternConverter.newInstance(options).getPattern());
     }
 
     @Test
-    void testInvalidLongPatternIgnoresExcessiveDigits() {
+    public void testInvalidLongPatternIgnoresExcessiveDigits() {
         final StringBuilder preciseBuilder = new StringBuilder();
         final StringBuilder milliBuilder = new StringBuilder();
         final LogEvent event = new MyLogEvent();
@@ -396,13 +396,13 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testNewInstanceAllowsNullParameter() {
+    public void testNewInstanceAllowsNullParameter() {
         DatePatternConverter.newInstance(null); // no errors
     }
 
     // test with all formats from one 'n' (100s of millis) to 'nnnnnnnnn' (nanosecond precision)
     @Test
-    void testPredefinedFormatWithAnyValidNanoPrecision() {
+    public void testPredefinedFormatWithAnyValidNanoPrecision() {
         final StringBuilder preciseBuilder = new StringBuilder();
         final StringBuilder milliBuilder = new StringBuilder();
         final LogEvent event = new MyLogEvent();
@@ -450,7 +450,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testPredefinedFormatWithoutTimezone() {
+    public void testPredefinedFormatWithoutTimezone() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
             final String[] options = {format.name()};
             final DatePatternConverter converter = DatePatternConverter.newInstance(options);
@@ -459,7 +459,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     @Test
-    void testPredefinedFormatWithTimezone() {
+    public void testPredefinedFormatWithTimezone() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
             final String[] options = {format.name(), "PST"}; // Pacific Standard Time=UTC-8:00
             final DatePatternConverter converter = DatePatternConverter.newInstance(options);
