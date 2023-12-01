@@ -20,8 +20,13 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.config.Order;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
 
+@Namespace(ConfigurationFactory.NAMESPACE)
+@Plugin("JsonConfigurationFactory")
+@Order(6)
 public class JsonConfigurationFactory extends ConfigurationFactory {
 
     /**
@@ -29,42 +34,13 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
      */
     private static final String[] SUFFIXES = new String[] {".json", ".jsn"};
 
-    private static final String[] dependencies = new String[] {
-        "com.fasterxml.jackson.databind.ObjectMapper",
-        "com.fasterxml.jackson.databind.JsonNode",
-        "com.fasterxml.jackson.core.JsonParser"
-    };
-
-    private final boolean isActive;
-
-    public JsonConfigurationFactory() {
-        for (final String dependency : dependencies) {
-            if (!Loader.isClassAvailable(dependency)) {
-                LOGGER.debug(
-                        "Missing dependencies for Json support, ConfigurationFactory {} is inactive",
-                        getClass().getName());
-                isActive = false;
-                return;
-            }
-        }
-        isActive = true;
-    }
-
     @Override
-    protected boolean isActive() {
-        return isActive;
+    protected String[] getSupportedTypes() {
+        return SUFFIXES;
     }
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        if (!isActive) {
-            return null;
-        }
         return new JsonConfiguration(loggerContext, source);
-    }
-
-    @Override
-    public String[] getSupportedTypes() {
-        return SUFFIXES;
     }
 }

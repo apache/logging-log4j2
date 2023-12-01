@@ -16,16 +16,13 @@
  */
 package org.apache.logging.log4j.core.config.json;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -35,37 +32,32 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.model.PluginType;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.JsonReader;
 
-/**
- * Creates a Node hierarchy from a JSON file.
- */
 public class JsonConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private final List<Status> status = new ArrayList<>();
-    private JsonNode root;
+    private final List<Status> statuses = new ArrayList<>();
+    private Map<String, Object> root;
 
-    public JsonConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
-        super(loggerContext, configSource);
-        final byte[] buffer;
+    public JsonConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
+        super(loggerContext, configurationSource);
         try {
-            try (final InputStream configStream = configSource.getInputStream()) {
-                buffer = configStream.readAllBytes();
+            final byte[] bytes;
+            try (final var configStream = configurationSource.getInputStream()) {
+                bytes = configStream.readAllBytes();
+                root = Cast.cast(JsonReader.read(new String(bytes, StandardCharsets.UTF_8)));
             }
-            final InputStream is = new ByteArrayInputStream(buffer);
-            root = getObjectMapper().readTree(is);
             if (root.size() == 1) {
-                for (final JsonNode node : root) {
-                    root = node;
+                for (final Object value : root.values()) {
+                    root = Cast.cast(value);
                 }
             }
             processAttributes(rootNode, root);
             final StatusConfiguration statusConfig = new StatusConfiguration().setStatus(getDefaultStatus());
-            int monitorIntervalSeconds = 0;
-            for (final Map.Entry<String, String> entry :
-                    rootNode.getAttributes().entrySet()) {
-                final String key = entry.getKey();
-                final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
-                // TODO: this duplicates a lot of the XmlConfiguration constructor
+            final AtomicInteger monitorIntervalSeconds = new AtomicInteger();
+
+            rootNode.getAttributes().forEach((key, value) -> {
                 if ("status".equalsIgnoreCase(key)) {
                     statusConfig.setStatus(value);
                 } else if ("dest".equalsIgnoreCase(key)) {
@@ -74,126 +66,98 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
                 } else if ("shutdownTimeout".equalsIgnoreCase(key)) {
                     shutdownTimeoutMillis = Long.parseLong(value);
-                } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
+                } else if ("verbose".equalsIgnoreCase(key)) {
                     statusConfig.setVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
                     LOGGER.warn("The packages attribute is no longer supported");
                 } else if ("name".equalsIgnoreCase(key)) {
                     setName(value);
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
-                    monitorIntervalSeconds = Integer.parseInt(value);
+                    monitorIntervalSeconds.setOpaque(Integer.parseInt(value));
                 } else if ("advertiser".equalsIgnoreCase(key)) {
-                    createAdvertiser(value, configSource, buffer, "application/json");
+                    createAdvertiser(value, configurationSource, bytes, "application/json");
                 }
-            }
-            initializeWatchers(this, configSource, monitorIntervalSeconds);
+            });
+            initializeWatchers(this, configurationSource, monitorIntervalSeconds.getOpaque());
             statusConfig.initialize();
             if (getName() == null) {
-                setName(configSource.getLocation());
+                setName(configurationSource.getLocation());
             }
-        } catch (final Exception ex) {
-            LOGGER.error("Error parsing " + configSource.getLocation(), ex);
+        } catch (final Exception e) {
+            LOGGER.error("Error parsing {}", configurationSource.getLocation(), e);
         }
-    }
-
-    protected ObjectMapper getObjectMapper() {
-        return new ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
     }
 
     @Override
     public void setup() {
-        final Iterator<Map.Entry<String, JsonNode>> iter = root.fields();
         final List<Node> children = rootNode.getChildren();
-        while (iter.hasNext()) {
-            final Map.Entry<String, JsonNode> entry = iter.next();
-            final JsonNode n = entry.getValue();
-            if (n.isObject()) {
-                LOGGER.debug("Processing node for object {}", entry.getKey());
-                children.add(constructNode(entry.getKey(), rootNode, n));
-            } else if (n.isArray()) {
-                LOGGER.error("Arrays are not supported at the root configuration.");
+        root.forEach((key, value) -> {
+            if (value instanceof Map) {
+                LOGGER.debug("Processing node for object {}", key);
+                children.add(constructNode(key, rootNode, Cast.cast(value)));
             }
-        }
+        });
         LOGGER.debug("Completed parsing configuration");
-        if (status.size() > 0) {
-            for (final Status s : status) {
+        if (statuses.size() > 0) {
+            for (final var s : statuses) {
                 LOGGER.error("Error processing element {}: {}", s.name, s.errorType);
             }
         }
     }
 
-    @Override
-    public Configuration reconfigure() {
-        try {
-            final ConfigurationSource source = getConfigurationSource().resetInputStream();
-            if (source == null) {
-                return null;
+    private Node constructNode(final String key, final Node parent, final Map<String, Object> value) {
+        final PluginType<?> pluginType = corePlugins.get(key);
+        final Node node = new Node(parent, key, pluginType);
+        processAttributes(node, value);
+        final int size = node.getChildren().size();
+        value.forEach((k, v) -> {
+            if (isValueType(v)) {
+                LOGGER.debug("Node {} is of type {}", k, v != null ? v.getClass() : null);
+                return;
             }
-            return new JsonConfiguration(getLoggerContext(), source);
-        } catch (final IOException ex) {
-            LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);
-        }
-        return null;
-    }
-
-    private Node constructNode(final String name, final Node parent, final JsonNode jsonNode) {
-        final PluginType<?> type = corePlugins.get(name);
-        final Node node = new Node(parent, name, type);
-        processAttributes(node, jsonNode);
-        final Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.fields();
-        final List<Node> children = node.getChildren();
-        while (iter.hasNext()) {
-            final Map.Entry<String, JsonNode> entry = iter.next();
-            final JsonNode n = entry.getValue();
-            if (n.isArray() || n.isObject()) {
-                if (type == null) {
-                    status.add(new Status(name, n, ErrorType.CLASS_NOT_FOUND));
-                }
-                if (n.isArray()) {
-                    LOGGER.debug("Processing node for array {}", entry.getKey());
-                    for (int i = 0; i < n.size(); ++i) {
-                        final String pluginType = getType(n.get(i), entry.getKey());
-                        final PluginType<?> entryType = corePlugins.get(pluginType);
-                        final Node item = new Node(node, entry.getKey(), entryType);
-                        processAttributes(item, n.get(i));
-                        if (pluginType.equals(entry.getKey())) {
-                            LOGGER.debug("Processing {}[{}]", entry.getKey(), i);
+            if (pluginType == null) {
+                statuses.add(new Status(v, k, ErrorType.CLASS_NOT_FOUND));
+                return;
+            }
+            if (v instanceof List<?>) {
+                LOGGER.debug("Processing node for array {}", k);
+                ((List<?>) v).forEach(object -> {
+                    if (object instanceof Map<?, ?>) {
+                        final Map<String, Object> map = Cast.cast(object);
+                        final String type = getType(map).orElse(k);
+                        final PluginType<?> entryType = corePlugins.get(type);
+                        final Node child = new Node(node, k, entryType);
+                        processAttributes(child, map);
+                        if (type.equalsIgnoreCase(k)) {
+                            LOGGER.debug("Processing {}[{}]", k, size);
                         } else {
-                            LOGGER.debug("Processing {} {}[{}]", pluginType, entry.getKey(), i);
+                            LOGGER.debug("Processing {} {}[{}]", type, k, size);
                         }
-                        final Iterator<Map.Entry<String, JsonNode>> itemIter =
-                                n.get(i).fields();
-                        final List<Node> itemChildren = item.getChildren();
-                        while (itemIter.hasNext()) {
-                            final Map.Entry<String, JsonNode> itemEntry = itemIter.next();
-                            if (itemEntry.getValue().isObject()) {
-                                LOGGER.debug("Processing node for object {}", itemEntry.getKey());
-                                itemChildren.add(constructNode(itemEntry.getKey(), item, itemEntry.getValue()));
-                            } else if (itemEntry.getValue().isArray()) {
-                                final JsonNode array = itemEntry.getValue();
-                                final String entryName = itemEntry.getKey();
-                                LOGGER.debug("Processing array for object {}", entryName);
-                                for (int j = 0; j < array.size(); ++j) {
-                                    itemChildren.add(constructNode(entryName, item, array.get(j)));
-                                }
+                        map.forEach((itemKey, itemValue) -> {
+                            if (itemValue instanceof Map<?, ?>) {
+                                LOGGER.debug("Processing node for object {}", itemKey);
+                                child.addChild(constructNode(itemKey, child, Cast.cast(itemValue)));
+                            } else if (itemValue instanceof List<?>) {
+                                final List<?> list = (List<?>) itemValue;
+                                LOGGER.debug("Processing array for object {}", itemKey);
+                                list.forEach(
+                                        subValue -> child.addChild(constructNode(itemKey, child, Cast.cast(subValue))));
                             }
-                        }
-                        children.add(item);
+                        });
+                        node.addChild(child);
                     }
-                } else {
-                    LOGGER.debug("Processing node for object {}", entry.getKey());
-                    children.add(constructNode(entry.getKey(), node, n));
-                }
+                });
             } else {
-                LOGGER.debug("Node {} is of type {}", entry.getKey(), n.getNodeType());
+                LOGGER.debug("Processing node for object {}", k);
+                node.addChild(constructNode(k, node, Cast.cast(v)));
             }
-        }
+        });
 
         final String t;
-        if (type == null) {
+        if (pluginType == null) {
             t = "null";
         } else {
-            t = type.getElementType() + ':' + type.getPluginClass();
+            t = pluginType.getElementType() + ':' + pluginType.getPluginClass();
         }
 
         final String p = node.getParent() == null
@@ -205,37 +169,44 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         return node;
     }
 
-    private String getType(final JsonNode node, final String name) {
-        final Iterator<Map.Entry<String, JsonNode>> iter = node.fields();
-        while (iter.hasNext()) {
-            final Map.Entry<String, JsonNode> entry = iter.next();
-            if (entry.getKey().equalsIgnoreCase("type")) {
-                final JsonNode n = entry.getValue();
-                if (n.isValueNode()) {
-                    return n.asText();
-                }
-            }
-        }
-        return name;
-    }
-
-    private void processAttributes(final Node parent, final JsonNode node) {
-        final Map<String, String> attrs = parent.getAttributes();
-        final Iterator<Map.Entry<String, JsonNode>> iter = node.fields();
-        while (iter.hasNext()) {
-            final Map.Entry<String, JsonNode> entry = iter.next();
-            if (!entry.getKey().equalsIgnoreCase("type")) {
-                final JsonNode n = entry.getValue();
-                if (n.isValueNode()) {
-                    attrs.put(entry.getKey(), n.asText());
-                }
-            }
-        }
-    }
-
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + "]";
+    public Configuration reconfigure() {
+        try {
+            final ConfigurationSource configurationSource =
+                    getConfigurationSource().resetInputStream();
+            if (configurationSource == null) {
+                return null;
+            }
+            return new JsonConfiguration(getLoggerContext(), configurationSource);
+        } catch (final IOException e) {
+            LOGGER.error("Cannot locate file {}", getConfigurationSource(), e);
+        }
+        return null;
+    }
+
+    private static boolean isValueType(final Object value) {
+        return !(value instanceof Map<?, ?> || value instanceof List<?>);
+    }
+
+    private static void processAttributes(final Node parent, final Map<String, Object> node) {
+        final Map<String, String> attributes = parent.getAttributes();
+        node.forEach((key, value) -> {
+            if (!key.equalsIgnoreCase("type") && isValueType(value)) {
+                attributes.put(key, String.valueOf(value));
+            }
+        });
+    }
+
+    private static Optional<String> getType(final Map<String, Object> node) {
+        for (final Map.Entry<String, Object> entry : node.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase("type")) {
+                final Object value = entry.getValue();
+                if (isValueType(value)) {
+                    return Optional.of(String.valueOf(value));
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     /**
@@ -248,20 +219,20 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
     /**
      * Status for recording errors.
      */
-    private static class Status {
-        private final JsonNode node;
+    private static final class Status {
+        private final Object node;
         private final String name;
         private final ErrorType errorType;
 
-        public Status(final String name, final JsonNode node, final ErrorType errorType) {
-            this.name = name;
+        private Status(final Object node, final String name, final ErrorType errorType) {
             this.node = node;
+            this.name = name;
             this.errorType = errorType;
         }
 
         @Override
         public String toString() {
-            return "Status [name=" + name + ", errorType=" + errorType + ", node=" + node + "]";
+            return "Status{" + "node=" + node + ", name='" + name + '\'' + ", errorType=" + errorType + '}';
         }
     }
 }
