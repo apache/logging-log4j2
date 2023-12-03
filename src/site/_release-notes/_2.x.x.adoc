@@ -28,6 +28,7 @@ This releases contains ...
 
 * Bumped the minimum Java version required for the build to Java 17. Runtime requirements remain unchanged. (https://github.com/apache/logging-log4j2/issues/2021[2021])
 * Update `ch.qos.logback:logback-classic` to version `1.3.13` (https://github.com/apache/logging-log4j2/pull/2017[2017])
+* Update `com.github.luben:zstd-jni` to version `1.5.5-11` (https://github.com/apache/logging-log4j2/pull/2030[2030])
 * Update `de.flapdoodle.reverse:de.flapdoodle.reverse` to version `1.7.2` (https://github.com/apache/logging-log4j2/pull/1979[1979])
 * Update `github/codeql-action` to version `2.22.8` (https://github.com/apache/logging-log4j2/pull/2005[2005])
 * Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1984[1984])
