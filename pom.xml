@@ -519,26 +519,6 @@
 
     <plugins>
 
-      <!-- `cyclonedx-maven-plugin` doesn't exclude not installed/deployed modules: https://github.com/CycloneDX/cyclonedx-maven-plugin/issues/409
-           This `generate-sbom` execution override configures such exclusions. -->
-      <plugin>
-        <groupId>org.cyclonedx</groupId>
-        <artifactId>cyclonedx-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-sbom</id>
-            <configuration combine.self="append">
-              <excludeArtifactId>log4j-api-java9</excludeArtifactId>
-              <excludeArtifactId>log4j-core-its</excludeArtifactId>
-              <excludeArtifactId>log4j-core-java9</excludeArtifactId>
-              <excludeArtifactId>log4j-layout-template-json-test</excludeArtifactId>
-              <excludeArtifactId>log4j-osgi-test</excludeArtifactId>
-              <excludeArtifactId>log4j-perf-test</excludeArtifactId>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Enable BOM flattening -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
