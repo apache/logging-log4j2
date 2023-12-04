@@ -89,6 +89,9 @@ updates:
     # Slf4j Extensions contain a breaking change in 1.7.26
     - dependency-name: "org.slf4j:slf4j-ext"
       versions: ["1.7.26,)"]
+    # Plexus Utils 4.x are for Maven 4.x
+    - dependency-name: "org.codehaus.plexus:plexus-utils"
+      versions: ["4,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
@@ -144,6 +147,9 @@ updates:
     # Slf4j Extensions contain a breaking change in 1.7.26
     - dependency-name: "org.slf4j:slf4j-ext"
       versions: ["1.7.26,)"]
+    # Plexus Utils 4.x are for Maven 4.x
+    - dependency-name: "org.codehaus.plexus:plexus-utils"
+      versions: ["4,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
