@@ -25,6 +25,7 @@ registries:
 updates:
 - package-ecosystem: maven
   directory: "/"
+  open-pull-requests-limit: 10
   schedule:
     interval: "daily"
   target-branch: "2.x"
@@ -101,6 +102,7 @@ updates:
 
 - package-ecosystem: maven
   directory: "/"
+  open-pull-requests-limit: 10
   schedule:
     interval: "daily"
   target-branch: "main"
