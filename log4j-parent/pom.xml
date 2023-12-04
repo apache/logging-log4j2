@@ -70,7 +70,7 @@
     <bsh.version>2.0b6</bsh.version>
     <cassandra.version>3.11.16</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
-    <commons-codec.version>1.15</commons-codec.version>
+    <commons-codec.version>1.16.0</commons-codec.version>
     <commons-compress.version>1.24.0</commons-compress.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
