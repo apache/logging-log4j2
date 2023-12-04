@@ -40,6 +40,7 @@ This releases contains ...
 * Update `org.apache.commons:commons-lang3` to version `3.14.0` (https://github.com/apache/logging-log4j2/pull/2047[2047])
 * Update `org.apache.commons:commons-pool2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2057[2057])
 * Update `org.apache.kafka:kafka-clients` to version `3.6.0` (https://github.com/apache/logging-log4j2/pull/2060[2060])
+* Update `org.codehaus.plexus:plexus-utils` to version `3.5.1` (https://github.com/apache/logging-log4j2/pull/2056[2056])
 * Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1984[1984])
 * Update `org.springframework.boot:spring-boot` to version `2.7.18` (https://github.com/apache/logging-log4j2/pull/1998[1998])
 

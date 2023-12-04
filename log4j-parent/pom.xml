@@ -138,7 +138,7 @@
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports: -->
     <osgi.api.version>6.0.0</osgi.api.version>
     <pax-exam.version>4.13.5</pax-exam.version>
-    <plexus-utils.version>3.5.0</plexus-utils.version>
+    <plexus-utils.version>3.5.1</plexus-utils.version>
     <slf4j.version>2.0.9</slf4j.version>
     <!-- Last version before a breaking change -->
     <slf4j-ext.version>1.7.25</slf4j-ext.version>
