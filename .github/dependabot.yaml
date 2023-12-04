@@ -15,16 +15,21 @@
 # limitations under the License.
 #
 version: 2
+# Add Maven Central explicitly to work around:
+#   https://github.com/dependabot/dependabot-core/issues/8329
+registries:
+  maven-central:
+    type: maven-repository
+    url: https://repo.maven.apache.org/maven2
+
 updates:
 - package-ecosystem: maven
   directory: "/"
   schedule:
     interval: "daily"
   target-branch: "2.x"
-  allow:
-    # Restrict to Production dependencies to workaround:
-    #   https://github.com/dependabot/dependabot-core/issues/8329
-    - dependency-type: "production"
+  registries:
+    - maven-central
   ignore:
     # Jetty 10.x does not have an internal logging API
     - dependency-name: "org.eclipse.jetty:*"
@@ -96,10 +101,8 @@ updates:
   schedule:
     interval: "daily"
   target-branch: "main"
-  allow:
-    # Restrict to Production dependencies to workaround:
-    #   https://github.com/dependabot/dependabot-core/issues/8329
-    - dependency-type: "production"
+  registries:
+    - maven-central
   ignore:
     # Jetty 10.x does not have an internal logging API
     - dependency-name: "org.eclipse.jetty:*"
