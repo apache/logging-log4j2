@@ -74,7 +74,7 @@
     <commons-compress.version>1.24.0</commons-compress.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
-    <commons-io.version>2.11.0</commons-io.version>
+    <commons-io.version>2.15.1</commons-io.version>
     <commons-lang3.version>3.13.0</commons-lang3.version>
     <commons-logging.version>1.2</commons-logging.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
