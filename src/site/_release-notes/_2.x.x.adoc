@@ -34,6 +34,7 @@ This releases contains ...
 * Update `de.flapdoodle.reverse:de.flapdoodle.reverse` to version `1.7.2` (https://github.com/apache/logging-log4j2/pull/1979[1979])
 * Update `github/codeql-action` to version `2.22.8` (https://github.com/apache/logging-log4j2/pull/2005[2005])
 * Update `org.apache.activemq:activemq-broker` to version `6.0.1` (https://github.com/apache/logging-log4j2/pull/2043[2043])
+* Update `org.apache.commons:commons-lang3` to version `3.14.0` (https://github.com/apache/logging-log4j2/pull/2047[2047])
 * Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1984[1984])
 * Update `org.springframework.boot:spring-boot` to version `2.7.18` (https://github.com/apache/logging-log4j2/pull/1998[1998])
 
