@@ -62,7 +62,7 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>5.17.4</activemq.version>
+    <activemq.version>6.0.1</activemq.version>
     <angus-activation.version>2.0.1</angus-activation.version>
     <angus-mail.version>2.0.2</angus-mail.version>
     <assertj.version>3.24.2</assertj.version>
