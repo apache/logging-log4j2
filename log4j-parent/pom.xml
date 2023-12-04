@@ -57,7 +57,7 @@
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
-    <surefire.version>3.1.2</surefire.version>
+    <surefire.version>3.2.2</surefire.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
