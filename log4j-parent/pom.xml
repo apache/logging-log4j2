@@ -127,7 +127,7 @@
     <log4j2-cachefile-transformer.version>2.15.0</log4j2-cachefile-transformer.version>
     <log4j2-ecs-layout.version>1.5.0</log4j2-ecs-layout.version>
     <logback.version>1.3.14</logback.version>
-    <maven.version>3.9.0</maven.version>
+    <maven.version>3.9.6</maven.version>
     <mockito.version>4.11.0</mockito.version>
     <mongodb.version>4.11.1</mongodb.version>
     <nashorn.version>15.4</nashorn.version>
