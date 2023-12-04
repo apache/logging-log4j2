@@ -21,6 +21,10 @@ updates:
   schedule:
     interval: "daily"
   target-branch: "2.x"
+  allow:
+    # Restrict to Production dependencies to workaround:
+    #   https://github.com/dependabot/dependabot-core/issues/8329
+    dependency-type: "production"
   ignore:
     # Jetty 10.x does not have an internal logging API
     - dependency-name: "org.eclipse.jetty:*"
@@ -92,6 +96,10 @@ updates:
   schedule:
     interval: "daily"
   target-branch: "main"
+  allow:
+    # Restrict to Production dependencies to workaround:
+    #   https://github.com/dependabot/dependabot-core/issues/8329
+    dependency-type: "production"
   ignore:
     # Jetty 10.x does not have an internal logging API
     - dependency-name: "org.eclipse.jetty:*"
