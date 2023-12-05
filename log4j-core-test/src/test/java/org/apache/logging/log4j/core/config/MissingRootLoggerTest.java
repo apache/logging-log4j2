@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
@@ -48,7 +49,7 @@ public class MissingRootLoggerTest {
         assertNotNull(map, "Appenders not null");
         assertThat("There should only be two appenders", map, hasSize(2));
         assertThat(map, hasKey("List"));
-        assertThat(map, hasKey("DefaultConsole-2"));
+        assertThat(map, hasKey(startsWith("DefaultConsole-")));
 
         final Map<String, LoggerConfig> loggerMap = config.getLoggers();
         assertNotNull(loggerMap, "loggerMap not null");
@@ -67,7 +68,8 @@ public class MissingRootLoggerTest {
         final Map<String, Appender> rootAppenders = root.getAppenders();
         assertThat("The root logger should only have one appender", rootAppenders, hasSize(1));
         // root only has Console appender!
-        assertThat("The root appender should be a ConsoleAppender", rootAppenders, hasKey("DefaultConsole-2"));
+        assertThat(
+                "The root appender should be a ConsoleAppender", rootAppenders, hasKey(startsWith("DefaultConsole-")));
         assertEquals(Level.ERROR, root.getLevel());
     }
 }

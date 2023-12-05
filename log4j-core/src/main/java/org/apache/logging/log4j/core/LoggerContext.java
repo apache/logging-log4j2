@@ -100,6 +100,15 @@ public class LoggerContext extends AbstractLifeCycle
     private final Lock configLock = new ReentrantLock();
 
     /**
+     * Constructor used to create an InternalLoggerContext.
+     */
+    protected LoggerContext() {
+        setStarted();
+        instanceFactory = null;
+        this.nullConfiguration = null;
+    }
+
+    /**
      * Constructor taking only a name.
      *
      * @param name The context name.
@@ -428,6 +437,7 @@ public class LoggerContext extends AbstractLifeCycle
             }
 
             this.setStopping();
+            String name = getName();
             try {
                 Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
             } catch (final LinkageError | Exception e) {

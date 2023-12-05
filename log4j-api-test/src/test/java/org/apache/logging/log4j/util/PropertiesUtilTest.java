@@ -140,6 +140,23 @@ public class PropertiesUtilTest {
         assertEquals("Log4j", value);
     }
 
+    @Test
+    @ResourceLock(Resources.SYSTEM_PROPERTIES)
+    public void testBadPropertysource() {
+        final String key1 = "testKey";
+        System.getProperties().put(key1, "test");
+        final PropertiesUtil util = new PropertiesUtil(new Properties());
+        ErrorPropertySource source = new ErrorPropertySource();
+        util.addPropertySource(source);
+        try {
+            assertEquals("test", util.getStringProperty(key1));
+            assertTrue(source.exceptionThrown);
+        } finally {
+            util.removePropertySource(source);
+            System.getProperties().remove(key1);
+        }
+    }
+
     private static final String[][] data = {
         {null, "org.apache.logging.log4j.level"},
         {null, "Log4jAnotherProperty"},
@@ -183,5 +200,26 @@ public class PropertiesUtilTest {
         props.setProperty(correct, correct);
         final PropertiesUtil util = new PropertiesUtil(props);
         assertNull(util.getStringProperty(correct));
+    }
+
+    private class ErrorPropertySource implements PropertySource {
+        public boolean exceptionThrown = false;
+
+        @Override
+        public int getPriority() {
+            return Integer.MIN_VALUE;
+        }
+
+        @Override
+        public String getProperty(String key) {
+            exceptionThrown = true;
+            throw new InstantiationError("Test");
+        }
+
+        @Override
+        public boolean containsProperty(String key) {
+            exceptionThrown = true;
+            throw new InstantiationError("Test");
+        }
     }
 }
