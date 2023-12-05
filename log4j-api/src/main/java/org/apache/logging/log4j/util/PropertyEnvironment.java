@@ -29,6 +29,12 @@ public interface PropertyEnvironment {
     void addPropertySource(PropertySource propertySource);
 
     /**
+     * Allows a PropertySource that was added to be removed.
+     * @param propertySource the PropertySource to remove.
+     */
+    void removePropertySource(PropertySource propertySource);
+
+    /**
      * Returns {@code true} if the specified property is defined, regardless of its value (it may not have a value).
      *
      * @param name the name of the property to verify

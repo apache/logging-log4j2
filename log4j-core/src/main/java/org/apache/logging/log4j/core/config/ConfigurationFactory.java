@@ -21,12 +21,15 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.PropertyKey;
 
 /**
@@ -116,6 +119,15 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     protected boolean isActive() {
         return true;
+    }
+
+    /**
+     * Required for Spring Boot.
+     * @param props PropertiesUtil.
+     * @return the AuthorizationProvider, if any.
+     */
+    public static AuthorizationProvider authorizationProvider(final PropertiesUtil props) {
+        return AuthorizationProvider.getAuthorizationProvider((PropertyEnvironment) props);
     }
 
     public abstract Configuration getConfiguration(final LoggerContext loggerContext, ConfigurationSource source);

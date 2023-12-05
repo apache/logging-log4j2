@@ -199,6 +199,13 @@ public class PropertiesUtil implements PropertyEnvironment {
         }
     }
 
+    @Override
+    public void removePropertySource(final PropertySource propertySource) {
+        if (environment != null) {
+            environment.removePropertySource(propertySource);
+        }
+    }
+
     /**
      * Returns {@code true} if the specified property is defined, regardless of its value (it may not have a value).
      *
@@ -683,6 +690,11 @@ public class PropertiesUtil implements PropertyEnvironment {
             sources.add(propertySource);
         }
 
+        @Override
+        public void removePropertySource(final PropertySource propertySource) {
+            sources.remove(propertySource);
+        }
+
         private void reload() {
             literal.clear();
             sources.forEach((s) -> {
@@ -700,14 +712,14 @@ public class PropertiesUtil implements PropertyEnvironment {
                     sources.forEach(source -> {
                         if (source instanceof ContextAwarePropertySource) {
                             final ContextAwarePropertySource src = Cast.cast(source);
-                            if (src.containsProperty(contextName, contextKey)) {
+                            if (sourceContainsProperty(src, contextName, contextKey)) {
                                 literal.putIfAbsent(key, src.getProperty(contextName, contextKey));
                             }
                         }
                     });
                 }
                 sources.forEach(source -> {
-                    if (source.containsProperty(contextKey)) {
+                    if (sourceContainsProperty(source, contextKey)) {
                         literal.putIfAbsent(key, source.getProperty(contextKey));
                     }
                 });
@@ -727,7 +739,7 @@ public class PropertiesUtil implements PropertyEnvironment {
                 while (source != null) {
                     if (source instanceof ContextAwarePropertySource) {
                         final ContextAwarePropertySource src = Cast.cast(source);
-                        result = src.getProperty(contextName, contextKey);
+                        result = sourceGetProperty(src, contextName, contextKey);
                     }
                     if (result != null) {
                         return result;
@@ -737,13 +749,29 @@ public class PropertiesUtil implements PropertyEnvironment {
             }
             PropertySource source = sources.first();
             while (source != null) {
-                result = source.getProperty(contextKey);
+                result = sourceGetProperty(source, contextKey);
                 if (result != null) {
                     return result;
                 }
                 source = sources.higher(source);
             }
             return result;
+        }
+
+        private String sourceGetProperty(ContextAwarePropertySource source, String contextName, String key) {
+            try {
+                return source.getProperty(contextName, key);
+            } catch (Throwable ex) {
+                return null;
+            }
+        }
+
+        private String sourceGetProperty(PropertySource source, String key) {
+            try {
+                return source.getProperty(key);
+            } catch (Throwable ex) {
+                return null;
+            }
         }
 
         @Override
@@ -758,7 +786,7 @@ public class PropertiesUtil implements PropertyEnvironment {
                 while (source != null) {
                     if (source instanceof ContextAwarePropertySource) {
                         final ContextAwarePropertySource src = Cast.cast(source);
-                        if (src.containsProperty(contextName, contextKey)) {
+                        if (sourceContainsProperty(src, contextName, contextKey)) {
                             return true;
                         }
                     }
@@ -769,9 +797,9 @@ public class PropertiesUtil implements PropertyEnvironment {
             while (source != null) {
                 if (source instanceof ContextAwarePropertySource) {
                     final ContextAwarePropertySource src = Cast.cast(source);
-                    if (src.containsProperty(contextName, contextKey)
+                    if (sourceContainsProperty(src, contextName, contextKey)
                             || (!contextName.equals(PropertySource.SYSTEM_CONTEXT)
-                                    && src.containsProperty(PropertySource.SYSTEM_CONTEXT, contextKey))) {
+                                    && sourceContainsProperty(src, PropertySource.SYSTEM_CONTEXT, contextKey))) {
                         return true;
                     }
                 } else {
@@ -782,6 +810,22 @@ public class PropertiesUtil implements PropertyEnvironment {
                 source = sources.higher(source);
             }
             return false;
+        }
+
+        private boolean sourceContainsProperty(ContextAwarePropertySource source, String contextName, String key) {
+            try {
+                return source.containsProperty(contextName, key);
+            } catch (Throwable ex) {
+                return false;
+            }
+        }
+
+        private boolean sourceContainsProperty(PropertySource source, String key) {
+            try {
+                return source.containsProperty(key);
+            } catch (Throwable ex) {
+                return false;
+            }
         }
 
         private String getContextKey(final String key) {

@@ -67,6 +67,17 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     /**
+     * This is used to construct an InternalLoggerContext, which makes SimpleLoggerContext conmpatible with core.
+     * @param context the InternalLoggerContext.
+     * @param name the Logger name.
+     */
+    protected Logger(final LoggerContext context, final String name) {
+        super(name);
+        this.context = context;
+        privateConfig = null;
+    }
+
+    /**
      * This method is only used for 1.x compatibility. Returns the parent of this Logger. If it doesn't already exist
      * return a temporary Logger.
      *
