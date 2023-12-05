@@ -92,6 +92,8 @@
 
   <build>
     <plugins>
+
+      <!-- Enable Log4j plugin processing -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -105,6 +107,18 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+
+      <!-- Illegal access is disabled by default in Java 16 due to JEP-396.
+           We are relaxing it for tests. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
+
 </project>

@@ -308,10 +308,13 @@
          Common properties
          ================= -->
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
-    <maven.compiler.release>11</maven.compiler.release>
-    <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
+    <!-- Target Java 17 -->
+    <minimalJavaBuildVersion>[17,18)</minimalJavaBuildVersion>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
     <!-- JDK version of the main Maven process (used in ASF parent POM) -->
-    <minimalJavaBuildVersion>[11,12)</minimalJavaBuildVersion>
+    <minimalJavaBuildVersion>[17,18)</minimalJavaBuildVersion>
     <module.name />
 
     <!-- `project.build.outputTimestamp` is required to be present for reproducible builds.

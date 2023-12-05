@@ -900,13 +900,19 @@ class JsonTemplateLayoutTest {
                                 "field", "severity",
                                 "severity", asMap("field", "code"))));
 
+        // `Level` can be extended at runtime and `LevelResolver` doesn't support this.
+        // JTL level-to-string caches might miss entries that user submits.
+        // Hence, we first fix a `Level` snapshot before the JTL compilation *and* checking against known levels.
+        // See #2063 for details.
+        final Level[] levels = Level.values();
+
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
-        for (final Level level : Level.values()) {
+        for (final Level level : levels) {
 
             // Create the log event.
             final SimpleMessage message = new SimpleMessage("Hello, World!");

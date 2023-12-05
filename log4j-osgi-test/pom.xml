@@ -196,9 +196,13 @@
             <pax.exam.logging>false</pax.exam.logging>
             <java.protocol.handler.pkgs>org.ops4j.pax.url</java.protocol.handler.pkgs>
           </systemPropertyVariables>
+          <!-- Illegal access is disabled by default in Java 16 due to JEP-396.
+               We are relaxing it for tests. -->
+          <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
         </configuration>
       </plugin>
 
     </plugins>
   </build>
+
 </project>

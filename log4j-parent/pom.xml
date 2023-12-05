@@ -44,12 +44,6 @@
     <!-- =================
          Common properties
          ================= -->
-    <maven.compiler.release>11</maven.compiler.release>
-    <maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
-    <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
-
-    <!-- JDK version of the main Maven process (used in ASF parent POM) -->
-    <minimalJavaBuildVersion>[11,12)</minimalJavaBuildVersion>
     <!-- TODO: fix errors and reenable SpotBugs -->
     <spotbugs.skip>true</spotbugs.skip>
     <!-- TODO: re-enable BND Baseline -->

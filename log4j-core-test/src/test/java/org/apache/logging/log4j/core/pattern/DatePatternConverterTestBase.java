@@ -16,13 +16,11 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 import org.apache.logging.log4j.core.AbstractLogEvent;
@@ -33,14 +31,11 @@ import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedTimeZoneFormat;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
 
-@RunWith(Parameterized.class)
-public class DatePatternConverterTest {
+abstract class DatePatternConverterTestBase {
 
-    private static class MyLogEvent extends AbstractLogEvent {
+    private static final class MyLogEvent extends AbstractLogEvent {
 
         @Override
         public Instant getInstant() {
@@ -82,13 +77,10 @@ public class DatePatternConverterTest {
 
     private static final String[] ISO8601_FORMAT_OPTIONS = {ISO8601};
 
-    @Parameterized.Parameters(name = "threadLocalEnabled={0}")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {{Boolean.TRUE}, {Boolean.FALSE}});
-    }
+    private final boolean threadLocalsEnabled;
 
-    public DatePatternConverterTest(final Boolean threadLocalEnabled) {
-        Constants.setThreadLocalsEnabled(threadLocalEnabled);
+    DatePatternConverterTestBase(final boolean threadLocalsEnabled) {
+        this.threadLocalsEnabled = threadLocalsEnabled;
     }
 
     private static Date date(final int year, final int month, final int date) {
@@ -104,6 +96,11 @@ public class DatePatternConverterTest {
         final String seconds = pattern.substring(0, foundIndex);
         final String remainder = pattern.substring(foundIndex + search.length());
         return seconds + "nnnnnnnnn".substring(0, precision) + remainder;
+    }
+
+    @Test
+    void testThreadLocalsConstant() {
+        assertEquals(threadLocalsEnabled, Constants.isThreadLocalsEnabled());
     }
 
     @Test
@@ -390,9 +387,9 @@ public class DatePatternConverterTest {
             final String expected = milliBuilder.append(tz).toString();
 
             assertEquals(
-                    "format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern,
                     expected,
-                    preciseBuilder.toString());
+                    preciseBuilder.toString(),
+                    "format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern);
             // System.out.println(preciseOptions[0] + ": " + precise);
         }
     }
@@ -416,7 +413,7 @@ public class DatePatternConverterTest {
                     if (pattern.endsWith("n")
                             || pattern.matches(".+n+X*")
                             || pattern.matches(".+n+Z*")
-                            || pattern.indexOf("SSS") < 0) {
+                            || !pattern.contains("SSS")) {
                         // ignore patterns that already have precise time formats
                         // ignore patterns that do not use seconds.
                         continue;
@@ -438,15 +435,13 @@ public class DatePatternConverterTest {
                                     milliBuilder.length() - timeZoneFormat.getLength(), milliBuilder.length())
                             : Strings.EMPTY;
                     milliBuilder.setLength(milliBuilder.length() - truncateLen); // truncate millis
-                    final String expected = milliBuilder
-                            .append("987123456".substring(0, i))
-                            .append(tz)
-                            .toString();
+                    final String expected =
+                            milliBuilder.append("987123456", 0, i).append(tz).toString();
 
                     assertEquals(
-                            "format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern,
                             expected,
-                            preciseBuilder.toString());
+                            preciseBuilder.toString(),
+                            "format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern);
                     // System.out.println(preciseOptions[0] + ": " + precise);
                 }
             }

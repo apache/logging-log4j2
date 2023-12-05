@@ -32,7 +32,7 @@ jobs:
   analyze:
     uses: apache/logging-parent/.github/workflows/codeql-analysis-reusable.yaml@main
     with:
-      java-version: 11
+      java-version: 17
     # Permissions required to publish Security Alerts
     permissions:
       actions: read

@@ -276,6 +276,13 @@
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- JEP-335 has deprecated the built-in JavaScript engine (Nashorn) in Java 11, and JEP-372 removed it in Java 15.
+         We are adding it back for tests that use JavaScript. -->
+    <dependency>
+      <groupId>org.openjdk.nashorn</groupId>
+      <artifactId>nashorn-core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- SLF4J tests -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -313,6 +320,7 @@
   <build>
     <plugins>
 
+      <!-- Enable Log4j plugin processing -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -350,14 +358,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>
-            <!--
-              ~ Allow environment modification:
-              ~   https://junit-pioneer.org/docs/environment-variables/#warnings-for-reflective-access
-            -->
-            --add-opens java.base/java.util=ALL-UNNAMED
-            --add-opens java.base/java.lang=ALL-UNNAMED
-          </argLine>
+          <!-- Illegal access is disabled by default in Java 16 due to JEP-396.
+               We are relaxing it for tests. -->
+          <argLine>--add-opens java.base/java.lang=ALL-UNNAMED
+            --add-opens java.base/java.net=ALL-UNNAMED
+            --add-opens java.base/java.util=ALL-UNNAMED</argLine>
           <runOrder>random</runOrder>
           <systemPropertyVariables>
             <Web.isWebApp>false</Web.isWebApp>
