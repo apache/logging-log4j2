@@ -18,11 +18,15 @@ package org.apache.logging.log4j.jndi.test.junit;
 
 import java.util.Collections;
 import java.util.Map;
+import javax.naming.CompositeName;
 import javax.naming.Context;
+import javax.naming.Name;
+import javax.naming.NamingException;
+import javax.naming.spi.InitialContextFactory;
+import javax.naming.spi.NamingManager;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 /**
  * JUnit rule to create a mock {@link Context} and bind an object to a name.
@@ -33,8 +37,16 @@ public class JndiRule implements TestRule {
 
     private final Map<String, Object> initialBindings;
 
+    static {
+        try {
+            NamingManager.setInitialContextFactoryBuilder(JndiFactoryBuilder.INSTANCE);
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public JndiRule(final String name, final Object value) {
-        this.initialBindings = Collections.singletonMap(name, value);
+        this(Collections.singletonMap(name, value));
     }
 
     public JndiRule(final Map<String, Object> initialBindings) {
@@ -45,13 +57,53 @@ public class JndiRule implements TestRule {
     public Statement apply(final Statement base, final Description description) {
         return new Statement() {
             @Override
+            @SuppressWarnings("BanJNDI")
             public void evaluate() throws Throwable {
-                final SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
-                for (final Map.Entry<String, Object> entry : initialBindings.entrySet()) {
-                    builder.bind(entry.getKey(), entry.getValue());
+                final InitialContextFactory factory = JndiFactoryBuilder.INSTANCE.createInitialContextFactory(null);
+                final Context context = factory.getInitialContext(null);
+                final Name javaComp = new CompositeName("java:comp/env");
+
+                try {
+                    createSubcontexts(context, javaComp);
+                    for (final Map.Entry<String, Object> entry : initialBindings.entrySet()) {
+                        recursiveBind(context, entry.getKey(), entry.getValue());
+                    }
+                    base.evaluate();
+                } finally {
+                    context.unbind(javaComp);
                 }
-                base.evaluate();
             }
         };
+    }
+
+    @SuppressWarnings("BanJNDI")
+    private static Context createSubcontexts(final Context initialContext, final Name name) throws NamingException {
+        Context currentContext = initialContext;
+        for (int i = 0; i < name.size(); i++) {
+            try {
+                currentContext = currentContext.createSubcontext(name.get(i));
+            } catch (NamingException e) {
+                // Silent catch. Probably an object is already bound in the context.
+                currentContext = (javax.naming.Context) currentContext.lookup(name.get(i));
+            }
+        }
+        return currentContext;
+    }
+
+    /**
+     * Binds to object to the JNDI context and creates subcontexts if necessary.
+     * @param initialContext initial JNDI context.
+     * @param key full name of the entry to add.
+     * @param value object to bind
+     * @throws NamingException if an object is already bound to that name
+     * @see Context#bind(String, Object)
+     */
+    @SuppressWarnings("BanJNDI")
+    public static void recursiveBind(final Context initialContext, final String key, final Object value)
+            throws NamingException {
+        final Name name = new CompositeName(key);
+        final int lastIdx = name.size() - 1;
+        final Context subcontext = createSubcontexts(initialContext, name.getPrefix(lastIdx));
+        subcontext.bind(name.get(lastIdx), value);
     }
 }

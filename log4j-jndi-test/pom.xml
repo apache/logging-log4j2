@@ -53,10 +53,9 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    <!-- `org.springframework:spring-test` is required for `org.springframework.mock.jndi.SimpleNamingContextBuilder`: -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-catalina</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

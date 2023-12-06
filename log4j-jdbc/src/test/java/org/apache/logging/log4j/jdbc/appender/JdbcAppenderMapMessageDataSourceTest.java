@@ -70,10 +70,10 @@ public class JdbcAppenderMapMessageDataSourceTest {
     protected JdbcAppenderMapMessageDataSourceTest(final JdbcRule jdbcRule) {
         // @formatter:off
         this.rules = RuleChain.emptyRuleChain()
-                .around(new JndiRule("java:/comp/env/jdbc/TestDataSourceAppender", createMockDataSource()))
+                .around(new JndiRule("java:comp/env/jdbc/TestDataSourceAppender", createMockDataSource()))
                 .around(jdbcRule)
                 .around(new LoggerContextRule(
-                        "org/apache/logging/log4j/jdbc/appender/log4j2-data-source-map-message.xml"));
+                        "org/apache/logging/log4j/jdbc/appender/JdbcAppenderMapMessageDataSourceTest.xml"));
         // @formatter:on
         this.jdbcRule = jdbcRule;
     }

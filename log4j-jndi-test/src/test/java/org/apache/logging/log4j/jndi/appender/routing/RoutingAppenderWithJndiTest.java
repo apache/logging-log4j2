@@ -78,7 +78,7 @@ public class RoutingAppenderWithJndiTest {
 
         // now set jndi resource to Application1
         final Context context = new InitialContext();
-        context.bind(JNDI_CONTEXT_NAME, "Application1");
+        JndiRule.recursiveBind(context, JNDI_CONTEXT_NAME, "Application1");
 
         msg = new StructuredDataMessage("Test", "This is a message from Application1", "Context");
         EventLogger.logEvent(msg);

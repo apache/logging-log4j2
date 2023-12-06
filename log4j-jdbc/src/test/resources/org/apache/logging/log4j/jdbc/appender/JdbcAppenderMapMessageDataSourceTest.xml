@@ -22,7 +22,7 @@
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
     <Jdbc name="databaseAppender" tableName="dsLogEntry" ignoreExceptions="false">
-      <DataSource jndiName="java:/comp/env/jdbc/TestDataSourceAppender" />
+      <DataSource jndiName="java:comp/env/jdbc/TestDataSourceAppender" />
       <ColumnMapping name="Id" />
       <ColumnMapping name="ColumnA" />
       <ColumnMapping name="ColumnB" />

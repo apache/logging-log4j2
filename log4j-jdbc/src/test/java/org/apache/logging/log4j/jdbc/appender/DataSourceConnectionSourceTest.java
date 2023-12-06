@@ -40,7 +40,7 @@ public class DataSourceConnectionSourceTest {
     @Parameterized.Parameters(name = "{0}")
     public static Object[][] data() {
         System.setProperty("log4j2.*.JNDI.enableJDBC", "true");
-        return new Object[][] {{"java:/comp/env/jdbc/Logging01"}, {"java:/comp/env/jdbc/Logging02"}};
+        return new Object[][] {{"java:comp/env/jdbc/Logging01"}, {"java:comp/env/jdbc/Logging02"}};
     }
 
     private static final String CONFIG = "log4j-fatalOnly.xml";

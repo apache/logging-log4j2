@@ -155,7 +155,7 @@
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.31</spring-framework.version>
     <system-stubs.version>2.1.5</system-stubs.version>
-    <tomcat-juli.version>10.1.16</tomcat-juli.version>
+    <tomcat.version>10.1.16</tomcat.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.1</wiremock.version>
     <woodstox.version>6.5.1</woodstox.version>
@@ -857,10 +857,18 @@
         <version>${system-stubs.version}</version>
       </dependency>
 
+      <!-- Used for its JNDI implementation -->
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-catalina</artifactId>
+        <version>${tomcat.version}</version>
+      </dependency>
+
+      <!-- Used in Log4j App Server -->
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-juli</artifactId>
-        <version>${tomcat-juli.version}</version>
+        <version>${tomcat.version}</version>
       </dependency>
 
       <dependency>
