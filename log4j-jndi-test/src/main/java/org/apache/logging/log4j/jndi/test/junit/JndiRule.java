@@ -118,7 +118,7 @@ public class JndiRule implements TestRule {
         });
     }
 
-    private void addBindings(Context context) throws NamingException {
+    private void addBindings(final Context context) throws NamingException {
         for (final Map.Entry<String, Object> entry : bindings.entrySet()) {
             final String name = entry.getKey();
             final Object object = entry.getValue();
