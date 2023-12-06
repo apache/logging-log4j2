@@ -29,13 +29,17 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class JndiUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    /**
+     * Manager name used for accessing the {@link JndiManager} instance.
+     */
+    public static final String JNDI_MANAGER_NAME = DataSourceConnectionSource.class.getCanonicalName();
+
     private JndiUtil() {}
 
     public static DataSource getDataSource(final String jndiName) {
         try {
-            final DataSource dataSource = JndiManager.getDefaultManager(
-                            DataSourceConnectionSource.class.getCanonicalName())
-                    .lookup(jndiName);
+            final DataSource dataSource =
+                    JndiManager.getDefaultManager(JNDI_MANAGER_NAME).lookup(jndiName);
             if (dataSource == null) {
                 LOGGER.error("No data source found with JNDI name [" + jndiName + "].");
                 return null;

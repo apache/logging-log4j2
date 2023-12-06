@@ -31,6 +31,7 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <module.name>org.apache.logging.log4j.jndi.test</module.name>
+    <simple-jndi.version>0.23.0</simple-jndi.version>
   </properties>
   <dependencies>
     <dependency>
@@ -53,10 +54,10 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    <!-- `org.springframework:spring-test` is required for `org.springframework.mock.jndi.SimpleNamingContextBuilder`: -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
+      <groupId>com.github.h-thurow</groupId>
+      <artifactId>simple-jndi</artifactId>
+      <version>${simple-jndi.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
