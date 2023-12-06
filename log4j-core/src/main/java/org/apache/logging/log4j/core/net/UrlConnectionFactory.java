@@ -56,6 +56,16 @@ public class UrlConnectionFactory {
     private static final String NO_PROTOCOLS = "_none";
     public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
 
+    @Deprecated(since = "3.0.0", forRemoval = true)
+    public static <T extends URLConnection> T createConnection(
+            final URL url,
+            final long lastModifiedMillis,
+            final SslConfiguration sslConfiguration,
+            final AuthorizationProvider authorizationProvider)
+            throws IOException {
+        return createConnection(url, lastModifiedMillis, sslConfiguration, authorizationProvider, PropertiesUtil.getProperties());
+    }
+
     @SuppressFBWarnings(
             value = "URLCONNECTION_SSRF_FD",
             justification = "The URL parameter originates only from secure sources.")
