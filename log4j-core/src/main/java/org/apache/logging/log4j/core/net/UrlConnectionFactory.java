@@ -63,7 +63,8 @@ public class UrlConnectionFactory {
             final SslConfiguration sslConfiguration,
             final AuthorizationProvider authorizationProvider)
             throws IOException {
-        return createConnection(url, lastModifiedMillis, sslConfiguration, authorizationProvider, PropertiesUtil.getProperties());
+        return createConnection(
+                url, lastModifiedMillis, sslConfiguration, authorizationProvider, PropertiesUtil.getProperties());
     }
 
     @SuppressFBWarnings(
