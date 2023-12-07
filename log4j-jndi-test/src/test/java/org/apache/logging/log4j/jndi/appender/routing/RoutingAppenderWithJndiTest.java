@@ -21,11 +21,11 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.Collections;
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.After;
@@ -77,7 +77,8 @@ public class RoutingAppenderWithJndiTest {
         assertTrue("The default log file was not created", defaultLogFile.exists());
 
         // now set jndi resource to Application1
-        final Context context = new InitialContext();
+        final Context context = JndiManager.getDefaultManager().getContext();
+        assertNotNull(context);
         context.bind(JNDI_CONTEXT_NAME, "Application1");
 
         msg = new StructuredDataMessage("Test", "This is a message from Application1", "Context");

@@ -121,6 +121,11 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return true;
     }
 
+    @Deprecated(since = "3.0.0", forRemoval = true)
+    public static ConfigurationFactory getInstance() {
+        return LoggerContext.getContext(false).getInstanceFactory().getInstance(KEY);
+    }
+
     /**
      * Required for Spring Boot.
      * @param props PropertiesUtil.

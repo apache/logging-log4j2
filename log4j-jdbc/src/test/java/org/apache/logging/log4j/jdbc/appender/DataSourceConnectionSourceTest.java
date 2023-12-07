@@ -27,6 +27,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.jdbc.appender.internal.JndiUtil;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,7 +53,8 @@ public class DataSourceConnectionSourceTest {
     private final String jndiURL;
 
     public DataSourceConnectionSourceTest(final String jndiURL) {
-        this.rules = RuleChain.outerRule(new JndiRule(jndiURL, dataSource)).around(new LoggerContextRule(CONFIG));
+        this.rules = RuleChain.outerRule(new JndiRule(JndiUtil.JNDI_MANAGER_NAME, jndiURL, dataSource))
+                .around(new LoggerContextRule(CONFIG));
         this.jndiURL = jndiURL;
     }
 

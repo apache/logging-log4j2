@@ -115,15 +115,6 @@ updates:
     # EclipseLink 3.x is Jakarta EE 9
     - dependency-name: "org.eclipse.persistence:*"
       update-types: ["version-update:semver-major"]
-    # Spring 6.x is Jakarta EE 9
-    - dependency-name: "org.springframework:*"
-      update-types: ["version-update:semver-major"]
-    # Spring Boot 3.x is Jakarta EE 9
-    - dependency-name: "org.springframework.boot:*"
-      update-types: ["version-update:semver-major"]
-    # Spring Cloud 2022.x is Jakarta EE 9
-    - dependency-name: "org.springframework.cloud:*"
-      update-types: ["version-update:semver-major"]
     # Keep Logback version 1.2.x
     - dependency-name: "ch.qos.logback:*"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]

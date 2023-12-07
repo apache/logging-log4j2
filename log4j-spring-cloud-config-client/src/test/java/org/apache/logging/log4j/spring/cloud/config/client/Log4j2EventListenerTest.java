@@ -27,7 +27,6 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.Watcher;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -41,8 +40,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * Class Description goes here.
  */
-@Ignore(
-        "Fails with `java.lang.NoClassDefFoundError: org/apache/logging/log4j/internal/LogManagerStatus` since `log4j-spring-boot` of `2.x` is injected due to Spring Boot 2 BOM import. Spring Boot must be updated from version 2 to 3. (#2018)")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SpringConfiguration.class})
 public class Log4j2EventListenerTest {
