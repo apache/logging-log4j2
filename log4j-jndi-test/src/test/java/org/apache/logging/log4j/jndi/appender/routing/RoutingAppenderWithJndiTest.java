@@ -20,12 +20,10 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.Collections;
-import javax.naming.Context;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.After;
@@ -77,9 +75,7 @@ public class RoutingAppenderWithJndiTest {
         assertTrue("The default log file was not created", defaultLogFile.exists());
 
         // now set jndi resource to Application1
-        final Context context = JndiManager.getDefaultManager().getContext();
-        assertNotNull(context);
-        context.bind(JNDI_CONTEXT_NAME, "Application1");
+        JndiRule.recursiveBind(JNDI_CONTEXT_NAME, "Application1");
 
         msg = new StructuredDataMessage("Test", "This is a message from Application1", "Context");
         EventLogger.logEvent(msg);
@@ -90,7 +86,7 @@ public class RoutingAppenderWithJndiTest {
                 listAppender1.getEvents().size() == 1);
 
         // now set jndi resource to Application2
-        context.rebind(JNDI_CONTEXT_NAME, "Application2");
+        JndiRule.rebind(JNDI_CONTEXT_NAME, "Application2");
 
         msg = new StructuredDataMessage("Test", "This is a message from Application2", "Context");
         EventLogger.logEvent(msg);
@@ -118,7 +114,7 @@ public class RoutingAppenderWithJndiTest {
 
         // now set jndi resource to Application3.
         // The context name, 'Application3', will be used as log file name by the default route.
-        context.rebind("java:comp/env/logging/context-name", "Application3");
+        JndiRule.rebind(JNDI_CONTEXT_NAME, "Application3");
         msg = new StructuredDataMessage("Test", "This is a message from Application3", "Context");
         EventLogger.logEvent(msg);
         final File application3LogFile = new File("target/routingbyjndi/routingbyjnditest-Application3.log");
@@ -126,7 +122,7 @@ public class RoutingAppenderWithJndiTest {
 
         // now set jndi resource to Application4
         // The context name, 'Application4', will be used as log file name by the default route.
-        context.rebind("java:comp/env/logging/context-name", "Application4");
+        JndiRule.rebind(JNDI_CONTEXT_NAME, "Application4");
         msg = new StructuredDataMessage("Test", "This is a message from Application4", "Context");
         EventLogger.logEvent(msg);
         final File application4LogFile = new File("target/routingbyjndi/routingbyjnditest-Application4.log");

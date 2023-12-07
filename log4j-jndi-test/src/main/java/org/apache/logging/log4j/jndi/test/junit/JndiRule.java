@@ -17,18 +17,13 @@
 package org.apache.logging.log4j.jndi.test.junit;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Set;
-import java.util.Spliterators;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
 import javax.naming.Context;
-import javax.naming.NameClassPair;
+import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactoryBuilder;
 import javax.naming.spi.NamingManager;
@@ -46,9 +41,11 @@ import org.osjava.sj.jndi.MemoryContext;
 @SuppressWarnings("BanJNDI")
 public class JndiRule implements TestRule {
 
+    private static final Hashtable<String, Object> ENV = new Hashtable<>(Map.of(MemoryContext.IGNORE_CLOSE, "true"));
+    private static final Context CONTEXT = new MemoryContext(ENV);
+
     static {
-        final InitialContextFactoryBuilder factoryBuilder =
-                factoryBuilderEnv -> factoryEnv -> new MemoryContext(new Hashtable<>()) {};
+        final InitialContextFactoryBuilder factoryBuilder = factoryBuilderEnv -> factoryEnv -> CONTEXT;
         try {
             NamingManager.setInitialContextFactoryBuilder(factoryBuilder);
         } catch (final NamingException error) {
@@ -91,38 +88,44 @@ public class JndiRule implements TestRule {
 
     private void resetJndiManager() throws NamingException {
         if (JndiManager.isJndiEnabled()) {
-            final Context context = getContext();
-            clearBindings(context);
-            addBindings(context);
+            clearBindings();
+            addBindings();
         }
     }
 
-    private Context getContext() {
-        final JndiManager manager =
-                managerName == null ? JndiManager.getDefaultManager() : JndiManager.getDefaultManager(managerName);
-        @Nullable final Context context = manager.getContext();
-        assertNotNull(context);
-        return context;
-    }
-
-    private static void clearBindings(final Context context) throws NamingException {
-        final Set<NameClassPair> existingBindings = StreamSupport.stream(
-                        Spliterators.spliteratorUnknownSize(context.list("").asIterator(), 0), false)
-                .collect(Collectors.toSet());
-        existingBindings.forEach(binding -> {
+    private static void clearBindings() throws NamingException {
+        Collections.list(CONTEXT.list("")).forEach(binding -> {
             try {
-                context.unbind(binding.getName());
+                CONTEXT.unbind(binding.getName());
             } catch (NamingException error) {
                 throw new RuntimeException(error);
             }
         });
     }
 
-    private void addBindings(final Context context) throws NamingException {
+    private void addBindings() throws NamingException {
         for (final Map.Entry<String, Object> entry : bindings.entrySet()) {
-            final String name = entry.getKey();
+            final String key = entry.getKey();
             final Object object = entry.getValue();
-            context.bind(name, object);
+            recursiveBind(key, object);
         }
+    }
+
+    public static void recursiveBind(final String key, final Object value) throws NamingException {
+        final Name name = CONTEXT.getNameParser((Name) null).parse(key);
+        Context currentContext = CONTEXT;
+        final int lastIndex = name.size() - 1;
+        for (int i = 0; i < lastIndex; i++) {
+            try {
+                currentContext = (Context) currentContext.lookup(name.get(i));
+            } catch (NamingException ignored) {
+                currentContext = currentContext.createSubcontext(name.get(i));
+            }
+        }
+        currentContext.bind(name.get(lastIndex), value);
+    }
+
+    public static void rebind(final String key, final Object value) throws NamingException {
+        CONTEXT.rebind(key, value);
     }
 }

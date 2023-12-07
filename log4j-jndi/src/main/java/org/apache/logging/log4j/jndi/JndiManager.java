@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nullable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -193,14 +192,6 @@ public class JndiManager extends AbstractManager {
     @Override
     protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         return JndiCloser.closeSilently(this.context);
-    }
-
-    /**
-     * @return the active context
-     */
-    @Nullable
-    public Context getContext() {
-        return context;
     }
 
     /**
