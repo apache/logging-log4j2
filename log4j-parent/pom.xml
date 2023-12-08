@@ -80,7 +80,7 @@
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch-java.version>8.11.1</elasticsearch-java.version>
+    <elasticsearch-java.version>8.11.2</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.9.0</flapdoodle-embed.version>
