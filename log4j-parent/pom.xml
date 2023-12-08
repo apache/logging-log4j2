@@ -16,9 +16,7 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-bom</artifactId>
@@ -140,8 +138,6 @@
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.1</plexus-utils.version>
     <slf4j.version>2.0.9</slf4j.version>
-    <!-- Last version before a breaking change -->
-    <slf4j-ext.version>1.7.25</slf4j-ext.version>
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.31</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
@@ -956,7 +952,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
-        <version>${slf4j-ext.version}</version>
+        <version>${slf4j.version}</version>
       </dependency>
 
       <dependency>

@@ -39,10 +39,7 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     public static final String FQCN = Log4jLogger.class.getName();
 
     private static final long serialVersionUID = 7869000638091304316L;
-    private static final Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
-    private static final EventDataConverter CONVERTER = createConverter();
 
-    private final boolean eventLogger;
     private transient ExtendedLogger logger;
     private final String name;
     private transient Log4jMarkerFactory markerFactory;
@@ -50,7 +47,6 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     public Log4jLogger(final Log4jMarkerFactory markerFactory, final ExtendedLogger logger, final String name) {
         this.markerFactory = markerFactory;
         this.logger = logger;
-        this.eventLogger = "EventLogger".equals(name);
         this.name = name;
     }
 
@@ -370,10 +366,7 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
         }
         final Message msg;
         final Throwable actualThrowable;
-        if (CONVERTER != null && eventLogger && marker != null && marker.contains(EVENT_MARKER)) {
-            msg = CONVERTER.convertEvent(message, params, throwable);
-            actualThrowable = throwable != null ? throwable : msg.getThrowable();
-        } else if (params == null) {
+        if (params == null) {
             msg = new SimpleMessage(message);
             actualThrowable = throwable;
         } else {
@@ -405,15 +398,6 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     private void writeObject(final ObjectOutputStream aOutputStream) throws IOException {
         // perform the default serialization for all non-transient, non-static fields
         aOutputStream.defaultWriteObject();
-    }
-
-    private static EventDataConverter createConverter() {
-        try {
-            LoaderUtil.loadClass("org.slf4j.ext.EventData");
-            return new EventDataConverter();
-        } catch (final ClassNotFoundException cnfe) {
-            return null;
-        }
     }
 
     private static Level getLevel(final int i) {

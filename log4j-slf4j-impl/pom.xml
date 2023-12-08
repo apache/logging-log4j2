@@ -29,9 +29,6 @@
   <description>The Apache Log4j SLF4J API binding to Log4j 2 Core</description>
   <properties>
     <slf4j.version>1.7.36</slf4j.version>
-    <!-- Do not upgrade the SLF4J version. 1.7.26 broke backward compatibility. Users can update the version if
-      they do not require support for SLF4J's EventData -->
-    <slf4j-ext.version>1.7.25</slf4j-ext.version>
 
     <!--
       ~ OSGi and JPMS options
@@ -60,7 +57,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
-        <version>${slf4j-ext.version}</version>
+        <version>${slf4j.version}</version>
         <optional>true</optional>
       </dependency>
     </dependencies>
@@ -79,11 +76,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -135,6 +127,11 @@
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
