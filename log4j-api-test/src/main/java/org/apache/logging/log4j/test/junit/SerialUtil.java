@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -54,6 +55,7 @@ public class SerialUtil {
      * @return the deserialized object
      */
     @SuppressWarnings("unchecked")
+    @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static <T> T deserialize(final byte[] data) {
         try {
             final ByteArrayInputStream bas = new ByteArrayInputStream(data);

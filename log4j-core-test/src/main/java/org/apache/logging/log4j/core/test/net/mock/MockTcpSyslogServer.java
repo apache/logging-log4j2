@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.test.net.mock;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -34,6 +35,7 @@ public class MockTcpSyslogServer extends MockSyslogServer {
         this(0);
     }
 
+    @SuppressFBWarnings("UNENCRYPTED_SERVER_SOCKET")
     private MockTcpSyslogServer(final int port) throws IOException {
         super(0, port);
         serverSocket = new ServerSocket(port);

@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.core.appender.db.jdbc.AbstractConnectionSource;
 import org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource;
 
+@SuppressFBWarnings("HARD_CODE_PASSWORD")
 public class JdbcH2TestHelper {
 
     /**

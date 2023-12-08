@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.test;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class TestLogger extends AbstractLogger {
     }
 
     @Override
+    @SuppressFBWarnings("INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE")
     protected void log(
             final Level level,
             final Marker marker,

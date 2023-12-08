@@ -30,9 +30,6 @@
   <description>The Apache Log4j development-time performance tests</description>
 
   <properties>
-    <!-- Ignore less important (high rank) bugs for test artifacts -->
-    <spotbugs.maxRank>9</spotbugs.maxRank>
-
     <uberjar.name>benchmarks</uberjar.name>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.test.skip>true</maven.test.skip>
@@ -41,6 +38,7 @@
     <module.name>org.apache.logging.log4j.perf</module.name>
     <maven.compiler.release>9</maven.compiler.release>
     <surefire.jdkToolchain>[9, )</surefire.jdkToolchain>
+    <spotbugs.skip>true</spotbugs.skip>
   </properties>
 
   <dependencies>

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.test;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Finds currently available server ports.
  */
+@SuppressFBWarnings("UNENCRYPTED_SERVER_SOCKET")
 public final class AvailablePortFinder {
 
     /**

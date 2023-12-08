@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.test.smtp;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -77,6 +78,7 @@ public class SimpleSmtpServer implements Runnable {
      * Main loop of the SMTP server.
      */
     @Override
+    @SuppressFBWarnings("UNENCRYPTED_SERVER_SOCKET")
     public void run() {
         stopped = false;
         try {

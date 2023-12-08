@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.test.net.ssl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Random;
 
+@SuppressFBWarnings("PREDICTABLE_RANDOM")
 public class TlsSyslogTestUtil {
     public static final String ABC = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static final String NUMBERS = "0123456789";

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -33,6 +34,7 @@ import org.junit.runner.Description;
  *
  * @since 2.8
  */
+@SuppressFBWarnings("SQL_INJECTION_JDBC")
 public class JdbcRule implements TestRule {
 
     private final ConnectionSource connectionSource;

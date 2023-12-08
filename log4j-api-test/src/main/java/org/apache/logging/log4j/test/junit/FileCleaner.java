@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 class FileCleaner extends AbstractFileCleaner {
     @Override
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     Collection<Path> getPathsForTest(final ExtensionContext context) {
         final Collection<Path> paths = new HashSet<>();
         final CleanUpFiles testClassAnnotation = context.getRequiredTestClass().getAnnotation(CleanUpFiles.class);

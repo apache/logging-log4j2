@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -206,6 +207,7 @@ public enum GcFreeLoggingTestUtil {
         logger.fatal(mapMessage); // LOG4J2-1683
     }
 
+    @SuppressFBWarnings("COMMAND_INJECTION")
     public static void runTest(final Class<?> cls) throws Exception {
         final String javaHome = System.getProperty("java.home");
         final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
