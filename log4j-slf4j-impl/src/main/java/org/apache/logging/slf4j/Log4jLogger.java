@@ -21,9 +21,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
@@ -33,10 +31,6 @@ public class Log4jLogger implements LocationAwareLogger {
 
     public static final String FQCN = Log4jLogger.class.getName();
 
-    private static final Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
-    private static final EventDataConverter CONVERTER = createConverter();
-
-    private final boolean eventLogger;
     private final ExtendedLogger logger;
     private final String name;
     private final Log4jMarkerFactory markerFactory;
@@ -44,7 +38,6 @@ public class Log4jLogger implements LocationAwareLogger {
     public Log4jLogger(final Log4jMarkerFactory markerFactory, final ExtendedLogger logger, final String name) {
         this.markerFactory = markerFactory;
         this.logger = logger;
-        this.eventLogger = "EventLogger".equals(name);
         this.name = name;
     }
 
@@ -364,10 +357,7 @@ public class Log4jLogger implements LocationAwareLogger {
         }
         final Message msg;
         final Throwable actualThrowable;
-        if (CONVERTER != null && eventLogger && marker != null && marker.contains(EVENT_MARKER)) {
-            msg = CONVERTER.convertEvent(message, params, throwable);
-            actualThrowable = throwable != null ? throwable : msg.getThrowable();
-        } else if (params == null) {
+        if (params == null) {
             msg = new SimpleMessage(message);
             actualThrowable = throwable;
         } else {
@@ -380,15 +370,6 @@ public class Log4jLogger implements LocationAwareLogger {
     @Override
     public String getName() {
         return name;
-    }
-
-    private static EventDataConverter createConverter() {
-        try {
-            LoaderUtil.loadClass("org.slf4j.ext.EventData");
-            return new EventDataConverter();
-        } catch (final ClassNotFoundException cnfe) {
-            return null;
-        }
     }
 
     private static Level getLevel(final int i) {

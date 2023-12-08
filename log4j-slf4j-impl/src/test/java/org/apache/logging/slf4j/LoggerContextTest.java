@@ -34,7 +34,7 @@ public class LoggerContextTest {
         final Log4jLoggerFactory factory = (Log4jLoggerFactory) LoggerFactory.getILoggerFactory();
         factory.getLogger("test");
         Set<LoggerContext> set = factory.getLoggerContexts();
-        final LoggerContext ctx1 = set.toArray(new LoggerContext[0])[0];
+        final LoggerContext ctx1 = set.toArray(LoggerContext.EMPTY_ARRAY)[0];
         assertTrue("LoggerContext is not enabled for shutdown", ctx1 instanceof LifeCycle);
         ((LifeCycle) ctx1).stop();
         set = factory.getLoggerContexts();

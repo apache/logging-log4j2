@@ -29,22 +29,7 @@
   <name>Apache Log4j SLF4J Binding</name>
   <description>The Apache Log4j SLF4J API binding to Log4j 2 Core</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-    <slf4j.version>1.7.25</slf4j.version>
-
-    <!--
-      ~ OSGi and JPMS options
-      -->
-    <bnd-extra-package-options>
-      <!-- Optional dependencies -->
-      org.slf4j.ext;resolution:=optional
-    </bnd-extra-package-options>
-    <bnd-extra-module-options>
-      <!-- Optional module -->
-      slf4j.ext;substitute="slf4j-ext";static=true;transitive=false,
-      <!-- Version 1.7.25 has not module name, but 1.7.36 does -->
-      org.slf4j;substitute="slf4j-api"
-    </bnd-extra-module-options>
+    <slf4j.version>1.7.36</slf4j.version>
   </properties>
   <dependencies>
     <dependency>
@@ -59,11 +44,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -108,6 +88,11 @@
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
