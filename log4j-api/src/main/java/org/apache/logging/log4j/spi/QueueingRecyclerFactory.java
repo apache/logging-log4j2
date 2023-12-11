@@ -30,15 +30,28 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
 
     private final QueueFactory queueFactory;
 
-    public QueueingRecyclerFactory(final QueueFactory queueFactory) {
+    private final int capacity;
+
+    public QueueingRecyclerFactory(final QueueFactory queueFactory, final int capacity) {
+        if (capacity < 1) {
+            throw new IllegalArgumentException("was expecting `capacity > 0`, found: " + capacity);
+        }
         this.queueFactory = requireNonNull(queueFactory, "queueFactory");
+        this.capacity = capacity;
+    }
+
+    /**
+     * @return the maximum number of objects retained per thread in recyclers created
+     */
+    public int getCapacity() {
+        return capacity;
     }
 
     @Override
     public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
         requireNonNull(supplier, "supplier");
         requireNonNull(cleaner, "cleaner");
-        final Queue<V> queue = queueFactory.create();
+        final Queue<V> queue = queueFactory.create(capacity);
         return new QueueingRecycler<>(supplier, cleaner, queue);
     }
 

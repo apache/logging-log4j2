@@ -104,7 +104,7 @@ public class LoggingSystem {
             environmentLazy.map(environment -> () -> getProvider().createContextMap(environment));
     private final Lazy<Supplier<ThreadContextStack>> threadContextStackFactoryLazy =
             environmentLazy.map(environment -> () -> getProvider().createContextStack(environment));
-    private final Lazy<RecyclerFactory> recyclerFactoryLazy = Lazy.relaxed(RecyclerFactories::getDefault);
+    private final Lazy<RecyclerFactory> recyclerFactoryLazy = Lazy.lazy(() -> RecyclerFactories.INSTANCE);
 
     public LoggingSystem() {}
 

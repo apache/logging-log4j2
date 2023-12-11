@@ -27,5 +27,5 @@ import java.util.Queue;
 @FunctionalInterface
 public interface QueueFactory {
 
-    <E> Queue<E> create();
+    <E> Queue<E> create(final int capacity);
 }

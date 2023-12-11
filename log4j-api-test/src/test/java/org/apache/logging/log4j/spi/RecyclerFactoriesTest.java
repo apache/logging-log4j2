@@ -36,7 +36,7 @@ public class RecyclerFactoriesTest {
         Assertions.assertThat(actualThreadLocalRecyclerFactory)
                 .asInstanceOf(InstanceOfAssertFactories.type(ThreadLocalRecyclerFactory.class))
                 .extracting(ThreadLocalRecyclerFactory::getCapacity)
-                .isEqualTo(RecyclerFactories.DEFAULT_QUEUE_CAPACITY);
+                .isEqualTo(RecyclerFactories.CAPACITY);
     }
 
     @Test

@@ -16,36 +16,83 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.QueueFactories;
 import org.apache.logging.log4j.util.QueueFactory;
 import org.apache.logging.log4j.util.StringParameterParser;
 
+/**
+ * Stores the default {@link RecyclerFactory} instance.
+ */
+@InternalApi
 public final class RecyclerFactories {
 
-    // Visible for testing
-    static final int DEFAULT_QUEUE_CAPACITY = Math.max(2 * Runtime.getRuntime().availableProcessors() + 1, 8);
+    /**
+     * The default recycler capacity.
+     */
+    public static final int CAPACITY = Math.max(2 * Runtime.getRuntime().availableProcessors() + 1, 8);
+
+    /**
+     * The default recycler instance.
+     */
+    public static final RecyclerFactory INSTANCE = isThreadLocalsEnabled()
+            ? new ThreadLocalRecyclerFactory(CAPACITY)
+            : new QueueingRecyclerFactory(QueueFactories.MPMC, CAPACITY);
 
     private RecyclerFactories() {}
 
-    public static RecyclerFactory getDefault() {
-        return isThreadLocalsEnabled()
-                ? new ThreadLocalRecyclerFactory(DEFAULT_QUEUE_CAPACITY)
-                : new QueueingRecyclerFactory(QueueFactories.MPMC.factory(DEFAULT_QUEUE_CAPACITY));
-    }
-
+    /**
+     * Creates a {@link RecyclerFactory} instance using the provided specification.
+     * <p>
+     * The recycler factory specification string must be formatted as follows:
+     * </p>
+     * <pre>{@code
+     * recyclerFactorySpec            = dummySpec
+     *                                | threadLocalRecyclerFactorySpec
+     *                                | queueingRecyclerFactorySpec
+     *
+     * dummySpec                      = "dummy"
+     *
+     * threadLocalRecyclerFactorySpec = "threadLocal" , [ ":" , capacityArg ]
+     * capacityArg                    = "capacity=" , integer
+     *
+     * queueingRecyclerFactorySpec    = "queue" , [ ":" , queueingRecyclerFactoryArgs ]
+     * queueingRecyclerFactoryArgs    = queueingRecyclerFactoryArg , [ "," , queueingRecyclerFactoryArg ]*
+     * queueingRecyclerFactoryArg     = capacityArg
+     *                                | queueSupplierArg
+     * queueSupplierArg               = ( classPath , ".new" )
+     *                                | ( classPath , "." , methodName )
+     * }</pre>
+     * <p>
+     * If not specified, {@code capacity} will be set to {@code max(8, 2*C+1)}, where {@code C} denotes the value returned by {@link Runtime#availableProcessors()}.
+     * </p>
+     * <p>
+     * You can find some examples below.
+     * </p>
+     * <ul>
+     * <li><code>{@code dummy}</code></li>
+     * <li><code>{@code threadLocal}</code></li>
+     * <li><code>{@code threadLocal:capacity=13}</code></li>
+     * <li><code>{@code queue}</code></li>
+     * <li><code>{@code queue:supplier=java.util.ArrayDeque.new}</code></li>
+     * <li><code>{@code queue:capacity=100}</code></li>
+     * <li><code>{@code queue:supplier=com.acme.AwesomeQueue.create,capacity=42}</code></li>
+     * </ul>
+     * @param recyclerFactorySpec the recycler factory specification string
+     * @return a recycler factory instance
+     */
     public static RecyclerFactory ofSpec(final String recyclerFactorySpec) {
 
-        // TLA-, MPMC-, or ABQ-based queueing factory -- if nothing is specified.
-        if (recyclerFactorySpec == null) {
-            return getDefault();
-        }
+        // Check arguments
+        requireNonNull(recyclerFactorySpec, "recyclerFactorySpec");
 
         // Is a dummy factory requested?
-        else if (recyclerFactorySpec.equals("dummy")) {
+        if (recyclerFactorySpec.equals("dummy")) {
             return DummyRecyclerFactory.getInstance();
         }
 
@@ -98,24 +145,29 @@ public final class RecyclerFactories {
                 : supplierValue.toString();
 
         // Execute the read spec
-        final QueueFactory queueFactory = supplierPath != null
-                ? QueueFactories.createQueueFactory(supplierPath, capacity)
-                : QueueFactories.MPMC.factory(capacity);
-        return new QueueingRecyclerFactory(queueFactory);
+        final QueueFactory queueFactory =
+                supplierPath != null ? QueueFactories.ofSupplier(supplierPath) : QueueFactories.MPMC;
+        return new QueueingRecyclerFactory(queueFactory, capacity);
     }
 
     private static int readQueueCapacity(
             final String factorySpec, final Map<String, StringParameterParser.Value> parsedValues) {
         final StringParameterParser.Value capacityValue = parsedValues.get("capacity");
         if (capacityValue == null || capacityValue instanceof StringParameterParser.NullValue) {
-            return DEFAULT_QUEUE_CAPACITY;
+            return CAPACITY;
         } else {
+            final int capacity;
             try {
-                return Integer.parseInt(capacityValue.toString());
+                capacity = Integer.parseInt(capacityValue.toString());
             } catch (final NumberFormatException error) {
                 throw new IllegalArgumentException(
                         "failed reading `capacity` in recycler factory: " + factorySpec, error);
             }
+            if (capacity < 1) {
+                throw new IllegalArgumentException(
+                        "was expecting `capacity > 0` in the recycler factory: " + factorySpec);
+            }
+            return capacity;
         }
     }
 }
