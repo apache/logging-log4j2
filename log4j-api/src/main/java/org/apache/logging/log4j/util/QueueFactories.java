@@ -21,8 +21,6 @@ import java.lang.reflect.Method;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import org.jctools.queues.MpmcArrayQueue;
-import org.jctools.queues.MpscArrayQueue;
-import org.jctools.queues.SpmcArrayQueue;
 import org.jctools.queues.SpscArrayQueue;
 
 /**
@@ -41,16 +39,6 @@ public enum QueueFactories {
      * Provides a bounded queue for single-producer/single-consumer usage.
      */
     SPSC(Lazy.lazy(JCToolsQueueFactory.SPSC::load)),
-
-    /**
-     * Provides a bounded queue for multi-producer/single-consumer usage.
-     */
-    MPSC(Lazy.lazy(JCToolsQueueFactory.MPSC::load)),
-
-    /**
-     * Provides a bounded queue for single-producer/multi-consumer usage.
-     */
-    SPMC(Lazy.lazy(JCToolsQueueFactory.SPMC::load)),
 
     /**
      * Provides a bounded queue for multi-producer/multi-consumer usage.
@@ -151,20 +139,6 @@ public enum QueueFactories {
             @Override
             public <E> Queue<E> create(final int capacity) {
                 return new SpscArrayQueue<>(capacity);
-            }
-        },
-
-        MPSC {
-            @Override
-            public <E> Queue<E> create(final int capacity) {
-                return new MpscArrayQueue<>(capacity);
-            }
-        },
-
-        SPMC {
-            @Override
-            public <E> Queue<E> create(final int capacity) {
-                return new SpmcArrayQueue<>(capacity);
             }
         },
 
