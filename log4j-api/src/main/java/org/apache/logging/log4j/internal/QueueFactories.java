@@ -26,7 +26,6 @@ import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.jctools.queues.MpmcArrayQueue;
-import org.jctools.queues.SpscArrayQueue;
 
 /**
  * Provides {@link QueueFactory} instances for different use cases.
@@ -39,11 +38,6 @@ import org.jctools.queues.SpscArrayQueue;
  */
 @InternalApi
 public enum QueueFactories implements QueueFactory {
-
-    /**
-     * Provides a bounded queue for single-producer/single-consumer usage.
-     */
-    SPSC(() -> SpscArrayQueue::new),
 
     /**
      * Provides a bounded queue for multi-producer/multi-consumer usage.

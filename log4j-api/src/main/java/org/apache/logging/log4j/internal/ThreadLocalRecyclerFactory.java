@@ -70,17 +70,17 @@ final class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
         private final Consumer<V> cleaner;
 
-        private final ThreadLocal<Queue<V>> holder;
+        private final ThreadLocal<Queue<V>> queueRef;
 
         private ThreadLocalRecycler(final Supplier<V> supplier, final Consumer<V> cleaner, final int capacity) {
             super(supplier);
-            this.holder = ThreadLocal.withInitial(() -> QueueFactories.SPSC.create(capacity));
+            this.queueRef = ThreadLocal.withInitial(() -> new ArrayQueue<>(capacity));
             this.cleaner = cleaner;
         }
 
         @Override
         public V acquire() {
-            final Queue<V> queue = holder.get();
+            final Queue<V> queue = queueRef.get();
             final V value = queue.poll();
             return value != null ? value : createInstance();
         }
@@ -89,12 +89,13 @@ final class ThreadLocalRecyclerFactory implements RecyclerFactory {
         public void release(final V value) {
             requireNonNull(value, "value");
             cleaner.accept(value);
-            holder.get().offer(value);
+            final Queue<V> queue = queueRef.get();
+            queue.offer(value);
         }
 
         // Visible for testing
         Queue<V> getQueue() {
-            return holder.get();
+            return queueRef.get();
         }
     }
 }
