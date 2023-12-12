@@ -18,7 +18,6 @@ package org.apache.logging.log4j.message;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.logging.log4j.spi.ThreadLocalRecyclerFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +30,7 @@ public class ReusableMessageFactoryTest {
 
     @BeforeEach
     void setUp() {
-        factory = new ReusableMessageFactory(new ThreadLocalRecyclerFactory(8));
+        factory = new ReusableMessageFactory();
     }
 
     @Test

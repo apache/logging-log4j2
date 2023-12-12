@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.internal;
 
 import java.util.*;
 import java.util.concurrent.Callable;
+import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Utility class for parsing string-formatted parameters, e.g., {@code queue:supplier=com.acme.FastestQueue.new,capacity=42}.

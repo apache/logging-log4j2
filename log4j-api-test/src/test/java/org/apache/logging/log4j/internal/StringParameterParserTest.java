@@ -14,10 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.internal;
 
-import java.util.*;
-import org.apache.logging.log4j.util.StringParameterParser.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import org.apache.logging.log4j.internal.StringParameterParser.DoubleQuotedStringValue;
+import org.apache.logging.log4j.internal.StringParameterParser.NullValue;
+import org.apache.logging.log4j.internal.StringParameterParser.StringValue;
+import org.apache.logging.log4j.internal.StringParameterParser.Value;
+import org.apache.logging.log4j.internal.StringParameterParser.Values;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

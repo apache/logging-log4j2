@@ -14,25 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.internal;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.util.QueueFactory;
+import org.apache.logging.log4j.spi.AbstractRecycler;
+import org.apache.logging.log4j.spi.QueueFactory;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 
 /**
  * A {@link RecyclerFactory} pooling objects in a queue created using the provided {@link QueueFactory}.
  */
-public class QueueingRecyclerFactory implements RecyclerFactory {
+final class QueueingRecyclerFactory implements RecyclerFactory {
 
     private final QueueFactory queueFactory;
 
     private final int capacity;
 
-    public QueueingRecyclerFactory(final QueueFactory queueFactory, final int capacity) {
+    QueueingRecyclerFactory(final QueueFactory queueFactory, final int capacity) {
         if (capacity < 1) {
             throw new IllegalArgumentException("was expecting `capacity > 0`, found: " + capacity);
         }
@@ -43,7 +46,7 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
     /**
      * @return the maximum number of objects retained per thread in recyclers created
      */
-    public int getCapacity() {
+    int getCapacity() {
         return capacity;
     }
 

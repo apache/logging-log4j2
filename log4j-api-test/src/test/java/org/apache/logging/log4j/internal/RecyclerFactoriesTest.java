@@ -14,10 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.internal;
 
 import java.util.ArrayDeque;
 import java.util.concurrent.ArrayBlockingQueue;
+import org.apache.logging.log4j.spi.DummyRecyclerFactory;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
@@ -41,17 +44,22 @@ public class RecyclerFactoriesTest {
 
     @Test
     void ThreadLocalRecyclerFactory_should_work_with_capacity() {
-        final RecyclerFactory actualThreadLocalRecyclerFactory = RecyclerFactories.ofSpec("threadLocal:capacity=13");
+        final int capacity = 13;
+        final RecyclerFactory actualThreadLocalRecyclerFactory =
+                RecyclerFactories.ofSpec("threadLocal:capacity=" + capacity);
         Assertions.assertThat(actualThreadLocalRecyclerFactory)
                 .asInstanceOf(InstanceOfAssertFactories.type(ThreadLocalRecyclerFactory.class))
                 .extracting(ThreadLocalRecyclerFactory::getCapacity)
-                .isEqualTo(13);
+                .isEqualTo(capacity);
     }
 
     @Test
     void QueueingRecyclerFactory_should_work() {
         final RecyclerFactory actualQueueingRecyclerFactory = RecyclerFactories.ofSpec("queue");
-        Assertions.assertThat(actualQueueingRecyclerFactory).isInstanceOf(QueueingRecyclerFactory.class);
+        Assertions.assertThat(actualQueueingRecyclerFactory)
+                .asInstanceOf(InstanceOfAssertFactories.type(QueueingRecyclerFactory.class))
+                .extracting(QueueingRecyclerFactory::getCapacity)
+                .isEqualTo(RecyclerFactories.CAPACITY);
     }
 
     @Test
@@ -68,14 +76,19 @@ public class RecyclerFactoriesTest {
 
     @Test
     void QueueingRecyclerFactory_should_work_with_capacity() {
-        final RecyclerFactory actualQueueingRecyclerFactory = RecyclerFactories.ofSpec("queue:capacity=100");
-        Assertions.assertThat(actualQueueingRecyclerFactory).isInstanceOf(QueueingRecyclerFactory.class);
+        final int capacity = 100;
+        final RecyclerFactory actualQueueingRecyclerFactory = RecyclerFactories.ofSpec("queue:capacity=" + capacity);
+        Assertions.assertThat(actualQueueingRecyclerFactory)
+                .asInstanceOf(InstanceOfAssertFactories.type(QueueingRecyclerFactory.class))
+                .extracting(QueueingRecyclerFactory::getCapacity)
+                .isEqualTo(capacity);
     }
 
     @Test
     void QueueingRecyclerFactory_should_work_with_supplier_and_capacity() {
+        final int capacity = 100;
         final RecyclerFactory recyclerFactory = RecyclerFactories.ofSpec(
-                "queue:" + "supplier=java.util.concurrent.ArrayBlockingQueue.new," + "capacity=100");
+                "queue:supplier=java.util.concurrent.ArrayBlockingQueue.new,capacity=" + capacity);
         Assertions.assertThat(recyclerFactory).isInstanceOf(QueueingRecyclerFactory.class);
         final QueueingRecyclerFactory queueingRecyclerFactory = (QueueingRecyclerFactory) recyclerFactory;
         final Recycler<Object> recycler = queueingRecyclerFactory.create(Object::new);
@@ -84,6 +97,6 @@ public class RecyclerFactoriesTest {
                 (QueueingRecyclerFactory.QueueingRecycler<Object>) recycler;
         Assertions.assertThat(queueingRecycler.getQueue()).isInstanceOf(ArrayBlockingQueue.class);
         final ArrayBlockingQueue<Object> queue = (ArrayBlockingQueue<Object>) queueingRecycler.getQueue();
-        Assertions.assertThat(queue.remainingCapacity()).isEqualTo(100);
+        Assertions.assertThat(queue.remainingCapacity()).isEqualTo(capacity);
     }
 }

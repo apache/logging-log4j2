@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.internal;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.spi.DummyRecyclerFactory;
+import org.apache.logging.log4j.spi.QueueFactory;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.InternalApi;
-import org.apache.logging.log4j.util.QueueFactories;
-import org.apache.logging.log4j.util.QueueFactory;
-import org.apache.logging.log4j.util.StringParameterParser;
 
 /**
  * Stores the default {@link RecyclerFactory} instance.

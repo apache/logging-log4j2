@@ -26,6 +26,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.internal.QueueFactories;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
@@ -33,7 +34,6 @@ import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.util.LowLevelLogUtil;
-import org.apache.logging.log4j.util.QueueFactories;
 
 /**
  * Records events that occur in the logging system. By default, only error messages are logged to {@link System#err}.

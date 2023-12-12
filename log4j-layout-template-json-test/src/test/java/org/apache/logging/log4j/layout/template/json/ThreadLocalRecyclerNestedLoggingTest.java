@@ -25,12 +25,11 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.spi.ThreadLocalRecyclerFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests if logging while trying to encode an event causes {@link ThreadLocalRecyclerFactory.ThreadLocalRecycler} to incorrectly share buffers and end up overriding layout's earlier encoding work.
+ * Tests if logging while trying to encode an event causes thread local recycler to incorrectly share buffers and end up overriding layout's earlier encoding work.
  *
  * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2368">LOG4J2-2368</a>
  */

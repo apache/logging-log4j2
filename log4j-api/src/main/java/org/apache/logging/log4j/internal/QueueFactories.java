@@ -14,13 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.internal;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Supplier;
+import org.apache.logging.log4j.spi.QueueFactory;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.jctools.queues.MpmcArrayQueue;
 import org.jctools.queues.SpscArrayQueue;
 
