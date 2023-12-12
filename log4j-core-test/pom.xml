@@ -23,6 +23,7 @@
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-core-test</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Core Tests</name>
@@ -30,9 +31,6 @@
   <properties>
     <!-- Ignore less important (high rank) bugs for test artifacts -->
     <spotbugs.maxRank>9</spotbugs.maxRank>
-
-    <!-- Dependency versions -->
-    <slf4j-ext.version>${slf4j.version}</slf4j-ext.version>
 
     <!--
       ~ OSGi and JPMS options
@@ -320,12 +318,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- SLF4J tests -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Used for testing HttpAppender -->

@@ -18,7 +18,6 @@ package org.apache.logging.slf4j;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.core.LogEvent;
@@ -33,8 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
@@ -48,61 +45,28 @@ public class LoggerTest {
     public static LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
     Logger logger = LoggerFactory.getLogger("LoggerTest");
-    XLogger xlogger = XLoggerFactory.getXLogger("LoggerTest");
-
-    @Test
-    public void basicFlow() {
-        xlogger.entry();
-        verify("List", "o.a.l.s.LoggerTest entry MDC{}" + Strings.LINE_SEPARATOR);
-        xlogger.exit();
-        verify("List", "o.a.l.s.LoggerTest exit MDC{}" + Strings.LINE_SEPARATOR);
-    }
-
-    @Test
-    public void simpleFlow() {
-        xlogger.entry(CONFIG);
-        verify("List", "o.a.l.s.LoggerTest entry with (log4j-test1.xml) MDC{}" + Strings.LINE_SEPARATOR);
-        xlogger.exit(0);
-        verify("List", "o.a.l.s.LoggerTest exit with (0) MDC{}" + Strings.LINE_SEPARATOR);
-    }
-
-    @Test
-    public void throwing() {
-        xlogger.throwing(new IllegalArgumentException("Test Exception"));
-        verify("List", "o.a.l.s.LoggerTest throwing MDC{}" + Strings.LINE_SEPARATOR);
-    }
-
-    @Test
-    public void catching() {
-        try {
-            throw new NullPointerException();
-        } catch (final Exception e) {
-            xlogger.catching(e);
-            verify("List", "o.a.l.s.LoggerTest catching MDC{}" + Strings.LINE_SEPARATOR);
-        }
-    }
 
     @Test
     public void debug() {
         logger.debug("Debug message");
-        verify("List", "o.a.l.s.LoggerTest Debug message MDC{}" + Strings.LINE_SEPARATOR);
+        verify("o.a.l.s.LoggerTest Debug message MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     @Test
     public void debugNoParms() {
         logger.debug("Debug message {}");
-        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
+        verify("o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
         logger.debug("Debug message {}", (Object[]) null);
-        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
+        verify("o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
         ((LocationAwareLogger) logger)
                 .log(null, Log4jLogger.class.getName(), LocationAwareLogger.DEBUG_INT, "Debug message {}", null, null);
-        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
+        verify("o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     @Test
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
-        verify("List", "o.a.l.s.LoggerTest Hello, World MDC{}" + Strings.LINE_SEPARATOR);
+        verify("o.a.l.s.LoggerTest Hello, World MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     @Test
@@ -110,10 +74,10 @@ public class LoggerTest {
 
         MDC.put("TestYear", "2010");
         logger.debug("Debug message");
-        verify("List", "o.a.l.s.LoggerTest Debug message MDC{TestYear=2010}" + Strings.LINE_SEPARATOR);
+        verify("o.a.l.s.LoggerTest Debug message MDC{TestYear=2010}" + Strings.LINE_SEPARATOR);
         MDC.clear();
         logger.debug("Debug message");
-        verify("List", "o.a.l.s.LoggerTest Debug message MDC{}" + Strings.LINE_SEPARATOR);
+        verify("o.a.l.s.LoggerTest Debug message MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     /**
@@ -123,7 +87,7 @@ public class LoggerTest {
     public void supportsCustomSLF4JMarkers() {
         final Marker marker = new CustomFlatMarker("TEST");
         logger.debug(marker, "Test");
-        verify("List", "o.a.l.s.LoggerTest Test MDC{}" + Strings.LINE_SEPARATOR);
+        verify("o.a.l.s.LoggerTest Test MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     @Test
@@ -136,11 +100,7 @@ public class LoggerTest {
     @Test
     public void doubleSubst() {
         logger.debug("Hello, {}", "Log4j {}");
-        verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}" + Strings.LINE_SEPARATOR);
-        // XLogger 1.7.x performs substitution twice:
-        // https://jira.qos.ch/browse/SLF4J-421
-        xlogger.debug("Hello, {}", "Log4j {}");
-        verify("List", "o.a.l.s.LoggerTest Hello, Log4j Log4j {} MDC{}" + Strings.LINE_SEPARATOR);
+        verify("o.a.l.s.LoggerTest Hello, Log4j {} MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     @Test
@@ -183,10 +143,10 @@ public class LoggerTest {
         return listApp;
     }
 
-    private void verify(final String name, final String expected) {
-        final ListAppender listApp = getAppenderByName(name);
+    private void verify(final String expected) {
+        final ListAppender listApp = getAppenderByName("List");
         final List<String> events = listApp.getMessages();
-        assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of messages. Expected 1 Actual " + events.size(), 1, events.size());
         final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
         listApp.clear();

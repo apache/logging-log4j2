@@ -26,9 +26,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
