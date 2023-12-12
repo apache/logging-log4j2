@@ -97,7 +97,7 @@ public final class StatusLogger extends AbstractLogger {
         this.logger = logger;
         this.configuration = configuration;
         this.listenersLevel = configuration.getDefaultLevel().intLevel();
-        messages = QueueFactories.MPMC.create(configuration.getMaxEntries());
+        messages = QueueFactories.INSTANCE.create(configuration.getMaxEntries());
     }
 
     /**

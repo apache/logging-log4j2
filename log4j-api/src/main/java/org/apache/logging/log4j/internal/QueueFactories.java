@@ -16,67 +16,56 @@
  */
 package org.apache.logging.log4j.internal;
 
+import static org.apache.logging.log4j.util.LowLevelLogUtil.log;
+
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Queue;
+import java.util.ServiceLoader;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.function.Supplier;
 import org.apache.logging.log4j.spi.QueueFactory;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.jctools.queues.MpmcArrayQueue;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
- * Provides {@link QueueFactory} instances for different use cases.
- * <p>
- * Implementations provided by <a href="https://jctools.github.io/JCTools/">JCTools</a> will be preferred, if available at runtime.
- * Otherwise, {@link ArrayBlockingQueue} will be used.
- * </p>
+ * Provides the default {@link QueueFactory} instance.
  *
  * @since 3.0.0
  */
 @InternalApi
-public enum QueueFactories implements QueueFactory {
+@ServiceConsumer(QueueFactory.class)
+public final class QueueFactories {
 
     /**
-     * Provides a bounded queue for multi-producer/multi-consumer usage.
+     * The default {@link QueueFactory} instance.
      */
-    MPMC(() -> MpmcArrayQueue::new);
+    public static final QueueFactory INSTANCE = findInstance();
 
-    private final QueueFactory queueFactory;
-
-    QueueFactories(final Supplier<QueueFactory> queueFactoryProvider) {
-        this.queueFactory = getOrReplaceQueueFactory(queueFactoryProvider);
-    }
-
-    private static QueueFactory getOrReplaceQueueFactory(final Supplier<QueueFactory> queueFactoryProvider) {
-        try {
-            final QueueFactory queueFactory = queueFactoryProvider.get();
-            // Test with a large enough capacity to avoid any `IllegalArgumentExceptions` from trivial queues
-            queueFactory.create(16);
-            return queueFactory;
-        } catch (final LinkageError ignored) {
-            return ArrayBlockingQueueFactory.INSTANCE;
+    private static QueueFactory findInstance() {
+        final ServiceLoader<QueueFactory> serviceLoader =
+                ServiceLoader.load(QueueFactory.class, QueueFactory.class.getClassLoader());
+        final List<QueueFactory> factories =
+                ServiceLoaderUtil.safeStream(serviceLoader).toList();
+        if (factories.isEmpty()) {
+            return ArrayBlockingQueue::new;
+        } else {
+            final int factoryCount = factories.size();
+            if (factoryCount > 1) {
+                log("Log4j was expecting a single `QueueFactory` provider, found:");
+                for (int factoryIndex = 0; factoryIndex < factoryCount; factoryIndex++) {
+                    log((factoryIndex + 1) + ". `" + factories.get(factoryIndex) + "`");
+                }
+                log("Log4j will use the first `QueueFactory` provider as the default.");
+            }
+            return factories.get(0);
         }
     }
 
-    @Override
-    public <E> Queue<E> create(final int capacity) {
-        return queueFactory.create(capacity);
-    }
-
-    private static final class ArrayBlockingQueueFactory implements QueueFactory {
-
-        private static final ArrayBlockingQueueFactory INSTANCE = new ArrayBlockingQueueFactory();
-
-        private ArrayBlockingQueueFactory() {}
-
-        @Override
-        public <E> Queue<E> create(final int capacity) {
-            return new ArrayBlockingQueue<>(capacity);
-        }
-    }
+    private QueueFactories() {}
 
     /**
      * Creates a {@link QueueFactory} using the provided supplier.

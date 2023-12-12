@@ -42,7 +42,7 @@ public final class RecyclerFactories {
      */
     public static final RecyclerFactory INSTANCE = isThreadLocalsEnabled()
             ? new ThreadLocalRecyclerFactory(CAPACITY)
-            : new QueueingRecyclerFactory(QueueFactories.MPMC, CAPACITY);
+            : new QueueingRecyclerFactory(QueueFactories.INSTANCE, CAPACITY);
 
     private RecyclerFactories() {}
 
@@ -146,7 +146,7 @@ public final class RecyclerFactories {
 
         // Execute the read spec
         final QueueFactory queueFactory =
-                supplierPath != null ? QueueFactories.ofSupplier(supplierPath) : QueueFactories.MPMC;
+                supplierPath != null ? QueueFactories.ofSupplier(supplierPath) : QueueFactories.INSTANCE;
         return new QueueingRecyclerFactory(queueFactory, capacity);
     }
 

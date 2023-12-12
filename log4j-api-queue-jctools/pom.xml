@@ -15,35 +15,45 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
-  <artifactId>log4j-api</artifactId>
-  <packaging>jar</packaging>
-  <name>Apache Log4j API</name>
-  <description>The Apache Log4j API</description>
+
+  <artifactId>log4j-api-queue-jctools</artifactId>
+  <name>Apache Log4j API queue provider (JCTools)</name>
+  <description>Provides JCTools-based queue implementations for the Apache Log4j API.</description>
+
   <properties>
-    <maven.javadoc.skip>false</maven.javadoc.skip>
+
+    <log4jParentDir>${basedir}/..</log4jParentDir>
 
     <!--
       ~ OSGi and JPMS options
       -->
-    <bnd-module-name>org.apache.logging.log4j</bnd-module-name>
-    <bnd-extra-package-options>
-      <!-- No JSR 305 at runtime -->
-      !javax.annotation.*
-    </bnd-extra-package-options>
-    <bnd-extra-module-options>
-      <!-- No JSR 305 at runtime -->
-      jsr305;ignore=true,
-      <!-- Used in StringBuilders through reflection -->
-      java.sql;static=true
-    </bnd-extra-module-options>
+    <bnd-module-name>org.apache.logging.log4j.api.queue.jctools</bnd-module-name>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
   </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+    </dependency>
+
+  </dependencies>
+
 </project>
