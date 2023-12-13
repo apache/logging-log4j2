@@ -3,6 +3,6 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
-  <issue id="2052" link="https://github.com/apache/logging-log4j2/pull/2052"/>
-  <description format="asciidoc">Update `org.apache.tomcat:tomcat-juli` to version `10.1.16`</description>
+  <issue id="2086" link="https://github.com/apache/logging-log4j2/pull/2086"/>
+  <description format="asciidoc">Update `org.apache.tomcat:tomcat-juli` to version `10.1.17`</description>
 </entry>
