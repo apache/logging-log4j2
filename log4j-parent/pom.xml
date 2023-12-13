@@ -103,7 +103,7 @@
     <commons-logging.version>1.3.0</commons-logging.version>
     <conversant.disruptor.version>1.2.21</conversant.disruptor.version>
     <disruptor.version>4.0.0</disruptor.version>
-    <elasticsearch.version>7.17.15</elasticsearch.version>
+    <elasticsearch.version>7.17.16</elasticsearch.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.8.1</flapdoodle-embed.version>
