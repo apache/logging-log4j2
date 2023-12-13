@@ -339,6 +339,11 @@
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
+    <!-- Temporary override for the `changelog-release` profile introduced by `logging-parent`.
+         This override can be removed once `logging-parent` updates `log4j-tools` to version `0.7.0`.
+         See https://github.com/apache/logging-log4j-tools/issues/89 -->
+    <log4j.changelog.versionPattern><![CDATA[^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>(0|[1-9]\d*)(-[a-zA-Z][0-9a-zA-Z-]*)?)$]]></log4j.changelog.versionPattern>
+
   </properties>
 
   <dependencyManagement>
