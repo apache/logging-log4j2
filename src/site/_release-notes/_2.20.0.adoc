@@ -19,44 +19,47 @@
 
 Changes staged for the next 2.x.x version that is yet to be released.
 
-== Changes
 
+[#release-notes-2-20-0-added]
 === Added
 
-* Add support for timezones in `RollingFileAppender` date pattern (for https://issues.apache.org/jira/browse/LOG4J2-1631[LOG4J2-1631] by Piotr P. Karwasz, Danas Mikelinskas)
-* Add `LogEvent` timestamp to `ProducerRecord` in `KafkaAppender` (for https://issues.apache.org/jira/browse/LOG4J2-2678[LOG4J2-2678] by Piotr P. Karwasz, Federico D'Ambrosio)
-* Add `PatternLayout` support for abbreviating the name of all logger components except the 2 rightmost (for https://issues.apache.org/jira/browse/LOG4J2-2785[LOG4J2-2785] by Ralph Goers, Markus Spann)
-* Removes internal field that leaked into public API. (for https://issues.apache.org/jira/browse/LOG4J2-3615[LOG4J2-3615] by Piotr P. Karwasz)
-* Add a `LogBuilder#logAndGet()` method to emulate the `Logger#traceEntry` method. (for https://issues.apache.org/jira/browse/LOG4J2-3645[LOG4J2-3645] by Piotr P. Karwasz)
+* Add support for timezones in `RollingFileAppender` date pattern (https://issues.apache.org/jira/browse/LOG4J2-1631[LOG4J2-1631])
+* Add `LogEvent` timestamp to `ProducerRecord` in `KafkaAppender` (https://issues.apache.org/jira/browse/LOG4J2-2678[LOG4J2-2678])
+* Add `PatternLayout` support for abbreviating the name of all logger components except the 2 rightmost (https://issues.apache.org/jira/browse/LOG4J2-2785[LOG4J2-2785])
+* Removes internal field that leaked into public API. (https://issues.apache.org/jira/browse/LOG4J2-3615[LOG4J2-3615])
+* Add a `LogBuilder#logAndGet()` method to emulate the `Logger#traceEntry` method. (https://issues.apache.org/jira/browse/LOG4J2-3645[LOG4J2-3645])
 
+[#release-notes-2-20-0-changed]
 === Changed
 
-* Simplify site generation (for https://github.com/apache/logging-log4j2/pull/1166[1166] by Volkan Yazıcı)
-* Switch the issue tracker from https://issues.apache.org/jira/browse/LOG4J2[JIRA] to https://github.com/apache/logging-log4j2/issues[GitHub Issues] (for https://github.com/apache/logging-log4j2/pull/1172[1172] by Volkan Yazıcı)
-* Remove liquibase-log4j2 maven module (for https://github.com/apache/logging-log4j2/pull/1193[1193] by StevenMassaro)
-* Fix order of stacktrace elements, that causes cache misses in `ThrowableProxyHelper`. (for https://github.com/apache/logging-log4j2/pull/1214[1214] by `alex-dubrouski`, Piotr P. Karwasz)
-* Switch from `com.sun.mail` to Eclipse Angus. (for https://issues.apache.org/jira/browse/LOG4J2-3554[LOG4J2-3554] by Oleh Astappiev, Piotr P. Karwasz)
-* Add Log4j2 Core as default runtime dependency of the SLF4J2-to-Log4j2 API bridge. (for https://issues.apache.org/jira/browse/LOG4J2-3601[LOG4J2-3601] by `afs`, Piotr P. Karwasz)
-* Replace `maven-changes-plugin` with a custom changelog implementation (for https://issues.apache.org/jira/browse/LOG4J2-3628[LOG4J2-3628] by Volkan Yazıcı)
-* Moved `log4j-api` and `log4j-core` artifacts with classifier `tests` to `log4j-api-test` and `log4j-core-test` respectively. (for https://issues.apache.org/jira/browse/LOG4J2-3650[LOG4J2-3650] by Piotr P. Karwasz)
+* Simplify site generation (https://github.com/apache/logging-log4j2/pull/1166[1166])
+* Switch the issue tracker from https://issues.apache.org/jira/browse/LOG4J2[JIRA] to https://github.com/apache/logging-log4j2/issues[GitHub Issues] (https://github.com/apache/logging-log4j2/pull/1172[1172])
+* Remove liquibase-log4j2 maven module (https://github.com/apache/logging-log4j2/pull/1193[1193])
+* Fix order of stacktrace elements, that causes cache misses in `ThrowableProxyHelper`. (https://github.com/apache/logging-log4j2/pull/1214[1214])
+* Switch from `com.sun.mail` to Eclipse Angus. (https://issues.apache.org/jira/browse/LOG4J2-3554[LOG4J2-3554])
+* Add Log4j2 Core as default runtime dependency of the SLF4J2-to-Log4j2 API bridge. (https://issues.apache.org/jira/browse/LOG4J2-3601[LOG4J2-3601])
+* Replace `maven-changes-plugin` with a custom changelog implementation (https://issues.apache.org/jira/browse/LOG4J2-3628[LOG4J2-3628])
+* Moved `log4j-api` and `log4j-core` artifacts with classifier `tests` to `log4j-api-test` and `log4j-core-test` respectively. (https://issues.apache.org/jira/browse/LOG4J2-3650[LOG4J2-3650])
 
+[#release-notes-2-20-0-deprecated]
 === Deprecated
 
-* Deprecate support for package scanning for plugins (for https://issues.apache.org/jira/browse/LOG4J2-3644[LOG4J2-3644] by Ralph Goers)
+* Deprecate support for package scanning for plugins (https://issues.apache.org/jira/browse/LOG4J2-3644[LOG4J2-3644])
 
+[#release-notes-2-20-0-fixed]
 === Fixed
 
-* Copy programmatically supplied location even if `includeLocation="false"`. (for https://github.com/apache/logging-log4j2/pull/1197[1197] by Piotr P. Karwasz)
-* Eliminate status logger warning, when `disableAnsi` or `noConsoleNoAnsi` is used the style and highlight patterns. (for https://github.com/apache/logging-log4j2/pull/1202[1202] by `wleese`, Piotr P. Karwasz)
-* Fix detection of location requirements in `RewriteAppender`. (for https://github.com/apache/logging-log4j2/pull/1274[1274] by `amirhadadi`, Piotr P. Karwasz)
-* Fix `java.sql.Time` object formatting in `MapMessage` (for https://issues.apache.org/jira/browse/LOG4J2-2297[LOG4J2-2297] by Ralph Goers)
-* Fix previous fire time computation in `CronTriggeringPolicy` (for https://issues.apache.org/jira/browse/LOG4J2-3357[LOG4J2-3357] by Ralph Goers)
-* Correct default to not include location for ``AsyncRootLogger``s (for https://issues.apache.org/jira/browse/LOG4J2-3487[LOG4J2-3487] by Ralph Goers, Dave Messink)
-* Lazily evaluate the level of a SLF4J `LogEventBuilder` (for https://issues.apache.org/jira/browse/LOG4J2-3598[LOG4J2-3598] by Piotr P. Karwasz)
-* Fixes priority of Legacy system properties, which are now back to having higher priority than Environment variables. (for https://issues.apache.org/jira/browse/LOG4J2-3621[LOG4J2-3615] by `adwsingh`, Piotr P. Karwasz)
-* Protects `ServiceLoaderUtil` from unchecked `ServiceLoader` exceptions. (for https://issues.apache.org/jira/browse/LOG4J2-3624[LOG4J2-3624] by Piotr P. Karwasz)
-* Fix `Configurator#setLevel` for internal classes (for https://issues.apache.org/jira/browse/LOG4J2-3631[LOG4J2-3631] by Piotr P. Karwasz, Jeff Thomas)
-* Fix level propagation in `Log4jBridgeHandler` (for https://issues.apache.org/jira/browse/LOG4J2-3634[LOG4J2-3634] by Piotr P. Karwasz, Marcel Koch)
-* Disable `OsgiServiceLocator` if not running in OSGI container. (for https://issues.apache.org/jira/browse/LOG4J2-3642[LOG4J2-3642] by `adwsingh`, Piotr P. Karwasz)
-* When using a Date Lookup in the file pattern the current time should be used. (for https://issues.apache.org/jira/browse/LOG4J2-3643[LOG4J2-3643] by Ralph Goers)
-* Fixed `LogBuilder` filtering in the presence of global filters. (for https://issues.apache.org/jira/browse/LOG4J2-3647[LOG4J2-3647] by Piotr P. Karwasz)
+* Copy programmatically supplied location even if `includeLocation="false"`. (https://github.com/apache/logging-log4j2/pull/1197[1197])
+* Eliminate status logger warning, when `disableAnsi` or `noConsoleNoAnsi` is used the style and highlight patterns. (https://github.com/apache/logging-log4j2/pull/1202[1202])
+* Fix detection of location requirements in `RewriteAppender`. (https://github.com/apache/logging-log4j2/pull/1274[1274])
+* Fix `java.sql.Time` object formatting in `MapMessage` (https://issues.apache.org/jira/browse/LOG4J2-2297[LOG4J2-2297])
+* Fix previous fire time computation in `CronTriggeringPolicy` (https://issues.apache.org/jira/browse/LOG4J2-3357[LOG4J2-3357])
+* Correct default to not include location for ``AsyncRootLogger``s (https://issues.apache.org/jira/browse/LOG4J2-3487[LOG4J2-3487])
+* Lazily evaluate the level of a SLF4J `LogEventBuilder` (https://issues.apache.org/jira/browse/LOG4J2-3598[LOG4J2-3598])
+* Fixes priority of Legacy system properties, which are now back to having higher priority than Environment variables. (https://issues.apache.org/jira/browse/LOG4J2-3621[LOG4J2-3615])
+* Protects `ServiceLoaderUtil` from unchecked `ServiceLoader` exceptions. (https://issues.apache.org/jira/browse/LOG4J2-3624[LOG4J2-3624])
+* Fix `Configurator#setLevel` for internal classes (https://issues.apache.org/jira/browse/LOG4J2-3631[LOG4J2-3631])
+* Fix level propagation in `Log4jBridgeHandler` (https://issues.apache.org/jira/browse/LOG4J2-3634[LOG4J2-3634])
+* Disable `OsgiServiceLocator` if not running in OSGI container. (https://issues.apache.org/jira/browse/LOG4J2-3642[LOG4J2-3642])
+* When using a Date Lookup in the file pattern the current time should be used. (https://issues.apache.org/jira/browse/LOG4J2-3643[LOG4J2-3643])
+* Fixed `LogBuilder` filtering in the presence of global filters. (https://issues.apache.org/jira/browse/LOG4J2-3647[LOG4J2-3647])

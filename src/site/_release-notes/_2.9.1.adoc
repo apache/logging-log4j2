@@ -71,26 +71,27 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
-== Changes
 
+[#release-notes-2-9-1-changed]
 === Changed
 
-* Use a class' canonical name instead of name to create its logger name. (for https://issues.apache.org/jira/browse/LOG4J2-2023[LOG4J2-2023] by Gary Gregory)
-* Update Jackson from 2.9.0 to 2.9.1 (fix for Java 9.) (for https://issues.apache.org/jira/browse/LOG4J2-2043[LOG4J2-2043] by Gary Gregory)
-* Update Apache Commons CSV from 1.4 to 1.5. (for https://issues.apache.org/jira/browse/LOG4J2-2044[LOG4J2-2044] by Gary Gregory)
-* Update javax.mail from 1.5.6 to 1.6.0. (for https://issues.apache.org/jira/browse/LOG4J2-2045[LOG4J2-2045] by Gary Gregory)
-* Update Apache Commons Compress from 1.13 to 1.14. (for https://issues.apache.org/jira/browse/LOG4J2-2046[LOG4J2-2046] by Gary Gregory)
-* Update Cassandra driver from 3.1.0 to 3.1.4. (for https://issues.apache.org/jira/browse/LOG4J2-2047[LOG4J2-2047] by Gary Gregory)
-* Update Apache Kafka Client from 0.11.0.0 to 0.11.0.1. (for https://issues.apache.org/jira/browse/LOG4J2-2049[LOG4J2-2049] by Gary Gregory)
+* Use a class' canonical name instead of name to create its logger name. (https://issues.apache.org/jira/browse/LOG4J2-2023[LOG4J2-2023])
+* Update Jackson from 2.9.0 to 2.9.1 (fix for Java 9.) (https://issues.apache.org/jira/browse/LOG4J2-2043[LOG4J2-2043])
+* Update Apache Commons CSV from 1.4 to 1.5. (https://issues.apache.org/jira/browse/LOG4J2-2044[LOG4J2-2044])
+* Update javax.mail from 1.5.6 to 1.6.0. (https://issues.apache.org/jira/browse/LOG4J2-2045[LOG4J2-2045])
+* Update Apache Commons Compress from 1.13 to 1.14. (https://issues.apache.org/jira/browse/LOG4J2-2046[LOG4J2-2046])
+* Update Cassandra driver from 3.1.0 to 3.1.4. (https://issues.apache.org/jira/browse/LOG4J2-2047[LOG4J2-2047])
+* Update Apache Kafka Client from 0.11.0.0 to 0.11.0.1. (https://issues.apache.org/jira/browse/LOG4J2-2049[LOG4J2-2049])
 
+[#release-notes-2-9-1-fixed]
 === Fixed
 
-* Prevent ConcurrentModificationException with AsyncLoggerConfig. (for https://issues.apache.org/jira/browse/LOG4J2-1914[LOG4J2-1914] by Remko Popma)
-* ClassNotFoundException when making all loggers asynchronous under OSGi environment. (for https://issues.apache.org/jira/browse/LOG4J2-1936[LOG4J2-1936] by Gary Gregory, Helber Belmiro)
-* Prevent ConcurrentModificationException with AsyncLoggerConfig. (for https://issues.apache.org/jira/browse/LOG4J2-1988[LOG4J2-1988] by Remko Popma)
-* java.lang.AbstractMethodError: javax.xml.parsers.DocumentBuilderFactory.setFeature(). (for https://issues.apache.org/jira/browse/LOG4J2-2026[LOG4J2-2026] by Gary Gregory, Leon Finker)
-* Java 9 StackLocator was not properly skipping the initial stack frames. (for https://issues.apache.org/jira/browse/LOG4J2-2028[LOG4J2-2028] by Ralph Goers, Jason Tedor)
-* Marker examples should not use deprecated flow APIs. (for https://issues.apache.org/jira/browse/LOG4J2-2029[LOG4J2-2029] by Gary Gregory, Fabrizio Cucci)
-* Inspect all known ClassLoaders to locate the service provider. (for https://issues.apache.org/jira/browse/LOG4J2-2030[LOG4J2-2030] by Ralph Goers)
-* Fix documentation to clarify disruptor-3.3.4 is now required for async loggers (previously the docs referred to disruptor-3.3.3 which was never released). (for https://issues.apache.org/jira/browse/LOG4J2-2035[LOG4J2-2035] by Remko Popma)
-* Increase default queue size for AsyncAppender from 128 to 1024. (for https://issues.apache.org/jira/browse/LOG4J2-2048[LOG4J2-2048] by Remko Popma)
+* Prevent ConcurrentModificationException with AsyncLoggerConfig. (https://issues.apache.org/jira/browse/LOG4J2-1914[LOG4J2-1914])
+* ClassNotFoundException when making all loggers asynchronous under OSGi environment. (https://issues.apache.org/jira/browse/LOG4J2-1936[LOG4J2-1936])
+* Prevent ConcurrentModificationException with AsyncLoggerConfig. (https://issues.apache.org/jira/browse/LOG4J2-1988[LOG4J2-1988])
+* java.lang.AbstractMethodError: javax.xml.parsers.DocumentBuilderFactory.setFeature(). (https://issues.apache.org/jira/browse/LOG4J2-2026[LOG4J2-2026])
+* Java 9 StackLocator was not properly skipping the initial stack frames. (https://issues.apache.org/jira/browse/LOG4J2-2028[LOG4J2-2028])
+* Marker examples should not use deprecated flow APIs. (https://issues.apache.org/jira/browse/LOG4J2-2029[LOG4J2-2029])
+* Inspect all known ClassLoaders to locate the service provider. (https://issues.apache.org/jira/browse/LOG4J2-2030[LOG4J2-2030])
+* Fix documentation to clarify disruptor-3.3.4 is now required for async loggers (previously the docs referred to disruptor-3.3.3 which was never released). (https://issues.apache.org/jira/browse/LOG4J2-2035[LOG4J2-2035])
+* Increase default queue size for AsyncAppender from 128 to 1024. (https://issues.apache.org/jira/browse/LOG4J2-2048[LOG4J2-2048])

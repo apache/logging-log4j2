@@ -17,14 +17,15 @@
 
 = 2.0-alpha1 (2012-07-29)
 
-== Changes
 
+[#release-notes-2-0-alpha1-added]
 === Added
 
-* Added ability to filter on the AppenderRef by adding either a level or a filter. (for https://issues.apache.org/jira/browse/LOG4J2-60[LOG4J2-60] by Ralph Goers, Shane Kelly)
+* Added ability to filter on the AppenderRef by adding either a level or a filter. (https://issues.apache.org/jira/browse/LOG4J2-60[LOG4J2-60])
 
+[#release-notes-2-0-alpha1-fixed]
 === Fixed
 
-* Make sure all application facing log methods use their own FQCN. This patch resolves a unit test failure for the %C pattern when using the Category logger. (for https://issues.apache.org/jira/browse/LOG4J2-50[LOG4J2-50] by Ralph Goers, John Vasileff)
-* Remove LoggerContext support for custom logger factories. All Loggers returned by LoggerContext should be compatible and of the same type. (for https://issues.apache.org/jira/browse/LOG4J2-51[LOG4J2-51] by Ralph Goers, John Vasileff)
-* Level.toLevel would throw an IllegalArgumentException instead of returning the default value. (for https://issues.apache.org/jira/browse/LOG4J2-56[LOG4J2-56] by Ralph Goers, John Owen Atala)
+* Make sure all application facing log methods use their own FQCN. This patch resolves a unit test failure for the %C pattern when using the Category logger. (https://issues.apache.org/jira/browse/LOG4J2-50[LOG4J2-50])
+* Remove LoggerContext support for custom logger factories. All Loggers returned by LoggerContext should be compatible and of the same type. (https://issues.apache.org/jira/browse/LOG4J2-51[LOG4J2-51])
+* Level.toLevel would throw an IllegalArgumentException instead of returning the default value. (https://issues.apache.org/jira/browse/LOG4J2-56[LOG4J2-56])

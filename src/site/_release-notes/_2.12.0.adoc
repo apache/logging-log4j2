@@ -39,47 +39,49 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
-== Changes
 
+[#release-notes-2-12-0-added]
 === Added
 
-* Allow custom end-of-line with JsonLayout. (for https://issues.apache.org/jira/browse/LOG4J2-2337[LOG4J2-2337] by Gary Gregory, Arvind Sahare, Patrice Ferrot)
-* Allow zero padding the counter of a RollingFileAppender. (for https://issues.apache.org/jira/browse/LOG4J2-2403[LOG4J2-2403] by Ralph Goers, hupfdule)
-* Add reconfiguration methods to Configurator. (for https://issues.apache.org/jira/browse/LOG4J2-2406[LOG4J2-2406] by Ralph Goers)
-* Add filter that will match events when no marker is present. (for https://issues.apache.org/jira/browse/LOG4J2-2427[LOG4J2-2427] by Ralph Goers, Rimaljit Kaur)
-* TCP Appender should support a host name resolving to multiple IP addresses. (for https://issues.apache.org/jira/browse/LOG4J2-2586[LOG4J2-2586] by Ralph Goers)
-* GZIP compression on rollover supports configurable compression levels. (for https://issues.apache.org/jira/browse/LOG4J2-2598[LOG4J2-2598] by Carter Kozak, Carter Kozak)
-* AsyncQueueFullPolicy configuration short values "Default" and "Discard" are case-insensitive to avoid confusion. (for https://issues.apache.org/jira/browse/LOG4J2-2611[LOG4J2-2611] by Carter Kozak)
-* Add and use method org.apache.logging.log4j.message.MapMessage.toKey(String) for simpler subclasses. (for https://issues.apache.org/jira/browse/LOG4J2-2634[LOG4J2-2634] by Gary Gregory)
-* Add support for reconfiguration via HTTP(S), Docker, and Spring Cloud Configuration. (for https://issues.apache.org/jira/browse/LOG4J2-913[LOG4J2-913] by Ralph Goers)
+* Allow custom end-of-line with JsonLayout. (https://issues.apache.org/jira/browse/LOG4J2-2337[LOG4J2-2337])
+* Allow zero padding the counter of a RollingFileAppender. (https://issues.apache.org/jira/browse/LOG4J2-2403[LOG4J2-2403])
+* Add reconfiguration methods to Configurator. (https://issues.apache.org/jira/browse/LOG4J2-2406[LOG4J2-2406])
+* Add filter that will match events when no marker is present. (https://issues.apache.org/jira/browse/LOG4J2-2427[LOG4J2-2427])
+* TCP Appender should support a host name resolving to multiple IP addresses. (https://issues.apache.org/jira/browse/LOG4J2-2586[LOG4J2-2586])
+* GZIP compression on rollover supports configurable compression levels. (https://issues.apache.org/jira/browse/LOG4J2-2598[LOG4J2-2598])
+* AsyncQueueFullPolicy configuration short values "Default" and "Discard" are case-insensitive to avoid confusion. (https://issues.apache.org/jira/browse/LOG4J2-2611[LOG4J2-2611])
+* Add and use method org.apache.logging.log4j.message.MapMessage.toKey(String) for simpler subclasses. (https://issues.apache.org/jira/browse/LOG4J2-2634[LOG4J2-2634])
+* Add support for reconfiguration via HTTP(S), Docker, and Spring Cloud Configuration. (https://issues.apache.org/jira/browse/LOG4J2-913[LOG4J2-913])
 
+[#release-notes-2-12-0-changed]
 === Changed
 
-* Update Jackson from 2.9.7 to 2.9.8. (for https://issues.apache.org/jira/browse/LOG4J2-2570[LOG4J2-2570] by Gary Gregory, Gary Gregory)
-* Update MongoDB 3 module driver from 3.9.0 to 3.10.1. (for https://issues.apache.org/jira/browse/LOG4J2-2574[LOG4J2-2574] by Gary Gregory, Gary Gregory)
-* Update Jackson from 2.9.8 to 2.9.9. (for https://issues.apache.org/jira/browse/LOG4J2-2619[LOG4J2-2619] by Gary Gregory)
-* Refactor several AsyncLogger methods below the 35 byte threshold for inlining. (for https://issues.apache.org/jira/browse/LOG4J2-2634[LOG4J2-2634] by Carter Kozak)
-* Update tests from H2 1.4.197 to 1.4.199. (for by Gary Gregory)
+* Update Jackson from 2.9.7 to 2.9.8. (https://issues.apache.org/jira/browse/LOG4J2-2570[LOG4J2-2570])
+* Update MongoDB 3 module driver from 3.9.0 to 3.10.1. (https://issues.apache.org/jira/browse/LOG4J2-2574[LOG4J2-2574])
+* Update Jackson from 2.9.8 to 2.9.9. (https://issues.apache.org/jira/browse/LOG4J2-2619[LOG4J2-2619])
+* Refactor several AsyncLogger methods below the 35 byte threshold for inlining. (https://issues.apache.org/jira/browse/LOG4J2-2634[LOG4J2-2634])
+* Update tests from H2 1.4.197 to 1.4.199.
 
+[#release-notes-2-12-0-fixed]
 === Fixed
 
-* FailoverAppender was failing with ERROR appender Failover has no parameter that matches element Failovers. (for https://issues.apache.org/jira/browse/LOG4J2-1103[LOG4J2-1103] by Ralph Goers, Seán Dunne)
-* Lookups were not found if the plugin key was not lower case. (for https://issues.apache.org/jira/browse/LOG4J2-1143[LOG4J2-1143] by Ralph Goers, Pascal Heinrich)
-* Locate plugins within a Jar using a URL Connection. (for https://issues.apache.org/jira/browse/LOG4J2-1852[LOG4J2-1852] by Ralph Goers, Tanner Altares)
-* RollingRandomAccessFileAppender error message referenced incorrect class name. (for https://issues.apache.org/jira/browse/LOG4J2-2547[LOG4J2-2547] by Ralph Goers)
-* NullPointerException in JdbcAppender.createAppender(). (for https://issues.apache.org/jira/browse/LOG4J2-2559[LOG4J2-2559] by Gary Gregory, Li Lei)
-* JEP223 version detection fix for JDK 9 and up. (for https://issues.apache.org/jira/browse/LOG4J2-2561[LOG4J2-2561] by Ralph Goers, Ulrich Enslin)
-* MapPatternConverter is properly created from the '%K', '%map', and '%MAP' patterns. PatternConverter instanceOf methods with unknown parameter types no longer elide those with known parameters. (for https://issues.apache.org/jira/browse/LOG4J2-2564[LOG4J2-2564] by Carter Kozak)
-* StackOverflowException when server not reachable with SocketAppender. (for https://issues.apache.org/jira/browse/LOG4J2-2592[LOG4J2-2592] by Gary Gregory, Dávid Kaya)
-* Throw better exception message when both log4j-slf4j-impl and log4j-to-slf4j are present. (for https://issues.apache.org/jira/browse/LOG4J2-2597[LOG4J2-2597] by Ralph Goers)
-* java.lang.StackOverflowError at org.apache.logging.log4j.junit.AbstractExternalFileCleaner.println(AbstractExternalFileCleaner.java:169). (for https://issues.apache.org/jira/browse/LOG4J2-2598[LOG4J2-2598] by Gary Gregory, Gary Gregory)
-* Update file time when size based triggering policy is used without a time-based triggering policy. (for https://issues.apache.org/jira/browse/LOG4J2-2602[LOG4J2-2602] by Ralph Goers)
-* Asynchronous logging when the queue is full no longer results in heavy CPU utilization and low throughput. (for https://issues.apache.org/jira/browse/LOG4J2-2606[LOG4J2-2606] by Carter Kozak)
-* Explicitly set file creation time. (for https://issues.apache.org/jira/browse/LOG4J2-2610[LOG4J2-2610] by Ralph Goers)
-* NullPointerException at org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager.writeInternal(JdbcDatabaseManager.java:803). (for https://issues.apache.org/jira/browse/LOG4J2-2612[LOG4J2-2612] by Gary Gregory)
-* Restore constructor to ThrowablePatternConverter that was removed in 2.8.2. (for https://issues.apache.org/jira/browse/LOG4J2-2616[LOG4J2-2616] by Ralph Goers)
-* Possible ClassCastException in org.apache.logging.log4j.core.script.ScriptManager.ScriptManager(Configuration, WatchManager) (for https://issues.apache.org/jira/browse/LOG4J2-2618[LOG4J2-2618] by Gary Gregory)
-* StructuredDataId was ignoring maxLength attribute. (for https://issues.apache.org/jira/browse/LOG4J2-2622[LOG4J2-2622] by Ralph Goers)
-* Fix a race allowing events not to be recorded when a RoutingAppender purge policy attempts to delete an idle appender at exactly the same time as a new event is recorded. (for https://issues.apache.org/jira/browse/LOG4J2-2629[LOG4J2-2629] by Carter Kozak)
-* RoutingAppender PurgePolicy implementations no longer stop appenders referenced from the logger configuration, only those that have been created by the RoutingAppender. Note that RoutingAppender.getAppenders no longer includes entries for referenced appenders, only those which it has created. (for https://issues.apache.org/jira/browse/LOG4J2-2631[LOG4J2-2631] by Carter Kozak)
-* RFC5424Layout was not properly setting default Structured Element id for the MDC (for https://issues.apache.org/jira/browse/LOG4J2-2636[LOG4J2-2636] by Ralph Goers)
+* FailoverAppender was failing with ERROR appender Failover has no parameter that matches element Failovers. (https://issues.apache.org/jira/browse/LOG4J2-1103[LOG4J2-1103])
+* Lookups were not found if the plugin key was not lower case. (https://issues.apache.org/jira/browse/LOG4J2-1143[LOG4J2-1143])
+* Locate plugins within a Jar using a URL Connection. (https://issues.apache.org/jira/browse/LOG4J2-1852[LOG4J2-1852])
+* RollingRandomAccessFileAppender error message referenced incorrect class name. (https://issues.apache.org/jira/browse/LOG4J2-2547[LOG4J2-2547])
+* NullPointerException in JdbcAppender.createAppender(). (https://issues.apache.org/jira/browse/LOG4J2-2559[LOG4J2-2559])
+* JEP223 version detection fix for JDK 9 and up. (https://issues.apache.org/jira/browse/LOG4J2-2561[LOG4J2-2561])
+* MapPatternConverter is properly created from the '%K', '%map', and '%MAP' patterns. PatternConverter instanceOf methods with unknown parameter types no longer elide those with known parameters. (https://issues.apache.org/jira/browse/LOG4J2-2564[LOG4J2-2564])
+* StackOverflowException when server not reachable with SocketAppender. (https://issues.apache.org/jira/browse/LOG4J2-2592[LOG4J2-2592])
+* Throw better exception message when both log4j-slf4j-impl and log4j-to-slf4j are present. (https://issues.apache.org/jira/browse/LOG4J2-2597[LOG4J2-2597])
+* java.lang.StackOverflowError at org.apache.logging.log4j.junit.AbstractExternalFileCleaner.println(AbstractExternalFileCleaner.java:169). (https://issues.apache.org/jira/browse/LOG4J2-2598[LOG4J2-2598])
+* Update file time when size based triggering policy is used without a time-based triggering policy. (https://issues.apache.org/jira/browse/LOG4J2-2602[LOG4J2-2602])
+* Asynchronous logging when the queue is full no longer results in heavy CPU utilization and low throughput. (https://issues.apache.org/jira/browse/LOG4J2-2606[LOG4J2-2606])
+* Explicitly set file creation time. (https://issues.apache.org/jira/browse/LOG4J2-2610[LOG4J2-2610])
+* NullPointerException at org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager.writeInternal(JdbcDatabaseManager.java:803). (https://issues.apache.org/jira/browse/LOG4J2-2612[LOG4J2-2612])
+* Restore constructor to ThrowablePatternConverter that was removed in 2.8.2. (https://issues.apache.org/jira/browse/LOG4J2-2616[LOG4J2-2616])
+* Possible ClassCastException in org.apache.logging.log4j.core.script.ScriptManager.ScriptManager(Configuration, WatchManager) (https://issues.apache.org/jira/browse/LOG4J2-2618[LOG4J2-2618])
+* StructuredDataId was ignoring maxLength attribute. (https://issues.apache.org/jira/browse/LOG4J2-2622[LOG4J2-2622])
+* Fix a race allowing events not to be recorded when a RoutingAppender purge policy attempts to delete an idle appender at exactly the same time as a new event is recorded. (https://issues.apache.org/jira/browse/LOG4J2-2629[LOG4J2-2629])
+* RoutingAppender PurgePolicy implementations no longer stop appenders referenced from the logger configuration, only those that have been created by the RoutingAppender. Note that RoutingAppender.getAppenders no longer includes entries for referenced appenders, only those which it has created. (https://issues.apache.org/jira/browse/LOG4J2-2631[LOG4J2-2631])
+* RFC5424Layout was not properly setting default Structured Element id for the MDC (https://issues.apache.org/jira/browse/LOG4J2-2636[LOG4J2-2636])

@@ -17,16 +17,17 @@
 
 = 2.0-alpha2 (2012-08-24)
 
-== Changes
 
+[#release-notes-2-0-alpha2-added]
 === Added
 
-* Allow components besides core to create a PluginMap for faster plugin loading and not having to specify the plugin package in the configuration. (for https://issues.apache.org/jira/browse/LOG4J2-67[LOG4J2-67] by Ralph Goers)
-* Add support for formatting using String.format(). (for https://issues.apache.org/jira/browse/LOG4J2-68[LOG4J2-68] by Ralph Goers)
-* Allow Flume agents to be embedded into the Flume Appender. (for https://issues.apache.org/jira/browse/LOG4J2-69[LOG4J2-69] by Ralph Goers)
-* Add getLogger(Class) to LogManager. (for https://issues.apache.org/jira/browse/LOG4J2-70[LOG4J2-70] by Ralph Goers)
+* Allow components besides core to create a PluginMap for faster plugin loading and not having to specify the plugin package in the configuration. (https://issues.apache.org/jira/browse/LOG4J2-67[LOG4J2-67])
+* Add support for formatting using String.format(). (https://issues.apache.org/jira/browse/LOG4J2-68[LOG4J2-68])
+* Allow Flume agents to be embedded into the Flume Appender. (https://issues.apache.org/jira/browse/LOG4J2-69[LOG4J2-69])
+* Add getLogger(Class) to LogManager. (https://issues.apache.org/jira/browse/LOG4J2-70[LOG4J2-70])
 
+[#release-notes-2-0-alpha2-fixed]
 === Fixed
 
-* Fix compilation problems in Java 7. (for https://issues.apache.org/jira/browse/LOG4J2-64[LOG4J2-64] by Ralph Goers)
-* Allow variable substitution on the configuration attributes and on the root log level. (for https://issues.apache.org/jira/browse/LOG4J2-65[LOG4J2-65] by Ralph Goers)
+* Fix compilation problems in Java 7. (https://issues.apache.org/jira/browse/LOG4J2-64[LOG4J2-64])
+* Allow variable substitution on the configuration attributes and on the root log level. (https://issues.apache.org/jira/browse/LOG4J2-65[LOG4J2-65])

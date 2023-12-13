@@ -6,7 +6,7 @@
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
 
-         https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +15,27 @@
     limitations under the License.
 ////
 
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE IS CALLED `index.adoc`, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Release notes `index.adoc` is generated from `src/changelog/.index.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Edit `.index.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.index.adoc.ftl` and the generated `.index.adoc`
+////
+
+[#release-notes]
 = Release Notes
 
 <#list releases as release><#if release.changelogEntryCount gt 0>
-* xref:${release.version}.adoc[${release.version}]<#if release.date?has_content> (${release.date})</#if>
+include::_release-notes/_${release.version}.adoc[]
 </#if></#list>

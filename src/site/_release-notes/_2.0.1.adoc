@@ -26,35 +26,37 @@ The package names and Maven `groupId` have been changed to `org.apache.logging.l
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
 
-== Changes
 
+[#release-notes-2-0-1-added]
 === Added
 
-* Added documentation for Custom Levels and Custom Loggers. (for https://issues.apache.org/jira/browse/LOG4J2-710[LOG4J2-710] by Remko Popma)
-* Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets. (for https://issues.apache.org/jira/browse/LOG4J2-725[LOG4J2-725] by Matt Sicker)
+* Added documentation for Custom Levels and Custom Loggers. (https://issues.apache.org/jira/browse/LOG4J2-710[LOG4J2-710])
+* Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets. (https://issues.apache.org/jira/browse/LOG4J2-725[LOG4J2-725])
 
+[#release-notes-2-0-1-changed]
 === Changed
 
-* Update to LMAX Disruptor 3.3.0 from 3.2.1. (for https://issues.apache.org/jira/browse/LOG4J2-732[LOG4J2-732] by Gary Gregory)
-* Update to latest Jackson jars from the 2.4.1.X line. (for https://issues.apache.org/jira/browse/LOG4J2-733[LOG4J2-733] by Gary Gregory)
+* Update to LMAX Disruptor 3.3.0 from 3.2.1. (https://issues.apache.org/jira/browse/LOG4J2-732[LOG4J2-732])
+* Update to latest Jackson jars from the 2.4.1.X line. (https://issues.apache.org/jira/browse/LOG4J2-733[LOG4J2-733])
 
+[#release-notes-2-0-1-fixed]
 === Fixed
 
-* Fixed ClassLoader issues in loading Log4j providers in an OSGi environment. (for https://issues.apache.org/jira/browse/LOG4J2-373[LOG4J2-373] by Matt Sicker)
-* Fixed AbstractDatabaseManager to close connection on writeInternal error. (for https://issues.apache.org/jira/browse/LOG4J2-657[LOG4J2-657] by Remko Popma, Stefan Wehner)
-* DatePatternConverter ISO8601_PATTERN now conforms to ISO8601. (for https://issues.apache.org/jira/browse/LOG4J2-670[LOG4J2-670] by Remko Popma)
-* Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup. (for https://issues.apache.org/jira/browse/LOG4J2-703[LOG4J2-703] by Gary Gregory, Nelson Melina)
-* Improved error message if configuration file not found. (for https://issues.apache.org/jira/browse/LOG4J2-704[LOG4J2-704] by Remko Popma)
-* Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer (for https://issues.apache.org/jira/browse/LOG4J2-713[LOG4J2-713] by Gary Gregory, Nelson Melina)
-* Automatically disable log4j JMX when detecting we are running on Android. (for https://issues.apache.org/jira/browse/LOG4J2-716[LOG4J2-716] by Remko Popma)
-* Correctly handle NetworkOnMainThreadException thrown on Android during Log4j2 initialization. (for https://issues.apache.org/jira/browse/LOG4J2-719[LOG4J2-719] by Remko Popma)
-* Updated documentation regarding extensions to LoggerContextFactory and Log4j 2 providers. (for https://issues.apache.org/jira/browse/LOG4J2-731[LOG4J2-731] by Matt Sicker)
-* Fixed log4j-bom so that it won't interfere with spring-bom and others. (for https://issues.apache.org/jira/browse/LOG4J2-735[LOG4J2-735] by Matt Sicker)
-* Fixed log4j-bom so that it won't specify a default scope on any third party dependencies. (for https://issues.apache.org/jira/browse/LOG4J2-736[LOG4J2-736] by Matt Sicker)
-* RollingFileManager deadlock if async action thread fails to start. (for https://issues.apache.org/jira/browse/LOG4J2-738[LOG4J2-738] by Gary Gregory, Timothy Stack)
-* Fixed typo in webapp manual regarding sample web.xml file. (for https://issues.apache.org/jira/browse/LOG4J2-740[LOG4J2-740] by Matt Sicker, Kosta Krauth)
-* Reinstate the package configuration attribute for discovering custom plugins. (for https://issues.apache.org/jira/browse/LOG4J2-741[LOG4J2-741] by Remko Popma)
-* XInclude not working with relative path. (for https://issues.apache.org/jira/browse/LOG4J2-742[LOG4J2-742] by Gary Gregory, Pascal Chollet)
-* Avoid unnecessary Clock calls when TimestampMessage is logged. (for https://issues.apache.org/jira/browse/LOG4J2-744[LOG4J2-744] by Remko Popma, Scott Harrington)
-* Retain the default date pattern after fixing the ISO8601 pattern. (for https://issues.apache.org/jira/browse/LOG4J2-749[LOG4J2-749] by Remko Popma, Scott Harrington)
-* Webapp configuration page has incorrect class name. (for https://issues.apache.org/jira/browse/LOG4J2-750[LOG4J2-750] by Gary Gregory, Mike Calmus)
+* Fixed ClassLoader issues in loading Log4j providers in an OSGi environment. (https://issues.apache.org/jira/browse/LOG4J2-373[LOG4J2-373])
+* Fixed AbstractDatabaseManager to close connection on writeInternal error. (https://issues.apache.org/jira/browse/LOG4J2-657[LOG4J2-657])
+* DatePatternConverter ISO8601_PATTERN now conforms to ISO8601. (https://issues.apache.org/jira/browse/LOG4J2-670[LOG4J2-670])
+* Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup. (https://issues.apache.org/jira/browse/LOG4J2-703[LOG4J2-703])
+* Improved error message if configuration file not found. (https://issues.apache.org/jira/browse/LOG4J2-704[LOG4J2-704])
+* Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer (https://issues.apache.org/jira/browse/LOG4J2-713[LOG4J2-713])
+* Automatically disable log4j JMX when detecting we are running on Android. (https://issues.apache.org/jira/browse/LOG4J2-716[LOG4J2-716])
+* Correctly handle NetworkOnMainThreadException thrown on Android during Log4j2 initialization. (https://issues.apache.org/jira/browse/LOG4J2-719[LOG4J2-719])
+* Updated documentation regarding extensions to LoggerContextFactory and Log4j 2 providers. (https://issues.apache.org/jira/browse/LOG4J2-731[LOG4J2-731])
+* Fixed log4j-bom so that it won't interfere with spring-bom and others. (https://issues.apache.org/jira/browse/LOG4J2-735[LOG4J2-735])
+* Fixed log4j-bom so that it won't specify a default scope on any third party dependencies. (https://issues.apache.org/jira/browse/LOG4J2-736[LOG4J2-736])
+* RollingFileManager deadlock if async action thread fails to start. (https://issues.apache.org/jira/browse/LOG4J2-738[LOG4J2-738])
+* Fixed typo in webapp manual regarding sample web.xml file. (https://issues.apache.org/jira/browse/LOG4J2-740[LOG4J2-740])
+* Reinstate the package configuration attribute for discovering custom plugins. (https://issues.apache.org/jira/browse/LOG4J2-741[LOG4J2-741])
+* XInclude not working with relative path. (https://issues.apache.org/jira/browse/LOG4J2-742[LOG4J2-742])
+* Avoid unnecessary Clock calls when TimestampMessage is logged. (https://issues.apache.org/jira/browse/LOG4J2-744[LOG4J2-744])
+* Retain the default date pattern after fixing the ISO8601 pattern. (https://issues.apache.org/jira/browse/LOG4J2-749[LOG4J2-749])
+* Webapp configuration page has incorrect class name. (https://issues.apache.org/jira/browse/LOG4J2-750[LOG4J2-750])
