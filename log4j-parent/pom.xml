@@ -140,7 +140,7 @@
     <mockito.version>5.8.0</mockito.version>
     <mongodb.version>4.11.1</mongodb.version>
     <nashorn.version>15.4</nashorn.version>
-    <netty.version>4.1.102.Final</netty.version>
+    <netty.version>4.1.103.Final</netty.version>
     <opentest4j.version>1.3.0</opentest4j.version>
     <org.eclipse.osgi.version>3.18.600</org.eclipse.osgi.version>
     <oro.version>2.0.8</oro.version>
