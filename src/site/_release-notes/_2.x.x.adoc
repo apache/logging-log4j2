@@ -44,7 +44,7 @@ This releases contains ...
 * Update `org.apache.commons:commons-pool2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2057[2057])
 * Update `org.apache.kafka:kafka-clients` to version `3.6.1` (https://github.com/apache/logging-log4j2/pull/2068[2068])
 * Update `org.apache.maven:maven-core` to version `3.9.6` (https://github.com/apache/logging-log4j2/pull/2040[2040])
-* Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.2` (https://github.com/apache/logging-log4j2/pull/2059[2059])
+* Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.3` (https://github.com/apache/logging-log4j2/pull/2088[2088])
 * Update `org.codehaus.plexus:plexus-utils` to version `3.5.1` (https://github.com/apache/logging-log4j2/pull/2056[2056])
 * Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1984[1984])
 * Update `org.jmdns:jmdns` to version `3.5.9` (https://github.com/apache/logging-log4j2/pull/2067[2067])
