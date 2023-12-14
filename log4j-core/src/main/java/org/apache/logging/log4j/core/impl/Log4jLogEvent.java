@@ -1108,13 +1108,13 @@ public class Log4jLogEvent implements LogEvent {
         private final String loggerName;
         // transient since 2.8
         private final transient Message message;
-        /** since 2.8 */
+        /** @since 2.8 */
         private MarshalledObject<Message> marshalledMessage;
-        /** since 2.8 */
+        /** @since 2.8 */
         private String messageString;
 
         private final long timeMillis;
-        /** since 2.11 */
+        /** @since 2.11 */
         private final int nanoOfMillisecond;
 
         private final transient Throwable thrown;

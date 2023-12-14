@@ -78,6 +78,6 @@ public class ExecutorServices {
         return true;
     }
 
-    /** no-op method which can be invoked to ensure this class has been initialized per jls-12.4.2. */
+    /** No-op method which can be invoked to ensure this class has been initialized per jls-12.4.2. */
     public static void ensureInitialized() {}
 }
