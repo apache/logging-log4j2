@@ -46,6 +46,7 @@ This releases contains ...
 * Update `org.apache.maven:maven-core` to version `3.9.6` (https://github.com/apache/logging-log4j2/pull/2040[2040])
 * Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.3` (https://github.com/apache/logging-log4j2/pull/2088[2088])
 * Update `org.codehaus.plexus:plexus-utils` to version `3.5.1` (https://github.com/apache/logging-log4j2/pull/2056[2056])
+* Update `org.eclipse.persistence:org.eclipse.persistence.jpa` to version `2.7.14` (https://github.com/apache/logging-log4j2/pull/2094[2094])
 * Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1984[1984])
 * Update `org.jmdns:jmdns` to version `3.5.9` (https://github.com/apache/logging-log4j2/pull/2067[2067])
 * Update `org.springframework.boot:spring-boot` to version `2.7.18` (https://github.com/apache/logging-log4j2/pull/1998[1998])
