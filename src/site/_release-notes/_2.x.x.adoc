@@ -34,7 +34,7 @@ This releases contains ...
 * Update `commons-io:commons-io` to version `2.15.1` (https://github.com/apache/logging-log4j2/pull/2034[2034])
 * Update `commons-logging:commons-logging` to version `1.3.0` (https://github.com/apache/logging-log4j2/pull/2050[2050])
 * Update `de.flapdoodle.reverse:de.flapdoodle.reverse` to version `1.7.2` (https://github.com/apache/logging-log4j2/pull/1979[1979])
-* Update `github/codeql-action` to version `2.22.10` (https://github.com/apache/logging-log4j2/pull/2087[2087])
+* Update `github/codeql-action` to version `3.22.11` (https://github.com/apache/logging-log4j2/pull/2093[2093])
 * Update `net.java.dev.jna:jna` to version `5.14.0` (https://github.com/apache/logging-log4j2/pull/2081[2081])
 * Update `org.apache.activemq:activemq-broker` to version `6.0.1` (https://github.com/apache/logging-log4j2/pull/2043[2043])
 * Update `org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle` to version `1.3.7` (https://github.com/apache/logging-log4j2/pull/2058[2058])
