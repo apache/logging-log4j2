@@ -33,7 +33,7 @@ fail_for_invalid_args() {
 
 # Constants
 PROJECT_NAME="Apache Log4j"
-PROJECT_SITE="https://logging.apache.org/log4j"
+PROJECT_SITE="https://logging.apache.org/log4j/3.x"
 PROJECT_STAGING_SITE="${PROJECT_SITE/apache.org/staged.apache.org}"
 PROJECT_REPO="https://github.com/apache/logging-log4j2"
 PROJECT_DIST_DIR="https://dist.apache.org/repos/dist/dev/logging/log4j"
