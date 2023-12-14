@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-= 3.0.0 (2023-06-17)
+= 3.0.0-alpha1 (2023-06-17)
 
 As the Java ecosystem has evolved, requests have been received from users, and the need for improved security has
 become more apparent, changes were necessariy in Log4j's design:
@@ -40,7 +40,7 @@ in application frameworks that support multiple applications more flexible.
 for Log4j 2.x will continue to operate with the Log4j 3.x libraries present instead.
 
 
-[#release-notes-3-0-0-added]
+[#release-notes-3-0-0-alpha1-added]
 === Added
 
 * Allow plugins to be created through more flexible dependency injection patterns. (https://issues.apache.org/jira/browse/LOG4J2-1188[LOG4J2-1188])
@@ -55,7 +55,7 @@ for Log4j 2.x will continue to operate with the Log4j 3.x libraries present inst
 * Add built-in JSON configuration parser for a useful structured configuration file format which only requires the `java.base` module. (https://issues.apache.org/jira/browse/LOG4J2-3415[LOG4J2-3415])
 * Add `@Ordered` annotation to support plugin ordering when two or more plugins within the same category have the same case-insensitive name. (https://issues.apache.org/jira/browse/LOG4J2-857[LOG4J2-857])
 
-[#release-notes-3-0-0-changed]
+[#release-notes-3-0-0-alpha1-changed]
 === Changed
 
 * Simplify Maven `site` phase and align it with the one in `2.x` branch. (https://github.com/apache/logging-log4j2/pull/1220[1220])
@@ -84,12 +84,12 @@ for Log4j 2.x will continue to operate with the Log4j 3.x libraries present inst
 * Unify plugin builders and plugin factories. (https://issues.apache.org/jira/browse/LOG4J2-860[LOG4J2-860])
 * Update Conversant Disruptor from 1.12.15 to 1.12.21. The new version requires Java 11. (https://issues.apache.org/jira/browse/LOG4J2-2079[LOG4J2-2079])
 
-[#release-notes-3-0-0-removed]
+[#release-notes-3-0-0-alpha1-removed]
 === Removed
 
 * Remove support for `java.io.Serializable` in several classes including `Message`, `Layout`, `LogEvent`, `Logger`, and `ReadOnlyStringMap`. (https://issues.apache.org/jira/browse/LOG4J2-3228[LOG4J2-3228])
 
-[#release-notes-3-0-0-fixed]
+[#release-notes-3-0-0-alpha1-fixed]
 === Fixed
 
 * `EnvironmentLookup` may throw NPE. (https://issues.apache.org/jira/browse/LOG4J2-2244[LOG4J2-2244])
