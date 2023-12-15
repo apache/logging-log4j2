@@ -131,7 +131,7 @@
     <mockito.version>4.11.0</mockito.version>
     <mongodb.version>4.11.1</mongodb.version>
     <nashorn.version>15.4</nashorn.version>
-    <netty.version>4.1.101.Final</netty.version>
+    <netty.version>4.1.104.Final</netty.version>
     <org.eclipse.osgi.version>3.13.0.v20180226-1711</org.eclipse.osgi.version>
     <org.eclipse.persistence.version>2.7.14</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
