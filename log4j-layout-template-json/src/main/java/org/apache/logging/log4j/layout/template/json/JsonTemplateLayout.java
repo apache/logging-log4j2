@@ -34,7 +34,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.Uris;
 import org.apache.logging.log4j.plugins.*;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.util.Strings;
 
 @Configurable(elementType = Layout.ELEMENT_TYPE)

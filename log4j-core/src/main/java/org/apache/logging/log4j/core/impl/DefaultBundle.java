@@ -45,6 +45,7 @@ import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.spi.*;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 
 /**
  * Provides instance binding defaults.

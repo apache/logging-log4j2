@@ -41,13 +41,14 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.internal.RecyclerFactories;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactoryRegistry;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -105,7 +106,8 @@ public class LoggingSystem {
             environmentLazy.map(environment -> () -> getProvider().createContextMap(environment));
     private final Lazy<Supplier<ThreadContextStack>> threadContextStackFactoryLazy =
             environmentLazy.map(environment -> () -> getProvider().createContextStack(environment));
-    private final Lazy<RecyclerFactory> recyclerFactoryLazy = Lazy.lazy(() -> RecyclerFactories.INSTANCE);
+    private final Lazy<RecyclerFactory> recyclerFactoryLazy =
+            environmentLazy.map(RecyclerFactoryRegistry::findRecyclerFactory);
 
     public LoggingSystem() {}
 

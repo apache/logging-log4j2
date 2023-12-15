@@ -234,7 +234,6 @@
          Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
     <module>log4j-1.2-api</module>
     <module>log4j-api</module>
-    <module>log4j-api-queue-jctools</module>
     <module>log4j-api-test</module>
     <module>log4j-appserver</module>
     <module>log4j-core</module>
@@ -246,6 +245,7 @@
     <module>log4j-gctests</module>
     <module>log4j-iostreams</module>
     <module>log4j-jcl</module>
+    <module>log4j-jctools</module>
     <module>log4j-jdbc</module>
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-jndi</module>

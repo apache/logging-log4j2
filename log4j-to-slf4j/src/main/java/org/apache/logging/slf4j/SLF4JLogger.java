@@ -24,7 +24,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;

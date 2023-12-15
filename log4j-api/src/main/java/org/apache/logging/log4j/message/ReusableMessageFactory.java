@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactory;
+import org.apache.logging.log4j.spi.recycler.Recycler;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**

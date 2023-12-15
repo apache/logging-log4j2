@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.internal.QueueFactories;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
@@ -63,7 +63,7 @@ public final class StatusLogger extends AbstractLogger {
 
     private final ReadWriteLock listenersLock = new ReentrantReadWriteLock();
 
-    private final Queue<StatusData> messages;
+    private final Queue<StatusData> messages = new ConcurrentLinkedQueue<>();
 
     private int listenersLevel;
 
@@ -97,7 +97,6 @@ public final class StatusLogger extends AbstractLogger {
         this.logger = logger;
         this.configuration = configuration;
         this.listenersLevel = configuration.getDefaultLevel().intLevel();
-        messages = QueueFactories.INSTANCE.create(configuration.getMaxEntries());
     }
 
     /**
