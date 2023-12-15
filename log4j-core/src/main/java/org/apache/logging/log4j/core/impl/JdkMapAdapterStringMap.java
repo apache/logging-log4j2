@@ -53,6 +53,11 @@ public class JdkMapAdapterStringMap implements StringMap {
 
     public JdkMapAdapterStringMap(final Map<String, String> map) {
         this.map = Objects.requireNonNull(map, "map");
+        try {
+            map.replace(Strings.EMPTY, Strings.EMPTY, Strings.EMPTY);
+        } catch (final UnsupportedOperationException ignored) {
+            immutable = true;
+        }
     }
 
     @Override

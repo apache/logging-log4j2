@@ -16,18 +16,30 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests the JdkMapAdapterStringMap class.
@@ -836,5 +848,18 @@ public class JdkMapAdapterStringMapTest {
         state.data = original;
         original.forEach(COUNTER, state);
         assertEquals(state.count, original.size());
+    }
+
+    static Stream<Arguments> testImmutability() {
+        return Stream.of(
+                Arguments.of(new HashMap<>(), false),
+                Arguments.of(Collections.emptyMap(), true),
+                Arguments.of(Collections.unmodifiableMap(new HashMap<>()), true));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testImmutability(final Map<String, String> map, final boolean frozen) {
+        assertThat(new JdkMapAdapterStringMap(map).isFrozen()).as("Frozen").isEqualTo(frozen);
     }
 }
