@@ -119,14 +119,6 @@ public class AsyncAppenderTest {
     }
 
     @Test
-    @Tag("jctools")
-    @LoggerContextSource("BlockingQueueFactory-JCToolsBlockingQueue.xml")
-    public void testJcToolsBlockingQueue(final LoggerContext context) throws InterruptedException {
-        rewriteTest(context);
-        exceptionTest(context);
-    }
-
-    @Test
     @LoggerContextSource("BlockingQueueFactory-LinkedTransferQueue.xml")
     public void testLinkedTransferQueue(final LoggerContext context) throws InterruptedException {
         rewriteTest(context);

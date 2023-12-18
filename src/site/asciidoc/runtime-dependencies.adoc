@@ -182,8 +182,6 @@ The module info definition may be modified in the future to export these only to
 !
 !requires static com.lmax.disruptor
 !
-!requires static org.jctools.core
-!
 !requires static org.osgi.framework
 !
 !requires static com.conversantmedia.disruptor
@@ -311,8 +309,6 @@ The module info definition may be modified in the future to export these only to
 !requires org.apache.logging.log4j.plugins
 !
 !requires org.apache.logging.log4j.core
-!
-!requires org.jctools.core
 !
 !===
 

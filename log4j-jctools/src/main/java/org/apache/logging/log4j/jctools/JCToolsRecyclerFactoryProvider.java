@@ -32,10 +32,12 @@ import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.jctools.queues.MpmcArrayQueue;
 
 /**
- * A multi-producer-multi-consumer, thread-safe {@link Recycler} factory provider implementation based on <a href="https://jctools.github.io/JCTools/">JCTools</a>.
+ * A {@link Recycler} factory provider implementation based on <a href="https://jctools.github.io/JCTools/">JCTools</a>.
+ *
+ * @since 3.0.0
  */
 @ServiceProvider(RecyclerFactoryProvider.class)
-public final class JCToolsMpmcRecyclerFactoryProvider implements RecyclerFactoryProvider {
+public final class JCToolsRecyclerFactoryProvider implements RecyclerFactoryProvider {
 
     @Override
     public int getOrder() {
@@ -57,10 +59,8 @@ public final class JCToolsMpmcRecyclerFactoryProvider implements RecyclerFactory
         return new JCToolsMpmcRecyclerFactory(capacity);
     }
 
-    // Visible for testing
-    static final class JCToolsMpmcRecyclerFactory implements RecyclerFactory {
+    private static final class JCToolsMpmcRecyclerFactory implements RecyclerFactory {
 
-        // Visible for testing
         private final int capacity;
 
         private JCToolsMpmcRecyclerFactory(final int capacity) {
@@ -75,13 +75,11 @@ public final class JCToolsMpmcRecyclerFactoryProvider implements RecyclerFactory
             return new JCToolsMpmcRecycler<>(supplier, cleaner, queue);
         }
 
-        // Visible for testing
-        static final class JCToolsMpmcRecycler<V> extends AbstractRecycler<V> {
+        private static final class JCToolsMpmcRecycler<V> extends AbstractRecycler<V> {
 
             private final Consumer<V> cleaner;
 
-            // Visible for testing
-            final Queue<V> queue;
+            private final Queue<V> queue;
 
             private JCToolsMpmcRecycler(final Supplier<V> supplier, final Consumer<V> cleaner, final Queue<V> queue) {
                 super(supplier);

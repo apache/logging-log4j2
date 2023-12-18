@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.internal.recycler;
 
-import static org.apache.logging.log4j.internal.recycler.RecyclerFactoriesTestUtil.createForEnvironment;
+import static org.apache.logging.log4j.internal.recycler.RecyclerFactoryTestUtil.createForEnvironment;
 import static org.apache.logging.log4j.spi.recycler.Recycler.DEFAULT_CAPACITY;
 import static org.assertj.core.api.Assertions.assertThat;
 

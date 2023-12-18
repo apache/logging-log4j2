@@ -23,9 +23,9 @@ import org.apache.logging.log4j.spi.recycler.RecyclerFactoryRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
-final class RecyclerFactoriesTestUtil {
+final class RecyclerFactoryTestUtil {
 
-    private RecyclerFactoriesTestUtil() {}
+    private RecyclerFactoryTestUtil() {}
 
     @Nullable
     static RecyclerFactory createForEnvironment(

@@ -359,12 +359,6 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api-queue-jctools</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api-test</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -414,6 +408,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jcl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jctools</artifactId>
         <version>${project.version}</version>
       </dependency>
 

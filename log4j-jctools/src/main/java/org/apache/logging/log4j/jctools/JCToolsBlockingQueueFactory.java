@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.jctools;
 
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
+import org.apache.logging.log4j.core.async.BlockingQueueFactory;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -27,13 +28,13 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.jctools.queues.MpscArrayQueue;
 
 /**
- * Factory for creating instances of BlockingQueues backed by JCTools {@link MpscArrayQueue}.
+ * A {@link BlockingQueueFactory} based on <a href="https://jctools.github.io/JCTools/">JCTools</a>.
  *
- * @since 2.7
+ * @since 3.0.0
  */
 @Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE, printObject = true)
 @Plugin("JCToolsBlockingQueue")
-public class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
+public final class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
 
     private final WaitStrategy waitStrategy;
 
