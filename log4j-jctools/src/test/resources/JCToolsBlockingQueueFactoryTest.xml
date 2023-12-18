@@ -15,16 +15,25 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF">
+<Configuration status="OFF" name="JCToolsBlockingQueueFactoryTest">
+
   <Appenders>
-    <List name="List" raw="true">
-      <JsonTemplateLayout
-          recyclerFactory="queue:supplier=org.jctools.queues.MpmcArrayQueue.new,capacity=512"/>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <List name="List">
+      <PatternLayout pattern="%C %M %m"/>
     </List>
-  </Appenders>
-  <Loggers>
-    <Root level="TRACE">
+    <Async name="Async" includeLocation="true" error-ref="STDOUT">
       <AppenderRef ref="List"/>
+      <JCToolsBlockingQueue/>
+    </Async>
+  </Appenders>
+
+  <Loggers>
+    <Root level="debug">
+      <AppenderRef ref="Async"/>
     </Root>
   </Loggers>
+
 </Configuration>

@@ -34,7 +34,7 @@ import org.apache.logging.log4j.message.ParameterVisitable;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;

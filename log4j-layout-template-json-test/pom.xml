@@ -78,12 +78,6 @@
       <artifactId>java-allocation-instrumenter</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- needed for `RecyclerFactoriesTest` -->
-    <dependency>
-      <groupId>org.jctools</groupId>
-      <artifactId>jctools-core</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>

@@ -18,8 +18,8 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactory;
+import org.apache.logging.log4j.spi.recycler.Recycler;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;

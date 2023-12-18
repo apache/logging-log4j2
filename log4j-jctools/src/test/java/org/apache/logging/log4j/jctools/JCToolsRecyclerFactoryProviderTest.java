@@ -14,16 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.jctools;
 
-import java.util.concurrent.BlockingQueue;
-import org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory;
-import org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory.WaitStrategy;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class RunJCTools extends AbstractRunQueue {
+import java.util.Comparator;
+import java.util.List;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactoryProvider;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactoryRegistry;
+import org.junit.jupiter.api.Test;
 
-    @Override
-    BlockingQueue<String> createQueue(final int capacity) {
-        return JCToolsBlockingQueueFactory.createFactory(WaitStrategy.SPIN).create(capacity);
+class JCToolsRecyclerFactoryProviderTest {
+
+    @Test
+    void verify_is_the_first() {
+        final List<Class<?>> providerClasses = RecyclerFactoryRegistry.getRecyclerFactoryProviders().stream()
+                .sorted(Comparator.comparing(RecyclerFactoryProvider::getOrder))
+                .<Class<?>>map(RecyclerFactoryProvider::getClass)
+                .toList();
+        assertThat(providerClasses).startsWith(JCToolsRecyclerFactoryProvider.class);
     }
 }

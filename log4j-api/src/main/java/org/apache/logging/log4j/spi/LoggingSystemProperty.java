@@ -190,7 +190,15 @@ public enum LoggingSystemProperty implements PropertyKey {
      * (from either {@code javax} or {@code jakarta}) is checked to see if this is a webapp.
      */
     // Web.isWebApp : calculate | true | false
-    IS_WEBAPP(PropertyComponent.WEB, Constant.IS_WEB_APP);
+    IS_WEBAPP(PropertyComponent.WEB, Constant.IS_WEB_APP),
+    /**
+     * Property to override the default recycler factory.
+     */
+    RECYCLER_FACTORY(PropertyComponent.RECYCLER, Constant.RECYCLER_FACTORY),
+    /**
+     * Property to override the default recycler capacity.
+     */
+    RECYCLER_CAPACITY(PropertyComponent.RECYCLER, Constant.RECYCLER_CAPACITY);
 
     public static final String SIMPLE_LOGGER_LOG_LEVEL = "SimpleLogger.%s.level";
     public static final String SYSTEM_PROPERTY_PREFIX = "log4j2.*.";
@@ -476,5 +484,8 @@ public enum LoggingSystemProperty implements PropertyKey {
         static final String IS_WEB_APP = "isWebApp";
         public static final String WEB =
                 LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.WEB + DELIM + IS_WEB_APP;
+
+        static final String RECYCLER_FACTORY = "factory";
+        static final String RECYCLER_CAPACITY = "capacity";
     }
 }

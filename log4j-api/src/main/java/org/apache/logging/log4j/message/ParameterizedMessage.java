@@ -19,7 +19,7 @@ package org.apache.logging.log4j.message;
 import java.util.Arrays;
 import java.util.Objects;
 import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 

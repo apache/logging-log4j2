@@ -14,15 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.spi.recycler;
 
 /**
- * Strategy for recycling objects. This is primarily useful for heavyweight objects and buffers.
+ * Contract for recycling strategies.
+ * This is the primary building block for logging components striving for garbage-free operation.
  *
  * @param <V> the recyclable type
  * @since 3.0.0
  */
 public interface Recycler<V> {
+
+    /**
+     * The default recycler capacity: {@code max(2C+1, 8)}, {@code C} denoting the number of available processors
+     */
+    int DEFAULT_CAPACITY = Math.max(2 * Runtime.getRuntime().availableProcessors() + 1, 8);
 
     /**
      * Acquires an instance of V. This may either be a fresh instance of V or a recycled instance of V.

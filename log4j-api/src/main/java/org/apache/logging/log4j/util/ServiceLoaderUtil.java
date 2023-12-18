@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import static java.util.Objects.requireNonNull;
+
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.ServiceConfigurationError;
@@ -36,7 +39,15 @@ public final class ServiceLoaderUtil {
 
     private ServiceLoaderUtil() {}
 
+    public static <S> Stream<S> safeStream(final Class<S> type, @Nullable final ClassLoader classLoader) {
+        requireNonNull(type, "type");
+        final ClassLoader effectiveLoader = classLoader != null ? classLoader : type.getClassLoader();
+        final ServiceLoader<S> serviceLoader = ServiceLoader.load(type, effectiveLoader);
+        return safeStream(serviceLoader);
+    }
+
     public static <S> Stream<S> safeStream(final ServiceLoader<S> serviceLoader) {
+        requireNonNull(serviceLoader, "serviceLoader");
         final Set<Class<?>> classes = new HashSet<>();
         return StreamSupport.stream(new ServiceLoaderSpliterator<>(serviceLoader), false)
                 // only the first occurrence of a class

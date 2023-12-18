@@ -14,34 +14,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.internal;
+package org.apache.logging.log4j.internal.recycler;
 
+import static org.apache.logging.log4j.internal.recycler.RecyclerFactoryTestUtil.createForEnvironment;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.internal.recycler.ThreadLocalRecyclerFactoryProvider.ThreadLocalRecyclerFactory;
+import org.apache.logging.log4j.internal.recycler.ThreadLocalRecyclerFactoryProvider.ThreadLocalRecyclerFactory.ThreadLocalRecycler;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.params.IntRangeSource;
 
-class ThreadLocalRecyclerFactoryTest {
+class ThreadLocalRecyclerFactoryProviderTest {
 
-    private static final int CAPACITY = 8;
+    private static final int CAPACITY = 13;
 
     private static class RecyclableObject {}
 
-    private Recycler<RecyclableObject> recycler;
+    private ThreadLocalRecycler<RecyclableObject> recycler;
 
     private Queue<RecyclableObject> recyclerQueue;
 
     @BeforeEach
     void setUp() {
-        recycler = new ThreadLocalRecyclerFactory(CAPACITY).create(RecyclableObject::new);
-        recyclerQueue = ((ThreadLocalRecyclerFactory.ThreadLocalRecycler<RecyclableObject>) recycler).getQueue();
+        final RecyclerFactory recyclerFactory = createForEnvironment(null, "threadLocal", CAPACITY);
+        assertThat(recyclerFactory).isInstanceOf(ThreadLocalRecyclerFactory.class);
+        assert recyclerFactory != null;
+        recycler = (ThreadLocalRecycler<RecyclableObject>) recyclerFactory.create(RecyclableObject::new);
+        recyclerQueue = recycler.queueRef.get();
+    }
+
+    @Test
+    void should_not_be_configured_when_TLs_are_disabled() {
+        assertThatThrownBy(() -> createForEnvironment(false, "threadLocal", null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("failed to configure recycler");
     }
 
     @ParameterizedTest
@@ -79,18 +93,22 @@ class ThreadLocalRecyclerFactoryTest {
 
         assertThat(recyclerQueue).isEmpty();
 
-        // simulate a massively callstack with tons of logging
-        final List<RecyclableObject> acquiredObjects =
-                IntStream.range(0, 1024).mapToObj(i -> recycler.acquire()).collect(Collectors.toList());
+        // Simulate a callstack with excessive logging
+        final int acquisitionCount = Math.addExact(CAPACITY, 1024);
+        final List<RecyclableObject> acquiredObjects = IntStream.range(0, acquisitionCount)
+                .mapToObj(i -> recycler.acquire())
+                .toList();
 
-        // still nothing returned to pool
+        // Verify collected instances are all new
+        assertThat(acquiredObjects).doesNotHaveDuplicates();
+
+        // Verify the pool is still empty
         assertThat(recyclerQueue).isEmpty();
 
-        // don't want any duplicate instances
-        assertThat(acquiredObjects).containsOnlyOnceElementsOf(acquiredObjects);
+        // Release all acquired instances
         acquiredObjects.forEach(recycler::release);
 
-        // upon return, we should only have `CAPACITY` retained for future use
+        // Verify the queue size is capped
         assertThat(recyclerQueue).hasSize(CAPACITY);
     }
 }
