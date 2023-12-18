@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.recycler.Recycler;
 
 /**
  * Creates messages. Implementations can provide different message format syntaxes.

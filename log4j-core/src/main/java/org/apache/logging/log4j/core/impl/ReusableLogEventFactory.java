@@ -29,8 +29,8 @@ import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactory;
+import org.apache.logging.log4j.spi.recycler.Recycler;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 
 /**
  * Garbage-free LogEventFactory that recycles mutable {@link LogEvent} instances.

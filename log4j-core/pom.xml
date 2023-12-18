@@ -40,7 +40,6 @@
       com.lmax.disruptor.*;resolution:=optional,
       org.apache.commons.compress.*;resolution:=optional,
       org.fusesource.jansi;resolution:=optional,
-      org.jctools.*;resolution:=optional,
       <!-- Optional Java modules -->
       <!-- java.management -->
       java.lang.management;resolution:=optional,
@@ -132,12 +131,6 @@
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
-    <dependency>
-      <groupId>org.jctools</groupId>
-      <artifactId>jctools-core</artifactId>
       <optional>true</optional>
     </dependency>
   </dependencies>

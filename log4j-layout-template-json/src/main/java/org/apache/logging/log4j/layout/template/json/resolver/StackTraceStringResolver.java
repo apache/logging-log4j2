@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.layout.template.json.util.CharSequencePointer;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter;
-import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactory;
+import org.apache.logging.log4j.spi.recycler.Recycler;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 
 /**
  * Exception stack trace to JSON string resolver used by {@link ExceptionResolver}.

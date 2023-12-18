@@ -14,7 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.spi.recycler;
+
 /**
  * Interface implemented by classes that need to interact with the {@link Recycler} that created them.
  */

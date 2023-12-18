@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.spi.recycler;
+
+import static java.util.Objects.requireNonNull;
 
 import java.util.function.Supplier;
 
@@ -22,15 +24,15 @@ public abstract class AbstractRecycler<V> implements Recycler<V> {
 
     private final Supplier<V> supplier;
 
-    public AbstractRecycler(final Supplier<V> supplier) {
-        this.supplier = supplier;
+    protected AbstractRecycler(final Supplier<V> supplier) {
+        this.supplier = requireNonNull(supplier, "supplier");
     }
 
     protected final V createInstance() {
         final V instance = supplier.get();
         if (instance instanceof RecyclerAware) {
             @SuppressWarnings("unchecked")
-            RecyclerAware<V> recyclerAware = (RecyclerAware<V>) instance;
+            final RecyclerAware<V> recyclerAware = (RecyclerAware<V>) instance;
             recyclerAware.setRecycler(this);
         }
         return instance;

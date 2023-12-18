@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.util.Lazy;
 
 /**

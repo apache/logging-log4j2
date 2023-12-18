@@ -39,7 +39,7 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.spi.RecyclerFactory;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**

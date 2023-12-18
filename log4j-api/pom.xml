@@ -36,9 +36,7 @@
     <bnd-module-name>org.apache.logging.log4j</bnd-module-name>
     <bnd-extra-package-options>
       <!-- No JSR 305 at runtime -->
-      !javax.annotation.*,
-      <!-- Optional dependencies -->
-      org.jctools.*;resolution:=optional
+      !javax.annotation.*
     </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- No JSR 305 at runtime -->
@@ -48,11 +46,4 @@
     </bnd-extra-module-options>
 
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>org.jctools</groupId>
-      <artifactId>jctools-core</artifactId>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
 </project>

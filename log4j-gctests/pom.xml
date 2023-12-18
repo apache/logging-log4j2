@@ -99,12 +99,6 @@
       <artifactId>jansi</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
-    <dependency>
-      <groupId>org.jctools</groupId>
-      <artifactId>jctools-core</artifactId>
-      <optional>true</optional>
-    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>

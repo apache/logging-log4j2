@@ -192,6 +192,7 @@ attribute, `spinPolicy`, which corresponds to the `SpinPolicy` enum.
 |JCToolsBlockingQueue |This uses
 https://jctools.github.io/JCTools/[JCTools], specifically the MPSC
 bounded lock-free queue.
+This implementation is provided by the `log4j-jctools` artifact.
 
 |LinkedTransferQueue |This uses the new in Java 7 implementation
 https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/LinkedTransferQueue.html[`LinkedTransferQueue`].

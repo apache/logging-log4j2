@@ -35,6 +35,7 @@ public enum PropertyComponent {
     LOGGER(Constant.LOGGER),
     LOGGER_CONTEXT(Constant.LOGGER_CONTEXT),
     MESSAGE(Constant.MESSAGE),
+    RECYCLER(Constant.RECYCLER),
     SCRIPT(Constant.SCRIPT),
     SIMPLE_LOGGER(Constant.SIMPLE_LOGGER),
     STATUS_LOGGER(Constant.STATUS_LOGGER),
@@ -74,6 +75,7 @@ public enum PropertyComponent {
         public static final String LOGGER = "Logger";
         public static final String LOGGER_CONTEXT = "LoggerContext";
         public static final String MESSAGE = "Message";
+        public static final String RECYCLER = "Recycler";
         public static final String SCRIPT = "Script";
         public static final String SIMPLE_LOGGER = "SimpleLogger";
         public static final String STATUS_LOGGER = "StatusLogger";
