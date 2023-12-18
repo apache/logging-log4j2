@@ -108,7 +108,7 @@
     <javax-servlet.version>4.0.1</javax-servlet.version>
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <jansi.version>2.4.1</jansi.version>
-    <java-allocation-instrumenter.version>3.3.3</java-allocation-instrumenter.version>
+    <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>4.0.2</jctools.version>
     <je.version>18.3.12</je.version>
