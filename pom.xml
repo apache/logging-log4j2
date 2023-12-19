@@ -325,7 +325,7 @@
          2. This value is employed in various places while creating the distribution
          To mitigate these, we define a *dummy* value here and let the CI replace it during a release.
          Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
-    <project.build.outputTimestamp>2023-12-13T13:21:07Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-12-19T18:55:31Z</project.build.outputTimestamp>
 
     <!-- ========================
          Site-specific properties
