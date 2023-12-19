@@ -825,11 +825,17 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <jdkToolchain>
-                <version>[1.8, 9)</version>
-              </jdkToolchain>
-            </configuration>
+            <executions>
+              <!-- Modifies only the `default-test` run -->
+              <execution>
+                <id>default-test</id>
+                <configuration>
+                  <jdkToolchain>
+                    <version>[1.8, 9)</version>
+                  </jdkToolchain>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

@@ -89,8 +89,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <executions>
+          <!-- Uses a different id than `default-test` to ignore the `java8-tests` profile -->
           <execution>
-            <id>test</id>
+            <id>run-tests</id>
             <goals>
               <goal>test</goal>
             </goals>
@@ -100,29 +101,4 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>java8-tests</id>
-      <activation>
-        <property>
-          <name>env.CI</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration combine.self="override">
-              <reuseForks>false</reuseForks>
-              <systemPropertyVariables>
-                <java.awt.headless>true</java.awt.headless>
-              </systemPropertyVariables>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
