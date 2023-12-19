@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-= 3.0.0-beta1 (2023-12-13)
+= 3.0.0-beta1 (2023-12-19)
 
 This is the first beta release of the upcoming major release, i.e., `3.0.0`.
 
