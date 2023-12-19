@@ -50,6 +50,9 @@ final class DisruptorUtil {
     static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
             .getBooleanProperty("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", true);
 
+    static final int DISRUPTOR_MAJOR_VERSION =
+            LoaderUtil.isClassAvailable("com.lmax.disruptor.SequenceReportingEventHandler") ? 3 : 4;
+
     private DisruptorUtil() {}
 
     static WaitStrategy createWaitStrategy(

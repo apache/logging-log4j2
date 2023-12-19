@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.EventHandler;
-import com.lmax.disruptor.Sequence;
+import com.lmax.disruptor.LifecycleAware;
+import com.lmax.disruptor.SequenceReportingEventHandler;
 
 /**
  * This event handler gets passed messages from the RingBuffer as they become
@@ -25,59 +25,12 @@ import com.lmax.disruptor.Sequence;
  * controlled by the {@code Executor} passed to the {@code Disruptor}
  * constructor.
  */
-public class RingBufferLogEventHandler implements EventHandler<RingBufferLogEvent> {
-
-    private static final int NOTIFY_PROGRESS_THRESHOLD = 50;
-    private Sequence sequenceCallback;
-    private int counter;
-    private long threadId = -1;
-
-    @Override
-    public void setSequenceCallback(final Sequence sequenceCallback) {
-        this.sequenceCallback = sequenceCallback;
-    }
-
-    @Override
-    public void onEvent(final RingBufferLogEvent event, final long sequence, final boolean endOfBatch)
-            throws Exception {
-        try {
-            // RingBufferLogEvents are populated by an EventTranslator. If an exception is thrown during event
-            // translation, the event may not be fully populated, but Disruptor requires that the associated sequence
-            // still be published since a slot has already been claimed in the ring buffer. Ignore any such unpopulated
-            // events. The exception that occurred during translation will have already been propagated.
-            if (event.isPopulated()) {
-                event.execute(endOfBatch);
-            }
-        } finally {
-            event.clear();
-            // notify the BatchEventProcessor that the sequence has progressed.
-            // Without this callback the sequence would not be progressed
-            // until the batch has completely finished.
-            notifyCallback(sequence);
-        }
-    }
-
-    private void notifyCallback(final long sequence) {
-        if (++counter > NOTIFY_PROGRESS_THRESHOLD) {
-            sequenceCallback.set(sequence);
-            counter = 0;
-        }
-    }
+public class RingBufferLogEventHandler extends RingBufferLogEventHandler4
+        implements SequenceReportingEventHandler<RingBufferLogEvent>, LifecycleAware {
 
     /**
-     * Returns the thread ID of the background consumer thread, or {@code -1} if the background thread has not started
-     * yet.
-     * @return the thread ID of the background consumer thread, or {@code -1}
+     * @deprecated Use the {@link RingBufferLogEventHandler4#create()} factory method instead.
      */
-    public long getThreadId() {
-        return threadId;
-    }
-
-    @Override
-    public void onStart() {
-        threadId = Thread.currentThread().getId();
-    }
-
-    @Override
-    public void onShutdown() {}
+    @Deprecated
+    public RingBufferLogEventHandler() {}
 }

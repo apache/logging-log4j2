@@ -122,7 +122,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         final ExceptionHandler<RingBufferLogEvent> errorHandler = DisruptorUtil.getAsyncLoggerExceptionHandler();
         disruptor.setDefaultExceptionHandler(errorHandler);
 
-        final RingBufferLogEventHandler[] handlers = {new RingBufferLogEventHandler()};
+        final RingBufferLogEventHandler4[] handlers = {RingBufferLogEventHandler4.create()};
         disruptor.handleEventsWith(handlers);
 
         LOGGER.debug(
