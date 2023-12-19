@@ -39,13 +39,14 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("AsyncLoggers")
+@Tag(Tags.ASYNC_LOGGERS)
 @UsingStatusListener
 public class AsyncLoggerConfigTest {
 

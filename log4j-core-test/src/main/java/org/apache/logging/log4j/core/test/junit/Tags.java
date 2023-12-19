@@ -14,23 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.async;
-
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.Tags;
-import org.apache.logging.log4j.test.junit.SetTestProperty;
-import org.junit.jupiter.api.Tag;
+package org.apache.logging.log4j.core.test.junit;
 
 /**
- * Tests queue full scenarios with AsyncLoggers in configuration.
+ * Container for a Junit 5 tags used in tests.
  */
-@SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
-@Tag(Tags.ASYNC_LOGGERS)
-public class QueueFullAsyncLoggerConfigTest2 extends QueueFullAsyncLoggerConfigTest {
+public final class Tags {
 
-    @Override
-    protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
-        super.checkConfig(ctx);
-        assertFormatMessagesInBackground();
-    }
+    /**
+     * Tests that use LMAX Disruptor. Same name as the JUnit 4 category.
+     */
+    public static final String ASYNC_LOGGERS = "org.apache.logging.log4j.core.test.categories.AsyncLoggers";
+
+    private Tags() {}
 }

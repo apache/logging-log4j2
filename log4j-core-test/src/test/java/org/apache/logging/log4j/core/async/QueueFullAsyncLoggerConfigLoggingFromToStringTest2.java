@@ -17,12 +17,15 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.junit.jupiter.api.Tag;
 
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
  */
 @SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
+@Tag(Tags.ASYNC_LOGGERS)
 public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2
         extends QueueFullAsyncLoggerConfigLoggingFromToStringTest {
 

@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
@@ -35,7 +36,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("AsyncLoggers")
+@Tag(Tags.ASYNC_LOGGERS)
 @UsingTestProperties
 @UsingStatusListener
 public class AsyncLoggerThreadContextTest {

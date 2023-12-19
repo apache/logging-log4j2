@@ -21,8 +21,10 @@ import static org.assertj.core.api.Assertions.*;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.Constants;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -31,6 +33,7 @@ import org.junit.jupiter.api.Test;
 @SetTestProperty(key = "log4j2.enableThreadlocals", value = "true")
 @SetTestProperty(key = "log4j2.isWebapp", value = "false")
 @SetTestProperty(key = "log4j2.asyncLoggerConfigRingBufferSize", value = "128")
+@Tag(Tags.ASYNC_LOGGERS)
 public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFullAbstractTest {
 
     @Override

@@ -59,7 +59,11 @@
       java.allocation.instrumenter;substitute="java-allocation-instrumenter",
       spring.test;substitute="spring-test"
     </bnd-extra-module-options>
+
+    <!-- Additional version of LMAX Disruptor to test -->
+    <disruptor4.version>4.0.0</disruptor4.version>
   </properties>
+
   <dependencies>
     <!-- Pull in useful test classes from API -->
     <dependency>
@@ -369,6 +373,32 @@
             </path>
           </annotationProcessorPaths>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test-disruptor-4</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <additionalClasspathDependencies>
+                <dependency>
+                  <groupId>com.lmax</groupId>
+                  <artifactId>disruptor</artifactId>
+                  <version>${disruptor4.version}</version>
+                </dependency>
+              </additionalClasspathDependencies>
+              <classpathDependencyExcludes>
+                <classpathDependencyExclude>com.lmax:disruptor</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+              <groups>org.apache.logging.log4j.core.test.categories.AsyncLoggers</groups>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>

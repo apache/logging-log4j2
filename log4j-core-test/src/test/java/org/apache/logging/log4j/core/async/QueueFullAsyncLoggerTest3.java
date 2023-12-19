@@ -26,9 +26,11 @@ import org.apache.logging.log4j.core.GarbageCollectionHelper;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -41,6 +43,7 @@ import org.junit.jupiter.api.Timeout;
 @SetTestProperty(key = "log4j2.asyncLoggerRingBufferSize", value = "128")
 @SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
 @SetTestProperty(key = "log4j2.asyncQueueFullPolicy", value = "Discard")
+@Tag(Tags.ASYNC_LOGGERS)
 public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
     @Override

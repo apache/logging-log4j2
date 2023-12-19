@@ -19,13 +19,16 @@ package org.apache.logging.log4j.core.async;
 import static org.junit.Assert.*;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
 @SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
+@Tag(Tags.ASYNC_LOGGERS)
 public class QueueFullAsyncLoggerLoggingFromToStringTest2 extends QueueFullAsyncLoggerLoggingFromToStringTest {
 
     @Override
