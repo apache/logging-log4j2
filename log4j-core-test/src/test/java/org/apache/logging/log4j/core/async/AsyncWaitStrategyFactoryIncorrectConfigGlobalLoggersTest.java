@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.LogManager;
@@ -58,10 +58,14 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
 
         final AsyncLogger logger = (AsyncLogger) context.getRootLogger();
         final AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
-        assertEquals(
-                TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
-        assertThat(
-                "waitstrategy is TimeoutBlockingWaitStrategy",
-                delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
+        if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 3) {
+            assertEquals(
+                    TimeoutBlockingWaitStrategy.class,
+                    delegate.getWaitStrategy().getClass());
+        } else {
+            assertEquals(
+                    Class.forName("com.lmax.disruptor.TimeoutBlockingWaitStrategy"),
+                    delegate.getWaitStrategy().getClass());
+        }
     }
 }

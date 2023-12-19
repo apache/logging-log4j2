@@ -18,7 +18,10 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.Tags;
+import org.junit.jupiter.api.Tag;
 
+@Tag(Tags.ASYNC_LOGGERS)
 class AsyncLoggerClassLoadDeadlock {
     static {
         final Logger log = LogManager.getLogger("com.foo.bar.deadlock");
