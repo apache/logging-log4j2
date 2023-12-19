@@ -45,7 +45,7 @@
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- dependency versions -->
-    <spring-cloud.version>2021.0.8</spring-cloud.version>
+    <spring-cloud.version>2021.0.9</spring-cloud.version>
 
   </properties>
 

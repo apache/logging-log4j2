@@ -52,6 +52,7 @@ This releases contains ...
 * Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1984[1984])
 * Update `org.jmdns:jmdns` to version `3.5.9` (https://github.com/apache/logging-log4j2/pull/2067[2067])
 * Update `org.springframework.boot:spring-boot` to version `2.7.18` (https://github.com/apache/logging-log4j2/pull/1998[1998])
+* Update `org.springframework.cloud:spring-cloud-dependencies` to version `2021.0.9` (https://github.com/apache/logging-log4j2/pull/2109[2109])
 
 [#release-notes-2-x-x-fixed]
 === Fixed
