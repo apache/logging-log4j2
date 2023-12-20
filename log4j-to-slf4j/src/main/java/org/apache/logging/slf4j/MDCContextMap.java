@@ -16,6 +16,7 @@
  */
 package org.apache.logging.slf4j;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.logging.log4j.spi.CleanableThreadContextMap;
@@ -75,13 +76,12 @@ public class MDCContextMap implements CleanableThreadContextMap {
     }
 
     @Override
-    @SuppressWarnings("unchecked") // nothing we can do about this, restricted by SLF4J API
     public Map<String, String> getCopy() {
-        return MDC.getCopyOfContextMap();
+        final Map<String, String> contextMap = MDC.getCopyOfContextMap();
+        return contextMap != null ? contextMap : new HashMap<>();
     }
 
     @Override
-    @SuppressWarnings("unchecked") // nothing we can do about this, restricted by SLF4J API
     public Map<String, String> getImmutableMapOrNull() {
         return MDC.getCopyOfContextMap();
     }
