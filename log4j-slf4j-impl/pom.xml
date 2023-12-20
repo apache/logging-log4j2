@@ -28,9 +28,10 @@
   <name>Apache Log4j SLF4J Binding</name>
   <description>The Apache Log4j SLF4J API binding to Log4j 2 Core</description>
   <properties>
+    <slf4j.version>1.7.36</slf4j.version>
     <!-- Do not upgrade the SLF4J version. 1.7.26 broke backward compatibility. Users can update the version if
       they do not require support for SLF4J's EventData -->
-    <slf4j.version>1.7.25</slf4j.version>
+    <slf4j-ext.version>1.7.25</slf4j-ext.version>
 
     <!--
       ~ OSGi and JPMS options
@@ -46,6 +47,25 @@
       org.slf4j;substitute="slf4j-api"
     </bnd-extra-module-options>
   </properties>
+
+  <!-- Use explicit versions as a temporary workaround to a Coursier/Ivy bug:
+    https://github.com/apache/logging-log4j2/issues/2065 -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-ext</artifactId>
+        <version>${slf4j-ext.version}</version>
+        <optional>true</optional>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>
