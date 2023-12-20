@@ -253,7 +253,11 @@ public class RollingFileManager extends FileManager {
     @Override
     protected void createParentDir(final File file) {
         if (directWrite) {
-            file.getParentFile().mkdirs();
+            final File parent = file.getParentFile();
+            // If the parent is null the file is in the current working directory.
+            if (parent != null) {
+                parent.mkdirs();
+            }
         }
     }
 
