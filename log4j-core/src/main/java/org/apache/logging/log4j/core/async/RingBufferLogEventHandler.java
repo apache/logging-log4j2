@@ -24,13 +24,11 @@ import com.lmax.disruptor.SequenceReportingEventHandler;
  * available. Processing of these messages is done in a separate thread,
  * controlled by the {@code Executor} passed to the {@code Disruptor}
  * constructor.
+ * <p>
+ *     <strong>Warning:</strong> this class only works with Disruptor 3.x.
+ * </p>
+ * @deprecated Only used internally, will be removed in the next major version.
  */
+@Deprecated
 public class RingBufferLogEventHandler extends RingBufferLogEventHandler4
-        implements SequenceReportingEventHandler<RingBufferLogEvent>, LifecycleAware {
-
-    /**
-     * @deprecated Use the {@link RingBufferLogEventHandler4#create()} factory method instead.
-     */
-    @Deprecated
-    public RingBufferLogEventHandler() {}
-}
+        implements SequenceReportingEventHandler<RingBufferLogEvent>, LifecycleAware {}

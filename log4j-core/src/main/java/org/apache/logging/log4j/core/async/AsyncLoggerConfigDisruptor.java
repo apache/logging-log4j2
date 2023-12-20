@@ -93,6 +93,9 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
 
     /**
      * EventHandler performs the work in a separate thread.
+     * <p>
+     *     <strong>Warning:</strong> this implementation only works with Disruptor 4.x.
+     * </p>
      */
     private static class Log4jEventWrapperHandler implements EventHandler<Log4jEventWrapper> {
         private static final int NOTIFY_PROGRESS_THRESHOLD = 50;
@@ -129,7 +132,10 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     }
 
     /**
-     * A version of Log4jEventWrapperHandler for LMAX Disruptor 3.x.
+     * EventHandler performs the work in a separate thread.
+     * <p>
+     *     <strong>Warning:</strong> this implementation only works with Disruptor 3.x.
+     * </p>
      */
     private static final class Log4jEventWrapperHandler3 extends Log4jEventWrapperHandler
             implements SequenceReportingEventHandler<Log4jEventWrapper> {}
@@ -166,11 +172,13 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
             };
 
     private Log4jEventWrapperHandler createEventHandler() {
-        try {
-            return LoaderUtil.newInstanceOf(
-                    "org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor$Log4jEventWrapperHandler3");
-        } catch (final ReflectiveOperationException | LinkageError e) {
-            LOGGER.debug("LMAX Disruptor 3.x is missing, trying version 4.x.", e);
+        if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 3) {
+            try {
+                return LoaderUtil.newInstanceOf(
+                        "org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor$Log4jEventWrapperHandler3");
+            } catch (final ReflectiveOperationException | LinkageError e) {
+                LOGGER.warn("Failed to create event handler for LMAX Disruptor 3.x, trying version 4.x.", e);
+            }
         }
         return new Log4jEventWrapperHandler();
     }

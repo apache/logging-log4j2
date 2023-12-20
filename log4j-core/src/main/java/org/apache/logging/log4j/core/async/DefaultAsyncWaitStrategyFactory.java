@@ -74,17 +74,17 @@ class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
         LOGGER.trace(
                 "DefaultAsyncWaitStrategyFactory creating TimeoutBlockingWaitStrategy(timeout={}, unit=MILLIS)",
                 timeoutMillis);
-        try {
-            // Check for the v 4.x version of the strategy, the version in 3.x is not garbage-free.
-            if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 4) {
+        // Check for the v 4.x version of the strategy, the version in 3.x is not garbage-free.
+        if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 4) {
+            try {
                 return (WaitStrategy) Class.forName("com.lmax.disruptor.TimeoutBlockingWaitStrategy")
                         .getConstructor(long.class, TimeUnit.class)
                         .newInstance(timeoutMillis, TimeUnit.MILLISECONDS);
+            } catch (final ReflectiveOperationException | LinkageError e) {
+                LOGGER.debug(
+                        "DefaultAsyncWaitStrategyFactory failed to load 'com.lmax.disruptor.TimeoutBlockingWaitStrategy', using '{}' instead.",
+                        TimeoutBlockingWaitStrategy.class.getName());
             }
-        } catch (final ReflectiveOperationException | LinkageError e) {
-            LOGGER.debug(
-                    "DefaultAsyncWaitStrategyFactory failed to load 'com.lmax.disruptor.TimeoutBlockingWaitStrategy', using '{}' instead.",
-                    TimeoutBlockingWaitStrategy.class.getName());
         }
         // Use our version
         return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);

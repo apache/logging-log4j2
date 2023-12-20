@@ -18,14 +18,15 @@ package org.apache.logging.log4j.core.async;
 
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.Sequence;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * This event handler gets passed messages from the RingBuffer as they become
  * available. Processing of these messages is done in a separate thread,
  * controlled by the {@code Executor} passed to the {@code Disruptor}
  * constructor.
+ *  * <p>
+ *  *     <strong>Warning:</strong> this class only works with Disruptor 4.x.
+ *  * </p>
  */
 class RingBufferLogEventHandler4 implements EventHandler<RingBufferLogEvent> {
 
@@ -33,18 +34,6 @@ class RingBufferLogEventHandler4 implements EventHandler<RingBufferLogEvent> {
     private Sequence sequenceCallback;
     private int counter;
     private long threadId = -1;
-
-    /**
-     * Returns the appropriate {@link EventHandler} for the version of LMAX Disruptor used.
-     */
-    public static RingBufferLogEventHandler4 create() {
-        try {
-            return LoaderUtil.newInstanceOf("org.apache.logging.log4j.core.async.RingBufferLogEventHandler");
-        } catch (final ReflectiveOperationException | LinkageError e) {
-            StatusLogger.getLogger().debug("LMAX Disruptor 3.x is missing, trying version 4.x.", e);
-        }
-        return new RingBufferLogEventHandler4();
-    }
 
     /*
      * Overrides a method from Disruptor 4.x. Do not remove.

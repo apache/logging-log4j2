@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.EventTranslatorVararg;
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
@@ -35,6 +36,7 @@ import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Helper class for async loggers: AsyncLoggerDisruptor handles the mechanics of working with the LMAX Disruptor, and
@@ -45,6 +47,20 @@ import org.apache.logging.log4j.message.Message;
 class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
+
+    /**
+     * Creates an appropriate event handler for the Disruptor library used.
+     */
+    private static EventHandler<RingBufferLogEvent> createEventHandler() {
+        if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 3) {
+            try {
+                return LoaderUtil.newInstanceOf("org.apache.logging.log4j.core.async.RingBufferLogEventHandler");
+            } catch (final ReflectiveOperationException | LinkageError e) {
+                LOGGER.warn("Failed to create event handler for LMAX Disruptor 3.x, trying version 4.x.", e);
+            }
+        }
+        return new RingBufferLogEventHandler4();
+    }
 
     private final Object queueFullEnqueueLock = new Object();
 
@@ -122,8 +138,8 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         final ExceptionHandler<RingBufferLogEvent> errorHandler = DisruptorUtil.getAsyncLoggerExceptionHandler();
         disruptor.setDefaultExceptionHandler(errorHandler);
 
-        final RingBufferLogEventHandler4[] handlers = {RingBufferLogEventHandler4.create()};
-        disruptor.handleEventsWith(handlers);
+        final EventHandler<RingBufferLogEvent> handler = createEventHandler();
+        disruptor.handleEventsWith(handler);
 
         LOGGER.debug(
                 "[{}] Starting AsyncLogger disruptor for this context with ringbufferSize={}, waitStrategy={}, "
