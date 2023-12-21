@@ -101,11 +101,6 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * log4j-web-2.1 should work around a bug in JBOSS EAP 6.2. (https://issues.apache.org/jira/browse/LOG4J2-890[LOG4J2-890])
 * Fix FindBugs DM_DEFAULT_ENCODING bug in SimpleLogger.logMessage() and simplify code. (https://issues.apache.org/jira/browse/LOG4J2-959[LOG4J2-959])
 
-[#release-notes-2-4-removed]
-=== Removed
-
-* Removed experimental interface LevelLogger which got committed to master by mistake.
-
 [#release-notes-2-4-fixed]
 === Fixed
 
@@ -143,3 +138,8 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Clarify documentation for combining async with sync loggers. (https://issues.apache.org/jira/browse/LOG4J2-918[LOG4J2-918])
 * Circular suppressed Exception throws StackOverflowError. (https://issues.apache.org/jira/browse/LOG4J2-934[LOG4J2-934])
 * Use System.nanoTime() to measure time intervals. (https://issues.apache.org/jira/browse/LOG4J2-982[LOG4J2-982])
+
+[#release-notes-2-4-removed]
+=== Removed
+
+* Removed experimental interface LevelLogger which got committed to master by mistake.

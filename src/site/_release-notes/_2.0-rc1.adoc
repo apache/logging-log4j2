@@ -65,11 +65,6 @@ Release date:: 2014-02-16
 * Resource leak in Flume appender when it cannot create a BerkeleyDB db. (https://issues.apache.org/jira/browse/LOG4J2-532[LOG4J2-532])
 * Renamed the org.apache.logging.log4j.core.appender.db.nosql.couch package to org.apache.logging.log4j.core.appender.db.nosql.couchdb.
 
-[#release-notes-2-0-rc1-removed]
-=== Removed
-
-* Removed the DataSourceConnectionSource and the <DriverManager> plugin for the JDBC Appender. It is not safe to use. Please use the DataSource or factory connection sources backed by a connection pool.
-
 [#release-notes-2-0-rc1-fixed]
 === Fixed
 
@@ -122,3 +117,8 @@ Release date:: 2014-02-16
 * Switch in log4j-1.2-api Category.getEffectiveLevel has no cases for FATAL, OFF. (https://issues.apache.org/jira/browse/LOG4J2-517[LOG4J2-517])
 * LocalizedMessage serialization is broken. (https://issues.apache.org/jira/browse/LOG4J2-523[LOG4J2-523])
 * Fixed bugs where rolled log files were overwritten by RollingFile appender with composite time and size based policies. (https://issues.apache.org/jira/browse/LOG4J2-531[LOG4J2-531])
+
+[#release-notes-2-0-rc1-removed]
+=== Removed
+
+* Removed the DataSourceConnectionSource and the <DriverManager> plugin for the JDBC Appender. It is not safe to use. Please use the DataSource or factory connection sources backed by a connection pool.

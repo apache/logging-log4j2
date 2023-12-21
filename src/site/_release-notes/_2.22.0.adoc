@@ -53,11 +53,6 @@ SBOM generation is streamlined by `logging-parent`, see https://logging.apache.o
 * Update `org.springframework:spring-framework-bom` to version `5.3.31` (https://github.com/apache/logging-log4j2/pull/1973[1973])
 * Update `org.zeromq:jeromq` to version `0.5.4` (https://github.com/apache/logging-log4j2/pull/1878[1878])
 
-[#release-notes-2-22-0-removed]
-=== Removed
-
-* Removed unused `FastDateParser` which was causing unnecessary heap overhead (https://issues.apache.org/jira/browse/LOG4J2-3672[LOG4J2-3672], https://github.com/apache/logging-log4j2/pull/1848[1848])
-
 [#release-notes-2-22-0-fixed]
 === Fixed
 
@@ -67,3 +62,8 @@ SBOM generation is streamlined by `logging-parent`, see https://logging.apache.o
 * Fix JPMS descriptors causing `jlink` issues (https://github.com/apache/logging-log4j2/issues/1896[1896])
 * Add missing `Implementation-` and `Specification-` entries to `MANIFEST.MF` (implemented by `logging-parent` version `10.3.0` update) (https://github.com/apache/logging-log4j2/issues/1923[1923])
 * Fix `NotSerializableException` thrown when `Logger` is serialized with a `ReusableMessageFactory` (https://github.com/apache/logging-log4j2/issues/1884[1884])
+
+[#release-notes-2-22-0-removed]
+=== Removed
+
+* Removed unused `FastDateParser` which was causing unnecessary heap overhead (https://issues.apache.org/jira/browse/LOG4J2-3672[LOG4J2-3672], https://github.com/apache/logging-log4j2/pull/1848[1848])

@@ -80,11 +80,6 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 * Update Tomcat JULI to version 10.0.27 (https://github.com/apache/logging-log4j2/issues/1591[1591])
 * Update Woodstox to version https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION[6.5.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
 
-[#release-notes-2-21-0-removed]
-=== Removed
-
-* Moved `log4j-jmx-gui` to https://github.com/apache/logging-log4j-jmx-gui/actions[its own repository] along with its own release cycle
-
 [#release-notes-2-21-0-fixed]
 === Fixed
 
@@ -126,3 +121,8 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 * Fixed `%notEmpty` directive of `PatternLayout` for empty MDC/NDC inputs (https://issues.apache.org/jira/browse/LOG4J2-3660[LOG4J2-3660])
 * Fixed file descriptor leak on Tomcat (https://issues.apache.org/jira/browse/LOG4J2-3663[LOG4J2-3663])
 * Ensured `FileOutputStream` is closed in `CommonsCompressAction.execute()`
+
+[#release-notes-2-21-0-removed]
+=== Removed
+
+* Moved `log4j-jmx-gui` to https://github.com/apache/logging-log4j-jmx-gui/actions[its own repository] along with its own release cycle
