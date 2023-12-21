@@ -84,6 +84,7 @@
               <systemPropertyVariables>
                 <java.awt.headless>true</java.awt.headless>
               </systemPropertyVariables>
+              <useModulePath>false</useModulePath>
             </configuration>
           </plugin>
         </plugins>
