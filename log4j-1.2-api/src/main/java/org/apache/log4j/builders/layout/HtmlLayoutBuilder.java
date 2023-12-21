@@ -28,7 +28,7 @@ import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -64,19 +64,20 @@ public class HtmlLayoutBuilder extends AbstractBuilder<Layout> implements Layout
                 }
             }
         });
-        return createLayout(title.get(), locationInfo.get());
+        return createLayout(config, title.get(), locationInfo.get());
     }
 
     @Override
     public Layout parse(final PropertiesConfiguration config) {
         final String title = getProperty(TITLE_PARAM, DEFAULT_TITLE);
         final boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM);
-        return createLayout(title, locationInfo);
+        return createLayout(config, title, locationInfo);
     }
 
-    private Layout createLayout(final String title, final boolean locationInfo) {
+    private static Layout createLayout(
+            final Configuration configuration, final String title, final boolean locationInfo) {
         return LayoutWrapper.adapt(HtmlLayout.newBuilder()
-                .setConfiguration(new DefaultConfiguration())
+                .setConfiguration(configuration)
                 .setTitle(title)
                 .setLocationInfo(locationInfo)
                 .build());
