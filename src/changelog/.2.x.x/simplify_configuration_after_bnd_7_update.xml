@@ -18,8 +18,8 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
-       type="updated">
+       type="changed">
   <description format="asciidoc">
-    Simplify BND configuration after upgrade from version 6.4.1 to 7.0.0.
+    Simplify BND configuration after upgrade from version `6.4.1` to `7.0.0`
   </description>
 </entry>
