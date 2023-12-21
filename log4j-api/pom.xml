@@ -36,10 +36,6 @@
     <bnd-multi-release>true</bnd-multi-release>
     <!-- Differs from OSGi bundle name -->
     <bnd-module-name>org.apache.logging.log4j</bnd-module-name>
-    <bnd-extra-package-options>
-      <!-- This is a Java 9 only package, so BND can not detect it as private -->
-      !org.apache.logging.log4j.util.internal
-    </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- Used in StringBuilders through reflection -->
       java.sql;static=true,

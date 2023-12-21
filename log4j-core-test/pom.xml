@@ -53,7 +53,6 @@
       org.hamcrest;transitive=false,
       org.junit.jupiter.api;transitive=false,
       <!-- Name changes -->
-      org.assertj.core;substitute="assertj-core",
       java.allocation.instrumenter;substitute="java-allocation-instrumenter",
       spring.test;substitute="spring-test"
     </bnd-extra-module-options>

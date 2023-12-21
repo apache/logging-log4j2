@@ -37,11 +37,6 @@
       <!-- This bridge also support SLF4J 2.x -->
       org.slf4j.*;version="${slf4j.support.range}"
     </bnd-extra-package-options>
-    <bnd-extra-module-options>
-      <!-- The module descriptor is in `META-INF/versions/9`
-           BND 6.x can not find it -->
-      org.slf4j;substitute="slf4j-api"
-    </bnd-extra-module-options>
   </properties>
   <dependencies>
     <dependency>
