@@ -1131,6 +1131,36 @@
     </pluginManagement>
 
     <plugins>
+
+      <!--
+        ~ A previous `generate-module-descriptors` execution leaves `target/classes/module-info.class` files.
+        ~ These interfere with the way the `maven-compiler-plugin` works.
+        -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>delete-module-descriptors</id>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.outputDirectory}</directory>
+                  <includes>
+                    <include>module-info.class</include>
+                  </includes>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!--
         ~ Some external logging bridges can interfere with our tests, giving false negatives.
         -->
@@ -1167,6 +1197,7 @@
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
 
