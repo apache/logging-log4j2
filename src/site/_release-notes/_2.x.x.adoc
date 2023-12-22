@@ -23,19 +23,19 @@
 This releases contains ...
 
 
-[#release-notes-2-x-x-changed]
-=== Changed
-
-* Bumped the minimum Java version required for the build to Java 17. Runtime requirements remain unchanged. (https://github.com/apache/logging-log4j2/issues/2021[2021])
-
 [#release-notes-2-x-x-fixed]
 === Fixed
 
+* Mark `JdkMapAdapterStringMap` as frozen if map is immutable. (https://github.com/apache/logging-log4j2/issues/2098[2098])
+* Fix NPE in `CloseableThreadContext`. (https://github.com/apache/logging-log4j2/pull/1426[1426])
+* Use the module name of Conversant Media Disruptor from version `1.2.16+` of the library.
+* Fix NPE in `RollingFileManager`. (https://github.com/apache/logging-log4j2/pull/1645[1645])
 * Fix `log4j-to-slf4j` JPMS and OSGi descriptors. (https://github.com/apache/logging-log4j2/pull/1983[1983])
 
 [#release-notes-2-x-x-updated]
 === Updated
 
+* Bumped the minimum Java version required for the build to Java 17. Runtime requirements remain unchanged. (https://github.com/apache/logging-log4j2/issues/2021[2021])
 * Update `actions/upload-artifact` to version `4.0.0` (https://github.com/apache/logging-log4j2/pull/2096[2096])
 * Update `ch.qos.logback:logback-classic` to version `1.3.14` (https://github.com/apache/logging-log4j2/pull/2029[2029])
 * Update `co.elastic.clients:elasticsearch-java` to version `8.11.2` (https://github.com/apache/logging-log4j2/pull/2078[2078])
