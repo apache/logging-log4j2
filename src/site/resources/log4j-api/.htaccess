@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond "%{REQUEST_URI}" "^(/log4j/[^/]+)"
+RewriteRule "^apidocs(.*)$" "%1/javadoc/log4j-api$1" [R=permanent]
