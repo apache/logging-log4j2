@@ -486,6 +486,15 @@ public enum LoggingSystemProperty implements PropertyKey {
                 LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.WEB + DELIM + IS_WEB_APP;
 
         static final String RECYCLER_FACTORY = "factory";
+        public static final String RECYCLER_FACTORY_PROPERTY = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
+                + PropertyComponent.Constant.RECYCLER
+                + DELIM
+                + RECYCLER_FACTORY;
+
         static final String RECYCLER_CAPACITY = "capacity";
+        public static final String RECYCLER_CAPACITY_PROPERTY = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
+                + PropertyComponent.Constant.RECYCLER
+                + DELIM
+                + RECYCLER_CAPACITY;
     }
 }

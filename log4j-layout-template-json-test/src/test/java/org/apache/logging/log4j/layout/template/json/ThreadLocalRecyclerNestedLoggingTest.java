@@ -25,14 +25,18 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.internal.recycler.ThreadLocalRecyclerFactoryProvider;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests if logging while trying to encode an event causes thread local recycler to incorrectly share buffers and end up overriding layout's earlier encoding work.
  *
  * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2368">LOG4J2-2368</a>
  */
+@SetSystemProperty(key = LoggingSystemProperty.Constant.RECYCLER_FACTORY_PROPERTY, value = "threadLocal")
 public class ThreadLocalRecyclerNestedLoggingTest {
 
     private static final class ThrowableLoggingInGetMessage extends RuntimeException {
@@ -56,10 +60,23 @@ public class ThreadLocalRecyclerNestedLoggingTest {
             final LoggerContext loggerContext,
             final @Named(value = "List1") ListAppender appender1,
             final @Named(value = "List2") ListAppender appender2) {
+
+        // Verify the recycler factory type
+        final String actualRecyclerFactoryClassName =
+                loggerContext.getConfiguration().getRecyclerFactory().getClass().getCanonicalName();
+        final String expectedRecyclerFactoryClassName =
+                ThreadLocalRecyclerFactoryProvider.class.getCanonicalName() + ".ThreadLocalRecyclerFactory";
+        Assertions.assertThat(actualRecyclerFactoryClassName).isEqualTo(expectedRecyclerFactoryClassName);
+
+        // Perform nested logging
         final Logger logger = loggerContext.getLogger(ThreadLocalRecyclerNestedLoggingTest.class);
         logger.error("A", new ThrowableLoggingInGetMessage(logger));
+
+        // Collect logged messages
         final List<String> messages1 = readAppendedMessages(appender1);
         final List<String> messages2 = readAppendedMessages(appender2);
+
+        // Verify logged messages
         Assertions.assertThat(messages1)
                 .containsExactlyInAnyOrderElementsOf(messages2)
                 .containsExactlyInAnyOrderElementsOf(Stream.of("['B',null]", "['A','C']")

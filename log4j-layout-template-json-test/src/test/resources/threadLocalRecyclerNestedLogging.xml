@@ -15,16 +15,16 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="NestedLoggingFromThrowableMessageTest">
+<Configuration status="OFF" name="ThreadLocalRecyclerNestedLoggingTest">
   <Properties>
     <Property name="eventTemplate">[{"$resolver": "message", "stringified": true}, {"$resolver": "exception", "field": "message"}]</Property>
   </Properties>
   <Appenders>
     <List name="List1" raw="true">
-      <JsonTemplateLayout eventTemplate="${eventTemplate}" recyclerFactory="threadLocal" eventDelimiter=""/>
+      <JsonTemplateLayout eventTemplate="${eventTemplate}" eventDelimiter=""/>
     </List>
     <List name="List2" raw="true">
-      <JsonTemplateLayout eventTemplate="${eventTemplate}" recyclerFactory="threadLocal" eventDelimiter=""/>
+      <JsonTemplateLayout eventTemplate="${eventTemplate}" eventDelimiter=""/>
     </List>
   </Appenders>
   <Loggers>
