@@ -20,6 +20,8 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This releases contains ...
+This releases fixes several issues from the previous releases.
+
+While maintaining compatibility with Java 8, the artifacts in this release where generated using JDK 17.
 
 <#include "../.changelog.adoc.ftl">
