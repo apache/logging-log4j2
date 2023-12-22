@@ -303,7 +303,7 @@
   <properties>
 
     <!-- project version -->
-    <revision>3.0.0-beta1</revision>
+    <revision>3.0.0-SNAPSHOT</revision>
 
     <!-- =================
          Common properties
