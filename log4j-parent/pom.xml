@@ -933,8 +933,11 @@
     <plugins>
 
       <!--
-        ~ A previous `generate-module-descriptors` execution leaves `target/classes/module-info.class` files.
-        ~ These interfere with the way the `maven-compiler-plugin` works.
+        ~ A previous `generate-module-descriptors` execution leaves:
+        ~  * `target/classes/module-info.class` files, which interferes with `maven-compiler-plugin`,
+        ~  * `target/classes/META-INF/versions` folder, which switch `bnd-maven-plugin` into MRJ mode.
+        ~
+        ~ TODO: test BND multi-release mode in 2.23.0.
         -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -953,6 +956,7 @@
                   <directory>${project.build.outputDirectory}</directory>
                   <includes>
                     <include>module-info.class</include>
+                    <include>META-INF/versions/**</include>
                   </includes>
                 </fileset>
               </filesets>
