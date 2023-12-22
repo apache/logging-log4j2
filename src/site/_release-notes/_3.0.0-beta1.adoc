@@ -1,0 +1,129 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= 3.0.0-beta1 (2023-12-19)
+
+This is the first beta release of the upcoming major release, i.e., `3.0.0`.
+
+
+[#release-notes-3-0-0-beta1-added]
+=== Added
+
+* Add annotations for nullability. (https://issues.apache.org/jira/browse/LOG4J2-1477[LOG4J2-1477])
+* Remove deprecated code. (https://issues.apache.org/jira/browse/LOG4J2-2493[LOG4J2-2493])
+* Add a more generalized dependency injection system to plugins inspired by JSR 330. (https://issues.apache.org/jira/browse/LOG4J2-2803[LOG4J2-2803])
+* Add and enhance structured properties for per-context settings outside configuration files. (https://issues.apache.org/jira/browse/LOG4J2-3299[LOG4J2-3299], https://github.com/apache/logging-log4j2/pull/1473[1473])
+* Automate artifact publishing and release preparation. (https://issues.apache.org/jira/browse/LOG4J2-3466[LOG4J2-3466])
+* Add support for dependency injection of plugins into container types such as `Optional<T>`, `Collection<T>`, `Set<T>`, `Stream<T>`, `List<T>`, and `Map<String, T>`. (https://issues.apache.org/jira/browse/LOG4J2-3496[LOG4J2-3496])
+* Add support for `ConstraintValidator` in plugin classes. (https://issues.apache.org/jira/browse/LOG4J2-3497[LOG4J2-3497])
+
+[#release-notes-3-0-0-beta1-changed]
+=== Changed
+
+* Remove liquibase-log4j2 maven module (https://github.com/apache/logging-log4j2/pull/1193[1193])
+* Make the output of annotation processing reproducible. (https://github.com/apache/logging-log4j2/issues/1520[1520])
+* Replace `synchronized` blocks with locks for improved performance with virtual threads. (https://github.com/apache/logging-log4j2/issues/1532[1532])
+* Removes additional `isFiltered` checks in `AsyncLoggerConfig`. (https://github.com/apache/logging-log4j2/pull/1550[1550])
+* Ignore exceptions thrown by PropertySources. Eliminate ClassCastException when SimpleLoggerContext is used. (https://github.com/spring-projects/spring-boot/issues/33450[Spring-33450], https://github.com/apache/logging-log4j2/issues/1799[1799])
+* Update `com.lmax:disruptor` to version `4.0.0` (https://github.com/apache/logging-log4j2/issues/1829[1829])
+* Migrate most tests to JUnit 5. This includes a more powerful set of test extensions. (https://issues.apache.org/jira/browse/LOG4J2-2653[LOG4J2-2653])
+* Make Log4j use its own BOM. (https://issues.apache.org/jira/browse/LOG4J2-3511[LOG4J2-3511])
+* Change encoding of HTTP Basic Authentication to UTF-8. (https://github.com/apache/logging-log4j2/issues/1970[1970])
+* Upgraded the required compiler version to Java 17
+* Upgraded the required runtime version to Java 17
+* Update `actions/checkout` to version `4.1.1` (https://github.com/apache/logging-log4j2/pull/1869[1869])
+* Update `actions/setup-java` to version `3.13.0` (https://github.com/apache/logging-log4j2/pull/1809[1809])
+* Update `actions/setup-python` to version `4.7.1` (https://github.com/apache/logging-log4j2/pull/1831[1831])
+* Update `ch.qos.logback:logback-classic` to version `1.4.14` (https://github.com/apache/logging-log4j2/pull/2028[2028])
+* Update `com.datastax.cassandra:cassandra-driver-core` to version `3.11.5` (https://github.com/apache/logging-log4j2/pull/1889[1889])
+* Update `com.fasterxml.jackson:jackson-bom` to version `2.16.0` (https://github.com/apache/logging-log4j2/pull/1974[1974])
+* Update `com.github.luben:zstd-jni` to version `1.5.5-11` (https://github.com/apache/logging-log4j2/pull/2032[2032])
+* Update `com.github.spotbugs:spotbugs-maven-plugin` to version `4.7.3.6` (https://github.com/apache/logging-log4j2/pull/1879[1879])
+* Update `com.github.tomakehurst:wiremock-jre8` to version `2.35.1` (https://github.com/apache/logging-log4j2/pull/1765[1765])
+* Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2102[2102])
+* Update `com.google.errorprone:error_prone_core` to version `2.23.0` (https://github.com/apache/logging-log4j2/pull/1871[1871])
+* Update `com.google.guava:guava-testlib` to version `32.1.3-jre` (https://github.com/apache/logging-log4j2/pull/1934[1934])
+* Update `com.h2database:h2` to version `2.2.224` (https://github.com/apache/logging-log4j2/pull/1917[1917])
+* Update `commons-codec:commons-codec` to version `1.16.0` (https://github.com/apache/logging-log4j2/pull/2054[2054])
+* Update `commons-io:commons-io` to version `2.15.1` (https://github.com/apache/logging-log4j2/pull/2035[2035])
+* Update `commons-logging:commons-logging` to version `1.3.0` (https://github.com/apache/logging-log4j2/pull/2046[2046])
+* Update `de.flapdoodle.reverse:de.flapdoodle.reverse` to version `1.7.2` (https://github.com/apache/logging-log4j2/pull/2000[2000])
+* Update `io.netty:netty-bom` to version `4.1.104.Final` (https://github.com/apache/logging-log4j2/pull/2097[2097])
+* Update `net.java.dev.jna:jna` to version `5.14.0` (https://github.com/apache/logging-log4j2/pull/2082[2082])
+* Update `org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle` to version `1.3.7` (https://github.com/apache/logging-log4j2/pull/2053[2053])
+* Update `org.apache.commons:commons-compress` to version `1.25.0` (https://github.com/apache/logging-log4j2/pull/2055[2055])
+* Update `org.apache.commons:commons-csv` to version `1.10.0` (https://github.com/apache/logging-log4j2/pull/2041[2041])
+* Update `org.apache.commons:commons-dbcp2` to version `2.11.0` (https://github.com/apache/logging-log4j2/pull/2044[2044])
+* Update `org.apache.commons:commons-lang3` to version `3.14.0` (https://github.com/apache/logging-log4j2/pull/2036[2036])
+* Update `org.apache.commons:commons-pool2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2038[2038])
+* Update `org.apache.groovy:groovy-bom` to version `4.0.16` (https://github.com/apache/logging-log4j2/pull/2039[2039])
+* Update `org.apache.maven:maven-core` to version `3.9.6` (https://github.com/apache/logging-log4j2/pull/2049[2049])
+* Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.3` (https://github.com/apache/logging-log4j2/pull/2091[2091])
+* Update `org.apache.tomcat:tomcat-juli` to version `10.1.17` (https://github.com/apache/logging-log4j2/pull/2086[2086])
+* Update `org.codehaus.plexus:plexus-utils` to version `3.5.1` (https://github.com/apache/logging-log4j2/pull/2061[2061])
+* Update `org.eclipse.jetty:jetty-bom` to version `9.4.53.v20231009` (https://github.com/apache/logging-log4j2/pull/1931[1931])
+* Update `org.eclipse.persistence:org.eclipse.persistence.jpa` to version `2.7.13` (https://github.com/apache/logging-log4j2/pull/1933[1933])
+* Update `org.eclipse.platform:org.eclipse.osgi` to version `3.18.600` (https://github.com/apache/logging-log4j2/pull/2064[2064])
+* Update `org.elasticsearch.client:elasticsearch-rest-high-level-client` to version `7.17.16` (https://github.com/apache/logging-log4j2/pull/2085[2085])
+* Update `org.graalvm.truffle:truffle-api` to version `23.1.1` (https://github.com/apache/logging-log4j2/pull/1872[1872])
+* Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1995[1995])
+* Update `org.jmdns:jmdns` to version `3.5.9` (https://github.com/apache/logging-log4j2/pull/2069[2069])
+* Update `org.junit:junit-bom` to version `5.10.1` (https://github.com/apache/logging-log4j2/pull/1993[1993])
+* Update `org.junit-pioneer:junit-pioneer` to version `2.2.0` (https://github.com/apache/logging-log4j2/pull/1986[1986])
+* Update `org.mockito:mockito-bom` to version `5.8.0` (https://github.com/apache/logging-log4j2/pull/2031[2031])
+* Update `org.mongodb:bson` to version `4.11.1` (https://github.com/apache/logging-log4j2/pull/1991[1991])
+* Update `org.springframework.boot:spring-boot` to version `2.7.17` (https://github.com/apache/logging-log4j2/pull/1902[1902])
+* Update `org.springframework.boot:spring-boot-dependencies` to version `2.7.18` (https://github.com/apache/logging-log4j2/pull/2002[2002])
+* Update `org.springframework:spring-framework-bom` to version `5.3.30` (https://github.com/apache/logging-log4j2/pull/1903[1903])
+* Update `org.springframework:spring-test` to version `5.3.31` (https://github.com/apache/logging-log4j2/pull/1992[1992])
+* Update `org.xerial.snappy:snappy-java` to version `1.1.10.5` (https://github.com/apache/logging-log4j2/pull/1877[1877])
+* Update `org.zeromq:jeromq` to version `0.5.4` (https://github.com/apache/logging-log4j2/pull/1888[1888])
+* Update `uk.org.webcompere:system-stubs-core` to version `2.1.5` (https://github.com/apache/logging-log4j2/pull/2001[2001])
+* Update OpenTest4J from version 1.2.0 to link:https://github.com/ota4j-team/opentest4j/releases/tag/r1.3.0[1.3.0].
+
+[#release-notes-3-0-0-beta1-removed]
+=== Removed
+
+* Remove `GelfLayout` (a GELF-compatible layout is still possible using JSON Template Layout) (https://github.com/apache/logging-log4j2/pull/1951[1951])
+* Remove `log4j-cassandra` (https://github.com/apache/logging-log4j2/pull/1951[1951])
+* Remove `log4j-couchdb` (https://github.com/apache/logging-log4j2/pull/1951[1951])
+* Remove Jackson-based JSON configuration support. JSON configuration files are now handled through a built-in JSON parser.
+* Moved Log4j Jakarta EE modules (`log4j-jakarta-jms`, `log4j-jakarta-smtp`, and `log4j-jakarta-web`) to their own https://github.com/apache/logging-log4j-jakarta[repository] and https://logging.apache.org/log4j/jakarta[website] (https://github.com/apache/logging-log4j2/pull/1966[1966])
+* Removed all Java EE modules: `log4j-jms`, `log4j-jpa`, `log4j-smtp`, `log4j-web` (https://github.com/apache/logging-log4j2/pull/1966[1966])
+* Remove `log4j-jeromq` module (users are recommended to migrate to https://github.com/fbacchella/loghublog4j2[loghublog4j2]) (https://github.com/apache/logging-log4j2/pull/1951[1951])
+* Remove `log4j-kafka` (https://github.com/apache/logging-log4j2/pull/1951[1951])
+* Remove `log4j-layout-jackson-json` module (it is superseded by JSON Template Layout) (https://github.com/apache/logging-log4j2/pull/1951[1951])
+* Remove `log4j-layout-jackson-yaml` module (https://github.com/apache/logging-log4j2/pull/1951[1951])
+* Remove legacy OSGi integration. `ServiceLoader` mechanism should be used instead.
+* Remove `log4j-mongodb3` module (https://github.com/apache/logging-log4j2/pull/1951[1951])
+* Remove support for `SecurityManager`. Starting in Java 21, a custom `SecurityManager` cannot be used.
+* Remove `log4j-spring-boot` module (its features are upstreamed to `org.springframework.boot:spring-boot-starter-log4j2`) (https://github.com/apache/logging-log4j2/pull/1951[1951])
+
+[#release-notes-3-0-0-beta1-fixed]
+=== Fixed
+
+* Remove locale-dependent `toLowerCase/toUpperCase` calls. (https://github.com/apache/logging-log4j2/pull/1281[1281])
+* Add environment variable arbiter. (https://github.com/apache/logging-log4j2/issues/1312[1312])
+* Fixed logging of java.sql.Date objects by appending it before Log4J tries to call java.util.Date.toInstant() on it. (https://github.com/apache/logging-log4j2/pull/1366[1366])
+* Adapt the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed. To achieve that set the `Bundle-ActivationPolicy` to `lazy` for the log4j bundles. (https://github.com/apache/logging-log4j2/issues/1367[1367])
+* Fix runtime dependencies documentation. (https://github.com/apache/logging-log4j2/pull/1530[1530])
+* Allow to override fqcn in `Log4jEventBuilder` by implementing `CallerBoundaryAware`. (https://github.com/apache/logging-log4j2/pull/1533[1533])
+* Migrate MongoDB tests to JUnit 5 and Flapdoodle Embedded MongoDB 4. (https://github.com/apache/logging-log4j2/issues/1589[1589])
+* Fixed rollover strategy in the Log4j 1.x compatibility layer. (https://github.com/apache/logging-log4j2/issues/1650[1650])
+* Only shutdown Log4j after last `Log4jServletContextListener` is executed. (https://github.com/apache/logging-log4j2/issues/1782[1782])
+* Fixes context data loss if `<AsyncLogger>` components are used with an all async logger context. (https://github.com/apache/logging-log4j2/issues/1786[1786])
+* AppenderLoggingException logging any exception to a MongoDB Appender. (https://issues.apache.org/jira/browse/LOG4J2-3392[LOG4J2-3392])

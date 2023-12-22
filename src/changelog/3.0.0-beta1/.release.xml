@@ -15,13 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://logging.apache.org/log4j/changelog"
-       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
-       type="fixed">
-  <issue id="1445" link="https://github.com/apache/logging-log4j2/issues/1445"/>
-  <author id="thisdudeiknew" name="Timothy Pfeifer"/>
-  <description format="asciidoc">
-    Fixed `RollingFileManager` to propagate failed synchronous actions correctly.
-  </description>
-</entry>
+<release xmlns="http://logging.apache.org/log4j/changelog"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
+         date="2023-12-19" version="3.0.0-beta1"/>
