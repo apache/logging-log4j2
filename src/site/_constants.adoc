@@ -34,7 +34,7 @@
 ////
 
 :project-github-url: https://github.com/apache/logging-log4j2
-:project-version: 2.23.0-SNAPSHOT
+:project-version: 2.22.1
 :project-name: Log4j
 :project-id: log4j
 :java-target-version: 8

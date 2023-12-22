@@ -1,0 +1,67 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+[#release-notes-2-22-1]
+== 2.22.1
+
+Release date:: 2023-12-22
+
+This releases contains ...
+
+
+[#release-notes-2-22-1-fixed]
+=== Fixed
+
+* Mark `JdkMapAdapterStringMap` as frozen if map is immutable. (https://github.com/apache/logging-log4j2/issues/2098[2098])
+* Fix NPE in `CloseableThreadContext`. (https://github.com/apache/logging-log4j2/pull/1426[1426])
+* Use the module name of Conversant Media Disruptor from version `1.2.16+` of the library.
+* Fix NPE in `RollingFileManager`. (https://github.com/apache/logging-log4j2/pull/1645[1645])
+* Fix `log4j-to-slf4j` JPMS and OSGi descriptors. (https://github.com/apache/logging-log4j2/pull/1983[1983])
+* Workaround a Coursier/Ivy dependency resolution bug affecting `log4j-slf4j-impl` and `log4j-mongodb3`. (https://github.com/apache/logging-log4j2/pull/2065[2065])
+
+[#release-notes-2-22-1-updated]
+=== Updated
+
+* Bumped the minimum Java version required for the build to Java 17. Runtime requirements remain unchanged. (https://github.com/apache/logging-log4j2/issues/2021[2021])
+* Update `actions/upload-artifact` to version `4.0.0` (https://github.com/apache/logging-log4j2/pull/2096[2096])
+* Update `ch.qos.logback:logback-classic` to version `1.3.14` (https://github.com/apache/logging-log4j2/pull/2029[2029])
+* Update `co.elastic.clients:elasticsearch-java` to version `8.11.2` (https://github.com/apache/logging-log4j2/pull/2078[2078])
+* Update `com.github.luben:zstd-jni` to version `1.5.5-11` (https://github.com/apache/logging-log4j2/pull/2030[2030])
+* Update `com.google.guava:guava` to version `33.0.0-jre` (https://github.com/apache/logging-log4j2/pull/2110[2110])
+* Update `commons-codec:commons-codec` to version `1.16.0` (https://github.com/apache/logging-log4j2/pull/2042[2042])
+* Update `commons-io:commons-io` to version `2.15.1` (https://github.com/apache/logging-log4j2/pull/2034[2034])
+* Update `commons-logging:commons-logging` to version `1.3.0` (https://github.com/apache/logging-log4j2/pull/2050[2050])
+* Update `de.flapdoodle.reverse:de.flapdoodle.reverse` to version `1.7.2` (https://github.com/apache/logging-log4j2/pull/1979[1979])
+* Update `github/codeql-action` to version `3.22.11` (https://github.com/apache/logging-log4j2/pull/2093[2093])
+* Update `io.netty:netty-bom` to version `4.1.104.Final` (https://github.com/apache/logging-log4j2/pull/2095[2095])
+* Update `net.java.dev.jna:jna` to version `5.14.0` (https://github.com/apache/logging-log4j2/pull/2081[2081])
+* Update `org.apache.activemq:activemq-broker` to version `6.0.1` (https://github.com/apache/logging-log4j2/pull/2043[2043])
+* Update `org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle` to version `1.3.7` (https://github.com/apache/logging-log4j2/pull/2058[2058])
+* Update `org.apache.commons:commons-compress` to version `1.25.0` (https://github.com/apache/logging-log4j2/pull/2045[2045])
+* Update `org.apache.commons:commons-dbcp2` to version `2.11.0` (https://github.com/apache/logging-log4j2/pull/2048[2048])
+* Update `org.apache.commons:commons-lang3` to version `3.14.0` (https://github.com/apache/logging-log4j2/pull/2047[2047])
+* Update `org.apache.commons:commons-pool2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2057[2057])
+* Update `org.apache.kafka:kafka-clients` to version `3.6.1` (https://github.com/apache/logging-log4j2/pull/2068[2068])
+* Update `org.apache.logging:logging-parent` to version `10.5.0` (https://github.com/apache/logging-log4j2/pull/2119[2119])
+* Update `org.apache.maven:maven-core` to version `3.9.6` (https://github.com/apache/logging-log4j2/pull/2040[2040])
+* Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.3` (https://github.com/apache/logging-log4j2/pull/2088[2088])
+* Update `org.codehaus.plexus:plexus-utils` to version `3.5.1` (https://github.com/apache/logging-log4j2/pull/2056[2056])
+* Update `org.eclipse.persistence:org.eclipse.persistence.jpa` to version `2.7.14` (https://github.com/apache/logging-log4j2/pull/2094[2094])
+* Update `org.jctools:jctools-core` to version `4.0.2` (https://github.com/apache/logging-log4j2/pull/1984[1984])
+* Update `org.jmdns:jmdns` to version `3.5.9` (https://github.com/apache/logging-log4j2/pull/2067[2067])
+* Update `org.springframework.boot:spring-boot` to version `2.7.18` (https://github.com/apache/logging-log4j2/pull/1998[1998])
+* Update `org.springframework.cloud:spring-cloud-dependencies` to version `2021.0.9` (https://github.com/apache/logging-log4j2/pull/2109[2109])
