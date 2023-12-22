@@ -32,6 +32,7 @@
   <properties>
 
     <maven.deploy.skip>true</maven.deploy.skip>
+    <sign.skip>true</sign.skip>
 
     <!--
       ~ OSGi and JPMS options
