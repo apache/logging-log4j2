@@ -20,9 +20,9 @@
 
 Release date:: 2023-12-22
 
-This releases fixes several issues from the previous releases.
+This release contains only dependency upgrades and bug fixes, which do not change the behavior of the artifacts.
 
-While maintaining compatibility with Java 8, the artifacts in this release where generated using JDK 17.
+While maintaining compatibility with Java 8, the artifacts in this release where generated using JDK 17, unlike version `2.22.0` that used JDK 11.
 
 
 [#release-notes-2-22-1-fixed]
