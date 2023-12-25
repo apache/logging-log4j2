@@ -1,6 +1,10 @@
 ---
 name: Feature request
 about: Submit a feature request
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 **Warning!**
