@@ -68,7 +68,7 @@
     <assertj.version>3.24.2</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <cassandra.version>3.11.16</cassandra.version>
+    <cassandra.version>4.0.10</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
     <commons-codec.version>1.16.0</commons-codec.version>
     <commons-compress.version>1.25.0</commons-compress.version>
