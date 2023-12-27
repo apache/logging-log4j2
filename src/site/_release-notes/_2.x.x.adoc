@@ -41,4 +41,5 @@ This releases contains ...
 [#release-notes-2-x-x-updated]
 === Updated
 
+* Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
 * Update `org.codehaus.groovy:groovy-bom` to version `3.0.20` (https://github.com/apache/logging-log4j2/pull/2125[2125])
