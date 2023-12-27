@@ -95,6 +95,21 @@ This is the first beta release of the upcoming major release, i.e., `3.0.0`.
 * Update `uk.org.webcompere:system-stubs-core` to version `2.1.5` (https://github.com/apache/logging-log4j2/pull/2001[2001])
 * Update OpenTest4J from version 1.2.0 to link:https://github.com/ota4j-team/opentest4j/releases/tag/r1.3.0[1.3.0].
 
+[#release-notes-3-0-0-beta1-fixed]
+=== Fixed
+
+* Remove locale-dependent `toLowerCase/toUpperCase` calls. (https://github.com/apache/logging-log4j2/pull/1281[1281])
+* Add environment variable arbiter. (https://github.com/apache/logging-log4j2/issues/1312[1312])
+* Fixed logging of java.sql.Date objects by appending it before Log4J tries to call java.util.Date.toInstant() on it. (https://github.com/apache/logging-log4j2/pull/1366[1366])
+* Adapt the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed. To achieve that set the `Bundle-ActivationPolicy` to `lazy` for the log4j bundles. (https://github.com/apache/logging-log4j2/issues/1367[1367])
+* Fix runtime dependencies documentation. (https://github.com/apache/logging-log4j2/pull/1530[1530])
+* Allow to override fqcn in `Log4jEventBuilder` by implementing `CallerBoundaryAware`. (https://github.com/apache/logging-log4j2/pull/1533[1533])
+* Migrate MongoDB tests to JUnit 5 and Flapdoodle Embedded MongoDB 4. (https://github.com/apache/logging-log4j2/issues/1589[1589])
+* Fixed rollover strategy in the Log4j 1.x compatibility layer. (https://github.com/apache/logging-log4j2/issues/1650[1650])
+* Only shutdown Log4j after last `Log4jServletContextListener` is executed. (https://github.com/apache/logging-log4j2/issues/1782[1782])
+* Fixes context data loss if `<AsyncLogger>` components are used with an all async logger context. (https://github.com/apache/logging-log4j2/issues/1786[1786])
+* AppenderLoggingException logging any exception to a MongoDB Appender. (https://issues.apache.org/jira/browse/LOG4J2-3392[LOG4J2-3392])
+
 [#release-notes-3-0-0-beta1-removed]
 === Removed
 
@@ -112,18 +127,3 @@ This is the first beta release of the upcoming major release, i.e., `3.0.0`.
 * Remove `log4j-mongodb3` module (https://github.com/apache/logging-log4j2/pull/1951[1951])
 * Remove support for `SecurityManager`. Starting in Java 21, a custom `SecurityManager` cannot be used.
 * Remove `log4j-spring-boot` module (its features are upstreamed to `org.springframework.boot:spring-boot-starter-log4j2`) (https://github.com/apache/logging-log4j2/pull/1951[1951])
-
-[#release-notes-3-0-0-beta1-fixed]
-=== Fixed
-
-* Remove locale-dependent `toLowerCase/toUpperCase` calls. (https://github.com/apache/logging-log4j2/pull/1281[1281])
-* Add environment variable arbiter. (https://github.com/apache/logging-log4j2/issues/1312[1312])
-* Fixed logging of java.sql.Date objects by appending it before Log4J tries to call java.util.Date.toInstant() on it. (https://github.com/apache/logging-log4j2/pull/1366[1366])
-* Adapt the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed. To achieve that set the `Bundle-ActivationPolicy` to `lazy` for the log4j bundles. (https://github.com/apache/logging-log4j2/issues/1367[1367])
-* Fix runtime dependencies documentation. (https://github.com/apache/logging-log4j2/pull/1530[1530])
-* Allow to override fqcn in `Log4jEventBuilder` by implementing `CallerBoundaryAware`. (https://github.com/apache/logging-log4j2/pull/1533[1533])
-* Migrate MongoDB tests to JUnit 5 and Flapdoodle Embedded MongoDB 4. (https://github.com/apache/logging-log4j2/issues/1589[1589])
-* Fixed rollover strategy in the Log4j 1.x compatibility layer. (https://github.com/apache/logging-log4j2/issues/1650[1650])
-* Only shutdown Log4j after last `Log4jServletContextListener` is executed. (https://github.com/apache/logging-log4j2/issues/1782[1782])
-* Fixes context data loss if `<AsyncLogger>` components are used with an all async logger context. (https://github.com/apache/logging-log4j2/issues/1786[1786])
-* AppenderLoggingException logging any exception to a MongoDB Appender. (https://issues.apache.org/jira/browse/LOG4J2-3392[LOG4J2-3392])

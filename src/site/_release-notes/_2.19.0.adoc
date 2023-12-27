@@ -47,12 +47,6 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Allow PropertySources to be added. (https://issues.apache.org/jira/browse/LOG4J2-3588[LOG4J2-3588])
 * Allow Plugins to be injected with the LoggerContext reference. (https://issues.apache.org/jira/browse/LOG4J2-3589[LOG4J2-3589])
 
-[#release-notes-2-19-0-removed]
-=== Removed
-
-* Removed build page in favor of a single build instructions file. (https://issues.apache.org/jira/browse/LOG4J2-3573[LOG4J2-3573])
-* Remove SLF4J 1.8.x binding. (https://issues.apache.org/jira/browse/LOG4J2-3590[LOG4J2-3590])
-
 [#release-notes-2-19-0-fixed]
 === Fixed
 
@@ -72,3 +66,9 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Fix regression in Rfc5424Layout default values. (https://issues.apache.org/jira/browse/LOG4J2-3587[LOG4J2-3587])
 * Harden InstantFormatter against delegate failures. (https://issues.apache.org/jira/browse/LOG4J2-3614[LOG4J2-3614])
 * Add async support to `Log4jServletFilter`. (https://issues.apache.org/jira/browse/LOG4J2-708[LOG4J2-708])
+
+[#release-notes-2-19-0-removed]
+=== Removed
+
+* Removed build page in favor of a single build instructions file. (https://issues.apache.org/jira/browse/LOG4J2-3573[LOG4J2-3573])
+* Remove SLF4J 1.8.x binding. (https://issues.apache.org/jira/browse/LOG4J2-3590[LOG4J2-3590])

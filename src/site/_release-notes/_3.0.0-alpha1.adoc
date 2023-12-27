@@ -84,11 +84,6 @@ for Log4j 2.x will continue to operate with the Log4j 3.x libraries present inst
 * Unify plugin builders and plugin factories. (https://issues.apache.org/jira/browse/LOG4J2-860[LOG4J2-860])
 * Update Conversant Disruptor from 1.12.15 to 1.12.21. The new version requires Java 11. (https://issues.apache.org/jira/browse/LOG4J2-2079[LOG4J2-2079])
 
-[#release-notes-3-0-0-alpha1-removed]
-=== Removed
-
-* Remove support for `java.io.Serializable` in several classes including `Message`, `Layout`, `LogEvent`, `Logger`, and `ReadOnlyStringMap`. (https://issues.apache.org/jira/browse/LOG4J2-3228[LOG4J2-3228])
-
 [#release-notes-3-0-0-alpha1-fixed]
 === Fixed
 
@@ -99,3 +94,8 @@ for Log4j 2.x will continue to operate with the Log4j 3.x libraries present inst
 * Reduce Log4j 2 initialization time by deferring loading Plugin classes. (https://issues.apache.org/jira/browse/LOG4J2-2795[LOG4J2-2795])
 * Fixes incorrect constructor call in `LocalizedMessageFactory`. (https://issues.apache.org/jira/browse/LOG4J2-2850[LOG4J2-2850])
 * Fix file descriptor leak on Tomcat. (https://issues.apache.org/jira/browse/LOG4J2-3663[LOG4J2-3663])
+
+[#release-notes-3-0-0-alpha1-removed]
+=== Removed
+
+* Remove support for `java.io.Serializable` in several classes including `Message`, `Layout`, `LogEvent`, `Logger`, and `ReadOnlyStringMap`. (https://issues.apache.org/jira/browse/LOG4J2-3228[LOG4J2-3228])

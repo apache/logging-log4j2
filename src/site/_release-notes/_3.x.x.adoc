@@ -32,3 +32,8 @@ This release contains...
 * Mark `JdkMapAdapterStringMap` as frozen if map is immutable. (https://github.com/apache/logging-log4j2/issues/2098[2098])
 * Fix NPE in `CloseableThreadContext`. (https://github.com/apache/logging-log4j2/pull/1426[1426])
 * Fix NPE in `RollingFileManager`. (https://github.com/apache/logging-log4j2/pull/1645[1645])
+
+[#release-notes-3-x-x-updated]
+=== Updated
+
+* Update `org.apache.logging:logging-parent` to version `10.5.0` (https://github.com/apache/logging-log4j2/pull/2118[2118])
