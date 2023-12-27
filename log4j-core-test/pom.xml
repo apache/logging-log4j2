@@ -452,6 +452,20 @@
 
     </profile>
 
+    <!--
+      ~ Dummy profile to force Dependabot to upgrade `disruptor4.version`.
+      ~ Using this profile causes a compilation error.
+      -->
+    <profile>
+      <id>disruptor-4</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.lmax</groupId>
+          <artifactId>disruptor</artifactId>
+          <version>${disruptor4.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
 </project>
