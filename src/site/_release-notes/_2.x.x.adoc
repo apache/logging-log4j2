@@ -22,3 +22,18 @@
 
 This releases contains ...
 
+
+[#release-notes-2-x-x-added]
+=== Added
+
+* Added support for LMAX Disruptor 4.x. (https://github.com/apache/logging-log4j2/issues/1821[1821])
+
+[#release-notes-2-x-x-changed]
+=== Changed
+
+* Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2103[2103])
+
+[#release-notes-2-x-x-deprecated]
+=== Deprecated
+
+* Deprecated the `RingBufferLogEventHandler` class for removal from the public API in 3.x.
