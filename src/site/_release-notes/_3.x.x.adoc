@@ -24,6 +24,7 @@ This release contains...
 === Changed
 
 * Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2102[2102])
+* Update `com.google.guava:guava` to version `33.0.0-jre` (https://github.com/apache/logging-log4j2/pull/2108[2108])
 
 [#release-notes-3-x-x-fixed]
 === Fixed
