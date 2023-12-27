@@ -15,6 +15,10 @@
 # limitations under the License.
 #
 
+##
+# WARNING: due to a difference in the name of the main branch in
+# `logging-parent` and this repo, Scorecard fails if we use reusable workflows.
+##
 name: scorecards-analysis
 
 on:
@@ -29,10 +33,43 @@ permissions: read-all
 jobs:
 
   analysis:
-    uses: apache/logging-parent/.github/workflows/scorecards-analysis-reusable.yaml@rel/10.5.0
+
+    name: "Scorecards analysis"
+    runs-on: ubuntu-latest
     permissions:
       # Needed to upload the results to the code-scanning dashboard.
       security-events: write
       actions: read
       id-token: write # This is required for requesting the JWT
       contents: read  # This is required for actions/checkout
+
+    steps:
+
+      - name: "Checkout code"
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11   # 4.1.1
+        with:
+          persist-credentials: false
+
+      - name: "Run analysis"
+        uses: ossf/scorecard-action@0864cf19026789058feabb7e87baa5f140aac736    # 2.3.1
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          # A read-only PAT token, which is sufficient for the action to function.
+          # The relevant discussion: https://github.com/ossf/scorecard-action/issues/188
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          # Publish the results for public repositories to enable scorecard badges.
+          # For more details: https://github.com/ossf/scorecard-action#publishing-results
+          publish_results: true
+
+      - name: "Upload artifact"
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392    # 3.1.0
+        with:
+          name: SARIF file
+          path: results.sarif
+          retention-days: 5
+
+      - name: "Upload to code-scanning"
+        uses: github/codeql-action/upload-sarif@b374143c1149a9115d881581d29b8390bbcbb59c    # 2.1.22
+        with:
+          sarif_file: results.sarif
