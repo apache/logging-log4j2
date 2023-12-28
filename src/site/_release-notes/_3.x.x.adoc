@@ -36,4 +36,5 @@ This release contains...
 [#release-notes-3-x-x-updated]
 === Updated
 
+* Update `org.apache.groovy:groovy-bom` to version `4.0.17` (https://github.com/apache/logging-log4j2/pull/2124[2124])
 * Update `org.apache.logging:logging-parent` to version `10.5.0` (https://github.com/apache/logging-log4j2/pull/2118[2118])
