@@ -28,7 +28,7 @@
   <name>Apache Log4j SLF4J Binding</name>
   <description>The Apache Log4j SLF4J API binding to Log4j 2 Core</description>
   <properties>
-    <slf4j.version>1.7.36</slf4j.version>
+    <slf4j.version>2.0.9</slf4j.version>
 
     <!--
       ~ OSGi and JPMS options
