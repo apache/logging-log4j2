@@ -36,6 +36,7 @@ This release contains...
 [#release-notes-3-x-x-updated]
 === Updated
 
+* Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2127[2127])
 * Update `org.apache.groovy:groovy-bom` to version `4.0.17` (https://github.com/apache/logging-log4j2/pull/2124[2124])
 * Update `org.apache.logging:logging-parent` to version `10.5.0` (https://github.com/apache/logging-log4j2/pull/2118[2118])
 * Update `org.springframework.boot:spring-boot-dependencies` to version `3.2.1` (https://github.com/apache/logging-log4j2/pull/2123[2123])

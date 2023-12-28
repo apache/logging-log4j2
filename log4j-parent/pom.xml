@@ -117,7 +117,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.7.2</hsqldb.version>
-    <jackson-bom.version>2.16.0</jackson-bom.version>
+    <jackson-bom.version>2.16.1</jackson-bom.version>
     <jansi.version>2.4.0</jansi.version>
     <javax-jms.version>2.0.1</javax-jms.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
