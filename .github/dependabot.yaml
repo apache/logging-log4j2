@@ -88,9 +88,10 @@ updates:
     # WebCompere System Stubs requires Java 11
     - dependency-name: "uk.org.webcompere:*"
       versions: ["2.1.0,)"]
-    # Slf4j Extensions contain a breaking change in 1.7.26
-    - dependency-name: "org.slf4j:slf4j-ext"
-      versions: ["1.7.26,)"]
+    # SLF4J 1.7.x should only upgrade to 1.7.x and
+    # SLF4J 2.x should only upgrade to 2.x.
+    - dependency-name: "org.slf4j:slf4j-api"
+      update-types: ["version-update:semver-major"]
     # Plexus Utils 4.x are for Maven 4.x
     - dependency-name: "org.codehaus.plexus:plexus-utils"
       versions: ["4,)"]
@@ -147,9 +148,10 @@ updates:
     # Json Unit 3.x requires Java 17
     - dependency-name: "net.javacrumbs.json-unit:*"
       versions: ["[3.0.0,)"]
-    # Slf4j Extensions contain a breaking change in 1.7.26
-    - dependency-name: "org.slf4j:slf4j-ext"
-      versions: ["1.7.26,)"]
+    # SLF4J 1.7.x should only upgrade to 1.7.x and
+    # SLF4J 2.x should only upgrade to 2.x.
+    - dependency-name: "org.slf4j:slf4j-api"
+      update-types: ["version-update:semver-major"]
     # Plexus Utils 4.x are for Maven 4.x
     - dependency-name: "org.codehaus.plexus:plexus-utils"
       versions: ["4,)"]
