@@ -31,7 +31,7 @@
     <slf4j.version>1.7.36</slf4j.version>
     <!-- Do not upgrade the SLF4J version. 1.7.26 broke backward compatibility. Users can update the version if
       they do not require support for SLF4J's EventData -->
-    <slf4j-ext.version>1.7.25</slf4j-ext.version>
+    <slf4j-ext.version>1.7.26</slf4j-ext.version>
 
     <!--
       ~ OSGi and JPMS options
