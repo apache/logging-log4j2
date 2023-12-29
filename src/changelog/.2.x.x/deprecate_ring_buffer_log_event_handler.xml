@@ -3,7 +3,5 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
        type="deprecated">
-  <description format="asciidoc">
-    Deprecated the `RingBufferLogEventHandler` class for removal from the public API in 3.x.
-  </description>
+  <description format="asciidoc">Deprecated the `RingBufferLogEventHandler` class for removal from the public API in 3.x</description>
 </entry>

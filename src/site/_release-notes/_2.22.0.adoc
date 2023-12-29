@@ -41,17 +41,6 @@ SBOM generation is streamlined by `logging-parent`, see https://logging.apache.o
 
 * Change the order of evaluation of `FormattedMessage` formatters. Messages are evaluated using `java.util.Format` only if they don't comply to the `java.text.MessageFormat` or `ParameterizedMessage` format. (https://github.com/apache/logging-log4j2/issues/1223[1223])
 * Change default encoding of HTTP Basic Authentication to UTF-8 and add `log4j2.configurationAuthorizationEncoding` property to overwrite it. (https://github.com/apache/logging-log4j2/issues/1970[1970])
-* Update `com.fasterxml.jackson:jackson-bom` to version `2.16.0` (https://github.com/apache/logging-log4j2/pull/1974[1974])
-* Update `com.github.luben:zstd-jni` to version `1.5.5-10` (https://github.com/apache/logging-log4j2/pull/1940[1940])
-* Update `com.google.guava:guava` to version `32.1.3-jre` (https://github.com/apache/logging-log4j2/pull/1875[1875])
-* Update `io.netty:netty-bom` to version `4.1.101.Final` (https://github.com/apache/logging-log4j2/pull/1960[1960])
-* Update `org.eclipse.persistence:org.eclipse.persistence.jpa` to version `2.7.13` (https://github.com/apache/logging-log4j2/pull/1900[1900])
-* Update `org.fusesource.jansi:jansi` to version `2.4.1` (https://github.com/apache/logging-log4j2/pull/1907[1907])
-* Update `org.mongodb:bson` to version `4.11.1` (https://github.com/apache/logging-log4j2/pull/1957[1957])
-* Update `org.springframework:spring-framework-bom` to version `5.3.30`
-* Update `org.springframework.boot:spring-boot` to version `2.7.17` (https://github.com/apache/logging-log4j2/pull/1874[1874])
-* Update `org.springframework:spring-framework-bom` to version `5.3.31` (https://github.com/apache/logging-log4j2/pull/1973[1973])
-* Update `org.zeromq:jeromq` to version `0.5.4` (https://github.com/apache/logging-log4j2/pull/1878[1878])
 
 [#release-notes-2-22-0-fixed]
 === Fixed
@@ -67,3 +56,18 @@ SBOM generation is streamlined by `logging-parent`, see https://logging.apache.o
 === Removed
 
 * Removed unused `FastDateParser` which was causing unnecessary heap overhead (https://issues.apache.org/jira/browse/LOG4J2-3672[LOG4J2-3672], https://github.com/apache/logging-log4j2/pull/1848[1848])
+
+[#release-notes-2-22-0-updated]
+=== Updated
+
+* Update `com.fasterxml.jackson:jackson-bom` to version `2.16.0` (https://github.com/apache/logging-log4j2/pull/1974[1974])
+* Update `com.github.luben:zstd-jni` to version `1.5.5-10` (https://github.com/apache/logging-log4j2/pull/1940[1940])
+* Update `com.google.guava:guava` to version `32.1.3-jre` (https://github.com/apache/logging-log4j2/pull/1875[1875])
+* Update `io.netty:netty-bom` to version `4.1.101.Final` (https://github.com/apache/logging-log4j2/pull/1960[1960])
+* Update `org.eclipse.persistence:org.eclipse.persistence.jpa` to version `2.7.13` (https://github.com/apache/logging-log4j2/pull/1900[1900])
+* Update `org.fusesource.jansi:jansi` to version `2.4.1` (https://github.com/apache/logging-log4j2/pull/1907[1907])
+* Update `org.mongodb:bson` to version `4.11.1` (https://github.com/apache/logging-log4j2/pull/1957[1957])
+* Update `org.springframework:spring-framework-bom` to version `5.3.30`
+* Update `org.springframework.boot:spring-boot` to version `2.7.17` (https://github.com/apache/logging-log4j2/pull/1874[1874])
+* Update `org.springframework:spring-framework-bom` to version `5.3.31` (https://github.com/apache/logging-log4j2/pull/1973[1973])
+* Update `org.zeromq:jeromq` to version `0.5.4` (https://github.com/apache/logging-log4j2/pull/1878[1878])
