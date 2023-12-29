@@ -65,13 +65,10 @@ public final class LoaderUtil {
             } catch (final SecurityException ignored) {
                 try {
                     // let's see if we can obtain that permission
-                    AccessController.doPrivileged(
-                            (PrivilegedAction<Void>) () -> {
-                                AccessController.checkPermission(GET_CLASS_LOADER);
-                                return null;
-                            },
-                            null,
-                            GET_CLASS_LOADER);
+                    runPrivilegedActionWithGetClassLoaderPermission((PrivilegedAction<Void>) () -> {
+                        AccessController.checkPermission(GET_CLASS_LOADER);
+                        return null;
+                    });
                     getClassLoaderDisabled = false;
                 } catch (final SecurityException ignore) {
                     // no chance
@@ -108,7 +105,7 @@ public final class LoaderUtil {
             }
             return isChild(loader1, loader2) ? loader1 : loader2;
         };
-        return AccessController.doPrivileged(action, null, GET_CLASS_LOADER);
+        return runActionInvolvingGetClassLoaderPermission(action);
     }
 
     /**
@@ -143,20 +140,27 @@ public final class LoaderUtil {
      * @return the current thread's ClassLoader, a fallback loader, or null if no fallback can be determined
      */
     public static ClassLoader getThreadContextClassLoader() {
-        if (GET_CLASS_LOADER_DISABLED) {
-            // we can at least get this class's ClassLoader regardless of security context
-            // however, if this is null, there's really no option left at this point
-            try {
-                return getThisClassLoader();
-            } catch (final SecurityException ignored) {
-                return null;
-            }
+        try {
+            return GET_CLASS_LOADER_DISABLED
+                    ? getThisClassLoader()
+                    : runActionInvolvingGetClassLoaderPermission(TCCL_GETTER);
+        } catch (final SecurityException ignored) {
+            return null;
         }
-        return AccessController.doPrivileged(TCCL_GETTER, null, GET_CLASS_LOADER);
     }
 
     private static ClassLoader getThisClassLoader() {
         return LoaderUtil.class.getClassLoader();
+    }
+
+    private static <T> T runActionInvolvingGetClassLoaderPermission(final PrivilegedAction<T> action) {
+        return System.getSecurityManager() != null
+                ? runPrivilegedActionWithGetClassLoaderPermission(action)
+                : action.run();
+    }
+
+    private static <T> T runPrivilegedActionWithGetClassLoaderPermission(final PrivilegedAction<T> action) {
+        return AccessController.doPrivileged(action, null, GET_CLASS_LOADER);
     }
 
     private static class ThreadContextClassLoaderGetter implements PrivilegedAction<ClassLoader> {
