@@ -14,51 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.config;
+package org.apache.logging.log4j.config.yaml;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactoryTest;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-class ConfigurationFactoryTest extends AbstractConfigurationFactoryTest {
+class YamlConfigurationFactoryTest extends AbstractConfigurationFactoryTest {
 
     @TempLoggingDir
     private static Path loggingPath;
 
     @Test
-    @LoggerContextSource("log4j-test1.xml")
-    void xml(final LoggerContext context) throws IOException {
+    @LoggerContextSource("YamlConfigurationFactoryTest.yaml")
+    void yamlConfiguration(final LoggerContext context) throws IOException {
         checkConfiguration(context);
-        final Path logFile = loggingPath.resolve("test-xml.log");
-        checkFileLogger(context, logFile);
-    }
-
-    @Test
-    @LoggerContextSource("log4j-xinclude.xml")
-    void xinclude(final LoggerContext context) throws IOException {
-        checkConfiguration(context);
-        final Path logFile = loggingPath.resolve("test-xinclude.log");
-        checkFileLogger(context, logFile);
-    }
-
-    @Test
-    @Tag("json")
-    @LoggerContextSource("log4j-test1.json")
-    void json(final LoggerContext context) throws IOException {
-        checkConfiguration(context);
-        final Path logFile = loggingPath.resolve("test-json.log");
-        checkFileLogger(context, logFile);
-    }
-
-    @Test
-    @LoggerContextSource("log4j-test1.properties")
-    void properties(final LoggerContext context) throws IOException {
-        checkConfiguration(context);
-        final Path logFile = loggingPath.resolve("test-properties.log");
+        final Path logFile = loggingPath.resolve("test-yaml.log");
         checkFileLogger(context, logFile);
     }
 }

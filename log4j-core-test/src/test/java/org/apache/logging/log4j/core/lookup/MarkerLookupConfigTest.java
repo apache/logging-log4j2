@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.junit.jupiter.api.Tag;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -36,43 +37,40 @@ import org.junit.jupiter.api.Test;
  *
  * @since 2.4
  */
-@LoggerContextSource("log4j-marker-lookup.yaml")
-@Tag("yaml")
-public class MarkerLookupConfigTest {
+@UsingStatusListener
+class MarkerLookupConfigTest {
 
-    public static final Marker PAYLOAD = MarkerManager.getMarker("PAYLOAD");
+    private static final Marker PAYLOAD = MarkerManager.getMarker("PAYLOAD");
     private static final String PAYLOAD_LOG = "Message in payload.log";
 
-    public static final Marker PERFORMANCE = MarkerManager.getMarker("PERFORMANCE");
+    private static final Marker PERFORMANCE = MarkerManager.getMarker("PERFORMANCE");
 
     private static final String PERFORMANCE_LOG = "Message in performance.log";
-    public static final Marker SQL = MarkerManager.getMarker("SQL");
+    private static final Marker SQL = MarkerManager.getMarker("SQL");
     private static final String SQL_LOG = "Message in sql.log";
 
+    @TempLoggingDir
+    private static Path loggingPath;
+
     @Test
-    public void test() throws IOException {
-        final Logger logger = LogManager.getLogger();
+    @LoggerContextSource
+    void test(final LoggerContext context) throws IOException {
+        final Logger logger = context.getLogger(getClass());
         logger.info(SQL, SQL_LOG);
         logger.info(PAYLOAD, PAYLOAD_LOG);
         logger.info(PERFORMANCE, PERFORMANCE_LOG);
+        context.stop(1, TimeUnit.SECONDS);
         {
-            final String log = FileUtils.readFileToString(new File("target/logs/sql.log"), StandardCharsets.UTF_8);
-            assertTrue(log.contains(SQL_LOG));
-            assertFalse(log.contains(PAYLOAD_LOG));
-            assertFalse(log.contains(PERFORMANCE_LOG));
+            final List<String> lines = Files.readAllLines(loggingPath.resolve("sql.log"));
+            assertThat(lines).hasSize(1).contains(SQL_LOG);
         }
         {
-            final String log = FileUtils.readFileToString(new File("target/logs/payload.log"), StandardCharsets.UTF_8);
-            assertFalse(log.contains(SQL_LOG));
-            assertTrue(log.contains(PAYLOAD_LOG));
-            assertFalse(log.contains(PERFORMANCE_LOG));
+            final List<String> lines = Files.readAllLines(loggingPath.resolve("payload.log"));
+            assertThat(lines).hasSize(1).contains(PAYLOAD_LOG);
         }
         {
-            final String log =
-                    FileUtils.readFileToString(new File("target/logs/performance.log"), StandardCharsets.UTF_8);
-            assertFalse(log.contains(SQL_LOG));
-            assertFalse(log.contains(PAYLOAD_LOG));
-            assertTrue(log.contains(PERFORMANCE_LOG));
+            final List<String> lines = Files.readAllLines(loggingPath.resolve("performance.log"));
+            assertThat(lines).hasSize(1).contains(PERFORMANCE_LOG);
         }
     }
 }

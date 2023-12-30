@@ -36,7 +36,6 @@
     <bnd-extra-package-options>
       <!-- External optional dependencies -->
       com.conversantmedia.util.concurrent;resolution:=optional;
-      com.fasterxml.jackson.*;resolution:=optional,
       com.lmax.disruptor.*;resolution:=optional,
       org.apache.commons.compress.*;resolution:=optional,
       org.fusesource.jansi;resolution:=optional,
@@ -62,10 +61,6 @@
       java.xml;transitive=false,
       jdk.unsupported;transitive=false,
       org.fusesource.jansi;transitive=false,
-      <!-- BND 6.x does not recognize multi-release JARs. Remove when 7.x is published -->
-      com.fasterxml.jackson.core;substitute="jackson-core";transitive=false,
-      com.fasterxml.jackson.databind;substitute="jackson-databind";transitive=false,
-      com.fasterxml.jackson.dataformat.yaml;substitute="jackson-dataformat-yaml";transitive=false
     </bnd-extra-module-options>
   </properties>
   <dependencies>
@@ -101,24 +96,6 @@
     <dependency>
       <groupId>com.lmax</groupId>
       <artifactId>disruptor</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for JSON support -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for JSON support -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for YAML support (including JSON requirements) -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-yaml</artifactId>
       <optional>true</optional>
     </dependency>
     <!-- Required for console color support in Windows -->
