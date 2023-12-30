@@ -50,36 +50,31 @@ public final class LoaderUtil {
     // wants to use PropertiesUtil, but then PropertiesUtil wants to use LoaderUtil.
     private static Boolean ignoreTCCL;
 
-    private static final RuntimePermission GET_CLASS_LOADER = new RuntimePermission("getClassLoader");
-    private static final boolean GET_CLASS_LOADER_DISABLED;
+    static final RuntimePermission GET_CLASS_LOADER = new RuntimePermission("getClassLoader");
+    static final LazyBoolean GET_CLASS_LOADER_DISABLED = new LazyBoolean(() -> {
+        if (System.getSecurityManager() == null) {
+            return false;
+        }
+        try {
+            AccessController.checkPermission(GET_CLASS_LOADER);
+            // seems like we'll be ok
+            return false;
+        } catch (final SecurityException ignored) {
+            try {
+                // let's see if we can obtain that permission
+                AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                    AccessController.checkPermission(GET_CLASS_LOADER);
+                    return null;
+                });
+                return false;
+            } catch (final SecurityException ignore) {
+                // no chance
+                return true;
+            }
+        }
+    });
 
     private static final PrivilegedAction<ClassLoader> TCCL_GETTER = new ThreadContextClassLoaderGetter();
-
-    static {
-        if (System.getSecurityManager() != null) {
-            boolean getClassLoaderDisabled;
-            try {
-                AccessController.checkPermission(GET_CLASS_LOADER);
-                // seems like we'll be ok
-                getClassLoaderDisabled = false;
-            } catch (final SecurityException ignored) {
-                try {
-                    // let's see if we can obtain that permission
-                    runPrivilegedActionWithGetClassLoaderPermission((PrivilegedAction<Void>) () -> {
-                        AccessController.checkPermission(GET_CLASS_LOADER);
-                        return null;
-                    });
-                    getClassLoaderDisabled = false;
-                } catch (final SecurityException ignore) {
-                    // no chance
-                    getClassLoaderDisabled = true;
-                }
-            }
-            GET_CLASS_LOADER_DISABLED = getClassLoaderDisabled;
-        } else {
-            GET_CLASS_LOADER_DISABLED = false;
-        }
-    }
 
     private LoaderUtil() {}
 
@@ -97,7 +92,7 @@ public final class LoaderUtil {
         PrivilegedAction<ClassLoader> action = () -> {
             final ClassLoader loader1 = class1 == null ? null : class1.getClassLoader();
             final ClassLoader loader2 = class2 == null ? null : class2.getClassLoader();
-            final ClassLoader referenceLoader = GET_CLASS_LOADER_DISABLED
+            final ClassLoader referenceLoader = GET_CLASS_LOADER_DISABLED.getAsBoolean()
                     ? getThisClassLoader()
                     : Thread.currentThread().getContextClassLoader();
             if (isChild(referenceLoader, loader1)) {
@@ -105,7 +100,7 @@ public final class LoaderUtil {
             }
             return isChild(loader1, loader2) ? loader1 : loader2;
         };
-        return runActionInvolvingGetClassLoaderPermission(action);
+        return runPrivileged(action);
     }
 
     /**
@@ -141,9 +136,7 @@ public final class LoaderUtil {
      */
     public static ClassLoader getThreadContextClassLoader() {
         try {
-            return GET_CLASS_LOADER_DISABLED
-                    ? getThisClassLoader()
-                    : runActionInvolvingGetClassLoaderPermission(TCCL_GETTER);
+            return GET_CLASS_LOADER_DISABLED.getAsBoolean() ? getThisClassLoader() : runPrivileged(TCCL_GETTER);
         } catch (final SecurityException ignored) {
             return null;
         }
@@ -153,14 +146,8 @@ public final class LoaderUtil {
         return LoaderUtil.class.getClassLoader();
     }
 
-    private static <T> T runActionInvolvingGetClassLoaderPermission(final PrivilegedAction<T> action) {
-        return System.getSecurityManager() != null
-                ? runPrivilegedActionWithGetClassLoaderPermission(action)
-                : action.run();
-    }
-
-    private static <T> T runPrivilegedActionWithGetClassLoaderPermission(final PrivilegedAction<T> action) {
-        return AccessController.doPrivileged(action, null, GET_CLASS_LOADER);
+    private static <T> T runPrivileged(final PrivilegedAction<T> action) {
+        return System.getSecurityManager() != null ? AccessController.doPrivileged(action) : action.run();
     }
 
     private static class ThreadContextClassLoaderGetter implements PrivilegedAction<ClassLoader> {
@@ -171,7 +158,7 @@ public final class LoaderUtil {
                 return contextClassLoader;
             }
             final ClassLoader thisClassLoader = getThisClassLoader();
-            if (thisClassLoader != null || GET_CLASS_LOADER_DISABLED) {
+            if (thisClassLoader != null || GET_CLASS_LOADER_DISABLED.getAsBoolean()) {
                 return thisClassLoader;
             }
             return ClassLoader.getSystemClassLoader();
@@ -476,7 +463,7 @@ public final class LoaderUtil {
         final ClassLoader[] candidates = {
             useTccl ? getThreadContextClassLoader() : null,
             LoaderUtil.class.getClassLoader(),
-            GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()
+            GET_CLASS_LOADER_DISABLED.getAsBoolean() ? null : ClassLoader.getSystemClassLoader()
         };
         // @formatter:on
         final Collection<UrlResource> resources = new LinkedHashSet<>();
