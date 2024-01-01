@@ -43,4 +43,5 @@ This releases contains ...
 
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
 * Update `github/codeql-action` to version `3.22.12` (https://github.com/apache/logging-log4j2/pull/2130[2130])
+* Update `org.assertj:assertj-core` to version `3.25.0` (https://github.com/apache/logging-log4j2/pull/2145[2145])
 * Update `org.codehaus.groovy:groovy-bom` to version `3.0.20` (https://github.com/apache/logging-log4j2/pull/2125[2125])
