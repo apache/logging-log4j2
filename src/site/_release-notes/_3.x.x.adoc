@@ -20,6 +20,11 @@
 This release contains...
 
 
+[#release-notes-3-x-x-added]
+=== Added
+
+* Add and update DSLs for setting up dependency injection for test and non-test code. (https://github.com/apache/logging-log4j2/issues/2147[2147])
+
 [#release-notes-3-x-x-changed]
 === Changed
 

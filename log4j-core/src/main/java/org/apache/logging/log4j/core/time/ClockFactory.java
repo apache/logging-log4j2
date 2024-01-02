@@ -24,9 +24,7 @@ import org.apache.logging.log4j.core.time.internal.SystemClock;
 import org.apache.logging.log4j.core.time.internal.SystemMillisClock;
 import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
-import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertyEnvironment;
@@ -39,11 +37,8 @@ import org.apache.logging.log4j.util.PropertyEnvironment;
 public final class ClockFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final Lazy<Clock> FALLBACK = Lazy.lazy(() -> {
-        ConfigurableInstanceFactory factory = DI.createFactory();
-        factory.registerBundle(new ClockFactory());
-        return factory.getInstance(Clock.KEY);
-    });
+    private static final Lazy<Clock> FALLBACK =
+            Lazy.lazy(() -> DI.builder().build().getInstance(Clock.KEY));
 
     /**
      * Returns a {@code Clock} instance depending on the value of system
@@ -75,33 +70,21 @@ public final class ClockFactory {
 
     @ConditionalOnMissingBinding
     @SingletonFactory
-    public Clock clock(
-            final PropertyEnvironment environment, final InstanceFactory instanceFactory, final ClassLoader classLoader)
-            throws ClassNotFoundException {
+    @Deprecated(forRemoval = true)
+    public Clock clock(final PropertyEnvironment environment) {
         final String customClock = environment.getStringProperty(Log4jPropertyKey.CONFIG_CLOCK);
         if (customClock == null) {
             return logSupportedPrecision(new SystemClock());
         }
-        switch (customClock) {
-            case "SystemClock":
-                return logSupportedPrecision(new SystemClock());
-
-            case "SystemMillisClock":
-                return logSupportedPrecision(new SystemMillisClock());
-
-            case "CachedClock":
-            case "org.apache.logging.log4j.core.time.internal.CachedClock":
-                return logSupportedPrecision(CachedClock.instance());
-
-            case "CoarseCachedClock":
-            case "org.apache.logging.log4j.core.time.internal.CoarseCachedClock":
-                return logSupportedPrecision(CoarseCachedClock.instance());
-
-            default:
-                final Class<? extends Clock> clockClass =
-                        classLoader.loadClass(customClock).asSubclass(Clock.class);
-                return logSupportedPrecision(instanceFactory.getInstance(clockClass));
-        }
+        return switch (customClock) {
+            case "SystemMillisClock" -> logSupportedPrecision(new SystemMillisClock());
+            case "CachedClock", "org.apache.logging.log4j.core.time.internal.CachedClock" -> logSupportedPrecision(
+                    CachedClock.instance());
+            case "CoarseCachedClock",
+                    "org.apache.logging.log4j.core.time.internal.CoarseCachedClock" -> logSupportedPrecision(
+                    CoarseCachedClock.instance());
+            default -> logSupportedPrecision(new SystemClock());
+        };
     }
 
     private static Clock logSupportedPrecision(final Clock clock) {

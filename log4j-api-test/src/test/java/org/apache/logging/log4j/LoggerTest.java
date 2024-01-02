@@ -40,12 +40,15 @@ import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.TestLogger;
+import org.apache.logging.log4j.test.TestLoggerContextFactory;
+import org.apache.logging.log4j.test.junit.LoggerContextFactoryExtension;
 import org.apache.logging.log4j.test.junit.Resources;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
@@ -53,6 +56,10 @@ import org.junitpioneer.jupiter.ReadsSystemProperty;
 @ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
 @ReadsSystemProperty
 public class LoggerTest {
+
+    @RegisterExtension
+    public static final LoggerContextFactoryExtension EXTENSION =
+            new LoggerContextFactoryExtension(new TestLoggerContextFactory());
 
     private static class TestParameterizedMessageFactory {
         // empty
@@ -75,7 +82,7 @@ public class LoggerTest {
         assertThat(
                 "Incorrect message 1",
                 results.get(0),
-                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:71) Hello"));
+                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:78) Hello"));
         assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
         assertThat(
                 "Incorrect message 3",
@@ -84,7 +91,7 @@ public class LoggerTest {
         assertThat(
                 "Throwable incorrect in message 3",
                 results.get(2),
-                containsString("org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:73)"));
+                containsString("org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:80)"));
     }
 
     @Test

@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
@@ -35,13 +36,14 @@ import org.junit.jupiter.api.Test;
 
 @Tag("async")
 @UsingStatusListener
+@ContextSelectorType(AsyncLoggerContextSelector.class)
 public class AsyncLoggerConfigWithAsyncEnabledTest {
 
     @TempLoggingDir
     private static Path loggingPath;
 
     @Test
-    @LoggerContextSource(selector = AsyncLoggerContextSelector.class)
+    @LoggerContextSource
     public void testParametersAreAvailableToLayout(final LoggerContext ctx) throws Exception {
         final File file = loggingPath.resolve("AsyncLoggerConfigTest4.log").toFile();
 

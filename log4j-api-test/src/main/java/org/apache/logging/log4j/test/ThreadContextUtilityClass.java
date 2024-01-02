@@ -112,8 +112,4 @@ public class ThreadContextUtilityClass {
         ThreadContext.put("testKey", "testValue");
         assertEquals("testValue", ThreadContext.get("testKey"));
     }
-
-    public static void reset() {
-        ThreadContext.init();
-    }
 }

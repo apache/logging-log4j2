@@ -31,10 +31,9 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.jupiter.api.AfterAll;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -42,6 +41,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Used for internal unit testing the Logger class.
  */
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class LoggerTest {
 
     Appender a1;
@@ -64,15 +64,6 @@ public class LoggerTest {
 
         rbCH = ResourceBundle.getBundle("L7D", new Locale("fr", "CH"));
         assertNotNull(rbCH, "Got a null resource bundle.");
-
-        System.setProperty(
-                Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
-                BasicConfigurationFactory.class.getName());
-    }
-
-    @AfterAll
-    public static void tearDownClass() {
-        System.clearProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey());
     }
 
     @AfterEach

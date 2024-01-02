@@ -16,7 +16,12 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +29,12 @@ import java.util.Locale;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.*;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationProcessor;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -40,12 +50,12 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.di.Binding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -703,7 +713,7 @@ public class Rfc5424LayoutTest {
         node.getAttributes().put("name", "Rfc5242Layout");
 
         final ConfigurableInstanceFactory factory = DI.createInitializedFactory();
-        factory.registerBinding(Binding.from(Configuration.KEY).toInstance(configuration));
+        factory.registerBinding(Configuration.KEY, Lazy.value(configuration));
         final ConfigurationProcessor processor = new ConfigurationProcessor(factory);
         final Rfc5424Layout object = processor.processNodeTree(node);
         assertNotNull(object);

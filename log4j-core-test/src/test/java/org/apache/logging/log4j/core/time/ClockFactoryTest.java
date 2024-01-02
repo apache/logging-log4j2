@@ -18,71 +18,47 @@ package org.apache.logging.log4j.core.time;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
-import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 public class ClockFactoryTest {
 
-    private final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
+    private final DI.FactoryBuilder builder = DI.builder();
 
     @Test
     public void testDefaultIsSystemClock() {
-        DI.initializeFactory(instanceFactory);
-        assertThat(instanceFactory.getInstance(Clock.class)).isInstanceOf(SystemClock.class);
+        final Clock clock = builder.build().getInstance(Clock.KEY);
+        assertThat(clock).isInstanceOf(SystemClock.class);
     }
 
     @Test
-    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "SystemClock")
     public void testSpecifySystemClockShort() {
-        DI.initializeFactory(instanceFactory);
-        assertThat(instanceFactory.getInstance(Clock.class)).isInstanceOf(SystemClock.class);
+        final Clock clock = builder.addInitialBindingFrom(Clock.KEY)
+                .toSingleton(SystemClock::new)
+                .build()
+                .getInstance(Clock.KEY);
+        assertThat(clock).isInstanceOf(SystemClock.class);
     }
 
     @Test
-    @SetSystemProperty(
-            key = Log4jPropertyKey.Constant.CONFIG_CLOCK,
-            value = "org.apache.logging.log4j.core.time.internal.SystemClock")
-    public void testSpecifySystemClockLong() {
-        DI.initializeFactory(instanceFactory);
-        assertThat(instanceFactory.getInstance(Clock.class)).isInstanceOf(SystemClock.class);
-    }
-
-    @Test
-    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "CachedClock")
     public void testSpecifyCachedClockShort() {
-        DI.initializeFactory(instanceFactory);
-        assertThat(instanceFactory.getInstance(Clock.class)).isInstanceOf(CachedClock.class);
+        final Clock clock = builder.addInitialBindingFrom(Clock.KEY)
+                .toSingleton(CachedClock::instance)
+                .build()
+                .getInstance(Clock.KEY);
+        assertThat(clock).isInstanceOf(CachedClock.class);
     }
 
     @Test
-    @SetSystemProperty(
-            key = Log4jPropertyKey.Constant.CONFIG_CLOCK,
-            value = "org.apache.logging.log4j.core.time.internal.CachedClock")
-    public void testSpecifyCachedClockLong() {
-        DI.initializeFactory(instanceFactory);
-        assertThat(instanceFactory.getInstance(Clock.class)).isInstanceOf(CachedClock.class);
-    }
-
-    @Test
-    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "CoarseCachedClock")
     public void testSpecifyCoarseCachedClockShort() {
-        DI.initializeFactory(instanceFactory);
-        assertThat(instanceFactory.getInstance(Clock.class)).isInstanceOf(CoarseCachedClock.class);
-    }
-
-    @Test
-    @SetSystemProperty(
-            key = Log4jPropertyKey.Constant.CONFIG_CLOCK,
-            value = "org.apache.logging.log4j.core.time.internal.CoarseCachedClock")
-    public void testSpecifyCoarseCachedClockLong() {
-        DI.initializeFactory(instanceFactory);
-        assertThat(instanceFactory.getInstance(Clock.class)).isInstanceOf(CoarseCachedClock.class);
+        final Clock clock = builder.addInitialBindingFrom(Clock.KEY)
+                .toSingleton(CoarseCachedClock::instance)
+                .build()
+                .getInstance(Clock.KEY);
+        assertThat(clock).isInstanceOf(CoarseCachedClock.class);
     }
 
     public static class MyClock implements Clock {
@@ -93,11 +69,11 @@ public class ClockFactoryTest {
     }
 
     @Test
-    @SetSystemProperty(
-            key = Log4jPropertyKey.Constant.CONFIG_CLOCK,
-            value = "org.apache.logging.log4j.core.time.ClockFactoryTest$MyClock")
     public void testCustomClock() {
-        DI.initializeFactory(instanceFactory);
-        assertThat(instanceFactory.getInstance(Clock.class)).isInstanceOf(MyClock.class);
+        final Clock clock = builder.addInitialBindingFrom(Clock.KEY)
+                .toSingleton(MyClock::new)
+                .build()
+                .getInstance(Clock.KEY);
+        assertThat(clock).isInstanceOf(MyClock.class);
     }
 }

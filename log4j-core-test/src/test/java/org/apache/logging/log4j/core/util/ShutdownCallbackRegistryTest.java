@@ -28,20 +28,16 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.TestBinding;
 import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
 
+@TestBinding(api = ShutdownCallbackRegistry.class, implementation = ShutdownCallbackRegistryTest.Registry.class)
+@LoggerContextSource
 public class ShutdownCallbackRegistryTest {
 
-    @SingletonFactory
-    ShutdownCallbackRegistry shutdownCallbackRegistry() {
-        return new Registry();
-    }
-
     @Test
-    @LoggerContextSource(value = "ShutdownCallbackRegistryTest.xml", bootstrap = true)
     public void testShutdownCallbackRegistry(final LoggerContext context) {
         assertTrue(context.isStarted(), "LoggerContext should be started");
         assertThat(Registry.CALLBACKS, hasSize(1));

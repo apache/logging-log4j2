@@ -22,7 +22,7 @@
  * @see org.apache.logging.log4j.core.test.junit.LoggerContextRule JUnit 4 test rule
  */
 @Export
-@Version("2.20.1")
+@Version("3.0.0")
 package org.apache.logging.log4j.core.test.junit;
 
 import org.osgi.annotation.bundle.Export;

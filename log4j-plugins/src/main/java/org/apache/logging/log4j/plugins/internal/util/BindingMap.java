@@ -16,121 +16,26 @@
  */
 package org.apache.logging.log4j.plugins.internal.util;
 
-import java.util.Collection;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.logging.log4j.plugins.di.Binding;
+import java.util.function.Supplier;
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.InternalApi;
 
-@InternalApi
-public class BindingMap {
-    private final HierarchicalMap<Key<?>, Binding<?>> bindings;
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+public interface BindingMap {
+    <T> @Nullable Supplier<T> get(final Key<T> key, final Iterable<String> aliases);
 
-    private BindingMap(final HierarchicalMap<Key<?>, Binding<?>> bindings) {
-        this.bindings = bindings;
-    }
+    <T> void put(final Key<? super T> key, final Supplier<T> factory);
 
-    public <T> Binding<T> get(final Key<T> key, final Collection<String> aliases) {
-        lock.readLock().lock();
-        try {
-            final Binding<T> existing = get(key);
-            if (existing != null) {
-                return existing;
-            }
-            for (final String alias : aliases) {
-                final Binding<T> existingAlias = get(key.withName(alias));
-                if (existingAlias != null) {
-                    return existingAlias;
-                }
-            }
-            return null;
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
+    <T> void putIfAbsent(final Key<? super T> key, final Supplier<T> factory);
 
-    <T> Binding<T> get(final Key<T> key) {
-        return Cast.cast(bindings.get(key));
-    }
+    void remove(final Key<?> key);
 
-    public void put(final Binding<?> binding) {
-        lock.writeLock().lock();
-        try {
-            bindings.put(binding.getKey(), binding);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
+    boolean containsKey(final Key<?> key);
 
-    public Binding<?> putIfAbsent(final Binding<?> binding) {
-        lock.readLock().lock();
-        try {
-            final Binding<?> existing = bindings.get(binding.getKey());
-            if (existing != null) {
-                return existing;
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
-        lock.writeLock().lock();
-        try {
-            return bindings.putIfAbsent(binding.getKey(), binding);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
+    boolean containsLocalKey(final Key<?> key);
 
-    public <T> Binding<T> merge(final Binding<T> binding) {
-        final Key<T> key = binding.getKey();
-        lock.writeLock().lock();
-        try {
-            final Binding<?> merged = bindings.merge(key, binding, (existingBinding, ignored) -> {
-                final Binding<T> existing = Cast.cast(existingBinding);
-                final Key<T> existingKey = existing.getKey();
-                final int compared = existingKey.compareTo(key);
-                return compared > 0 ? binding : existing;
-            });
-            return Cast.cast(merged);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
+    BindingMap newChildMap();
 
-    public void remove(final Key<?> key) {
-        lock.writeLock().lock();
-        try {
-            bindings.remove(key);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    public boolean containsKey(final Key<?> key) {
-        lock.readLock().lock();
-        try {
-            return bindings.containsKey(key);
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    public boolean containsLocalKey(final Key<?> key) {
-        lock.readLock().lock();
-        try {
-            return bindings.containsLocalKey(key);
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    public BindingMap newChildMap() {
-        return new BindingMap(bindings.newChildMap());
-    }
-
-    public static BindingMap newRootMap() {
-        return new BindingMap(HierarchicalMap.newRootMap());
+    static BindingMap newRootMap() {
+        return new DefaultBindingMap(HierarchicalMap.newRootMap());
     }
 }

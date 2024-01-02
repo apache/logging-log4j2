@@ -16,26 +16,21 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Inherited
-@Tag("functional")
-@ExtendWith(ContextSelectorCallback.class)
+@Log4jTest
 public @interface ContextSelectorType {
 
     /**
-     * Specifies the {@link ContextSelector} class to use for this test class.
+     * Specifies the {@link ContextSelector} class to use for this test class or method.
      */
     Class<? extends ContextSelector> value();
 }

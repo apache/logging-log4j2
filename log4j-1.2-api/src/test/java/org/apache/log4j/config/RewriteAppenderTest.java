@@ -16,7 +16,9 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.LegacyLoggerContextSource;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +42,7 @@ import org.junit.jupiter.api.Test;
 public class RewriteAppenderTest {
 
     @Test
-    @LoggerContextSource(value = "log4j1-rewrite.xml", v1config = true)
+    @LegacyLoggerContextSource("log4j1-rewrite.xml")
     public void testRewrite(final LoggerContext context) {
         final Logger logger = LogManager.getLogger("test");
         ThreadContext.put("key1", "This is a test");

@@ -18,6 +18,8 @@ package org.apache.logging.log4j.plugins.di;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.function.Supplier;
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
@@ -44,6 +46,7 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
      * @param scopeType scope annotation type
      * @return the registered scope instance for the provided scope type
      */
+    @Nullable
     Scope getRegisteredScope(final Class<? extends Annotation> scopeType);
 
     /**
@@ -79,28 +82,20 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
     /**
      * Registers a binding between a key and factory. This overwrites any existing binding the key may have had.
      *
-     * @param binding binding to register
+     * @param key key for binding
+     * @param factory factory for value to bind
+     * @param <T> type of value returned by factory
      */
-    void registerBinding(final Binding<?> binding);
-
-    /**
-     * Registers multiple bindings.
-     *
-     * @param bindings bindings to register
-     * @see #registerBinding(Binding)
-     */
-    default void registerBindings(final Binding<?>... bindings) {
-        for (final Binding<?> binding : bindings) {
-            registerBinding(binding);
-        }
-    }
+    <T> void registerBinding(final Key<? super T> key, final Supplier<T> factory);
 
     /**
      * Registers a binding between a key and factory only if no binding exists for that key.
      *
-     * @param binding binding to register
+     * @param key key for binding
+     * @param factory factory for value to bind
+     * @param <T> type of value returned by factory
      */
-    void registerBindingIfAbsent(final Binding<?> binding);
+    <T> void registerBindingIfAbsent(final Key<? super T> key, final Supplier<T> factory);
 
     /**
      * Removes any existing binding for the provided key.

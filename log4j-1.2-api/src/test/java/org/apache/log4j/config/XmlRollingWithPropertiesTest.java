@@ -21,11 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.nio.file.Paths;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.LegacyLoggerContextSource;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Test configuration from Properties.
@@ -34,19 +33,10 @@ public class XmlRollingWithPropertiesTest {
 
     private static final String TEST_DIR = "target/XmlRollingWithPropertiesTest";
 
-    @BeforeAll
-    static void beforeAll() {
-        System.setProperty("test.directory", TEST_DIR);
-    }
-
-    @AfterAll
-    static void afterAll() {
-        System.clearProperty("test.directory");
-    }
-
     @Test
+    @SetSystemProperty(key = "test.directory", value = TEST_DIR)
     @CleanUpDirectories(TEST_DIR)
-    @LoggerContextSource(value = "log4j1-rolling-properties.xml", v1config = true)
+    @LegacyLoggerContextSource("log4j1-rolling-properties.xml")
     public void testProperties(final LoggerContext context) {
         // ${test.directory}/logs/etl.log
         final Logger logger = context.getLogger("test");

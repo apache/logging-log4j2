@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.di.Binding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginType;
@@ -45,7 +44,7 @@ public class ConfigurationProcessor {
     private final ThreadLocal<Node> currentNode = new ThreadLocal<>();
 
     public ConfigurationProcessor(final ConfigurableInstanceFactory instanceFactory) {
-        instanceFactory.registerBinding(Binding.from(Node.CURRENT_NODE).to(currentNode::get));
+        instanceFactory.registerBinding(Node.CURRENT_NODE, currentNode::get);
         this.instanceFactory = instanceFactory;
     }
 

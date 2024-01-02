@@ -29,8 +29,9 @@ import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.TestBinding;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Inject;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.Test;
 public class LogEventFactoryTest {
 
     @Test
+    @TestBinding(api = LogEventFactory.class, implementation = TestLogEventFactory.class)
     @LoggerContextSource(value = "log4j2-config.xml")
     public void testEvent(@Named("List") final ListAppender app, final LoggerContext context) {
         final org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.test.LogEventFactory");
@@ -53,6 +55,7 @@ public class LogEventFactoryTest {
     public static class TestLogEventFactory implements LogEventFactory {
         private final ContextDataInjector injector;
 
+        @Inject
         public TestLogEventFactory(final ContextDataInjector injector) {
             this.injector = injector;
         }
@@ -77,10 +80,5 @@ public class LogEventFactoryTest {
                     .setThrown(t)
                     .build();
         }
-    }
-
-    @Factory
-    public LogEventFactory logEventFactory(final ContextDataInjector injector) {
-        return new TestLogEventFactory(injector);
     }
 }

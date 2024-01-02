@@ -20,7 +20,9 @@
  */
 @Export
 @Version("1.0.0")
+@NullMarked
 package org.apache.logging.log4j.plugins.di;
 
+import org.apache.logging.log4j.lang.NullMarked;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;

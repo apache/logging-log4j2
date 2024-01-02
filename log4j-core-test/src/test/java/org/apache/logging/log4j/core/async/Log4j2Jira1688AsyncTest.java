@@ -23,6 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -33,7 +34,8 @@ import org.junit.jupiter.api.Test;
  * Tests LOG4J2-1688 Multiple loggings of arguments are setting these arguments to null.
  */
 @Tag("async")
-@LoggerContextSource(value = "log4j-list.xml", selector = AsyncLoggerContextSelector.class)
+@ContextSelectorType(AsyncLoggerContextSelector.class)
+@LoggerContextSource("log4j-list.xml")
 public class Log4j2Jira1688AsyncTest {
 
     private static Object[] createArray(final int size) {

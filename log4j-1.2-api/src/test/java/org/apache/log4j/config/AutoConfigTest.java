@@ -28,7 +28,7 @@ import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.LegacyLoggerContextSource;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 public class AutoConfigTest {
 
     @Test
-    @LoggerContextSource(value = "log4j.xml", v1config = true)
+    @LegacyLoggerContextSource("log4j.xml")
     public void testListAppender(final org.apache.logging.log4j.core.LoggerContext context) {
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
