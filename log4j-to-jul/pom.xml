@@ -29,9 +29,6 @@
   <name>Apache Log4j to JUL Bridge</name>
   <description>The Apache Log4j binding between Log4j 2 API and java.util.logging (JUL).</description>
   <inceptionYear>2022</inceptionYear>
-  <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.tojul;
 
-import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.spi.Provider;
 
@@ -25,7 +24,7 @@ import org.apache.logging.log4j.spi.Provider;
  *
  * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
-@ServiceProvider(value = Provider.class, resolution = Resolution.OPTIONAL)
+@ServiceProvider(value = Provider.class)
 public class JULProvider extends Provider {
     public JULProvider() {
         super(20, "3.0.0", JULLoggerContextFactory.class, null);
