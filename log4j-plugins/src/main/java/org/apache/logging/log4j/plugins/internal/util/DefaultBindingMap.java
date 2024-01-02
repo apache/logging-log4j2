@@ -25,7 +25,7 @@ import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.InternalApi;
 
 @InternalApi
-public class DefaultBindingMap implements BindingMap {
+public final class DefaultBindingMap implements BindingMap {
     private final HierarchicalMap<Key<?>, Supplier<?>> bindings;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 

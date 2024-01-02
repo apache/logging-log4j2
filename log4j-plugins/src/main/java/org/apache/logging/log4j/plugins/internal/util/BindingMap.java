@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.di.Key;
 
-public interface BindingMap {
+public sealed interface BindingMap permits DefaultBindingMap {
     <T> @Nullable Supplier<T> get(final Key<T> key, final Iterable<String> aliases);
 
     <T> void put(final Key<? super T> key, final Supplier<T> factory);
