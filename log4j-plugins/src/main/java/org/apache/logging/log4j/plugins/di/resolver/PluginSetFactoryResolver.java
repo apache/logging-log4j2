@@ -40,7 +40,7 @@ public class PluginSetFactoryResolver<T> extends AbstractPluginFactoryResolver<S
     public Supplier<Set<? extends T>> getFactory(
             final ResolvableKey<Set<? extends T>> resolvableKey, final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.namespace();
-        final ParameterizedType containerType = (ParameterizedType) resolvableKey.type();
+        final ParameterizedType containerType = resolvableKey.parameterizedType();
         final Type componentType = containerType.getActualTypeArguments()[0];
         return () -> Plugins.<T>streamPluginInstancesMatching(instanceFactory, namespace, componentType)
                 .collect(Collectors.toCollection(LinkedHashSet::new));

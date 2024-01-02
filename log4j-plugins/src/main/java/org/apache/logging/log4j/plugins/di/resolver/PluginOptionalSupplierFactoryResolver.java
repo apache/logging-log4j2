@@ -40,7 +40,7 @@ public class PluginOptionalSupplierFactoryResolver<T>
             final ResolvableKey<Optional<? extends Supplier<? extends T>>> resolvableKey,
             final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.namespace();
-        final ParameterizedType containerType = (ParameterizedType) resolvableKey.type();
+        final ParameterizedType containerType = resolvableKey.parameterizedType();
         final ParameterizedType supplierType = (ParameterizedType) containerType.getActualTypeArguments()[0];
         final Type componentType = supplierType.getActualTypeArguments()[0];
         return () -> Plugins.<T>streamPluginFactoriesMatching(instanceFactory, namespace, componentType)

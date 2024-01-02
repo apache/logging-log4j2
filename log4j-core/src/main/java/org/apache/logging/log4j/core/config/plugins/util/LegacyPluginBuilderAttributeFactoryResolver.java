@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.lang.reflect.Type;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.resolver.AbstractAttributeFactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
@@ -35,7 +36,7 @@ public class LegacyPluginBuilderAttributeFactoryResolver<T>
     }
 
     @Override
-    protected T getDefaultValue(
+    protected @Nullable T getDefaultValue(
             final PluginBuilderAttribute annotation,
             final StringValueResolver resolver,
             final Type type,

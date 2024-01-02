@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
@@ -100,7 +101,7 @@ public class PluginElementFactoryResolver<T> implements FactoryResolver<T> {
         return Cast.cast(array);
     }
 
-    private static <T> T findChildElement(
+    private static <T> @Nullable T findChildElement(
             final Node node, final String name, final Collection<String> aliases, final Class<?> targetType) {
         final List<Node> children = node.getChildren();
         final Iterator<Node> iterator = children.iterator();

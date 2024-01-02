@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.plugins.di.resolver;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
@@ -32,14 +31,16 @@ import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 public class SupplierFactoryResolver<T> implements FactoryResolver<Supplier<T>> {
     @Override
     public boolean supportsKey(final Key<?> key) {
-        final Type type = key.getType();
-        return type instanceof ParameterizedType && ((ParameterizedType) type).getRawType() == Supplier.class;
+        return key.getType() instanceof ParameterizedType type
+                && type.getRawType() == Supplier.class
+                && type.getActualTypeArguments().length == 1;
     }
 
     @Override
     public Supplier<Supplier<T>> getFactory(
             final ResolvableKey<Supplier<T>> resolvableKey, final InstanceFactory instanceFactory) {
         final Key<T> key = resolvableKey.key().getSuppliedType();
+        assert key != null; // already checked in supportsKey
         final Collection<String> aliases = resolvableKey.aliases();
         // dependencies ignored as this is a lazy binding
         return () -> instanceFactory.getFactory(key, aliases);

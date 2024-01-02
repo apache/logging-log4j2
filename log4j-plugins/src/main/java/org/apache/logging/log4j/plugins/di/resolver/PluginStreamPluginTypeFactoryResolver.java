@@ -33,11 +33,10 @@ public class PluginStreamPluginTypeFactoryResolver<T>
         }
         // have Stream<T>
         final Type streamTypeArgument = typeArguments[0];
-        if (!(streamTypeArgument instanceof ParameterizedType)) {
+        if (!(streamTypeArgument instanceof final ParameterizedType streamParameterizedTypeArgument)) {
             return false;
         }
         // have Stream<T<...>>
-        final ParameterizedType streamParameterizedTypeArgument = (ParameterizedType) streamTypeArgument;
         if (streamParameterizedTypeArgument.getRawType() != PluginType.class) {
             return false;
         }
@@ -52,7 +51,7 @@ public class PluginStreamPluginTypeFactoryResolver<T>
             final ResolvableKey<Stream<? extends PluginType<? extends T>>> resolvableKey,
             final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.namespace();
-        final ParameterizedType streamType = (ParameterizedType) resolvableKey.type();
+        final ParameterizedType streamType = resolvableKey.parameterizedType();
         final ParameterizedType supplierType = (ParameterizedType) streamType.getActualTypeArguments()[0];
         final ParameterizedType pluginType = (ParameterizedType) supplierType.getActualTypeArguments()[0];
         final Type componentType = pluginType.getActualTypeArguments()[0];

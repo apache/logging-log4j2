@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
@@ -41,7 +42,7 @@ public class OptionalFactoryResolver<T> implements FactoryResolver<Optional<T>> 
     public Supplier<Optional<T>> getFactory(
             final ResolvableKey<Optional<T>> resolvableKey, final InstanceFactory instanceFactory) {
         final Key<?> key = resolvableKey.key();
-        final Key<T> itemKey = key.getParameterizedTypeArgument(0);
+        final Key<@Nullable T> itemKey = key.getParameterizedTypeArgument(0);
         final Collection<String> aliases = resolvableKey.aliases();
         final DependencyChain dependencyChain = resolvableKey.dependencyChain();
         if (itemKey == null) {

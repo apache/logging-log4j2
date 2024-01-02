@@ -21,6 +21,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
@@ -69,7 +70,7 @@ public abstract class AbstractAttributeFactoryResolver<T, A extends Annotation> 
                 LOGGER.trace("Configured node {} {}={}", node.getName(), key, sensitive ? "(sensitive)" : attribute);
                 return typeConverter.convert(attribute, null, sensitive);
             }
-            final T defaultValue = getDefaultValue(annotation, resolver, type, typeConverter);
+            final @Nullable T defaultValue = getDefaultValue(annotation, resolver, type, typeConverter);
             LOGGER.trace("Configured node {} {}={} (default value)", node.getName(), key, defaultValue);
             return defaultValue;
         };
@@ -77,7 +78,7 @@ public abstract class AbstractAttributeFactoryResolver<T, A extends Annotation> 
 
     protected abstract boolean isSensitive(final A annotation);
 
-    protected abstract T getDefaultValue(
+    protected abstract @Nullable T getDefaultValue(
             final A annotation,
             final StringValueResolver resolver,
             final Type type,

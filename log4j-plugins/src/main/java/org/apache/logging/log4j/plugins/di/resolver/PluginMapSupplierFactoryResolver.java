@@ -44,7 +44,7 @@ public class PluginMapSupplierFactoryResolver<T>
             final ResolvableKey<Map<String, ? extends Supplier<? extends T>>> resolvableKey,
             final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.namespace();
-        final ParameterizedType mapType = (ParameterizedType) resolvableKey.type();
+        final ParameterizedType mapType = resolvableKey.parameterizedType();
         final Type componentType = mapType.getActualTypeArguments()[1];
         final ParameterizedType parameterizedType = (ParameterizedType) componentType;
         final Type[] typeArguments = parameterizedType.getActualTypeArguments();

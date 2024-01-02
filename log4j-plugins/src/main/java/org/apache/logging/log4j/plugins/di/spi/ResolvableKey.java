@@ -16,23 +16,18 @@
  */
 package org.apache.logging.log4j.plugins.di.spi;
 
-import java.lang.reflect.Type;
+import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.List;
 import org.apache.logging.log4j.plugins.di.Key;
 
 public record ResolvableKey<T>(Key<T> key, Collection<String> aliases, DependencyChain dependencyChain) {
 
-    public Type type() {
-        return key.getType();
-    }
-
-    public Class<T> rawType() {
-        return key.getRawType();
-    }
-
-    public String name() {
-        return key.getName();
+    public ParameterizedType parameterizedType() {
+        if (key.getType() instanceof ParameterizedType type) {
+            return type;
+        }
+        throw new IllegalStateException("Not a parameterized type");
     }
 
     public String namespace() {

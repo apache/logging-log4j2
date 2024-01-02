@@ -150,10 +150,10 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     }
 
     protected <T> @Nullable T getInjectableInstance(final ResolvableKey<T> resolvableKey) {
-        final Class<T> rawType = resolvableKey.rawType();
-        validate(rawType, resolvableKey.name(), rawType);
-        final Executable factory = BeanUtils.getInjectableFactory(resolvableKey);
         final Key<T> key = resolvableKey.key();
+        final Class<T> rawType = key.getRawType();
+        validate(rawType, key.getName(), rawType);
+        final Executable factory = BeanUtils.getInjectableFactory(resolvableKey);
         final DependencyChain updatedChain = resolvableKey.dependencyChain().withDependency(key);
         final Object[] arguments = InjectionPoint.fromExecutable(factory).stream()
                 .map(point -> getArgumentFactory(point, updatedChain).get())
@@ -378,14 +378,15 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     protected <T> void injectField(final Field field, final Object instance) {
         final InjectionPoint<T> point = InjectionPoint.forField(field);
         currentInjectionPoint.set(point);
-        final ResolvableKey<T> resolvableKey = ResolvableKey.of(point.key(), point.aliases());
+        final Key<T> key = point.key();
+        final ResolvableKey<T> resolvableKey = ResolvableKey.of(key, point.aliases());
         try {
             final T value = getInstance(resolvableKey);
             // TODO(ms): if null, consider throwing exception here
             if (value != null) {
                 agent.setFieldValue(field, instance, value);
             }
-            validate(field, resolvableKey.name(), agent.getFieldValue(field, instance));
+            validate(field, key.getName(), agent.getFieldValue(field, instance));
         } finally {
             currentInjectionPoint.remove();
         }

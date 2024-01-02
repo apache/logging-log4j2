@@ -28,10 +28,9 @@ public abstract class AbstractPluginFactoryResolver<T> implements FactoryResolve
             return false;
         }
         final Type type = key.getType();
-        if (!(type instanceof ParameterizedType)) {
+        if (!(type instanceof final ParameterizedType parameterizedType)) {
             return false;
         }
-        final ParameterizedType parameterizedType = (ParameterizedType) type;
         final Type rawType = parameterizedType.getRawType();
         final Type[] typeArguments = parameterizedType.getActualTypeArguments();
         if (typeArguments.length == 0) {
