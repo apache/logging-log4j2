@@ -25,20 +25,4 @@ import java.lang.annotation.Annotation;
  * @param <A> annotation type
  * @param <M> meta-annotation type
  */
-public class AnnotatedAnnotation<A extends Annotation, M extends Annotation> {
-    private final A annotation;
-    private final M metaAnnotation;
-
-    public AnnotatedAnnotation(final A annotation, final M metaAnnotation) {
-        this.annotation = annotation;
-        this.metaAnnotation = metaAnnotation;
-    }
-
-    public A getAnnotation() {
-        return annotation;
-    }
-
-    public M getMetaAnnotation() {
-        return metaAnnotation;
-    }
-}
+public record AnnotatedAnnotation<A extends Annotation, M extends Annotation>(A annotation, M metaAnnotation) {}

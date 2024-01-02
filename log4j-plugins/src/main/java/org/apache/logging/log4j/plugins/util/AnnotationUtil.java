@@ -56,7 +56,7 @@ public final class AnnotationUtil {
     public static Annotation getElementAnnotationHavingMetaAnnotation(
             final AnnotatedElement element, final Class<? extends Annotation> metaAnnotation) {
         return findAnnotatedAnnotations(element, metaAnnotation)
-                .map(AnnotatedAnnotation::getAnnotation)
+                .map(AnnotatedAnnotation::annotation)
                 .findFirst()
                 .orElse(null);
     }

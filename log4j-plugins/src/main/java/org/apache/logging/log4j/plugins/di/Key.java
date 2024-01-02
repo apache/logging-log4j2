@@ -375,7 +375,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
 
     private static @Nullable Class<? extends Annotation> getQualifierType(final AnnotatedElement element) {
         return AnnotationUtil.findAnnotatedAnnotations(element, QualifierType.class)
-                .map(annotatedAnnotation -> annotatedAnnotation.getAnnotation().annotationType())
+                .map(annotatedAnnotation -> annotatedAnnotation.annotation().annotationType())
                 .findFirst()
                 .orElse(null);
     }

@@ -170,9 +170,9 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
     private <A extends Annotation> ConstraintValidator<A> initialize(
             final AnnotatedAnnotation<A, Constraint> constraint) {
         final Class<? extends ConstraintValidator<A>> validatorType =
-                Cast.cast(constraint.getMetaAnnotation().value());
+                Cast.cast(constraint.metaAnnotation().value());
         final ConstraintValidator<A> validator = getInstance(validatorType);
-        validator.initialize(constraint.getAnnotation());
+        validator.initialize(constraint.annotation());
         return validator;
     }
 }

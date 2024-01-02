@@ -155,9 +155,9 @@ public final class Keys {
     private static <A extends Annotation> Optional<String> getSpecifiedName(
             final AnnotatedAnnotation<A, NameProvider> annotatedAnnotation) {
         final Class<? extends AnnotatedElementNameProvider<A>> providerType =
-                Cast.cast(annotatedAnnotation.getMetaAnnotation().value());
+                Cast.cast(annotatedAnnotation.metaAnnotation().value());
         final AnnotatedElementNameProvider<A> provider = ReflectionUtil.instantiate(providerType);
-        return provider.getSpecifiedName(annotatedAnnotation.getAnnotation());
+        return provider.getSpecifiedName(annotatedAnnotation.annotation());
     }
 
     public static Collection<String> getAliases(final AnnotatedElement element) {
@@ -170,8 +170,8 @@ public final class Keys {
     private static <A extends Annotation> Collection<String> getAliases(
             final AnnotatedAnnotation<A, AliasesProvider> annotatedAnnotation) {
         final Class<? extends AnnotatedElementAliasesProvider<A>> providerType =
-                Cast.cast(annotatedAnnotation.getMetaAnnotation().value());
+                Cast.cast(annotatedAnnotation.metaAnnotation().value());
         final AnnotatedElementAliasesProvider<A> provider = ReflectionUtil.instantiate(providerType);
-        return provider.getAliases(annotatedAnnotation.getAnnotation());
+        return provider.getAliases(annotatedAnnotation.annotation());
     }
 }
