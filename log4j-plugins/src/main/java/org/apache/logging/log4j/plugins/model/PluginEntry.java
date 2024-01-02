@@ -24,71 +24,15 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Descriptor for {@link org.apache.logging.log4j.plugins.Plugin} metadata.
  */
-public final class PluginEntry implements Comparable<PluginEntry> {
-    private final String key;
-    private final String className;
-    private final String name;
-    private final String elementType;
-    private final boolean printable;
-    private final boolean deferChildren;
-    private final String namespace;
-
-    private PluginEntry(
-            final String key,
-            final String className,
-            final String name,
-            final String elementType,
-            final boolean printable,
-            final boolean deferChildren,
-            final String namespace) {
-        this.key = key;
-        this.className = className;
-        this.name = name;
-        this.elementType = elementType;
-        this.printable = printable;
-        this.deferChildren = deferChildren;
-        this.namespace = namespace;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getElementType() {
-        return elementType;
-    }
-
-    public boolean isPrintable() {
-        return printable;
-    }
-
-    public boolean isDeferChildren() {
-        return deferChildren;
-    }
-
-    public String getNamespace() {
-        return namespace;
-    }
-
-    @Override
-    public String toString() {
-        return "PluginEntry{" + "key='"
-                + key + '\'' + ", className='"
-                + className + '\'' + ", name='"
-                + name + '\'' + ", elementType='"
-                + elementType + '\'' + ", printable="
-                + printable + ", deferChildren="
-                + deferChildren + ", namespace='"
-                + namespace + '\'' + '}';
-    }
+public record PluginEntry(
+        String key,
+        String className,
+        String name,
+        String elementType,
+        boolean printable,
+        boolean deferChildren,
+        String namespace)
+        implements Comparable<PluginEntry> {
 
     @Override
     public int compareTo(final PluginEntry o) {

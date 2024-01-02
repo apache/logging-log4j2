@@ -56,12 +56,12 @@ public class PluginType<T> {
             if (loader == null) {
                 throw new IllegalStateException("ClassLoader has been destroyed already");
             }
-            final String className = pluginEntry.getClassName();
+            final String className = pluginEntry.className();
             try {
                 return Cast.cast(loader.loadClass(className));
             } catch (final ClassNotFoundException e) {
                 throw new IllegalStateException(
-                        "No class named " + className + " located for element " + pluginEntry.getName(), e);
+                        "No class named " + className + " located for element " + pluginEntry.name(), e);
             }
         });
     }
@@ -75,7 +75,7 @@ public class PluginType<T> {
     }
 
     public String getElementType() {
-        return pluginEntry.getElementType();
+        return pluginEntry.elementType();
     }
 
     /**
@@ -84,15 +84,15 @@ public class PluginType<T> {
      * @since 2.1
      */
     public String getKey() {
-        return this.pluginEntry.getKey();
+        return this.pluginEntry.key();
     }
 
     public boolean isObjectPrintable() {
-        return this.pluginEntry.isPrintable();
+        return this.pluginEntry.printable();
     }
 
     public boolean isDeferChildren() {
-        return this.pluginEntry.isDeferChildren();
+        return this.pluginEntry.deferChildren();
     }
 
     /**
@@ -101,11 +101,11 @@ public class PluginType<T> {
      * @since 2.1
      */
     public String getNamespace() {
-        return this.pluginEntry.getNamespace();
+        return this.pluginEntry.namespace();
     }
 
     public String getName() {
-        return pluginEntry.getName();
+        return pluginEntry.name();
     }
 
     public String getElementName() {
@@ -115,10 +115,10 @@ public class PluginType<T> {
     @Override
     public String toString() {
         return "PluginType [pluginClass=" + pluginClass.toString() + ", key="
-                + pluginEntry.getKey() + ", elementType="
-                + pluginEntry.getElementType() + ", isObjectPrintable="
-                + pluginEntry.isPrintable() + ", isDeferChildren=="
-                + pluginEntry.isDeferChildren() + ", namespace="
-                + pluginEntry.getNamespace() + "]";
+                + pluginEntry.key() + ", elementType="
+                + pluginEntry.elementType() + ", isObjectPrintable="
+                + pluginEntry.printable() + ", isDeferChildren=="
+                + pluginEntry.deferChildren() + ", namespace="
+                + pluginEntry.namespace() + "]";
     }
 }

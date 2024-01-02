@@ -82,7 +82,7 @@ public class PluginProcessorTest {
 
     private void verifyFakePluginEntry(final String name, final PluginType<?> fake) {
         assertNotNull("The plugin '" + name.toLowerCase() + "' was not found.", fake);
-        assertEquals(FakePlugin.class.getName(), fake.getPluginEntry().getClassName());
+        assertEquals(FakePlugin.class.getName(), fake.getPluginEntry().className());
         assertEquals(name.toLowerCase(), fake.getKey());
         assertEquals(Plugin.EMPTY, c.elementType());
         assertEquals(p.value(), fake.getName());
@@ -98,7 +98,7 @@ public class PluginProcessorTest {
         final PluginType<?> nested = testCategory.get(p.value());
         assertNotNull(nested);
         assertEquals(p.value().toLowerCase(), nested.getKey());
-        assertEquals(FakePlugin.Nested.class.getName(), nested.getPluginEntry().getClassName());
+        assertEquals(FakePlugin.Nested.class.getName(), nested.getPluginEntry().className());
         assertEquals(p.value(), nested.getName());
     }
 

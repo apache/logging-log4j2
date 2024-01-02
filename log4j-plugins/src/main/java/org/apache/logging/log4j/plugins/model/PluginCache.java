@@ -73,7 +73,7 @@ public class PluginCache {
                                 .setPrintable(in.readBoolean())
                                 .setDeferChildren(in.readBoolean())
                                 .get();
-                        m.putIfAbsent(entry.getKey(), entry);
+                        m.putIfAbsent(entry.key(), entry);
                     }
                 }
             }

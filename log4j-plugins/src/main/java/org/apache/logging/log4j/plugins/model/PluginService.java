@@ -34,10 +34,10 @@ public abstract class PluginService {
         final PluginEntry[] entries = getEntries();
         final ClassLoader classLoader = getClass().getClassLoader();
         for (PluginEntry entry : entries) {
-            final String namespace = entry.getNamespace();
+            final String namespace = entry.namespace();
             namespaces
                     .computeIfAbsent(namespace.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, namespace))
-                    .merge(entry.getKey(), new PluginType<>(entry, classLoader));
+                    .merge(entry.key(), new PluginType<>(entry, classLoader));
         }
     }
 

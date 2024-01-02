@@ -180,18 +180,18 @@ public class PluginProcessor extends AbstractProcessor {
             for (int i = 0; i < list.size(); ++i) {
                 final PluginEntry entry = list.get(i);
                 writer.println("    PluginEntry.builder()");
-                writer.println(String.format("      .setKey(\"%s\")", entry.getKey()));
-                writer.println(String.format("      .setClassName(\"%s\")", entry.getClassName()));
-                writer.println(String.format("      .setName(\"%s\")", entry.getName()));
-                writer.println(String.format("      .setNamespace(\"%s\")", entry.getNamespace()));
-                final String elementType = entry.getElementType();
+                writer.println(String.format("      .setKey(\"%s\")", entry.key()));
+                writer.println(String.format("      .setClassName(\"%s\")", entry.className()));
+                writer.println(String.format("      .setName(\"%s\")", entry.name()));
+                writer.println(String.format("      .setNamespace(\"%s\")", entry.namespace()));
+                final String elementType = entry.elementType();
                 if (Strings.isNotEmpty(elementType)) {
                     writer.println(String.format("      .setElementType(\"%s\")", elementType));
                 }
-                if (entry.isPrintable()) {
+                if (entry.printable()) {
                     writer.println("      .setPrintable(true)");
                 }
-                if (entry.isDeferChildren()) {
+                if (entry.deferChildren()) {
                     writer.println("      .setDeferChildren(true)");
                 }
                 writer.println("      .get()" + (i < max ? "," : Strings.EMPTY));
