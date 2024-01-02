@@ -5,11 +5,6 @@
        type="added">
   <issue id="2147" link="https://github.com/apache/logging-log4j2/issues/2147"/>
   <description format="asciidoc">
-    Add various DSLs for dependency injection. This includes:
-
-    - `DI.FactoryBuilder` and related builder classes for configuring a `ConfigurableInstanceFactory`.
-    - Repeatable `@TestBinding` test annotation for specifying simple bindings in tests.
-    - `@LegacyLoggerContextSource` test annotation for specifying v1-style configuration files.
-    - Test extension updates to improve compatibility of different annotations.
+    Add and update DSLs for setting up dependency injection for test and non-test code.
   </description>
 </entry>
