@@ -103,8 +103,9 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        final TempLoggingDir annotation =
-                parameterContext.findAnnotation(TempLoggingDir.class).get();
+        final TempLoggingDir annotation = parameterContext
+                .findAnnotation(TempLoggingDir.class)
+                .orElseThrow(() -> new ParameterResolutionException("No @TempLoggingDir annotation found"));
         // Get or create temporary directory
         PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, extensionContext);
         if (holder == null || !extensionContext.equals(holder.getMainContext())) {
