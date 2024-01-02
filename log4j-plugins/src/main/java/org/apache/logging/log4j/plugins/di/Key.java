@@ -233,10 +233,9 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof Key<?>)) {
+        if (!(o instanceof final Key<?> that)) {
             return false;
         }
-        final Key<?> that = (Key<?>) o;
         return TypeUtil.isEqual(this.type, that.type)
                 && this.name.equalsIgnoreCase(that.name)
                 && this.namespace.equalsIgnoreCase(that.namespace)
