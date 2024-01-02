@@ -18,9 +18,11 @@ package org.apache.logging.log4j.core.config;
 
 import java.lang.ref.WeakReference;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.lang.NullMarked;
 import org.apache.logging.log4j.plugins.di.spi.InstancePostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 
+@NullMarked
 public class LoggerContextAwarePostProcessor implements InstancePostProcessor {
     private final WeakReference<LoggerContext> loggerContextRef;
 
@@ -30,9 +32,9 @@ public class LoggerContextAwarePostProcessor implements InstancePostProcessor {
 
     @Override
     public <T> T postProcessBeforeInitialization(final ResolvableKey<T> resolvableKey, final T instance) {
-        if (instance instanceof LoggerContextAware) {
+        if (instance instanceof LoggerContextAware aware) {
             final LoggerContext loggerContext = loggerContextRef.get();
-            ((LoggerContextAware) instance).setLoggerContext(loggerContext);
+            aware.setLoggerContext(loggerContext);
         }
         return instance;
     }

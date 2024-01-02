@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
+
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.di.Key;
 
 public class ResolvableKey<T> {
@@ -53,7 +55,7 @@ public class ResolvableKey<T> {
         return key.getNamespace();
     }
 
-    public Class<? extends Annotation> getQualifierType() {
+    public @Nullable Class<? extends Annotation> getQualifierType() {
         return key.getQualifierType();
     }
 

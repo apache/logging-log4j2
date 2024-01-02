@@ -18,8 +18,10 @@ package org.apache.logging.log4j.plugins.di.spi;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.StringJoiner;
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.di.Key;
 
 class DependencyChains {
@@ -68,13 +70,13 @@ class DependencyChains {
 
     private static final class LinkedChain implements DependencyChain {
         private final Key<?> head;
-        private final LinkedChain tail;
+        private final @Nullable LinkedChain tail;
 
         private LinkedChain(final Key<?> head) {
             this(head, null);
         }
 
-        private LinkedChain(final Key<?> head, final LinkedChain tail) {
+        private LinkedChain(final Key<?> head, final @Nullable LinkedChain tail) {
             this.head = head;
             this.tail = tail;
         }
@@ -126,7 +128,7 @@ class DependencyChains {
         }
 
         private static final class Iter implements Iterator<Key<?>> {
-            private LinkedChain current;
+            private @Nullable LinkedChain current;
 
             private Iter(final LinkedChain current) {
                 this.current = current;
@@ -139,6 +141,9 @@ class DependencyChains {
 
             @Override
             public Key<?> next() {
+                if (current == null) {
+                    throw new NoSuchElementException();
+                }
                 final Key<?> head = current.head;
                 current = current.tail;
                 return head;

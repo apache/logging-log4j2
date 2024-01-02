@@ -25,12 +25,15 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
+import org.apache.logging.log4j.lang.NonNull;
+import org.apache.logging.log4j.lang.NullUnmarked;
 
 /**
  * Provides reflection operations using the calling context of another class. This is useful for centralizing
  * which module to open oneself to instead of this Log4j Plugins module.
  */
 @FunctionalInterface
+@NullUnmarked
 public interface ReflectionAgent {
 
     /**
@@ -41,7 +44,7 @@ public interface ReflectionAgent {
      * @throws InaccessibleObjectException if this cannot access the provided object
      * @throws SecurityException if the request is denied by the security manager
      */
-    void makeAccessible(final AccessibleObject object);
+    void makeAccessible(final @NonNull AccessibleObject object);
 
     private <M extends AccessibleObject & Member> void makeAccessible(final M member, final Object instance) {
         Objects.requireNonNull(member, "member cannot be null");
@@ -55,7 +58,7 @@ public interface ReflectionAgent {
         }
     }
 
-    default Object getFieldValue(final Field field, final Object instance) {
+    default Object getFieldValue(final @NonNull Field field, final Object instance) {
         makeAccessible(field, instance);
         try {
             return field.get(instance);
@@ -64,7 +67,7 @@ public interface ReflectionAgent {
         }
     }
 
-    default void setFieldValue(final Field field, final Object instance, final Object value) {
+    default void setFieldValue(final @NonNull Field field, final Object instance, final Object value) {
         makeAccessible(field, instance);
         try {
             field.set(instance, value);
@@ -73,7 +76,7 @@ public interface ReflectionAgent {
         }
     }
 
-    default Object invokeMethod(final Method method, final Object instance, final Object... args) {
+    default Object invokeMethod(final @NonNull Method method, final Object instance, final Object... args) {
         makeAccessible(method, instance);
         try {
             return method.invoke(instance, args);
@@ -84,7 +87,7 @@ public interface ReflectionAgent {
         }
     }
 
-    default <T> T newInstance(final Constructor<T> constructor, final Object... args) {
+    default <T> @NonNull T newInstance(final @NonNull Constructor<T> constructor, final Object... args) {
         makeAccessible(constructor, null);
         try {
             return constructor.newInstance(args);
@@ -95,11 +98,11 @@ public interface ReflectionAgent {
         }
     }
 
-    default <T> T newInstance(final Class<T> clazz) {
+    default <T> @NonNull T newInstance(final @NonNull Class<T> clazz) {
         return newInstance(getDefaultConstructor(clazz));
     }
 
-    private <T> Constructor<T> getDefaultConstructor(final Class<T> clazz) {
+    private <T> @NonNull Constructor<T> getDefaultConstructor(final @NonNull Class<T> clazz) {
         try {
             return clazz.getDeclaredConstructor();
         } catch (final NoSuchMethodException | SecurityException e) {

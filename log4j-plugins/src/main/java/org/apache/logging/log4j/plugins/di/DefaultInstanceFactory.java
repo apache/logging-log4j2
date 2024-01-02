@@ -133,7 +133,11 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
             throw new NotInjectableException(resolvableKey);
         }
         return () -> {
-            var instance = getInjectableInstance(resolvableKey);
+            @Nullable T instance = getInjectableInstance(resolvableKey);
+            // TODO(ms): consider throwing exception here
+            if (instance == null) {
+                return null;
+            }
             instance = postProcessBeforeInitialization(resolvableKey, instance);
             injectMembers(key, instance, resolvableKey.getDependencyChain());
             instance = postProcessAfterInitialization(resolvableKey, instance);
@@ -145,7 +149,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         };
     }
 
-    protected <T> T getInjectableInstance(final ResolvableKey<T> resolvableKey) {
+    protected <T> @Nullable T getInjectableInstance(final ResolvableKey<T> resolvableKey) {
         final Class<T> rawType = resolvableKey.getRawType();
         validate(rawType, resolvableKey.getName(), rawType);
         final Executable factory = BeanUtils.getInjectableFactory(resolvableKey);
@@ -173,9 +177,11 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         return value;
     }
 
-    protected <T> T invokeFactory(final Executable factory, final Object... arguments) {
-        if (factory instanceof Method) {
-            return Cast.cast(agent.invokeMethod((Method) factory, null, arguments));
+    protected <T> @Nullable T invokeFactory(final Executable factory, final Object... arguments) {
+        if (factory instanceof Method method) {
+            final Object result = agent.invokeMethod(method, null, arguments);
+            // TODO(ms): if null, consider throwing exception here
+            return Cast.cast(result);
         } else {
             return agent.newInstance(Cast.cast(factory), arguments);
         }
@@ -248,7 +254,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
                 .map(Conditional::value)
                 .collect(Collectors.toSet());
         final List<? extends Condition> globalConditions =
-                conditionalClasses.stream().map(this::getInstance).collect(Collectors.toList());
+                conditionalClasses.stream().map(this::getInstance).toList();
         final ConditionContext context = ConditionContext.of(this);
         final List<Method> factoryMethods = new ArrayList<>();
         for (final Method method : AnnotationUtil.getDeclaredMethodsMetaAnnotatedWith(bundleClass, FactoryType.class)) {
@@ -285,7 +291,12 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         final Supplier<T> unscoped = () -> {
             final Object[] arguments =
                     argumentFactories.stream().map(Supplier::get).toArray();
-            T instance = Cast.cast(agent.invokeMethod(method, bundleInstance, arguments));
+            final Object result = agent.invokeMethod(method, bundleInstance, arguments);
+            if (result == null) {
+                // TODO(ms): if null, consider throwing exception here
+                return null;
+            }
+            T instance = Cast.cast(result);
             instance = postProcessBeforeInitialization(resolvableKey, instance);
             injectMembers(primaryKey, instance, DependencyChain.empty());
             return postProcessAfterInitialization(resolvableKey, instance);
@@ -370,6 +381,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         final ResolvableKey<T> resolvableKey = ResolvableKey.of(point.getKey(), point.getAliases());
         try {
             final T value = getInstance(resolvableKey);
+            // TODO(ms): if null, consider throwing exception here
             if (value != null) {
                 agent.setFieldValue(field, instance, value);
             }

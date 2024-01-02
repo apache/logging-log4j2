@@ -17,9 +17,12 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.lang.NullMarked;
 import org.apache.logging.log4j.plugins.di.spi.InstancePostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 
+@NullMarked
 public class ConfigurationAwarePostProcessor implements InstancePostProcessor {
     private final Supplier<? extends Configuration> configurationSupplier;
 
@@ -29,8 +32,8 @@ public class ConfigurationAwarePostProcessor implements InstancePostProcessor {
 
     @Override
     public <T> T postProcessBeforeInitialization(final ResolvableKey<T> resolvableKey, final T instance) {
-        if (instance instanceof ConfigurationAware) {
-            ((ConfigurationAware) instance).setConfiguration(configurationSupplier.get());
+        if (instance instanceof ConfigurationAware aware) {
+            aware.setConfiguration(configurationSupplier.get());
         }
         return instance;
     }

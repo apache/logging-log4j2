@@ -156,7 +156,7 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
      * @param value   value to validate
      * @throws ConstraintValidationException if validation fails
      */
-    default void validate(final AnnotatedElement element, final String name, final Object value) {
+    default void validate(final AnnotatedElement element, final String name, final @Nullable Object value) {
         // TODO(ms): can maybe move logic into a post processor
         final long errors = AnnotationUtil.findAnnotatedAnnotations(element, Constraint.class)
                 .map(this::initialize)
