@@ -46,12 +46,12 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.test.junit.ExtensionContextAnchor;
 import org.apache.logging.log4j.test.junit.TestPropertySource;
-import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> implements BeforeAllCallback {
 
@@ -77,10 +77,6 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
             }
         }
         throw new NotImplementedException(loggingTarget.toString());
-    }
-
-    public MongoDb4Resolver() {
-        super(MongoClient.class);
     }
 
     @Override
@@ -125,7 +121,7 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
     @Override
     public MongoClient resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        return ExtensionContextAnchor.getAttribute(MongoClientHolder.class, MongoClientHolder.class, extensionContext)
+        return ExtensionContextAnchor.getRequiredAttribute(MongoClientHolder.class, MongoClientHolder.class, extensionContext)
                 .get();
     }
 
