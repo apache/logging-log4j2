@@ -42,6 +42,18 @@ import org.junit.platform.commons.PreconditionViolationException;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.ReflectionSupport;
 
+/**
+ * Test extension for setting up various Log4j subsystems. This extension is enabled by using one or more
+ * test extension annotations that have been annotated with {@link Log4jTest}. When Log4j test extensions are
+ * present on test classes, then these extensions apply to all tests within the class and are set up before
+ * all tests (via {@link BeforeAllCallback}). When Log4j test extensions are present on test methods, then
+ * these extensions apply to the individually-annotated tests.
+ *
+ * @see LoggerContextSource
+ * @see LegacyLoggerContextSource
+ * @see Log4jTest
+ * @see LoggingResolvers
+ */
 class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback {
     private static final String FQCN = Log4jExtension.class.getName();
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(Log4jExtension.class);
@@ -65,7 +77,8 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
         if (AnnotationSupport.isAnnotated(testMethod, Log4jTest.class)) {
             final DI.FactoryBuilder builder;
             if (AnnotationSupport.isAnnotated(testClass, Log4jTest.class)) {
-                builder = store.get(DI.FactoryBuilder.class, DI.FactoryBuilder.class);
+                builder = store.get(DI.FactoryBuilder.class, DI.FactoryBuilder.class)
+                        .copy();
             } else {
                 builder = store.getOrComputeIfAbsent(DI.FactoryBuilder.class);
             }
@@ -228,7 +241,7 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
         }
     }
 
-    record LoggerContextResource(LoggerContext loggerContext, Runnable cleaner)
+    private record LoggerContextResource(LoggerContext loggerContext, Runnable cleaner)
             implements LoggerContextProvider, ExtensionContext.Store.CloseableResource {
         LoggerContextResource(LoggerContext loggerContext, long shutdownTimeout, TimeUnit unit) {
             this(loggerContext, () -> loggerContext.stop(shutdownTimeout, unit));
