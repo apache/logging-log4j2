@@ -48,6 +48,6 @@ public class LoggerContextFactoryExtension implements BeforeAllCallback, AfterAl
     }
 
     private ExtensionContext.Store getStore(final ExtensionContext context) {
-        return context.getStore(ExtensionContext.Namespace.create(getClass(), context.getRequiredTestClass()));
+        return context.getStore(ExtensionContext.Namespace.create(getClass()));
     }
 }
