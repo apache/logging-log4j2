@@ -38,6 +38,7 @@ import org.junit.jupiter.api.extension.ExtensionContextException;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
+import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ModifierSupport;
 import org.junit.platform.commons.support.ReflectionSupport;
@@ -46,10 +47,6 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         implements BeforeAllCallback, BeforeEachCallback, TestExecutionExceptionHandler {
 
     private static final Object KEY = ListStatusListener.class;
-
-    public StatusLoggerExtension() {
-        super(ListStatusListener.class);
-    }
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
@@ -110,6 +107,9 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
             throws ParameterResolutionException {
         final ListStatusListenerHolder holder =
                 ExtensionContextAnchor.getAttribute(KEY, ListStatusListenerHolder.class, extensionContext);
+        if (holder == null) {
+            throw new ParameterResolutionException("Unable to resolve ListStatusListener");
+        }
         return holder.getStatusListener();
     }
 
