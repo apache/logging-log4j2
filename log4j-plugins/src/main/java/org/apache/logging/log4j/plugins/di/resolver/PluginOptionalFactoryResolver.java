@@ -35,8 +35,8 @@ public class PluginOptionalFactoryResolver<T> extends AbstractPluginFactoryResol
     @Override
     public Supplier<Optional<? extends T>> getFactory(
             final ResolvableKey<Optional<? extends T>> resolvableKey, final InstanceFactory instanceFactory) {
-        final String namespace = resolvableKey.getNamespace();
-        final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
+        final String namespace = resolvableKey.namespace();
+        final ParameterizedType containerType = (ParameterizedType) resolvableKey.type();
         final Type componentType = containerType.getActualTypeArguments()[0];
         return () -> Plugins.<T>streamPluginInstancesMatching(instanceFactory, namespace, componentType)
                 .findFirst();

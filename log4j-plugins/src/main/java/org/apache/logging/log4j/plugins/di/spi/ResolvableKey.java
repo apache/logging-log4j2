@@ -16,33 +16,27 @@
  */
 package org.apache.logging.log4j.plugins.di.spi;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.di.Key;
 
 public record ResolvableKey<T>(Key<T> key, Collection<String> aliases, DependencyChain dependencyChain) {
 
-    public Type getType() {
+    public Type type() {
         return key.getType();
     }
 
-    public Class<T> getRawType() {
+    public Class<T> rawType() {
         return key.getRawType();
     }
 
-    public String getName() {
+    public String name() {
         return key.getName();
     }
 
-    public String getNamespace() {
+    public String namespace() {
         return key.getNamespace();
-    }
-
-    public @Nullable Class<? extends Annotation> getQualifierType() {
-        return key.getQualifierType();
     }
 
     public static <T> ResolvableKey<T> of(final Key<T> key) {

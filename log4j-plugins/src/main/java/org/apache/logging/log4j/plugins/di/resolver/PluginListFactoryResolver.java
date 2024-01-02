@@ -39,8 +39,8 @@ public class PluginListFactoryResolver<T> extends AbstractPluginFactoryResolver<
     @Override
     public Supplier<List<? extends T>> getFactory(
             final ResolvableKey<List<? extends T>> resolvableKey, final InstanceFactory instanceFactory) {
-        final String namespace = resolvableKey.getNamespace();
-        final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
+        final String namespace = resolvableKey.namespace();
+        final ParameterizedType containerType = (ParameterizedType) resolvableKey.type();
         final Type componentType = containerType.getActualTypeArguments()[0];
         return () -> Plugins.<T>streamPluginInstancesMatching(instanceFactory, namespace, componentType)
                 .collect(Collectors.toCollection(ArrayList::new));

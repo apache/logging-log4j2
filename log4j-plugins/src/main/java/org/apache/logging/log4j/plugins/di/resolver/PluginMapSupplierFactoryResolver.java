@@ -43,8 +43,8 @@ public class PluginMapSupplierFactoryResolver<T>
     public Supplier<Map<String, ? extends Supplier<? extends T>>> getFactory(
             final ResolvableKey<Map<String, ? extends Supplier<? extends T>>> resolvableKey,
             final InstanceFactory instanceFactory) {
-        final String namespace = resolvableKey.getNamespace();
-        final ParameterizedType mapType = (ParameterizedType) resolvableKey.getType();
+        final String namespace = resolvableKey.namespace();
+        final ParameterizedType mapType = (ParameterizedType) resolvableKey.type();
         final Type componentType = mapType.getActualTypeArguments()[1];
         final ParameterizedType parameterizedType = (ParameterizedType) componentType;
         final Type[] typeArguments = parameterizedType.getActualTypeArguments();

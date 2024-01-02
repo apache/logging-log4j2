@@ -39,8 +39,8 @@ public class PluginStreamSupplierFactoryResolver<T>
     public Supplier<Stream<? extends Supplier<? extends T>>> getFactory(
             final ResolvableKey<Stream<? extends Supplier<? extends T>>> resolvableKey,
             final InstanceFactory instanceFactory) {
-        final String namespace = resolvableKey.getNamespace();
-        final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
+        final String namespace = resolvableKey.namespace();
+        final ParameterizedType containerType = (ParameterizedType) resolvableKey.type();
         final ParameterizedType supplierType = (ParameterizedType) containerType.getActualTypeArguments()[0];
         final Type[] typeArguments = supplierType.getActualTypeArguments();
         final Type componentType = typeArguments[0];

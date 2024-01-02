@@ -36,8 +36,8 @@ public class PluginStreamFactoryResolver<T> extends AbstractPluginFactoryResolve
     @Override
     public Supplier<Stream<? extends T>> getFactory(
             final ResolvableKey<Stream<? extends T>> resolvableKey, final InstanceFactory instanceFactory) {
-        final String namespace = resolvableKey.getNamespace();
-        final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
+        final String namespace = resolvableKey.namespace();
+        final ParameterizedType containerType = (ParameterizedType) resolvableKey.type();
         final Type componentType = containerType.getActualTypeArguments()[0];
         return () -> Plugins.streamPluginInstancesMatching(instanceFactory, namespace, componentType);
     }

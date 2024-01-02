@@ -150,8 +150,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     }
 
     protected <T> @Nullable T getInjectableInstance(final ResolvableKey<T> resolvableKey) {
-        final Class<T> rawType = resolvableKey.getRawType();
-        validate(rawType, resolvableKey.getName(), rawType);
+        final Class<T> rawType = resolvableKey.rawType();
+        validate(rawType, resolvableKey.name(), rawType);
         final Executable factory = BeanUtils.getInjectableFactory(resolvableKey);
         final Key<T> key = resolvableKey.key();
         final DependencyChain updatedChain = resolvableKey.dependencyChain().withDependency(key);
@@ -385,7 +385,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
             if (value != null) {
                 agent.setFieldValue(field, instance, value);
             }
-            validate(field, resolvableKey.getName(), agent.getFieldValue(field, instance));
+            validate(field, resolvableKey.name(), agent.getFieldValue(field, instance));
         } finally {
             currentInjectionPoint.remove();
         }
