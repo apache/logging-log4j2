@@ -35,12 +35,11 @@ public class TestPropertySource implements PropertySource {
     }
 
     public static TestProperties createProperties(final ExtensionContext context) {
-        TestProperties props = getProperties(context);
         // Make sure that the properties do not come from the parent ExtensionContext
-        if (props instanceof JUnitTestProperties && context.equals(((JUnitTestProperties) props).getContext())) {
+        if (getProperties(context) instanceof JUnitTestProperties props && context.equals(props.context)) {
             return props;
         }
-        props = new JUnitTestProperties(context);
+        final TestProperties props = new JUnitTestProperties(context);
         ExtensionContextAnchor.setAttribute(TestProperties.class, props, context);
         return props;
     }
@@ -86,10 +85,6 @@ public class TestPropertySource implements PropertySource {
         public JUnitTestProperties(final ExtensionContext context) {
             this.context = context;
             this.store = context.getStore(NAMESPACE);
-        }
-
-        public ExtensionContext getContext() {
-            return context;
         }
 
         @Override
