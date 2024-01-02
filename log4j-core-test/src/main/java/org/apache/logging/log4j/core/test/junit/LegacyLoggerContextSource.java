@@ -16,20 +16,22 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 
 /**
- * Specifies a particular {@link ConfigurationFactory} class to use for a test class or method instead of the default.
+ * Alternative test extension to {@link LoggerContextSource} that uses a v1-style configuration file.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
+@Documented
 @Inherited
-@Log4jTest
-public @interface ConfigurationFactoryType {
-    Class<? extends ConfigurationFactory> value();
+@LoggingResolvers
+public @interface LegacyLoggerContextSource {
+    /** Path to configuration file to use in test. */
+    String value();
 }

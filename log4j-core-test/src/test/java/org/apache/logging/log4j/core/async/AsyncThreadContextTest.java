@@ -36,8 +36,6 @@ import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.plugins.di.Binding;
-import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
@@ -134,11 +132,11 @@ public class AsyncThreadContextTest {
             throws Exception {
         final Path testLoggingPath = loggingPath.resolve(contextImpl.toString()).resolve(asyncMode.toString());
         props.setProperty("logging.path", testLoggingPath.toString());
-        final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
-        instanceFactory.registerBinding(
-                Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(asyncMode.contextSelectorType)));
-        DI.initializeFactory(instanceFactory);
-        final Log4jContextFactory factory = new Log4jContextFactory(instanceFactory);
+        final Log4jContextFactory factory = DI.builder()
+                .addInitialBindingFrom(ContextSelector.KEY)
+                .toFunction(instanceFactory -> instanceFactory.getFactory(asyncMode.contextSelectorType))
+                .build()
+                .getInstance(Log4jContextFactory.class);
         final String fqcn = testClass.getName();
         final ClassLoader classLoader = testClass.getClassLoader();
         final String name = contextImpl.toString() + ' ' + asyncMode;

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
+       type="added">
+  <issue id="2147" link="https://github.com/apache/logging-log4j2/issues/2147"/>
+  <description format="asciidoc">
+    Add various DSLs for dependency injection. This includes:
+
+    - `DI.FactoryBuilder` and related builder classes for configuring a `ConfigurableInstanceFactory`.
+    - Repeatable `@TestBinding` test annotation for specifying simple bindings in tests.
+    - `@LegacyLoggerContextSource` test annotation for specifying v1-style configuration files.
+    - Test extension updates to improve compatibility of different annotations.
+  </description>
+</entry>

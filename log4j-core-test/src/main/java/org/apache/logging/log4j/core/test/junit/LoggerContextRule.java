@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.plugins.di.Binding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -132,13 +131,13 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                 System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
                 final String displayName = description.getDisplayName();
                 System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, displayName);
-                final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
+                final DI.FactoryBuilder builder = DI.builder();
                 if (contextSelectorClass != null) {
-                    instanceFactory.registerBinding(
-                            Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(contextSelectorClass)));
+                    builder.addInitialBindingFrom(ContextSelector.KEY)
+                            .toFunction(instanceFactory -> instanceFactory.getFactory(contextSelectorClass));
                 }
-                DI.initializeFactory(instanceFactory);
-                final Log4jContextFactory factory = new Log4jContextFactory(instanceFactory);
+                final ConfigurableInstanceFactory instanceFactory = builder.build();
+                final Log4jContextFactory factory = instanceFactory.getInstance(Log4jContextFactory.class);
                 LogManager.setFactory(factory);
                 final String fqcn = getClass().getName();
                 final ClassLoader classLoader = description.getTestClass().getClassLoader();

@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.plugins.di.Binding;
 
 /**
  * Base Configuration for Log4j 1.
@@ -64,7 +63,7 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
      */
     @Override
     public void initialize() {
-        instanceFactory.registerBinding(Binding.from(Configuration.KEY).toInstance(this));
+        instanceFactory.registerBinding(Configuration.KEY, () -> this);
         getStrSubstitutor().setConfiguration(this);
         getConfigurationStrSubstitutor().setConfiguration(this);
         super.getScheduler().start();

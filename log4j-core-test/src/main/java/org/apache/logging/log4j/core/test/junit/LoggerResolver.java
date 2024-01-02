@@ -16,11 +16,8 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
-
 import java.lang.reflect.Parameter;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -37,17 +34,10 @@ class LoggerResolver implements ParameterResolver {
     @Override
     public Logger resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        final LoggerContext loggerContext = getLoggerContext(extensionContext);
-        if (loggerContext == null) {
-            throw new ParameterResolutionException("No LoggerContext defined");
-        }
-        final String loggerName;
         final Parameter parameter = parameterContext.getParameter();
-        if (Keys.hasName(parameter)) {
-            loggerName = Keys.getName(parameter);
-        } else {
-            loggerName = extensionContext.getRequiredTestClass().getCanonicalName();
-        }
-        return loggerContext.getLogger(loggerName);
+        final String loggerName = Keys.hasName(parameter)
+                ? Keys.getName(parameter)
+                : extensionContext.getRequiredTestClass().getCanonicalName();
+        return Log4jExtension.getRequiredLoggerContext(extensionContext).getLogger(loggerName);
     }
 }

@@ -34,6 +34,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.lang.NullMarked;
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.condition.Condition;
@@ -92,26 +94,25 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         this.scopes = scopes;
         this.factoryResolvers = factoryResolvers;
         this.instancePostProcessors.addAll(instancePostProcessors);
-        this.bindings.put(Binding.from(InjectionPoint.CURRENT_INJECTION_POINT).to(currentInjectionPoint::get));
-        this.bindings.put(Binding.from(ConfigurableInstanceFactory.class).toInstance(this));
-        this.bindings.put(Binding.from(InstanceFactory.class).toInstance(this));
-        this.bindings.put(Binding.from(PropertyEnvironment.class).to(PropertiesUtil::getProperties));
-        this.bindings.put(Binding.from(ClassLoader.class).to(LoaderUtil::getClassLoader));
+        this.bindings.put(InjectionPoint.CURRENT_INJECTION_POINT, currentInjectionPoint::get);
+        this.bindings.put(Key.forClass(ConfigurableInstanceFactory.class), () -> this);
+        this.bindings.put(Key.forClass(InstanceFactory.class), () -> this);
+        this.bindings.put(Key.forClass(PropertyEnvironment.class), PropertiesUtil::getProperties);
+        this.bindings.put(Key.forClass(ClassLoader.class), LoaderUtil::getClassLoader);
     }
 
     @Override
     public <T> Supplier<T> getFactory(final ResolvableKey<T> resolvableKey) {
         final Key<T> key = resolvableKey.getKey();
-        final Binding<T> existingBinding = bindings.get(key, resolvableKey.getAliases());
+        final Supplier<T> existingBinding = bindings.get(key, resolvableKey.getAliases());
         if (existingBinding != null) {
             return existingBinding;
         }
         final Supplier<T> unscoped = resolveKey(resolvableKey).orElseGet(() -> createDefaultFactory(resolvableKey));
         final Scope scope = getScopeForType(key.getRawType());
         final Supplier<T> scoped = scope.get(key, unscoped);
-        final Binding<T> binding = Binding.from(key).to(scoped);
-        registerBinding(binding);
-        return binding;
+        registerBinding(key, scoped);
+        return scoped;
     }
 
     protected <T> Optional<Supplier<T>> resolveKey(final ResolvableKey<T> resolvableKey) {
@@ -216,7 +217,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     }
 
     @Override
-    public Scope getRegisteredScope(final Class<? extends Annotation> scopeType) {
+    public @Nullable Scope getRegisteredScope(final Class<? extends Annotation> scopeType) {
         return scopes.get(scopeType);
     }
 
@@ -290,23 +291,21 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
             return postProcessAfterInitialization(resolvableKey, instance);
         };
         final Supplier<T> scoped = getScopeForMethod(method).get(primaryKey, unscoped);
-        registerBinding(Binding.from(primaryKey).to(scoped));
+        registerBinding(primaryKey, scoped);
         for (final String alias : Keys.getAliases(method)) {
             final Key<T> aliasKey = primaryKey.withName(alias);
-            if (!hasBinding(aliasKey)) {
-                registerBinding(Binding.from(aliasKey).to(scoped));
-            }
+            registerBindingIfAbsent(aliasKey, scoped);
         }
     }
 
     @Override
-    public void registerBinding(final Binding<?> binding) {
-        bindings.put(binding);
+    public <T> void registerBinding(final Key<? super T> key, final Supplier<T> factory) {
+        bindings.put(key, factory);
     }
 
     @Override
-    public void registerBindingIfAbsent(final Binding<?> binding) {
-        bindings.putIfAbsent(binding);
+    public <T> void registerBindingIfAbsent(final Key<? super T> key, final Supplier<T> factory) {
+        bindings.putIfAbsent(key, factory);
     }
 
     @Override
@@ -380,6 +379,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         }
     }
 
+    @NullMarked
     enum DefaultScope implements Scope {
         INSTANCE;
 

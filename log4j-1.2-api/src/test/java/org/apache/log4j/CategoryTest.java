@@ -29,9 +29,9 @@ import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
@@ -47,6 +47,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests of Category.
  */
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class CategoryTest {
 
     private static final String VERSION1_APPENDER_NAME = "Version1List";
@@ -58,15 +59,11 @@ public class CategoryTest {
     public static void setupClass() {
         appender.start();
         version1Appender.setName(VERSION1_APPENDER_NAME);
-        System.setProperty(
-                Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
-                BasicConfigurationFactory.class.getName());
     }
 
     @AfterAll
     public static void cleanupClass() {
         appender.stop();
-        System.clearProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey());
     }
 
     @BeforeEach

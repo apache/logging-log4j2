@@ -18,18 +18,28 @@ package org.apache.logging.log4j.core.test.junit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 
 /**
- * Specifies a particular {@link ConfigurationFactory} class to use for a test class or method instead of the default.
+ * Specifies one or more pairs of {@linkplain org.apache.logging.log4j.plugins.di.Key binding keys} with
+ * injectable classes to bind in a test. The binding key corresponds to {@link #api()} and the factory will
+ * use the provided {@link #implementation()} class (or {@link #implementationClassName()} to load reflectively).
+ *
+ * @see ConfigurationFactoryType
+ * @see ContextSelectorType
  */
-@Retention(RetentionPolicy.RUNTIME)
+@Repeatable(TestBindings.class)
 @Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Log4jTest
-public @interface ConfigurationFactoryType {
-    Class<? extends ConfigurationFactory> value();
+public @interface TestBinding {
+    Class<?> api();
+
+    Class<?> implementation() default Object.class;
+
+    String implementationClassName() default "";
 }

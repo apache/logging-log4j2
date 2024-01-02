@@ -16,10 +16,18 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ServiceLoader;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
+import org.apache.logging.log4j.plugins.di.spi.Scope;
 import org.apache.logging.log4j.plugins.util.OrderedComparator;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
@@ -31,53 +39,143 @@ public final class DI {
     }
 
     /**
-     * Creates a new {@linkplain #initializeFactory(ConfigurableInstanceFactory) initialized} instance factory.
+     * Creates a new {@linkplain ConfigurableInstanceFactory initialized} instance factory.
      *
      * @return the initialized instance factory
      */
     public static ConfigurableInstanceFactory createInitializedFactory() {
-        final var factory = createFactory();
-        initializeFactory(factory);
-        return factory;
+        return builder().build();
     }
 
-    /**
-     * Creates a new instance factory with the provided initial bindings and subsequently
-     * {@linkplain #initializeFactory(ConfigurableInstanceFactory) initializes} it.
-     *
-     * @param bindings the bindings to register before initializing the factory
-     * @return the initialized instance factory
-     */
-    public static ConfigurableInstanceFactory createInitializedFactory(final Binding<?>... bindings) {
-        final var factory = createFactory();
-        for (final Binding<?> binding : bindings) {
-            factory.registerBinding(binding);
+    public static FactoryBuilder builder() {
+        return new FactoryBuilder();
+    }
+
+    public static class FactoryBuilder {
+        private final Supplier<ConfigurableInstanceFactory> provider;
+        private final List<ConfigurableInstanceFactoryPostProcessor> preInitializationBindings = new ArrayList<>();
+        private final ConfigurableInstanceFactoryPostProcessor initializer;
+
+        private final List<ConfigurableInstanceFactoryPostProcessor> postInitializationBindings = new ArrayList<>();
+
+        public FactoryBuilder() {
+            provider = DefaultInstanceFactory::new;
+            initializer = factory -> ServiceLoaderUtil.safeStream(ServiceLoader.load(
+                            ConfigurableInstanceFactoryPostProcessor.class, DI.class.getClassLoader()))
+                    .sorted(Comparator.comparing(
+                            ConfigurableInstanceFactoryPostProcessor::getClass, OrderedComparator.INSTANCE))
+                    .forEachOrdered(processor -> processor.postProcessFactory(factory));
         }
-        initializeFactory(factory);
-        return factory;
+
+        private FactoryBuilder(final FactoryBuilder copy) {
+            this.provider = copy.provider;
+            this.preInitializationBindings.addAll(copy.preInitializationBindings);
+            this.initializer = copy.initializer;
+            this.postInitializationBindings.addAll(copy.postInitializationBindings);
+        }
+
+        public <T> UnscopedBindingBuilder<T> addInitialBindingFrom(final Key<T> key) {
+            return new UnscopedBindingBuilder<>(key, this, preInitializationBindings::add);
+        }
+
+        public <T> UnscopedBindingBuilder<T> addInitialBindingFrom(final Class<T> type) {
+            return addInitialBindingFrom(Key.forClass(type));
+        }
+
+        public <T> UnscopedBindingBuilder<T> addBindingFrom(final Key<T> key) {
+            return new UnscopedBindingBuilder<>(key, this, postInitializationBindings::add);
+        }
+
+        public <T> UnscopedBindingBuilder<T> addBindingFrom(final Class<T> type) {
+            return addBindingFrom(Key.forClass(type));
+        }
+
+        public FactoryBuilder addInitialBundle(final Object bundle) {
+            preInitializationBindings.add(factory -> factory.registerBundle(bundle));
+            return this;
+        }
+
+        public FactoryBuilder addBundle(final Object bundle) {
+            postInitializationBindings.add(factory -> factory.registerBundle(bundle));
+            return this;
+        }
+
+        public ConfigurableInstanceFactory build() {
+            final ConfigurableInstanceFactory factory = provider.get();
+            preInitializationBindings.forEach(binding -> binding.postProcessFactory(factory));
+            initializer.postProcessFactory(factory);
+            postInitializationBindings.forEach(binding -> binding.postProcessFactory(factory));
+            return factory;
+        }
+
+        public FactoryBuilder copy() {
+            return new FactoryBuilder(this);
+        }
     }
 
-    /**
-     * Creates a new instance factory. This should be {@linkplain #initializeFactory(ConfigurableInstanceFactory)
-     * initialized} after setup.
-     *
-     * @return a new instance factory
-     */
-    public static ConfigurableInstanceFactory createFactory() {
-        return new DefaultInstanceFactory();
+    public static class UnscopedBindingBuilder<T> {
+        final Key<T> key;
+        final FactoryBuilder builder;
+        final Consumer<ConfigurableInstanceFactoryPostProcessor> addBinding;
+
+        private UnscopedBindingBuilder(
+                final Key<T> key,
+                final FactoryBuilder builder,
+                final Consumer<ConfigurableInstanceFactoryPostProcessor> addBinding) {
+            this.key = key;
+            this.builder = builder;
+            this.addBinding = addBinding;
+        }
+
+        private UnscopedBindingBuilder(final UnscopedBindingBuilder<T> copy) {
+            this(copy.key, copy.builder, copy.addBinding);
+        }
+
+        public ScopedBindingBuilder<T> inScope(final Class<? extends Annotation> scopeType) {
+            return new ScopedBindingBuilder<>(this, scopeType);
+        }
+
+        public FactoryBuilder toInstance(final T instance) {
+            addBinding.accept(factory -> factory.registerBinding(key, Lazy.value(instance)));
+            return builder;
+        }
+
+        public FactoryBuilder toSingleton(final Supplier<? extends T> provider) {
+            addBinding.accept(factory -> factory.registerBinding(key, Lazy.lazy(provider)));
+            return builder;
+        }
+
+        public FactoryBuilder toUnscoped(final Supplier<? extends T> provider) {
+            addBinding.accept(factory -> factory.registerBinding(key, provider));
+            return builder;
+        }
+
+        public FactoryBuilder toFunction(final Function<InstanceFactory, ? extends Supplier<? extends T>> function) {
+            addBinding.accept(factory -> factory.registerBinding(key, function.apply(factory)));
+            return builder;
+        }
     }
 
-    /**
-     * Initializes the given instance factory with all registered {@link ConfigurableInstanceFactoryPostProcessor}
-     * services.
-     *
-     * @param factory the instance factory to initialize
-     */
-    public static void initializeFactory(final ConfigurableInstanceFactory factory) {
-        ServiceLoaderUtil.safeStream(
-                        ServiceLoader.load(ConfigurableInstanceFactoryPostProcessor.class, DI.class.getClassLoader()))
-                .sorted(Comparator.comparing(
-                        ConfigurableInstanceFactoryPostProcessor::getClass, OrderedComparator.INSTANCE))
-                .forEachOrdered(processor -> processor.postProcessFactory(factory));
+    public static class ScopedBindingBuilder<T> extends UnscopedBindingBuilder<T> {
+        private final Class<? extends Annotation> scopeType;
+
+        private ScopedBindingBuilder(
+                final UnscopedBindingBuilder<T> builder, final Class<? extends Annotation> scopeType) {
+            super(builder);
+            this.scopeType = scopeType;
+        }
+
+        public FactoryBuilder toProvider(final Supplier<? extends T> provider) {
+            addBinding.accept(factory -> {
+                final Scope scope = factory.getRegisteredScope(scopeType);
+                if (scope != null) {
+                    final Supplier<T> scoped = scope.get(key, provider::get);
+                    factory.registerBinding(key, scoped);
+                } else {
+                    factory.registerBinding(key, provider);
+                }
+            });
+            return builder;
+        }
     }
 }

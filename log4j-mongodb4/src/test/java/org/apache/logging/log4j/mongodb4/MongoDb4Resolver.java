@@ -121,7 +121,8 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
     @Override
     public MongoClient resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        return ExtensionContextAnchor.getRequiredAttribute(MongoClientHolder.class, MongoClientHolder.class, extensionContext)
+        return ExtensionContextAnchor.getRequiredAttribute(
+                        MongoClientHolder.class, MongoClientHolder.class, extensionContext)
                 .get();
     }
 

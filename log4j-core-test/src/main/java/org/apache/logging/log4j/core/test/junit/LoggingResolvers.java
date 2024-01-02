@@ -16,20 +16,28 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Specifies a particular {@link ConfigurationFactory} class to use for a test class or method instead of the default.
+ * Annotates a test annotation to include {@link org.junit.jupiter.api.extension.ParameterResolver} extensions for
+ * {@link org.apache.logging.log4j.core.LoggerContext}, {@link org.apache.logging.log4j.core.config.Configuration},
+ * {@link org.apache.logging.log4j.core.Appender}, {@link org.apache.logging.log4j.core.appender.AbstractManager},
+ * and {@link org.apache.logging.log4j.core.Logger}.
  */
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
 @Inherited
+@Documented
 @Log4jTest
-public @interface ConfigurationFactoryType {
-    Class<? extends ConfigurationFactory> value();
-}
+@ExtendWith(LoggerContextResolver.class)
+@ExtendWith(ConfigurationResolver.class)
+@ExtendWith(AppenderResolver.class)
+@ExtendWith(AppenderManagerResolver.class)
+@ExtendWith(LoggerResolver.class)
+public @interface LoggingResolvers {}

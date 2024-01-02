@@ -16,7 +16,11 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.as;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +33,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.LegacyLoggerContextSource;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
 
@@ -40,14 +44,14 @@ import org.junit.jupiter.api.Test;
 public class MapRewriteAppenderTest {
 
     @Test
-    @LoggerContextSource(value = "log4j1-mapRewrite.xml", v1config = true)
+    @LegacyLoggerContextSource("log4j1-mapRewrite.xml")
     public void testRewrite() {
         final Logger logger = LogManager.getLogger("test");
         final Map<String, String> map = new HashMap<>();
         map.put("message", "This is a test");
         map.put("hello", "world");
         logger.debug(map);
-        final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         final Configuration configuration = context.getConfiguration();
         final Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
@@ -58,9 +62,13 @@ public class MapRewriteAppenderTest {
         }
         assertNotNull(eventAppender, "No Event Appender");
         final List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue(events != null && events.size() > 0, "No events");
-        assertNotNull(events.get(0).getProperties(), "No properties in the event");
-        assertTrue(events.get(0).getProperties().containsKey("hello"), "Key was not inserted");
-        assertEquals("world", events.get(0).getProperties().get("hello"), "Key value is incorrect");
+        assertThat(events)
+                .isNotNull()
+                .isNotEmpty()
+                .first()
+                .extracting(LoggingEvent::getProperties, as(MAP))
+                .containsKey("hello")
+                .extractingByKey("hello", as(STRING))
+                .isEqualTo("world");
     }
 }

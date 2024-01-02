@@ -48,7 +48,6 @@ import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.plugins.di.Binding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
@@ -212,7 +211,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     private void initializeInstanceFactory() {
         final var ref = Lazy.weak(this);
-        instanceFactory.registerBinding(Binding.from(KEY).to(ref));
+        instanceFactory.registerBinding(KEY, ref);
         instanceFactory.registerInstancePostProcessor(new LoggerContextAwarePostProcessor(this));
     }
 
@@ -253,8 +252,8 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public static LoggerContext getContext() {
         final var context = LogManager.getContext();
-        if (context instanceof LoggerContext) {
-            return (LoggerContext) context;
+        if (context instanceof LoggerContext ctx) {
+            return ctx;
         }
         throw new IllegalStateException(
                 "Expected instance of " + LoggerContext.class + " but got " + context.getClass());
@@ -279,8 +278,8 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public static LoggerContext getContext(final boolean currentContext) {
         final var context = LogManager.getContext(currentContext);
-        if (context instanceof LoggerContext) {
-            return (LoggerContext) context;
+        if (context instanceof LoggerContext ctx) {
+            return ctx;
         }
         throw new IllegalStateException(
                 "Expected instance of " + LoggerContext.class + " but got " + context.getClass());
@@ -309,8 +308,8 @@ public class LoggerContext extends AbstractLifeCycle
     public static LoggerContext getContext(
             final ClassLoader loader, final boolean currentContext, final URI configLocation) {
         final var context = LogManager.getContext(loader, currentContext, configLocation);
-        if (context instanceof LoggerContext) {
-            return (LoggerContext) context;
+        if (context instanceof LoggerContext ctx) {
+            return ctx;
         }
         throw new IllegalStateException(
                 "Expected instance of " + LoggerContext.class + " but got " + context.getClass());
@@ -439,7 +438,7 @@ public class LoggerContext extends AbstractLifeCycle
             this.setStopping();
             String name = getName();
             try {
-                Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
+                Server.unregisterLoggerContext(name); // LOG4J2-406, LOG4J2-500
             } catch (final LinkageError | Exception e) {
                 // LOG4J2-1506 Hello Android, GAE
                 LOGGER.error("Unable to unregister MBeans", e);

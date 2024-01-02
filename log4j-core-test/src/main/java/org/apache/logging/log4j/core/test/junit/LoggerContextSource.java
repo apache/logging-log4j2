@@ -28,15 +28,12 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
-import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.test.junit.TempLoggingDirectory;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Specifies a configuration file to use for unit tests. This configuration file will be loaded once and used for all tests
- * executed in the annotated test class unless otherwise specified by {@link #reconfigure()}. When annotated on a test method,
+ * Specifies a configuration file to use for unit tests. This configuration file will be loaded for each test
+ * executed in the annotated test class. When annotated on a test method,
  * this will override the class-level configuration if provided for that method. By using this JUnit 5 extension, the following
  * types can be injected into tests via constructor or method parameters:
  *
@@ -52,18 +49,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * rely on configuration files and production code.
  *
  * @since 2.14.0
+ * @see org.apache.logging.log4j.test.junit.SetTestProperty
+ * @see ConfigurationFactoryType
+ * @see ContextSelectorType
+ * @see TestBinding
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 @Inherited
-@Tag("functional")
 @ExtendWith(TempLoggingDirectory.class)
-@ExtendWith(LoggerContextResolver.class)
-@ExtendWith(ConfigurationResolver.class)
-@ExtendWith(AppenderResolver.class)
-@ExtendWith(AppenderManagerResolver.class)
-@ExtendWith(LoggerResolver.class)
+@LoggingResolvers
 public @interface LoggerContextSource {
     /**
      * Specifies the name of the configuration file to use for the annotated test.
@@ -84,20 +80,4 @@ public @interface LoggerContextSource {
      * Specifies the time unit {@link #timeout()} is measured in.
      */
     TimeUnit unit() default TimeUnit.SECONDS;
-
-    /**
-     * Toggles Log4j1 configuration file compatibility mode for XML and properties files.
-     */
-    boolean v1config() default false;
-
-    /**
-     * Determines whether to bootstrap a fresh LoggerContextFactory.
-     */
-    boolean bootstrap() default false;
-
-    /**
-     * Overrides the {@link ContextSelector} to use by default. If unset, the test instance can still
-     * define a context selector factory to override the default {@link ClassLoaderContextSelector}.
-     */
-    Class<? extends ContextSelector> selector() default ContextSelector.class;
 }

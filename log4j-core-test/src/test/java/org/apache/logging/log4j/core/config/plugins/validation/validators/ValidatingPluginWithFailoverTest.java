@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationProcessor;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.di.Binding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
@@ -71,7 +70,7 @@ public class ValidatingPluginWithFailoverTest {
     public void testDoesNotLog_NoParameterThatMatchesElement_message() {
         final StatusListener listener = mock(StatusListener.class);
         when(listener.getStatusLevel()).thenReturn(Level.WARN);
-        instanceFactory.registerBinding(Binding.from(Configuration.KEY).to(NullConfiguration::new));
+        instanceFactory.registerBinding(Configuration.KEY, NullConfiguration::new);
         final StatusLogger logger = StatusLogger.getLogger();
         logger.trace("Initializing");
         logger.registerListener(listener);

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import com.google.errorprone.annotations.concurrent.LazyInit;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedType;
@@ -28,6 +29,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
+import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.di.spi.InjectionPoint;
@@ -41,7 +43,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Keys represent a reified type with an optional {@link QualifierType} type, name, and namespace.
  * A key is used in two related contexts: describing an {@link InjectionPoint} requesting a dependency
- * for injection and describing a {@link Binding} where a {@linkplain Scope scoped} factory is
+ * for injection and describing a binding where a {@linkplain Scope scoped} factory is
  * registered for providing dependencies.
  *
  * @param <T> type of key
@@ -53,12 +55,14 @@ import org.apache.logging.log4j.util.Strings;
 public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
     private final Type type;
     private final Class<T> rawType;
-    private final Class<? extends Annotation> qualifierType;
+    private final @Nullable Class<? extends Annotation> qualifierType;
     private final String name;
     private final String namespace;
     private final OptionalInt order;
     private final int hashCode;
-    private String toString;
+
+    @LazyInit
+    private @Nullable String toString;
 
     /**
      * Anonymous subclasses override this constructor to instantiate this Key based on the type given.
@@ -87,7 +91,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
     private Key(
             final Type type,
             final Class<T> rawType,
-            final Class<? extends Annotation> qualifierType,
+            final @Nullable Class<? extends Annotation> qualifierType,
             final String name,
             final String namespace,
             final OptionalInt order) {
@@ -141,7 +145,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
      * Returns the qualifier type of this key. If this key has no qualifier type defined, then this returns
      * {@code null}.
      */
-    public final Class<? extends Annotation> getQualifierType() {
+    public final @Nullable Class<? extends Annotation> getQualifierType() {
         return qualifierType;
     }
 
@@ -198,7 +202,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
      * @return a new instance from this using the supplied type or {@code null} if this key did not contain a
      * supplier type
      */
-    public final <P> Key<P> getSuppliedType() {
+    public final <P> @Nullable Key<P> getSuppliedType() {
         if (type instanceof ParameterizedType && Supplier.class.isAssignableFrom(rawType)) {
             final Type typeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
             return withType(typeArgument);
@@ -217,7 +221,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
      * @throws IndexOutOfBoundsException if {@code arg} is negative or otherwise outside the bounds of the actual
      *                                   number of type arguments of this key's type
      */
-    public final <P> Key<P> getParameterizedTypeArgument(final int arg) {
+    public final <P> @Nullable Key<P> getParameterizedTypeArgument(final int arg) {
         if (arg < 0) {
             throw new IndexOutOfBoundsException(arg);
         }
@@ -369,7 +373,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
         return new Builder<>(original);
     }
 
-    private static Class<? extends Annotation> getQualifierType(final AnnotatedElement element) {
+    private static @Nullable Class<? extends Annotation> getQualifierType(final AnnotatedElement element) {
         return AnnotationUtil.findAnnotatedAnnotations(element, QualifierType.class)
                 .map(annotatedAnnotation -> annotatedAnnotation.getAnnotation().annotationType())
                 .findFirst()
@@ -384,9 +388,9 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
     public static class Builder<T> implements Supplier<Key<T>> {
         private final Type type;
         private final Class<T> rawType;
-        private Class<? extends Annotation> qualifierType;
-        private String name;
-        private String namespace;
+        private @Nullable Class<? extends Annotation> qualifierType;
+        private @Nullable String name;
+        private @Nullable String namespace;
         private OptionalInt order = OptionalInt.empty();
 
         private Builder(final Type type) {
@@ -412,7 +416,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
          * Specifies a qualifier annotation type. Qualifiers are optional and are used for an additional comparison
          * property for keys.
          */
-        public Builder<T> setQualifierType(final Class<? extends Annotation> qualifierType) {
+        public Builder<T> setQualifierType(final @Nullable Class<? extends Annotation> qualifierType) {
             this.qualifierType = qualifierType;
             return this;
         }

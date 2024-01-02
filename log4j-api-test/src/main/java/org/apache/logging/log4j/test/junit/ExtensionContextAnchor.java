@@ -16,20 +16,22 @@
  */
 package org.apache.logging.log4j.test.junit;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import org.apache.logging.log4j.lang.NullMarked;
+import org.apache.logging.log4j.lang.Nullable;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.junit.platform.commons.PreconditionViolationException;
 
+@NullMarked
 public class ExtensionContextAnchor
         implements BeforeAllCallback, BeforeEachCallback, AfterAllCallback, AfterEachCallback {
 
     public static Namespace LOG4J2_NAMESPACE = Namespace.create("org.apache.logging.log4j.junit");
-    private static final ThreadLocal<ExtensionContext> EXTENSION_CONTEXT = new InheritableThreadLocal<>();
+    private static final ThreadLocal<@Nullable ExtensionContext> EXTENSION_CONTEXT = new InheritableThreadLocal<>();
 
     private static void bind(final ExtensionContext context) {
         EXTENSION_CONTEXT.set(context);
@@ -39,27 +41,45 @@ public class ExtensionContextAnchor
         EXTENSION_CONTEXT.set(context.getParent().orElse(null));
     }
 
-    public static ExtensionContext getContext() {
+    public static @Nullable ExtensionContext getContext() {
         return EXTENSION_CONTEXT.get();
     }
 
-    public static ExtensionContext getContext(final ExtensionContext context) {
+    public static @Nullable ExtensionContext getContext(final @Nullable ExtensionContext context) {
         return context != null ? context : EXTENSION_CONTEXT.get();
     }
 
-    public static <T> T getAttribute(final Object key, final Class<T> clazz, final ExtensionContext context) {
+    public static ExtensionContext getRequiredContext(final @Nullable ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
-        assertNotNull(actualContext, "missing ExtensionContext");
-        return actualContext.getStore(LOG4J2_NAMESPACE).get(key, clazz);
+        if (actualContext == null) {
+            throw new PreconditionViolationException("No ExtensionContext available");
+        }
+        return actualContext;
     }
 
-    public static void setAttribute(final Object key, final Object value, final ExtensionContext context) {
-        final ExtensionContext actualContext = getContext(context);
-        assertNotNull(actualContext, "missing ExtensionContext");
-        actualContext.getStore(LOG4J2_NAMESPACE).put(key, value);
+    public static ExtensionContext.Store getRequiredStore(final @Nullable ExtensionContext context) {
+        return getRequiredContext(context).getStore(LOG4J2_NAMESPACE);
     }
 
-    public static void removeAttribute(final Object key, final ExtensionContext context) {
+    public static <T> @Nullable T getAttribute(
+            final Object key, final Class<T> clazz, final @Nullable ExtensionContext context) {
+        return getRequiredStore(context).get(key, clazz);
+    }
+
+    public static <T> T getRequiredAttribute(
+            final Object key, final Class<T> clazz, final @Nullable ExtensionContext context) {
+        final T attribute = getRequiredStore(context).get(key, clazz);
+        if (attribute == null) {
+            throw new PreconditionViolationException("Unable to find instance of " + clazz.getCanonicalName());
+        }
+        return attribute;
+    }
+
+    public static void setAttribute(final Object key, final Object value, final @Nullable ExtensionContext context) {
+        getRequiredStore(context).put(key, value);
+    }
+
+    public static void removeAttribute(final Object key, final @Nullable ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         if (actualContext != null) {
             actualContext.getStore(LOG4J2_NAMESPACE).remove(key);

@@ -16,11 +16,8 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
-
 import java.lang.reflect.Parameter;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.di.Keys;
@@ -45,11 +42,8 @@ class AppenderManagerResolver implements ParameterResolver {
     @Override
     public Object resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        final LoggerContext loggerContext = getLoggerContext(extensionContext);
-        if (loggerContext == null) {
-            throw new ParameterResolutionException("No LoggerContext defined");
-        }
-        final Configuration configuration = loggerContext.getConfiguration();
+        final Configuration configuration =
+                Log4jExtension.getRequiredLoggerContext(extensionContext).getConfiguration();
         final Parameter parameter = parameterContext.getParameter();
         final String name = Keys.getName(parameter);
         final Appender appender = configuration.getAppender(name);

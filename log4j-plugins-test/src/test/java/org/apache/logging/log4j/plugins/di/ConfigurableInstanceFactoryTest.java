@@ -121,8 +121,10 @@ class ConfigurableInstanceFactoryTest {
     @Test
     void testDeferredSupplierNotInvokedUntilInitiallyProvided() {
         final AtomicInteger counter = new AtomicInteger();
-        final DeferredSupplierBean bean = DI.createInitializedFactory(
-                        Binding.from(int.class).to(counter::incrementAndGet))
+        final DeferredSupplierBean bean = DI.builder()
+                .addInitialBindingFrom(int.class)
+                .toUnscoped(counter::incrementAndGet)
+                .build()
                 .getInstance(DeferredSupplierBean.class);
         assertThat(counter.get()).isEqualTo(0);
         assertThat(bean.singletonSupplier.get().id).isEqualTo(1);
@@ -177,9 +179,8 @@ class ConfigurableInstanceFactoryTest {
 
     @Test
     void supplierAliases() {
-        final var instanceFactory = DI.createInitializedFactory();
-        instanceFactory.registerBundle(AliasBundle.class);
-        final Aliases aliases = instanceFactory.getInstance(Aliases.class);
+        final Aliases aliases =
+                DI.builder().addBundle(AliasBundle.class).build().getInstance(Aliases.class);
         assertThat(List.of(aliases.foo, aliases.bar, aliases.baz, aliases.constructed, aliases.methodInjected))
                 .allMatch("bar"::equals);
     }
@@ -206,17 +207,22 @@ class ConfigurableInstanceFactoryTest {
 
     @Test
     void injectionPointValidationPartial() {
-        final var instanceFactory = DI.createInitializedFactory(
-                Binding.from(new @Named("foo") Key<String>() {}).toInstance("hello"));
+        final ConfigurableInstanceFactory instanceFactory = DI.builder()
+                .addInitialBindingFrom(new @Named("foo") Key<String>() {})
+                .toInstance("hello")
+                .build();
         assertThatThrownBy(() -> instanceFactory.getInstance(ValidatedInjectionPoints.class))
                 .isInstanceOf(NoQualifiedBindingException.class);
     }
 
     @Test
     void injectionPointValidationFull() {
-        final var instanceFactory = DI.createInitializedFactory(
-                Binding.from(new @Named("foo") Key<String>() {}).toInstance("hello"),
-                Binding.from(new @Named("bar") Key<String>() {}).toInstance("world"));
+        final ConfigurableInstanceFactory instanceFactory = DI.builder()
+                .addInitialBindingFrom(new @Named("foo") Key<String>() {})
+                .toInstance("hello")
+                .addInitialBindingFrom(new @Named("bar") Key<String>() {})
+                .toInstance("world")
+                .build();
         final ValidatedInjectionPoints instance = instanceFactory.getInstance(ValidatedInjectionPoints.class);
         assertThat(instance.foo).isEqualTo("hello");
         assertThat(instance.bar).isEqualTo("world");

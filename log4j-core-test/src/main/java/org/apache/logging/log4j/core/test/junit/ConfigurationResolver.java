@@ -16,29 +16,17 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
-
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 class ConfigurationResolver extends TypeBasedParameterResolver<Configuration> {
-
-    public ConfigurationResolver() {
-        super(Configuration.class);
-    }
-
     @Override
     public Configuration resolveParameter(
             final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        final LoggerContext loggerContext = getLoggerContext(extensionContext);
-        if (loggerContext == null) {
-            throw new ParameterResolutionException("No LoggerContext defined");
-        }
-        return loggerContext.getConfiguration();
+        return Log4jExtension.getRequiredLoggerContext(extensionContext).getConfiguration();
     }
 }

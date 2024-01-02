@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
-
 import java.lang.reflect.Parameter;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -42,10 +40,7 @@ class AppenderResolver implements ParameterResolver {
     @Override
     public Object resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        final LoggerContext loggerContext = getLoggerContext(extensionContext);
-        if (loggerContext == null) {
-            throw new ParameterResolutionException("No LoggerContext defined");
-        }
+        final LoggerContext loggerContext = Log4jExtension.getRequiredLoggerContext(extensionContext);
         final String name = Keys.getName(parameterContext.getParameter());
         if (name.isEmpty()) {
             throw new ParameterResolutionException("No named annotation present after checking earlier");
