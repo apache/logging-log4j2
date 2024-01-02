@@ -36,14 +36,19 @@
     <bnd-module-name>org.apache.logging.log4j</bnd-module-name>
     <bnd-extra-package-options>
       <!-- No JSR 305 at runtime -->
-      !javax.annotation.*
+      !javax.annotation.*,
+      <!-- No JSpecify at runtime -->
+      !org.jspecify.annotations.*
     </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- No JSR 305 at runtime -->
       jsr305;ignore=true,
+      <!-- No JSpecify at runtime -->
+      org.jspecify;ignore=true,
       <!-- Used in StringBuilders through reflection -->
       java.sql;static=true
     </bnd-extra-module-options>
 
   </properties>
+
 </project>
