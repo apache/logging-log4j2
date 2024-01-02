@@ -40,10 +40,10 @@ public class OptionalFactoryResolver<T> implements FactoryResolver<Optional<T>> 
     @Override
     public Supplier<Optional<T>> getFactory(
             final ResolvableKey<Optional<T>> resolvableKey, final InstanceFactory instanceFactory) {
-        final Key<?> key = resolvableKey.getKey();
+        final Key<?> key = resolvableKey.key();
         final Key<T> itemKey = key.getParameterizedTypeArgument(0);
-        final Collection<String> aliases = resolvableKey.getAliases();
-        final DependencyChain dependencyChain = resolvableKey.getDependencyChain();
+        final Collection<String> aliases = resolvableKey.aliases();
+        final DependencyChain dependencyChain = resolvableKey.dependencyChain();
         if (itemKey == null) {
             throw new NotInjectableException(resolvableKey);
         }

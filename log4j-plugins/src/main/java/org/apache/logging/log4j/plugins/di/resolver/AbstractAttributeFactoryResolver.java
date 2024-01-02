@@ -48,7 +48,7 @@ public abstract class AbstractAttributeFactoryResolver<T, A extends Annotation> 
     public Supplier<T> getFactory(final ResolvableKey<T> resolvableKey, final InstanceFactory instanceFactory) {
         final InjectionPoint<?> injectionPoint = instanceFactory.getInstance(InjectionPoint.CURRENT_INJECTION_POINT);
         return () -> {
-            final Key<?> key = resolvableKey.getKey();
+            final Key<?> key = resolvableKey.key();
             final Type type = key.getType();
             final TypeConverter<T> typeConverter = instanceFactory.getTypeConverter(type);
             final AnnotatedElement element = injectionPoint.element();
@@ -62,7 +62,7 @@ public abstract class AbstractAttributeFactoryResolver<T, A extends Annotation> 
                 resolver = StringValueResolver.NOOP;
             }
             LOGGER.trace("Configuring node {} attribute {}", node.getName(), key);
-            final String attribute = node.removeMatchingAttribute(key.getName(), resolvableKey.getAliases())
+            final String attribute = node.removeMatchingAttribute(key.getName(), resolvableKey.aliases())
                     .map(resolver::resolve)
                     .orElse(null);
             if (attribute != null) {

@@ -55,10 +55,10 @@ public class PluginValueFactoryResolver implements FactoryResolver<String> {
             final ResolvableKey<String> resolvableKey, final InstanceFactory instanceFactory) {
         return () -> {
             final Node node = instanceFactory.getInstance(Node.CURRENT_NODE);
-            final String name = resolvableKey.getKey().getName();
+            final String name = resolvableKey.key().getName();
             final String nodeValue = node.getValue();
-            final Optional<String> attributeValue = node.removeMatchingAttribute(name, resolvableKey.getAliases())
-                    .filter(Strings::isNotEmpty);
+            final Optional<String> attributeValue =
+                    node.removeMatchingAttribute(name, resolvableKey.aliases()).filter(Strings::isNotEmpty);
             final String rawValue;
             if (Strings.isNotEmpty(nodeValue)) {
                 attributeValue.ifPresent(attribute -> StatusLogger.getLogger()

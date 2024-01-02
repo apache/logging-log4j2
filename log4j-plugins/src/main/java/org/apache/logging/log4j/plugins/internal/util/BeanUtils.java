@@ -68,7 +68,7 @@ public final class BeanUtils {
     }
 
     public static Executable getInjectableFactory(final ResolvableKey<?> resolvableKey) {
-        final Class<?> rawType = resolvableKey.getKey().getRawType();
+        final Class<?> rawType = resolvableKey.key().getRawType();
         return findStaticFactoryMethod(rawType)
                 .or(() -> findInjectableConstructor(rawType))
                 .orElseThrow(() -> new NotInjectableException(resolvableKey));

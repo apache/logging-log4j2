@@ -103,8 +103,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
 
     @Override
     public <T> Supplier<T> getFactory(final ResolvableKey<T> resolvableKey) {
-        final Key<T> key = resolvableKey.getKey();
-        final Supplier<T> existingBinding = bindings.get(key, resolvableKey.getAliases());
+        final Key<T> key = resolvableKey.key();
+        final Supplier<T> existingBinding = bindings.get(key, resolvableKey.aliases());
         if (existingBinding != null) {
             return existingBinding;
         }
@@ -117,14 +117,14 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
 
     protected <T> Optional<Supplier<T>> resolveKey(final ResolvableKey<T> resolvableKey) {
         return factoryResolvers.stream()
-                .filter(resolver -> resolver.supportsKey(resolvableKey.getKey()))
+                .filter(resolver -> resolver.supportsKey(resolvableKey.key()))
                 .findFirst()
                 .map(Cast::<FactoryResolver<T>>cast)
                 .map(resolver -> resolver.getFactory(resolvableKey, this));
     }
 
     protected <T> Supplier<T> createDefaultFactory(final ResolvableKey<T> resolvableKey) {
-        final Key<T> key = resolvableKey.getKey();
+        final Key<T> key = resolvableKey.key();
         if (key.getQualifierType() != null) {
             // TODO(ms): would be useful to provide some logs about possible matches
             throw new NoQualifiedBindingException(resolvableKey);
@@ -139,7 +139,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
                 return null;
             }
             instance = postProcessBeforeInitialization(resolvableKey, instance);
-            injectMembers(key, instance, resolvableKey.getDependencyChain());
+            injectMembers(key, instance, resolvableKey.dependencyChain());
             instance = postProcessAfterInitialization(resolvableKey, instance);
             if (instance instanceof Supplier<?>) {
                 final Supplier<T> supplier = Cast.cast(instance);
@@ -153,8 +153,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         final Class<T> rawType = resolvableKey.getRawType();
         validate(rawType, resolvableKey.getName(), rawType);
         final Executable factory = BeanUtils.getInjectableFactory(resolvableKey);
-        final Key<T> key = resolvableKey.getKey();
-        final DependencyChain updatedChain = resolvableKey.getDependencyChain().withDependency(key);
+        final Key<T> key = resolvableKey.key();
+        final DependencyChain updatedChain = resolvableKey.dependencyChain().withDependency(key);
         final Object[] arguments = InjectionPoint.fromExecutable(factory).stream()
                 .map(point -> getArgumentFactory(point, updatedChain).get())
                 .toArray();

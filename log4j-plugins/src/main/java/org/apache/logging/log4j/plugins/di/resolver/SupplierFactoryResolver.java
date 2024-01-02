@@ -39,8 +39,8 @@ public class SupplierFactoryResolver<T> implements FactoryResolver<Supplier<T>> 
     @Override
     public Supplier<Supplier<T>> getFactory(
             final ResolvableKey<Supplier<T>> resolvableKey, final InstanceFactory instanceFactory) {
-        final Key<T> key = resolvableKey.getKey().getSuppliedType();
-        final Collection<String> aliases = resolvableKey.getAliases();
+        final Key<T> key = resolvableKey.key().getSuppliedType();
+        final Collection<String> aliases = resolvableKey.aliases();
         // dependencies ignored as this is a lazy binding
         return () -> instanceFactory.getFactory(key, aliases);
     }

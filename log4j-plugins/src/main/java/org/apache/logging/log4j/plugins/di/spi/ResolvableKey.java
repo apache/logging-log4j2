@@ -23,20 +23,7 @@ import java.util.List;
 import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.di.Key;
 
-public class ResolvableKey<T> {
-    private final Key<T> key;
-    private final Collection<String> aliases;
-    private final DependencyChain dependencyChain;
-
-    private ResolvableKey(final Key<T> key, final Collection<String> aliases, final DependencyChain dependencyChain) {
-        this.key = key;
-        this.aliases = aliases;
-        this.dependencyChain = dependencyChain;
-    }
-
-    public Key<T> getKey() {
-        return key;
-    }
+public record ResolvableKey<T>(Key<T> key, Collection<String> aliases, DependencyChain dependencyChain) {
 
     public Type getType() {
         return key.getType();
@@ -56,14 +43,6 @@ public class ResolvableKey<T> {
 
     public @Nullable Class<? extends Annotation> getQualifierType() {
         return key.getQualifierType();
-    }
-
-    public Collection<String> getAliases() {
-        return aliases;
-    }
-
-    public DependencyChain getDependencyChain() {
-        return dependencyChain;
     }
 
     public static <T> ResolvableKey<T> of(final Key<T> key) {

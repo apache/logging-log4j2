@@ -37,7 +37,7 @@ public class NotInjectableException extends InjectException {
     }
 
     public NotInjectableException(final ResolvableKey<?> resolvableKey) {
-        this(resolvableKey.getDependencyChain(), resolvableKey.getKey());
+        this(resolvableKey.dependencyChain(), resolvableKey.key());
     }
 
     private NotInjectableException(final DependencyChain chain, final Object target) {

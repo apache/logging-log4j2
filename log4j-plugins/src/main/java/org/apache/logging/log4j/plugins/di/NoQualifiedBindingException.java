@@ -34,7 +34,7 @@ public class NoQualifiedBindingException extends InjectException {
 
     private static String formatMessage(final ResolvableKey<?> key) {
         final StringBuilder sb = new StringBuilder("No qualified binding registered for ");
-        final DependencyChain dependencyChain = key.getDependencyChain();
+        final DependencyChain dependencyChain = key.dependencyChain();
         if (!dependencyChain.isEmpty()) {
             sb.append("chain ");
             for (final Key<?> dependency : dependencyChain) {
@@ -42,7 +42,7 @@ public class NoQualifiedBindingException extends InjectException {
                 sb.append(" -> ");
             }
         }
-        StringBuilders.appendValue(sb, key.getKey());
+        StringBuilders.appendValue(sb, key.key());
         return sb.toString();
     }
 }

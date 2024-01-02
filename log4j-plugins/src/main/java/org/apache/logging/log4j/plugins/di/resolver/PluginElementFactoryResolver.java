@@ -58,8 +58,8 @@ public class PluginElementFactoryResolver<T> implements FactoryResolver<T> {
 
     @Override
     public Supplier<T> getFactory(final ResolvableKey<T> resolvableKey, final InstanceFactory instanceFactory) {
-        final Key<?> key = resolvableKey.getKey();
-        final Collection<String> aliases = resolvableKey.getAliases();
+        final Key<?> key = resolvableKey.key();
+        final Collection<String> aliases = resolvableKey.aliases();
         return () -> {
             final Node node = instanceFactory.getInstance(Node.CURRENT_NODE);
             LOGGER.trace("Configuring node {} element {}", node.getName(), key);

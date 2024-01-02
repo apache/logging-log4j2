@@ -36,7 +36,7 @@ public class PluginNamespaceFactoryResolver implements FactoryResolver<PluginNam
     @Override
     public Supplier<PluginNamespace> getFactory(
             final ResolvableKey<PluginNamespace> resolvableKey, final InstanceFactory instanceFactory) {
-        final String namespace = resolvableKey.getKey().getNamespace();
+        final String namespace = resolvableKey.key().getNamespace();
         return () -> instanceFactory.getInstance(PluginRegistry.class).getNamespace(namespace);
     }
 }
