@@ -26,7 +26,7 @@ import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.di.spi.Scope;
 
 /**
- * Manages dependency injection of a set of {@linkplain Binding bindings} between {@link Key}s and {@link Supplier}s
+ * Manages dependency injection of a set of bindings between {@link Key}s and {@link Supplier}s
  * lifecycle-bound to {@link Scope}s. Keys describe the type, name, namespace, qualifier type, and order of a binding.
  * Suppliers are known as <i>factories</i>, and factories may have injectable dependencies on other bindings upon
  * creation. Scopes control the lifecycle of instances returned by a binding's factory. Factories for keys can be

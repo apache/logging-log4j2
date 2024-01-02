@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.di.spi.Scope;
 import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.Lazy;
 import org.junit.jupiter.api.Test;
 
 class CustomScopeTest {
@@ -41,7 +42,7 @@ class CustomScopeTest {
 
         @Override
         public <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped) {
-            final Binding<T> binding = Binding.from(key).toSingleton(unscoped);
+            final var binding = Lazy.lazy(unscoped);
             return Cast.cast(bindings.computeIfAbsent(key, ignored -> binding));
         }
     }

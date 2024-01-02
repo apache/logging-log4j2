@@ -22,8 +22,7 @@ import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Exception thrown when a {@linkplain org.apache.logging.log4j.plugins.QualifierType qualified} injection point
- * is attempted to be {@linkplain ResolvableKey resolved} and no {@linkplain Binding binding} has been registered
- * previously.
+ * is attempted to be {@linkplain ResolvableKey resolved} and no binding has been registered previously.
  */
 public class NoQualifiedBindingException extends InjectException {
     /**

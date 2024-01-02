@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.plugins.di;
 
 /**
- * Thrown when a duplicate {@link Binding} is attempted to be registered in a {@link ConfigurableInstanceFactory}.
+ * Thrown when a duplicate binding is attempted to be registered from a bundle in a {@link ConfigurableInstanceFactory}.
  */
 public class DuplicateBindingException extends InjectException {
     public DuplicateBindingException(final Key<?> key) {
