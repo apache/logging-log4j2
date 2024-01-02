@@ -31,15 +31,36 @@ import java.lang.annotation.Target;
  * @see ConfigurationFactoryType
  * @see ContextSelectorType
  */
-@Repeatable(TestBindings.class)
+@Repeatable(TestBinding.Group.class)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Log4jTest
 public @interface TestBinding {
+    /**
+     * Specifies the {@linkplain org.apache.logging.log4j.plugins.di.Key#forClass(Class) class to use as a key} for this binding.
+     */
     Class<?> api();
 
+    /**
+     * Specifies the implementation class to use as a binding. If left as the default value of {@code Object.class},
+     * then the implementation class must be specified as a fully qualified class name in {@link #implementationClassName()}.
+     */
     Class<?> implementation() default Object.class;
 
+    /**
+     * Specifies the fully qualified class name to use as a binding. If left blank, then the implementation class must
+     * be specified in {@link #implementation()}.
+     */
     String implementationClassName() default "";
+
+    /**
+     * Annotation container for multiple {@link TestBinding} annotations.
+     */
+    @Target({ElementType.TYPE, ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Inherited
+    @interface Group {
+        TestBinding[] value();
+    }
 }
