@@ -39,11 +39,9 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
                 .forEach(setProperty -> props.setProperty(setProperty.key(), setProperty.value()));
         final Class<?> testClass = context.getRequiredTestClass();
         final Object testInstance = context.getRequiredTestInstance();
-        final Class<? extends TestProperties> testPropertiesType = props.getClass();
         ReflectionSupport.findFields(
                         testClass,
-                        field -> ModifierSupport.isNotStatic(field)
-                                && field.getType().isAssignableFrom(testPropertiesType),
+                        field -> ModifierSupport.isNotStatic(field) && TestProperties.class.equals(field.getType()),
                         HierarchyTraversalMode.BOTTOM_UP)
                 .forEach(field -> ReflectionUtil.setFieldValue(field, testInstance, props));
     }
@@ -54,11 +52,9 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
         AnnotationSupport.findRepeatableAnnotations(context.getRequiredTestClass(), SetTestProperty.class)
                 .forEach(setProperty -> props.setProperty(setProperty.key(), setProperty.value()));
         final Class<?> testClass = context.getRequiredTestClass();
-        final Class<? extends TestProperties> testPropertiesType = props.getClass();
         ReflectionSupport.findFields(
                         testClass,
-                        field -> ModifierSupport.isStatic(field)
-                                && field.getType().isAssignableFrom(testPropertiesType),
+                        field -> ModifierSupport.isStatic(field) && TestProperties.class.equals(field.getType()),
                         HierarchyTraversalMode.BOTTOM_UP)
                 .forEach(field -> ReflectionUtil.setStaticFieldValue(field, props));
     }
