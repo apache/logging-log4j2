@@ -27,36 +27,9 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
 
-public class InjectionPoint<T> {
+public record InjectionPoint<T>(Key<T> key, Collection<String> aliases, AnnotatedElement element) {
 
     public static final Key<InjectionPoint<?>> CURRENT_INJECTION_POINT = new Key<>() {};
-
-    private final Key<T> key;
-    private final Collection<String> aliases;
-    private final AnnotatedElement element;
-
-    private InjectionPoint(final Key<T> key, final Collection<String> aliases, final AnnotatedElement element) {
-        this.key = key;
-        this.aliases = aliases;
-        this.element = element;
-    }
-
-    public Key<T> getKey() {
-        return key;
-    }
-
-    public Collection<String> getAliases() {
-        return aliases;
-    }
-
-    public AnnotatedElement getElement() {
-        return element;
-    }
-
-    @Override
-    public String toString() {
-        return "InjectionPoint{" + "key=" + key + ", aliases=" + aliases + ", element=" + element + '}';
-    }
 
     public static <T> InjectionPoint<T> forField(final Field field) {
         final Key<T> key = Key.forField(field);

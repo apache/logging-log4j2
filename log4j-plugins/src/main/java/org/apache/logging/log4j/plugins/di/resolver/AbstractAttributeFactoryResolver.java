@@ -51,7 +51,7 @@ public abstract class AbstractAttributeFactoryResolver<T, A extends Annotation> 
             final Key<?> key = resolvableKey.getKey();
             final Type type = key.getType();
             final TypeConverter<T> typeConverter = instanceFactory.getTypeConverter(type);
-            final AnnotatedElement element = injectionPoint.getElement();
+            final AnnotatedElement element = injectionPoint.element();
             final A annotation = element.getAnnotation(annotationType);
             final boolean sensitive = isSensitive(annotation);
             final Node node = instanceFactory.getInstance(Node.CURRENT_NODE);

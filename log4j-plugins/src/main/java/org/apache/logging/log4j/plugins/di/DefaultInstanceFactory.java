@@ -199,12 +199,12 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
 
     protected <T> Supplier<T> getArgumentFactory(
             final InjectionPoint<T> injectionPoint, final DependencyChain dependencyChain) {
-        final Key<T> key = injectionPoint.getKey();
+        final Key<T> key = injectionPoint.key();
         if (key.getRawType() != Supplier.class && dependencyChain.hasDependency(key)) {
             throw new CircularDependencyException(key, dependencyChain);
         }
-        final AnnotatedElement element = injectionPoint.getElement();
-        final ResolvableKey<T> resolvableKey = ResolvableKey.of(key, injectionPoint.getAliases(), dependencyChain);
+        final AnnotatedElement element = injectionPoint.element();
+        final ResolvableKey<T> resolvableKey = ResolvableKey.of(key, injectionPoint.aliases(), dependencyChain);
         return () -> {
             currentInjectionPoint.set(injectionPoint);
             try {
@@ -378,7 +378,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     protected <T> void injectField(final Field field, final Object instance) {
         final InjectionPoint<T> point = InjectionPoint.forField(field);
         currentInjectionPoint.set(point);
-        final ResolvableKey<T> resolvableKey = ResolvableKey.of(point.getKey(), point.getAliases());
+        final ResolvableKey<T> resolvableKey = ResolvableKey.of(point.key(), point.aliases());
         try {
             final T value = getInstance(resolvableKey);
             // TODO(ms): if null, consider throwing exception here
