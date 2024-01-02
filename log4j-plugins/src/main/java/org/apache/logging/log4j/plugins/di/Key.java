@@ -167,14 +167,6 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
     }
 
     /**
-     * Returns a new key using the provided class. The name, namespace, qualifier, and order of this key are
-     * copied into the new key.
-     */
-    public final <U> Key<U> withType(final Class<U> type) {
-        return new Key<>(type, type, qualifierType, name, namespace, order);
-    }
-
-    /**
      * Returns a new key using the provided name and the same type and qualifier type as this instance.
      */
     public final Key<T> withName(final String name) {
