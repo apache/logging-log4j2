@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.lang.NullMarked;
 import org.apache.logging.log4j.plugins.di.spi.InstancePostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
