@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ModifierSupport;
@@ -31,10 +32,6 @@ import org.junit.platform.commons.support.ReflectionSupport;
 public class TestPropertyResolver extends TypeBasedParameterResolver<TestProperties>
         implements BeforeAllCallback, BeforeEachCallback {
 
-    public TestPropertyResolver() {
-        super(TestProperties.class);
-    }
-
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
         final TestProperties props = TestPropertySource.createProperties(context);
@@ -42,10 +39,11 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
                 .forEach(setProperty -> props.setProperty(setProperty.key(), setProperty.value()));
         final Class<?> testClass = context.getRequiredTestClass();
         final Object testInstance = context.getRequiredTestInstance();
+        final Class<? extends TestProperties> testPropertiesType = props.getClass();
         ReflectionSupport.findFields(
                         testClass,
                         field -> ModifierSupport.isNotStatic(field)
-                                && field.getType().equals(TestProperties.class),
+                                && field.getType().isAssignableFrom(testPropertiesType),
                         HierarchyTraversalMode.BOTTOM_UP)
                 .forEach(field -> ReflectionUtil.setFieldValue(field, testInstance, props));
     }
@@ -56,10 +54,11 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
         AnnotationSupport.findRepeatableAnnotations(context.getRequiredTestClass(), SetTestProperty.class)
                 .forEach(setProperty -> props.setProperty(setProperty.key(), setProperty.value()));
         final Class<?> testClass = context.getRequiredTestClass();
+        final Class<? extends TestProperties> testPropertiesType = props.getClass();
         ReflectionSupport.findFields(
                         testClass,
                         field -> ModifierSupport.isStatic(field)
-                                && field.getType().equals(TestProperties.class),
+                                && field.getType().isAssignableFrom(testPropertiesType),
                         HierarchyTraversalMode.BOTTOM_UP)
                 .forEach(field -> ReflectionUtil.setStaticFieldValue(field, props));
     }

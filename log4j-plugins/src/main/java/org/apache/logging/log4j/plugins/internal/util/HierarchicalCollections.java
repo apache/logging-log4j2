@@ -16,7 +16,12 @@
  */
 package org.apache.logging.log4j.plugins.internal.util;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 class HierarchicalCollections {
@@ -78,11 +83,6 @@ class HierarchicalCollections {
         @Override
         public Set<K> keySet() {
             return new HierarchicalSet<>(super.keySet(), parent.keySet());
-        }
-
-        @Override
-        public HierarchicalMap<K, V> newChildMap() {
-            return new ChildMap<>(this);
         }
     }
 
