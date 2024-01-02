@@ -39,13 +39,7 @@ final class LazyUtil {
         return value == NULL ? null : Cast.cast(value);
     }
 
-    static class Constant<T> implements Lazy<T> {
-        private final T value;
-
-        Constant(final T value) {
-            this.value = value;
-        }
-
+    record Constant<T>(T value) implements Lazy<T> {
         @Override
         public T get() {
             return value;
