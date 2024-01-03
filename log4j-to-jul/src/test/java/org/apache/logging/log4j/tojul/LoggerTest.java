@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import org.apache.logging.log4j.LogManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LoggerTest {
 
@@ -43,7 +43,7 @@ public class LoggerTest {
     // https://javadoc.io/doc/com.google.guava/guava-testlib/latest/com/google/common/testing/TestLogHandler.html
     private TestLogHandler handler;
 
-    @Before
+    @BeforeEach
     public void setupLogCapture() {
         handler = new TestLogHandler();
         // Beware, the order here should not be changed!
@@ -61,7 +61,7 @@ public class LoggerTest {
         assertThat(julLogger.getParent()).isEqualTo(rootLogger);
     }
 
-    @After
+    @AfterEach
     public void clearLogs() {
         julLogger.removeHandler(handler);
         // Reset all Levels what any tests set anymore
