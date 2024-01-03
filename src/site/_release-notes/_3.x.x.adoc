@@ -38,6 +38,11 @@ This release contains...
 * Fix NPE in `CloseableThreadContext`. (https://github.com/apache/logging-log4j2/pull/1426[1426])
 * Fix NPE in `RollingFileManager`. (https://github.com/apache/logging-log4j2/pull/1645[1645])
 
+[#release-notes-3-x-x-removed]
+=== Removed
+
+* Remove `org.apache.logging.log4j.core.parser` and related packages. (https://github.com/apache/logging-log4j2/pull/2154[2154])
+
 [#release-notes-3-x-x-updated]
 === Updated
 
