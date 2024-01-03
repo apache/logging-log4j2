@@ -33,6 +33,7 @@
     <!--
       ~ OSGi and JPMS options
       -->
+    <bnd.baseline.skip>false</bnd.baseline.skip>
     <bnd-extra-module-options>
       <!-- The module descriptor is in `META-INF/versions/9`
            BND can not find it -->
