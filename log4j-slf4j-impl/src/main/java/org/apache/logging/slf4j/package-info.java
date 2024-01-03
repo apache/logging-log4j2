@@ -21,7 +21,7 @@
  */
 @Export
 @Header(name = Constants.BUNDLE_ACTIVATIONPOLICY, value = Constants.ACTIVATION_LAZY)
-@Version("2.21.0")
+@Version("2.23.0")
 package org.apache.logging.slf4j;
 
 import org.osgi.annotation.bundle.Export;
