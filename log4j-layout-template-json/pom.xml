@@ -56,20 +56,7 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>biz.aQute.bnd</groupId>
-        <artifactId>bnd-baseline-maven-plugin</artifactId>
-        <configuration>
-          <!--
-            ~ This package has only an internal function and was removed
-            ~ from the public OSGi exports.
-            -->
-          <diffpackages>
-            <diffpackage>!org.apache.logging.log4j.layout.template.json.util</diffpackage>
-            <diffpackage>*</diffpackage>
-          </diffpackages>
-        </configuration>
-      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -83,6 +70,7 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+
       <!-- Disable Failsafe since tests go to the `-test` module. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -91,6 +79,7 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -98,6 +87,7 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 

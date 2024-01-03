@@ -18,7 +18,7 @@
  * Log4j 2 Context Selectors.
  */
 @Export
-@Version("2.20.1")
+@Version("3.0.0")
 package org.apache.logging.log4j.core.selector;
 
 import org.osgi.annotation.bundle.Export;

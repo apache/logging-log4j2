@@ -19,7 +19,7 @@
  * Utility and manager classes for Log4j 2 plugins.
  */
 @Export
-@Version("2.20.2")
+@Version("3.0.0")
 @NullMarked
 package org.apache.logging.log4j.core.config.plugins.util;
 

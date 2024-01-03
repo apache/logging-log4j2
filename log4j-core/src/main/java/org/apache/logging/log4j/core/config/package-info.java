@@ -18,7 +18,7 @@
  * Configuration of Log4j 2.
  */
 @Export
-@Version("2.21.0")
+@Version("3.0.0")
 package org.apache.logging.log4j.core.config;
 
 import org.osgi.annotation.bundle.Export;

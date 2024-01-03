@@ -20,7 +20,7 @@
  * integration tests, an appropriate category interface should be specified.
  */
 @Export
-@Version("2.20.1")
+@Version("3.0.0")
 package org.apache.logging.log4j.core.test.categories;
 
 import org.osgi.annotation.bundle.Export;

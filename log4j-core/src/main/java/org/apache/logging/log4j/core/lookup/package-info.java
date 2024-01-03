@@ -20,7 +20,7 @@
  * {@link org.apache.logging.log4j.core.lookup.Lookup} plugin namespace annotation.
  */
 @Export
-@Version("2.20.1")
+@Version("3.0.0")
 package org.apache.logging.log4j.core.lookup;
 
 import org.osgi.annotation.bundle.Export;

@@ -20,7 +20,7 @@
  * @since 2.4
  */
 @Export
-@Version("2.20.1")
+@Version("3.0.0")
 package org.apache.logging.log4j.core.config.builder.api;
 
 import org.osgi.annotation.bundle.Export;

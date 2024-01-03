@@ -46,7 +46,9 @@
          ================= -->
     <!-- TODO: fix errors and reenable SpotBugs -->
     <spotbugs.skip>true</spotbugs.skip>
-    <!-- TODO: re-enable BND Baseline -->
+    <!-- TODO: move to `logging-parent` -->
+    <bnd.baseline.fail.on.missing>false</bnd.baseline.fail.on.missing>
+    <!-- TODO: enable when everything is in sync -->
     <bnd.baseline.skip>true</bnd.baseline.skip>
 
     <!-- ========================
