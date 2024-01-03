@@ -20,14 +20,14 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.arbiters.Arbiter;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginNode;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.script.ScriptManagerImpl;
 import org.apache.logging.log4j.script.ScriptRef;
@@ -60,7 +60,7 @@ public final class ScriptArbiter implements Arbiter {
         return Boolean.parseBoolean(object.toString());
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }

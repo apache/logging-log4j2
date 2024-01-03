@@ -18,12 +18,10 @@ package org.apache.logging.log4j.script.filter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
@@ -31,6 +29,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -71,7 +70,7 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
         final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
-        return !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
+        return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
     @Override
@@ -132,15 +131,15 @@ public final class ScriptFilter extends AbstractFilter {
      */
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
+    @Inject
     public static ScriptFilter createFilter(
             @PluginElement final Script script,
             @PluginAttribute final Result onMatch,
             @PluginAttribute final Result onMismatch,
-            @PluginConfiguration final Configuration configuration) {
+            final Configuration configuration) {
 
         if (script == null) {
-            AbstractLifeCycle.LOGGER.error(
-                    "A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
+            LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
             return null;
         }
         if (configuration.getScriptManager() == null) {

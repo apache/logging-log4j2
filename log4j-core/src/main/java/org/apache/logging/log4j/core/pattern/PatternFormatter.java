@@ -22,6 +22,12 @@ import org.apache.logging.log4j.core.LogEvent;
  *
  */
 public class PatternFormatter {
+
+    /**
+     * The empty array.
+     */
+    public static final PatternFormatter[] EMPTY_ARRAY = {};
+
     private final LogEventPatternConverter converter;
     private final FormattingInfo field;
     private final boolean skipFormattingInfo;

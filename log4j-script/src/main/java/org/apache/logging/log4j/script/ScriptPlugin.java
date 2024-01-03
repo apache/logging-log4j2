@@ -40,9 +40,9 @@ public class ScriptPlugin extends AbstractScript {
     @PluginFactory
     public static ScriptPlugin createScript(
             // @formatter:off
-            @PluginAttribute final String name,
-            @PluginAttribute String language,
-            @PluginValue final String scriptText) {
+            @PluginAttribute("name") final String name,
+            @PluginAttribute(ATTR_LANGUAGE) String language,
+            @PluginValue(ATTR_SCRIPT_TEXT) final String scriptText) {
         // @formatter:on
         if (language == null) {
             LOGGER.error("No '{}' attribute provided for {} plugin '{}'", ATTR_LANGUAGE, PLUGIN_NAME, name);

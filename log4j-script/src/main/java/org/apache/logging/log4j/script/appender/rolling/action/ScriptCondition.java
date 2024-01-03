@@ -62,9 +62,9 @@ public class ScriptCondition implements ScriptConditional {
     /**
      * Executes the script
      *
-     * @param baseDir
-     * @param candidates
-     * @return
+     * @param basePath base directory for files to delete
+     * @param candidates a list of paths, that can be deleted by the script
+     * @return a list of paths selected to delete by the script execution
      */
     @SuppressWarnings("unchecked")
     public List<PathWithAttributes> selectFilesToDelete(

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.script.appender;
 
 import java.util.Objects;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -65,19 +64,19 @@ public final class ScriptAppenderSelector extends AbstractAppender {
         @Override
         public Appender build() {
             if (name == null) {
-                AbstractLifeCycle.LOGGER.error("Name missing.");
+                LOGGER.error("Name missing.");
                 return null;
             }
             if (script == null) {
-                AbstractLifeCycle.LOGGER.error("Script missing for ScriptAppenderSelector appender {}", name);
+                LOGGER.error("Script missing for ScriptAppenderSelector appender {}", name);
                 return null;
             }
             if (appenderSet == null) {
-                AbstractLifeCycle.LOGGER.error("AppenderSet missing for ScriptAppenderSelector appender {}", name);
+                LOGGER.error("AppenderSet missing for ScriptAppenderSelector appender {}", name);
                 return null;
             }
             if (configuration == null) {
-                AbstractLifeCycle.LOGGER.error("Configuration missing for ScriptAppenderSelector appender {}", name);
+                LOGGER.error("Configuration missing for ScriptAppenderSelector appender {}", name);
                 return null;
             }
             final ScriptManager scriptManager = configuration.getScriptManager();
@@ -89,7 +88,7 @@ public final class ScriptAppenderSelector extends AbstractAppender {
                 return null;
             }
             final ScriptBindings bindings = scriptManager.createBindings(script);
-            AbstractLifeCycle.LOGGER.debug(
+            LOGGER.debug(
                     "ScriptAppenderSelector '{}' executing {} '{}': {}",
                     name,
                     script.getLanguage(),
@@ -97,7 +96,7 @@ public final class ScriptAppenderSelector extends AbstractAppender {
                     script.getScriptText());
             final Object object = scriptManager.execute(script.getName(), bindings);
             final String actualAppenderName = Objects.toString(object, null);
-            AbstractLifeCycle.LOGGER.debug("ScriptAppenderSelector '{}' selected '{}'", name, actualAppenderName);
+            LOGGER.debug("ScriptAppenderSelector '{}' selected '{}'", name, actualAppenderName);
             return appenderSet.createAppender(actualAppenderName, name);
         }
 
@@ -143,7 +142,8 @@ public final class ScriptAppenderSelector extends AbstractAppender {
         return new Builder();
     }
 
-    private ScriptAppenderSelector(final String name, final Filter filter, final Layout layout) {
+    private ScriptAppenderSelector(
+            final String name, final Filter filter, final Layout layout, final Property[] properties) {
         super(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
 

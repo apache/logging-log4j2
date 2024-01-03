@@ -106,13 +106,13 @@ public final class ScriptPatternSelector implements PatternSelector {
                 return null;
             }
             return new ScriptPatternSelector(
+                    configuration,
                     script,
                     properties,
                     defaultPattern,
                     alwaysWriteExceptions,
                     disableAnsi,
-                    noConsoleNoAnsi,
-                    configuration);
+                    noConsoleNoAnsi);
         }
 
         public Builder setScript(final AbstractScript script) {
@@ -165,13 +165,13 @@ public final class ScriptPatternSelector implements PatternSelector {
     private final boolean requiresLocation;
 
     private ScriptPatternSelector(
+            final Configuration config,
             final AbstractScript script,
             final PatternMatch[] properties,
             final String defaultPattern,
             final boolean alwaysWriteExceptions,
             final boolean disableAnsi,
-            final boolean noConsoleNoAnsi,
-            final Configuration config) {
+            final boolean noConsoleNoAnsi) {
         this.script = script;
         this.configuration = config;
         final PatternParser parser = PatternLayout.createPatternParser(config);
@@ -180,7 +180,7 @@ public final class ScriptPatternSelector implements PatternSelector {
             try {
                 final List<PatternFormatter> list =
                         parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
-                final PatternFormatter[] formatters = list.toArray(new PatternFormatter[list.size()]);
+                final PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
                 formatterMap.put(property.getKey(), formatters);
                 patternMap.put(property.getKey(), property.getPattern());
                 for (int i = 0; !needsLocation && i < formatters.length; ++i) {
@@ -193,7 +193,7 @@ public final class ScriptPatternSelector implements PatternSelector {
         try {
             final List<PatternFormatter> list =
                     parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
-            defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
+            defaultFormatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
             this.defaultPattern = defaultPattern;
             for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
                 needsLocation = defaultFormatters[i].requiresLocation();

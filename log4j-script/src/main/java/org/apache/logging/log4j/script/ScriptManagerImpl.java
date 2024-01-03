@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.script;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -86,7 +87,7 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
         this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
         allowedLanguages = Arrays.stream(Strings.splitList(scriptLanguages))
-                .map(String::toLowerCase)
+                .map(Strings::toRootLowerCase)
                 .collect(Collectors.toSet());
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
@@ -100,7 +101,7 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
                 final StringBuilder names = new StringBuilder();
                 final List<String> languageNames = factory.getNames();
                 for (final String name : languageNames) {
-                    if (allowedLanguages.contains(name.toLowerCase(Locale.ROOT))) {
+                    if (allowedLanguages.contains(toRootLowerCase(name))) {
                         if (names.length() > 0) {
                             names.append(", ");
                         }
@@ -132,7 +133,7 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
             final StringBuilder names = new StringBuilder();
             for (final ScriptEngineFactory factory : factories) {
                 for (final String name : factory.getNames()) {
-                    if (allowedLanguages.contains(name.toLowerCase(Locale.ROOT))) {
+                    if (allowedLanguages.contains(toRootLowerCase(name))) {
                         if (names.length() > 0) {
                             names.append(", ");
                         }
@@ -165,7 +166,7 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
     }
 
     public boolean addScript(final Script script) {
-        if (allowedLanguages.contains(script.getLanguage().toLowerCase(Locale.ROOT))) {
+        if (allowedLanguages.contains(toRootLowerCase(script.getLanguage()))) {
             final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
             if (engine == null) {
                 logger.error("No ScriptEngine found for language " + script.getLanguage()
