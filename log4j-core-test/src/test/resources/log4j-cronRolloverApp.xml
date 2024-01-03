@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="warn" name="testlog4j2" packages="">
+<Configuration status="warn" name="testlog4j2">
   <Properties>
     <Property name="baseDir">target/testlog4</Property>
   </Properties>

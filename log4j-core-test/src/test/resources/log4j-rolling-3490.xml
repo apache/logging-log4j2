@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" filePattern="target/rolling-3490/app-%i.log">
       <PatternLayout>
