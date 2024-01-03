@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -425,38 +426,49 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             final PropertyEnvironment props,
             final SslConfiguration sslConfiguration) {
         final File inputFile = source.getFile();
+        final ConfigResult configResult = new ConfigResult();
         InputStream inputStream = null;
         HttpInputStreamUtil.Result result = null;
         final long lastModified = source.getLastModified();
-        if (inputFile != null && inputFile.exists()) {
-            try {
-                final long modified = inputFile.lastModified();
-                if (modified > lastModified) {
-                    source.setLastModified(modified);
-                    inputStream = new FileInputStream(inputFile);
-                    result = new HttpInputStreamUtil.Result(Status.SUCCESS);
-                } else {
-                    result = new HttpInputStreamUtil.Result(Status.NOT_MODIFIED);
+        try {
+            if (inputFile != null && inputFile.exists()) {
+                try {
+                    final long modified = inputFile.lastModified();
+                    if (modified > lastModified) {
+                        source.setLastModified(modified);
+                        inputStream = new FileInputStream(inputFile);
+                        result = new HttpInputStreamUtil.Result(Status.SUCCESS);
+                    } else {
+                        result = new HttpInputStreamUtil.Result(Status.NOT_MODIFIED);
+                    }
+                } catch (Exception ex) {
+                    result = new HttpInputStreamUtil.Result(Status.ERROR);
                 }
-            } catch (Exception ex) {
-                result = new HttpInputStreamUtil.Result(Status.ERROR);
+            } else if (source.getURI() != null) {
+                try {
+                    result = HttpInputStreamUtil.getInputStream(source, props, authorizationProvider, sslConfiguration);
+                    inputStream = result.getInputStream();
+                } catch (ConfigurationException ex) {
+                    result = new HttpInputStreamUtil.Result(Status.ERROR);
+                }
+            } else {
+                result = new HttpInputStreamUtil.Result(Status.NOT_FOUND);
             }
-        } else if (source.getURI() != null) {
-            try {
-                result = HttpInputStreamUtil.getInputStream(source, props, authorizationProvider, sslConfiguration);
-                inputStream = result.getInputStream();
-            } catch (ConfigurationException ex) {
-                result = new HttpInputStreamUtil.Result(Status.ERROR);
+            if (result.getStatus() == Status.SUCCESS) {
+                LOGGER.debug("Processing Debug key/value pairs from: {}", source.toString());
+                parseJsonConfiguration(inputStream, configResult);
+            } else {
+                configResult.status = result.getStatus();
             }
-        } else {
-            result = new HttpInputStreamUtil.Result(Status.NOT_FOUND);
-        }
-        final ConfigResult configResult = new ConfigResult();
-        if (result.getStatus() == Status.SUCCESS) {
-            LOGGER.debug("Processing Debug key/value pairs from: {}", source.toString());
-            parseJsonConfiguration(inputStream, configResult);
-        } else {
-            configResult.status = result.getStatus();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    LOGGER.warn("Failed to close {}.", source, e);
+                    configResult.status = Status.ERROR;
+                }
+            }
         }
         return configResult;
     }
