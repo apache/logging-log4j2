@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-// @Category(AsyncLoggers.class)
-@Ignore("https://issues.apache.org/jira/browse/LOG4J2-3523")
+@Category(AsyncLoggers.class)
 public class AsyncLoggerThreadsTest {
 
     @BeforeClass

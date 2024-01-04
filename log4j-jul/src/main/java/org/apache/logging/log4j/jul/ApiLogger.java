@@ -50,12 +50,9 @@ public class ApiLogger extends Logger {
         super(logger.getName(), null);
         final Level javaLevel = LevelTranslator.toJavaLevel(logger.getLevel());
         // "java.util.logging.LoggingPermission" "control"
-        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                ApiLogger.super.setLevel(javaLevel);
-                return null;
-            }
+        AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+            ApiLogger.super.setLevel(javaLevel);
+            return null;
         });
         this.logger = new WrappedLogger(logger);
     }

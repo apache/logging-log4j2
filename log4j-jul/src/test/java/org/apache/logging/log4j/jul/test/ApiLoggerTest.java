@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.logging.Logger;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.jul.ApiLoggerAdapter;
 import org.apache.logging.log4j.jul.JulPropertyKey;
 import org.apache.logging.log4j.jul.LogManager;

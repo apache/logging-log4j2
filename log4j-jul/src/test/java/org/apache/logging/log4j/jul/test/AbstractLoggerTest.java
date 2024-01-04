@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.MementoLogEvent;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.jul.ApiLogger;
 import org.apache.logging.log4j.jul.LevelTranslator;
 import org.junit.Test;

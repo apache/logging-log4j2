@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.net.URI;
 import java.util.List;
 import java.util.logging.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.jul.LogManager;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class CallerInformationTest {
@@ -34,8 +33,8 @@ public class CallerInformationTest {
     // config from log4j-core test-jar
     private static final String CONFIG = "log4j2-calling-class.xml";
 
-    private LoggerContext ctx;
-    private ListAppender app;
+    @Rule
+    public final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
     @BeforeClass
     public static void setUpClass() {
@@ -47,27 +46,9 @@ public class CallerInformationTest {
         System.clearProperty("java.util.logging.manager");
     }
 
-    @Before
-    public void beforeEach() throws Exception {
-        final URI uri = this.getClass().getClassLoader().getResource(CONFIG).toURI();
-        ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(null, false, uri);
-        assertNotNull("No LoggerContext", ctx);
-    }
-
-    @After
-    public void afterEach() throws Exception {
-        if (ctx != null) {
-            ctx.stop();
-            ctx = null;
-            app = null;
-        }
-    }
-
     @Test
     public void testClassLogger() throws Exception {
-        app = ctx.getConfiguration().getAppender("Class");
-        assertNotNull("No ListAppender", app);
-        app.clear();
+        final ListAppender app = ctx.getListAppender("Class").clear();
         final Logger logger = Logger.getLogger("ClassLogger");
         logger.info("Ignored message contents.");
         logger.warning("Verifying the caller class is still correct.");
@@ -81,9 +62,7 @@ public class CallerInformationTest {
 
     @Test
     public void testMethodLogger() throws Exception {
-        app = ctx.getConfiguration().getAppender("Method");
-        assertNotNull("No ListAppender", app);
-        app.clear();
+        final ListAppender app = ctx.getListAppender("Method").clear();
         final Logger logger = Logger.getLogger("MethodLogger");
         logger.info("More messages.");
         logger.warning("CATASTROPHE INCOMING!");

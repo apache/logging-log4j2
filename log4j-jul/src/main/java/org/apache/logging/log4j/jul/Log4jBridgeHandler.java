@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jul;
 
 // note: NO import of Logger, Level, LogManager to prevent conflicts JUL/log4j
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -183,8 +182,9 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
             synchronized (this) {
                 // Check again to make sure we still have to propagate  the levels at this point
                 if (this.installAsLevelPropagator) {
-                    @SuppressWarnings("resource") // no need to close the AutoCloseable ctx here
-                    LoggerContext context = LoggerContext.getContext(false);
+                    // no need to close the AutoCloseable ctx here
+                    @SuppressWarnings("resource")
+                    final LoggerContext context = LoggerContext.getContext(false);
                     context.addConfigurationStartedListener(this);
                     propagateLogLevels(context.getConfiguration());
                     // note: java.util.logging.LogManager.addPropertyChangeListener() could also
@@ -194,8 +194,8 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
             }
         }
 
-        org.apache.logging.log4j.Logger log4jLogger = getLog4jLogger(record);
-        String msg = julFormatter.formatMessage(record); // use JUL's implementation to get real msg
+        final org.apache.logging.log4j.Logger log4jLogger = getLog4jLogger(record);
+        final String msg = julFormatter.formatMessage(record); // use JUL's implementation to get real msg
         /* log4j allows nulls:
         if (msg == null) {
             // JUL allows nulls, but other log system may not
