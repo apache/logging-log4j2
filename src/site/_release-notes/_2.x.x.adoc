@@ -42,10 +42,12 @@ This releases contains ...
 === Fixed
 
 * Fixed use of `SecurityManager` in `LoaderUtil` where `AccessController::doPrivileged` should only be invoked when a `SecurityManager` is installed. Some runtimes do not seem to have this method available. (https://github.com/apache/logging-log4j2/issues/2129[2129])
+* Fix typo in Kubernetes `clientKeyData` configuration property.
 
 [#release-notes-2-x-x-updated]
 === Updated
 
+* Update `co.elastic.clients:elasticsearch-java` to version `8.11.3` (https://github.com/apache/logging-log4j2/pull/2161[2161])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
 * Update `github/codeql-action` to version `3.22.12` (https://github.com/apache/logging-log4j2/pull/2130[2130])
 * Update `org.assertj:assertj-core` to version `3.25.1` (https://github.com/apache/logging-log4j2/pull/2153[2153])
