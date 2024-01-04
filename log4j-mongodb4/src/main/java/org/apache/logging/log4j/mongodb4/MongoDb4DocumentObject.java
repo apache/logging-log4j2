@@ -25,8 +25,12 @@ import org.bson.Document;
  * {@link Document}.
  */
 public final class MongoDb4DocumentObject implements NoSqlObject<Document> {
+
     private final Document document;
 
+    /**
+     * Constructs a new instance.
+     */
     public MongoDb4DocumentObject() {
         this.document = new Document();
     }
