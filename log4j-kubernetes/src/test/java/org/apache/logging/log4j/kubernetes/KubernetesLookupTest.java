@@ -60,7 +60,6 @@ public class KubernetesLookupTest {
             assertEquals("Incorrect pod name", "sampleapp-584f99476d-mnrp4", lookup.lookup("podName"));
         } finally {
             lookup.clearInfo();
-            ;
         }
     }
 

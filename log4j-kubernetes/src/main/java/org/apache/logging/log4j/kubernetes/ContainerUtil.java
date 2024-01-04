@@ -56,9 +56,8 @@ public class ContainerUtil {
                         .orElse(null);
                 LOGGER.debug("Found container id {}", id);
                 return id;
-            } else {
-                LOGGER.warn("Unable to access container information");
             }
+            LOGGER.warn("Unable to access container information");
         } catch (IOException ioe) {
             LOGGER.warn("Error obtaining container id: {}", ioe.getMessage());
         }

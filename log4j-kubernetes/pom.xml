@@ -23,21 +23,19 @@
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
-
   <artifactId>log4j-kubernetes</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Kubernetes Library</name>
   <description>Apache Log4j Kubernetes Support</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
 
     <!--
       ~ OSGi and JPMS options
       -->
     <bnd-extra-module-options>
-      <!-- Standardize names -->
-      kubernetes.client;substitute="kubernetes-client",
-      kubernetes.model.core;substitute="kubernetes-model-core
+      <!-- Filebased module names: MUST be static -->
+      kubernetes.client;substitute="kubernetes-client";transitive=false;static=true,
+      kubernetes.model.core;substitute="kubernetes-model-core";transitive=false;static=true
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
@@ -54,11 +52,6 @@
     <dependency>
       <groupId>io.fabric8</groupId>
       <artifactId>kubernetes-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.kubernetes;
 
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerStatus;
+import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -57,7 +58,7 @@ public class KubernetesLookup extends AbstractLookup {
             LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.cloud.config.client.SpringEnvironmentHolder")
                     || LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.boot.SpringEnvironmentHolder");
     private Pod pod;
-    private io.fabric8.kubernetes.api.model.Namespace namespace;
+    private Namespace namespace;
     private URL masterUrl;
 
     public KubernetesLookup() {
@@ -67,7 +68,7 @@ public class KubernetesLookup extends AbstractLookup {
         initialize();
     }
 
-    KubernetesLookup(Pod pod, io.fabric8.kubernetes.api.model.Namespace namespace, URL masterUrl) {
+    KubernetesLookup(Pod pod, Namespace namespace, URL masterUrl) {
         this.pod = pod;
         this.namespace = namespace;
         this.masterUrl = masterUrl;
