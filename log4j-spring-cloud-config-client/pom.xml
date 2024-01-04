@@ -38,53 +38,31 @@
       ~ OSGi and JPMS options
       -->
     <bnd-module-name>org.apache.logging.log4j.spring.cloud.config.client</bnd-module-name>
+    <bnd-extra-packages-options>
+      <!-- Used only for annotations -->
+      org.springframework.boot.autoconfigure;resolution:=optional
+    </bnd-extra-packages-options>
     <bnd-extra-module-options>
+      <!-- Optional dependencies should not be transitive -->
+      spring.boot.autoconfigure;transitive=false,
       <!-- Filebased module names: MUST be static -->
       spring.cloud.context;substitute="spring-cloud-context";static=true;transitive=false
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-
-    <!-- dependency versions -->
-    <spring-boot.version>3.2.1</spring-boot.version>
-    <spring-cloud.version>2022.0.4</spring-cloud.version>
-
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
-        <version>${spring-boot.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -92,25 +70,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-config-client</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-jcl</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-bootstrap</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <scope>runtime</scope>
+      <artifactId>spring-cloud-context</artifactId>
     </dependency>
 
     <dependency>
@@ -120,8 +86,14 @@
     </dependency>
 
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jcl</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -129,24 +101,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-jcl</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-log4j2</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-jcl</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
   </dependencies>

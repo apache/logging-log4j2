@@ -153,6 +153,9 @@
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.1</plexus-utils.version>
     <slf4j.version>2.0.10</slf4j.version>
+    <spring-boot.version>3.2.1</spring-boot.version>
+    <spring-cloud.version>4.1.0</spring-cloud.version>
+    <spring-framework.version>6.1.2</spring-framework.version>
     <system-stubs.version>2.1.6</system-stubs.version>
     <tomcat-juli.version>10.1.18</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
@@ -264,6 +267,14 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-bom</artifactId>
         <version>${netty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-framework-bom</artifactId>
+        <version>${spring-framework.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -811,6 +822,42 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>${slf4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <version>${spring-boot.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring-framework.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jcl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-context</artifactId>
+        <version>${spring-cloud.version}</version>
       </dependency>
 
       <dependency>
