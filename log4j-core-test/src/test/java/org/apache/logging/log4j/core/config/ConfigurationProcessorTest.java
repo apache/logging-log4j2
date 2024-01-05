@@ -30,6 +30,7 @@ import org.apache.logging.log4j.plugins.test.validation.ValidatingPlugin;
 import org.apache.logging.log4j.plugins.test.validation.ValidatingPluginWithGenericBuilder;
 import org.apache.logging.log4j.plugins.test.validation.ValidatingPluginWithTypedBuilder;
 import org.apache.logging.log4j.plugins.test.validation.di.ConfigurablePlugin;
+import org.apache.logging.log4j.plugins.test.validation.di.ConfigurableRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -56,6 +57,10 @@ class ConfigurationProcessorTest {
     @Inject
     @Configurable
     PluginType<PluginWithGenericSubclassFoo1Builder> pluginWithGenericSubclassFoo1BuilderPluginType;
+
+    @Inject
+    @Configurable
+    PluginType<ConfigurableRecord> configurableRecordPluginType;
 
     @BeforeEach
     void setUp() {
@@ -138,5 +143,37 @@ class ConfigurationProcessorTest {
                 .returns("Gamma", from(ConfigurablePlugin::getGammaName))
                 .returns("thought", from(ConfigurablePlugin::getDeltaThing))
                 .returns("bar2", from(ConfigurablePlugin::getDeltaName));
+    }
+
+    @Test
+    void configurableRecord() {
+        final Node root = Node.newBuilder()
+                .setName("root")
+                .setPluginType(configurableRecordPluginType)
+                .addChild(builder -> builder.setName("alpha")
+                        .setPluginType(validatingPluginType)
+                        .setAttribute("name", "Alpha"))
+                .addChild(builder -> builder.setName("beta")
+                        .setPluginType(validatingPluginWithGenericBuilderPluginType)
+                        .setAttribute("name", "Beta"))
+                .addChild(builder -> builder.setName("gamma")
+                        .setPluginType(validatingPluginWithTypedBuilderPluginType)
+                        .setAttribute("name", "Gamma"))
+                .addChild(builder -> builder.setName("delta")
+                        .setPluginType(pluginWithGenericSubclassFoo1BuilderPluginType)
+                        .setAttribute("thing", "thought")
+                        .setAttribute("foo1", "bar2"))
+                .get();
+        final ConfigurableRecord result = configurationProcessor.processNodeTree(root);
+        assertThat(result)
+                .hasNoNullFieldsOrProperties()
+                .returns("Alpha", from(ConfigurableRecord::alpha).andThen(ValidatingPlugin::getName))
+                .returns("Beta", from(ConfigurableRecord::beta).andThen(ValidatingPluginWithGenericBuilder::getName))
+                .returns("Gamma", from(ConfigurableRecord::gamma).andThen(ValidatingPluginWithTypedBuilder::getName))
+                .returns(
+                        "thought",
+                        from(ConfigurableRecord::delta).andThen(PluginWithGenericSubclassFoo1Builder::getThing))
+                .returns(
+                        "bar2", from(ConfigurableRecord::delta).andThen(PluginWithGenericSubclassFoo1Builder::getFoo1));
     }
 }
