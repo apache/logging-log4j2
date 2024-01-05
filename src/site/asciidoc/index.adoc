@@ -26,8 +26,8 @@ The project is actively maintained by a link:team.html[team] of several voluntee
 - link:maven-artifacts.html[How can I add Log4j artifacts to my Maven/Ivy/Gradle project?]
 - link:manual/usage.html?[How can I use the Log4j API?]
 - link:manual/configuration.html[How can I configure my `log4j2.xml`?]
-- link:release-notes.adoc[Where are the release notes?]
-- link:support.adoc[**I need help!**]
+- link:release-notes.html[Where are the release notes?]
+- link:support.html[**I need help!**]
 
 [#features]
 == Features
