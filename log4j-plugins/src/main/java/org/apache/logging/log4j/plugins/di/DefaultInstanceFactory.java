@@ -417,7 +417,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
             }
         } else {
             final ConstraintValidatorFactory factory = getInstance(Key.forClass(ConstraintValidatorFactory.class));
-            validator = (ConstraintValidator<A>) factory.createValidator(annotation.getClass());
+            validator = (ConstraintValidator<A>) factory.createValidator(annotation.annotationType());
         }
         validator.initialize(annotation);
         return validator;
