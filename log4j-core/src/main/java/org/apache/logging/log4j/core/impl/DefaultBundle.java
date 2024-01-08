@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
-
 import java.util.Map;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
@@ -91,7 +89,7 @@ public class DefaultBundle {
         final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
 
         // note: map may be null (if legacy custom ThreadContextMap was installed by user)
-        if (threadContextMap instanceof DefaultThreadContextMap || threadContextMap == null) {
+        if (threadContextMap == null) {
             // for non StringMap-based context maps
             return new ThreadContextDataInjector.ForDefaultThreadContextMap();
         }
@@ -103,14 +101,12 @@ public class DefaultBundle {
 
     @SingletonFactory
     @ConditionalOnMissingBinding
-    public LogEventFactory defaultLogEventFactory(
+    public LogEventFactory reusableLogEventFactory(
             final ContextDataInjector injector,
             final Clock clock,
             final NanoClock nanoClock,
             final RecyclerFactory recyclerFactory) {
-        return isThreadLocalsEnabled()
-                ? new ReusableLogEventFactory(injector, clock, nanoClock, recyclerFactory)
-                : new DefaultLogEventFactory(injector, clock, nanoClock);
+        return new ReusableLogEventFactory(injector, clock, nanoClock, recyclerFactory);
     }
 
     @SingletonFactory

@@ -40,7 +40,6 @@ LOG4J_OPTIONS="-Dlog4j.configurationFile=perf5AsyncApndNoLoc.xml"
 #LOG4J_OPTIONS="-Dlogback.configurationFile=perf-logback.xml"
 
 #LOG4J_OPTIONS="${LOG4J_OPTIONS} -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"
-LOG4J_OPTIONS="${LOG4J_OPTIONS} -Dlog4j2.enable.threadlocals=true"
 LOG4J_OPTIONS="${LOG4J_OPTIONS} -Dlog4j2.enable.direct.encoders=true"
 LOG4J_OPTIONS="${LOG4J_OPTIONS} -DAsyncLogger.WaitStrategy=busySpin"
 LOG4J_OPTIONS="${LOG4J_OPTIONS} -DAsyncLoggerConfig.WaitStrategy=busySpin"

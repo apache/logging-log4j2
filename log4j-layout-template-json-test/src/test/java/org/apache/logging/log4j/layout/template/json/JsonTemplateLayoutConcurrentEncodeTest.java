@@ -62,7 +62,6 @@ class JsonTemplateLayoutConcurrentEncodeTest {
     @ValueSource(
             strings = {
                 "dummy",
-                "threadLocal",
                 "queue:supplier=java.util.concurrent.ArrayBlockingQueue.new",
                 "queue:supplier=org.jctools.queues.MpmcArrayQueue.new"
             })

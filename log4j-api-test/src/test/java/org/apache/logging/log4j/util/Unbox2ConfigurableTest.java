@@ -47,11 +47,6 @@ public class Unbox2ConfigurableTest {
         FieldUtils.writeDeclaredField(field, "modifiers", field.getModifiers() & ~Modifier.FINAL);
 
         field.set(null, 32); // reset to default
-
-        final Field threadLocalField = FieldUtils.getDeclaredField(Unbox.class, "threadLocalState", true);
-        final ThreadLocal<?> threadLocal = (ThreadLocal<?>) threadLocalField.get(null);
-        threadLocal.remove();
-        threadLocalField.set(null, new ThreadLocal<>());
     }
 
     @Test

@@ -28,7 +28,6 @@ import org.HdrHistogram.Histogram;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 
@@ -160,10 +159,6 @@ public class ResponseTimeTest {
                 warmupResponseTmHistograms,
                 threadCount);
         System.out.println("-----------------Warmup done. load=" + loadMessagesPerSec);
-        if (!Constants.ENABLE_DIRECT_ENCODERS || !Constants.ENABLE_THREADLOCALS) {
-            // System.gc();
-            // Thread.sleep(5000);
-        }
         System.out.println("-----------------Starting measured run. load=" + loadMessagesPerSec);
 
         final long start = System.currentTimeMillis();

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME;
 import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME;
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.WaitStrategy;
@@ -38,8 +37,7 @@ import org.apache.logging.log4j.util.PropertyKey;
 final class DisruptorUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int RINGBUFFER_MIN_SIZE = 128;
-    private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
-    private static final int RINGBUFFER_NO_GC_DEFAULT_SIZE = 4 * 1024;
+    private static final int RINGBUFFER_DEFAULT_SIZE = 4 * 1024;
 
     /**
      * LOG4J2-2606: Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
@@ -69,7 +67,7 @@ final class DisruptorUtil {
     }
 
     static int calculateRingBufferSize(final PropertyKey key) {
-        int ringBufferSize = isThreadLocalsEnabled() ? RINGBUFFER_NO_GC_DEFAULT_SIZE : RINGBUFFER_DEFAULT_SIZE;
+        int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
         final String userPreferredRBSize =
                 PropertiesUtil.getProperties().getStringProperty(key, String.valueOf(ringBufferSize));
         try {

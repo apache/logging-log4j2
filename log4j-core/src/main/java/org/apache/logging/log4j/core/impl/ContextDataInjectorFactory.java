@@ -20,7 +20,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.spi.CopyOnWrite;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -80,7 +79,7 @@ public class ContextDataInjectorFactory {
         final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
 
         // note: map may be null (if legacy custom ThreadContextMap was installed by user)
-        if (threadContextMap instanceof DefaultThreadContextMap || threadContextMap == null) {
+        if (threadContextMap == null) {
             return new ThreadContextDataInjector.ForDefaultThreadContextMap(); // for non StringMap-based context maps
         }
         if (threadContextMap instanceof CopyOnWrite) {

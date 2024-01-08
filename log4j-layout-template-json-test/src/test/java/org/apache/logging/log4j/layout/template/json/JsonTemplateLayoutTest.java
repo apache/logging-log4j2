@@ -613,8 +613,7 @@ class JsonTemplateLayoutTest {
 
         // Get toByteArrayOutput().
         final byte[] toByteArrayOutputBytes = layout.toByteArray(logEvent);
-        final String toByteArrayOutput =
-                new String(toByteArrayOutputBytes, 0, toByteArrayOutputBytes.length, layout.getCharset());
+        final String toByteArrayOutput = new String(toByteArrayOutputBytes, layout.getCharset());
 
         // Get encode() output.
         final ByteBuffer byteBuffer = ByteBuffer.allocate(512 * 1024);
@@ -1309,12 +1308,12 @@ class JsonTemplateLayoutTest {
 
     @Test
     void test_MessageParameterResolver_with_ParameterizedMessageFactory() {
-        testMessageParameterResolver(ParameterizedMessageFactory.INSTANCE);
+        testMessageParameterResolver(new ReusableMessageFactory());
     }
 
     @Test
     void test_MessageParameterResolver_noParameters_with_ParameterizedMessageFactory() {
-        testMessageParameterResolverNoParameters(ParameterizedMessageFactory.INSTANCE);
+        testMessageParameterResolverNoParameters(new ReusableMessageFactory());
     }
 
     @Test

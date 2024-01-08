@@ -23,7 +23,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Implementation of the {@link MessageFactory} interface that avoids allocating temporary objects where possible.
- * Message instances are cached in a ThreadLocal and reused when a new message is requested within the same thread.
+ * Message instances are cached in a {@link Recycler} and reused when a new message is requested.
  * Messages returned from this factory must be {@linkplain #recycle(Message) recycled} when done using.
  * @see ParameterizedMessageFactory
  * @see ReusableSimpleMessage
@@ -33,15 +33,10 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-/*
- * https://errorprone.info/bugpattern/ThreadLocalUsage
- * Instance thread locals are not a problem here, since this class is almost a singleton.
- */
-@SuppressWarnings("ThreadLocalUsage")
 public final class ReusableMessageFactory implements MessageFactory {
 
     /**
-     * Instance of ReusableMessageFactory..
+     * Instance of {@link ReusableMessageFactory}.
      */
     public static final ReusableMessageFactory INSTANCE = new ReusableMessageFactory();
 

@@ -63,7 +63,6 @@ public class LegacyPropertiesCompatibilityTest {
             {"log4j2.asyncQueueFullPolicy", "AsyncLogger.queueFullPolicy"},
             {"log4j2.discardThreshold", "AsyncLogger.discardThreshold"},
             {"log4j2.isWebapp", "Web.isWebApp"},
-            {"log4j2.enableThreadlocals", "ThreadLocals.enable"},
             {"log4j2.enableDirectEncoders", "GC.enableDirectEncoders"},
             {"log4j2.initialReusableMsgSize", "GC.initialReusableMsgSize"},
             {"log4j2.maxReusableMsgSize", "GC.maxReusableMsgSize"},

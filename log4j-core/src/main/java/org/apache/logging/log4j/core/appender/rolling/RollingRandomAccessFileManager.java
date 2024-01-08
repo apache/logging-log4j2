@@ -49,6 +49,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
      * @since 2.8.3
      */
     public RollingRandomAccessFileManager(
+            final Configuration configuration,
             final LoggerContext loggerContext,
             final RandomAccessFile raf,
             final String fileName,
@@ -68,6 +69,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final String fileGroup,
             final boolean writeHeader) {
         super(
+                configuration,
                 loggerContext,
                 fileName,
                 pattern,
@@ -296,6 +298,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final boolean writeHeader = !data.append || file == null || !file.exists();
 
             final RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(
+                    data.getConfiguration(),
                     data.getLoggerContext(),
                     raf,
                     name,
@@ -407,7 +410,8 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     public void updateData(final Object data) {
         final FactoryData factoryData = (FactoryData) data;
         setRolloverStrategy(factoryData.getRolloverStrategy());
-        setPatternProcessor(new PatternProcessor(factoryData.getPattern(), getPatternProcessor()));
+        setPatternProcessor(
+                new PatternProcessor(factoryData.getConfiguration(), factoryData.getPattern(), getPatternProcessor()));
         setTriggeringPolicy(factoryData.getTriggeringPolicy());
     }
 }

@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
@@ -77,9 +78,9 @@ public class PatternProcessor {
      * Constructor.
      * @param pattern The file pattern.
      */
-    public PatternProcessor(final String pattern) {
+    public PatternProcessor(final Configuration configuration, final String pattern) {
         this.pattern = pattern;
-        final PatternParser parser = new PatternParser(null, KEY, ArrayPatternConverter.class);
+        final PatternParser parser = new PatternParser(configuration, KEY, ArrayPatternConverter.class);
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
         parser.parse(pattern, converters, fields, false, false, false);
@@ -108,8 +109,8 @@ public class PatternProcessor {
      * @param pattern  The file pattern.
      * @param copy Source pattern processor
      */
-    public PatternProcessor(final String pattern, final PatternProcessor copy) {
-        this(pattern);
+    public PatternProcessor(final Configuration configuration, final String pattern, final PatternProcessor copy) {
+        this(configuration, pattern);
         this.prevFileTime = copy.prevFileTime;
         this.nextFileTime = copy.nextFileTime;
         this.currentFileTime = copy.currentFileTime;

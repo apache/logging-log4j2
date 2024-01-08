@@ -330,8 +330,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         this.compressionLevel = compressionLevel;
         this.stopCustomActionsOnError = stopCustomActionsOnError;
         this.customActions = customActions == null ? Collections.<Action>emptyList() : Arrays.asList(customActions);
-        this.tempCompressedFilePattern =
-                tempCompressedFilePatternString != null ? new PatternProcessor(tempCompressedFilePatternString) : null;
+        this.tempCompressedFilePattern = tempCompressedFilePatternString != null
+                ? new PatternProcessor(configuration, tempCompressedFilePatternString)
+                : null;
     }
 
     public int getCompressionLevel() {

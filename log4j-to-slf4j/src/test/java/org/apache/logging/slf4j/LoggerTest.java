@@ -30,7 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
@@ -102,7 +102,7 @@ public class LoggerTest {
         final Logger testLogger = testMessageFactoryMismatch(
                 "getLogger_String_MessageFactoryMismatch",
                 StringFormatterMessageFactory.INSTANCE,
-                ParameterizedMessageFactory.INSTANCE);
+                new ReusableMessageFactory());
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertThat(list.strList, hasSize(1));
         assertThat(list.strList, hasItem(String.format("%,d", Integer.MAX_VALUE)));

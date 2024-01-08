@@ -19,15 +19,12 @@ package org.apache.logging.log4j.core.async.perftest;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.async.AsyncLogger;
-import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  * Created by remko on 2/26/2016.
@@ -44,8 +41,6 @@ public class SimplePerfTest {
         if (!(logger instanceof AsyncLogger)) {
             throw new IllegalStateException();
         }
-        // work around a bug in Log4j-2.5
-        workAroundLog4j2_5Bug();
 
         logger.error("Starting...");
         System.out.println("Starting...");
@@ -141,17 +136,6 @@ public class SimplePerfTest {
             //        logger.error("7 arg message {} {} ");
 
             logger.error("simple text message");
-        }
-    }
-
-    private static void workAroundLog4j2_5Bug() {
-        // use reflection so we can use the same test with older versions of log4j2
-        try {
-            final Method setUseThreadLocals =
-                    AsyncLoggerContext.class.getDeclaredMethod("setUseThreadLocals", boolean.class);
-            final LoggerContext context = LogManager.getContext(false);
-            setUseThreadLocals.invoke(context, Boolean.TRUE);
-        } catch (final Throwable ignored) {
         }
     }
 }
