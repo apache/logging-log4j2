@@ -14,34 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.config.yaml;
+package org.apache.logging.log4j.config.properties;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import org.apache.logging.log4j.config.jackson.AbstractJacksonConfiguration;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Order;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
 
-/**
- * Creates a Node hierarchy from a YAML file.
- */
-public class YamlConfiguration extends AbstractJacksonConfiguration {
+@Namespace(ConfigurationFactory.NAMESPACE)
+@Plugin
+@Order(9)
+public class JavaPropsConfigurationFactory extends ConfigurationFactory {
 
-    public YamlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
-        super(loggerContext, configurationSource);
+    /**
+     * The file extensions supported by this factory.
+     */
+    private static final String[] SUFFIXES = new String[] {".properties"};
+
+    @Override
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return new JavaPropsConfiguration(loggerContext, source);
     }
 
     @Override
-    protected Configuration createConfiguration(
-            final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
-        return new YamlConfiguration(loggerContext, configurationSource);
-    }
-
-    protected ObjectMapper getObjectMapper() {
-        return YAMLMapper.builder()
-                .configure(JsonParser.Feature.ALLOW_COMMENTS, true)
-                .build();
+    public String[] getSupportedTypes() {
+        return SUFFIXES;
     }
 }

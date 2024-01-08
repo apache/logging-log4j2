@@ -14,34 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.config.yaml;
+package org.apache.logging.log4j.config.properties;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import org.apache.logging.log4j.config.jackson.AbstractJacksonConfiguration;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 
 /**
- * Creates a Node hierarchy from a YAML file.
+ * Creates a Node hierarchy from a properties file.
  */
-public class YamlConfiguration extends AbstractJacksonConfiguration {
+public class JavaPropsConfiguration extends AbstractJacksonConfiguration {
 
-    public YamlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
-        super(loggerContext, configurationSource);
+    public JavaPropsConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
+        super(loggerContext, configSource);
     }
 
     @Override
-    protected Configuration createConfiguration(
-            final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
-        return new YamlConfiguration(loggerContext, configurationSource);
+    protected Configuration createConfiguration(LoggerContext loggerContext, ConfigurationSource configurationSource) {
+        return new JavaPropsConfiguration(loggerContext, configurationSource);
     }
 
     protected ObjectMapper getObjectMapper() {
-        return YAMLMapper.builder()
+        return JavaPropsMapper.builder()
                 .configure(JsonParser.Feature.ALLOW_COMMENTS, true)
+                .nodeFactory(SortingNodeFactory.INSTANCE)
                 .build();
     }
 }

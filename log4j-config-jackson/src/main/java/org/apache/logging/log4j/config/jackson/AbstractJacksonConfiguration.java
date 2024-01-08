@@ -18,6 +18,8 @@ package org.apache.logging.log4j.config.jackson;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -148,7 +151,7 @@ public abstract class AbstractJacksonConfiguration extends AbstractConfiguration
     }
 
     private Node constructNode(final String name, final Node parent, final JsonNode jsonNode) {
-        final PluginType<?> type = corePlugins.get(name);
+        final PluginType<?> type = corePlugins.get(getType(jsonNode, name));
         final Node node = new Node(parent, name, type);
         processAttributes(node, jsonNode);
         final Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.fields();
@@ -163,33 +166,8 @@ public abstract class AbstractJacksonConfiguration extends AbstractConfiguration
                 if (n.isArray()) {
                     LOGGER.debug("Processing node for array {}", entry.getKey());
                     for (int i = 0; i < n.size(); ++i) {
-                        final String pluginType = getType(n.get(i), entry.getKey());
-                        final PluginType<?> entryType = corePlugins.get(pluginType);
-                        final Node item = new Node(node, entry.getKey(), entryType);
-                        processAttributes(item, n.get(i));
-                        if (pluginType.equals(entry.getKey())) {
-                            LOGGER.debug("Processing {}[{}]", entry.getKey(), i);
-                        } else {
-                            LOGGER.debug("Processing {} {}[{}]", pluginType, entry.getKey(), i);
-                        }
-                        final Iterator<Map.Entry<String, JsonNode>> itemIter =
-                                n.get(i).fields();
-                        final List<Node> itemChildren = item.getChildren();
-                        while (itemIter.hasNext()) {
-                            final Map.Entry<String, JsonNode> itemEntry = itemIter.next();
-                            if (itemEntry.getValue().isObject()) {
-                                LOGGER.debug("Processing node for object {}", itemEntry.getKey());
-                                itemChildren.add(constructNode(itemEntry.getKey(), item, itemEntry.getValue()));
-                            } else if (itemEntry.getValue().isArray()) {
-                                final JsonNode array = itemEntry.getValue();
-                                final String entryName = itemEntry.getKey();
-                                LOGGER.debug("Processing array for object {}", entryName);
-                                for (int j = 0; j < array.size(); ++j) {
-                                    itemChildren.add(constructNode(entryName, item, array.get(j)));
-                                }
-                            }
-                        }
-                        children.add(item);
+                        LOGGER.debug("Processing node for array entry {}[{}]", entry.getKey(), i);
+                        children.add(constructNode(entry.getKey(), node, n.get(i)));
                     }
                 } else {
                     LOGGER.debug("Processing node for object {}", entry.getKey());
@@ -220,7 +198,7 @@ public abstract class AbstractJacksonConfiguration extends AbstractConfiguration
         final Iterator<Map.Entry<String, JsonNode>> iter = node.fields();
         while (iter.hasNext()) {
             final Map.Entry<String, JsonNode> entry = iter.next();
-            if (entry.getKey().equalsIgnoreCase("type")) {
+            if ("type".equalsIgnoreCase(entry.getKey())) {
                 final JsonNode n = entry.getValue();
                 if (n.isValueNode()) {
                     return n.asText();
@@ -235,7 +213,7 @@ public abstract class AbstractJacksonConfiguration extends AbstractConfiguration
         final Iterator<Map.Entry<String, JsonNode>> iter = node.fields();
         while (iter.hasNext()) {
             final Map.Entry<String, JsonNode> entry = iter.next();
-            if (!entry.getKey().equalsIgnoreCase("type")) {
+            if (!"type".equalsIgnoreCase(entry.getKey())) {
                 final JsonNode n = entry.getValue();
                 if (n.isValueNode()) {
                     attrs.put(entry.getKey(), n.asText());
@@ -273,6 +251,21 @@ public abstract class AbstractJacksonConfiguration extends AbstractConfiguration
         @Override
         public String toString() {
             return "Status [name=" + name + ", errorType=" + errorType + ", node=" + node + "]";
+        }
+    }
+
+    /**
+     * A node factory that sorts children by name.
+     */
+    public static final class SortingNodeFactory extends JsonNodeFactory {
+
+        public static final JsonNodeFactory INSTANCE = new SortingNodeFactory();
+
+        private SortingNodeFactory() {}
+
+        @Override
+        public ObjectNode objectNode() {
+            return new ObjectNode(this, new TreeMap<>());
         }
     }
 }
