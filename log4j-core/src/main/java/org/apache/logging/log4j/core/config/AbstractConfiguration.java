@@ -669,16 +669,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
-        if (rootNode.hasChildren()
-                && "Properties".equalsIgnoreCase(rootNode.getChildren().get(0).getName())) {
-            final Node first = rootNode.getChildren().get(0);
-            createConfiguration(first, null);
-            if (first.getObject() != null) {
-                StrLookup lookup = first.getObject();
-                runtimeStrSubstitutor.setVariableResolver(lookup);
-                configurationStrSubstitutor.setVariableResolver(lookup);
+        // Find the "Properties" node first
+        boolean hasProperties = false;
+        for (final Node node : rootNode.getChildren()) {
+            if ("Properties".equalsIgnoreCase(node.getName())) {
+                hasProperties = true;
+                createConfiguration(node, null);
+                if (node.getObject() != null) {
+                    final StrLookup lookup = node.getObject();
+                    runtimeStrSubstitutor.setVariableResolver(lookup);
+                    configurationStrSubstitutor.setVariableResolver(lookup);
+                }
+                break;
             }
-        } else {
+        }
+        if (!hasProperties) {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
             Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
