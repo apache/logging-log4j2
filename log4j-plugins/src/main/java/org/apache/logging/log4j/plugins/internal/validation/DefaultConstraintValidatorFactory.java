@@ -33,6 +33,7 @@ public class DefaultConstraintValidatorFactory implements ConstraintValidatorFac
     private final Map<Class<? extends Annotation>, Supplier<ConstraintValidator<?>>> validators;
 
     public DefaultConstraintValidatorFactory(final TypeConverter<Integer> integerTypeConverter) {
+        final Supplier<ConstraintValidator<?>> validPortValidator = () -> new ValidPortValidator(integerTypeConverter);
         validators = Map.of(
                 RequiredClass.class,
                 RequiredClassValidator::new,
@@ -40,15 +41,23 @@ public class DefaultConstraintValidatorFactory implements ConstraintValidatorFac
                 RequiredPropertyValidator::new,
                 Required.class,
                 RequiredValidator::new,
+                org.apache.logging.log4j.core.config.plugins.validation.constraints.Required.class,
+                RequiredValidator::new,
+                org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank.class,
+                RequiredValidator::new,
                 ValidHost.class,
                 ValidHostValidator::new,
+                org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost.class,
+                ValidHostValidator::new,
                 ValidPort.class,
-                () -> new ValidPortValidator(integerTypeConverter));
+                validPortValidator,
+                org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort.class,
+                validPortValidator);
     }
 
     @Override
-    public <A extends Annotation> ConstraintValidator<A> createValidator(final A annotation) {
-        final Supplier<ConstraintValidator<?>> supplier = validators.get(annotation.getClass());
+    public <A extends Annotation> ConstraintValidator<A> createValidator(final Class<A> annotation) {
+        final Supplier<ConstraintValidator<?>> supplier = validators.get(annotation);
         if (supplier == null) {
             throw new IllegalArgumentException("Didn't find a constraint validator for constraint " + annotation);
         }
