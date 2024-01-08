@@ -14,24 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.plugins.validation;
+package org.apache.logging.log4j.plugins.validation.constraints;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.net.InetAddress;
+import org.apache.logging.log4j.plugins.validation.Constraint;
 
 /**
- * Meta annotation to mark an annotation as a validation constraint. This annotation must specify a
- * {@link ConstraintValidator} implementation class that has a default constructor.
+ * Indicates that a plugin attribute must be a valid host. This relies on the same validation rules as
+ * {@link InetAddress#getByName(String)}.
  *
- * @since 2.1
+ * @since 2.8
  */
 @Documented
-@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Constraint {
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Constraint
+public @interface ValidHost {
 
     /**
-     * {@link ConstraintValidator} class that implements the validation logic for the annotated constraint annotation.
-     * @return the class that implements the validation logic.
+     * The message to be logged if this constraint is violated. This should normally be overridden.
+     * @return The message to be logged if this constraint is violated.
      */
-    Class<? extends ConstraintValidator<? extends Annotation>> value();
+    String message() default "The hostname is invalid";
 }

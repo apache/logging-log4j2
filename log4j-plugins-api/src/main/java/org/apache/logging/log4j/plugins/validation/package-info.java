@@ -16,13 +16,13 @@
  */
 
 /**
- * ConstraintValidator implementations for the constraint annotations.
+ * Constraint validators for plugin factory methods.
  *
  * @since 2.1
  */
 @Export
-@Version("1.0.0")
-package org.apache.logging.log4j.plugins.validation.validators;
+@Version("3.0.0")
+package org.apache.logging.log4j.plugins.validation;
 
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;

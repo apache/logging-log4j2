@@ -16,13 +16,13 @@
  */
 
 /**
- * Constraint validators for plugin factory methods.
- *
- * @since 2.1
+ * Annotations for Log4j plugins. Annotations starting with {@code Plugin} are the primary annotations
+ * used for most plugins, while the remaining annotations are for more generic dependency injection scenarios
+ * such as singleton and dependent instances.
  */
 @Export
-@Version("1.0.0")
-package org.apache.logging.log4j.plugins.validation;
+@Version("3.0.0")
+package org.apache.logging.log4j.plugins;
 
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;

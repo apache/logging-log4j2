@@ -14,26 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.plugins.validation.constraints;
+package org.apache.logging.log4j.plugins.validation;
 
-import java.lang.annotation.*;
-import org.apache.logging.log4j.plugins.validation.Constraint;
-import org.apache.logging.log4j.plugins.validation.validators.RequiredValidator;
+import java.lang.reflect.AnnotatedElement;
+import org.apache.logging.log4j.plugins.PluginException;
 
-/**
- * Marks a plugin builder field or plugin factory parameter as required.
- *
- * @since 2.1
- */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(RequiredValidator.class)
-public @interface Required {
-
-    /**
-     * The message to be logged if this constraint is violated. This should normally be overridden.
-     * @return the message to be logged if the constraint is violated.
-     */
-    String message() default "The parameter is null or empty";
+public class ConstraintValidationException extends PluginException {
+    public ConstraintValidationException(final AnnotatedElement element, final String name, final Object value) {
+        super("Validation failed for " + name + " (source: " + element + ") and value " + value);
+    }
 }

@@ -16,26 +16,28 @@
  */
 package org.apache.logging.log4j.plugins.validation.constraints;
 
-import java.lang.annotation.*;
-import java.net.InetAddress;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.apache.logging.log4j.plugins.validation.Constraint;
-import org.apache.logging.log4j.plugins.validation.validators.ValidHostValidator;
 
 /**
- * Indicates that a plugin attribute must be a valid host. This relies on the same validation rules as
- * {@link InetAddress#getByName(String)}.
+ * Indicates that a plugin attribute must be a valid port number. A valid port number is an integer between 0 and
+ * 65535.
  *
  * @since 2.8
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(ValidHostValidator.class)
-public @interface ValidHost {
+@Constraint
+public @interface ValidPort {
 
     /**
      * The message to be logged if this constraint is violated. This should normally be overridden.
-     * @return The message to be logged if this constraint is violated.
+     * @return The message to be logged if the constraint is violated.
      */
-    String message() default "The hostname is invalid";
+    String message() default "The port number is invalid";
 }

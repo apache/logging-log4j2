@@ -16,25 +16,27 @@
  */
 package org.apache.logging.log4j.plugins.validation.constraints;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.apache.logging.log4j.plugins.validation.Constraint;
-import org.apache.logging.log4j.plugins.validation.validators.ValidPortValidator;
 
 /**
- * Indicates that a plugin attribute must be a valid port number. A valid port number is an integer between 0 and
- * 65535.
+ * Marks a plugin builder field or plugin factory parameter as required.
  *
- * @since 2.8
+ * @since 2.1
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Constraint(ValidPortValidator.class)
-public @interface ValidPort {
+@Constraint
+public @interface Required {
 
     /**
      * The message to be logged if this constraint is violated. This should normally be overridden.
-     * @return The message to be logged if the constraint is violated.
+     * @return the message to be logged if the constraint is violated.
      */
-    String message() default "The port number is invalid";
+    String message() default "The parameter is null or empty";
 }

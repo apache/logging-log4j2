@@ -28,14 +28,19 @@
   <packaging>jar</packaging>
   <name>Apache Log4j Plugins</name>
   <description>Log4j Plugin Support</description>
-  <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-  </properties>
+
   <dependencies>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins-api</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

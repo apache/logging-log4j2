@@ -51,8 +51,13 @@ import org.apache.logging.log4j.plugins.di.spi.Scope;
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
 import org.apache.logging.log4j.plugins.internal.util.BindingMap;
 import org.apache.logging.log4j.plugins.internal.util.HierarchicalMap;
+import org.apache.logging.log4j.plugins.internal.validation.DefaultConstraintValidatorFactory;
+import org.apache.logging.log4j.plugins.util.AnnotatedAnnotation;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.OrderedComparator;
+import org.apache.logging.log4j.plugins.validation.Constraint;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
+import org.apache.logging.log4j.plugins.validation.spi.ConstraintValidatorFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -99,6 +104,9 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         this.bindings.put(Key.forClass(InstanceFactory.class), () -> this);
         this.bindings.put(Key.forClass(PropertyEnvironment.class), PropertiesUtil::getProperties);
         this.bindings.put(Key.forClass(ClassLoader.class), LoaderUtil::getClassLoader);
+        this.bindings.put(
+                Key.forClass(ConstraintValidatorFactory.class),
+                () -> new DefaultConstraintValidatorFactory(Integer::valueOf));
     }
 
     @Override
@@ -390,6 +398,29 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         } finally {
             currentInjectionPoint.remove();
         }
+    }
+
+    public <A extends Annotation> ConstraintValidator<A> createValidator(
+            final AnnotatedAnnotation<A, Constraint> constraint) {
+        final A annotation = constraint.annotation();
+
+        final Class<? extends ConstraintValidator<A>>[] validatorClasses = (Class<? extends ConstraintValidator<A>>[])
+                constraint.metaAnnotation().value();
+        final ConstraintValidator<A> validator;
+        if (validatorClasses.length > 0) {
+            try {
+                validator = LoaderUtil.newInstanceOf(validatorClasses[0]);
+            } catch (ReflectiveOperationException e) {
+                // Should not happen
+                throw new IllegalArgumentException(
+                        "Unable to instantiate constraint validator " + validatorClasses[0], e);
+            }
+        } else {
+            final ConstraintValidatorFactory factory = getInstance(Key.forClass(ConstraintValidatorFactory.class));
+            validator = (ConstraintValidator<A>) factory.createValidator(annotation.getClass());
+        }
+        validator.initialize(annotation);
+        return validator;
     }
 
     @NullMarked

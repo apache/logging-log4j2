@@ -14,35 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.plugins.validation.constraints;
+package org.apache.logging.log4j.plugins.validation;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.logging.log4j.plugins.validation.Constraint;
-import org.apache.logging.log4j.plugins.validation.validators.RequiredPropertyValidator;
 
 /**
- * Marks a plugin as requiring a property to be set, possibly to a specific value.
+ * Meta annotation to mark an annotation as a validation constraint. This annotation must specify a
+ * {@link ConstraintValidator} implementation class that has a default constructor.
  *
- * @since 3.0.0
+ * @since 2.1
  */
 @Documented
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-@Constraint(RequiredPropertyValidator.class)
-public @interface RequiredProperty {
-
-    /** The name of the property that is required */
-    String name();
-    /** The value that the property is required to be set to. */
-    String value() default "";
+public @interface Constraint {
 
     /**
-     * The message to be logged if this constraint is violated. This should normally be overridden.
-     * @return the message to be logged if the constraint is violated.
+     * Optional {@link ConstraintValidator} class that implements the validation logic for the annotated constraint annotation.
      */
-    String message() default "The required property is not present or has an incorrect value";
+    Class<? extends ConstraintValidator<? extends Annotation>>[] value() default {};
 }

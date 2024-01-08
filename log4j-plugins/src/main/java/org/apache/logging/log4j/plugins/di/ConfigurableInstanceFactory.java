@@ -32,7 +32,6 @@ import org.apache.logging.log4j.plugins.util.OrderedComparator;
 import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidationException;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
-import org.apache.logging.log4j.util.Cast;
 
 /**
  * Configuration manager for the state of an instance factory. Configurable instance factories can form a
@@ -159,7 +158,7 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
     default void validate(final AnnotatedElement element, final String name, final @Nullable Object value) {
         // TODO(ms): can maybe move logic into a post processor
         final long errors = AnnotationUtil.findAnnotatedAnnotations(element, Constraint.class)
-                .map(this::initialize)
+                .map(this::createValidator)
                 .filter(validator -> !validator.isValid(name, value))
                 .count();
         if (errors > 0) {
@@ -167,12 +166,5 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
         }
     }
 
-    private <A extends Annotation> ConstraintValidator<A> initialize(
-            final AnnotatedAnnotation<A, Constraint> constraint) {
-        final Class<? extends ConstraintValidator<A>> validatorType =
-                Cast.cast(constraint.metaAnnotation().value());
-        final ConstraintValidator<A> validator = getInstance(validatorType);
-        validator.initialize(constraint.annotation());
-        return validator;
-    }
+    <A extends Annotation> ConstraintValidator<A> createValidator(final AnnotatedAnnotation<A, Constraint> constraint);
 }

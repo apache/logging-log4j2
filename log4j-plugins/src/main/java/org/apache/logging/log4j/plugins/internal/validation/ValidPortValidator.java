@@ -14,48 +14,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.plugins.validation.validators;
+package org.apache.logging.log4j.plugins.internal.validation;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
-import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Validator that checks an object to verify it is a valid hostname or IP address. Validation rules follow the same
- * logic as in {@link InetAddress#getByName(String)}.
+ * Validator that checks an object to verify it is a valid port number (an integer between 0 and 65535).
  *
  * @since 2.8
  */
-public class ValidHostValidator implements ConstraintValidator<ValidHost> {
+public class ValidPortValidator implements ConstraintValidator<ValidPort> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private ValidHost annotation;
+    private final TypeConverter<Integer> converter;
+    private ValidPort annotation;
+
+    public ValidPortValidator(final TypeConverter<Integer> converter) {
+        this.converter = converter;
+    }
 
     @Override
-    public void initialize(final ValidHost annotation) {
+    public void initialize(final ValidPort annotation) {
         this.annotation = annotation;
     }
 
     @Override
     public boolean isValid(final String name, final Object value) {
-        if (value == null) {
+        if (value instanceof CharSequence) {
+            return isValid(name, converter.convert(value.toString(), -1));
+        }
+        if (!(value instanceof Integer)) {
             LOGGER.error(annotation.message());
             return false;
         }
-        if (value instanceof InetAddress) {
-            // InetAddress factory methods all have built in validation
-            return true;
-        }
-        try {
-            InetAddress.getByName(value.toString());
-            return true;
-        } catch (final UnknownHostException e) {
-            LOGGER.error(annotation.message(), e);
+        final int port = (int) value;
+        if (port < 0 || port > 65535) {
+            LOGGER.error(annotation.message());
             return false;
         }
+        return true;
     }
 }

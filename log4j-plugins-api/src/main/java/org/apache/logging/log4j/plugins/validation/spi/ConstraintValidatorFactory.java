@@ -14,15 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.plugins.validation;
+package org.apache.logging.log4j.plugins.validation.spi;
 
-import static org.apache.logging.log4j.message.ParameterizedMessage.deepToString;
+import java.lang.annotation.Annotation;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidationException;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 
-import java.lang.reflect.AnnotatedElement;
-import org.apache.logging.log4j.plugins.PluginException;
+public interface ConstraintValidatorFactory {
 
-public class ConstraintValidationException extends PluginException {
-    public ConstraintValidationException(final AnnotatedElement element, final String name, final Object value) {
-        super("Validation failed for " + name + " (source: " + element + ") and value " + deepToString(value));
-    }
+    /**
+     * Returns a validator to for the given annotation type.
+     *
+     * @param annotation the constraint annotation.
+     * @return a validator for the given constraint.
+     * @throws ConstraintValidationException if the given constraint is not supported.
+     */
+    <A extends Annotation> ConstraintValidator<A> createValidator(Class<A> annotation);
 }

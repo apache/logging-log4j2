@@ -22,25 +22,26 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.apache.logging.log4j.plugins.validation.Constraint;
-import org.apache.logging.log4j.plugins.validation.validators.RequiredClassValidator;
 
 /**
- * Marks a plugin builder field or plugin factory parameter as required.
+ * Marks a plugin as requiring a property to be set, possibly to a specific value.
  *
  * @since 3.0.0
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-@Constraint(RequiredClassValidator.class)
-public @interface RequiredClass {
+@Constraint
+public @interface RequiredProperty {
 
-    /** The fully qualified name of the Class that is required */
-    String value();
+    /** The name of the property that is required */
+    String name();
+    /** The value that the property is required to be set to. */
+    String value() default "";
 
     /**
      * The message to be logged if this constraint is violated. This should normally be overridden.
      * @return the message to be logged if the constraint is violated.
      */
-    String message() default "The required class is not present";
+    String message() default "The required property is not present or has an incorrect value";
 }
