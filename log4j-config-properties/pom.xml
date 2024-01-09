@@ -25,6 +25,8 @@
   </parent>
 
   <artifactId>log4j-config-properties</artifactId>
+  <name>Log4j Core properties configuration</name>
+  <description>Provides a Jackson-based properties configuration factory.</description>
 
   <dependencies>
 
