@@ -4,6 +4,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
        type="added">
   <description format="asciidoc">
-    Add a new properties configuration factory based on `jackson-dataformat-properties`.
+    Add `log4j-config-properties` module containing a new configuration factory based on `jackson-dataformat-properties`
   </description>
 </entry>
