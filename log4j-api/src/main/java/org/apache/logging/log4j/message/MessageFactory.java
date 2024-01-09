@@ -57,7 +57,6 @@ public interface MessageFactory {
      * @param params
      *            the message parameters
      * @return a new message
-     * @see StringFormatterMessageFactory
      */
     Message newMessage(String message, Object... params);
 
