@@ -433,12 +433,7 @@ class JsonWriterTest {
     void test_writeString_emitter_excessive_string_ending_with_high_surrogate() {
         withLockedWriter(writer -> {
             final int maxStringLength = writer.getMaxStringLength();
-            @SuppressWarnings("StringBufferReplaceableByString")
-            final String excessiveString = new StringBuilder()
-                    .append("x".repeat(maxStringLength - 1))
-                    .append(HI_SURROGATE)
-                    .append(LO_SURROGATE)
-                    .toString();
+            final String excessiveString = "x".repeat(maxStringLength - 1) + HI_SURROGATE + LO_SURROGATE;
             final String expectedJson =
                     "\"" + "x".repeat(maxStringLength - 1) + writer.getTruncatedStringSuffix() + '"';
             final BiConsumer<StringBuilder, String> emitter = StringBuilder::append;
@@ -479,12 +474,7 @@ class JsonWriterTest {
     void test_writeString_formattable_excessive_string_ending_with_high_surrogate() {
         withLockedWriter(writer -> {
             final int maxStringLength = writer.getMaxStringLength();
-            @SuppressWarnings("StringBufferReplaceableByString")
-            final String excessiveString = new StringBuilder()
-                    .append("x".repeat(maxStringLength - 1))
-                    .append(HI_SURROGATE)
-                    .append(LO_SURROGATE)
-                    .toString();
+            final String excessiveString = "x".repeat(maxStringLength - 1) + HI_SURROGATE + LO_SURROGATE;
             final String expectedJson =
                     "\"" + "x".repeat(maxStringLength - 1) + writer.getTruncatedStringSuffix() + '"';
             final String actualJson =
@@ -549,12 +539,7 @@ class JsonWriterTest {
     void test_writeString_excessive_seq_ending_with_high_surrogate() {
         withLockedWriter(writer -> {
             final int maxStringLength = writer.getMaxStringLength();
-            @SuppressWarnings("StringBufferReplaceableByString")
-            final CharSequence seq = new StringBuilder()
-                    .append("x".repeat(maxStringLength - 1))
-                    .append(HI_SURROGATE)
-                    .append(LO_SURROGATE)
-                    .toString();
+            final CharSequence seq = "x".repeat(maxStringLength - 1) + HI_SURROGATE + LO_SURROGATE;
             final String expectedJson =
                     "\"" + "x".repeat(maxStringLength - 1) + writer.getTruncatedStringSuffix() + '"';
             final String actualJson = writer.use(() -> writer.writeString(seq));
@@ -614,13 +599,7 @@ class JsonWriterTest {
     void test_writerString_excessive_buffer_ending_with_high_surrogate() {
         withLockedWriter(writer -> {
             final int maxStringLength = writer.getMaxStringLength();
-            @SuppressWarnings("StringBufferReplaceableByString")
-            final char[] buffer = new StringBuilder()
-                    .append("x".repeat(maxStringLength - 1))
-                    .append(HI_SURROGATE)
-                    .append(LO_SURROGATE)
-                    .toString()
-                    .toCharArray();
+            final char[] buffer = ("x".repeat(maxStringLength - 1) + HI_SURROGATE + LO_SURROGATE).toCharArray();
             final String expectedJson =
                     "\"" + "x".repeat(maxStringLength - 1) + writer.getTruncatedStringSuffix() + '"';
             final String actualJson = writer.use(() -> writer.writeString(buffer));

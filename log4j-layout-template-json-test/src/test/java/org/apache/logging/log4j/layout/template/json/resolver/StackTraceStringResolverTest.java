@@ -39,6 +39,7 @@ import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("StaticAssignmentOfThrowable")
 class StackTraceStringResolverTest {
 
     ////////////////////////////////////////////////////////////////////////////

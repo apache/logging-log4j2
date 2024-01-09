@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +37,9 @@ import org.junit.jupiter.api.Test;
 public class NestedLoggingTest {
 
     private static final class ThrowableLoggingInGetMessage extends RuntimeException {
+
+        @Serial
+        private static final long serialVersionUID = 42L;
 
         private final Logger logger;
 
