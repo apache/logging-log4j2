@@ -26,7 +26,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 
 @Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin
-@Order(9)
+@Order(8)
 public class JavaPropsConfigurationFactory extends ConfigurationFactory {
 
     /**

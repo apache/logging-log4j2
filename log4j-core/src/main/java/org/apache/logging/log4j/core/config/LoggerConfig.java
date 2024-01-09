@@ -31,7 +31,6 @@ import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -828,26 +827,20 @@ public class LoggerConfig extends AbstractFilterable {
             final Level level, final AppenderRef[] refs, final String levelAndRefs, final Configuration config) {
         final LevelAndRefs result = new LevelAndRefs();
         if (levelAndRefs != null) {
-            if (config instanceof PropertiesConfiguration) {
-                if (level != null) {
-                    LOGGER.warn("Level is ignored when levelAndRefs syntax is used.");
-                }
-                if (refs != null && refs.length > 0) {
-                    LOGGER.warn("Appender references are ignored when levelAndRefs syntax is used");
-                }
-                final String[] parts = Strings.splitList(levelAndRefs);
-                result.level = Level.getLevel(parts[0]);
-                if (parts.length > 1) {
-                    final List<AppenderRef> refList = new ArrayList<>();
-                    Arrays.stream(parts)
-                            .skip(1)
-                            .forEach((ref) -> refList.add(AppenderRef.createAppenderRef(ref, null, null)));
-                    result.refs = refList;
-                }
-            } else {
-                LOGGER.warn("levelAndRefs are only allowed in a properties configuration. The value is ignored.");
-                result.level = level;
-                result.refs = refs != null ? Arrays.asList(refs) : new ArrayList<>();
+            if (level != null) {
+                LOGGER.warn("Level is ignored when levelAndRefs syntax is used.");
+            }
+            if (refs != null && refs.length > 0) {
+                LOGGER.warn("Appender references are ignored when levelAndRefs syntax is used");
+            }
+            final String[] parts = Strings.splitList(levelAndRefs);
+            result.level = Level.getLevel(parts[0]);
+            if (parts.length > 1) {
+                final List<AppenderRef> refList = new ArrayList<>();
+                Arrays.stream(parts)
+                        .skip(1)
+                        .forEach((ref) -> refList.add(AppenderRef.createAppenderRef(ref, null, null)));
+                result.refs = refList;
             }
         } else {
             result.level = level;
