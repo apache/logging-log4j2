@@ -24,10 +24,12 @@ This release contains...
 === Added
 
 * Add and update DSLs for setting up dependency injection for test and non-test code. (https://github.com/apache/logging-log4j2/issues/2147[2147])
+* Add a new properties configuration factory based on `jackson-dataformat-properties`.
 
 [#release-notes-3-x-x-changed]
 === Changed
 
+* Moves legacy `2.x` properties configuration factory to `log4j-config-properties-legacy`.
 * Split off YAML configuration into a new `log4j-config-yaml` module.
 * Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2102[2102])
 * Update `com.google.guava:guava` to version `33.0.0-jre` (https://github.com/apache/logging-log4j2/pull/2108[2108])

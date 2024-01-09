@@ -37,7 +37,6 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
-import org.apache.logging.log4j.util.Timer;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
@@ -64,9 +63,6 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     private final boolean compressBody;
 
     private final FlumeEventFactory factory;
-
-    private final Timer timer = new Timer("FlumeEvent", 5000);
-    private volatile long count;
 
     /**
      * Which Manager will be used by the appender instance.
@@ -120,25 +116,10 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                 }
             }
         }
-        timer.startOrResume();
         final FlumeEvent flumeEvent =
                 factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix, eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().toByteArray(flumeEvent));
-        if (update()) {
-            final String msg = timer.stop();
-            LOGGER.debug(msg);
-        } else {
-            timer.pause();
-        }
         manager.send(flumeEvent);
-    }
-
-    private synchronized boolean update() {
-        if (++count == 5000) {
-            count = 0;
-            return true;
-        }
-        return false;
     }
 
     @Override

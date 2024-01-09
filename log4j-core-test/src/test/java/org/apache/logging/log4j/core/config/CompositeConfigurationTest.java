@@ -239,53 +239,6 @@ public class CompositeConfigurationTest {
         }
         return null;
     }
-    /*
-    @Test
-    public void overrideFilter() {
-        final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-filter.xml,log4j-comp-filter.json");
-        Statement test = new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
-                assertTrue(config.getFilter() instanceof CompositeFilter);
-                CompositeFilter filter = (CompositeFilter) config.getFilter();
-                assertTrue(filter.getFiltersArray().length == 2);
-            }
-        };
-        runTest(lcr, test);
-    }
-
-    @Test
-    public void testReconfiguration() throws Exception {
-        final LoggerContextRule rule =
-                new LoggerContextRule("classpath:log4j-comp-reconfig.xml,log4j-comp-reconfig.properties");
-        Statement test = new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                final Configuration oldConfig = rule.getConfiguration();
-                final org.apache.logging.log4j.Logger logger = rule.getLogger("LoggerTest");
-                final int MONITOR_INTERVAL_SECONDS = 5;
-                final File file = new File("target/test-classes/log4j-comp-reconfig.properties");
-                final long orig = file.lastModified();
-                final long newTime = orig + 10000;
-                assertTrue("setLastModified should have succeeded.", file.setLastModified(newTime));
-                TimeUnit.SECONDS.sleep(MONITOR_INTERVAL_SECONDS + 1);
-                for (int i = 0; i < 17; ++i) {
-                    logger.debug("Reconfigure");
-                }
-                int loopCount = 0;
-                Configuration newConfig;
-                do {
-                    Thread.sleep(100);
-                    newConfig = rule.getConfiguration();
-                    ++loopCount;
-                } while (newConfig == oldConfig && loopCount <= 5);
-                assertNotSame("Reconfiguration failed", newConfig, oldConfig);
-            }
-        };
-        runTest(rule, test);
-
-    } */
 
     private void runTest(final LoggerContextRule rule, final Statement statement) {
         try {

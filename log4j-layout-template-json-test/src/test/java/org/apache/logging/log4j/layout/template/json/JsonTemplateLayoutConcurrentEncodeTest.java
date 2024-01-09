@@ -20,7 +20,12 @@ import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,10 +43,9 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests {@link JsonTemplateLayout} doesn't exhibit unexpected behavior when accessed concurrently.
@@ -58,20 +62,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 @Execution(ExecutionMode.SAME_THREAD)
 class JsonTemplateLayoutConcurrentEncodeTest {
 
-    @ParameterizedTest
-    @ValueSource(
-            strings = {
-                "dummy",
-                "queue:supplier=java.util.concurrent.ArrayBlockingQueue.new",
-                "queue:supplier=org.jctools.queues.MpmcArrayQueue.new"
-            })
-    void test_concurrent_encode(final String recyclerFactory) throws IOException {
-        final Path appenderFilepath = createAppenderFilepath(recyclerFactory);
+    @Test
+    void test_concurrent_encode() throws IOException {
+        final Path appenderFilepath = createAppenderFilepath();
         final int workerCount = 10;
         final int messageLength = 1_000;
         final int messageCount = 1_000;
         try {
-            withContextFromTemplate(appenderFilepath, recyclerFactory, loggerContext -> {
+            withContextFromTemplate(appenderFilepath, loggerContext -> {
                 final Logger logger = loggerContext.getLogger(JsonTemplateLayoutConcurrentEncodeTest.class);
                 runWorkers(workerCount, messageLength, messageCount, logger);
             });
@@ -83,24 +81,16 @@ class JsonTemplateLayoutConcurrentEncodeTest {
         Files.delete(appenderFilepath);
     }
 
-    private static Path createAppenderFilepath(final String recyclerFactory) {
-        final String appenderFilename = String.format(
-                "%s-%s.log",
-                JsonTemplateLayoutConcurrentEncodeTest.class.getSimpleName(),
-                recyclerFactory.replaceAll("[^A-Za-z0-9]+", ""));
+    private static Path createAppenderFilepath() {
+        final String appenderFilename = JsonTemplateLayoutConcurrentEncodeTest.class.getSimpleName() + ".log";
         return Paths.get(System.getProperty("java.io.tmpdir"), appenderFilename);
     }
 
     private static void withContextFromTemplate(
-            final Path appenderFilepath,
-            final String recyclerFactory,
-            final Consumer<LoggerContext> loggerContextConsumer) {
+            final Path appenderFilepath, final Consumer<LoggerContext> loggerContextConsumer) {
 
         // Create the configuration builder.
-        final String configName = String.format(
-                "%s-%s",
-                JsonTemplateLayoutConcurrentEncodeTest.class.getSimpleName(),
-                recyclerFactory.replaceAll("[^A-Za-z0-9]+", ""));
+        final String configName = JsonTemplateLayoutConcurrentEncodeTest.class.getSimpleName();
         final ConfigurationBuilder<?> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder()
                 .setStatusLevel(Level.ERROR)
                 .setConfigurationName(configName);
@@ -119,8 +109,7 @@ class JsonTemplateLayoutConcurrentEncodeTest {
                         .addAttribute("ignoreExceptions", false)
                         .add(configBuilder
                                 .newLayout("JsonTemplateLayout")
-                                .addAttribute("eventTemplate", eventTemplateJson)
-                                .addAttribute("recyclerFactory", recyclerFactory)))
+                                .addAttribute("eventTemplate", eventTemplateJson)))
                 .add(configBuilder.newRootLogger(Level.ALL).add(configBuilder.newAppenderRef(appenderName)))
                 .build(false);
 

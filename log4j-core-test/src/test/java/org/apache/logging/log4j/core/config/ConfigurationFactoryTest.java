@@ -53,12 +53,4 @@ class ConfigurationFactoryTest extends AbstractConfigurationFactoryTest {
         final Path logFile = loggingPath.resolve("test-json.log");
         checkFileLogger(context, logFile);
     }
-
-    @Test
-    @LoggerContextSource("log4j-test1.properties")
-    void properties(final LoggerContext context) throws IOException {
-        checkConfiguration(context);
-        final Path logFile = loggingPath.resolve("test-properties.log");
-        checkFileLogger(context, logFile);
-    }
 }

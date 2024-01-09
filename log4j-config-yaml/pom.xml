@@ -25,12 +25,14 @@
   </parent>
 
   <artifactId>log4j-config-yaml</artifactId>
+  <name>Log4j Core YAML configuration</name>
+  <description>Provides a Jackson-based YAML configuration factory.</description>
 
   <dependencies>
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <artifactId>log4j-config-jackson</artifactId>
     </dependency>
 
     <dependency>

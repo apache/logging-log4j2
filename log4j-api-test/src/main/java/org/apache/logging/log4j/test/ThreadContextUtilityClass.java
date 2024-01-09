@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.util.Timer;
 
 public class ThreadContextUtilityClass {
 

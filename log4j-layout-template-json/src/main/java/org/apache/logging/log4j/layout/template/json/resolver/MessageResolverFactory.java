@@ -21,7 +21,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
- * @see MessageResolver
+ * A {@link MessageResolver} factory.
  */
 @Namespace(TemplateResolverFactory.CATEGORY)
 @Plugin("MessageResolverFactory")

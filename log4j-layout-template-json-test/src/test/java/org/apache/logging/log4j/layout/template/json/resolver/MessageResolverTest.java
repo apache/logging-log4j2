@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 class MessageResolverTest {
 
     /**
-     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3080">LOG4J2-3080</a>
+     * Tests the inconsistent <code>fallbackKey</code> behaviour described in <a href="https://issues.apache.org/jira/browse/LOG4J2-3080">LOG4J2-3080</a>.
      */
     @Test
     @LoggerContextSource("messageFallbackKeyUsingJsonTemplateLayout.xml")

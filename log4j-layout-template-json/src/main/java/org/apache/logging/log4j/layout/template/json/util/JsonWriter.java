@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -66,7 +65,9 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
      * character to use after backslash; and negative values, that generic
      * (backslash - u) escaping is to be used.
      */
-    private static final Lazy<int[]> ESC_CODES = Lazy.pure(() -> {
+    private static final int[] ESC_CODES;
+
+    static {
         final int[] table = new int[128];
         // Control chars need generic escape sequence
         for (int i = 0; i < 32; ++i) {
@@ -82,8 +83,8 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         table[0x0C] = 'f';
         table[0x0A] = 'n';
         table[0x0D] = 'r';
-        return table;
-    });
+        ESC_CODES = table;
+    }
 
     private final char[] quoteBuffer;
 
@@ -582,12 +583,11 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                 length > 0 && Character.isHighSurrogate(seq.charAt(offset + length - 1)) ? -1 : 0;
         final int limit = offset + length + surrogateCorrection;
         int i = offset;
-        final int[] escCodes = ESC_CODES.get();
         outer:
         while (i < limit) {
             while (true) {
                 final char c = seq.charAt(i);
-                if (c < escCodes.length && escCodes[c] != 0) {
+                if (c < ESC_CODES.length && ESC_CODES[c] != 0) {
                     break;
                 }
                 stringBuilder.append(c);
@@ -596,7 +596,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                 }
             }
             final char d = seq.charAt(i++);
-            final int escCode = escCodes[d];
+            final int escCode = ESC_CODES[d];
             final int quoteBufferLength = escCode < 0 ? quoteNumeric(d) : quoteNamed(escCode);
             stringBuilder.append(quoteBuffer, 0, quoteBufferLength);
         }
@@ -646,12 +646,11 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         final int surrogateCorrection = length > 0 && Character.isHighSurrogate(buffer[offset + length - 1]) ? -1 : 0;
         final int limit = offset + length + surrogateCorrection;
         int i = offset;
-        final int[] escCodes = ESC_CODES.get();
         outer:
         while (i < limit) {
             while (true) {
                 final char c = buffer[i];
-                if (c < escCodes.length && escCodes[c] != 0) {
+                if (c < ESC_CODES.length && ESC_CODES[c] != 0) {
                     break;
                 }
                 stringBuilder.append(c);
@@ -660,7 +659,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                 }
             }
             final char d = buffer[i++];
-            final int escCode = escCodes[d];
+            final int escCode = ESC_CODES[d];
             final int quoteBufferLength = escCode < 0 ? quoteNumeric(d) : quoteNamed(escCode);
             stringBuilder.append(quoteBuffer, 0, quoteBufferLength);
         }
@@ -701,7 +700,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         } else {
             final long longNumber = number.longValue();
             final double doubleValue = number.doubleValue();
-            if (Double.compare(longNumber, doubleValue) == 0) {
+            if (Double.compare((double) longNumber, doubleValue) == 0) {
                 writeNumber(longNumber);
             } else {
                 writeNumber(doubleValue);
