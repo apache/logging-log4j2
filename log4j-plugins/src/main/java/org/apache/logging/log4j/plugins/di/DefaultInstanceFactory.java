@@ -400,6 +400,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         }
     }
 
+    @Override
     public <A extends Annotation> ConstraintValidator<A> createValidator(
             final AnnotatedAnnotation<A, Constraint> constraint) {
         final A annotation = constraint.annotation();
@@ -410,7 +411,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         if (validatorClasses.length > 0) {
             try {
                 validator = LoaderUtil.newInstanceOf(validatorClasses[0]);
-            } catch (ReflectiveOperationException e) {
+            } catch (final ReflectiveOperationException e) {
                 // Should not happen
                 throw new IllegalArgumentException(
                         "Unable to instantiate constraint validator " + validatorClasses[0], e);
