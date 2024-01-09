@@ -25,19 +25,15 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.internal.recycler.ThreadLocalRecyclerFactoryProvider;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
- * Tests if logging while trying to encode an event causes thread local recycler to incorrectly share buffers and end up overriding layout's earlier encoding work.
+ * Tests if logging while trying to encode an event causes the default recycler to incorrectly share buffers and end up overriding layout's earlier encoding work.
  *
  * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2368">LOG4J2-2368</a>
  */
-@SetSystemProperty(key = LoggingSystemProperty.Constant.RECYCLER_FACTORY_PROPERTY, value = "threadLocal")
-public class ThreadLocalRecyclerNestedLoggingTest {
+public class NestedLoggingTest {
 
     private static final class ThrowableLoggingInGetMessage extends RuntimeException {
 
@@ -55,21 +51,14 @@ public class ThreadLocalRecyclerNestedLoggingTest {
     }
 
     @Test
-    @LoggerContextSource("threadLocalRecyclerNestedLogging.xml")
-    public void nested_logging_should_not_pollute_thread_local(
+    @LoggerContextSource("NestedLoggingTest.xml")
+    public void nested_logging_should_work(
             final LoggerContext loggerContext,
             final @Named(value = "List1") ListAppender appender1,
             final @Named(value = "List2") ListAppender appender2) {
 
-        // Verify the recycler factory type
-        final String actualRecyclerFactoryClassName =
-                loggerContext.getConfiguration().getRecyclerFactory().getClass().getCanonicalName();
-        final String expectedRecyclerFactoryClassName =
-                ThreadLocalRecyclerFactoryProvider.class.getCanonicalName() + ".ThreadLocalRecyclerFactory";
-        Assertions.assertThat(actualRecyclerFactoryClassName).isEqualTo(expectedRecyclerFactoryClassName);
-
         // Perform nested logging
-        final Logger logger = loggerContext.getLogger(ThreadLocalRecyclerNestedLoggingTest.class);
+        final Logger logger = loggerContext.getLogger(NestedLoggingTest.class);
         logger.error("A", new ThrowableLoggingInGetMessage(logger));
 
         // Collect logged messages

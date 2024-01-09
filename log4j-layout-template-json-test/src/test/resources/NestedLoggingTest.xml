@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="ThreadLocalRecyclerNestedLoggingTest">
+<Configuration status="OFF" name="NestedLoggingTest">
   <Properties>
     <Property name="eventTemplate">[{"$resolver": "message", "stringified": true}, {"$resolver": "exception", "field": "message"}]</Property>
   </Properties>
