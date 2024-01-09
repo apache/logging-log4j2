@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.test;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Primarily used in unit tests, but can be used to track elapsed time for a request or portion of any other operation

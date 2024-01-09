@@ -28,15 +28,19 @@ This release contains...
 [#release-notes-3-x-x-changed]
 === Changed
 
+* Split off YAML configuration into a new `log4j-config-yaml` module.
 * Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2102[2102])
 * Update `com.google.guava:guava` to version `33.0.0-jre` (https://github.com/apache/logging-log4j2/pull/2108[2108])
 
 [#release-notes-3-x-x-fixed]
 === Fixed
 
+* The MongoDb4 appender now supports long values to configure `collectionSize` (https://github.com/apache/logging-log4j2/issues/1747[1747])
 * Mark `JdkMapAdapterStringMap` as frozen if map is immutable. (https://github.com/apache/logging-log4j2/issues/2098[2098])
+* Possible NullPointerException in MongoDb4DocumentObject, MongoDbDocumentObject, DefaultNoSqlObject. (https://issues.apache.org/jira/browse/LOG4J2-3392[LOG4J2-3392])
 * Fix NPE in `CloseableThreadContext`. (https://github.com/apache/logging-log4j2/pull/1426[1426])
 * Fix NPE in `RollingFileManager`. (https://github.com/apache/logging-log4j2/pull/1645[1645])
+* Workaround a Coursier/Ivy dependency resolution bug affecting `log4j-slf4j-impl` and `log4j-mongodb3`. (https://github.com/apache/logging-log4j2/pull/2065[2065])
 
 [#release-notes-3-x-x-removed]
 === Removed
