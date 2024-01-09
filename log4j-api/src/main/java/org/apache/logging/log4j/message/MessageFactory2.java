@@ -19,7 +19,6 @@ package org.apache.logging.log4j.message;
 /**
  * Creates messages. Implementations can provide different message format syntaxes.
  *
- * @see ParameterizedMessageFactory
  * @deprecated MessageFactory now contains all interface methods.
  * @since 2.6
  */

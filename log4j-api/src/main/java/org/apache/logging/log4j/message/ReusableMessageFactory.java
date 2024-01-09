@@ -25,7 +25,6 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Implementation of the {@link MessageFactory} interface that avoids allocating temporary objects where possible.
  * Message instances are cached in a {@link Recycler} and reused when a new message is requested.
  * Messages returned from this factory must be {@linkplain #recycle(Message) recycled} when done using.
- * @see ParameterizedMessageFactory
  * @see ReusableSimpleMessage
  * @see ReusableObjectMessage
  * @see ReusableParameterizedMessage

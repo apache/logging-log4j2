@@ -23,7 +23,6 @@ import org.apache.logging.log4j.spi.recycler.Recycler;
  * If messages created by an implementation are reusable, then the {@link #recycle(Message)} method must
  * be implemented and consistently used for returning objects to be reused.
  *
- * @see ParameterizedMessageFactory
  * @see StringFormatterMessageFactory
  */
 public interface MessageFactory {
@@ -58,7 +57,6 @@ public interface MessageFactory {
      * @param params
      *            the message parameters
      * @return a new message
-     * @see ParameterizedMessageFactory
      * @see StringFormatterMessageFactory
      */
     Message newMessage(String message, Object... params);
@@ -78,7 +76,6 @@ public interface MessageFactory {
      * @param message a message template, the kind of message template depends on the implementation.
      * @param p0 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(final String message, final Object p0) {
         return newMessage(message, new Object[] {p0});
@@ -91,7 +88,6 @@ public interface MessageFactory {
      * @param p0 a message parameter
      * @param p1 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(final String message, final Object p0, final Object p1) {
         return newMessage(message, new Object[] {p0, p1});
@@ -105,7 +101,6 @@ public interface MessageFactory {
      * @param p1 a message parameter
      * @param p2 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
         return newMessage(message, new Object[] {p0, p1, p2});
@@ -120,7 +115,6 @@ public interface MessageFactory {
      * @param p2 a message parameter
      * @param p3 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(
             final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
@@ -137,7 +131,6 @@ public interface MessageFactory {
      * @param p3 a message parameter
      * @param p4 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(
             final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
@@ -155,7 +148,6 @@ public interface MessageFactory {
      * @param p4 a message parameter
      * @param p5 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(
             final String message,
@@ -180,7 +172,6 @@ public interface MessageFactory {
      * @param p5 a message parameter
      * @param p6 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(
             final String message,
@@ -207,7 +198,6 @@ public interface MessageFactory {
      * @param p6 a message parameter
      * @param p7 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(
             final String message,
@@ -236,7 +226,6 @@ public interface MessageFactory {
      * @param p7 a message parameter
      * @param p8 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(
             final String message,
@@ -267,7 +256,6 @@ public interface MessageFactory {
      * @param p8 a message parameter
      * @param p9 a message parameter
      * @return a new message
-     * @see ParameterizedMessageFactory
      */
     default Message newMessage(
             final String message,

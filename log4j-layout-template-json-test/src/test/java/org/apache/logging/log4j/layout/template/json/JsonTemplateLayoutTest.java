@@ -1307,16 +1307,6 @@ class JsonTemplateLayoutTest {
     }
 
     @Test
-    void test_MessageParameterResolver_with_ParameterizedMessageFactory() {
-        testMessageParameterResolver(new ReusableMessageFactory());
-    }
-
-    @Test
-    void test_MessageParameterResolver_noParameters_with_ParameterizedMessageFactory() {
-        testMessageParameterResolverNoParameters(new ReusableMessageFactory());
-    }
-
-    @Test
     void test_MessageParameterResolver_with_ReusableMessageFactory() {
         testMessageParameterResolver(ReusableMessageFactory.INSTANCE);
     }
