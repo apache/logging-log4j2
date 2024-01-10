@@ -24,11 +24,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-@UsingStatusListener
 class LoggerTest {
 
     @Test
@@ -39,20 +37,20 @@ class LoggerTest {
 
     @Test
     @LoggerContextSource("LoggerTest.xml")
-    void testLog(final LoggerContext loggerContext) {
+    void testLog(final LoggerContext context) {
         final Log logger = LogFactory.getLog("LoggerTest");
         logger.debug("Test message");
-        verify(loggerContext, "o.a.l.l.j.LoggerTest Test message MDC{}" + Strings.LINE_SEPARATOR);
+        verify(context, "o.a.l.l.j.LoggerTest Test message MDC{}" + Strings.LINE_SEPARATOR);
         logger.debug("Exception: ", new NullPointerException("Test"));
-        verify(loggerContext, "o.a.l.l.j.LoggerTest Exception:  MDC{}" + Strings.LINE_SEPARATOR);
+        verify(context, "o.a.l.l.j.LoggerTest Exception:  MDC{}" + Strings.LINE_SEPARATOR);
         logger.info("Info Message");
-        verify(loggerContext, "o.a.l.l.j.LoggerTest Info Message MDC{}" + Strings.LINE_SEPARATOR);
+        verify(context, "o.a.l.l.j.LoggerTest Info Message MDC{}" + Strings.LINE_SEPARATOR);
         logger.info("Info Message {}");
-        verify(loggerContext, "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + Strings.LINE_SEPARATOR);
+        verify(context, "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + Strings.LINE_SEPARATOR);
     }
 
-    private static void verify(final LoggerContext loggerContext, final String expected) {
-        final ListAppender listApp = loggerContext.getConfiguration().getAppender("List");
+    private static void verify(final LoggerContext context, final String expected) {
+        final ListAppender listApp = context.getConfiguration().getAppender("List");
         final List<String> events = listApp.getMessages();
         assertThat(events).hasSize(1).containsExactly(expected);
         listApp.clear();

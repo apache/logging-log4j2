@@ -16,20 +16,17 @@
  */
 package org.apache.logging.log4j.jcl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.SetTestProperty;
-import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
-@UsingStatusListener
-@SetTestProperty(key = "log4j2.configurationFile", value = "org/apache/logging/log4j/jcl/CallerInformationTest.xml")
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class CallerInformationTest {
 
     @Test
