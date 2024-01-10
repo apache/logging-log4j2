@@ -23,16 +23,14 @@
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
-
   <artifactId>log4j-jcl</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Commons Logging Bridge</name>
   <description>The Apache Log4j Commons Logging Adapter</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <bnd-extra-module-options>
-      <!-- Use module name returned by `jar -d` -->
-      commons.logging;substitute="commons-logging"
+      <!-- Filebase module names: MUST be static -->
+      commons.logging;substitute="commons-logging";transitive=false;static=true
     </bnd-extra-module-options>
   </properties>
   <dependencies>
@@ -60,15 +58,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>
