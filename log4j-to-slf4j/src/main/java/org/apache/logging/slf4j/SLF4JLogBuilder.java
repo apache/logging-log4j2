@@ -16,6 +16,7 @@
  */
 package org.apache.logging.slf4j;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +27,6 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
-import org.apache.logging.log4j.util.Supplier;
 
 public class SLF4JLogBuilder implements LogBuilder {
 

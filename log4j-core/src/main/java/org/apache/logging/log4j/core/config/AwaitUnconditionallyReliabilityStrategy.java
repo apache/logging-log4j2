@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -24,7 +25,6 @@ import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Reliability strategy that sleeps unconditionally for some time before allowing a Configuration to be stopped.

@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.Supplier;
 import org.opentest4j.MultipleFailuresError;
 
 /**

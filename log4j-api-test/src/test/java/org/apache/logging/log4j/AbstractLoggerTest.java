@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -36,7 +37,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.Resources;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;

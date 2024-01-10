@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Interface for objects that know how to ensure delivery of log events to the appropriate appenders, even during and

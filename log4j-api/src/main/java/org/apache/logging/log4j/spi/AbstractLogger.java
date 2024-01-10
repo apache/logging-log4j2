@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LoggingException;
@@ -35,7 +36,6 @@ import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StackLocatorUtil;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.

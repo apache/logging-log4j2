@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Extends the {@code Logger} interface with methods that facilitate implementing or extending {@code Logger}s. Users

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 

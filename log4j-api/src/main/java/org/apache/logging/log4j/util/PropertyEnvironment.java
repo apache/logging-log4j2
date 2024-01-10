@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 
 public interface PropertyEnvironment {
 

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;

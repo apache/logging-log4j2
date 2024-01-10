@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Marker;
@@ -33,7 +34,6 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * The core implementation of the {@link org.apache.logging.log4j.Logger} interface. Besides providing an implementation

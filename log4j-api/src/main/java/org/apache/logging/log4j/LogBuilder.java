@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Interface for constructing log events before logging them. Instances of LogBuilders should only be created

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.internal;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.BridgeAware;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;

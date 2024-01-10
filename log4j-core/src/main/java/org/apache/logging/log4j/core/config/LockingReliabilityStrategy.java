@@ -19,11 +19,11 @@ package org.apache.logging.log4j.core.config;
 import java.util.Objects;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * ReliabilityStrategy that uses read/write locks to prevent the LoggerConfig from stopping while it is in use.

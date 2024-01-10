@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * This is the central interface in the log4j package. Most logging operations, except configuration, are done through
