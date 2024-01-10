@@ -16,20 +16,18 @@
  */
 package org.apache.logging.log4j.jcl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.test.junit.SetTestProperty;
-import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-@UsingStatusListener
-@SetTestProperty(key = "log4j2.configurationFile", value = "org/apache/logging/log4j/jcl/LoggerTest.xml")
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 class LoggerTest {
 
     @Test
@@ -39,21 +37,21 @@ class LoggerTest {
     }
 
     @Test
-    void testLog() {
+    @LoggerContextSource("LoggerTest.xml")
+    void testLog(final LoggerContext context) {
         final Log logger = LogFactory.getLog("LoggerTest");
         logger.debug("Test message");
-        verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}" + Strings.LINE_SEPARATOR);
+        verify(context, "o.a.l.l.j.LoggerTest Test message MDC{}" + Strings.LINE_SEPARATOR);
         logger.debug("Exception: ", new NullPointerException("Test"));
-        verify("List", "o.a.l.l.j.LoggerTest Exception:  MDC{}" + Strings.LINE_SEPARATOR);
+        verify(context, "o.a.l.l.j.LoggerTest Exception:  MDC{}" + Strings.LINE_SEPARATOR);
         logger.info("Info Message");
-        verify("List", "o.a.l.l.j.LoggerTest Info Message MDC{}" + Strings.LINE_SEPARATOR);
+        verify(context, "o.a.l.l.j.LoggerTest Info Message MDC{}" + Strings.LINE_SEPARATOR);
         logger.info("Info Message {}");
-        verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + Strings.LINE_SEPARATOR);
+        verify(context, "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + Strings.LINE_SEPARATOR);
     }
 
-    private void verify(final String name, final String expected) {
-        final LoggerContext context = LoggerContext.getContext(false);
-        final ListAppender listApp = context.getConfiguration().getAppender(name);
+    private static void verify(final LoggerContext context, final String expected) {
+        final ListAppender listApp = context.getConfiguration().getAppender("List");
         final List<String> events = listApp.getMessages();
         assertThat(events).hasSize(1).containsExactly(expected);
         listApp.clear();
