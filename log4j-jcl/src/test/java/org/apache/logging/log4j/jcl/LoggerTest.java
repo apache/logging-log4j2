@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.jcl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -23,10 +26,6 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class LoggerTest {
 
