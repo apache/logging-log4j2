@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
  */
-@SetTestProperty(key = "ThreadLocals.enable", value = "true")
 @SetTestProperty(key = "Web.isWebApp", value = "false")
 @SetTestProperty(key = "AsyncLoggerConfig.ringBufferSize", value = "128")
 public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFullAbstractTest {
@@ -45,6 +44,5 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
     protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
         assertAsyncLoggerConfig(ctx, 128);
         assertThat(Constants.isWebApp()).isFalse();
-        assertThat(Constants.isThreadLocalsEnabled()).isTrue();
     }
 }

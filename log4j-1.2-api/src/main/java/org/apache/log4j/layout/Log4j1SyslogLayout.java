@@ -146,7 +146,7 @@ public final class Log4j1SyslogLayout extends AbstractStringLayout {
      */
     private static final String[] dateFormatOptions = {"MMM dd HH:mm:ss", null, "en"};
 
-    private final LogEventPatternConverter dateConverter = DatePatternConverter.newInstance(dateFormatOptions);
+    private final LogEventPatternConverter dateConverter;
 
     private Log4j1SyslogLayout(
             final Configuration config,
@@ -160,6 +160,7 @@ public final class Log4j1SyslogLayout extends AbstractStringLayout {
         this.facilityPrinting = facilityPrinting;
         this.header = header;
         this.messageLayout = messageLayout;
+        this.dateConverter = DatePatternConverter.newInstance(config, dateFormatOptions);
     }
 
     /**

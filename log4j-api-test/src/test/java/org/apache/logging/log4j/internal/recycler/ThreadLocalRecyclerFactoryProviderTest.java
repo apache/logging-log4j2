@@ -44,7 +44,7 @@ class ThreadLocalRecyclerFactoryProviderTest {
 
     @BeforeEach
     void setUp() {
-        final RecyclerFactory recyclerFactory = createForEnvironment(null, "threadLocal", CAPACITY);
+        final RecyclerFactory recyclerFactory = createForEnvironment(false, "threadLocal", CAPACITY);
         assertThat(recyclerFactory).isInstanceOf(ThreadLocalRecyclerFactory.class);
         assert recyclerFactory != null;
         recycler = (ThreadLocalRecycler<RecyclableObject>) recyclerFactory.create(RecyclableObject::new);
@@ -52,8 +52,8 @@ class ThreadLocalRecyclerFactoryProviderTest {
     }
 
     @Test
-    void should_not_be_configured_when_TLs_are_disabled() {
-        assertThatThrownBy(() -> createForEnvironment(false, "threadLocal", null))
+    void should_not_be_configured_for_webapps() {
+        assertThatThrownBy(() -> createForEnvironment(true, "threadLocal", null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("failed to configure recycler");
     }

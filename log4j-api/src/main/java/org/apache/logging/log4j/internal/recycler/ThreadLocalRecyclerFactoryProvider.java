@@ -55,11 +55,10 @@ public final class ThreadLocalRecyclerFactoryProvider implements RecyclerFactory
 
     @Nullable
     @Override
-    public RecyclerFactory createForEnvironment(PropertyEnvironment environment) {
+    public RecyclerFactory createForEnvironment(final PropertyEnvironment environment) {
         requireNonNull(environment, "environment");
-        final boolean threadLocalEnabled =
-                environment.getBooleanProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE, true);
-        if (!threadLocalEnabled) {
+        final boolean webApp = environment.getBooleanProperty(LoggingSystemProperty.IS_WEBAPP, false);
+        if (webApp) {
             return null;
         }
         final int capacity = environment.getIntegerProperty(LoggingSystemProperty.RECYCLER_CAPACITY, DEFAULT_CAPACITY);

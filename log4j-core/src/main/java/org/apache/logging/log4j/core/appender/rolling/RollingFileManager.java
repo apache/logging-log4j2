@@ -92,6 +92,7 @@ public class RollingFileManager extends FileManager {
      * @since 2.9
      */
     protected RollingFileManager(
+            final Configuration configuration,
             final LoggerContext loggerContext,
             final String fileName,
             final String pattern,
@@ -127,7 +128,7 @@ public class RollingFileManager extends FileManager {
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
         this.rolloverStrategy = rolloverStrategy;
-        this.patternProcessor = new PatternProcessor(pattern);
+        this.patternProcessor = new PatternProcessor(configuration, pattern);
         this.patternProcessor.setPrevFileTime(initialTime);
         this.fileName = fileName;
         this.directWrite = rolloverStrategy instanceof DirectFileRolloverStrategy;
@@ -744,7 +745,8 @@ public class RollingFileManager extends FileManager {
     public void updateData(final Object data) {
         final FactoryData factoryData = (FactoryData) data;
         setRolloverStrategy(factoryData.getRolloverStrategy());
-        setPatternProcessor(new PatternProcessor(factoryData.getPattern(), getPatternProcessor()));
+        setPatternProcessor(
+                new PatternProcessor(factoryData.getConfiguration(), factoryData.getPattern(), getPatternProcessor()));
         setTriggeringPolicy(factoryData.getTriggeringPolicy());
     }
 
@@ -791,6 +793,7 @@ public class RollingFileManager extends FileManager {
                 final boolean writeHeader = file != null && file.exists() && file.length() == 0;
 
                 final RollingFileManager rm = new RollingFileManager(
+                        data.getConfiguration(),
                         data.getLoggerContext(),
                         data.fileName,
                         data.pattern,

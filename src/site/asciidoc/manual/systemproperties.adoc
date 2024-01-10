@@ -183,9 +183,7 @@ classes with the current thread's context class loader before falling back to th
 |factory
 |log4j2.messageFactory, LOG4J_MESSAGE_FACTORY
 |System/Application
-|org.apache.logging.log4j.message. ParameterizedMessageFactory or
-org.apache.logging.log4j.message. ReusableMessageFactory in garbage-free
-mode
+`org.apache.logging.log4j.message.ReusableMessageFactory`
 |Default message factory used by Loggers if no factory was specified.
 
 |Message

@@ -49,28 +49,6 @@ public final class Constants {
         isWebApp.reset();
     }
 
-    private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(() -> !isWebApp()
-            && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE, true));
-
-    /**
-     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
-     * <p>
-     * {@code True} for non-{@link #isWebApp()} web apps}, disable by setting system property
-     * "log4j2.enable.threadlocals" to "false".
-     * </p>
-     */
-    public static boolean isThreadLocalsEnabled() {
-        return threadLocalsEnabled.getAsBoolean();
-    }
-
-    public static void setThreadLocalsEnabled(final boolean enabled) {
-        threadLocalsEnabled.setAsBoolean(enabled);
-    }
-
-    public static void resetThreadLocalsEnabled() {
-        threadLocalsEnabled.reset();
-    }
-
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 
     /**

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
@@ -311,15 +310,8 @@ public final class ThreadContext {
      * Returns a read-only view of the internal data structure used to store thread context key-value pairs,
      * or {@code null} if the internal data structure does not implement the
      * {@code ReadOnlyThreadContextMap} interface.
-     * <p>
-     * The {@link DefaultThreadContextMap} implementation does not implement {@code ReadOnlyThreadContextMap}, so by
-     * default this method returns {@code null}.
-     * </p>
      *
      * @return the internal data structure used to store thread context key-value pairs or {@code null}
-     * @see DefaultThreadContextMap
-     * @see org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap
-     * @see org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap
      * @since 2.8
      */
     public static ReadOnlyThreadContextMap getThreadContextMap() {

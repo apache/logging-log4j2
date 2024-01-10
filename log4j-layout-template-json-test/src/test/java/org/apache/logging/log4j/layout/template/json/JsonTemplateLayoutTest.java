@@ -613,8 +613,7 @@ class JsonTemplateLayoutTest {
 
         // Get toByteArrayOutput().
         final byte[] toByteArrayOutputBytes = layout.toByteArray(logEvent);
-        final String toByteArrayOutput =
-                new String(toByteArrayOutputBytes, 0, toByteArrayOutputBytes.length, layout.getCharset());
+        final String toByteArrayOutput = new String(toByteArrayOutputBytes, layout.getCharset());
 
         // Get encode() output.
         final ByteBuffer byteBuffer = ByteBuffer.allocate(512 * 1024);
@@ -1305,16 +1304,6 @@ class JsonTemplateLayoutTest {
             final String expectedMessage = String.format("%s:%s", level, message.getFormattedMessage());
             assertThat(accessor.getString("message")).isEqualTo(expectedMessage);
         });
-    }
-
-    @Test
-    void test_MessageParameterResolver_with_ParameterizedMessageFactory() {
-        testMessageParameterResolver(ParameterizedMessageFactory.INSTANCE);
-    }
-
-    @Test
-    void test_MessageParameterResolver_noParameters_with_ParameterizedMessageFactory() {
-        testMessageParameterResolverNoParameters(ParameterizedMessageFactory.INSTANCE);
     }
 
     @Test

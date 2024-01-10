@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
@@ -32,6 +30,7 @@ import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
@@ -46,8 +45,6 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private abstract static class Formatter {
         long previousTime; // for ThreadLocal caching mode
         int nanos;
-
-        abstract String format(final Instant instant);
 
         abstract void formatToBuffer(final Instant instant, StringBuilder destination);
 
@@ -68,11 +65,6 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
         PatternFormatter(final FastDateFormat fastDateFormat) {
             this.fastDateFormat = fastDateFormat;
-        }
-
-        @Override
-        String format(final Instant instant) {
-            return fastDateFormat.format(instant.getEpochMillisecond());
         }
 
         @Override
@@ -108,11 +100,6 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
 
         @Override
-        String format(final Instant instant) {
-            return fixedDateFormat.formatInstant(instant);
-        }
-
-        @Override
         void formatToBuffer(final Instant instant, final StringBuilder destination) {
             final long epochSecond = instant.getEpochSecond();
             final int nanoOfSecond = instant.getNanoOfSecond();
@@ -138,11 +125,6 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final class UnixFormatter extends Formatter {
 
         @Override
-        String format(final Instant instant) {
-            return Long.toString(instant.getEpochSecond());
-        }
-
-        @Override
         void formatToBuffer(final Instant instant, final StringBuilder destination) {
             destination.append(instant.getEpochSecond()); // no need for caching
         }
@@ -151,25 +133,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final class UnixMillisFormatter extends Formatter {
 
         @Override
-        String format(final Instant instant) {
-            return Long.toString(instant.getEpochMillisecond());
-        }
-
-        @Override
         void formatToBuffer(final Instant instant, final StringBuilder destination) {
             destination.append(instant.getEpochMillisecond()); // no need for caching
-        }
-    }
-
-    private final class CachedTime {
-        public final long epochSecond;
-        public final int nanoOfSecond;
-        public final String formatted;
-
-        public CachedTime(final Instant instant) {
-            this.epochSecond = instant.getEpochSecond();
-            this.nanoOfSecond = instant.getNanoOfSecond();
-            this.formatted = formatter.format(instant);
         }
     }
 
@@ -183,28 +148,31 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     private static final String UNIX_MILLIS_FORMAT = "UNIX_MILLIS";
 
-    private final String[] options;
-    private final ThreadLocal<MutableInstant> threadLocalMutableInstant = new ThreadLocal<>();
-    private final ThreadLocal<Formatter> threadLocalFormatter = new ThreadLocal<>();
-    private final AtomicReference<CachedTime> cachedTime;
-    private final Formatter formatter;
+    private final String pattern;
+
+    private final TimeZone timeZone;
+
+    private final Recycler<MutableInstant> mutableInstantRecycler;
+
+    private final Recycler<Formatter> formatterRecycler;
 
     /**
      * Private constructor.
      *
      * @param options options, may be null.
      */
-    private DatePatternConverter(final String[] options) {
+    private DatePatternConverter(final Configuration configuration, final String[] options) {
         super("Date", "date");
-        this.options = options == null ? null : Arrays.copyOf(options, options.length);
-        this.formatter = createFormatter(options);
-        cachedTime = new AtomicReference<>(fromEpochMillis(System.currentTimeMillis()));
-    }
-
-    private CachedTime fromEpochMillis(final long epochMillis) {
-        final MutableInstant temp = new MutableInstant();
-        temp.initFromEpochMilli(epochMillis, 0);
-        return new CachedTime(temp);
+        final String[] safeOptions = options == null ? null : Arrays.copyOf(options, options.length);
+        this.mutableInstantRecycler = configuration.getRecyclerFactory().create(MutableInstant::new);
+        this.formatterRecycler = configuration.getRecyclerFactory().create(() -> createFormatter(safeOptions));
+        final Formatter formatter = formatterRecycler.acquire();
+        try {
+            this.pattern = formatter.toPattern();
+            this.timeZone = formatter.getTimeZone();
+        } finally {
+            formatterRecycler.release(formatter);
+        }
     }
 
     private Formatter createFormatter(final String[] options) {
@@ -221,8 +189,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static DatePatternConverter newInstance(final String[] options) {
-        return new DatePatternConverter(options);
+    public static DatePatternConverter newInstance(final Configuration configuration, final String[] options) {
+        return new DatePatternConverter(configuration, options);
     }
 
     private static Formatter createFixedFormatter(final FixedDateFormat fixedDateFormat) {
@@ -275,7 +243,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * @param date date
      * @param toAppendTo buffer to which formatted date is appended.
      */
-    public void format(final Date date, final StringBuilder toAppendTo) {
+    void format(final Date date, final StringBuilder toAppendTo) {
         format(date.getTime(), toAppendTo);
     }
 
@@ -287,55 +255,23 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         format(event.getInstant(), output);
     }
 
-    public void format(final long epochMilli, final StringBuilder output) {
-        final MutableInstant instant = getMutableInstant();
-        instant.initFromEpochMilli(epochMilli, 0);
-        format(instant, output);
-    }
-
-    private MutableInstant getMutableInstant() {
-        if (isThreadLocalsEnabled()) {
-            MutableInstant result = threadLocalMutableInstant.get();
-            if (result == null) {
-                result = new MutableInstant();
-                threadLocalMutableInstant.set(result);
-            }
-            return result;
-        }
-        return new MutableInstant();
-    }
-
-    public void format(final Instant instant, final StringBuilder output) {
-        if (isThreadLocalsEnabled()) {
-            formatWithoutAllocation(instant, output);
-        } else {
-            formatWithoutThreadLocals(instant, output);
+    private void format(final long epochMilli, final StringBuilder output) {
+        final MutableInstant instant = mutableInstantRecycler.acquire();
+        try {
+            instant.initFromEpochMilli(epochMilli, 0);
+            format(instant, output);
+        } finally {
+            mutableInstantRecycler.release(instant);
         }
     }
 
-    private void formatWithoutAllocation(final Instant instant, final StringBuilder output) {
-        getThreadLocalFormatter().formatToBuffer(instant, output);
-    }
-
-    private Formatter getThreadLocalFormatter() {
-        Formatter result = threadLocalFormatter.get();
-        if (result == null) {
-            result = createFormatter(options);
-            threadLocalFormatter.set(result);
+    void format(final Instant instant, final StringBuilder output) {
+        final Formatter formatter = formatterRecycler.acquire();
+        try {
+            formatter.formatToBuffer(instant, output);
+        } finally {
+            formatterRecycler.release(formatter);
         }
-        return result;
-    }
-
-    private void formatWithoutThreadLocals(final Instant instant, final StringBuilder output) {
-        final CachedTime effective;
-        final CachedTime cached = cachedTime.get();
-        if (instant.getEpochSecond() != cached.epochSecond || instant.getNanoOfSecond() != cached.nanoOfSecond) {
-            effective = new CachedTime(instant);
-            cachedTime.compareAndSet(cached, effective);
-        } else {
-            effective = cached;
-        }
-        output.append(effective.formatted);
     }
 
     /**
@@ -365,7 +301,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * @return the pattern string describing this date format.
      */
     public String getPattern() {
-        return formatter.toPattern();
+        return pattern;
     }
 
     /**
@@ -374,6 +310,6 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * @return the timezone used by this date format.
      */
     public TimeZone getTimeZone() {
-        return formatter.getTimeZone();
+        return timeZone;
     }
 }

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.TimeZone;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -37,8 +38,8 @@ public final class FileDatePatternConverter implements ArrayPatternConverter {
     /**
      * Private constructor.
      */
-    private FileDatePatternConverter(final String... options) {
-        delegate = DatePatternConverter.newInstance(options);
+    private FileDatePatternConverter(final Configuration configuration, final String... options) {
+        delegate = DatePatternConverter.newInstance(configuration, options);
     }
 
     /**
@@ -47,12 +48,12 @@ public final class FileDatePatternConverter implements ArrayPatternConverter {
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static FileDatePatternConverter newInstance(final String[] options) {
+    public static FileDatePatternConverter newInstance(final Configuration configuration, final String[] options) {
         if (options == null || options.length == 0) {
-            return new FileDatePatternConverter("yyyy-MM-dd");
+            return new FileDatePatternConverter(configuration, "yyyy-MM-dd");
         }
 
-        return new FileDatePatternConverter(options);
+        return new FileDatePatternConverter(configuration, options);
     }
 
     @Override

@@ -34,7 +34,7 @@ import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ObjectMessage;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
@@ -61,7 +61,7 @@ public class LoggerTest {
     public static final LoggerContextFactoryExtension EXTENSION =
             new LoggerContextFactoryExtension(new TestLoggerContextFactory());
 
-    private static class TestParameterizedMessageFactory {
+    private static class TestReusableMessageFactory {
         // empty
     }
 
@@ -344,12 +344,12 @@ public class LoggerTest {
 
     @Test
     @ResourceLock("log4j2.TestLogger")
-    public void getLogger_Class_ParameterizedMessageFactory() {
+    public void getLogger_Class_ReusableMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
-        final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
+        final MessageFactory messageFactory = new ReusableMessageFactory();
         final TestLogger testLogger =
-                (TestLogger) LogManager.getLogger(TestParameterizedMessageFactory.class, messageFactory);
+                (TestLogger) LogManager.getLogger(TestReusableMessageFactory.class, messageFactory);
         assertNotNull(testLogger);
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
@@ -375,12 +375,12 @@ public class LoggerTest {
 
     @Test
     @ResourceLock("log4j2.TestLogger")
-    public void getLogger_Object_ParameterizedMessageFactory() {
+    public void getLogger_Object_ReusableMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
-        final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
+        final MessageFactory messageFactory = new ReusableMessageFactory();
         final TestLogger testLogger =
-                (TestLogger) LogManager.getLogger(new TestParameterizedMessageFactory(), messageFactory);
+                (TestLogger) LogManager.getLogger(new TestReusableMessageFactory(), messageFactory);
         assertNotNull(testLogger);
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
@@ -419,7 +419,7 @@ public class LoggerTest {
         assertNotNull(testLogger);
         assertEqualMessageFactory(messageFactory, testLogger);
         final TestLogger testLogger2 = (TestLogger)
-                LogManager.getLogger("getLogger_String_MessageFactoryMismatch", ParameterizedMessageFactory.INSTANCE);
+                LogManager.getLogger("getLogger_String_MessageFactoryMismatch", new ReusableMessageFactory());
         assertNotNull(testLogger2);
         // TODO: How to test?
         // This test context always creates new loggers, other test context impls I tried fail other tests.
@@ -433,10 +433,10 @@ public class LoggerTest {
 
     @Test
     @ResourceLock("log4j2.TestLogger")
-    public void getLogger_String_ParameterizedMessageFactory() {
-        final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
+    public void getLogger_String_ReusableMessageFactory() {
+        final MessageFactory messageFactory = new ReusableMessageFactory();
         final TestLogger testLogger =
-                (TestLogger) LogManager.getLogger("getLogger_String_ParameterizedMessageFactory", messageFactory);
+                (TestLogger) LogManager.getLogger("getLogger_String_ReusableMessageFactory", messageFactory);
         assertNotNull(testLogger);
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);

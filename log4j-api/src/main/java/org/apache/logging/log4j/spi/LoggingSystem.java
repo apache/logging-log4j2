@@ -44,12 +44,10 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactoryRegistry;
-import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.LowLevelLogUtil;
@@ -90,7 +88,7 @@ public class LoggingSystem {
                 return factory;
             }
         }
-        return Constants.isThreadLocalsEnabled() ? new ReusableMessageFactory() : new ParameterizedMessageFactory();
+        return new ReusableMessageFactory();
     });
     private final Lazy<FlowMessageFactory> flowMessageFactoryLazy = environmentLazy.map(environment -> {
         final String className = environment.getStringProperty(LOGGER_FLOW_MESSAGE_FACTORY_CLASS);
@@ -312,7 +310,7 @@ public class LoggingSystem {
         /**
          * Creates the ThreadContextMap instance used by the ThreadContext.
          * <p>
-         * If {@linkplain Constants#isThreadLocalsEnabled() Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
+         * A garbage-free StringMap-based context map can
          * be installed by setting system property {@link LoggingSystemProperty#THREAD_CONTEXT_GARBAGE_FREE_ENABLED} to {@code true}.
          * </p><p>
          * Furthermore, any custom {@code ThreadContextMap} can be installed by setting system property
@@ -351,18 +349,14 @@ public class LoggingSystem {
                     return map;
                 }
             }
-            final boolean threadLocalsEnabled = Constants.isThreadLocalsEnabled();
             final boolean garbageFreeEnabled = environment.getBooleanProperty(THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
             final boolean inheritableMap = environment.getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE);
             final int initialCapacity = environment.getIntegerProperty(
                     THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY);
-            if (threadLocalsEnabled) {
-                if (garbageFreeEnabled) {
-                    return new GarbageFreeSortedArrayThreadContextMap(inheritableMap, initialCapacity);
-                }
-                return new CopyOnWriteSortedArrayThreadContextMap(inheritableMap, initialCapacity);
+            if (garbageFreeEnabled) {
+                return new GarbageFreeSortedArrayThreadContextMap(inheritableMap, initialCapacity);
             }
-            return new DefaultThreadContextMap(true, inheritableMap);
+            return new CopyOnWriteSortedArrayThreadContextMap(inheritableMap, initialCapacity);
         }
 
         public ThreadContextStack createContextStack(final PropertyEnvironment environment) {

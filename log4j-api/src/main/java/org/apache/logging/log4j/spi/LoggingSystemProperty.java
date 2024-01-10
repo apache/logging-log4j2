@@ -45,13 +45,6 @@ public enum LoggingSystemProperty implements PropertyKey {
      */
     // GC.maxReusableMsgSize
     GC_REUSABLE_MESSAGE_MAX_SIZE(PropertyComponent.GC, Constant.MAX_REUSABLE_MSG_SIZE),
-    /**
-     * Property to override the use of thread-local values for garbage-free logging.
-     *
-     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1270">LOG4J2-1270</a>
-     */
-    // ThreadLocals.enabled : calculate | true | false
-    THREAD_LOCALS_ENABLE(PropertyComponent.THREAD_LOCALs, Constant.ENABLE),
 
     /**
      * Property to ignore the thread context ClassLoader when set to {@code true}.
@@ -280,11 +273,8 @@ public enum LoggingSystemProperty implements PropertyKey {
          *
          * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1270">LOG4J2-1270</a>
          */
-        // ThreadLocals.enabled : calculate | true | false
+        // ThreadContext.enabled : calculate | true | false
         static final String ENABLE = "enable";
-
-        public static final String THREAD_LOCALS_ENABLE =
-                SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_LOCALS + DELIM + ENABLE;
 
         /**
          * Property to ignore the thread context ClassLoader when set to {@code true}.

@@ -23,7 +23,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.ReusableLogEvent;
-import org.apache.logging.log4j.core.async.ThreadNameCachingStrategy;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
@@ -38,7 +37,6 @@ import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
  * @see Recycler
  */
 public class ReusableLogEventFactory implements LogEventFactory {
-    private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
 
     private final ContextDataInjector injector;
     private final Clock clock;
@@ -125,11 +123,8 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.setContextData(injector.injectContextData(properties, result.getContextData()));
         result.setContextStack(
                 ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack()); // mutable copy
-
-        if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
-            result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call
-            result.setThreadPriority(Thread.currentThread().getPriority());
-        }
+        result.setThreadName(Thread.currentThread().getName());
+        result.setThreadPriority(Thread.currentThread().getPriority());
         return result;
     }
 

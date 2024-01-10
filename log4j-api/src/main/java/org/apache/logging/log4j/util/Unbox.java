@@ -90,24 +90,6 @@ public class Unbox {
         }
     }
 
-    private static class State {
-        private final StringBuilder[] ringBuffer = new StringBuilder[RINGBUFFER_SIZE];
-        private int current;
-
-        State() {
-            for (int i = 0; i < ringBuffer.length; i++) {
-                ringBuffer[i] = new StringBuilder(21);
-            }
-        }
-
-        public StringBuilder getStringBuilder() {
-            final StringBuilder result = ringBuffer[MASK & current++];
-            result.setLength(0);
-            return result;
-        }
-    }
-
-    private static final ThreadLocal<State> threadLocalState = new ThreadLocal<>();
     private static final WebSafeState webSafeState = new WebSafeState();
 
     private Unbox() {
@@ -243,17 +225,8 @@ public class Unbox {
         return getSB().append(value);
     }
 
-    private static State getState() {
-        State state = threadLocalState.get();
-        if (state == null) {
-            state = new State();
-            threadLocalState.set(state);
-        }
-        return state;
-    }
-
     private static StringBuilder getSB() {
-        return Constants.isThreadLocalsEnabled() ? getState().getStringBuilder() : webSafeState.getStringBuilder();
+        return webSafeState.getStringBuilder();
     }
 
     /** For testing. */

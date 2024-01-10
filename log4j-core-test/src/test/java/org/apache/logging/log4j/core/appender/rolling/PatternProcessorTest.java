@@ -25,6 +25,7 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -42,7 +43,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testDontInterpretBackslashAsEscape() {
-        final PatternProcessor pp = new PatternProcessor("c:\\test\\new/app-%d{HH-mm-ss}.log");
+        final PatternProcessor pp = createPatternProcessor("c:\\test\\new/app-%d{HH-mm-ss}.log");
         final Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 16);
         cal.set(Calendar.MINUTE, 2);
@@ -56,7 +57,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Instant initial = parseLocalDateTime("2014-03-04T10:31:59");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -67,7 +68,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour2() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Instant initial = parseLocalDateTime("2014-03-04T23:31:59");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -81,7 +82,7 @@ public class PatternProcessorTest {
         // America/Chicago 2014 - DST start - Mar 9 02:00
         // during winter GMT-6
         // during summer GMT-5
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
         final Instant initial =
                 OffsetDateTime.parse("2014-03-09T01:31:59-06:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
@@ -97,7 +98,7 @@ public class PatternProcessorTest {
         // America/Chicago 2014 - DST end - Nov 2 02:00
         // during summer GMT-5
         // during winter GMT-6
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
         final Instant initial =
                 OffsetDateTime.parse("2014-11-02T01:31:59-05:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
@@ -111,7 +112,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextYear() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Instant initial = parseLocalDateTime("2015-12-31T23:31:59");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -122,7 +123,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMillisecondlyReturnsNextMillisec() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss.SSS}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss.SSS}.log.gz");
         final Instant initial = parseLocalDateTime("2014-03-04T10:31:53.123");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -133,7 +134,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMinutelyReturnsFirstSecondOfNextMinute() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm}.log.gz");
         final Instant initial = parseLocalDateTime("2014-03-04T10:31:59");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -144,7 +145,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Instant initial = parseLocalDateTime("2014-10-15T10:31:59");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -155,7 +156,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth2() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Instant initial = parseLocalDateTime("2014-01-31T10:31:59");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -167,7 +168,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth3() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Instant initial = parseLocalDateTime("2014-12-31T10:31:59");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -179,7 +180,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextYear() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Instant initial = parseLocalDateTime("2015-12-28T00:00:00");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -191,7 +192,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeSecondlyReturnsFirstMillisecOfNextSecond() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss}.log.gz");
         final Instant initial = parseLocalDateTime("2014-03-04T10:31:53.123");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -206,7 +207,7 @@ public class PatternProcessorTest {
         Locale.setDefault(Locale.FRANCE); // force 1st day of the week to be Monday
 
         try {
-            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-W}.log.gz");
+            final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-W}.log.gz");
             final Instant initial = parseLocalDateTime("2014-03-04T10:31:59");
             final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -224,7 +225,7 @@ public class PatternProcessorTest {
         Locale.setDefault(Locale.US); // force 1st day of the week to be Sunday
 
         try {
-            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-W}.log.gz");
+            final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-W}.log.gz");
             final Instant initial = parseLocalDateTime("2014-03-04T10:31:59");
             final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -244,7 +245,7 @@ public class PatternProcessorTest {
         final Locale old = Locale.getDefault();
         Locale.setDefault(Locale.US); // force 1st day of the week to be Sunday
         try {
-            final PatternProcessor pp = new PatternProcessor("logs/market_data_msg.log-%d{yyyy-MM-'W'W}");
+            final PatternProcessor pp = createPatternProcessor("logs/market_data_msg.log-%d{yyyy-MM-'W'W}");
             final Instant initial = parseLocalDateTime("2015-12-28T00:00:00");
             final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -258,7 +259,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeDailyReturnsFirstHourOfNextDay() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd}.log.gz");
         final Instant initial = parseLocalDateTime("2014-03-04T02:31:59");
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -269,7 +270,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeDailyReturnsFirstHourOfNextDayHonoringTimeZoneOption1() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
         final Instant initial =
                 OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
@@ -286,7 +287,7 @@ public class PatternProcessorTest {
         final TimeZone old = TimeZone.getDefault();
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+10")); // default is ignored if pattern contains timezone
         try {
-            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
+            final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
             final Instant initial =
                     OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
             final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
@@ -306,7 +307,7 @@ public class PatternProcessorTest {
         final TimeZone old = TimeZone.getDefault();
         TimeZone.setDefault(TimeZone.getTimeZone("GMT-10")); // default is ignored if pattern contains timezone
         try {
-            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
+            final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
             final Instant initial =
                     OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
             final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
@@ -322,7 +323,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstJan() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
         final Instant initial =
                 OffsetDateTime.parse("2014-01-04T00:31:59-06:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
@@ -335,7 +336,7 @@ public class PatternProcessorTest {
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstJun() {
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
         final Instant initial =
                 OffsetDateTime.parse("2014-06-04T00:31:59-05:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
@@ -351,7 +352,7 @@ public class PatternProcessorTest {
         // America/Chicago 2014 - DST start - Mar 9 02:00
         // during winter GMT-6
         // during summer GMT-5
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
         final Instant initial =
                 OffsetDateTime.parse("2014-03-09T00:31:59-06:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
@@ -367,7 +368,7 @@ public class PatternProcessorTest {
         // America/Chicago 2014 - DST end - Nov 2 02:00
         // during summer GMT-5
         // during winter GMT-6
-        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
         final Instant initial =
                 OffsetDateTime.parse("2014-11-02T00:31:59-05:00").toInstant();
         final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
@@ -384,7 +385,7 @@ public class PatternProcessorTest {
         final TimeZone old = TimeZone.getDefault();
         TimeZone.setDefault(TimeZone.getTimeZone("GMT-10")); // default is ignored even if timezone option invalid
         try {
-            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{NOTVALID}.log.gz");
+            final PatternProcessor pp = createPatternProcessor("logs/app-%d{yyyy-MM-dd}{NOTVALID}.log.gz");
             final Instant initial = Instant.parse("2014-03-04T02:31:59Z");
             final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
@@ -393,5 +394,9 @@ public class PatternProcessorTest {
         } finally {
             TimeZone.setDefault(old);
         }
+    }
+
+    private static PatternProcessor createPatternProcessor(final String pattern) {
+        return new PatternProcessor(new NullConfiguration(), pattern);
     }
 }

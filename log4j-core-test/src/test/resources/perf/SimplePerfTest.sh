@@ -37,7 +37,6 @@ GC_OPTIONS=
 
 LOG4J_OPTIONS="-Dlog4j.configurationFile=perf-CountingNoOpAppender.xml"
 LOG4J_OPTIONS="${LOG4J_OPTIONS} -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"
-LOG4J_OPTIONS="${LOG4J_OPTIONS} -Dlog4j2.enable.threadlocals=true"
 LOG4J_OPTIONS="${LOG4J_OPTIONS} -DAsyncLogger.WaitStrategy=Block"
 LOG4J_OPTIONS="${LOG4J_OPTIONS} -Dlog4j.format.msg.async=true"
 export LOG4J_OPTIONS

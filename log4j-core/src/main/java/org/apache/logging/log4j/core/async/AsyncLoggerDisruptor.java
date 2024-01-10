@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.EventTranslatorVararg;
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.TimeoutException;
@@ -30,7 +29,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
@@ -56,10 +54,8 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private String contextName;
     private final Supplier<AsyncWaitStrategyFactory> waitStrategyFactorySupplier;
 
-    private boolean useThreadLocalTranslator = true;
     private long backgroundThreadId;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
-    private int ringBufferSize;
     private WaitStrategy waitStrategy;
 
     AsyncLoggerDisruptor(
@@ -107,7 +103,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             }
             setStarting();
             LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
-            ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE);
+            int ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE);
             final AsyncWaitStrategyFactory factory =
                     waitStrategyFactorySupplier.get(); // get factory from configuration
             waitStrategy = DisruptorUtil.createWaitStrategy(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY, factory);
@@ -141,10 +137,6 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
                     errorHandler);
             disruptor.start();
 
-            LOGGER.trace(
-                    "[{}] AsyncLoggers use a {} translator",
-                    contextName,
-                    useThreadLocalTranslator ? "threadlocal" : "vararg");
             super.start();
         } finally {
             startLock.unlock();
@@ -276,55 +268,6 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         }
     }
 
-    void enqueueLogMessageWhenQueueFull(
-            final EventTranslatorVararg<RingBufferLogEvent> translator,
-            final AsyncLogger asyncLogger,
-            final StackTraceElement location,
-            final String fqcn,
-            final Level level,
-            final Marker marker,
-            final Message msg,
-            final Throwable thrown) {
-        try {
-            // Note: we deliberately access the volatile disruptor field afresh here.
-            // Avoiding this and using an older reference could result in adding a log event to the disruptor after it
-            // was shut down, which could cause the publishEvent method to hang and never return.
-            if (synchronizeEnqueueWhenQueueFull()) {
-                queueFullEnqueueLock.lock();
-                try {
-                    disruptor
-                            .getRingBuffer()
-                            .publishEvent(
-                                    translator,
-                                    asyncLogger, // asyncLogger: 0
-                                    location, // location: 1
-                                    fqcn, // 2
-                                    level, // 3
-                                    marker, // 4
-                                    msg, // 5
-                                    thrown); // 6
-                } finally {
-                    queueFullEnqueueLock.unlock();
-                }
-            } else {
-                disruptor
-                        .getRingBuffer()
-                        .publishEvent(
-                                translator,
-                                asyncLogger, // asyncLogger: 0
-                                location, // location: 1
-                                fqcn, // 2
-                                level, // 3
-                                marker, // 4
-                                msg, // 5
-                                thrown); // 6
-            }
-        } catch (final NullPointerException npe) {
-            // LOG4J2-639: catch NPE if disruptor field was set to null in stop()
-            logWarningOnNpeFromDisruptorPublish(level, fqcn, msg, thrown);
-        }
-    }
-
     private boolean synchronizeEnqueueWhenQueueFull() {
         return DisruptorUtil.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
                 // Background thread must never block
@@ -350,35 +293,5 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
                 fqcn,
                 msg.getFormattedMessage(),
                 thrown == null ? "" : Throwables.toStringList(thrown));
-    }
-
-    /**
-     * Returns whether it is allowed to store non-JDK classes in ThreadLocal objects for efficiency.
-     *
-     * @return whether AsyncLoggers are allowed to use ThreadLocal objects
-     * @since 2.5
-     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1172">LOG4J2-1172</a>
-     */
-    public boolean isUseThreadLocals() {
-        return useThreadLocalTranslator;
-    }
-
-    /**
-     * Signals this AsyncLoggerDisruptor whether it is allowed to store non-JDK classes in ThreadLocal objects for
-     * efficiency.
-     * <p>
-     * This property may be modified after the {@link #start()} method has been called.
-     * </p>
-     *
-     * @param allow whether AsyncLoggers are allowed to use ThreadLocal objects
-     * @since 2.5
-     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1172">LOG4J2-1172</a>
-     */
-    public void setUseThreadLocals(final boolean allow) {
-        useThreadLocalTranslator = allow;
-        LOGGER.trace(
-                "[{}] AsyncLoggers have been modified to use a {} translator",
-                contextName,
-                useThreadLocalTranslator ? "threadlocal" : "vararg");
     }
 }

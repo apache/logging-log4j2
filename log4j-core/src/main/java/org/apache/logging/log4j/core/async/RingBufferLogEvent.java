@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
-
 import com.lmax.disruptor.EventFactory;
 import java.util.Arrays;
 import org.apache.logging.log4j.Level;
@@ -498,18 +496,10 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
         }
 
         // ensure that excessively long char[] arrays are not kept in memory forever
-        if (isThreadLocalsEnabled()) {
-            StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
 
-            if (parameters != null) {
-                Arrays.fill(parameters, null);
-            }
-        } else {
-            // A user may have manually logged a ReusableMessage implementation, when thread locals are
-            // disabled we remove the reference in order to avoid permanently holding references to these
-            // buffers.
-            messageText = null;
-            parameters = null;
+        if (parameters != null) {
+            Arrays.fill(parameters, null);
         }
     }
 

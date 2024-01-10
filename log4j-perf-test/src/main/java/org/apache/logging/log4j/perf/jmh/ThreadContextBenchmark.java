@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ThreadContextMap;
@@ -71,7 +70,6 @@ import org.openjdk.jmh.annotations.Warmup;
 @Fork(1)
 @State(Scope.Benchmark)
 public class ThreadContextBenchmark {
-    private static final String DEFAULT_CONTEXT_MAP = "Default";
     private static final String COPY_OPENHASH_MAP = "CopyOpenHash";
     private static final String COPY_ARRAY_MAP = "CopySortedArray";
     private static final String NO_GC_OPENHASH_MAP = "NoGcOpenHash";
@@ -79,7 +77,6 @@ public class ThreadContextBenchmark {
     private static final Map<String, Class<? extends ThreadContextMap>> IMPLEMENTATIONS = new HashMap<>();
 
     static {
-        IMPLEMENTATIONS.put(DEFAULT_CONTEXT_MAP, DefaultThreadContextMap.class);
         IMPLEMENTATIONS.put(COPY_OPENHASH_MAP, CopyOnWriteOpenHashMapThreadContextMap.class);
         IMPLEMENTATIONS.put(
                 COPY_ARRAY_MAP,

@@ -24,7 +24,7 @@
           fileName="target/gcFreeJsonTemplateLayoutLogging.log"
           bufferedIO="false"
           append="false">
-      <JsonTemplateLayout recyclerFactory="threadLocal"/>
+      <JsonTemplateLayout/>
     </File>
   </Appenders>
   <Loggers>

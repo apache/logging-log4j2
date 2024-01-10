@@ -217,8 +217,7 @@ the `LogEventFactory` is not used.
 == MessageFactory
 
 A `MessageFactory` is used to generate `Message` objects. Applications may
-replace the standard `ParameterizedMessageFactory` (or
-`ReusableMessageFactory` in garbage-free mode) by setting the value of the
+replace the standard `ReusableMessageFactory` by setting the value of the
 system property `log4j2.messageFactory` to the name of the custom
 `MessageFactory` class.
 

@@ -35,7 +35,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
@@ -68,8 +67,7 @@ public class ThreadContextDataInjectorTest {
             {
                 (Function<Boolean, ThreadContextMap>) ThreadContextDataInjectorTest::createGarbageFreeMap,
                 GARBAGE_FREE_MAP_CLASS_NAME
-            },
-            {(Function<Boolean, ThreadContextMap>) ThreadContextDataInjectorTest::createDefaultMap, null}
+            }
         };
     }
 
@@ -168,12 +166,5 @@ public class ThreadContextDataInjectorTest {
         assertTrue(constructor.trySetAccessible(), () -> "Unable to access constructor for " + mapClass);
         return assertDoesNotThrow(
                 () -> constructor.newInstance(inheritable, LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY));
-    }
-
-    private static ThreadContextMap createDefaultMap(final boolean inheritable) {
-        final Constructor<DefaultThreadContextMap> constructor = assertDoesNotThrow(
-                () -> DefaultThreadContextMap.class.getDeclaredConstructor(Boolean.TYPE, Boolean.TYPE));
-        assertTrue(constructor.trySetAccessible(), "Unable to construct DefaultThreadContextMap");
-        return assertDoesNotThrow(() -> constructor.newInstance(true, inheritable));
     }
 }

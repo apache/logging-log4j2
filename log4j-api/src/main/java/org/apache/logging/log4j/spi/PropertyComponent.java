@@ -41,7 +41,6 @@ public enum PropertyComponent {
     STATUS_LOGGER(Constant.STATUS_LOGGER),
     SYSTEM(Constant.SYSTEM),
     THREAD_CONTEXT(Constant.THREAD_CONTEXT),
-    THREAD_LOCALs(Constant.THREAD_LOCALS),
     TRANSPORT_SECURITY(Constant.TRANSPORT_SECURITY),
     UUID(Constant.UUID),
     WEB(Constant.WEB);
@@ -81,7 +80,6 @@ public enum PropertyComponent {
         public static final String STATUS_LOGGER = "StatusLogger";
         public static final String SYSTEM = "System";
         public static final String THREAD_CONTEXT = "ThreadContext";
-        public static final String THREAD_LOCALS = "ThreadLocals";
         public static final String TRANSPORT_SECURITY = "TransportSecurity";
         public static final String UUID = "UUID";
         public static final String WEB = "Web";

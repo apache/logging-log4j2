@@ -41,6 +41,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 import java.util.concurrent.locks.LockSupport;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -68,6 +69,7 @@ public class RollingRandomAccessFileManagerTest {
             final TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(triggerSize);
             final RolloverStrategy rolloverStrategy = null;
             final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(
+                    new NullConfiguration(),
                     null,
                     raf,
                     file.getName(),
@@ -113,6 +115,7 @@ public class RollingRandomAccessFileManagerTest {
             final TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(triggerSize);
             final RolloverStrategy rolloverStrategy = null;
             final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(
+                    new NullConfiguration(),
                     null,
                     raf,
                     file.getName(),
@@ -157,6 +160,7 @@ public class RollingRandomAccessFileManagerTest {
             assertNotEquals(bufferSize, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
             final RolloverStrategy rolloverStrategy = null;
             final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(
+                    new NullConfiguration(),
                     null,
                     raf,
                     file.getName(),

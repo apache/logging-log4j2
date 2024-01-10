@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -383,7 +383,7 @@ public class LoggerTest {
         final Logger testLogger = testMessageFactoryMismatch(
                 testInfo.getTestMethod().map(Method::getName).orElseThrow(AssertionError::new),
                 StringFormatterMessageFactory.INSTANCE,
-                ParameterizedMessageFactory.INSTANCE);
+                new ReusableMessageFactory());
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);

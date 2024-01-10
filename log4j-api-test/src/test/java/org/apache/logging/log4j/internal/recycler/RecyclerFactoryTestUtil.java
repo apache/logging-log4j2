@@ -18,6 +18,7 @@ package org.apache.logging.log4j.internal.recycler;
 
 import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.Properties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactoryRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -29,16 +30,16 @@ final class RecyclerFactoryTestUtil {
 
     @Nullable
     static RecyclerFactory createForEnvironment(
-            @Nullable Boolean threadLocalsEnabled, @Nullable final String factory, @Nullable final Integer capacity) {
+            @Nullable Boolean webApp, @Nullable final String factory, @Nullable final Integer capacity) {
         final Properties properties = new Properties();
-        if (threadLocalsEnabled != null) {
-            properties.setProperty("log4j2.*.ThreadLocals.enable", "" + threadLocalsEnabled);
+        if (webApp != null) {
+            properties.setProperty(LoggingSystemProperty.IS_WEBAPP.getSystemKey(), webApp + "");
         }
         if (factory != null) {
-            properties.setProperty("log4j2.*.Recycler.factory", factory);
+            properties.setProperty(LoggingSystemProperty.RECYCLER_FACTORY.getSystemKey(), factory);
         }
         if (capacity != null) {
-            properties.setProperty("log4j2.*.Recycler.capacity", "" + capacity);
+            properties.setProperty(LoggingSystemProperty.RECYCLER_CAPACITY.getSystemKey(), capacity + "");
         }
         final PropertyEnvironment env = new PropertiesUtil(properties);
         return RecyclerFactoryRegistry.findRecyclerFactory(env);

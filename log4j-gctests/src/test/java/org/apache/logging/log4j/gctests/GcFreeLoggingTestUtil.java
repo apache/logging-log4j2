@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.gctests;
 
 import static java.lang.System.getProperty;
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 import static org.apache.logging.log4j.util.Constants.isWebApp;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -53,12 +52,10 @@ public enum GcFreeLoggingTestUtil {
 
     public static void executeLogging(final String configurationFile, final Class<?> testClass) throws Exception {
 
-        System.setProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE.getSystemKey(), "true");
         System.setProperty(Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS.getSystemKey(), "true");
         System.setProperty(LoggingSystemProperty.IS_WEBAPP.getSystemKey(), "false");
         System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), configurationFile);
 
-        assertTrue(isThreadLocalsEnabled(), "Constants.isThreadLocalsEnabled()");
         assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
         assertFalse(isWebApp(), "Constants.isWebApp()");
 

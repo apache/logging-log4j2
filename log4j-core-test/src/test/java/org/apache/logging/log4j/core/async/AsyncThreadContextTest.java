@@ -37,7 +37,6 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.TestProperties;
@@ -98,7 +97,6 @@ public class AsyncThreadContextTest {
         public String implClassSimpleName() {
             switch (this) {
                 case WEBAPP:
-                    return DefaultThreadContextMap.class.getSimpleName();
                 case GARBAGE_FREE:
                     return "GarbageFreeSortedArrayThreadContextMap";
                 case COPY_ON_WRITE:
