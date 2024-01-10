@@ -152,7 +152,7 @@ The Log4j 3.x User's Guide is available on this link:manual/index.html[site].
 
 == Requirements
 
-Log4j 3.x require a minimum of Java 11. For support for older versions of Java see the
+Log4j 3.x require a minimum of Java 17. For support for older versions of Java see the
 link:http://logging.apache.org/2.x[Log4j 2.x site].
 
 == News
