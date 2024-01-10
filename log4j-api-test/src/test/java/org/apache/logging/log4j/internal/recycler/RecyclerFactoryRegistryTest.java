@@ -16,18 +16,15 @@
  */
 package org.apache.logging.log4j.internal.recycler;
 
+import static org.apache.logging.log4j.internal.recycler.RecyclerFactoryTestUtil.createForEnvironment;
 import static org.apache.logging.log4j.spi.recycler.Recycler.DEFAULT_CAPACITY;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
-import java.util.Properties;
 import org.apache.logging.log4j.internal.recycler.DummyRecyclerFactoryProvider.DummyRecyclerFactory;
 import org.apache.logging.log4j.internal.recycler.QueueingRecyclerFactoryProvider.QueueingRecyclerFactory;
+import org.apache.logging.log4j.internal.recycler.ThreadLocalRecyclerFactoryProvider.ThreadLocalRecyclerFactory;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactoryProvider;
-import org.apache.logging.log4j.spi.recycler.RecyclerFactoryRegistry;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 
@@ -35,13 +32,32 @@ public class RecyclerFactoryRegistryTest {
 
     @Test
     void DummyRecyclerFactory_should_work() {
-        final RecyclerFactory factory = createForEnvironment("dummy", null);
+        final RecyclerFactory factory = createForEnvironment(null, "dummy", null);
         assertThat(factory).isInstanceOf(DummyRecyclerFactory.class);
     }
 
     @Test
+    void ThreadLocalRecyclerFactory_should_work() {
+        final RecyclerFactory factory = createForEnvironment(null, "threadLocal", null);
+        assertThat(factory)
+                .asInstanceOf(InstanceOfAssertFactories.type(ThreadLocalRecyclerFactory.class))
+                .extracting(factory_ -> factory_.capacity)
+                .isEqualTo(DEFAULT_CAPACITY);
+    }
+
+    @Test
+    void ThreadLocalRecyclerFactory_should_work_with_capacity() {
+        final int capacity = 13;
+        final RecyclerFactory factory = createForEnvironment(null, "threadLocal", capacity);
+        assertThat(factory)
+                .asInstanceOf(InstanceOfAssertFactories.type(ThreadLocalRecyclerFactory.class))
+                .extracting(factory_ -> factory_.capacity)
+                .isEqualTo(capacity);
+    }
+
+    @Test
     void QueueingRecyclerFactory_should_work() {
-        final RecyclerFactory factory = createForEnvironment("queue", null);
+        final RecyclerFactory factory = createForEnvironment(null, "queue", null);
         assertThat(factory)
                 .asInstanceOf(InstanceOfAssertFactories.type(QueueingRecyclerFactory.class))
                 .extracting(factory_ -> factory_.capacity)
@@ -51,31 +67,19 @@ public class RecyclerFactoryRegistryTest {
     @Test
     void QueueingRecyclerFactory_should_work_with_capacity() {
         final int capacity = 100;
-        final RecyclerFactory factory = createForEnvironment("queue", capacity);
+        final RecyclerFactory factory = createForEnvironment(null, "queue", capacity);
         assertThat(factory)
                 .asInstanceOf(InstanceOfAssertFactories.type(QueueingRecyclerFactory.class))
                 .extracting(factory_ -> factory_.capacity)
                 .isEqualTo(capacity);
     }
 
-    @Nullable
-    private static RecyclerFactory createForEnvironment(
-            @Nullable final String factory, @Nullable final Integer capacity) {
-        final Properties properties = new Properties();
-        if (factory != null) {
-            properties.setProperty("log4j2.*.Recycler.factory", factory);
-        }
-        if (capacity != null) {
-            properties.setProperty("log4j2.*.Recycler.capacity", "" + capacity);
-        }
-        final PropertyEnvironment env = new PropertiesUtil(properties);
-        return RecyclerFactoryRegistry.findRecyclerFactory(env);
-    }
-
     @Test
     void verify_order() {
         final RecyclerFactoryProvider dummyProvider = new DummyRecyclerFactoryProvider();
+        final RecyclerFactoryProvider threadLocalProvider = new ThreadLocalRecyclerFactoryProvider();
         final RecyclerFactoryProvider queueProvider = new QueueingRecyclerFactoryProvider();
         assertThat(dummyProvider.getOrder()).isGreaterThan(queueProvider.getOrder());
+        assertThat(queueProvider.getOrder()).isGreaterThan(threadLocalProvider.getOrder());
     }
 }
