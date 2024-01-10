@@ -57,6 +57,7 @@ This release contains...
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2127[2127])
 * Update `org.apache.groovy:groovy-bom` to version `4.0.17` (https://github.com/apache/logging-log4j2/pull/2124[2124])
 * Update `org.apache.logging:logging-parent` to version `10.5.0` (https://github.com/apache/logging-log4j2/pull/2118[2118])
+* Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.5` (https://github.com/apache/logging-log4j2/pull/2177[2177])
 * Update `org.assertj:assertj-core` to version `3.25.1` (https://github.com/apache/logging-log4j2/pull/2152[2152])
 * Update `org.slf4j:slf4j-api` to version `2.0.10` (https://github.com/apache/logging-log4j2/pull/2136[2136])
 * Update `org.springframework.boot:spring-boot-dependencies` to version `3.2.1` (https://github.com/apache/logging-log4j2/pull/2123[2123])
