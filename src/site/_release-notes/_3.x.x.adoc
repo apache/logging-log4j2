@@ -48,7 +48,7 @@ This release contains...
 === Removed
 
 * Remove `org.apache.logging.log4j.core.impl.DefaultLogEventFactory`
-* Remove `org.apache.logging.log4j.util.Supplier` (in favor of `java.util.function.Supplier`)
+* Remove `org.apache.logging.log4j.util.Supplier` in favor of `java.util.function.Supplier` (https://github.com/apache/logging-log4j2/pull/2175[2175])
 * Remove `org.apache.logging.log4j.core.parser` and related packages. (https://github.com/apache/logging-log4j2/pull/2154[2154])
 * Remove `log4j2.enable.threadlocals` property (https://github.com/apache/logging-log4j2/issues/2105[2105])
 
