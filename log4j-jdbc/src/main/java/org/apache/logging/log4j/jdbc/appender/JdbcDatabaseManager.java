@@ -279,7 +279,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 final String className,
                 final int precision,
                 final int scale) {
-            super();
             this.schemaName = schemaName;
             this.catalogName = catalogName;
             this.tableName = tableName;
@@ -752,24 +751,26 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
         final String simpleName = statement.getClass().getName();
         int j = 1; // JDBC indices start at 1
-        for (final ColumnMapping mapping : this.factoryData.columnMappings) {
-            if (mapping.getLiteralValue() == null) {
-                final String source = mapping.getSource();
-                final String key = Strings.isEmpty(source) ? mapping.getName() : source;
-                final Object value = map.getValue(key);
-                if (logger().isTraceEnabled()) {
-                    final String valueStr =
-                            value instanceof String ? "\"" + value + "\"" : Objects.toString(value, null);
-                    logger().trace(
-                                    "{} setObject({}, {}) for key '{}' and mapping '{}'",
-                                    simpleName,
-                                    j,
-                                    valueStr,
-                                    key,
-                                    mapping.getName());
+        if (this.factoryData.columnMappings != null) {
+            for (final ColumnMapping mapping : this.factoryData.columnMappings) {
+                if (mapping.getLiteralValue() == null) {
+                    final String source = mapping.getSource();
+                    final String key = Strings.isEmpty(source) ? mapping.getName() : source;
+                    final Object value = map.getValue(key);
+                    if (logger().isTraceEnabled()) {
+                        final String valueStr =
+                                value instanceof String ? "\"" + value + "\"" : Objects.toString(value, null);
+                        logger().trace(
+                                        "{} setObject({}, {}) for key '{}' and mapping '{}'",
+                                        simpleName,
+                                        j,
+                                        valueStr,
+                                        key,
+                                        mapping.getName());
+                    }
+                    setStatementObject(j, mapping.getNameKey(), value);
+                    j++;
                 }
-                setStatementObject(j, mapping.getNameKey(), value);
-                j++;
             }
         }
     }
@@ -834,11 +835,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     protected void writeInternal(final LogEvent event) {
         StringReader reader = null;
         try {
-            if (!this.isRunning()
-                    || this.connection == null
-                    || this.connection.isClosed()
-                    || this.statement == null
-                    || this.statement.isClosed()) {
+            if (!this.isRunning() || isClosed(this.connection) || isClosed(this.statement)) {
                 throw new AppenderLoggingException(
                         "Cannot write logging event; JDBC manager not connected to the database, running=%s, [%s]).",
                         isRunning(), fieldsToString());
@@ -850,27 +847,30 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 setFields((MapMessage<?, ?>) message);
             }
             int j = 1; // JDBC indices start at 1
-            for (final ColumnMapping mapping : this.factoryData.columnMappings) {
-                if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
-                        || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(j++, event.getContextData().toMap());
-                } else if (ThreadContextStack.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(j++, event.getContextStack().asList());
-                } else if (Date.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(
-                            j++,
-                            DateTypeConverter.fromMillis(
-                                    event.getTimeMillis(), mapping.getType().asSubclass(Date.class)));
-                } else {
-                    final StringLayout layout = mapping.getLayout();
-                    if (layout != null) {
-                        if (Clob.class.isAssignableFrom(mapping.getType())) {
-                            this.statement.setClob(j++, new StringReader(layout.toSerializable(event)));
-                        } else if (NClob.class.isAssignableFrom(mapping.getType())) {
-                            this.statement.setNClob(j++, new StringReader(layout.toSerializable(event)));
-                        } else {
-                            final Object value = mapping.getTypeConverter().convert(layout.toSerializable(event), null);
-                            setStatementObject(j++, mapping.getNameKey(), value);
+            if (this.factoryData.columnMappings != null) {
+                for (final ColumnMapping mapping : this.factoryData.columnMappings) {
+                    if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
+                            || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
+                        this.statement.setObject(j++, event.getContextData().toMap());
+                    } else if (ThreadContextStack.class.isAssignableFrom(mapping.getType())) {
+                        this.statement.setObject(j++, event.getContextStack().asList());
+                    } else if (Date.class.isAssignableFrom(mapping.getType())) {
+                        this.statement.setObject(
+                                j++,
+                                DateTypeConverter.fromMillis(
+                                        event.getTimeMillis(), mapping.getType().asSubclass(Date.class)));
+                    } else {
+                        final StringLayout layout = mapping.getLayout();
+                        if (layout != null) {
+                            if (Clob.class.isAssignableFrom(mapping.getType())) {
+                                this.statement.setClob(j++, new StringReader(layout.toSerializable(event)));
+                            } else if (NClob.class.isAssignableFrom(mapping.getType())) {
+                                this.statement.setNClob(j++, new StringReader(layout.toSerializable(event)));
+                            } else {
+                                final Object value =
+                                        mapping.getTypeConverter().convert(layout.toSerializable(event), null);
+                                setStatementObject(j++, mapping.getNameKey(), value);
+                            }
                         }
                     }
                 }

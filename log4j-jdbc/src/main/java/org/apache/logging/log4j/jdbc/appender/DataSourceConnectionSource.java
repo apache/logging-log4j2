@@ -58,8 +58,7 @@ public final class DataSourceConnectionSource extends AbstractConnectionSource {
     /**
      * Factory method for creating a connection source within the plugin manager.
      *
-     * @param jndiName The full JNDI path where the data source is bound. Should start with java:/comp/env or
-     *                 environment-equivalent.
+     * @param jndiName The full JNDI path where the data source is bound. Must start with java:/comp/env or environment-equivalent.
      * @return the created connection source.
      */
     @PluginFactory
