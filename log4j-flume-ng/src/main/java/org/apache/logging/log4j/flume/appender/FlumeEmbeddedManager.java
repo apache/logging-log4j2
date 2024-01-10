@@ -38,7 +38,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
     private static final String IN_MEMORY = "InMemory";
 
-    private static final FlumeManagerFactory factory = new FlumeManagerFactory();
+    private static final FlumeManagerFactory FACTORY = new FlumeManagerFactory();
 
     private final EmbeddedAgent agent;
 
@@ -78,11 +78,11 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             throw new IllegalArgumentException("Cannot configure both Agents and Properties.");
         }
 
-        final String managerName = createManagerName(name, agents, properties);
-        return getManager(managerName, factory, new FactoryData(name, agents, properties, batchSize, dataDir));
+        final String extendedName = extendManagerName(name, agents, properties);
+        return getManager(extendedName, FACTORY, new FactoryData(name, agents, properties, batchSize, dataDir));
     }
 
-    private static String createManagerName(final String name, final Agent[] agents, final Property[] properties) {
+    private static String extendManagerName(final String name, final Agent[] agents, final Property[] properties) {
 
         final StringBuilder sb = new StringBuilder();
         boolean first = true;

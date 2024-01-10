@@ -110,7 +110,6 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         if (batchSize <= 0) {
             batchSize = 1;
         }
-        ;
         final StringBuilder sb = new StringBuilder(name);
         sb.append(" FlumeAvro[");
         boolean first = true;
@@ -221,7 +220,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         } else {
             int eventCount;
             BatchEvent batch = null;
-            synchronized (batchEvent) {
+            synchronized (this) {
                 batchEvent.addEvent(event);
                 eventCount = batchEvent.size();
                 final long now = System.nanoTime();
