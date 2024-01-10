@@ -16,20 +16,17 @@
  */
 package org.apache.logging.log4j.gctests;
 
-import org.apache.logging.log4j.core.test.categories.GarbageFree;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
  * Verifies steady state mixed synchronous and asynchronous logging is GC-free.
  *
- * @see <a href="https://github.com/google/allocation-instrumenter">https://github.com/google/allocation-instrumenter</a>
+ * @see <a href="https://github.com/google/allocation-instrumenter">Google Allocation Instrumenter</a>
  */
 @Tag("allocation")
 @Tag("functional")
-@Category(GarbageFree.class)
 public class GcFreeMixedSyncAsyncLoggingTest {
 
     @Test

@@ -16,24 +16,21 @@
  */
 package org.apache.logging.log4j.gctests;
 
-import org.apache.logging.log4j.core.test.categories.GarbageFree;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
- * Verifies steady state synchronous logging is GC-free.
+ * Verifies steady state logging with JSON Template Layout is GC-free.
  *
- * @see <a href="https://github.com/google/allocation-instrumenter">https://github.com/google/allocation-instrumenter</a>
+ * @see <a href="https://github.com/google/allocation-instrumenter">Google Allocation Instrumenter</a>
  */
 @Tag("allocation")
 @Tag("functional")
-@Category(GarbageFree.class)
-public class GcFreeSynchronousLoggingTest {
+public class JsonTemplateLayoutGcFreeTest {
 
     @Test
-    public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
+    void test_no_allocation_during_steady_state_logging() throws Exception {
         GcFreeLoggingTestUtil.runTest(getClass());
     }
 
@@ -42,6 +39,6 @@ public class GcFreeSynchronousLoggingTest {
      */
     public static void main(final String[] args) throws Exception {
         System.setProperty(LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED.getSystemKey(), "true");
-        GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeSynchronousLoggingTest.class);
+        GcFreeLoggingTestUtil.executeLogging("gcFreeJsonTemplateLayoutLogging.xml", JsonTemplateLayoutGcFreeTest.class);
     }
 }

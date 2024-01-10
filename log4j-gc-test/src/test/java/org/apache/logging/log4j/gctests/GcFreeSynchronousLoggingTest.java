@@ -16,23 +16,18 @@
  */
 package org.apache.logging.log4j.gctests;
 
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.test.categories.GarbageFree;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
- * Verifies steady state logging is GC-free.
+ * Verifies steady state synchronous logging is GC-free.
  *
- * @see <a href="https://github.com/google/allocation-instrumenter">https://github.com/google/allocation-instrumenter</a>
+ * @see <a href="https://github.com/google/allocation-instrumenter">Google Allocation Instrumenter</a>
  */
 @Tag("allocation")
 @Tag("functional")
-@Category(GarbageFree.class)
-public class GcFreeAsynchronousLoggingTest {
+public class GcFreeSynchronousLoggingTest {
 
     @Test
     public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
@@ -44,11 +39,6 @@ public class GcFreeAsynchronousLoggingTest {
      */
     public static void main(final String[] args) throws Exception {
         System.setProperty(LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED.getSystemKey(), "true");
-        System.setProperty(
-                Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getSystemKey(), "128"); // minimum ringbuffer size
-        System.setProperty(
-                Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
-                AsyncLoggerContextSelector.class.getName());
-        GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeAsynchronousLoggingTest.class);
+        GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeSynchronousLoggingTest.class);
     }
 }

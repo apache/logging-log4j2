@@ -246,7 +246,7 @@
     <module>log4j-csv</module>
     <module>log4j-docker</module>
     <module>log4j-flume-ng</module>
-    <module>log4j-gctests</module>
+    <module>log4j-gc-test</module>
     <module>log4j-iostreams</module>
     <module>log4j-jcl</module>
     <module>log4j-jctools</module>

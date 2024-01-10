@@ -47,10 +47,10 @@ import org.apache.logging.log4j.spi.LoggingSystemProperty;
 /**
  * Utility methods for the GC-free logging tests.
  */
-public enum GcFreeLoggingTestUtil {
+enum GcFreeLoggingTestUtil {
     ;
 
-    public static void executeLogging(final String configurationFile, final Class<?> testClass) throws Exception {
+    static void executeLogging(final String configurationFile, final Class<?> testClass) throws Exception {
 
         System.setProperty(Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS.getSystemKey(), "true");
         System.setProperty(LoggingSystemProperty.IS_WEBAPP.getSystemKey(), "false");
