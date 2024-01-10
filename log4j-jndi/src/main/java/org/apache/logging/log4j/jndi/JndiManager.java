@@ -67,7 +67,7 @@ public class JndiManager extends AbstractManager {
     }
 
     /**
-     * Gets the default JndiManager using the default {@link javax.naming.InitialContext}.
+     * Gets the default JndiManager using the default {@link InitialContext}.
      *
      * @return the default JndiManager
      */
@@ -76,7 +76,7 @@ public class JndiManager extends AbstractManager {
     }
 
     /**
-     * Gets a named JndiManager using the default {@link javax.naming.InitialContext}.
+     * Gets a named JndiManager using the default {@link InitialContext}.
      *
      * @param name the name of the JndiManager instance to create or use if available
      * @return a default JndiManager
@@ -217,7 +217,7 @@ public class JndiManager extends AbstractManager {
             }
             LOGGER.warn("Unsupported JNDI URI - {}", name);
         } catch (URISyntaxException ex) {
-            LOGGER.warn("Invalid  JNDI URI - {}", name);
+            LOGGER.warn("Invalid JNDI URI - {}", name);
         }
         return null;
     }

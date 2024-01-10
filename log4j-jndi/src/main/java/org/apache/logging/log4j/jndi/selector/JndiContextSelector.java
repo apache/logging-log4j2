@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.NamedContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jndi.JndiManager;
@@ -43,6 +42,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * context to look up the value of the entry. The logging context of the web-application will depend on the value the
  * env-entry. The JNDI context which is looked up by this class is <code>java:comp/env/log4j/context-name</code>.
  *
+ * <p>For security reasons, JNDI must be enabled by setting system property <code>log4j2.enableJndiContextSelector=true</code>.</p>
  * <p>
  * Here is an example of an <code>env-entry</code>:
  * </p>
@@ -96,8 +96,8 @@ public class JndiContextSelector implements NamedContextSelector {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     public JndiContextSelector() {
-        if (!JndiManager.isJndiEnabled()) {
-            throw new IllegalStateException("JNDI must be enabled by setting log4j2.enableJndi=true");
+        if (!JndiManager.isJndiContextSelectorEnabled()) {
+            throw new IllegalStateException("JNDI must be enabled by setting log4j2.enableJndiContextSelector=true");
         }
     }
 
@@ -112,7 +112,7 @@ public class JndiContextSelector implements NamedContextSelector {
             }
         }
         if (ctx != null) {
-            ctx.stop(ContextSelector.DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+            ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -148,7 +148,7 @@ public class JndiContextSelector implements NamedContextSelector {
         return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null, configLocation);
     }
 
-    private String getContextName() {
+    private static String getContextName() {
         String loggingContextName = null;
 
         try (final JndiManager jndiManager = JndiManager.getDefaultManager()) {

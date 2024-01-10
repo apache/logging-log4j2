@@ -58,8 +58,9 @@ public class JndiLookup extends AbstractLookup {
 
     /**
      * Looks up the value of the JNDI resource.
+     *
      * @param event The current LogEvent (is ignored by this StrLookup).
-     * @param key  the JNDI resource name to be looked up, may be null
+     * @param key the JNDI resource name to be looked up, may be null
      * @return The String value of the JNDI resource.
      */
     @Override
@@ -77,9 +78,9 @@ public class JndiLookup extends AbstractLookup {
     }
 
     /**
-     * Convert the given JNDI name to the actual JNDI name to use.
-     * Default implementation applies the "java:comp/env/" prefix
-     * unless other scheme like "java:" is given.
+     * Convert the given JNDI name to the actual JNDI name to use. Default implementation applies the "java:comp/env/"
+     * prefix unless other scheme like "java:" is given.
+     *
      * @param jndiName The name of the resource.
      * @return The fully qualified name to look up.
      */

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.jndi.internal;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
+import org.apache.logging.log4j.core.util.Closer;
 
 /**
  * Helper class for closing JNDI resources.
