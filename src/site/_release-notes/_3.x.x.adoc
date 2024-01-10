@@ -47,6 +47,7 @@ This release contains...
 [#release-notes-3-x-x-removed]
 === Removed
 
+* Remove `DefaultLogEventFactory`
 * Remove `org.apache.logging.log4j.core.parser` and related packages. (https://github.com/apache/logging-log4j2/pull/2154[2154])
 * Remove `log4j2.enable.threadlocals` property (https://github.com/apache/logging-log4j2/issues/2105[2105])
 

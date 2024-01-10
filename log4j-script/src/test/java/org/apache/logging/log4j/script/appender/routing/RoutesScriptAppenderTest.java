@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.routing.Routes;
 import org.apache.logging.log4j.core.appender.routing.RoutingAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
-import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.categories.Scripts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -143,7 +143,7 @@ public class RoutesScriptAppenderTest {
         Assert.assertNotNull(routes);
         Assert.assertNotNull(routes.getPatternScript());
         final LogEvent logEvent =
-                DefaultLogEventFactory.newInstance().createEvent("", null, "", Level.ERROR, null, null, null);
+                Log4jLogEvent.newBuilder().setLevel(Level.ERROR).build();
         assertEquals("Service2", routes.getPattern(logEvent, new ConcurrentHashMap<>()));
     }
 

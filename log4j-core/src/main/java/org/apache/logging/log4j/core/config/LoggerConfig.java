@@ -32,9 +32,9 @@ import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
+import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -44,6 +44,7 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -218,7 +219,7 @@ public class LoggerConfig extends AbstractFilterable {
      * Default constructor.
      */
     public LoggerConfig() {
-        this.logEventFactory = DefaultLogEventFactory.newInstance();
+        this.logEventFactory = DI.createInitializedFactory().getInstance(ReusableLogEventFactory.class);
         this.level = Level.ERROR;
         this.name = Strings.EMPTY;
         this.properties = null;
@@ -235,7 +236,7 @@ public class LoggerConfig extends AbstractFilterable {
      * @param additive true if the Logger is additive, false otherwise.
      */
     public LoggerConfig(final String name, final Level level, final boolean additive) {
-        this.logEventFactory = DefaultLogEventFactory.newInstance();
+        this.logEventFactory = DI.createInitializedFactory().getInstance(ReusableLogEventFactory.class);
         this.name = name;
         this.level = level;
         this.additive = additive;
@@ -256,7 +257,9 @@ public class LoggerConfig extends AbstractFilterable {
             final boolean includeLocation,
             final LogEventFactory logEventFactory) {
         super(filter, null);
-        this.logEventFactory = logEventFactory != null ? logEventFactory : DefaultLogEventFactory.newInstance();
+        this.logEventFactory = logEventFactory != null
+                ? logEventFactory
+                : DI.createInitializedFactory().getInstance(ReusableLogEventFactory.class);
         this.name = name;
         this.appenderRefs = appenders;
         this.level = level;
