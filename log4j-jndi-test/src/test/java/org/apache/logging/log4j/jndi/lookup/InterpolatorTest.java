@@ -16,27 +16,35 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 
 /**
- *
+ * Tests {@link Interpolator}.
  */
 public class InterpolatorTest {
 
@@ -48,7 +56,7 @@ public class InterpolatorTest {
     private static final String TEST_CONTEXT_NAME = "app-1";
 
     @ClassRule
-    public static RuleChain rules = RuleChain.outerRule(new ExternalResource() {
+    public static final RuleChain RULES = RuleChain.outerRule(new ExternalResource() {
                 @Override
                 protected void before() throws Throwable {
                     System.setProperty(TESTKEY, TESTVAL);
@@ -65,6 +73,28 @@ public class InterpolatorTest {
             })
             .around(new JndiRule(
                     JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME));
+
+    @Test
+    public void testGetDefaultLookup() {
+        final Map<String, String> map = new HashMap<>();
+        map.put(TESTKEY, TESTVAL);
+        final MapLookup defaultLookup = new MapLookup(map);
+        final Interpolator interpolator = new Interpolator(defaultLookup);
+        assertEquals(getLookupMap(defaultLookup), getLookupMap((MapLookup) interpolator.getDefaultLookup()));
+        assertSame(defaultLookup, interpolator.getDefaultLookup());
+    }
+
+    private static Map<String, String> getLookupMap(final MapLookup lookup) {
+        try {
+            final Field mapField = lookup.getClass().getDeclaredField("map");
+            mapField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            Map<String, String> map = (Map<String, String>) mapField.get(lookup);
+            return map;
+        } catch (final Exception error) {
+            throw new RuntimeException(error);
+        }
+    }
 
     @Test
     public void testLookup() {
@@ -116,5 +146,51 @@ public class InterpolatorTest {
         assertLookupNotEmpty(lookup, "java:os");
         assertLookupNotEmpty(lookup, "java:locale");
         assertLookupNotEmpty(lookup, "java:hw");
+    }
+
+    @Test
+    public void testInterpolatorMapMessageWithNoPrefix() {
+        final HashMap<String, String> configProperties = new HashMap<>();
+        configProperties.put("key", "configProperties");
+        final Interpolator interpolator = new Interpolator(configProperties);
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("key", "mapMessage");
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName(getClass().getName())
+                .setLoggerFqcn(Logger.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new StringMapMessage(map))
+                .build();
+        assertEquals("configProperties", interpolator.lookup(event, "key"));
+    }
+
+    @Test
+    public void testInterpolatorMapMessageWithNoPrefixConfigDoesntMatch() {
+        final Interpolator interpolator = new Interpolator(Collections.emptyMap());
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("key", "mapMessage");
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName(getClass().getName())
+                .setLoggerFqcn(Logger.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new StringMapMessage(map))
+                .build();
+        assertNull(interpolator.lookup(event, "key"), "Values without a map prefix should not match MapMessages");
+    }
+
+    @Test
+    public void testInterpolatorMapMessageWithMapPrefix() {
+        final HashMap<String, String> configProperties = new HashMap<>();
+        configProperties.put("key", "configProperties");
+        final Interpolator interpolator = new Interpolator(configProperties);
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("key", "mapMessage");
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName(getClass().getName())
+                .setLoggerFqcn(Logger.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new StringMapMessage(map))
+                .build();
+        assertEquals("mapMessage", interpolator.lookup(event, "map:key"));
     }
 }
