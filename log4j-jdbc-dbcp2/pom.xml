@@ -28,7 +28,6 @@
   <name>Apache Log4j JDBC DBCP 2</name>
   <description>Connection source for the JDBC Appender using Apache Commons DBCP2.</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
 
     <!--
       ~ OSGi and JPMS options
@@ -73,11 +72,6 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

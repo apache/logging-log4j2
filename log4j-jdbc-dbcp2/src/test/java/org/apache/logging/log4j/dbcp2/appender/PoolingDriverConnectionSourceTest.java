@@ -25,14 +25,6 @@ import org.junit.Test;
 
 public class PoolingDriverConnectionSourceTest {
 
-    private void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
-        try (final Connection conn = source.getConnection()) {
-            Assert.assertFalse(conn.isClosed());
-        } finally {
-            source.stop();
-        }
-    }
-
     @Test
     public void testH2Properties() throws SQLException {
         final Property[] properties = new Property[] {
@@ -47,6 +39,7 @@ public class PoolingDriverConnectionSourceTest {
                         .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
                         .setProperties(properties)
                         .build();
+        // @formatter:on
         openAndClose(source);
     }
 
@@ -78,7 +71,17 @@ public class PoolingDriverConnectionSourceTest {
                         .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
                         .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
                         .build();
+        // @formatter:on
         openAndClose(source);
+    }
+
+    private void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
+        Assert.assertNotNull("PoolingDriverConnectionSource is null", source);
+        try (final Connection conn = source.getConnection()) {
+            Assert.assertFalse(conn.isClosed());
+        } finally {
+            source.stop();
+        }
     }
 
     @Test
@@ -91,6 +94,7 @@ public class PoolingDriverConnectionSourceTest {
                         .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
                         .setPoolName("MyPoolName")
                         .build();
+        // @formatter:on
         openAndClose(source);
     }
 
