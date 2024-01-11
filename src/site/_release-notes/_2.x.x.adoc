@@ -42,7 +42,7 @@ This releases contains ...
 [#release-notes-2-x-x-updated]
 === Updated
 
-* Update `co.elastic.clients:elasticsearch-java` to version `8.11.3` (https://github.com/apache/logging-log4j2/pull/2161[2161])
+* Update `co.elastic.clients:elasticsearch-java` to version `8.11.4` (https://github.com/apache/logging-log4j2/pull/2180[2180])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
 * Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2103[2103])
 * Update `github/codeql-action` to version `3.23.0` (https://github.com/apache/logging-log4j2/pull/2173[2173])
