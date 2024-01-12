@@ -498,7 +498,7 @@ The generated logger code will take care of the FQCN.
 
 <a name="proguard-rules" />
 
-$h4 Which rules do I need to add when minification is enabled?
+$h4 Which rules do I need to add when ProGuard minification is enabled?
 
 When you are using Log4j with ProGuard/R8 enabled, you need to add the following rules to your configuration file:
 ```
