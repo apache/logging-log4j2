@@ -34,16 +34,11 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  * This Configuration is the same as the DefaultConfiguration but shows how a
  * custom configuration can be built programmatically
  */
-public class CustomConfiguration extends AbstractConfiguration {
-
-    /**
-     * The name of the default configuration.
-     */
-    public static final String CONFIG_NAME = "Custom";
+final class CustomConfiguration extends AbstractConfiguration {
 
     private final ListAppender appender = new ListAppender();
 
-    public CustomConfiguration(final LoggerContext loggerContext) {
+    CustomConfiguration(final LoggerContext loggerContext) {
         this(loggerContext, ConfigurationSource.NULL_SOURCE);
     }
 
@@ -52,7 +47,7 @@ public class CustomConfiguration extends AbstractConfiguration {
      */
     public CustomConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         super(loggerContext, source);
-        setName(CONFIG_NAME);
+        setName("Custom");
         appender.start();
         addAppender(appender);
         final LoggerConfig root = getRootLogger();
@@ -71,9 +66,9 @@ public class CustomConfiguration extends AbstractConfiguration {
         appender.getEvents().clear();
     }
 
-    private static class ListAppender extends AbstractLifeCycle implements Appender {
+    private static final class ListAppender extends AbstractLifeCycle implements Appender {
 
-        private final List<LogEvent> events = Collections.<LogEvent>synchronizedList(new ArrayList<>());
+        private final List<LogEvent> events = Collections.synchronizedList(new ArrayList<>());
 
         @Override
         public void append(final LogEvent event) {

@@ -31,7 +31,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 @Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("CustomConfigurationFactory")
 @Order(50)
-public class CustomConfigurationFactory extends ConfigurationFactory {
+public final class CustomConfigurationFactory extends ConfigurationFactory {
 
     /**
      * Valid file extensions for XML files.
