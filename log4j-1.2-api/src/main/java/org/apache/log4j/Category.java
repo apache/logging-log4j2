@@ -30,8 +30,6 @@ import org.apache.log4j.bridge.LogEventWrapper;
 import org.apache.log4j.helpers.AppenderAttachableImpl;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.CategoryUtil;
-import org.apache.log4j.or.ObjectRenderer;
-import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerRepository;
@@ -143,8 +141,6 @@ public class Category implements AppenderAttachable {
      * inherited form the hierarchy.
      */
     protected volatile Level level;
-
-    private RendererMap rendererMap;
 
     /**
      * The parent of this category. All categories have at least one ancestor which is the root category.
@@ -343,21 +339,6 @@ public class Category implements AppenderAttachable {
         } else {
             logger.log(lvl, msg, t);
         }
-    }
-
-    private <T> ObjectRenderer get(final Class<T> clazz) {
-        ObjectRenderer renderer = null;
-        for (Class<? super T> c = clazz; c != null; c = c.getSuperclass()) {
-            renderer = rendererMap.get(c);
-            if (renderer != null) {
-                return renderer;
-            }
-            renderer = searchInterfaces(c);
-            if (renderer != null) {
-                return renderer;
-            }
-        }
-        return null;
     }
 
     public boolean getAdditivity() {
@@ -651,21 +632,6 @@ public class Category implements AppenderAttachable {
         if (appender != null) {
             fireRemoveAppenderEvent(appender);
         }
-    }
-
-    ObjectRenderer searchInterfaces(final Class<?> c) {
-        ObjectRenderer renderer = rendererMap.get(c);
-        if (renderer != null) {
-            return renderer;
-        }
-        final Class<?>[] ia = c.getInterfaces();
-        for (final Class<?> clazz : ia) {
-            renderer = searchInterfaces(clazz);
-            if (renderer != null) {
-                return renderer;
-            }
-        }
-        return null;
     }
 
     public void setAdditivity(final boolean additivity) {
