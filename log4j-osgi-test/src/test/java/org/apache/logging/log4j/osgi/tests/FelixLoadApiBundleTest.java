@@ -14,19 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.osgi.tests.equinox;
+package org.apache.logging.log4j.osgi.tests;
 
-import org.apache.logging.log4j.osgi.tests.AbstractLoadBundleTest;
-import org.eclipse.osgi.launch.EquinoxFactory;
-import org.osgi.framework.launch.FrameworkFactory;
+import org.apache.felix.framework.FrameworkFactory;
 
 /**
- * Tests loading the Core bundle into an Eclipse Equinox OSGi container.
+ * Tests loading the Core bundle into an Apache Felix OSGi container.
  */
-public class EquinoxLoadApiBundleTest extends AbstractLoadBundleTest {
+public class FelixLoadApiBundleTest extends AbstractLoadBundleTest {
 
-    @Override
-    protected FrameworkFactory getFactory() {
-        return new EquinoxFactory();
+    public FelixLoadApiBundleTest() {
+        super(new FrameworkFactory());
     }
 }

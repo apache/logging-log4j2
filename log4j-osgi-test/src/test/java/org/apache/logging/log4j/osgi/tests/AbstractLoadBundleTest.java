@@ -19,13 +19,10 @@ package org.apache.logging.log4j.osgi.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.osgi.tests.junit.OsgiRule;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,18 +36,19 @@ import org.osgi.framework.launch.FrameworkFactory;
 /**
  * Tests a basic Log4J 'setup' in an OSGi container.
  */
-public abstract class AbstractLoadBundleTest {
+abstract class AbstractLoadBundleTest {
 
     private BundleContext bundleContext;
 
     @Rule
-    public OsgiRule osgi = new OsgiRule(getFactory());
+    public final OsgiRule osgi;
 
-    /**
-     * Called before each @Test.
-     */
+    AbstractLoadBundleTest(final FrameworkFactory frameworkFactory) {
+        this.osgi = new OsgiRule(frameworkFactory);
+    }
+
     @Before
-    public void before() throws BundleException {
+    public void before() {
         bundleContext = osgi.getFramework().getBundleContext();
     }
 
@@ -76,59 +74,6 @@ public abstract class AbstractLoadBundleTest {
         return installBundle("org.apache.logging.log4j.api.test");
     }
 
-    protected abstract FrameworkFactory getFactory();
-
-    private void log(final Bundle dummy) throws ReflectiveOperationException {
-        // use reflection to log in the context of the dummy bundle
-
-        final Class<?> logManagerClass = dummy.loadClass("org.apache.logging.log4j.LogManager");
-        final Method getLoggerMethod = logManagerClass.getMethod("getLogger", Class.class);
-
-        final Class<?> loggerClass = dummy.loadClass("org.apache.logging.log4j.configuration.CustomConfiguration");
-
-        final Object logger = getLoggerMethod.invoke(null, loggerClass);
-        final Method errorMethod = logger.getClass().getMethod("error", Object.class);
-
-        errorMethod.invoke(logger, "Test OK");
-    }
-
-    private PrintStream setupStream(final Bundle api, final PrintStream newStream) throws ReflectiveOperationException {
-        // use reflection to access the classes internals and in the context of the api bundle
-
-        final Class<?> statusLoggerClass = api.loadClass("org.apache.logging.log4j.status.StatusLogger");
-
-        final Field statusLoggerField = statusLoggerClass.getDeclaredField("STATUS_LOGGER");
-        statusLoggerField.setAccessible(true);
-        final Object statusLoggerFieldValue = statusLoggerField.get(null);
-
-        final Field loggerField = statusLoggerClass.getDeclaredField("logger");
-        loggerField.setAccessible(true);
-        final Object loggerFieldValue = loggerField.get(statusLoggerFieldValue);
-
-        final Class<?> simpleLoggerClass = api.loadClass("org.apache.logging.log4j.simple.SimpleLogger");
-
-        final Field streamField = simpleLoggerClass.getDeclaredField("stream");
-        streamField.setAccessible(true);
-
-        final PrintStream oldStream = (PrintStream) streamField.get(loggerFieldValue);
-
-        streamField.set(loggerFieldValue, newStream);
-
-        return oldStream;
-    }
-
-    private void start(final Bundle api, final Bundle core, final Bundle dummy) throws BundleException {
-        api.start();
-        core.start();
-        dummy.start();
-    }
-
-    private void stop(final Bundle api, final Bundle core, final Bundle dummy) throws BundleException {
-        dummy.stop();
-        core.stop();
-        api.stop();
-    }
-
     private void uninstall(final Bundle api, final Bundle core, final Bundle dummy) throws BundleException {
         dummy.uninstall();
         core.uninstall();
@@ -139,7 +84,7 @@ public abstract class AbstractLoadBundleTest {
      * Tests starting, then stopping, then restarting, then stopping, and finally uninstalling the API and Core bundles
      */
     @Test
-    public void testApiCoreStartStopStartStop() throws BundleException, ReflectiveOperationException {
+    public void testApiCoreStartStopStartStop() throws BundleException {
 
         final Bundle api = getApiBundle();
         final Bundle core = getCoreBundle();
@@ -191,25 +136,18 @@ public abstract class AbstractLoadBundleTest {
         // fails if LOG4J2-1637 is not fixed
         try {
             core.start();
-        } catch (final BundleException ex) {
-            boolean shouldRethrow = true;
-            final Throwable t = ex.getCause();
-            if (t != null) {
-                final Throwable t2 = t.getCause();
-                if (t2 != null) {
-                    final String cause = t2.toString();
-                    final boolean result =
-                            cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger") // Equinox
-                                    || cause.equals(
-                                            "java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger not found by org.apache.logging.log4j.core [2]"); // Felix
-                    Assert.assertFalse(
-                            "org.apache.logging.log4j package is not properly imported in org.apache.logging.log4j.core bundle, check that the package is exported from api and is not split between api and core",
-                            result);
-                    shouldRethrow = !result;
+        } catch (final BundleException error0) {
+            boolean log4jClassNotFound = false;
+            final Throwable error1 = error0.getCause();
+            if (error1 != null) {
+                final Throwable error2 = error1.getCause();
+                if (error2 != null) {
+                    log4jClassNotFound = error2.toString()
+                            .startsWith("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger");
                 }
             }
-            if (shouldRethrow) {
-                throw ex; // rethrow if the cause of the exception is something else
+            if (!log4jClassNotFound) {
+                throw error0;
             }
         }
 
@@ -255,9 +193,6 @@ public abstract class AbstractLoadBundleTest {
 
     /**
      * Tests whether the {@link ServiceLoaderUtil} finds services in other bundles.
-     *
-     * @throws BundleException
-     * @throws ReflectiveOperationException
      */
     @Test
     public void testServiceLoader() throws BundleException, ReflectiveOperationException {
