@@ -17,13 +17,7 @@
 package org.apache.logging.log4j.osgi.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -59,6 +53,17 @@ abstract class AbstractLoadBundleTest {
         return bundleContext.installBundle(url);
     }
 
+    private Bundle startApacheSpiFly() throws BundleException {
+        installBundle("org.objectweb.asm");
+        installBundle("org.objectweb.asm.commons");
+        installBundle("org.objectweb.asm.tree");
+        installBundle("org.objectweb.asm.tree.analysis");
+        installBundle("org.objectweb.asm.util");
+        final Bundle spiFly = installBundle("org.apache.aries.spifly.dynamic.bundle");
+        spiFly.start();
+        return spiFly;
+    }
+
     private Bundle getApiBundle() throws BundleException {
         return installBundle("org.apache.logging.log4j.api");
     }
@@ -85,6 +90,7 @@ abstract class AbstractLoadBundleTest {
     @Test
     public void testApiCoreStartStopStartStop() throws BundleException {
 
+        final Bundle spiFly = startApacheSpiFly();
         final Bundle api = getApiBundle();
         final Bundle plugins = getPluginsBundle();
         final Bundle core = getCoreBundle();
@@ -102,6 +108,7 @@ abstract class AbstractLoadBundleTest {
         doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, api);
 
         doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, plugins, api);
+        spiFly.uninstall();
     }
 
     /**
@@ -110,6 +117,7 @@ abstract class AbstractLoadBundleTest {
     @Test
     public void testClassNotFoundErrorLogger() throws BundleException {
 
+        final Bundle spiFly = startApacheSpiFly();
         final Bundle api = getApiBundle();
         final Bundle plugins = getPluginsBundle();
         final Bundle core = getCoreBundle();
@@ -136,6 +144,7 @@ abstract class AbstractLoadBundleTest {
 
         doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, api);
         doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, plugins, api);
+        spiFly.uninstall();
     }
 
     /**
@@ -145,6 +154,7 @@ abstract class AbstractLoadBundleTest {
     @Test
     public void testLog4J12Fragement() throws BundleException, ReflectiveOperationException {
 
+        final Bundle spiFly = startApacheSpiFly();
         final Bundle api = getApiBundle();
         final Bundle plugins = getPluginsBundle();
         final Bundle core = getCoreBundle();
@@ -167,38 +177,7 @@ abstract class AbstractLoadBundleTest {
 
         doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, api);
         doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, compat, core, plugins, api);
-    }
-
-    /**
-     * Tests whether the {@link ServiceLoaderUtil} finds services in other bundles.
-     */
-    @Test
-    public void testServiceLoader() throws BundleException, ReflectiveOperationException {
-        final Bundle api = getApiBundle();
-        final Bundle core = getCoreBundle();
-        final Bundle apiTests = getApiTestsBundle();
-
-        final Class<?> osgiServiceLocator = api.loadClass("org.apache.logging.log4j.util.OsgiServiceLocator");
-        assertTrue("OsgiServiceLocator is active", (boolean)
-                osgiServiceLocator.getMethod("isAvailable").invoke(null));
-
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core, apiTests);
-
-        final Class<?> osgiServiceLocatorTest =
-                apiTests.loadClass("org.apache.logging.log4j.test.util.OsgiServiceLocatorTest");
-
-        final Method loadProviders = osgiServiceLocatorTest.getDeclaredMethod("loadProviders");
-        final Object obj = loadProviders.invoke(null);
-        assertTrue(obj instanceof Stream);
-        @SuppressWarnings("unchecked")
-        final List<Object> services = ((Stream<Object>) obj).collect(Collectors.toList());
-        assertEquals(1, services.size());
-        assertEquals(
-                "org.apache.logging.log4j.core.impl.Log4jProvider",
-                services.get(0).getClass().getName());
-
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, apiTests, core, api);
-        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, apiTests, core, api);
+        spiFly.uninstall();
     }
 
     private static void doOnBundlesAndVerifyState(
