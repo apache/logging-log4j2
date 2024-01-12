@@ -28,7 +28,7 @@ import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
@@ -60,17 +60,17 @@ public class XmlLayoutBuilder extends AbstractBuilder<Layout> implements LayoutB
                 locationInfo.set(getBooleanValueAttribute(currentElement));
             }
         });
-        return createLayout(properties.get(), locationInfo.get());
+        return createLayout(config, properties.get(), locationInfo.get());
     }
 
     @Override
     public Layout parse(final PropertiesConfiguration config) {
         final boolean properties = getBooleanProperty(PROPERTIES);
         final boolean locationInfo = getBooleanProperty(LOCATION_INFO);
-        return createLayout(properties, locationInfo);
+        return createLayout(config, properties, locationInfo);
     }
 
-    private Layout createLayout(final boolean properties, final boolean locationInfo) {
-        return LayoutWrapper.adapt(Log4j1XmlLayout.createLayout(new DefaultConfiguration(), locationInfo, properties));
+    private Layout createLayout(final Configuration config, final boolean properties, final boolean locationInfo) {
+        return LayoutWrapper.adapt(Log4j1XmlLayout.createLayout(config, locationInfo, properties));
     }
 }
