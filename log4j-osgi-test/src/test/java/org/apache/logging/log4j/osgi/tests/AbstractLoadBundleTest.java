@@ -28,6 +28,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -74,12 +75,6 @@ abstract class AbstractLoadBundleTest {
         return installBundle("org.apache.logging.log4j.api.test");
     }
 
-    private void uninstall(final Bundle api, final Bundle core, final Bundle dummy) throws BundleException {
-        dummy.uninstall();
-        core.uninstall();
-        api.uninstall();
-    }
-
     /**
      * Tests starting, then stopping, then restarting, then stopping, and finally uninstalling the API and Core bundles
      */
@@ -92,35 +87,15 @@ abstract class AbstractLoadBundleTest {
         Assert.assertEquals("api is not in INSTALLED state", Bundle.INSTALLED, api.getState());
         Assert.assertEquals("core is not in INSTALLED state", Bundle.INSTALLED, core.getState());
 
-        api.start();
-        core.start();
+        // 1st start-stop
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
 
-        Assert.assertEquals("api is not in ACTIVE state", Bundle.ACTIVE, api.getState());
-        Assert.assertEquals("core is not in ACTIVE state", Bundle.ACTIVE, core.getState());
+        // 2nd start-stop
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
 
-        core.stop();
-        api.stop();
-
-        Assert.assertEquals("api is not in RESOLVED state", Bundle.RESOLVED, api.getState());
-        Assert.assertEquals("core is not in RESOLVED state", Bundle.RESOLVED, core.getState());
-
-        api.start();
-        core.start();
-
-        Assert.assertEquals("api is not in ACTIVE state", Bundle.ACTIVE, api.getState());
-        Assert.assertEquals("core is not in ACTIVE state", Bundle.ACTIVE, core.getState());
-
-        core.stop();
-        api.stop();
-
-        Assert.assertEquals("api is not in RESOLVED state", Bundle.RESOLVED, api.getState());
-        Assert.assertEquals("core is not in RESOLVED state", Bundle.RESOLVED, core.getState());
-
-        core.uninstall();
-        api.uninstall();
-
-        Assert.assertEquals("api is not in UNINSTALLED state", Bundle.UNINSTALLED, api.getState());
-        Assert.assertEquals("core is not in UNINSTALLED state", Bundle.UNINSTALLED, core.getState());
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, api);
     }
 
     /**
@@ -132,7 +107,7 @@ abstract class AbstractLoadBundleTest {
         final Bundle api = getApiBundle();
         final Bundle core = getCoreBundle();
 
-        api.start();
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api);
         // fails if LOG4J2-1637 is not fixed
         try {
             core.start();
@@ -150,12 +125,10 @@ abstract class AbstractLoadBundleTest {
                 throw error0;
             }
         }
+        assertEquals(String.format("`%s` bundle state mismatch", core), Bundle.ACTIVE, core.getState());
 
-        core.stop();
-        api.stop();
-
-        core.uninstall();
-        api.uninstall();
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, api);
     }
 
     /**
@@ -169,8 +142,7 @@ abstract class AbstractLoadBundleTest {
         final Bundle core = getCoreBundle();
         final Bundle compat = get12ApiBundle();
 
-        api.start();
-        core.start();
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core);
 
         final Class<?> coreClassFromCore = core.loadClass("org.apache.logging.log4j.core.Core");
         final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
@@ -185,10 +157,8 @@ abstract class AbstractLoadBundleTest {
                 levelClassFrom12API.getClassLoader(),
                 levelClassFromAPI.getClassLoader());
 
-        core.stop();
-        api.stop();
-
-        uninstall(api, core, compat);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, compat, core, api);
     }
 
     /**
@@ -204,9 +174,7 @@ abstract class AbstractLoadBundleTest {
         assertTrue("OsgiServiceLocator is active", (boolean)
                 osgiServiceLocator.getMethod("isAvailable").invoke(null));
 
-        core.start();
-        apiTests.start();
-        assertEquals("api-tests is not in ACTIVE state", Bundle.ACTIVE, apiTests.getState());
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core, apiTests);
 
         final Class<?> osgiServiceLocatorTest =
                 apiTests.loadClass("org.apache.logging.log4j.test.util.OsgiServiceLocatorTest");
@@ -221,11 +189,20 @@ abstract class AbstractLoadBundleTest {
                 "org.apache.logging.log4j.core.impl.Log4jProvider",
                 services.get(0).getClass().getName());
 
-        apiTests.stop();
-        core.stop();
-        api.stop();
-        assertEquals("api-tests is not in ACTIVE state", Bundle.RESOLVED, apiTests.getState());
-        uninstall(apiTests, api, core);
-        assertEquals("api-tests is not in ACTIVE state", Bundle.UNINSTALLED, apiTests.getState());
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, apiTests, core, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, apiTests, core, api);
+    }
+
+    private static void doOnBundlesAndVerifyState(
+            final ThrowingConsumer<Bundle> operation, final int expectedState, final Bundle... bundles) {
+        for (final Bundle bundle : bundles) {
+            try {
+                operation.accept(bundle);
+            } catch (final Throwable error) {
+                final String message = String.format("operation failure for bundle `%s`", bundle);
+                throw new RuntimeException(message, error);
+            }
+            assertEquals(String.format("`%s` bundle state mismatch", bundle), expectedState, bundle.getState());
+        }
     }
 }
