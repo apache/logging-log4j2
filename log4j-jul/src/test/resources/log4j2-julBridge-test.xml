@@ -28,7 +28,7 @@
         </Root>
 
         <!-- needs to be set to a lower level: -->
-        <Logger name="org.apache.logging.log4j.jul.Log4jBridgeHandlerTest" level="TRACE" />
+        <Logger name="org.apache.logging.log4j.jul.test.Log4jBridgeHandlerTest" level="TRACE" />
         <!-- some test configs: -->
         <Logger name="log4j.Log4jBridgeHandlerTest.propagate1" level="DEBUG" />
         <Logger name="log4j.Log4jBridgeHandlerTest.propagate1.nested1" level="TRACE" />

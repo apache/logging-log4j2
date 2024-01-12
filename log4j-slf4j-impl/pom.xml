@@ -29,20 +29,6 @@
   <description>The Apache Log4j SLF4J API binding to Log4j 2 Core</description>
   <properties>
     <slf4j.version>1.7.36</slf4j.version>
-
-    <!--
-      ~ OSGi and JPMS options
-      -->
-    <bnd-extra-package-options>
-      <!-- Optional dependencies -->
-      org.slf4j.ext;resolution:=optional
-    </bnd-extra-package-options>
-    <bnd-extra-module-options>
-      <!-- Optional module -->
-      slf4j.ext;substitute="slf4j-ext";static=true;transitive=false,
-      <!-- Version 1.7.25 has not module name, but 1.7.36 does -->
-      org.slf4j;substitute="slf4j-api"
-    </bnd-extra-module-options>
   </properties>
 
   <!-- Use explicit versions as a temporary workaround to a Coursier/Ivy bug:
@@ -53,12 +39,6 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-ext</artifactId>
-        <version>${slf4j.version}</version>
-        <optional>true</optional>
       </dependency>
     </dependencies>
   </dependencyManagement>

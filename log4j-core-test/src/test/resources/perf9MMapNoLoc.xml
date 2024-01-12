@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="warn" packages="org.apache.logging.log4j.core.async.perftest">
+<Configuration status="warn">
   <Appenders>
     <MemoryMappedFile name="MMapFile" fileName="perftest.log" regionLength="1073741824">
       <PatternLayout>

@@ -14,18 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jul;
+package org.apache.logging.log4j.osgi.tests;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.eclipse.osgi.launch.EquinoxFactory;
 
-public class DefaultLevelConverterTest {
+/**
+ * Tests loading the Core bundle into an Eclipse Equinox OSGi container.
+ */
+public class EquinoxLoadApiBundleTest extends AbstractLoadBundleTest {
 
-    /**
-     * (LOG4J2-1108) NullPointerException when passing null to java.util.logging.Logger.setLevel().
-     */
-    @Test
-    public void testJulSetNull() {
-        Assert.assertEquals(null, new DefaultLevelConverter().toLevel(null));
+    public EquinoxLoadApiBundleTest() {
+        super(new EquinoxFactory());
     }
 }

@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Properties>
     <Property name="audit-path">target/log4j2-1482</Property>
     <Property name="file-name">audit</Property>

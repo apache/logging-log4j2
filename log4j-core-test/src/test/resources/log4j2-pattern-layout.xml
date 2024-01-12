@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="DEBUG" packages="">
+<Configuration status="DEBUG">
 	<Properties>
 		<Property name="defaultPattern">%d{yyyyMMdd HH:mm:ss} %-5p %c{20}:%L - %m%n</Property>
 	</Properties>

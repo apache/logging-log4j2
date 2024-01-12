@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="WARN" name="MyApp" packages="">
+<Configuration status="WARN" name="MyApp">
   <Properties>
     <Property name="baseDir">target/rolling-1833</Property>
   </Properties>

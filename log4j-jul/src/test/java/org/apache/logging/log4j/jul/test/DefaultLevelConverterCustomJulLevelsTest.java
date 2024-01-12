@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jul;
+package org.apache.logging.log4j.jul.test;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.jul.DefaultLevelConverter;
+import org.apache.logging.log4j.jul.LevelTranslator;
 import org.junit.Assert;
 import org.junit.Test;
 
