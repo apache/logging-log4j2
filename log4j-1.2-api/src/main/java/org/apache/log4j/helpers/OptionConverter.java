@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * A convenience class to convert property values to specific types.
  */
-public class OptionConverter {
+public final class OptionConverter {
 
     private static class CharMap {
         final char key;

@@ -216,7 +216,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         }
     }
 
-    protected void set(final String name, final Element element, AtomicLong ref) {
+    protected void set(final String name, final Element element, final AtomicLong ref) {
         final String value = getValueAttribute(element);
         if (value == null) {
             LOGGER.warn("No value for {} parameter, using default {}", name, ref);

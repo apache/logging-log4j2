@@ -664,8 +664,8 @@ public class XmlConfiguration extends Log4j1Configuration {
         return null;
     }
 
-    public TriggeringPolicy parseTriggeringPolicy(Element policyElement) {
-        String className = subst(policyElement.getAttribute(CLASS_ATTR));
+    public TriggeringPolicy parseTriggeringPolicy(final Element policyElement) {
+        final String className = subst(policyElement.getAttribute(CLASS_ATTR));
         LOGGER.debug("Parsing triggering policy of class: \"{}\"", className);
         return manager.parseTriggeringPolicy(className, policyElement, this);
     }

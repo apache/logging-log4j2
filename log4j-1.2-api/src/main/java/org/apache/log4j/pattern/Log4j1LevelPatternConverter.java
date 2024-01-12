@@ -30,7 +30,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("Log4j1LevelPatternConverter")
 @ConverterKeys({"v1Level"})
-public class Log4j1LevelPatternConverter extends LogEventPatternConverter {
+public final class Log4j1LevelPatternConverter extends LogEventPatternConverter {
 
     private static final Log4j1LevelPatternConverter INSTANCE = new Log4j1LevelPatternConverter();
 

@@ -69,7 +69,7 @@ public class BuilderManager {
      */
     @Inject
     public BuilderManager(
-            final ConfigurableInstanceFactory instanceFactory, @Namespace(NAMESPACE) PluginNamespace plugins) {
+            final ConfigurableInstanceFactory instanceFactory, @Namespace(NAMESPACE) final PluginNamespace plugins) {
         this.instanceFactory = instanceFactory;
         this.plugins = plugins;
     }
@@ -126,7 +126,7 @@ public class BuilderManager {
             final String prefix,
             final Properties props,
             final PropertiesConfiguration config,
-            T invalidValue) {
+            final T invalidValue) {
         final P parser = createBuilder(getPlugin(className), prefix, props);
         if (parser != null) {
             final T value = parser.parse(config);

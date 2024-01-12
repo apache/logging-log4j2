@@ -43,12 +43,12 @@ public class SizeBasedTriggeringPolicyBuilder extends AbstractBuilder<Triggering
         super();
     }
 
-    public SizeBasedTriggeringPolicyBuilder(String prefix, Properties props) {
+    public SizeBasedTriggeringPolicyBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
-    public SizeBasedTriggeringPolicy parse(Element element, XmlConfiguration configuration) {
+    public SizeBasedTriggeringPolicy parse(final Element element, final XmlConfiguration configuration) {
         final AtomicLong maxSize = new AtomicLong(DEFAULT_MAX_SIZE);
         forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
@@ -65,12 +65,12 @@ public class SizeBasedTriggeringPolicyBuilder extends AbstractBuilder<Triggering
     }
 
     @Override
-    public SizeBasedTriggeringPolicy parse(PropertiesConfiguration configuration) {
+    public SizeBasedTriggeringPolicy parse(final PropertiesConfiguration configuration) {
         final long maxSize = getLongProperty(MAX_SIZE_PARAM, DEFAULT_MAX_SIZE);
         return createTriggeringPolicy(maxSize);
     }
 
-    private SizeBasedTriggeringPolicy createTriggeringPolicy(long maxSize) {
+    private SizeBasedTriggeringPolicy createTriggeringPolicy(final long maxSize) {
         return SizeBasedTriggeringPolicy.createPolicy(Long.toString(maxSize));
     }
 }

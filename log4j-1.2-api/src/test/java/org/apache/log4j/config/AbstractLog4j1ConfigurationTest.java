@@ -558,7 +558,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         }
     }
 
-    protected void testEnhancedRollingFileAppender(Configuration configuration) {
+    protected void testEnhancedRollingFileAppender(final Configuration configuration) {
         Appender appender;
         TriggeringPolicy policy;
         RolloverStrategy strategy;

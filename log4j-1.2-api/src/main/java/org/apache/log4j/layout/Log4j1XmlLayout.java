@@ -55,7 +55,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
     @PluginFactory
     public static Log4j1XmlLayout createLayout(
             // @formatter:off
-            @PluginConfiguration Configuration configuration,
+            @PluginConfiguration final Configuration configuration,
             @PluginAttribute(value = "locationInfo") final boolean locationInfo,
             @PluginAttribute(value = "properties") final boolean properties
             // @formatter:on
