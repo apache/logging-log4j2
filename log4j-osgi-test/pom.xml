@@ -207,6 +207,17 @@
         </configuration>
       </plugin>
 
+      <!-- Exclude `felix-cache` from `apache-rat-plugin` checks -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <exclude>felix-cache/**/*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 
