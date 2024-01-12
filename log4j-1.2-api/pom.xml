@@ -23,7 +23,6 @@
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
-
   <artifactId>log4j-1.2-api</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j 1.x Compatibility API</name>
@@ -86,12 +85,6 @@
       <artifactId>commons-lang3</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Place Felix before Equinox because Felix is signed. -->
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
@@ -107,6 +100,7 @@
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- JUnit -->
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
