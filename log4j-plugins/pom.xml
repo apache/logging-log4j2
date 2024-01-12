@@ -29,7 +29,10 @@
   <name>Apache Log4j Plugins</name>
   <description>Log4j Plugin Support</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
+    <bnd-extra-package-options>
+      <!-- External optional dependencies -->
+      com.google.errorprone.annotations.concurrent;resolution:=optional
+    </bnd-extra-package-options>
   </properties>
   <dependencies>
     <dependency>
