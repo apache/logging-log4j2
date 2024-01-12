@@ -42,8 +42,6 @@ import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
-import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
-import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -193,10 +191,6 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             return null;
         }
         final String filePattern = fileName + ".%i";
-        final TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder()
-                .setClock(clock)
-                .setModulate(true)
-                .build();
         final SizeBasedTriggeringPolicy sizePolicy = SizeBasedTriggeringPolicy.createPolicy(maxSize);
         final CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(sizePolicy);
         final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
