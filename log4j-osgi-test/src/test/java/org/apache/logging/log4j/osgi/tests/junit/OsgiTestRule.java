@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.osgi.tests.junit;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
 import org.junit.rules.ExternalResource;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
@@ -50,18 +53,19 @@ public class OsgiTestRule extends ExternalResource {
 
     @Override
     protected void before() throws Throwable {
-        final Map<String, String> configMap = new HashMap<>(2);
-        // Cleans framework before first init. Subsequent init invocations do not clean framework.
-        configMap.put("org.osgi.framework.storage.clean", "onFirstInit");
-        configMap.put("felix.log.level", "4");
-        configMap.put("eclipse.log.level", "ALL");
-        // Hack to get the build working on Windows. Could try newer versions of Felix.
-        configMap.put("felix.cache.locking", "false");
-        // Delegates loading of endorsed libraries to JVM classloader
-        // config.put("org.osgi.framework.bootdelegation", "javax.*,org.w3c.*,org.xml.*");
-        framework = factory.newFramework(configMap);
-        framework.init();
-        framework.start();
+        try (final InputStream is = OsgiTestRule.class.getResourceAsStream("/osgi.properties")) {
+            final Properties props = new Properties();
+            props.load(is);
+            final Map<String, String> configMap = props.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            e -> String.valueOf(e.getKey()),
+                            e -> String.valueOf(e.getValue()),
+                            (prev, next) -> next,
+                            HashMap::new));
+            framework = factory.newFramework(configMap);
+            framework.init();
+            framework.start();
+        }
     }
 
     public Framework getFramework() {

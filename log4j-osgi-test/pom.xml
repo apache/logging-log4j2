@@ -135,6 +135,13 @@
     </dependency>
   </dependencies>
   <build>
+    <testResources>
+      <testResource>
+        <!-- Enable variable interpolation in resources -->
+        <filtering>true</filtering>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
     <plugins>
 
       <!--
@@ -183,6 +190,15 @@
               <version>${project.version}</version>
             </path>
           </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <!-- Property files must be encoded in ISO-8859-1 -->
+          <propertiesEncoding>ISO-8859-1</propertiesEncoding>
         </configuration>
       </plugin>
 
