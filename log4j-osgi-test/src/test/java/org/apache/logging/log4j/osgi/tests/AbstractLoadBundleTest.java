@@ -18,6 +18,7 @@ package org.apache.logging.log4j.osgi.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -53,15 +54,22 @@ abstract class AbstractLoadBundleTest {
         return bundleContext.installBundle(url);
     }
 
-    private Bundle startApacheSpiFly() throws BundleException {
-        installBundle("org.objectweb.asm");
-        installBundle("org.objectweb.asm.commons");
-        installBundle("org.objectweb.asm.tree");
-        installBundle("org.objectweb.asm.tree.analysis");
-        installBundle("org.objectweb.asm.util");
-        final Bundle spiFly = installBundle("org.apache.aries.spifly.dynamic.bundle");
-        spiFly.start();
-        return spiFly;
+    private List<Bundle> startApacheSpiFly() throws BundleException {
+        final List<Bundle> bundles = List.of(
+                installBundle("org.apache.aries.spifly.dynamic.bundle"),
+                installBundle("org.objectweb.asm"),
+                installBundle("org.objectweb.asm.commons"),
+                installBundle("org.objectweb.asm.tree"),
+                installBundle("org.objectweb.asm.tree.analysis"),
+                installBundle("org.objectweb.asm.util"));
+        bundles.get(0).start();
+        return bundles;
+    }
+
+    private void uninstall(final List<Bundle> bundles) throws BundleException {
+        for (Bundle bundle : bundles) {
+            bundle.uninstall();
+        }
     }
 
     private Bundle getApiBundle() throws BundleException {
@@ -90,7 +98,7 @@ abstract class AbstractLoadBundleTest {
     @Test
     public void testApiCoreStartStopStartStop() throws BundleException {
 
-        final Bundle spiFly = startApacheSpiFly();
+        final List<Bundle> spiFly = startApacheSpiFly();
         final Bundle api = getApiBundle();
         final Bundle plugins = getPluginsBundle();
         final Bundle core = getCoreBundle();
@@ -108,7 +116,7 @@ abstract class AbstractLoadBundleTest {
         doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, api);
 
         doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, plugins, api);
-        spiFly.uninstall();
+        uninstall(spiFly);
     }
 
     /**
@@ -117,7 +125,7 @@ abstract class AbstractLoadBundleTest {
     @Test
     public void testClassNotFoundErrorLogger() throws BundleException {
 
-        final Bundle spiFly = startApacheSpiFly();
+        final List<Bundle> spiFly = startApacheSpiFly();
         final Bundle api = getApiBundle();
         final Bundle plugins = getPluginsBundle();
         final Bundle core = getCoreBundle();
@@ -144,7 +152,7 @@ abstract class AbstractLoadBundleTest {
 
         doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, api);
         doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, plugins, api);
-        spiFly.uninstall();
+        uninstall(spiFly);
     }
 
     /**
@@ -154,7 +162,7 @@ abstract class AbstractLoadBundleTest {
     @Test
     public void testLog4J12Fragement() throws BundleException, ReflectiveOperationException {
 
-        final Bundle spiFly = startApacheSpiFly();
+        final List<Bundle> spiFly = startApacheSpiFly();
         final Bundle api = getApiBundle();
         final Bundle plugins = getPluginsBundle();
         final Bundle core = getCoreBundle();
@@ -177,7 +185,7 @@ abstract class AbstractLoadBundleTest {
 
         doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, api);
         doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, compat, core, plugins, api);
-        spiFly.uninstall();
+        uninstall(spiFly);
     }
 
     private static void doOnBundlesAndVerifyState(
