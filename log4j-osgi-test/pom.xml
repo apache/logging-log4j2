@@ -28,12 +28,13 @@
   <name>Apache Log4j OSGi tests</name>
   <description>The Apache Log4j OSGi tests</description>
   <properties>
-    <docLabel>OSGi Documentation</docLabel>
-    <projectDir>/osgi</projectDir>
     <module.name>org.apache.logging.log4j.osgi</module.name>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
+    <sign.skip>true</sign.skip>
+
+    <spotbugs.skip>true</spotbugs.skip>
     <spifly.version>1.3.7</spifly.version>
   </properties>
   <dependencies>
@@ -41,6 +42,7 @@
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>1</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

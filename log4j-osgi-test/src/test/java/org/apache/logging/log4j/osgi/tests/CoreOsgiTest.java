@@ -29,17 +29,18 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.ProbeBuilder;
+import org.ops4j.pax.exam.TestProbeBuilder;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.osgi.framework.Constants;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-@Ignore
 public class CoreOsgiTest {
 
     @org.ops4j.pax.exam.Configuration
@@ -60,6 +61,19 @@ public class CoreOsgiTest {
                 linkBundle("ch.qos.logback.classic"),
                 linkBundle("ch.qos.logback.core"),
                 junitBundles());
+    }
+
+    @ProbeBuilder
+    public TestProbeBuilder probeConfiguration(final TestProbeBuilder builder) {
+        // Register `Log4jPlugins` manually with the Service Loader Mediator
+        builder.setHeader(
+                Constants.PROVIDE_CAPABILITY,
+                "osgi.serviceloader;osgi.serviceloader=\"org.apache.logging.log4j.plugins.model.PluginService\";"
+                        + "register:=\"org.apache.logging.log4j.osgi.tests.plugins.Log4jPlugins\"");
+        builder.setHeader(
+                Constants.REQUIRE_CAPABILITY,
+                "osgi.extender;filter:=\"(&(osgi.extender=osgi.serviceloader.registrar)(version>=1.0)(!(version>=2.0)))\"");
+        return builder;
     }
 
     @Test

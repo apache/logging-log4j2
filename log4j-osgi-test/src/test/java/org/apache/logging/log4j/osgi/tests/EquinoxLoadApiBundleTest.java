@@ -16,40 +16,14 @@
  */
 package org.apache.logging.log4j.osgi.tests;
 
-import org.apache.logging.log4j.osgi.tests.junit.OsgiTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.launch.FrameworkFactory;
+import org.eclipse.osgi.launch.EquinoxFactory;
 
 /**
- * Subclasses can tests a basic setup in an OSGi container.
+ * Tests loading the Core bundle into an Eclipse Equinox OSGi container.
  */
-public abstract class AbstractOsgiTest {
+public class EquinoxLoadApiBundleTest extends AbstractLoadBundleTest {
 
-    private BundleContext bundleContext;
-
-    @Rule
-    public OsgiTestRule osgi = new OsgiTestRule(getFactory());
-
-    /**
-     * Constructs a test for a given bundle.
-     */
-    public AbstractOsgiTest() {
-        super();
+    public EquinoxLoadApiBundleTest() {
+        super(new EquinoxFactory());
     }
-
-    /**
-     * Called before each @Test.
-     */
-    @Before
-    public void before() {
-        bundleContext = osgi.getFramework().getBundleContext();
-    }
-
-    public BundleContext getBundleContext() {
-        return bundleContext;
-    }
-
-    protected abstract FrameworkFactory getFactory();
 }
