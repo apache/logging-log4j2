@@ -31,7 +31,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
@@ -39,12 +38,13 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  */
 public class InternalLoggerContext extends LoggerContext {
 
-    private final SimpleLoggerContext simpleLoggerContext = new SimpleLoggerContext();
+    private final org.apache.logging.log4j.spi.LoggerContext parentLoggerContext;
 
     private static final LoggerConfig LOGGER_CONFIG = new LoggerConfig.RootLogger();
 
-    public InternalLoggerContext() {
+    public InternalLoggerContext(org.apache.logging.log4j.spi.LoggerContext loggerContext) {
         super();
+        this.parentLoggerContext = loggerContext;
         setStarted();
     }
 
@@ -65,7 +65,7 @@ public class InternalLoggerContext extends LoggerContext {
         public InternalLogger(InternalLoggerContext loggerContext, String name) {
             super(loggerContext, name);
             this.loggerContext = loggerContext;
-            this.logger = simpleLoggerContext.getLogger(name);
+            this.logger = parentLoggerContext.getLogger(name);
         }
 
         @Override

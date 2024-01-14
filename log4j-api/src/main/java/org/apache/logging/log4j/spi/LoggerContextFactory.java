@@ -106,4 +106,14 @@ public interface LoggerContextFactory {
     default boolean isClassLoaderDependent() {
         return true;
     }
+
+    /**
+     * Wraps the LoggerContext as needed so it can be used by the logging implementation.
+     * @param loggerContext The LoggerContext to wrap.
+     * @return the wrapped LoggerContext.
+     * @since 3.0.0
+     */
+    default LoggerContext wrapLoggerContext(LoggerContext loggerContext) {
+        return loggerContext;
+    }
 }

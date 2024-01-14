@@ -40,7 +40,7 @@ public class LoggerContextTest {
         assertTrue(registry instanceof DefaultShutdownCallbackRegistry);
         ((DefaultShutdownCallbackRegistry) registry).start();
         ((DefaultShutdownCallbackRegistry) registry).stop();
-        LoggerContext loggerContext = factory.getContext(LoggerContextTest.class.getName(), null, null, false);
+        org.apache.logging.log4j.spi.LoggerContext loggerContext = LogManager.getContext(false);
         assertTrue(loggerContext instanceof InternalLoggerContext);
     }
 }

@@ -54,8 +54,6 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     private final ContextSelector selector;
     private final ShutdownCallbackRegistry shutdownCallbackRegistry;
 
-    private final LoggerContext internalContext = new InternalLoggerContext();
-
     /**
      * Initializes the ContextSelector from system property {@link Log4jPropertyKey#CONTEXT_SELECTOR_CLASS_NAME}.
      */
@@ -159,12 +157,8 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
-        try {
-            if (ctx.getState() == LifeCycle.State.INITIALIZED) {
-                startContext(ctx, classLoader);
-            }
-        } catch (IllegalStateException ex) {
-            return internalContext;
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
+            startContext(ctx, classLoader);
         }
         return ctx;
     }
@@ -240,27 +234,23 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
-        try {
-            if (ctx.getState() == LifeCycle.State.INITIALIZED) {
-                ContextAnchor.THREAD_CONTEXT.set(ctx);
-                boolean setProperties = false;
-                try {
-                    if (ctx.getProperties() == null) {
-                        final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
-                        ctx.setProperties(props);
-                        PropertiesUtil.setThreadProperties(props);
-                        setProperties = true;
-                    }
-                    ctx.start(configuration);
-                } finally {
-                    if (setProperties) {
-                        PropertiesUtil.clearThreadProperties();
-                    }
-                    ContextAnchor.THREAD_CONTEXT.remove();
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
+            ContextAnchor.THREAD_CONTEXT.set(ctx);
+            boolean setProperties = false;
+            try {
+                if (ctx.getProperties() == null) {
+                    final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                    ctx.setProperties(props);
+                    PropertiesUtil.setThreadProperties(props);
+                    setProperties = true;
                 }
+                ctx.start(configuration);
+            } finally {
+                if (setProperties) {
+                    PropertiesUtil.clearThreadProperties();
+                }
+                ContextAnchor.THREAD_CONTEXT.remove();
             }
-        } catch (IllegalStateException ex) {
-            return internalContext;
         }
         return ctx;
     }
@@ -292,34 +282,29 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (name != null) {
             ctx.setName(name);
         }
-        try {
-            if (ctx.getState() == LifeCycle.State.INITIALIZED) {
-                if (configLocation != null || name != null) {
-                    ContextAnchor.THREAD_CONTEXT.set(ctx);
-                    boolean setProperties = false;
-                    try {
-                        if (ctx.getProperties() == null) {
-                            final PropertiesUtil props =
-                                    PropertiesUtil.getContextProperties(classLoader, ctx.getName());
-                            ctx.setProperties(props);
-                            PropertiesUtil.setThreadProperties(props);
-                            setProperties = true;
-                        }
-                        final Configuration config = ctx.getConfiguration(name, configLocation);
-                        LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
-                        ctx.start(config);
-                    } finally {
-                        if (setProperties) {
-                            PropertiesUtil.clearThreadProperties();
-                        }
-                        ContextAnchor.THREAD_CONTEXT.remove();
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
+            if (configLocation != null || name != null) {
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
+                boolean setProperties = false;
+                try {
+                    if (ctx.getProperties() == null) {
+                        final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        ctx.setProperties(props);
+                        PropertiesUtil.setThreadProperties(props);
+                        setProperties = true;
                     }
-                } else {
-                    startContext(ctx, classLoader);
+                    final Configuration config = ctx.getConfiguration(name, configLocation);
+                    LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
+                    ctx.start(config);
+                } finally {
+                    if (setProperties) {
+                        PropertiesUtil.clearThreadProperties();
+                    }
+                    ContextAnchor.THREAD_CONTEXT.remove();
                 }
+            } else {
+                startContext(ctx, classLoader);
             }
-        } catch (IllegalStateException ex) {
-            return internalContext;
         }
         return ctx;
     }
@@ -337,34 +322,29 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (name != null) {
             ctx.setName(name);
         }
-        try {
-            if (ctx.getState() == LifeCycle.State.INITIALIZED) {
-                if (configLocation != null || name != null) {
-                    boolean setProperties = false;
-                    try {
-                        if (ctx.getProperties() == null) {
-                            final PropertiesUtil props =
-                                    PropertiesUtil.getContextProperties(classLoader, ctx.getName());
-                            ctx.setProperties(props);
-                            PropertiesUtil.setThreadProperties(props);
-                            setProperties = true;
-                        }
-                        ContextAnchor.THREAD_CONTEXT.set(ctx);
-                        final Configuration config = ctx.getConfiguration(name, configLocation);
-                        LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
-                        ctx.start(config);
-                    } finally {
-                        if (setProperties) {
-                            PropertiesUtil.clearThreadProperties();
-                        }
-                        ContextAnchor.THREAD_CONTEXT.remove();
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
+            if (configLocation != null || name != null) {
+                boolean setProperties = false;
+                try {
+                    if (ctx.getProperties() == null) {
+                        final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        ctx.setProperties(props);
+                        PropertiesUtil.setThreadProperties(props);
+                        setProperties = true;
                     }
-                } else {
-                    startContext(ctx, classLoader);
+                    ContextAnchor.THREAD_CONTEXT.set(ctx);
+                    final Configuration config = ctx.getConfiguration(name, configLocation);
+                    LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
+                    ctx.start(config);
+                } finally {
+                    if (setProperties) {
+                        PropertiesUtil.clearThreadProperties();
+                    }
+                    ContextAnchor.THREAD_CONTEXT.remove();
                 }
+            } else {
+                startContext(ctx, classLoader);
             }
-        } catch (IllegalStateException ex) {
-            return internalContext;
         }
         return ctx;
     }
@@ -386,58 +366,52 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (name != null) {
             ctx.setName(name);
         }
-        try {
-            if (ctx.getState() == LifeCycle.State.INITIALIZED) {
-                if ((configLocations != null && !configLocations.isEmpty())) {
-                    ContextAnchor.THREAD_CONTEXT.set(ctx);
-                    boolean setProperties = false;
-                    try {
-                        final List<AbstractConfiguration> configurations = new ArrayList<>(configLocations.size());
-                        if (ctx.getProperties() == null) {
-                            final PropertiesUtil props =
-                                    PropertiesUtil.getContextProperties(classLoader, ctx.getName());
-                            ctx.setProperties(props);
-                            PropertiesUtil.setThreadProperties(props);
-                            setProperties = true;
-                        }
-                        for (final URI configLocation : configLocations) {
-                            final Configuration currentReadConfiguration = ctx.getConfiguration(name, configLocation);
-                            if (currentReadConfiguration != null) {
-                                if (currentReadConfiguration instanceof DefaultConfiguration) {
-                                    LOGGER.warn(
-                                            "Unable to locate configuration {}, ignoring", configLocation.toString());
-                                } else if (currentReadConfiguration instanceof AbstractConfiguration) {
-                                    configurations.add((AbstractConfiguration) currentReadConfiguration);
-                                } else {
-                                    LOGGER.error(
-                                            "Found configuration {}, which is not an AbstractConfiguration and can't be handled by CompositeConfiguration",
-                                            configLocation);
-                                }
-                            } else {
-                                LOGGER.info("Unable to access configuration {}, ignoring", configLocation.toString());
-                            }
-                        }
-                        if (configurations.isEmpty()) {
-                            LOGGER.error("No configurations could be created for {}", configLocations.toString());
-                        } else if (configurations.size() == 1) {
-                            ctx.start(configurations.get(0));
-                        } else {
-                            final CompositeConfiguration compositeConfiguration =
-                                    new CompositeConfiguration(configurations);
-                            ctx.start(compositeConfiguration);
-                        }
-                    } finally {
-                        if (setProperties) {
-                            PropertiesUtil.clearThreadProperties();
-                        }
-                        ContextAnchor.THREAD_CONTEXT.remove();
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
+            if ((configLocations != null && !configLocations.isEmpty())) {
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
+                boolean setProperties = false;
+                try {
+                    final List<AbstractConfiguration> configurations = new ArrayList<>(configLocations.size());
+                    if (ctx.getProperties() == null) {
+                        final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        ctx.setProperties(props);
+                        PropertiesUtil.setThreadProperties(props);
+                        setProperties = true;
                     }
-                } else {
-                    startContext(ctx, classLoader);
+                    for (final URI configLocation : configLocations) {
+                        final Configuration currentReadConfiguration = ctx.getConfiguration(name, configLocation);
+                        if (currentReadConfiguration != null) {
+                            if (currentReadConfiguration instanceof DefaultConfiguration) {
+                                LOGGER.warn("Unable to locate configuration {}, ignoring", configLocation.toString());
+                            } else if (currentReadConfiguration instanceof AbstractConfiguration) {
+                                configurations.add((AbstractConfiguration) currentReadConfiguration);
+                            } else {
+                                LOGGER.error(
+                                        "Found configuration {}, which is not an AbstractConfiguration and can't be handled by CompositeConfiguration",
+                                        configLocation);
+                            }
+                        } else {
+                            LOGGER.info("Unable to access configuration {}, ignoring", configLocation.toString());
+                        }
+                    }
+                    if (configurations.isEmpty()) {
+                        LOGGER.error("No configurations could be created for {}", configLocations.toString());
+                    } else if (configurations.size() == 1) {
+                        ctx.start(configurations.get(0));
+                    } else {
+                        final CompositeConfiguration compositeConfiguration =
+                                new CompositeConfiguration(configurations);
+                        ctx.start(compositeConfiguration);
+                    }
+                } finally {
+                    if (setProperties) {
+                        PropertiesUtil.clearThreadProperties();
+                    }
+                    ContextAnchor.THREAD_CONTEXT.remove();
                 }
+            } else {
+                startContext(ctx, classLoader);
             }
-        } catch (IllegalStateException ex) {
-            return internalContext;
         }
         return ctx;
     }
@@ -529,5 +503,11 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     public boolean isShutdownHookEnabled() {
         return !isWebApp()
                 && PropertiesUtil.getProperties().getBooleanProperty(Log4jPropertyKey.SHUTDOWN_HOOK_ENABLED, true);
+    }
+
+    @Override
+    public org.apache.logging.log4j.spi.LoggerContext wrapLoggerContext(
+            org.apache.logging.log4j.spi.LoggerContext loggerContext) {
+        return new InternalLoggerContext(loggerContext);
     }
 }
