@@ -31,7 +31,7 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <module.name>org.apache.logging.log4j.jndi.test</module.name>
-    <simple-jndi.version>0.23.0</simple-jndi.version>
+    <simple-jndi.version>0.24.0</simple-jndi.version>
   </properties>
   <dependencies>
     <dependency>
