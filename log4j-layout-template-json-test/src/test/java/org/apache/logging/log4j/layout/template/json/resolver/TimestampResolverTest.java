@@ -16,7 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.readJson;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.uncheckedSleep;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.withContextFromTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;

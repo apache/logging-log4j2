@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.ConfigurationProcessor;

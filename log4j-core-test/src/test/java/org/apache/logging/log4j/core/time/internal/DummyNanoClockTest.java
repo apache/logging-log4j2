@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.time.internal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 

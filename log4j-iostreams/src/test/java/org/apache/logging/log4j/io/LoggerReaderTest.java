@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;

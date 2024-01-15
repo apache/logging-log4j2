@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;

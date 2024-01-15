@@ -26,7 +26,11 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.spi.recycler.RecyclerAware;
-import org.apache.logging.log4j.util.*;
+import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.util.LambdaUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Collects data for a log event and then logs it. This class should be considered private.

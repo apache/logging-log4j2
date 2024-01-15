@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.time.internal.format;
 
-import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat.*;
-import static org.junit.Assert.*;
+import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat.DEFAULT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;

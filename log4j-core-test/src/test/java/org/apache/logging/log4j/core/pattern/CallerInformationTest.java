@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import org.apache.logging.log4j.Logger;

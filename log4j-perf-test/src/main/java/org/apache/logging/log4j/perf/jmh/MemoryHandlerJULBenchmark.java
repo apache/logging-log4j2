@@ -16,7 +16,17 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.eight;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.eleven;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.five;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.four;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.nine;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.one;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.seven;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.six;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.ten;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.three;
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.two;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;

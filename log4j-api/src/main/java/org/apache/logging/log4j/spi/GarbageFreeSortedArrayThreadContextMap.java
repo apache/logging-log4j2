@@ -17,7 +17,8 @@
 package org.apache.logging.log4j.spi;
 
 import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_INITIAL_CAPACITY;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_INHERITABLE;
 
 import java.util.Collections;
 import java.util.HashMap;

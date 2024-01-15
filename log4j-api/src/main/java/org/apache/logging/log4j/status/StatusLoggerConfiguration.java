@@ -16,7 +16,10 @@
  */
 package org.apache.logging.log4j.status;
 
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.STATUS_DATE_FORMAT;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.STATUS_DEFAULT_LISTENER_LEVEL;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.STATUS_LOGGER_DEBUG;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.STATUS_MAX_ENTRIES;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
