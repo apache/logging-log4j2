@@ -131,12 +131,10 @@ public class MarkerTest {
         final Marker log4jParent = MarkerManager.getMarker(parentMakerName);
         final Marker log4jMarker = MarkerManager.getMarker(childMarkerName);
         final Marker log4jMarker2 = MarkerManager.getMarker(childMarkerName);
-        assertEquals(log4jParent, log4jParent);
-        assertEquals(log4jMarker, log4jMarker);
         assertEquals(log4jMarker, log4jMarker2);
         assertEquals(slf4jMarker, slf4jMarker2);
         assertNotEquals(log4jParent, log4jMarker);
-        assertNotEquals(log4jMarker, log4jParent);
+        assertNotEquals(slf4jParent, slf4jMarker);
     }
 
     @Test
