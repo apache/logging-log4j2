@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

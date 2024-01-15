@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
