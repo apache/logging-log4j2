@@ -16,11 +16,11 @@
  limitations under the License.
 -->
 
-# Log4j 2 Compatibility with Log4j 1
+# Log4j 3 compatibility with Log4j 1
 
 ## API Compatibility
 
-Log4j 2 provides support for the Log4j 1 logging methods by providing alternate implementations 
+Log4j 3 provides support for the Log4j 1 logging methods by providing alternate implementations 
 of the classes containing those methods. These classes may be found in the log4j-1.2-api jar 
 distributed with the project. All calls to perform logging will result in the data passed to the logging methods
 to be forwarded to the Log4j2 API where they can be processed by implementations of the Log4j 2 API. 

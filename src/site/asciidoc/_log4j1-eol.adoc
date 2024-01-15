@@ -1,0 +1,23 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+[WARNING]
+====
+http://logging.apache.org/log4j/1.x[Log4j 1] has https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces[reached End of Life] in 2015, and is no longer supported.
+Vulnerabilities reported after August 2015 against Log4j 1 are not checked and will not be fixed.
+Users should xref:manual/migration.html[upgrade to Log4j 2] to obtain security fixes.
+====

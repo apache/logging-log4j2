@@ -67,16 +67,17 @@ directory], rather than from a mirror. Then verify the signatures using
 [source,sh,subs=attributes]
 ----
 gpg --import KEYS
-gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc apache-log4j-${Log4jReleaseVersion}-bin.tar.gz
-gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.zip.asc apache-log4j-${Log4jReleaseVersion}-bin.zip
-gpg --verify apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc apache-log4j-${Log4jReleaseVersion}-src.tar.gz
-gpg --verify apache-log4j-${Log4jReleaseVersion}-src.zip.asc apache-log4j-${Log4jReleaseVersion}-src.zip
+gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.zip.asc
 ----
-
-Apache Log4j ${Log4jReleaseVersion} is signed by {Log4jReleaseManager} ({Log4jReleaseKey}).
 
 Alternatively, you can verify the SHA512 signature on the files. A unix
 program called sha512sum is included in many unix distributions.
+
+[#requirements]
+== Requirements
+
+Log4j 3 runtime requires a minimum of Java 17.
+See the link:http://logging.apache.org/2.x[Log4j 2 website] for the latest releases supporting Java 6, 7, and 8.
 
 == Previous Releases
 

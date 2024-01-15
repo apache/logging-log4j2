@@ -14,13 +14,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-#set($dollar = '$')
 = JSON Template Layout
 Volkan Yazıcı <vy@apache.org>
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
+include::../_constants.adoc[]
 
 `JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
 generating layout. It encodes ``LogEvent``s according to the structure described
@@ -45,12 +42,12 @@ by the JSON template provided. In a nutshell, it shines with its
 Adding `log4j-layout-template-json` artifact to your list of dependencies is
 enough to enable access to `JsonTemplateLayout` in your Log4j configuration:
 
-[source,xml]
+[source,xml,subs="+attributes"]
 ----
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-layout-template-json</artifactId>
-    <version>${Log4jReleaseVersion}</version>
+    <version>{project-version}</version>
 </dependency>
 ----
 
@@ -122,8 +119,8 @@ or with the below `log4j2.properties` configuration:
 
 [source,ini]
 ----
-appender.console.json.type = JsonTemplateLayout
-appender.console.json.eventTemplateUri = classpath:EcsLayout.json
+appender.console.layout.type = JsonTemplateLayout
+appender.console.layout.eventTemplateUri = classpath:EcsLayout.json
 ----
 
 `JsonTemplateLayout` generates JSON as follows:
@@ -357,14 +354,14 @@ serialize ``LogEvent``s. The default configuration (accessible by
 `classpath:EcsLayout.json` provided by the `log4j-layout-template-json`
 artifact, which contains the following predefined event templates:
 
-- https://github.com/apache/logging-log4j2/tree/master/log4j-layout-template-json/src/main/resources/EcsLayout.json[`EcsLayout.json`]
+- https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/EcsLayout.json[`EcsLayout.json`]
   described by https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification]
 
-- https://github.com/apache/logging-log4j2/tree/master/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json[`LogstashJsonEventLayoutV1.json`]
+- https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json[`LogstashJsonEventLayoutV1.json`]
   described in https://github.com/logstash/log4j-jsonevent-layout[Logstash
   `json_event` pattern for log4j]
 
-- https://github.com/apache/logging-log4j2/tree/master/log4j-layout-template-json/src/main/resources/GelfLayout.json[`GelfLayout.json`]
+- https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/GelfLayout.json[`GelfLayout.json`]
   described by https://docs.graylog.org/en/3.1/pages/gelf.html#gelf-payload-specification[the
   Graylog Extended Log Format (GELF) payload specification] with additional
   `_thread` and `_logger` fields. (Here it is advised to override the obligatory
@@ -372,7 +369,7 @@ artifact, which contains the following predefined event templates:
   xref:additional-event-template-fields[additional event template fields]
   to avoid `hostName` property lookup at runtime, which incurs an extra cost.)
 
-- https://github.com/apache/logging-log4j2/tree/master/log4j-layout-template-json/src/main/resources/GcpLayout.json[`GcpLayout.json`]
+- https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/GcpLayout.json[`GcpLayout.json`]
   described by https://cloud.google.com/logging/docs/structured-logging[Google
   Cloud Platform structured logging] with additional
   `_thread`, `_logger` and `_exception` fields. The exception trace, if any,
@@ -388,7 +385,7 @@ Event template resolvers consume a `LogEvent` and render a certain property of
 it at the point of the JSON where they are declared. For instance, `marker`
 resolver renders the marker of the event, `level` resolver renders the level,
 and so on. An event template resolver is denoted with a special object
-containing a`${dollar}resolver` key:
+containing a`$resolver` key:
 
 .Example event template demonstrating the usage of `level` resolver
 [source,json]
@@ -557,7 +554,7 @@ locale:
   "$resolver": "caseConverter",
   "case": "lower",
   "locale": "nl_NL",
-  "input": "${dollar}{env:USER}"
+  "input": "${env:USER}"
 }
 ----
 
@@ -1395,7 +1392,7 @@ generates garbage, though most (e.g., `int`, `long`, `String`, `List`,
 `boolean[]`, etc.) don't.
 ====
 
-`"${dollar}resolver"` is left out in the following examples, since it is to be
+`"$resolver"` is left out in the following examples, since it is to be
 defined by the actual resolver, e.g., `map`, `mdc`.
 
 Resolve the value of the field keyed with `user:role`:
@@ -1857,8 +1854,8 @@ alternatives.
 [#faq-lookups]
 === Are lookups supported in templates?
 
-Yes, link:lookups.html[lookups] (e.g., `${dollar}{java:version}`,
-`${dollar}{env:USER}`, `${dollar}{date:MM-dd-yyyy}`) are supported in string
+Yes, link:lookups.html[lookups] (e.g., `${java:version}`,
+`${env:USER}`, `${date:MM-dd-yyyy}`) are supported in string
 literals of templates. Though note that they are not garbage-free.
 
 === Are recursive collections supported?

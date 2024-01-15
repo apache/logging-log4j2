@@ -728,8 +728,7 @@ positive number, then log events will be batched. Note that as of Log4j
 2.8, there are two ways to configure log event to column mappings: the
 original `ColumnConfig` style that only allows strings and timestamps,
 and the new `ColumnMapping` plugin that uses Log4j's built-in type
-conversion to allow for more data types (this is the same plugin as in
-the <<CassandraAppender>>).
+conversion to allow for more data types.
 
 To get off the ground quickly during development, an alternative to
 using a connection source based on JNDI is to use the non-pooling
