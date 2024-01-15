@@ -338,48 +338,6 @@ JsonTemplateLayout:
 }
 ----
 
-[#recycling-strategy]
-=== Recycling strategy
-
-`RecyclerFactory` plays a crucial role for determining the memory footprint of
-the layout. Template resolvers employ it to create recyclers for objects that
-they can reuse. The behavior of each `RecyclerFactory` and when one should
-prefer one over another is explained below:
-
-* `dummy` performs no recycling, hence each recycling attempt will result in a
-new instance. This will obviously create a load on the garbage-collector. It
-is a good choice for applications with low and medium log rate.
-
-* `threadLocal` performs the best, since every instance is stored in
-``ThreadLocal``s and accessed without any synchronization cost. Though this
-might not be a desirable option for applications running with hundreds of
-threads or more, e.g., a web servlet.
-
-* `queue` is the best of both worlds. It allows recycling of objects up to a
-certain number (`capacity`). When this limit is exceeded due to excessive
-concurrent load (e.g., `capacity` is 50 but there are 51 threads concurrently
-trying to log), it starts allocating. `queue` is a good strategy where
-`threadLocal` is not desirable.
-+
-`queue` also accepts optional `supplier` (of type `java.util.Queue`, defaults to
-  `org.jctools.queues.MpmcArrayQueue.new` if JCTools is in the classpath;
-otherwise `java.util.concurrent.ArrayBlockingQueue.new`) and `capacity` (of
-type `int`, defaults to `max(8,2*cpuCount+1)`) parameters:
-+
-.Example configurations of `queue` recycling strategy
-[source]
-----
-queue:supplier=org.jctools.queues.MpmcArrayQueue.new
-queue:capacity=10
-queue:supplier=java.util.concurrent.ArrayBlockingQueue.new,capacity=50
-----
-
-The default `RecyclerFactory` is `threadLocal`, if
-`log4j2.enable.threadlocals=true`; otherwise, `queue`.
-
-See <<extending-recycler>> for details on how to introduce custom
-`RecyclerFactory` implementations.
-
 [#template-config]
 == Template Configuration
 
@@ -1082,8 +1040,7 @@ Resolves `logEvent.getMessage().getParameters()`.
 ====
 Regarding garbage footprint, `stringified` flag translates to
 `String.valueOf(value)`, hence mind not-`String`-typed values. Further,
-`logEvent.getMessage()` is expected to implement `ParameterVisitable` interface,
-which is the case if `log4j2.enableThreadLocals` property set to true.
+`logEvent.getMessage()` is expected to implement `ParameterVisitable` interface.
 ====
 
 ====== Examples
@@ -1590,7 +1547,6 @@ plugins:
 
 * Event template resolvers (e.g., `exception`, `message`, `level` event template resolvers)
 * Event template interceptors (e.g., injection of `eventTemplateAdditionalField`)
-* Recycler factories
 
 Following sections cover these in detail.
 
@@ -1829,44 +1785,6 @@ provided an `eventTemplateRootObjectKey`. If so, it wraps the root `node` with a
 new object; otherwise, returns the `node` as is. Note that `node` refers to the
 root Java object of the event template read by `JsonReader`.
 
-[#extending-recycler]
-=== Extending Recycler Factories
-
-`recyclerFactory` input `String` read from the layout configuration is converted
-to a `RecyclerFactory` using the default `RecyclerFactoryConverter` extending
-from `TypeConverter<RecyclerFactory>`. If one wants to change this behavior,
-they simply need to add their own `TypeConverter<RecyclerFactory>` implementing
-`Comparable<TypeConverter<?>>` to prioritize their custom converter.
-
-[source,java]
-.Custom `TypeConverter` for `RecyclerFactory`
-----
-package com.acme.logging.log4j.layout.template.json;
-
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.convert.TypeConverter;
-
-@Category(TypeConverter.CATEGORY)
-@Plugin("AcmeRecyclerFactoryConverter")
-public final class AcmeRecyclerFactoryConverter
-        implements TypeConverter<RecyclerFactory>, Comparable<TypeConverter<?>> {
-
-    @Override
-    public RecyclerFactory convert(final String recyclerFactorySpec) {
-        return AcmeRecyclerFactory.ofSpec(recyclerFactorySpec);
-    }
-
-    @Override
-    public int compareTo(final TypeConverter<?> ignored) {
-        return -1;
-    }
-
-}
-----
-
-Here note that `compareTo()` always returns -1 to rank it higher compared to
-other matching converters.
-
 [#features]
 == Features
 
@@ -1966,7 +1884,7 @@ Yes, if the garbage-free layout behaviour toggling properties
 `log4j2.enableDirectEncoders` and `log4j2.garbagefreeThreadContextMap` are
 enabled. Take into account the following caveats:
 
-* The configured link:#recycling-strategy[recycling strategy] might not be
+* The configured recycling strategy might not be
   garbage-free.
 
 * Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,

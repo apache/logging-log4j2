@@ -120,9 +120,6 @@ you may also configure a link:async.html#WaitStrategy[custom wait strategy].)
 There are two separate system properties for manually controlling the
 mechanisms Log4j uses to avoid creating temporary objects:
 
-* `log4j2.enableThreadlocals` - if "true" (the default for non-web
-applications) objects are stored in ThreadLocal fields and reused,
-otherwise new objects are created for each log event.
 * `log4j2.enableDirectEncoders` - if "true" (the default) log events are
 converted to text and this text is converted to bytes without creating
 temporary objects. Note: _synchronous_ logging performance may be worse
@@ -386,10 +383,6 @@ http://logging.apache.org/log4j/2.x/log4j-api/xref/org/apache/logging/log4j/util
 interface. If an object is logged that implements this interface, its
 `formatTo` method is called instead of `toString()`.
 
-Log4j may call `toString()` on message and parameter objects when
-garbage-free logging is disabled (when system property
-`log4j2.enableThreadlocals` is set to "false".)
-
 [#codeImpact]
 === Impact on Application Code: Autoboxing
 
@@ -463,10 +456,8 @@ command line options we used:
 * -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
 -DAsyncLogger.WaitStrategy=busyspin (to use Async Loggers. The BusySpin
 wait strategy reduces some jitter.)
-* *classic mode:* -Dlog4j2.enable.threadlocals=false
--Dlog4j2.enable.direct.encoders=false +
-*garbage-free mode:* -Dlog4j2.enable.threadlocals=true
--Dlog4j2.enable.direct.encoders=true
+* *classic mode:* -Dlog4j2.enable.direct.encoders=false +
+*garbage-free mode:* -Dlog4j2.enable.direct.encoders=true
 * -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
 * -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
 -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime

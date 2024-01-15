@@ -365,16 +365,6 @@ class name of a custom `ThreadContextMap` implementation class.
 |If `true` use a `InheritableThreadLocal` to implement the ThreadContext map. Otherwise, use a plain `ThreadLocal`.
 (May be ignored if a custom ThreadContext map is specified.)
 
-|ThreadLocals
-|enable
-|log4j2.enableThreadlocals, LOG4J_ENABLE_THREADLOCALS
-|System
-|true
-|This system property can be used to switch off the use of threadlocals, which will partly disable Log4j's
-garbage-free behaviour: to be fully garbage-free, Log4j stores objects in ThreadLocal fields to reuse them,
-otherwise new objects are created for each log event. Note that this property is not effective when Log4j
-detects it is running in a web application.
-
 |Unbox
 |ringBufferSize
 |log4j2.unboxRingbufferSize, LOG4J_UNBOX_RINGBUFFER_SIZE

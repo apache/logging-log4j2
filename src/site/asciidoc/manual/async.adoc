@@ -687,10 +687,8 @@ command line options we used:
 * -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
 -DAsyncLogger.WaitStrategy=busyspin (to use Async Loggers. The BusySpin
 wait strategy reduces some jitter.)
-* *classic mode:* -Dlog4j2.enable.threadlocals=false
--Dlog4j2.enable.direct.encoders=false +
-*garbage-free mode:* -Dlog4j2.enable.threadlocals=true
--Dlog4j2.enable.direct.encoders=true
+* *classic mode:* -Dlog4j2.enable.direct.encoders=false +
+*garbage-free mode:* -Dlog4j2.enable.direct.encoders=true
 * -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
 * -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
 -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime

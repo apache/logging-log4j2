@@ -608,8 +608,7 @@ declare it as a service by defining the implmentation class in a file named
 == Custom ThreadContextMap implementations
 
 A garbage-free `StringMap`-based context map can be installed by setting
-system property `log4j2.garbagefreeThreadContextMap` to true. (Log4j
-must be link:garbagefree.html#Config[enabled] to use ThreadLocals.)
+system property `log4j2.garbagefreeThreadContextMap` to true.
 
 Any custom link:../log4j-core/apidocs/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
 implementation can be installed by setting system property `log4j2.threadContextMap` 
