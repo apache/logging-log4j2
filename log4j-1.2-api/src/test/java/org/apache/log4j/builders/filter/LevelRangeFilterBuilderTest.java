@@ -16,7 +16,7 @@
  */
 package org.apache.log4j.builders.filter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.StringReader;
 import java.util.Properties;
