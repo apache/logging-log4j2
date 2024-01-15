@@ -115,12 +115,10 @@ public class MemoryMappedFileAppenderTest {
                 "Expected file size to shrink");
 
         final List<String> lines = Files.readAllLines(logFile);
-        assertEquals(2, lines.size());
-        assertThat(lines.get(0))
-                .endsWith("org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation"
-                        + "(MemoryMappedFileAppenderTest.java:103): Test log1");
-        assertThat(lines.get(1))
-                .endsWith("org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation"
-                        + "(MemoryMappedFileAppenderTest.java:106): Test log2");
+        assertThat(lines)
+                .hasSize(2)
+                .contains(
+                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:103): Test log1",
+                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:106): Test log2");
     }
 }
