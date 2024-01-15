@@ -29,7 +29,6 @@ This release contains...
 [#release-notes-3-x-x-changed]
 === Changed
 
-* Moves legacy `2.x` properties configuration factory to `log4j-config-properties-legacy`.
 * Split off YAML configuration into a new `log4j-config-yaml` module.
 * Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2102[2102])
 * Update `com.google.guava:guava` to version `33.0.0-jre` (https://github.com/apache/logging-log4j2/pull/2108[2108])
@@ -48,6 +47,7 @@ This release contains...
 [#release-notes-3-x-x-removed]
 === Removed
 
+* Removed legacy `2.x` properties configuration factory.
 * Remove `DefaultLogEventFactory`
 * Remove `org.apache.logging.log4j.core.parser` and related packages. (https://github.com/apache/logging-log4j2/pull/2154[2154])
 * Remove `log4j2.enable.threadlocals` property (https://github.com/apache/logging-log4j2/issues/2105[2105])
@@ -55,6 +55,7 @@ This release contains...
 [#release-notes-3-x-x-updated]
 === Updated
 
+* Update `apache/logging-parent` to version `` (https://github.com/apache/logging-log4j2/pull/2191[2191])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2127[2127])
 * Update `org.apache.groovy:groovy-bom` to version `4.0.17` (https://github.com/apache/logging-log4j2/pull/2124[2124])
 * Update `org.apache.logging:logging-parent` to version `10.5.0` (https://github.com/apache/logging-log4j2/pull/2118[2118])
