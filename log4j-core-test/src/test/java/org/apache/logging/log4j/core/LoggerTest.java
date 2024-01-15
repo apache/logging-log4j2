@@ -133,7 +133,7 @@ public class LoggerTest {
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
         assertEquals(
-                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:123)",
+                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:129)",
                 events.get(0).getSource().toString(),
                 "Incorrect location");
         assertEquals(Level.DEBUG, events.get(0).getLevel(), "Incorrect Level");

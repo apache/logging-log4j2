@@ -118,7 +118,7 @@ public class MemoryMappedFileAppenderTest {
                 both(hasSize(2))
                         .and(
                                 contains(
-                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:103): Test log1",
-                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:106): Test log2")));
+                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:105): Test log1",
+                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:108): Test log2")));
     }
 }

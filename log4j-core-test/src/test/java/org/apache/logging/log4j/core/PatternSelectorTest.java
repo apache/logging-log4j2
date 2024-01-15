@@ -50,7 +50,7 @@ public class PatternSelectorTest {
         final String expect = String.format(
                 "[TRACE] TestMarkerPatternSelector ====== "
                         + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:%d Enter ======%n",
-                CURRENT_LINE + 4);
+                CURRENT_LINE + 5);
         assertEquals(expect, messages.get(0));
         assertEquals("[INFO ] TestMarkerPatternSelector Hello World" + Strings.LINE_SEPARATOR, messages.get(1));
         app.clear();
@@ -73,12 +73,12 @@ public class PatternSelectorTest {
         String expect = String.format(
                 "[TRACE] TestScriptPatternSelector ====== "
                         + "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:%d Enter ======%n",
-                CURRENT_LINE + 26);
+                CURRENT_LINE + 27);
         assertEquals(expect, messages.get(0));
         expect = String.format(
                 "[INFO ] TestScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector.%d "
                         + "Hello World%n",
-                CURRENT_LINE + 27);
+                CURRENT_LINE + 28);
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] NoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));
         app.clear();
@@ -101,12 +101,12 @@ public class PatternSelectorTest {
         String expect = String.format(
                 "[TRACE] TestJavaScriptPatternSelector ====== "
                         + "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:%d Enter ======%n",
-                CURRENT_LINE + 54);
+                CURRENT_LINE + 55);
         assertEquals(expect, messages.get(0));
         expect = String.format(
                 "[INFO ] TestJavaScriptPatternSelector "
                         + "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector.%d Hello World%n",
-                CURRENT_LINE + 55);
+                CURRENT_LINE + 56);
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] JavascriptNoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));
         app.clear();
