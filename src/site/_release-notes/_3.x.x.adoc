@@ -62,6 +62,7 @@ This release contains...
 * Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.5` (https://github.com/apache/logging-log4j2/pull/2177[2177])
 * Update `org.apache.tomcat:tomcat-juli` to version `10.1.18` (https://github.com/apache/logging-log4j2/pull/2176[2176])
 * Update `org.assertj:assertj-core` to version `3.25.1` (https://github.com/apache/logging-log4j2/pull/2152[2152])
+* Update `org.mockito:mockito-bom` to version `5.9.0` (https://github.com/apache/logging-log4j2/pull/2194[2194])
 * Update `org.slf4j:slf4j-api` to version `2.0.10` (https://github.com/apache/logging-log4j2/pull/2136[2136])
 * Update `org.springframework.boot:spring-boot-dependencies` to version `3.2.1` (https://github.com/apache/logging-log4j2/pull/2123[2123])
 * Update `uk.org.webcompere:system-stubs-core` to version `2.1.6` (https://github.com/apache/logging-log4j2/pull/2196[2196])
