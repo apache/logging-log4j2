@@ -479,9 +479,6 @@ the exact list of JAR files needed for these features.
 |CSV Layout
 |https://commons.apache.org/proper/commons-csv/[Apache Commons CSV]
 
-|XML Layout
-|https://github.com/FasterXML/jackson[Jackson core, databind and dataformat XML] and `com.fasterxml.woodstox:woodstox-core:5.0.2`
-
 |Async Loggers
 |http://lmax-exchange.github.io/disruptor/[LMAX Disruptor]
 

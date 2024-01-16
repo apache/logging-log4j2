@@ -557,13 +557,6 @@
       </complexContent>
    </complexType>
 
-   <complexType name="XmlLayoutType">
-      <complexContent>
-         <extension base="tns:AbstractJsonLayoutType" />
-      </complexContent>
-   </complexType>
-
-
    <!--
     ================================================================================================================================
     Appender types
@@ -625,7 +618,6 @@
             <element name="HtmlLayout" type="tns:HtmlLayoutType" />
             <element name="MessageLayout" type="tns:MessageLayoutType" />
             <element name="PatternLayout" type="tns:PatternLayoutType" />
-            <element name="XmlLayout" type="tns:XmlLayoutType" />
          </choice>
          <group ref="tns:FilterChoiceGroup" minOccurs="0" />
       </sequence>

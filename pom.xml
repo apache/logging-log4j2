@@ -256,8 +256,6 @@
     <module>log4j-jpl</module>
     <module>log4j-jul</module>
     <module>log4j-kubernetes</module>
-    <module>log4j-layout-jackson</module>
-    <module>log4j-layout-jackson-xml</module>
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-test</module>
     <module>log4j-mongodb4</module>

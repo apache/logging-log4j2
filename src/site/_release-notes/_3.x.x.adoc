@@ -50,6 +50,8 @@ This release contains...
 * Removed legacy `2.x` properties configuration factory.
 * Remove `DefaultLogEventFactory`
 * Remove `org.apache.logging.log4j.core.parser` and related packages. (https://github.com/apache/logging-log4j2/pull/2154[2154])
+* Remove `log4j-layout-jackson` module (https://github.com/apache/logging-log4j2/pull/2198[2198])
+* Remove `log4j-layout-jackson-xml` module (https://github.com/apache/logging-log4j2/pull/2198[2198])
 * Remove `log4j2.enable.threadlocals` property (https://github.com/apache/logging-log4j2/issues/2105[2105])
 
 [#release-notes-3-x-x-updated]
