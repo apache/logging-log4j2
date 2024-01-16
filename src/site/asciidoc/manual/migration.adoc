@@ -95,12 +95,8 @@ using a lookup for the system property named `catalina.base`, in Log4j
 1.x, the syntax would be `${catalina.base}`. In Log4j 2, the syntax
 would be `${sys:catalina.base}`.
 
-Log4j 1.x has a XMLLayout which is different from the XmlLayout in Log4j
-2, the log4j-1.2-api module contains a `Log4j1XmlLayout` which produce
-output in the format as in Log4j 1.x. The Log4j 1.x `SimpleLayout` can
-be emulated with PatternLayout "%level - %m%n". The Log4j 1.x
-`TTCCLayout` can be emulated with PatternLayout "%r [%t] %p %c
-%notEmpty\{%ndc }- %m%n".
+The Log4j 1 `XmlLayout` can be emulated using the `Log4j1XmlLayout` provided by the `log4j-1.2-api` module of Log4j 2.
+The Log4j 1 `SimpleLayout` and `TTCCLayout` can be emulated using the Log4j 2 `PatternLayout` configured with `%level - %m%n` and `%r [%t] %p %c %notEmpty\{%ndc }- %m%n` patterns, respectively.
 
 Both `PatternLayout` and `EnhancedPatternLayout` in Log4j 1.x can be
 replaced with `PatternLayout` in Log4j 2. The log4j-1.2-api module

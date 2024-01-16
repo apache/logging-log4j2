@@ -15,16 +15,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF">
-  <Appenders>
-    <File name="XmlFile" fileName="target/XmlCompactFileAppenderValidationTest.log.xml" immediateFlush="false" append="false">
-      <XmlLayout complete="true" compact="true" charset="UTF-8"/>
-    </File>
-  </Appenders>
-
-  <Loggers>
-    <Root level="info" includeLocation="false">
-      <AppenderRef ref="XmlFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
+       type="removed">
+  <description format="asciidoc">Remove `log4j-layout-jackson-xml` module</description>
+</entry>

@@ -177,7 +177,6 @@
         <item name="RFC-5424" href="/manual/layouts.html#RFC5424Layout"/>
         <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
         <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>
-        <item name="XML" href="/manual/layouts.html#XMLLayout"/>
         <item name="Location Information" href="/manual/layouts.html#LocationInformation"/>
       </item>
 

@@ -23,6 +23,4 @@ public interface Layouts {
     interface Csv {}
 
     interface Jansi {}
-
-    interface Xml {}
 }
