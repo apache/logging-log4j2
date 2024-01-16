@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
+
 /**
  * Markers are objects that are used to add easily filterable information to log messages.
  *
@@ -23,6 +25,7 @@ package org.apache.logging.log4j;
  * more specific categories. An example might be a Marker named "Error" with children named "SystemError" and
  * "ApplicationError".
  */
+@BaselineIgnore("3.0.0")
 public interface Marker {
 
     /**

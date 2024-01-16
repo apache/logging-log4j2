@@ -122,6 +122,8 @@ public interface Logger {
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void debug(Marker marker, MessageSupplier messageSupplier);
 
     /**
@@ -134,6 +136,8 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void debug(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
 
     /**
@@ -199,7 +203,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void debug(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -221,7 +226,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void debug(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -234,7 +240,8 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void debug(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -328,7 +335,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void debug(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -347,7 +355,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void debug(Supplier<?> messageSupplier);
 
     /**
@@ -359,7 +368,8 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void debug(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -678,6 +688,40 @@ public interface Logger {
             Object p9);
 
     /**
+     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
+     * logged.
+     * @deprecated Use {@link #traceEntry()} instead which performs the same function.
+     */
+    @Deprecated(forRemoval = true)
+    default void entry() {
+        traceEntry();
+    }
+
+    /**
+     * Logs entry to a method along with its parameters (consider using one of the {@code traceEntry(...)} methods instead.)
+     * <p>
+     * For example:
+     * </p>
+     * <pre>
+     * public void doSomething(String foo, int bar) {
+     *     LOGGER.entry(foo, bar);
+     *     // do something
+     * }
+     * </pre>
+     * <p>
+     * The use of methods such as this are more effective when combined with aspect-oriented programming or other
+     * bytecode manipulation tools. It can be rather tedious (and messy) to use this type of method manually.
+     * </p>
+     *
+     * @param params The parameters to the method.
+     * @deprecated Use {@link #traceEntry(String, Object...)} instead which performs the same function.
+     */
+    @Deprecated(forRemoval = true)
+    default void entry(final Object... params) {
+        traceEntry(null, params);
+    }
+
+    /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
@@ -780,7 +824,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void error(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -802,7 +847,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void error(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -815,7 +861,8 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void error(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -909,7 +956,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void error(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -928,7 +976,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void error(Supplier<?> messageSupplier);
 
     /**
@@ -940,7 +989,8 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void error(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -1259,6 +1309,32 @@ public interface Logger {
             Object p9);
 
     /**
+     * Logs exit from a method. Used for methods that do not return anything.
+     * @deprecated Use {@link #traceExit()} instead which performs the same function.
+     */
+    @Deprecated(forRemoval = true)
+    default void exit() {
+        traceExit();
+    }
+
+    /**
+     * Logs exiting from a method with the result. This may be coded as:
+     *
+     * <pre>
+     * return LOGGER.exit(myResult);
+     * </pre>
+     *
+     * @param <R> The type of the parameter and object being returned.
+     * @param result The result being returned from the method call.
+     * @return the result.
+     * @deprecated Use {@link #traceExit(Object)} instead which performs the same function.
+     */
+    @Deprecated(forRemoval = true)
+    default <R> R exit(final R result) {
+        return traceExit(result);
+    }
+
+    /**
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
      *
      * @param marker the marker data specific to this log statement
@@ -1361,7 +1437,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void fatal(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -1383,7 +1460,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void fatal(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -1396,7 +1474,8 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void fatal(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -1490,7 +1569,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void fatal(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -1509,7 +1589,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void fatal(Supplier<?> messageSupplier);
 
     /**
@@ -1521,7 +1602,8 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void fatal(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -1977,7 +2059,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void info(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -1999,7 +2082,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void info(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -2012,7 +2096,8 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void info(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -2106,7 +2191,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void info(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -2125,7 +2211,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void info(Supplier<?> messageSupplier);
 
     /**
@@ -2137,7 +2224,8 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void info(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -2684,7 +2772,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void log(Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -2707,7 +2796,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void log(Level level, Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -2721,7 +2811,8 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void log(Level level, Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -2825,7 +2916,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void log(Level level, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -2846,7 +2938,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void log(Level level, Supplier<?> messageSupplier);
 
     /**
@@ -2859,7 +2952,8 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack log.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void log(Level level, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -3382,7 +3476,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void trace(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -3405,7 +3500,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void trace(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -3418,7 +3514,8 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void trace(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -3514,7 +3611,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void trace(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -3534,7 +3632,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void trace(Supplier<?> messageSupplier);
 
     /**
@@ -3546,7 +3645,8 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void trace(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -3914,7 +4014,8 @@ public interface Logger {
      *
      * @since 2.6
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     EntryMessage traceEntry(Supplier<?>... paramSuppliers);
 
     /**
@@ -3933,7 +4034,8 @@ public interface Logger {
      *
      * @since 2.6
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     EntryMessage traceEntry(String format, Supplier<?>... paramSuppliers);
 
     /**
@@ -4152,7 +4254,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void warn(Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -4174,7 +4277,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void warn(Marker marker, Supplier<?> messageSupplier);
 
     /**
@@ -4187,7 +4291,8 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void warn(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -4281,7 +4386,8 @@ public interface Logger {
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void warn(String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -4300,7 +4406,8 @@ public interface Logger {
      *            message factory.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void warn(Supplier<?> messageSupplier);
 
     /**
@@ -4312,7 +4419,8 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack warn.
      * @since 2.4
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void warn(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
@@ -4642,7 +4750,12 @@ public interface Logger {
      * @since 2.13.0
      */
     default void logMessage(
-            Level level, Marker marker, String fqcn, StackTraceElement location, Message message, Throwable throwable) {
+            final Level level,
+            final Marker marker,
+            final String fqcn,
+            final StackTraceElement location,
+            final Message message,
+            final Throwable throwable) {
         // noop
     }
 
@@ -4715,7 +4828,7 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 2.13.0
      */
-    default LogBuilder atLevel(Level level) {
+    default LogBuilder atLevel(final Level level) {
         return LogBuilder.NOOP;
     }
 }

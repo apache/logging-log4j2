@@ -18,12 +18,15 @@ package org.apache.logging.log4j.util;
 
 /**
  * An operation that accepts two input arguments and returns no result.
- *
+ * <p>
+ *     <strong>Warning:</strong> part of the public API, since it is used by {@link ReadOnlyStringMap#forEach(BiConsumer)}.
+ * </p>
  * @param <K> type of the first argument
  * @param <V> type of the second argument
  * @see ReadOnlyStringMap
  * @since 2.7
  */
+@Deprecated(forRemoval = true)
 public interface BiConsumer<K, V> extends java.util.function.BiConsumer<K, V> {
 
     /**

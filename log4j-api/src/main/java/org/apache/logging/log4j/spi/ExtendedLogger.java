@@ -26,6 +26,9 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Extends the {@code Logger} interface with methods that facilitate implementing or extending {@code Logger}s. Users
  * should not need to use this interface.
+ * <p>
+ *     <strong>Warning:</strong> part of the API, not the SPI, since it is used by {@link LoggerContext#getLogger(String)}.
+ * </p>
  */
 public interface ExtendedLogger extends Logger {
 
@@ -634,6 +637,8 @@ public interface ExtendedLogger extends Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void logIfEnabled(String fqcn, Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
@@ -646,7 +651,7 @@ public interface ExtendedLogger extends Logger {
      * @param message The message format.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     void logIfEnabled(String fqcn, Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -659,6 +664,6 @@ public interface ExtendedLogger extends Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     void logIfEnabled(String fqcn, Level level, Marker marker, Supplier<?> msgSupplier, Throwable t);
 }

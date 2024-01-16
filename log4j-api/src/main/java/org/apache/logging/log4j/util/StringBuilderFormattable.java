@@ -18,7 +18,9 @@ package org.apache.logging.log4j.util;
 
 /**
  * Objects that implement this interface can be converted to text, ideally without allocating temporary objects.
- *
+ * <p>
+ *     <strong>Warning:</strong> part of the API, since it is used by {@link org.apache.logging.log4j.MarkerManager.Log4jMarker}.
+ * </p>
  * @since 2.6
  */
 public interface StringBuilderFormattable {

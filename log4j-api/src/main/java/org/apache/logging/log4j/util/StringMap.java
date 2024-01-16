@@ -16,9 +16,13 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+
 /**
  * Exposes methods to add and remove key-value pairs to and from {@code ReadOnlyStringMap}.
- *
+ * <p>
+ *     <strong>Warning:</strong> part of the API, since it is used by {@link ReadOnlyThreadContextMap#getReadOnlyContextData()}.
+ * </p>
  * @see ReadOnlyStringMap
  * @since 2.7
  */

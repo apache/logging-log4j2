@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -23,6 +24,9 @@ import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Anchor point for logging implementations.
+ * <p>
+ *     <strong>Warning:</strong> part of the API, not the SPI, since it is used by {@link LogManager#getContext()}
+ * </p>
  */
 public interface LoggerContext {
 

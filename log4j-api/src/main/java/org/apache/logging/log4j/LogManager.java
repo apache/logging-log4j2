@@ -40,7 +40,13 @@ import org.apache.logging.log4j.util.Strings;
 public class LogManager {
 
     /**
-     * Constant holding the name of the root logger (the empty string).
+     * Kept for binary compatibility.
+     */
+    @Deprecated(forRemoval = true)
+    public static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
+
+    /**
+     * The name of the root Logger is {@value #ROOT_LOGGER_NAME}.
      */
     public static final String ROOT_LOGGER_NAME = Strings.EMPTY;
 

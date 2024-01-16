@@ -26,6 +26,9 @@ import org.apache.logging.log4j.message.MessageFactory;
 
 /**
  * Convenience class to be used by {@code LoggerContext} implementations.
+ * <p>
+ *     <strong>Warning:</strong> part of the API, not the SPI, since it is used by {@link LoggerContext#getLoggerRegistry()}.
+ * </p>
  */
 public class LoggerRegistry<T extends ExtendedLogger> {
     private final MapFactory<T> factory;

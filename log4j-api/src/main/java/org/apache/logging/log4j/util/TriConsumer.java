@@ -18,7 +18,9 @@ package org.apache.logging.log4j.util;
 
 /**
  * An operation that accepts three input arguments and returns no result.
- *
+ * <p>
+ *     <strong>Warning:</strong> part of the public API, since it is used by {@link ReadOnlyStringMap#forEach(TriConsumer, Object)}.
+ * </p>
  * @param <K> type of the first argument
  * @param <V> type of the second argument
  * @param <S> type of the third argument

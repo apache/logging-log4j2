@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Collections;
@@ -498,6 +499,7 @@ public final class ThreadContext {
     /**
      * The ThreadContext Stack interface.
      */
+    @BaselineIgnore("3.0.0")
     public interface ContextStack extends Collection<String> {
 
         /**

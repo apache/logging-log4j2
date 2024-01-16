@@ -29,10 +29,15 @@
  *     used through the {@link org.apache.logging.log4j.ThreadContext} class.
  * </p>
  *
+ *<p>
+ * <strong>Version 3.x note:</strong> the only backward incompatible change in this package is
+ * the removal of serializability.
+ * </p>
+ *
  * @see <a href="http://logging.apache.org/log4j/2.x/manual/api.html">Log4j 2 API manual</a>
  */
 @Export
-@Version("3.0.0")
+@Version("2.23.0")
 package org.apache.logging.log4j;
 
 import org.osgi.annotation.bundle.Export;

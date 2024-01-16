@@ -31,5 +31,5 @@ package org.apache.logging.log4j.util;
  *
  * @since 2.4
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface Supplier<T> extends java.util.function.Supplier<T> {}

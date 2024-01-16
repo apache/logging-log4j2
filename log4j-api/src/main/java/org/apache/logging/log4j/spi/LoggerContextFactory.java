@@ -17,9 +17,13 @@
 package org.apache.logging.log4j.spi;
 
 import java.net.URI;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Implemented by factories that create {@link LoggerContext} objects.
+ * <p>
+ *     <strong>Warning:</strong> part of the API, not the SPI, since it is used by {@link LogManager#getFactory()}
+ * </p>
  */
 public interface LoggerContextFactory {
 

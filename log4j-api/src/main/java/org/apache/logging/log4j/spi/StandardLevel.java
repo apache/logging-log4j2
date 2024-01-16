@@ -17,9 +17,13 @@
 package org.apache.logging.log4j.spi;
 
 import java.util.EnumSet;
+import org.apache.logging.log4j.Level;
 
 /**
  * Standard Logging Levels as an enumeration for use internally. This enum is used as a parameter in any public APIs.
+ * <p>
+ *     <strong>Warning:</strong> part of the API, not the SPI, since it is used by {@link Level#getStandardLevel()}.
+ * </p>
  */
 public enum StandardLevel {
 

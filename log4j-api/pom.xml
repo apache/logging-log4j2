@@ -29,6 +29,7 @@
   <description>The Apache Log4j API</description>
   <properties>
     <maven.javadoc.skip>false</maven.javadoc.skip>
+    <bnd.baseline.skip>false</bnd.baseline.skip>
 
     <!--
       ~ OSGi and JPMS options

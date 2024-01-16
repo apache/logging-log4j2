@@ -25,8 +25,9 @@ import org.apache.logging.log4j.util.StringMap;
  * <p>
  * {@code ThreadContextMap} implementations that also implement this interface can be accessed
  * by applications via the {@link ThreadContext#getThreadContextMap()} method.
+ * <p>
+ *     <strong>Warning:</strong> part of the API, not the SPI, since it is used by {@link ThreadContext#getThreadContextMap()}.
  * </p>
- *
  * @see ThreadContext#getThreadContextMap()
  * @since 2.8
  */
