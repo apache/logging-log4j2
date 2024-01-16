@@ -60,6 +60,7 @@ This release contains...
 * Update `apache/logging-parent` to version `` (https://github.com/apache/logging-log4j2/pull/2191[2191])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2127[2127])
 * Update `com.github.h-thurow:simple-jndi` to version `0.24.0` (https://github.com/apache/logging-log4j2/pull/2195[2195])
+* Update `io.netty:netty-bom` to version `4.1.105.Final` (https://github.com/apache/logging-log4j2/pull/2200[2200])
 * Update `org.apache.groovy:groovy-bom` to version `4.0.17` (https://github.com/apache/logging-log4j2/pull/2124[2124])
 * Update `org.apache.logging:logging-parent` to version `10.6.0` (https://github.com/apache/logging-log4j2/pull/2193[2193])
 * Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.5` (https://github.com/apache/logging-log4j2/pull/2177[2177])
