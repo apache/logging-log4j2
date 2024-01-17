@@ -157,7 +157,7 @@
     <tomcat-juli.version>10.1.18</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.1</wiremock.version>
-    <woodstox.version>6.5.1</woodstox.version>
+    <woodstox.version>6.6.0</woodstox.version>
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
     <zstd.version>1.5.5-11</zstd.version>
