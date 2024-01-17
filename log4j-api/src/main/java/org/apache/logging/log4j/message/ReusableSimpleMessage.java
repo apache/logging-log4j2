@@ -24,7 +24,6 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @PerformanceSensitive("allocation")
 public class ReusableSimpleMessage implements ReusableMessage, CharSequence, ParameterVisitable {
-    private static final Object[] EMPTY_PARAMS = new Object[0];
     private CharSequence charSequence;
 
     public void set(final String message) {
@@ -47,7 +46,7 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
 
     @Override
     public Object[] getParameters() {
-        return EMPTY_PARAMS;
+        return Constants.EMPTY_OBJECT_ARRAY;
     }
 
     @Override

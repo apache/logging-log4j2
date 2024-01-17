@@ -60,8 +60,6 @@ final class ParameterFormatter {
     private static final char DELIM_START = '{';
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
 
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
@@ -439,7 +437,7 @@ final class ParameterFormatter {
         if (!(o instanceof Date)) {
             return false;
         }
-        str.append(FORMATTER.format(((Date) o).toInstant()));
+        str.append(DATE_FORMATTER.format(((Date) o).toInstant()));
         return true;
     }
 

@@ -38,7 +38,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     private final Locale locale;
 
-    private final StatusLogger logger = StatusLogger.getLogger();
+    private static final StatusLogger logger = StatusLogger.getLogger();
 
     private String loggerName;
     private final String key;

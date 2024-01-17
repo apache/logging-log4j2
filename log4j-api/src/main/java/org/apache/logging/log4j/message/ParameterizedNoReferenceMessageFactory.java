@@ -78,9 +78,7 @@ public final class ParameterizedNoReferenceMessageFactory implements MessageFact
     /**
      * Constructs a message factory with default flow strings.
      */
-    public ParameterizedNoReferenceMessageFactory() {
-        super();
-    }
+    public ParameterizedNoReferenceMessageFactory() {}
 
     /**
      * Instance of ParameterizedStatusMessageFactory.

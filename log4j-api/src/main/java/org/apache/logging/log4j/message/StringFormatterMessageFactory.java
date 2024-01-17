@@ -44,9 +44,7 @@ public final class StringFormatterMessageFactory implements MessageFactory {
     /**
      * Constructs a message factory with default flow strings.
      */
-    public StringFormatterMessageFactory() {
-        super();
-    }
+    public StringFormatterMessageFactory() {}
 
     /**
      * Creates {@link StringFormattedMessage} instances.

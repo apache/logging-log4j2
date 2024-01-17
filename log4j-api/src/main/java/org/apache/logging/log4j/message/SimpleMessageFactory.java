@@ -17,7 +17,8 @@
 package org.apache.logging.log4j.message;
 
 /**
- * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
+ * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
+ * extension.)
  * <p>
  * This uses is the simplest possible implementation of {@link Message}, the where you give the message to the
  * constructor argument as a String.

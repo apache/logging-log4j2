@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.apache.logging.log4j.util.Chars.LF;
+
 import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
@@ -41,6 +43,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
 
     private final Map<ThreadInformation, StackTraceElement[]> threads;
     private final String title;
+    private String formattedMessage;
 
     /**
      * Generate a ThreadDumpMessage with a title.
@@ -62,6 +65,9 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
      */
     @Override
     public String getFormattedMessage() {
+        if (formattedMessage != null) {
+            return formattedMessage;
+        }
         final StringBuilder sb = new StringBuilder(255);
         formatTo(sb);
         return sb.toString();
@@ -70,14 +76,14 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     @Override
     public void formatTo(final StringBuilder sb) {
         sb.append(title);
-        if (!title.isEmpty()) {
-            sb.append('\n');
+        if (title.length() > 0) {
+            sb.append(LF);
         }
         for (final Map.Entry<ThreadInformation, StackTraceElement[]> entry : threads.entrySet()) {
             final ThreadInformation info = entry.getKey();
             info.printThreadInfo(sb);
             info.printStack(sb, entry.getValue());
-            sb.append('\n');
+            sb.append(LF);
         }
     }
 
@@ -106,7 +112,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
      * Implementations of this class are loaded via the standard java Service Provider interface.
      * </p>
      */
-    public interface ThreadInfoFactory {
+    public static interface ThreadInfoFactory {
         Map<ThreadInformation, StackTraceElement[]> createThreadInfo();
     }
 

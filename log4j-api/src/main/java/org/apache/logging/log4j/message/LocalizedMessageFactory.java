@@ -68,7 +68,7 @@ public class LocalizedMessageFactory implements MessageFactory {
     @Override
     public Message newMessage(final String key) {
         if (resourceBundle == null) {
-            return new LocalizedMessage(baseName, key, null);
+            return new LocalizedMessage(baseName, key);
         }
         return new LocalizedMessage(resourceBundle, key);
     }

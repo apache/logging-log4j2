@@ -65,7 +65,7 @@ public final class ReusableMessageFactory implements MessageFactory {
      * @param message the message to make available again
      * @since 2.7
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     public static void release(final Message message) { // LOG4J2-1583
         if (message instanceof ReusableMessage) {
             ((ReusableMessage) message).clear();

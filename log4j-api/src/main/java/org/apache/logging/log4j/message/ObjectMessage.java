@@ -99,7 +99,7 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
         }
 
         final ObjectMessage that = (ObjectMessage) o;
-        return equalObjectsOrStrings(obj, that.obj);
+        return obj == null ? that.obj == null : equalObjectsOrStrings(obj, that.obj);
     }
 
     private boolean equalObjectsOrStrings(final Object left, final Object right) {
@@ -108,7 +108,7 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
 
     @Override
     public int hashCode() {
-        return obj.hashCode();
+        return obj != null ? obj.hashCode() : 0;
     }
 
     @Override

@@ -31,9 +31,7 @@ public class FormattedMessageFactory implements MessageFactory {
     /**
      * Constructs a message factory with default flow strings.
      */
-    public FormattedMessageFactory() {
-        super();
-    }
+    public FormattedMessageFactory() {}
 
     /**
      * Creates {@link StringFormattedMessage} instances.
