@@ -111,7 +111,7 @@
     <flapdoodle-embed.version>4.8.1</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.7.2</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
-    <graalvm.version>23.1.1</graalvm.version>
+    <graalvm.version>23.1.2</graalvm.version>
     <groovy.version>4.0.17</groovy.version>
     <guava.version>33.0.0-jre</guava.version>
     <h2.version>2.2.222</h2.version>
