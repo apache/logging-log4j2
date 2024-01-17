@@ -62,12 +62,4 @@ public class AsyncLoggerTest {
 
         assertTrue(LogManager.getFactory().isClassLoaderDependent());
     }
-
-    // NOTE: only define one @Test method per test class with Async Loggers to prevent spurious failures
-    // @Test
-    // public void testNanoClockInitiallyDummy() {
-    // final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
-    // assertTrue(log.getNanoClock() instanceof DummyNanoClock);
-    // }
-
 }

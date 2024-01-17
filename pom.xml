@@ -240,7 +240,6 @@
     <module>log4j-config-properties</module>
     <module>log4j-config-yaml</module>
     <module>log4j-core</module>
-    <module>log4j-core-its</module>
     <module>log4j-core-test</module>
     <module>log4j-csv</module>
     <module>log4j-docker</module>

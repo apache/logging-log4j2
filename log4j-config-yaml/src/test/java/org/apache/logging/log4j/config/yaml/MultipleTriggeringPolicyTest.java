@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -51,14 +50,6 @@ class MultipleTriggeringPolicyTest {
     @Tag("yaml")
     @LoggerContextSource("LOG4J2-1100/log4j2-good.yaml")
     void yaml(final Configuration configuration) {
-        assertBothTriggeringPoliciesConfigured(configuration);
-    }
-
-    @Test
-    @Tag("yaml")
-    @Disabled("LOG4J2-1100 demonstration")
-    @LoggerContextSource("LOG4J2-1100/log4j2-good.yaml")
-    void unsupportedYamlSyntax(final Configuration configuration) {
         assertBothTriggeringPoliciesConfigured(configuration);
     }
 

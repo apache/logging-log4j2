@@ -19,14 +19,12 @@ package org.apache.logging.log4j.core.net.ssl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
-public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
+class StoreConfigurationTest {
 
     @Test
-    public void equalsWithNotNullValues() {
+    void equalsWithNotNullValues() {
         final String location = "/to/the/file.jks";
         final PasswordProvider password = new MemoryPasswordProvider("changeit".toCharArray());
         final StoreConfiguration<Object> a = new StoreConfiguration<>(location, password);
@@ -37,7 +35,7 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
     }
 
     @Test
-    public void notEqualsWithNullAndNotNullValues() {
+    void notEqualsWithNullAndNotNullValues() {
         final String location = "/to/the/file.jks";
         final PasswordProvider password = new MemoryPasswordProvider("changeit".toCharArray());
         final StoreConfiguration<Object> a = new StoreConfiguration<>(location, password);
@@ -48,7 +46,7 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
     }
 
     @Test
-    public void equalsWithNullValues() {
+    void equalsWithNullValues() {
         final StoreConfiguration<Object> a = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
         final StoreConfiguration<Object> b = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
 

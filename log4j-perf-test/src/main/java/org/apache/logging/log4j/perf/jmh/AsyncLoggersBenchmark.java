@@ -72,7 +72,6 @@ public class AsyncLoggersBenchmark {
                 "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
         System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getSystemKey(), "262144");
         System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY.getSystemKey(), "Yield");
-        // System.setProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, "true");
         // System.setProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, "true");
 
         logger = LogManager.getLogger(getClass());
@@ -210,40 +209,4 @@ public class AsyncLoggersBenchmark {
                 ten,
                 eleven);
     }
-
-    //    @Benchmark
-    //    @BenchmarkMode(Mode.SampleTime)
-    //    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    //    public void latencySimple() {
-    //        logger.info(TEST);
-    //    }
-    //
-    //    @Benchmark
-    //    @BenchmarkMode(Mode.SampleTime)
-    //    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    //    public void latency3Params() {
-    //        logger.info("p1={}, p2={}, p3={}", "1", "2", "3");
-    //    }
-    //
-    //    @Benchmark
-    //    @BenchmarkMode(Mode.SampleTime)
-    //    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    //    public void latency5Params() {
-    //        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}", "1", "2", "3", "4", "5");
-    //    }
-    //
-    //    @Benchmark
-    //    @BenchmarkMode(Mode.SampleTime)
-    //    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    //    public void latency7Params() {
-    //        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", "1", "2", "3", "4", "5", "6", "7");
-    //    }
-    //
-    //    @Benchmark
-    //    @BenchmarkMode(Mode.SampleTime)
-    //    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    //    public void latency9Params() {
-    //        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", "1", "2", "3", "4", "5", "6",
-    // "7", "8", "9");
-    //    }
 }
