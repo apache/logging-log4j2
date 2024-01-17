@@ -21,7 +21,7 @@ package org.apache.logging.log4j.message;
  *
  * @deprecated use {@link ReusableMessage} directly
  */
-@Deprecated(since = "3.0.0")
+@Deprecated(forRemoval = true, since = "3.0")
 interface Clearable {
 
     /**

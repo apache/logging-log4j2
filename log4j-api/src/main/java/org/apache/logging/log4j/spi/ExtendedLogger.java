@@ -637,7 +637,6 @@ public interface ExtendedLogger extends Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      */
-    @Deprecated(forRemoval = true)
     @SuppressWarnings("removal")
     void logIfEnabled(String fqcn, Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
 

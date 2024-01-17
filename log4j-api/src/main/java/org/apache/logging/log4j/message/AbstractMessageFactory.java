@@ -22,5 +22,5 @@ package org.apache.logging.log4j.message;
  *
  * @deprecated MessageFactory has default methods that implement all the methods that were here.
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "3.0")
 public abstract class AbstractMessageFactory implements MessageFactory {}

@@ -25,11 +25,11 @@ package org.apache.logging.log4j.util;
  *
  * <p>Implementors are free to cache values or return a new or distinct value each time the supplier is invoked.
  *
- * <p><strong>DEPRECATED:</strong> this class will be removed in 3.0 to be replaced with the Java 8 interface.</p>
+ * <p><strong>DEPRECATED:</strong> this class is deprecated and will be replaced with the Java 8 interface.</p>
  *
  * @param <T> the type of values returned by this supplier
  *
  * @since 2.4
  */
-@Deprecated(forRemoval = true)
+@Deprecated(forRemoval = true, since = "2.22")
 public interface Supplier<T> extends java.util.function.Supplier<T> {}

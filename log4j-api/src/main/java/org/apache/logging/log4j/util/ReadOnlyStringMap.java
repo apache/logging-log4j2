@@ -21,9 +21,6 @@ import java.util.Map;
 /**
  * A read-only collection of String keys mapped to values of arbitrary type.
  * <p>
- *     <strong>Warning:</strong> part of the public API, do not remove.
- * </p>
- * <p>
  *     <strong>Warning:</strong> part of the API, since it is used by {@link StringMap}.
  * </p>
  * @since 2.7

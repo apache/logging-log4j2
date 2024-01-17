@@ -22,5 +22,5 @@ package org.apache.logging.log4j.message;
  * @deprecated MessageFactory now contains all interface methods.
  * @since 2.6
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "3.0")
 public interface MessageFactory2 extends MessageFactory {}

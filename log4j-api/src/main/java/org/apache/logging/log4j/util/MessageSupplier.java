@@ -32,5 +32,5 @@ import org.apache.logging.log4j.message.Message;
  * </p>
  * @since 2.4
  */
-@Deprecated(forRemoval = true)
+@Deprecated(forRemoval = true, since = "3.0")
 public interface MessageSupplier extends java.util.function.Supplier<Message> {}

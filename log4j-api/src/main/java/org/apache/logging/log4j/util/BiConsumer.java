@@ -26,7 +26,7 @@ package org.apache.logging.log4j.util;
  * @see ReadOnlyStringMap
  * @since 2.7
  */
-@Deprecated(forRemoval = true)
+@Deprecated(forRemoval = true, since = "3.0")
 public interface BiConsumer<K, V> extends java.util.function.BiConsumer<K, V> {
 
     /**
