@@ -41,12 +41,10 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -206,43 +204,6 @@ public class FileAppenderTest {
         testMultipleLockingAppenderThreads(true, THREADS, createOnDemand);
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {false, true})
-    @Disabled
-    public void testMultipleVMs(final boolean createOnDemand) throws Exception {
-        final String classPath = System.getProperty("java.class.path");
-        final int logEventCount = 10;
-        final int processCount = 3;
-        final Process[] processes = new Process[processCount];
-        final ProcessBuilder[] builders = new ProcessBuilder[processCount];
-        for (int index = 0; index < processCount; ++index) {
-            builders[index] = new ProcessBuilder(
-                    "java",
-                    "-cp",
-                    classPath,
-                    ProcessTest.class.getName(),
-                    "Process " + index,
-                    Integer.toString(logEventCount),
-                    "true",
-                    Boolean.toString(createOnDemand));
-        }
-        for (int index = 0; index < processCount; ++index) {
-            processes[index] = builders[index].start();
-        }
-        for (int index = 0; index < processCount; ++index) {
-            final Process process = processes[index];
-            // System.out.println("Process " + index + " exited with " + p.waitFor());
-            try (final BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    System.out.println(line);
-                }
-            }
-            process.destroy();
-        }
-        verifyFile(logEventCount * processCount);
-    }
-
     private static void writer(
             final boolean locking,
             final int logEventCount,
@@ -349,32 +310,6 @@ public class FileAppenderTest {
             } catch (final Throwable e) {
                 throwableRef.set(e);
             }
-        }
-    }
-
-    public static class ProcessTest {
-
-        public static void main(final String[] args) throws Exception {
-
-            if (args.length != 3) {
-                System.out.println("Required arguments 'id', 'count' and 'lock' not provided");
-                System.exit(-1);
-            }
-            final String id = args[0];
-
-            final int count = Integers.parseInt(args[1]);
-
-            if (count <= 0) {
-                System.out.println("Invalid count value: " + args[1]);
-                System.exit(-1);
-            }
-            final boolean lock = Boolean.parseBoolean(args[2]);
-
-            final boolean createOnDemand = Boolean.parseBoolean(args[2]);
-
-            // System.out.println("Got arguments " + id + ", " + count + ", " + lock);
-
-            writer(lock, count, id, createOnDemand, true, new DefaultConfiguration());
         }
     }
 }

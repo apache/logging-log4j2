@@ -32,7 +32,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.VectorAppender;
@@ -43,17 +42,8 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
-import org.apache.log4j.util.Compare;
-import org.apache.log4j.util.ControlFilter;
-import org.apache.log4j.util.Filter;
-import org.apache.log4j.util.ISO8601Filter;
-import org.apache.log4j.util.JunitTestRunnerFilter;
-import org.apache.log4j.util.LineNumberFilter;
-import org.apache.log4j.util.SunReflectFilter;
-import org.apache.log4j.util.Transformer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class DOMTestCase {
@@ -171,20 +161,6 @@ public class DOMTestCase {
         }
     }
 
-    static String TEMP_A1 = "target/output/temp.A1";
-    static String TEMP_A2 = "target/output/temp.A2";
-    static String FILTERED_A1 = "target/output/filtered.A1";
-    static String FILTERED_A2 = "target/output/filtered.A2";
-    static String EXCEPTION1 = "java.lang.Exception: Just testing";
-    static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
-    static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
-    static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
-    static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";
-    static String TEST1_1A_PAT = "(TRACE|DEBUG|INFO |WARN |ERROR|FATAL) \\w*\\.\\w* - Message \\d";
-    static String TEST1_1B_PAT = "(TRACE|DEBUG|INFO |WARN |ERROR|FATAL) root - Message \\d";
-    static String TEST1_2_PAT = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} "
-            + "\\[main]\\ (TRACE|DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d";
-
     private static final boolean Log4j1ActualAppender = false;
 
     private static final boolean AssumeThrowableRendererSupport = false;
@@ -192,40 +168,6 @@ public class DOMTestCase {
     Logger root;
 
     Logger logger;
-
-    void common() {
-        final String oldThreadName = Thread.currentThread().getName();
-        Thread.currentThread().setName("main");
-
-        int i = -1;
-
-        logger.trace("Message " + ++i);
-        root.trace("Message " + i);
-
-        logger.debug("Message " + ++i);
-        root.debug("Message " + i);
-
-        logger.info("Message " + ++i);
-        root.info("Message " + i);
-
-        logger.warn("Message " + ++i);
-        root.warn("Message " + i);
-
-        logger.error("Message " + ++i);
-        root.error("Message " + i);
-
-        logger.log(Level.FATAL, "Message " + ++i);
-        root.log(Level.FATAL, "Message " + i);
-
-        final Exception e = new Exception("Just testing");
-        logger.debug("Message " + ++i, e);
-        root.debug("Message " + i, e);
-
-        logger.error("Message " + ++i, e);
-        root.error("Message " + i, e);
-
-        Thread.currentThread().setName(oldThreadName);
-    }
 
     @BeforeEach
     public void setUp() {
@@ -236,105 +178,6 @@ public class DOMTestCase {
     @AfterEach
     public void tearDown() {
         root.getLoggerRepository().resetConfiguration();
-    }
-
-    @Test
-    @Disabled
-    public void test1() throws Exception {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/DOMTestCase1.xml");
-        common();
-
-        final ControlFilter cf1 = new ControlFilter(
-                new String[] {TEST1_1A_PAT, TEST1_1B_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
-
-        final ControlFilter cf2 = new ControlFilter(
-                new String[] {TEST1_2_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
-
-        Transformer.transform(TEMP_A1, FILTERED_A1, new Filter[] {
-            cf1, new LineNumberFilter(), new SunReflectFilter(), new JunitTestRunnerFilter()
-        });
-
-        Transformer.transform(TEMP_A2, FILTERED_A2, new Filter[] {
-            cf2, new LineNumberFilter(), new ISO8601Filter(), new SunReflectFilter(), new JunitTestRunnerFilter()
-        });
-
-        assertTrue(Compare.compare(FILTERED_A1, "witness/dom.A1.1"));
-        assertTrue(Compare.compare(FILTERED_A2, "witness/dom.A2.1"));
-    }
-
-    /**
-     * Tests processing of external entities in XML file.
-     */
-    @Test
-    @Disabled
-    public void test4() throws Exception {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/DOMTest4.xml");
-        common();
-
-        final ControlFilter cf1 = new ControlFilter(
-                new String[] {TEST1_1A_PAT, TEST1_1B_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
-
-        final ControlFilter cf2 = new ControlFilter(
-                new String[] {TEST1_2_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
-
-        Transformer.transform(TEMP_A1 + ".4", FILTERED_A1 + ".4", new Filter[] {
-            cf1, new LineNumberFilter(), new SunReflectFilter(), new JunitTestRunnerFilter()
-        });
-
-        Transformer.transform(TEMP_A2 + ".4", FILTERED_A2 + ".4", new Filter[] {
-            cf2, new LineNumberFilter(), new ISO8601Filter(), new SunReflectFilter(), new JunitTestRunnerFilter()
-        });
-
-        assertTrue(Compare.compare(FILTERED_A1 + ".4", "witness/dom.A1.4"));
-        assertTrue(Compare.compare(FILTERED_A2 + ".4", "witness/dom.A2.4"));
-    }
-
-    /**
-     * Tests that loggers mentioned in logger elements use the specified categoryFactory. See bug 33708.
-     */
-    @Test
-    @Disabled
-    public void testCategoryFactory1() {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/categoryfactory1.xml");
-        //
-        // logger not explicitly mentioned in configuration,
-        // should use default factory
-        final Logger logger2 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory1.2");
-        assertFalse(logger2.toString(), logger2 instanceof CustomLogger);
-        //
-        // logger explicitly mentioned in configuration,
-        // should be a CustomLogger
-        final Logger logger1 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory1.1");
-        assertTrue(logger1.toString(), logger1 instanceof CustomLogger);
-        //
-        // logger not explicitly mentioned in configuration,
-        // should use default factory
-        final Logger logger2Bis = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory1.2");
-        assertFalse(logger2Bis.toString(), logger2Bis instanceof CustomLogger);
-    }
-
-    /**
-     * Tests that loggers mentioned in logger-ref elements use the specified categoryFactory. See bug 33708.
-     */
-    @Test
-    @Disabled
-    public void testCategoryFactory2() {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/categoryfactory2.xml");
-        //
-        // logger not explicitly mentioned in configuration,
-        // should use default factory
-        final Logger logger2 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory2.2");
-        assertFalse(logger2.toString(), logger2 instanceof CustomLogger);
-        //
-        // logger explicitly mentioned in configuration,
-        // should be a CustomLogger
-        final Logger logger1 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory2.1");
-        assertTrue(logger1.toString(), logger1 instanceof CustomLogger);
-        //
-        // logger not explicitly mentioned in configuration,
-        // should use default factory
-        final Logger logger2Bis = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory2.2");
-        assertFalse(logger2Bis.toString(), logger2Bis instanceof CustomLogger);
     }
 
     /**
@@ -375,33 +218,6 @@ public class DOMTestCase {
         DOMConfigurator.configure(urlInJar);
         assertTrue(configJar.delete());
         assertFalse(configJar.exists());
-    }
-
-    /**
-     * Tests that loggers mentioned in logger elements use the specified loggerFactory. See bug 33708.
-     */
-    @Test
-    @Disabled("TODO")
-    public void testLoggerFactory1() {
-        DOMConfigurator.configure("src/test/resources/log4j1-1.2.17/input/xml/loggerfactory1.xml");
-        //
-        // logger not explicitly mentioned in configuration,
-        // should use default factory
-        final Logger logger2 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testLoggerFactory1.2");
-        assertNotNull(logger2);
-        assertFalse(logger2.toString(), logger2 instanceof CustomLogger);
-        //
-        // logger explicitly mentioned in configuration,
-        // should be a CustomLogger
-        final Logger logger1 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testLoggerFactory1.1");
-        assertNotNull(logger1);
-        assertTrue(logger1.toString(), logger1 instanceof CustomLogger);
-        //
-        // logger not explicitly mentioned in configuration,
-        // should use default factory
-        final Logger logger2Bis = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testLoggerFactory1.2");
-        assertNotNull(logger2Bis);
-        assertFalse(logger2Bis.toString(), logger2Bis instanceof CustomLogger);
     }
 
     /**

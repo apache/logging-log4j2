@@ -33,7 +33,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @Disabled(
-        "`co.elastic.logging.log4j2.EcsLayout` requires `org.apache.logging.log4j.core.layout.AbstractStringLayout#getStringBuilder()`, which doesn't exist anymore")
+        "`co.elastic.logging.log4j2.EcsLayout` requires `org.apache.logging.log4j.core.layout.AbstractStringLayout#getStringBuilder()`, which doesn't exist anymore. "
+                + "This test should be adapted when `co.elastic.logging:log4j2-ecs-layout` publishes a Log4j 3 compatible release.")
 class EcsLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
