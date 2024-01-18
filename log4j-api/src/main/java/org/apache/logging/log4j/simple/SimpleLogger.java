@@ -265,11 +265,12 @@ public class SimpleLogger extends AbstractLogger {
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
             justification = "Log4j prints stacktraces only to logs, which should be private.")
-    public void logMessage(
+    protected void doLogMessage(
             final String fqcn,
-            final Level mgsLevel,
+            final StackTraceElement location,
+            final Level level,
             final Marker marker,
-            final Message msg,
+            final Message message,
             final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();
         // Append date-time if so configured
@@ -286,13 +287,13 @@ public class SimpleLogger extends AbstractLogger {
             sb.append(SPACE);
         }
 
-        sb.append(mgsLevel.toString());
+        sb.append(level.toString());
         sb.append(SPACE);
         if (Strings.isNotEmpty(logName)) {
             sb.append(logName);
             sb.append(SPACE);
         }
-        sb.append(msg.getFormattedMessage());
+        sb.append(message.getFormattedMessage());
         if (showContextMap) {
             final Map<String, String> mdc = ThreadContext.getImmutableContext();
             if (mdc.size() > 0) {
@@ -301,7 +302,7 @@ public class SimpleLogger extends AbstractLogger {
                 sb.append(SPACE);
             }
         }
-        final Object[] params = msg.getParameters();
+        final Object[] params = message.getParameters();
         final Throwable t;
         if (throwable == null
                 && params != null

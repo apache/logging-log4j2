@@ -31,10 +31,12 @@ final class LazyLog4jLogRecord extends LogRecord {
     private transient boolean inferCaller = true;
 
     private final String fqcn;
+    private final StackTraceElement location;
 
-    LazyLog4jLogRecord(final String fqcn, final Level level, final String msg) {
+    LazyLog4jLogRecord(final String fqcn, final StackTraceElement location, final Level level, final String msg) {
         super(level, msg);
         this.fqcn = fqcn;
+        this.location = location;
     }
 
     @Override
@@ -54,8 +56,8 @@ final class LazyLog4jLogRecord extends LogRecord {
     }
 
     private void inferCaller() {
-        StackTraceElement location = null;
-        if (fqcn != null) {
+        StackTraceElement location = this.location;
+        if (location == null && fqcn != null) {
             location = StackLocatorUtil.calcLocation(fqcn);
         }
         if (location != null) {

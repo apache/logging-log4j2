@@ -296,8 +296,13 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    public void logMessage(
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+    protected void doLogMessage(
+            final String fqcn,
+            final StackTraceElement location,
+            final Level level,
+            final Marker marker,
+            final Message message,
+            final Throwable t) {
         final org.slf4j.Marker slf4jMarker = getMarker(marker);
         final String formattedMessage = message.getFormattedMessage();
         if (locationAwareLogger != null) {

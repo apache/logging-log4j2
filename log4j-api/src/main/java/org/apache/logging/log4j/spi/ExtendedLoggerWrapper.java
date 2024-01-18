@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Wrapper class that exposes the protected AbstractLogger methods to support wrapped loggers.
@@ -263,19 +262,20 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
      * Always log an event. This tends to be already guarded by an enabled check, so this method should not check for
      * the logger level again
      *
-     * @param fqcn The fully qualified class name of the <b>caller</b>
-     * @param level The logging level
-     * @param marker The Marker
-     * @param message The Message.
-     * @param t A Throwable or null.
+     * @param fqcn      The fully qualified class name of the <b>caller</b>
+     * @param level     The logging level
+     * @param marker    The Marker
+     * @param message   The Message.
+     * @param throwable A Throwable or null.
      */
     @Override
-    public void logMessage(
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
-        if (requiresLocation()) {
-            logger.logMessage(level, marker, fqcn, StackLocatorUtil.calcLocation(fqcn), message, t);
-        } else {
-            logger.logMessage(fqcn, level, marker, message, t);
-        }
+    public void doLogMessage(
+            final String fqcn,
+            final StackTraceElement location,
+            final Level level,
+            final Marker marker,
+            final Message message,
+            final Throwable throwable) {
+        logger.logMessage(level, marker, fqcn, location, message, throwable);
     }
 }

@@ -54,17 +54,11 @@ public class TestLogger extends AbstractLogger {
     }
 
     @Override
-    public void logMessage(
-            final String fqcn, final Level level, final Marker marker, final Message msg, final Throwable throwable) {
-        log(level, marker, fqcn, null, msg, throwable);
-    }
-
-    @Override
-    protected void log(
-            final Level level,
-            final Marker marker,
+    protected void doLogMessage(
             final String fqcn,
             final StackTraceElement location,
+            final Level level,
+            final Marker marker,
             final Message message,
             final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();

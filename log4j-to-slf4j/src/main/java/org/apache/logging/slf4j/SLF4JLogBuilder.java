@@ -79,7 +79,7 @@ public class SLF4JLogBuilder implements LogBuilder {
 
     private void logMessage(Message message) {
         try {
-            logger.logMessage(FQCN, level, marker, message, throwable);
+            logger.logMessage(level, marker, FQCN, null, message, throwable);
         } finally {
             inUse = false;
         }

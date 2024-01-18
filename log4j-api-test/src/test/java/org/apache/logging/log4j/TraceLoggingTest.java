@@ -280,8 +280,13 @@ public class TraceLoggingTest extends AbstractLogger {
     }
 
     @Override
-    public void logMessage(
-            final String fqcn, final Level level, final Marker marker, final Message data, final Throwable t) {
+    protected void doLogMessage(
+            final String fqcn,
+            final StackTraceElement location,
+            final Level level,
+            final Marker marker,
+            final Message data,
+            final Throwable t) {
         assertEquals(level, currentLevel, "Incorrect Level. Expected " + currentLevel + ", actual " + level);
         if (marker == null) {
             if (currentEvent.markerName != null) {

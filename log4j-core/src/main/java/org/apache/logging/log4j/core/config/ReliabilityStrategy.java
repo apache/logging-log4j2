@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Interface for objects that know how to ensure delivery of log events to the appropriate appenders, even during and
@@ -34,41 +34,22 @@ public interface ReliabilityStrategy {
      * @param reconfigured supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
      * @param loggerName The name of the Logger.
      * @param fqcn The fully qualified class name of the caller.
+     * @param location The location of the caller or null.
      * @param marker A Marker or null if none is present.
      * @param level The event Level.
-     * @param data The Message.
-     * @param t A Throwable or null.
+     * @param message The Message.
+     * @param throwable A Throwable or null.
+     * @since 3.0
      */
     void log(
             Supplier<LoggerConfig> reconfigured,
             String loggerName,
             String fqcn,
+            StackTraceElement location,
             Marker marker,
             Level level,
-            Message data,
-            Throwable t);
-    /**
-     * Logs an event.
-     *
-     * @param reconfigured supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
-     * @param loggerName The name of the Logger.
-     * @param fqcn The fully qualified class name of the caller.
-     * @param location The location of the caller or null.
-     * @param marker A Marker or null if none is present.
-     * @param level The event Level.
-     * @param data The Message.
-     * @param t A Throwable or null.
-     * @since 3.0
-     */
-    default void log(
-            final Supplier<LoggerConfig> reconfigured,
-            final String loggerName,
-            final String fqcn,
-            final StackTraceElement location,
-            final Marker marker,
-            final Level level,
-            final Message data,
-            final Throwable t) {}
+            Message message,
+            Throwable throwable);
 
     /**
      * Logs an event.

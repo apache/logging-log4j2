@@ -216,27 +216,32 @@ public final class StatusLogger extends AbstractLogger {
     /**
      * Adds an event.
      *
+     * @param msg    The message associated with the event.
+     * @param t      A Throwable or null.
+     * @param fqcn   The fully qualified class name of the <b>caller</b>
+     * @param level  The logging level
      * @param marker The Marker
-     * @param fqcn The fully qualified class name of the <b>caller</b>
-     * @param level The logging level
-     * @param msg The message associated with the event.
-     * @param t A Throwable or null.
      */
     @Override
-    public void logMessage(
-            final String fqcn, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    protected void doLogMessage(
+            final String fqcn,
+            final StackTraceElement location,
+            final Level level,
+            final Marker marker,
+            final Message message,
+            final Throwable throwable) {
         StackTraceElement element = null;
         if (fqcn != null) {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
         }
-        final StatusData data = new StatusData(element, level, msg, t, null);
+        final StatusData data = new StatusData(element, level, message, throwable, null);
         while (!messages.offer(data)) {
             // discard an old message and retry
             messages.poll();
         }
         // LOG4J2-1813 if system property "log4j2.debug" is defined, all status logging is enabled
         if (configuration.isDebugEnabled() || listeners.isEmpty()) {
-            logger.logMessage(fqcn, level, marker, msg, t);
+            logger.logMessage(level, marker, fqcn, null, message, throwable);
         } else {
             for (final StatusListener listener : listeners) {
                 if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {

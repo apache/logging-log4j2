@@ -23,11 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * ReliabilityStrategy that counts the number of threads that have started to log an event but have not completed yet,
@@ -43,31 +43,6 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
 
     public AwaitCompletionReliabilityStrategy(final LoggerConfig loggerConfig) {
         this.loggerConfig = Objects.requireNonNull(loggerConfig, "loggerConfig is null");
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
-     * java.lang.String, java.lang.String, org.apache.logging.log4j.Marker, org.apache.logging.log4j.Level,
-     * org.apache.logging.log4j.message.Message, java.lang.Throwable)
-     */
-    @Override
-    public void log(
-            final Supplier<LoggerConfig> reconfigured,
-            final String loggerName,
-            final String fqcn,
-            final Marker marker,
-            final Level level,
-            final Message data,
-            final Throwable t) {
-
-        final LoggerConfig config = getActiveLoggerConfig(reconfigured);
-        try {
-            config.log(loggerName, fqcn, marker, level, data, t);
-        } finally {
-            config.getReliabilityStrategy().afterLogEvent();
-        }
     }
 
     /*

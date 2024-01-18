@@ -19,10 +19,11 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -37,8 +38,6 @@ public class AsyncLoggerConfigUseAfterShutdownTest {
         log.info("some message");
         CoreLoggerContexts.stopLoggerContext(); // stop async thread
 
-        // call the #logMessage() method to bypass the isEnabled check:
-        // before the LOG4J2-639 fix this would throw a NPE
-        ((AbstractLogger) log).logMessage("com.foo.Bar", Level.INFO, null, new SimpleMessage("msg"), null);
+        log.log(Level.INFO, (Marker) null, (Message) new SimpleMessage("msg"), null);
     }
 }

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -24,7 +25,6 @@ import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Reliability strategy that sleeps unconditionally for some time before allowing a Configuration to be stopped.
@@ -44,25 +44,6 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
                 .getLongProperty(
                         Log4jPropertyKey.CONFIG_RELIABILITY_STRATEGY_AWAIT_UNCONDITIONALLY_MILLIS,
                         DEFAULT_SLEEP_MILLIS);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
-     * java.lang.String, java.lang.String, org.apache.logging.log4j.Marker, org.apache.logging.log4j.Level,
-     * org.apache.logging.log4j.message.Message, java.lang.Throwable)
-     */
-    @Override
-    public void log(
-            final Supplier<LoggerConfig> reconfigured,
-            final String loggerName,
-            final String fqcn,
-            final Marker marker,
-            final Level level,
-            final Message data,
-            final Throwable t) {
-        loggerConfig.log(loggerName, fqcn, marker, level, data, t);
     }
 
     /*

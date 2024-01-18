@@ -473,35 +473,6 @@ public class LoggerConfig extends AbstractFilterable {
         return propertiesRequireLookup;
     }
 
-    /**
-     * Logs an event.
-     *
-     * @param loggerName The name of the Logger.
-     * @param fqcn The fully qualified class name of the caller.
-     * @param marker A Marker or null if none is present.
-     * @param level The event Level.
-     * @param data The Message.
-     * @param t A Throwable or null.
-     */
-    @PerformanceSensitive("allocation")
-    public void log(
-            final String loggerName,
-            final String fqcn,
-            final Marker marker,
-            final Level level,
-            final Message data,
-            final Throwable t) {
-        final List<Property> props = getProperties(loggerName, fqcn, marker, level, data, t);
-        final LogEvent logEvent =
-                logEventFactory.createEvent(loggerName, marker, fqcn, location(fqcn), level, data, props, t);
-        try {
-            log(logEvent, LoggerConfigPredicate.ALL);
-        } finally {
-            // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
-            logEventFactory.recycle(logEvent);
-        }
-    }
-
     private StackTraceElement location(final String fqcn) {
         return requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
     }

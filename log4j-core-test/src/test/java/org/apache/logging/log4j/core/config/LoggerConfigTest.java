@@ -67,7 +67,7 @@ public class LoggerConfigTest {
             actualList[0] = properties;
             return new Builder().setTimeMillis(System.currentTimeMillis()).build();
         });
-        loggerConfig.log("name", "fqcn", null, Level.INFO, new SimpleMessage("msg"), null);
+        loggerConfig.log("name", "fqcn", null, null, Level.INFO, new SimpleMessage("msg"), null);
         assertSame(list, actualList[0], "propertiesList passed in as is if no substitutions required");
     }
 
@@ -86,7 +86,7 @@ public class LoggerConfigTest {
             actualListHolder[0] = properties;
             return new Builder().setTimeMillis(System.currentTimeMillis()).build();
         });
-        loggerConfig.log("name", "fqcn", null, Level.INFO, new SimpleMessage("msg"), null);
+        loggerConfig.log("name", "fqcn", null, null, Level.INFO, new SimpleMessage("msg"), null);
         assertNotSame(list, actualListHolder[0], "propertiesList with substitutions");
 
         @SuppressWarnings("unchecked")
@@ -135,7 +135,7 @@ public class LoggerConfigTest {
         when(appender.getName()).thenReturn("test");
         config.addAppender(appender, null, null);
 
-        config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);
+        config.log(FQCN, FQCN, null, null, Level.INFO, new SimpleMessage(), null);
         verify(appender, times(1)).append(any());
         verify(filter, times(1)).filter(any());
     }

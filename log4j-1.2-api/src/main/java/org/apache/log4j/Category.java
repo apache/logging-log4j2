@@ -334,7 +334,7 @@ public class Category implements AppenderAttachable {
         final org.apache.logging.log4j.Level lvl = level.getVersion2Level();
         final Message msg = createMessage(message);
         if (logger instanceof ExtendedLogger) {
-            ((ExtendedLogger) logger).logMessage(fqcn, lvl, null, msg, t);
+            ((ExtendedLogger) logger).logIfEnabled(fqcn, lvl, null, msg, t);
         } else {
             logger.log(lvl, msg, t);
         }
@@ -573,7 +573,7 @@ public class Category implements AppenderAttachable {
         if (logger.isEnabled(level)) {
             final Message msg = createMessage(message);
             if (logger instanceof ExtendedLogger) {
-                ((ExtendedLogger) logger).logMessage(fqcn, level, null, msg, throwable);
+                ((ExtendedLogger) logger).logIfEnabled(fqcn, level, null, msg, throwable);
             } else {
                 logger.log(level, msg, throwable);
             }

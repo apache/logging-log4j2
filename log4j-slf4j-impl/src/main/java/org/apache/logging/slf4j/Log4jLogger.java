@@ -364,7 +364,7 @@ public class Log4jLogger implements LocationAwareLogger {
             msg = new ParameterizedMessage(message, params, throwable);
             actualThrowable = throwable != null ? throwable : msg.getThrowable();
         }
-        logger.logMessage(fqcn, log4jLevel, log4jMarker, msg, actualThrowable);
+        logger.logMessage(log4jLevel, log4jMarker, fqcn, null, msg, actualThrowable);
     }
 
     @Override

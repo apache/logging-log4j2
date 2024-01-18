@@ -47,7 +47,7 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
     private long threadId = Thread.currentThread().getId();
     private String threadName = Thread.currentThread().getName();
     private int threadPriority = Thread.currentThread().getPriority();
-    private StackTraceElement location;
+    protected StackTraceElement location;
     private Clock clock;
     private NanoClock nanoClock;
 

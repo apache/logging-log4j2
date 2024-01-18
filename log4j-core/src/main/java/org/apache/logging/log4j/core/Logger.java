@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Marker;
@@ -30,10 +31,8 @@ import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * The core implementation of the {@link org.apache.logging.log4j.Logger} interface. Besides providing an implementation
@@ -149,19 +148,11 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     @Override
-    public void logMessage(
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
-        final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;
-        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
-        strategy.log(this, getName(), fqcn, marker, level, msg, t);
-    }
-
-    @Override
-    protected void log(
-            final Level level,
-            final Marker marker,
+    protected void doLogMessage(
             final String fqcn,
             final StackTraceElement location,
+            final Level level,
+            final Marker marker,
             final Message message,
             final Throwable throwable) {
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();

@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.Arrays;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * This is the central interface in the log4j package. Most logging operations, except configuration, are done through
@@ -69,12 +69,12 @@ import org.apache.logging.log4j.util.Supplier;
  * </pre>
  *
  * <p>
- * Note that although {@link MessageSupplier} is provided, using {@link Supplier Supplier&lt;Message&gt;} works just the
- * same. MessageSupplier was deprecated in 2.6 and un-deprecated in 2.8.1. Anonymous class usage of these APIs
- * should prefer using Supplier instead.
+ * Note that although {@link org.apache.logging.log4j.util.MessageSupplier} is provided, using {@link org.apache.logging.log4j.util.Supplier org.apache.logging.log4j.util.Supplier&lt;Message&gt;} works just the
+ * same. org.apache.logging.log4j.util.MessageSupplier was deprecated in 2.6 and un-deprecated in 2.8.1. Anonymous class usage of these APIs
+ * should prefer using org.apache.logging.log4j.util.Supplier instead.
  * </p>
  */
-public interface Logger {
+public interface Logger extends org.apache.logging.log4j.v3.Logger {
 
     /**
      * Logs a {@link Throwable} that has been caught to a specific logging level.
@@ -97,62 +97,34 @@ public interface Logger {
     void catching(Throwable throwable);
 
     /**
-     * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     */
-    void debug(Marker marker, Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void debug(Marker marker, Message message, Throwable throwable);
-
-    /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level with
-     * the specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * the specified Marker. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void debug(Marker marker, MessageSupplier messageSupplier);
+    default void debug(final Marker marker, final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        debug(marker, (Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level) with the
      * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void debug(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#DEBUG DEBUG} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     */
-    void debug(Marker marker, CharSequence message);
-
-    /**
-     * Logs a message CharSequence at the {@link Level#DEBUG DEBUG} level including the stack trace of the
-     * {@link Throwable} <code>throwable</code> passed as parameter.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void debug(Marker marker, CharSequence message, Throwable throwable);
+    default void debug(
+            final Marker marker,
+            final org.apache.logging.log4j.util.MessageSupplier messageSupplier,
+            final Throwable throwable) {
+        debug(marker, (Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
@@ -181,16 +153,6 @@ public interface Logger {
     void debug(Marker marker, String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void debug(Marker marker, String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#DEBUG
      * DEBUG} level.
      *
@@ -200,7 +162,14 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void debug(Marker marker, String message, Supplier<?>... paramSuppliers);
+    default void debug(
+            final Marker marker,
+            final String message,
+            final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isDebugEnabled(marker)) {
+            debug(marker, message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
@@ -222,7 +191,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void debug(Marker marker, Supplier<?> messageSupplier);
+    default void debug(final Marker marker, final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        debug(marker, (Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level) with the
@@ -235,58 +206,36 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void debug(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
-     *
-     * @param message the message string to be logged
-     */
-    void debug(Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
-     *
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void debug(Message message, Throwable throwable);
+    default void debug(
+            final Marker marker,
+            final org.apache.logging.log4j.util.Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        debug(marker, (Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void debug(MessageSupplier messageSupplier);
+    default void debug(final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        debug((Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level) including the
-     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void debug(MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#DEBUG DEBUG} level.
-     *
-     * @param message the message object to log.
-     */
-    void debug(CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void debug(CharSequence message, Throwable throwable);
+    default void debug(final org.apache.logging.log4j.util.MessageSupplier messageSupplier, final Throwable throwable) {
+        debug((Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
@@ -312,15 +261,6 @@ public interface Logger {
     void debug(String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void debug(String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#DEBUG
      * DEBUG} level.
      *
@@ -329,7 +269,11 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void debug(String message, Supplier<?>... paramSuppliers);
+    default void debug(final String message, final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isDebugEnabled()) {
+            debug(message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
@@ -348,7 +292,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void debug(Supplier<?> messageSupplier);
+    default void debug(final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        debug((Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level) including the
@@ -360,26 +306,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void debug(Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with parameters at debug level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     */
-    void debug(Marker marker, String message, Object p0);
-
-    /**
-     * Logs a message with parameters at debug level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void debug(Marker marker, String message, Object p0, Object p1);
+    default void debug(final org.apache.logging.log4j.util.Supplier<?> messageSupplier, final Throwable throwable) {
+        debug((Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message with parameters at debug level.
@@ -536,23 +465,6 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
-     */
-    void debug(String message, Object p0);
-
-    /**
-     * Logs a message with parameters at debug level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void debug(String message, Object p0, Object p1);
-
-    /**
-     * Logs a message with parameters at debug level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      */
@@ -678,62 +590,34 @@ public interface Logger {
             Object p9);
 
     /**
-     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     */
-    void error(Marker marker, Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void error(Marker marker, Message message, Throwable throwable);
-
-    /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level with
-     * the specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * the specified Marker. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void error(Marker marker, MessageSupplier messageSupplier);
+    default void error(final Marker marker, final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        error(marker, (Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) with the
      * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void error(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#ERROR ERROR} level.
-     *
-     * @param marker the marker data specific to this log statement.
-     * @param message the message CharSequence to log.
-     */
-    void error(Marker marker, CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param marker the marker data specific to this log statement.
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void error(Marker marker, CharSequence message, Throwable throwable);
+    default void error(
+            final Marker marker,
+            final org.apache.logging.log4j.util.MessageSupplier messageSupplier,
+            final Throwable throwable) {
+        error(marker, (Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
@@ -762,16 +646,6 @@ public interface Logger {
     void error(Marker marker, String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
-     *
-     * @param marker the marker data specific to this log statement.
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void error(Marker marker, String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#ERROR
      * ERROR} level.
      *
@@ -781,7 +655,14 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void error(Marker marker, String message, Supplier<?>... paramSuppliers);
+    default void error(
+            final Marker marker,
+            final String message,
+            final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isErrorEnabled(marker)) {
+            error(marker, message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
@@ -803,7 +684,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void error(Marker marker, Supplier<?> messageSupplier);
+    default void error(final Marker marker, final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        error(marker, (Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) with the
@@ -816,58 +699,36 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void error(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
-     *
-     * @param message the message string to be logged
-     */
-    void error(Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
-     *
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void error(Message message, Throwable throwable);
+    default void error(
+            final Marker marker,
+            final org.apache.logging.log4j.util.Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        error(marker, (Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void error(MessageSupplier messageSupplier);
+    default void error(final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        error((Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) including the
-     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void error(MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#ERROR ERROR} level.
-     *
-     * @param message the message CharSequence to log.
-     */
-    void error(CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void error(CharSequence message, Throwable throwable);
+    default void error(final org.apache.logging.log4j.util.MessageSupplier messageSupplier, final Throwable throwable) {
+        error((Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
@@ -893,15 +754,6 @@ public interface Logger {
     void error(String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void error(String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#ERROR
      * ERROR} level.
      *
@@ -910,7 +762,11 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void error(String message, Supplier<?>... paramSuppliers);
+    default void error(final String message, final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isErrorEnabled()) {
+            error(message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
@@ -929,7 +785,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void error(Supplier<?> messageSupplier);
+    default void error(final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        error((Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) including the
@@ -941,26 +799,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void error(Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with parameters at error level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     */
-    void error(Marker marker, String message, Object p0);
-
-    /**
-     * Logs a message with parameters at error level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void error(Marker marker, String message, Object p0, Object p1);
+    default void error(final org.apache.logging.log4j.util.Supplier<?> messageSupplier, final Throwable throwable) {
+        error((Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message with parameters at error level.
@@ -1117,23 +958,6 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
-     */
-    void error(String message, Object p0);
-
-    /**
-     * Logs a message with parameters at error level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void error(String message, Object p0, Object p1);
-
-    /**
-     * Logs a message with parameters at error level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      */
@@ -1259,62 +1083,34 @@ public interface Logger {
             Object p9);
 
     /**
-     * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     */
-    void fatal(Marker marker, Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void fatal(Marker marker, Message message, Throwable throwable);
-
-    /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level with
-     * the specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * the specified Marker. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void fatal(Marker marker, MessageSupplier messageSupplier);
+    default void fatal(final Marker marker, final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        fatal(marker, (Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) with the
      * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void fatal(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#FATAL FATAL} level.
-     *
-     * @param marker The marker data specific to this log statement.
-     * @param message the message CharSequence to log.
-     */
-    void fatal(Marker marker, CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param marker The marker data specific to this log statement.
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void fatal(Marker marker, CharSequence message, Throwable throwable);
+    default void fatal(
+            final Marker marker,
+            final org.apache.logging.log4j.util.MessageSupplier messageSupplier,
+            final Throwable throwable) {
+        fatal(marker, (Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
@@ -1343,16 +1139,6 @@ public interface Logger {
     void fatal(Marker marker, String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
-     *
-     * @param marker The marker data specific to this log statement.
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void fatal(Marker marker, String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#FATAL
      * FATAL} level.
      *
@@ -1362,7 +1148,14 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void fatal(Marker marker, String message, Supplier<?>... paramSuppliers);
+    default void fatal(
+            final Marker marker,
+            final String message,
+            final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isFatalEnabled(marker)) {
+            fatal(marker, message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
@@ -1384,7 +1177,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void fatal(Marker marker, Supplier<?> messageSupplier);
+    default void fatal(final Marker marker, final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        fatal(marker, (Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) with the
@@ -1397,58 +1192,36 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void fatal(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
-     *
-     * @param message the message string to be logged
-     */
-    void fatal(Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
-     *
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void fatal(Message message, Throwable throwable);
+    default void fatal(
+            final Marker marker,
+            final org.apache.logging.log4j.util.Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        fatal(marker, (Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void fatal(MessageSupplier messageSupplier);
+    default void fatal(final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        fatal((Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) including the
-     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void fatal(MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#FATAL FATAL} level.
-     *
-     * @param message the message CharSequence to log.
-     */
-    void fatal(CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void fatal(CharSequence message, Throwable throwable);
+    default void fatal(final org.apache.logging.log4j.util.MessageSupplier messageSupplier, final Throwable throwable) {
+        fatal((Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
@@ -1474,15 +1247,6 @@ public interface Logger {
     void fatal(String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void fatal(String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#FATAL
      * FATAL} level.
      *
@@ -1491,7 +1255,11 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void fatal(String message, Supplier<?>... paramSuppliers);
+    default void fatal(final String message, final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isFatalEnabled()) {
+            fatal(message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
@@ -1510,7 +1278,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void fatal(Supplier<?> messageSupplier);
+    default void fatal(final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        fatal((Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) including the
@@ -1522,26 +1292,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void fatal(Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with parameters at fatal level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     */
-    void fatal(Marker marker, String message, Object p0);
-
-    /**
-     * Logs a message with parameters at fatal level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void fatal(Marker marker, String message, Object p0, Object p1);
+    default void fatal(final org.apache.logging.log4j.util.Supplier<?> messageSupplier, final Throwable throwable) {
+        fatal((Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message with parameters at fatal level.
@@ -1698,23 +1451,6 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
-     */
-    void fatal(String message, Object p0);
-
-    /**
-     * Logs a message with parameters at fatal level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void fatal(String message, Object p0, Object p1);
-
-    /**
-     * Logs a message with parameters at fatal level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      */
@@ -1840,20 +1576,14 @@ public interface Logger {
             Object p9);
 
     /**
-     * Gets the Level associated with the Logger.
-     *
-     * @return the Level associate with the Logger.
-     */
-    Level getLevel();
-
-    /**
      * Gets the message factory used to convert message Objects and Strings/CharSequences into actual log Messages.
-     *
+     * <p>
      * Since version 2.6, Log4j internally uses message factories that implement the {@link MessageFactory} interface.
      * From version 2.6.2, the return type of this method was changed from {@link MessageFactory} to
      * {@code <MF extends MessageFactory> MF}. The returned factory will always implement {@link MessageFactory},
      * but the return type of this method could not be changed to {@link MessageFactory} without breaking binary
      * compatibility.
+     * </p>
      *
      * @return the message factory, as an instance of {@link MessageFactory}
      */
@@ -1868,69 +1598,34 @@ public interface Logger {
     FlowMessageFactory getFlowMessageFactory();
 
     /**
-     * Gets the logger name.
-     *
-     * @return the logger name.
-     */
-    String getName();
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     */
-    void info(Marker marker, Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void info(Marker marker, Message message, Throwable throwable);
-
-    /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level with the
-     * specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * specified Marker. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void info(Marker marker, MessageSupplier messageSupplier);
+    default void info(final Marker marker, final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        info(marker, (Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) with the
      * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void info(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#INFO INFO} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     */
-    void info(Marker marker, CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void info(Marker marker, CharSequence message, Throwable throwable);
+    default void info(
+            final Marker marker,
+            final org.apache.logging.log4j.util.MessageSupplier messageSupplier,
+            final Throwable throwable) {
+        info(marker, (Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
@@ -1959,16 +1654,6 @@ public interface Logger {
     void info(Marker marker, String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#INFO INFO} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void info(Marker marker, String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#INFO
      * INFO} level.
      *
@@ -1978,7 +1663,14 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void info(Marker marker, String message, Supplier<?>... paramSuppliers);
+    default void info(
+            final Marker marker,
+            final String message,
+            final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isInfoEnabled(marker)) {
+            info(marker, message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
@@ -2000,7 +1692,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void info(Marker marker, Supplier<?> messageSupplier);
+    default void info(final Marker marker, final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        info(marker, (Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) with the
@@ -2013,58 +1707,36 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void info(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
-     *
-     * @param message the message string to be logged
-     */
-    void info(Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
-     *
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void info(Message message, Throwable throwable);
+    default void info(
+            final Marker marker,
+            final org.apache.logging.log4j.util.Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        info(marker, (Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void info(MessageSupplier messageSupplier);
+    default void info(final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        info((Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) including the
-     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void info(MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#INFO INFO} level.
-     *
-     * @param message the message CharSequence to log.
-     */
-    void info(CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void info(CharSequence message, Throwable throwable);
+    default void info(final org.apache.logging.log4j.util.MessageSupplier messageSupplier, final Throwable throwable) {
+        info((Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
@@ -2090,15 +1762,6 @@ public interface Logger {
     void info(String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#INFO INFO} level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void info(String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#INFO
      * INFO} level.
      *
@@ -2107,7 +1770,11 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void info(String message, Supplier<?>... paramSuppliers);
+    default void info(final String message, final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isInfoEnabled()) {
+            info(message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
@@ -2126,7 +1793,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void info(Supplier<?> messageSupplier);
+    default void info(final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        info((Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) including the
@@ -2138,26 +1807,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void info(Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with parameters at info level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     */
-    void info(Marker marker, String message, Object p0);
-
-    /**
-     * Logs a message with parameters at info level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void info(Marker marker, String message, Object p0, Object p1);
+    default void info(final org.apache.logging.log4j.util.Supplier<?> messageSupplier, final Throwable throwable) {
+        info((Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message with parameters at info level.
@@ -2314,23 +1966,6 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
-     */
-    void info(String message, Object p0);
-
-    /**
-     * Logs a message with parameters at info level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void info(String message, Object p0, Object p1);
-
-    /**
-     * Logs a message with parameters at info level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      */
@@ -2456,143 +2091,8 @@ public interface Logger {
             Object p9);
 
     /**
-     * Checks whether this Logger is enabled for the {@link Level#DEBUG DEBUG} Level.
-     *
-     * @return boolean - {@code true} if this Logger is enabled for level DEBUG, {@code false} otherwise.
-     */
-    boolean isDebugEnabled();
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#DEBUG DEBUG} Level.
-     *
-     * @param marker The Marker to check
-     * @return boolean - {@code true} if this Logger is enabled for level DEBUG, {@code false} otherwise.
-     */
-    boolean isDebugEnabled(Marker marker);
-
-    /**
-     * Checks whether this Logger is enabled for the given Level.
-     * <p>
-     * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
-     * </p>
-     *
-     * @param level the Level to check
-     * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
-     */
-    boolean isEnabled(Level level);
-
-    /**
-     * Checks whether this Logger is enabled for the given Level and Marker.
-     *
-     * @param level The Level to check
-     * @param marker The Marker to check
-     * @return boolean - {@code true} if this Logger is enabled for level and marker, {@code false} otherwise.
-     */
-    boolean isEnabled(Level level, Marker marker);
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
-     *
-     * @return boolean - {@code true} if this Logger is enabled for level {@link Level#ERROR ERROR}, {@code false}
-     *         otherwise.
-     */
-    boolean isErrorEnabled();
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
-     *
-     * @param marker The Marker to check
-     * @return boolean - {@code true} if this Logger is enabled for level {@link Level#ERROR ERROR}, {@code false}
-     *         otherwise.
-     */
-    boolean isErrorEnabled(Marker marker);
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#FATAL FATAL} Level.
-     *
-     * @return boolean - {@code true} if this Logger is enabled for level {@link Level#FATAL FATAL}, {@code false}
-     *         otherwise.
-     */
-    boolean isFatalEnabled();
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#FATAL FATAL} Level.
-     *
-     * @param marker The Marker to check
-     * @return boolean - {@code true} if this Logger is enabled for level {@link Level#FATAL FATAL}, {@code false}
-     *         otherwise.
-     */
-    boolean isFatalEnabled(Marker marker);
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#INFO INFO} Level.
-     *
-     * @return boolean - {@code true} if this Logger is enabled for level INFO, {@code false} otherwise.
-     */
-    boolean isInfoEnabled();
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#INFO INFO} Level.
-     *
-     * @param marker The Marker to check
-     * @return boolean - {@code true} if this Logger is enabled for level INFO, {@code false} otherwise.
-     */
-    boolean isInfoEnabled(Marker marker);
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#TRACE TRACE} level.
-     *
-     * @return boolean - {@code true} if this Logger is enabled for level TRACE, {@code false} otherwise.
-     */
-    boolean isTraceEnabled();
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#TRACE TRACE} level.
-     *
-     * @param marker The Marker to check
-     * @return boolean - {@code true} if this Logger is enabled for level TRACE, {@code false} otherwise.
-     */
-    boolean isTraceEnabled(Marker marker);
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#WARN WARN} Level.
-     *
-     * @return boolean - {@code true} if this Logger is enabled for level {@link Level#WARN WARN}, {@code false}
-     *         otherwise.
-     */
-    boolean isWarnEnabled();
-
-    /**
-     * Checks whether this Logger is enabled for the {@link Level#WARN WARN} Level.
-     *
-     * @param marker The Marker to check
-     * @return boolean - {@code true} if this Logger is enabled for level {@link Level#WARN WARN}, {@code false}
-     *         otherwise.
-     */
-    boolean isWarnEnabled(Marker marker);
-
-    /**
-     * Logs a message with the specific Marker at the given level.
-     *
-     * @param level the logging level
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     */
-    void log(Level level, Marker marker, Message message);
-
-    /**
-     * Logs a message with the specific Marker at the given level.
-     *
-     * @param level the logging level
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void log(Level level, Marker marker, Message message, Throwable throwable);
-
-    /**
      * Logs a message which is only to be constructed if the logging level is the specified level with the specified
-     * Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * Marker. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param level the logging level
@@ -2600,11 +2100,16 @@ public interface Logger {
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void log(Level level, Marker marker, MessageSupplier messageSupplier);
+    default void log(
+            final Level level,
+            final Marker marker,
+            final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        log(level, marker, (Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the specified level) with the specified Marker and
-     * including the stack log of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier}
+     * including the stack log of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code org.apache.logging.log4j.util.MessageSupplier}
      * may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param level the logging level
@@ -2613,27 +2118,13 @@ public interface Logger {
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void log(Level level, Marker marker, MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the given level.
-     *
-     * @param level the logging level
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     */
-    void log(Level level, Marker marker, CharSequence message);
-
-    /**
-     * Logs a CharSequence at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
-     * parameter.
-     *
-     * @param level the logging level
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void log(Level level, Marker marker, CharSequence message, Throwable throwable);
+    default void log(
+            final Level level,
+            final Marker marker,
+            final org.apache.logging.log4j.util.MessageSupplier messageSupplier,
+            final Throwable throwable) {
+        log(level, marker, (Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the given level.
@@ -2665,17 +2156,6 @@ public interface Logger {
     void log(Level level, Marker marker, String message);
 
     /**
-     * Logs a message with parameters at the given level.
-     *
-     * @param level the logging level
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void log(Level level, Marker marker, String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the specified level.
      *
      * @param level the logging level
@@ -2685,7 +2165,15 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void log(Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
+    default void log(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isEnabled(level, marker)) {
+            log(level, marker, message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
@@ -2708,7 +2196,10 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void log(Level level, Marker marker, Supplier<?> messageSupplier);
+    default void log(
+            final Level level, final Marker marker, final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        log(level, marker, (Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the specified level) with the specified Marker and
@@ -2722,38 +2213,29 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void log(Level level, Marker marker, Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with the specific Marker at the given level.
-     *
-     * @param level the logging level
-     * @param message the message string to be logged
-     */
-    void log(Level level, Message message);
-
-    /**
-     * Logs a message with the specific Marker at the given level.
-     *
-     * @param level the logging level
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void log(Level level, Message message, Throwable throwable);
+    default void log(
+            final Level level,
+            final Marker marker,
+            final org.apache.logging.log4j.util.Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        log(level, marker, (Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the specified level. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param level the logging level
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void log(Level level, MessageSupplier messageSupplier);
+    default void log(final Level level, final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        log(level, (Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the specified level) including the stack log of
-     * the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may not use the
+     * the {@link Throwable} <code>throwable</code> passed as parameter. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the
      * {@link MessageFactory} to construct the {@code Message}.
      *
      * @param level the logging level
@@ -2761,25 +2243,12 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack log.
      * @since 2.4
      */
-    void log(Level level, MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the given level.
-     *
-     * @param level the logging level
-     * @param message the message CharSequence to log.
-     */
-    void log(Level level, CharSequence message);
-
-    /**
-     * Logs a CharSequence at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
-     * parameter.
-     *
-     * @param level the logging level
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void log(Level level, CharSequence message, Throwable throwable);
+    default void log(
+            final Level level,
+            final org.apache.logging.log4j.util.MessageSupplier messageSupplier,
+            final Throwable throwable) {
+        log(level, (Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the given level.
@@ -2808,16 +2277,6 @@ public interface Logger {
     void log(Level level, String message);
 
     /**
-     * Logs a message with parameters at the given level.
-     *
-     * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void log(Level level, String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the specified level.
      *
      * @param level the logging level
@@ -2826,7 +2285,14 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void log(Level level, String message, Supplier<?>... paramSuppliers);
+    default void log(
+            final Level level,
+            final String message,
+            final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isEnabled(level)) {
+            log(level, message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
@@ -2847,7 +2313,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void log(Level level, Supplier<?> messageSupplier);
+    default void log(final Level level, final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        log(level, (Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the specified level) including the stack log of
@@ -2860,28 +2328,12 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void log(Level level, Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with parameters at the specified level.
-     *
-     * @param level the logging level
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     */
-    void log(Level level, Marker marker, String message, Object p0);
-
-    /**
-     * Logs a message with parameters at the specified level.
-     *
-     * @param level the logging level
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void log(Level level, Marker marker, String message, Object p0, Object p1);
+    default void log(
+            final Level level,
+            final org.apache.logging.log4j.util.Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        log(level, (Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message with parameters at the specified level.
@@ -3061,25 +2513,6 @@ public interface Logger {
             Object p7,
             Object p8,
             Object p9);
-
-    /**
-     * Logs a message with parameters at the specified level.
-     *
-     * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     */
-    void log(Level level, String message, Object p0);
-
-    /**
-     * Logs a message with parameters at the specified level.
-     *
-     * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void log(Level level, String message, Object p0, Object p1);
 
     /**
      * Logs a message with parameters at the specified level.
@@ -3278,63 +2711,34 @@ public interface Logger {
     <T extends Throwable> T throwing(T throwable);
 
     /**
-     * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     */
-    void trace(Marker marker, Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void trace(Marker marker, Message message, Throwable throwable);
-
-    /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#TRACE TRACE} level with
-     * the specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * the specified Marker. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void trace(Marker marker, MessageSupplier messageSupplier);
+    default void trace(final Marker marker, final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        trace(marker, (Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) with the
      * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void trace(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#TRACE TRACE} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     */
-    void trace(Marker marker, CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     * @see #debug(String)
-     */
-    void trace(Marker marker, CharSequence message, Throwable throwable);
+    default void trace(
+            final Marker marker,
+            final org.apache.logging.log4j.util.MessageSupplier messageSupplier,
+            final Throwable throwable) {
+        trace(marker, (Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
@@ -3364,16 +2768,6 @@ public interface Logger {
     void trace(Marker marker, String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void trace(Marker marker, String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#TRACE
      * TRACE} level.
      *
@@ -3383,7 +2777,14 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void trace(Marker marker, String message, Supplier<?>... paramSuppliers);
+    default void trace(
+            final Marker marker,
+            final String message,
+            final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isTraceEnabled(marker)) {
+            trace(marker, message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
@@ -3406,7 +2807,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void trace(Marker marker, Supplier<?> messageSupplier);
+    default void trace(final Marker marker, final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        trace(marker, (Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) with the
@@ -3419,59 +2822,36 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void trace(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
-     *
-     * @param message the message string to be logged
-     */
-    void trace(Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
-     *
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void trace(Message message, Throwable throwable);
+    default void trace(
+            final Marker marker,
+            final org.apache.logging.log4j.util.Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        trace(marker, (Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#TRACE TRACE} level. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void trace(MessageSupplier messageSupplier);
+    default void trace(final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        trace((Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) including the
-     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void trace(MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#TRACE TRACE} level.
-     *
-     * @param message the message CharSequence to log.
-     */
-    void trace(CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     * @see #debug(String)
-     */
-    void trace(CharSequence message, Throwable throwable);
+    default void trace(final org.apache.logging.log4j.util.MessageSupplier messageSupplier, final Throwable throwable) {
+        trace((Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
@@ -3498,15 +2878,6 @@ public interface Logger {
     void trace(String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void trace(String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#TRACE
      * TRACE} level.
      *
@@ -3515,7 +2886,11 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void trace(String message, Supplier<?>... paramSuppliers);
+    default void trace(final String message, final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isTraceEnabled()) {
+            trace(message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
@@ -3535,7 +2910,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void trace(Supplier<?> messageSupplier);
+    default void trace(final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        trace((Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) including the
@@ -3547,26 +2924,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void trace(Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with parameters at trace level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     */
-    void trace(Marker marker, String message, Object p0);
-
-    /**
-     * Logs a message with parameters at trace level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void trace(Marker marker, String message, Object p0, Object p1);
+    default void trace(final org.apache.logging.log4j.util.Supplier<?> messageSupplier, final Throwable throwable) {
+        trace((Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message with parameters at trace level.
@@ -3717,23 +3077,6 @@ public interface Logger {
             Object p7,
             Object p8,
             Object p9);
-
-    /**
-     * Logs a message with parameters at trace level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     */
-    void trace(String message, Object p0);
-
-    /**
-     * Logs a message with parameters at trace level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void trace(String message, Object p0, Object p1);
 
     /**
      * Logs a message with parameters at trace level.
@@ -3909,13 +3252,13 @@ public interface Logger {
      * }
      * }</pre>
      *
-     * @param paramSuppliers The Suppliers for the parameters to the method.
+     * @param paramSuppliers The org.apache.logging.log4j.util.Suppliers for the parameters to the method.
      * @return built message
      *
      * @since 2.6
      */
     @SuppressWarnings("deprecation")
-    EntryMessage traceEntry(Supplier<?>... paramSuppliers);
+    EntryMessage traceEntry(org.apache.logging.log4j.util.Supplier<?>... paramSuppliers);
 
     /**
      * Logs entry to a method along with its parameters. For example,
@@ -3928,13 +3271,13 @@ public interface Logger {
      * }</pre>
      *
      * @param format The format String for the parameters.
-     * @param paramSuppliers The Suppliers for the parameters to the method.
+     * @param paramSuppliers The org.apache.logging.log4j.util.Suppliers for the parameters to the method.
      * @return built message
      *
      * @since 2.6
      */
     @SuppressWarnings("deprecation")
-    EntryMessage traceEntry(String format, Supplier<?>... paramSuppliers);
+    EntryMessage traceEntry(String format, org.apache.logging.log4j.util.Supplier<?>... paramSuppliers);
 
     /**
      * Logs entry to a method using a Message to describe the parameters.
@@ -4050,62 +3393,34 @@ public interface Logger {
     <R> R traceExit(Message message, R result);
 
     /**
-     * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     */
-    void warn(Marker marker, Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void warn(Marker marker, Message message, Throwable throwable);
-
-    /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level with the
-     * specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * specified Marker. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void warn(Marker marker, MessageSupplier messageSupplier);
+    default void warn(final Marker marker, final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        warn(marker, (Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) with the
      * specified Marker and including the stack warn of the {@link Throwable} <code>throwable</code> passed as parameter. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void warn(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#WARN WARN} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     */
-    void warn(Marker marker, CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void warn(Marker marker, CharSequence message, Throwable throwable);
+    default void warn(
+            final Marker marker,
+            final org.apache.logging.log4j.util.MessageSupplier messageSupplier,
+            final Throwable throwable) {
+        warn(marker, (Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
@@ -4134,16 +3449,6 @@ public interface Logger {
     void warn(Marker marker, String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#WARN WARN} level.
-     *
-     * @param marker the marker data specific to this log statement.
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void warn(Marker marker, String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#WARN
      * WARN} level.
      *
@@ -4153,7 +3458,14 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void warn(Marker marker, String message, Supplier<?>... paramSuppliers);
+    default void warn(
+            final Marker marker,
+            final String message,
+            final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isWarnEnabled(marker)) {
+            warn(marker, message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
@@ -4175,7 +3487,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void warn(Marker marker, Supplier<?> messageSupplier);
+    default void warn(final Marker marker, final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        warn(marker, (Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) with the
@@ -4188,58 +3502,36 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void warn(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
-     *
-     * @param message the message string to be logged
-     */
-    void warn(Message message);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
-     *
-     * @param message the message string to be logged
-     * @param throwable A Throwable or null.
-     */
-    void warn(Message message, Throwable throwable);
+    default void warn(
+            final Marker marker,
+            final org.apache.logging.log4j.util.Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        warn(marker, (Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level. The
-     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * {@code org.apache.logging.log4j.util.MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void warn(MessageSupplier messageSupplier);
+    default void warn(final org.apache.logging.log4j.util.MessageSupplier messageSupplier) {
+        warn((Supplier<Message>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) including the
-     * stack warn of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack warn of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code org.apache.logging.log4j.util.MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param messageSupplier A function, which when called, produces the desired log message.
      * @param throwable the {@code Throwable} to log, including its stack warn.
      * @since 2.4
      */
-    void warn(MessageSupplier messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message CharSequence with the {@link Level#WARN WARN} level.
-     *
-     * @param message the message CharSequence to log.
-     */
-    void warn(CharSequence message);
-
-    /**
-     * Logs a CharSequence at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
-     * <code>throwable</code> passed as parameter.
-     *
-     * @param message the message CharSequence to log.
-     * @param throwable the {@code Throwable} to log, including its stack trace.
-     */
-    void warn(CharSequence message, Throwable throwable);
+    default void warn(final org.apache.logging.log4j.util.MessageSupplier messageSupplier, final Throwable throwable) {
+        warn((Supplier<Message>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
@@ -4265,15 +3557,6 @@ public interface Logger {
     void warn(String message);
 
     /**
-     * Logs a message with parameters at the {@link Level#WARN WARN} level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param params parameters to the message.
-     * @see #getMessageFactory()
-     */
-    void warn(String message, Object... params);
-
-    /**
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#WARN
      * WARN} level.
      *
@@ -4282,7 +3565,11 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void warn(String message, Supplier<?>... paramSuppliers);
+    default void warn(final String message, final org.apache.logging.log4j.util.Supplier<?>... paramSuppliers) {
+        if (isWarnEnabled()) {
+            warn(message, Arrays.copyOf(paramSuppliers, paramSuppliers.length, Supplier[].class));
+        }
+    }
 
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
@@ -4301,7 +3588,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void warn(Supplier<?> messageSupplier);
+    default void warn(final org.apache.logging.log4j.util.Supplier<?> messageSupplier) {
+        warn((Supplier<?>) messageSupplier);
+    }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) including the
@@ -4313,26 +3602,9 @@ public interface Logger {
      * @since 2.4
      */
     @SuppressWarnings("deprecation")
-    void warn(Supplier<?> messageSupplier, Throwable throwable);
-
-    /**
-     * Logs a message with parameters at warn level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     */
-    void warn(Marker marker, String message, Object p0);
-
-    /**
-     * Logs a message with parameters at warn level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void warn(Marker marker, String message, Object p0, Object p1);
+    default void warn(final org.apache.logging.log4j.util.Supplier<?> messageSupplier, final Throwable throwable) {
+        warn((Supplier<?>) messageSupplier, throwable);
+    }
 
     /**
      * Logs a message with parameters at warn level.
@@ -4489,23 +3761,6 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
-     */
-    void warn(String message, Object p0);
-
-    /**
-     * Logs a message with parameters at warn level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
-     * @param p1 parameter to the message.
-     */
-    void warn(String message, Object p0, Object p1);
-
-    /**
-     * Logs a message with parameters at warn level.
-     *
-     * @param message the message to log; the format depends on the message factory.
-     * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      */
@@ -4641,81 +3896,6 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.13.0
      */
-    default void logMessage(
-            Level level, Marker marker, String fqcn, StackTraceElement location, Message message, Throwable throwable) {
-        // noop
-    }
-
-    /**
-     * Construct a trace log event.
-     * @return a LogBuilder.
-     * @since 2.13.0
-     */
-    default LogBuilder atTrace() {
-        return LogBuilder.NOOP;
-    }
-
-    /**
-     * Construct a trace log event.
-     * @return a LogBuilder.
-     * @since 2.13.0
-     */
-    default LogBuilder atDebug() {
-        return LogBuilder.NOOP;
-    }
-
-    /**
-     * Construct a trace log event.
-     * @return a LogBuilder.
-     * @since 2.13.0
-     */
-    default LogBuilder atInfo() {
-        return LogBuilder.NOOP;
-    }
-
-    /**
-     * Construct a trace log event.
-     * @return a LogBuilder.
-     * @since 2.13.0
-     */
-    default LogBuilder atWarn() {
-        return LogBuilder.NOOP;
-    }
-
-    /**
-     * Construct a trace log event.
-     * @return a LogBuilder.
-     * @since 2.13.0
-     */
-    default LogBuilder atError() {
-        return LogBuilder.NOOP;
-    }
-
-    /**
-     * Construct a trace log event.
-     * @return a LogBuilder.
-     * @since 2.13.0
-     */
-    default LogBuilder atFatal() {
-        return LogBuilder.NOOP;
-    }
-
-    /**
-     * Construct a log event that will always be logged.
-     * @return a LogBuilder.
-     * @since 2.13.0
-     */
-    default LogBuilder always() {
-        return LogBuilder.NOOP;
-    }
-
-    /**
-     * Construct a log event.
-     * @param level Any level (ignoreed here).
-     * @return a LogBuilder.
-     * @since 2.13.0
-     */
-    default LogBuilder atLevel(Level level) {
-        return LogBuilder.NOOP;
-    }
+    void logMessage(
+            Level level, Marker marker, String fqcn, StackTraceElement location, Message message, Throwable throwable);
 }

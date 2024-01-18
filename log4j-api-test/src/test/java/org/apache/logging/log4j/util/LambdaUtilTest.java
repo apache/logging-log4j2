@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.logging.log4j.message.Message;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
@@ -31,45 +31,30 @@ import org.junit.jupiter.api.Test;
 public class LambdaUtilTest {
 
     @Test
-    public void testGetSupplierResultOfSupplier() {
+    public void testGetResultOfStringSupplier() {
         final String expected = "result";
-        final Object actual = LambdaUtil.get((Supplier<String>) () -> expected);
+        final Object actual = LambdaUtil.get(() -> expected);
         assertSame(expected, actual);
     }
 
     @Test
-    public void testGetMessageSupplierResultOfSupplier() {
-        final Message expected = new SimpleMessage("hi");
-        final Message actual = LambdaUtil.get(() -> expected);
+    public void testGetResultOfMessageSupplier() {
+        final String expected = "hi";
+        final Object actual = LambdaUtil.get(() -> new SimpleMessage("hi"));
         assertSame(expected, actual);
     }
 
     @Test
-    public void testGetSupplierReturnsNullIfSupplierNull() {
-        final Object actual = LambdaUtil.get((Supplier<?>) null);
+    public void testGetResultOfNull() {
+        final Object actual = LambdaUtil.get(null);
         assertNull(actual);
     }
 
     @Test
-    public void testGetMessageSupplierReturnsNullIfSupplierNull() {
-        final Object actual = LambdaUtil.get((MessageSupplier) null);
-        assertNull(actual);
-    }
-
-    @Test
-    public void testGetSupplierExceptionIfSupplierThrowsException() {
+    public void testGetExceptionIfSupplierThrowsException() {
         assertThrows(
                 RuntimeException.class,
                 () -> LambdaUtil.get((Supplier<String>) () -> {
-                    throw new RuntimeException();
-                }));
-    }
-
-    @Test
-    public void testGetMessageSupplierExceptionIfSupplierThrowsException() {
-        assertThrows(
-                RuntimeException.class,
-                () -> LambdaUtil.get(() -> {
                     throw new RuntimeException();
                 }));
     }

@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Extends the {@code Logger} interface with methods that facilitate implementing or extending {@code Logger}s. Users
@@ -612,29 +611,29 @@ public interface ExtendedLogger extends Logger {
             Object p9);
 
     /**
-     * Logs a message at the specified level. It is the responsibility of the caller to ensure the specified
-     * level is enabled.
+     * Logs a message whose parameters are only to be constructed if the specified level is active.
      *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
      * @param marker A Marker or null.
-     * @param message The Message.
-     * @param t the exception to log, including its stack trace.
+     * @param message The message format.
+     * @param s0 lambda that provides the first argument.
      */
-    void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t);
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Supplier<?> s0);
 
     /**
-     * Logs a message which is only to be constructed if the specified level is active.
+     * Logs a message whose parameters are only to be constructed if the specified level is active.
      *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
      * @param marker A Marker or null.
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t the exception to log, including its stack trace.
+     * @param message The message format.
+     * @param s0 lambda that provides the first argument.
+     * @param s1 lambda that provides the second argument.
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Supplier<?> s0, Supplier<?> s1);
 
     /**
      * Logs a message whose parameters are only to be constructed if the specified level is active.
@@ -646,7 +645,6 @@ public interface ExtendedLogger extends Logger {
      * @param message The message format.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      */
-    @SuppressWarnings("deprecation")
     void logIfEnabled(String fqcn, Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -659,6 +657,5 @@ public interface ExtendedLogger extends Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      */
-    @SuppressWarnings("deprecation")
     void logIfEnabled(String fqcn, Level level, Marker marker, Supplier<?> msgSupplier, Throwable t);
 }

@@ -19,11 +19,11 @@ package org.apache.logging.log4j.core.config;
 import java.util.Objects;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * ReliabilityStrategy that uses read/write locks to prevent the LoggerConfig from stopping while it is in use.
@@ -41,47 +41,22 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
      * (non-Javadoc)
      *
      * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
-     * java.lang.String, java.lang.String, org.apache.logging.log4j.Marker, org.apache.logging.log4j.Level,
-     * org.apache.logging.log4j.message.Message, java.lang.Throwable)
-     */
-    @Override
-    public void log(
-            final Supplier<LoggerConfig> reconfigured,
-            final String loggerName,
-            final String fqcn,
-            final Marker marker,
-            final Level level,
-            final Message data,
-            final Throwable t) {
-
-        final LoggerConfig config = getActiveLoggerConfig(reconfigured);
-        try {
-            config.log(loggerName, fqcn, marker, level, data, t);
-        } finally {
-            config.getReliabilityStrategy().afterLogEvent();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
      * java.lang.String, java.lang.String, java.lang.StackTraceElement, org.apache.logging.log4j.Marker,
      * org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable)
      */
     @Override
     public void log(
-            final Supplier<LoggerConfig> reconfigured,
-            final String loggerName,
-            final String fqcn,
-            final StackTraceElement location,
-            final Marker marker,
-            final Level level,
-            final Message data,
-            final Throwable t) {
+            Supplier<LoggerConfig> reconfigured,
+            String loggerName,
+            String fqcn,
+            StackTraceElement location,
+            Marker marker,
+            Level level,
+            Message message,
+            Throwable throwable) {
         final LoggerConfig config = getActiveLoggerConfig(reconfigured);
         try {
-            config.log(loggerName, fqcn, location, marker, level, data, t);
+            config.log(loggerName, fqcn, location, marker, level, message, throwable);
         } finally {
             config.getReliabilityStrategy().afterLogEvent();
         }

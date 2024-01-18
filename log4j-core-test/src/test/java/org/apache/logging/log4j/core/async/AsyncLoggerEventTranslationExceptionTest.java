@@ -25,12 +25,12 @@ import com.lmax.disruptor.ExceptionHandler;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -58,8 +58,8 @@ class AsyncLoggerEventTranslationExceptionTest {
         assertTrue(TestExceptionHandler.INSTANTIATED, "TestExceptionHandler was not configured properly");
 
         final Message exceptionThrowingMessage = new ExceptionThrowingMessage();
-        assertThrows(TestMessageException.class, () -> ((AbstractLogger) log)
-                .logMessage("com.foo.Bar", Level.INFO, null, exceptionThrowingMessage, null));
+        assertThrows(
+                TestMessageException.class, () -> log.log(Level.INFO, (Marker) null, exceptionThrowingMessage, null));
 
         CoreLoggerContexts.stopLoggerContext(); // stop async thread
 

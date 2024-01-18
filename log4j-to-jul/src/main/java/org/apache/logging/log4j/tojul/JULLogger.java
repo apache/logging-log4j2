@@ -54,17 +54,22 @@ final class JULLogger extends AbstractLogger {
     }
 
     @Override
-    public void logMessage(
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+    protected void doLogMessage(
+            final String fqcn,
+            final StackTraceElement location,
+            final Level level,
+            final Marker marker,
+            final Message message,
+            final Throwable throwable) {
         final java.util.logging.Level julLevel = convertLevel(level);
         if (!logger.isLoggable(julLevel)) {
             return;
         }
         final LazyLog4jLogRecord record =
-                new LazyLog4jLogRecord(fqcn, julLevel, message.getFormattedMessage()); // NOT getFormat()
+                new LazyLog4jLogRecord(fqcn, location, julLevel, message.getFormattedMessage()); // NOT getFormat()
         // NOT record.setParameters(message.getParameters()); BECAUSE getFormattedMessage() NOT getFormat()
         record.setLoggerName(getName());
-        record.setThrown(t == null ? message.getThrowable() : t);
+        record.setThrown(throwable == null ? message.getThrowable() : throwable);
         logger.log(record);
     }
 

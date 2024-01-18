@@ -220,8 +220,13 @@ public class LambdaLoggerTest {
         }
 
         @Override
-        public void logMessage(
-                final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+        protected void doLogMessage(
+                final String fqcn,
+                final StackTraceElement location,
+                final Level level,
+                final Marker marker,
+                final Message message,
+                final Throwable t) {
             list.add(new LogEvent(fqcn, level, marker, message, t));
         }
 

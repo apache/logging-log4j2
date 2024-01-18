@@ -92,14 +92,11 @@ public class InternalLoggerContext extends LoggerContext {
         }
 
         @Override
-        public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {}
-
-        @Override
-        protected void log(
-                Level level,
-                Marker marker,
+        protected void doLogMessage(
                 String fqcn,
                 StackTraceElement location,
+                Level level,
+                Marker marker,
                 Message message,
                 Throwable throwable) {
             logger.log(level, marker, message, throwable);
