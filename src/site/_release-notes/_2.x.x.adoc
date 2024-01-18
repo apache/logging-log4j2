@@ -47,7 +47,7 @@ This releases contains ...
 * Update `co.elastic.clients:elasticsearch-java` to version `8.11.4` (https://github.com/apache/logging-log4j2/pull/2180[2180])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
 * Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2103[2103])
-* Update `github/codeql-action` to version `3.23.0` (https://github.com/apache/logging-log4j2/pull/2173[2173])
+* Update `github/codeql-action` to version `3.23.1` (https://github.com/apache/logging-log4j2/pull/2211[2211])
 * Update `io.netty:netty-bom` to version `4.1.105.Final` (https://github.com/apache/logging-log4j2/pull/2201[2201])
 * Update `org.apache.logging:logging-parent` to version `10.6.0` (https://github.com/apache/logging-log4j2/pull/2197[2197])
 * Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.5` (https://github.com/apache/logging-log4j2/pull/2178[2178])
