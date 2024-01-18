@@ -18,7 +18,8 @@ package org.apache.logging.log4j.jul.test;
 
 import static java.util.logging.Level.INFO;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 import java.util.logging.LogRecord;

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
