@@ -686,7 +686,7 @@ Using the HTML encoding format, the following characters are replaced:
 !Character !Replacement
 
 !'\r', '\n'
-!Converted into escaped strings "\\r" and "\\n" respectively
+!Converted into string literals "\r" and "\n" respectively
 
 !&, <, >, ", ', /
 !Replaced with the corresponding HTML entity
@@ -731,7 +731,7 @@ Using the CRLF encoding format, the following characters are replaced:
 !Character !Replacement
 
 !'\r', '\n'
-!Converted into escaped strings "\\r" and "\\n" respectively
+!Converted into literal strings "\r" and "\n" respectively
 !===
 
 |*equals*{pattern}{test}{substitution} +
