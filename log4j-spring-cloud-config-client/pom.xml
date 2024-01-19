@@ -33,6 +33,10 @@
   <description>Apache Log4j Spring Cloud Config Client Support</description>
 
   <properties>
+    <!-- Dependency version -->
+    <spring-boot.version>3.2.1</spring-boot.version>
+    <spring-cloud.version>4.1.0</spring-cloud.version>
+    <spring-framework.version>6.1.2</spring-framework.version>
 
     <!--
       ~ OSGi and JPMS options
@@ -51,11 +55,39 @@
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-framework-bom</artifactId>
+        <version>${spring-framework.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- We exclude external logging deps to comply with `ban-logging-dependencies` -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring-framework.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jcl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>${spring-boot.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -77,6 +109,7 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-context</artifactId>
+      <version>${spring-cloud.version}</version>
     </dependency>
 
     <dependency>
@@ -85,6 +118,7 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Spring requires an implementation of `commons-logging` and we excluded `spring-jcl` above -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jcl</artifactId>
@@ -100,6 +134,21 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <version>${spring-boot.version}</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Spring requires bridges from all logging APIs and we excluded `spring-boot-starter-logging` above -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
+      <version>${spring-boot.version}</version>
       <scope>test</scope>
     </dependency>
 
