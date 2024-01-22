@@ -37,18 +37,19 @@ This releases contains ...
 === Fixed
 
 * Fixed use of `SecurityManager` in `LoaderUtil` where `AccessController::doPrivileged` should only be invoked when a `SecurityManager` is installed. Some runtimes do not seem to have this method available. (https://github.com/apache/logging-log4j2/issues/2129[2129])
+* Fix `log4j-spring-cloud-config-client` dependencies to include only those required. (https://github.com/apache/logging-log4j2/pull/2157[2157])
 * Fix typo in Kubernetes `clientKeyData` configuration property.
 
 [#release-notes-2-x-x-updated]
 === Updated
 
-* Update `actions/upload-artifact` to version `4.1.0` (https://github.com/apache/logging-log4j2/pull/2190[2190])
+* Update `actions/upload-artifact` to version `4.2.0` (https://github.com/apache/logging-log4j2/pull/2216[2216])
 * Update `apache/logging-parent` to version `` (https://github.com/apache/logging-log4j2/pull/2192[2192])
 * Update `co.elastic.clients:elasticsearch-java` to version `8.11.4` (https://github.com/apache/logging-log4j2/pull/2180[2180])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
 * Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2103[2103])
 * Update `github/codeql-action` to version `3.23.1` (https://github.com/apache/logging-log4j2/pull/2211[2211])
-* Update `io.netty:netty-bom` to version `4.1.105.Final` (https://github.com/apache/logging-log4j2/pull/2201[2201])
+* Update `io.netty:netty-bom` to version `4.1.106.Final` (https://github.com/apache/logging-log4j2/pull/2225[2225])
 * Update `org.apache.logging:logging-parent` to version `10.6.0` (https://github.com/apache/logging-log4j2/pull/2197[2197])
 * Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.5` (https://github.com/apache/logging-log4j2/pull/2178[2178])
 * Update `org.assertj:assertj-core` to version `3.25.1` (https://github.com/apache/logging-log4j2/pull/2153[2153])
