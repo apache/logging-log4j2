@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;

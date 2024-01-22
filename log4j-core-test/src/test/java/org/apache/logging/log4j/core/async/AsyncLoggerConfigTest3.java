@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.HashMap;

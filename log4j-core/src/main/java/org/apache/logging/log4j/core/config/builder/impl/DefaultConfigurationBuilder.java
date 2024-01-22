@@ -81,7 +81,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private ConfigurationSource source;
     private int monitorInterval;
     private Level level;
-    private String verbosity;
     private String destination;
     private String packages;
     private String shutdownFlag;
@@ -200,9 +199,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (level != null) {
                 configuration.getStatusConfiguration().withStatus(level);
             }
-            if (verbosity != null) {
-                configuration.getStatusConfiguration().withVerbosity(verbosity);
-            }
             if (destination != null) {
                 configuration.getStatusConfiguration().withDestination(destination);
             }
@@ -272,9 +268,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         }
         if (level != null) {
             xmlWriter.writeAttribute("status", level.name());
-        }
-        if (verbosity != null) {
-            xmlWriter.writeAttribute("verbose", verbosity);
         }
         if (destination != null) {
             xmlWriter.writeAttribute("dest", destination);
@@ -596,9 +589,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         return this;
     }
 
+    /**
+     * @deprecated This method is ineffective and only kept for binary backward compatibility.
+     */
     @Override
+    @Deprecated
     public ConfigurationBuilder<T> setVerbosity(final String verbosity) {
-        this.verbosity = verbosity;
         return this;
     }
 
