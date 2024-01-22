@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import org.apache.logging.log4j.core.appender.FileAppender;

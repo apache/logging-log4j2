@@ -1760,7 +1760,7 @@ these custom classes:
 .Log4j configuration employing custom `randomNumber` resolver
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration packages="com.acme.logging.log4j.layout.template.json">
+<Configuration>
   <!-- ... -->
   <JsonTemplateLayout>
     <EventTemplateAdditionalField

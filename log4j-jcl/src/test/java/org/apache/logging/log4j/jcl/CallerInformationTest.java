@@ -23,17 +23,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.test.junit.SetTestProperty;
-import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 
-@UsingStatusListener
-@SetTestProperty(key = "log4j2.configurationFile", value = "org/apache/logging/log4j/jcl/CallerInformationTest.xml")
 public class CallerInformationTest {
 
     @Test
-    public void testClassLogger() throws Exception {
-        final LoggerContext ctx = LoggerContext.getContext(false);
+    @LoggerContextSource("CallerInformationTest.xml")
+    public void testClassLogger(final LoggerContext ctx) {
         final ListAppender app = ctx.getConfiguration().getAppender("Class");
         app.clear();
         final Log logger = LogFactory.getLog("ClassLogger");
@@ -45,8 +42,8 @@ public class CallerInformationTest {
     }
 
     @Test
-    public void testMethodLogger() throws Exception {
-        final LoggerContext ctx = LoggerContext.getContext(false);
+    @LoggerContextSource("CallerInformationTest.xml")
+    public void testMethodLogger(final LoggerContext ctx) {
         final ListAppender app = ctx.getConfiguration().getAppender("Method");
         app.clear();
         final Log logger = LogFactory.getLog("MethodLogger");

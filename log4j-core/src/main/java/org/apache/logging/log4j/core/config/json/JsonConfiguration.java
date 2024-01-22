@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Patterns;
@@ -46,7 +45,6 @@ import org.apache.logging.log4j.core.util.Patterns;
  */
 public class JsonConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
     private final List<Status> status = new ArrayList<>();
     private JsonNode root;
 
@@ -66,9 +64,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 }
             }
             processAttributes(rootNode, root);
-            final StatusConfiguration statusConfig = new StatusConfiguration()
-                    .withVerboseClasses(VERBOSE_CLASSES)
-                    .withStatus(getDefaultStatus());
+            final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry :
                     rootNode.getAttributes().entrySet()) {
@@ -83,8 +79,6 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
                 } else if ("shutdownTimeout".equalsIgnoreCase(key)) {
                     shutdownTimeoutMillis = Long.parseLong(value);
-                } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
-                    statusConfig.withVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
                     pluginPackages.addAll(Arrays.asList(value.split(Patterns.COMMA_SEPARATOR)));
                 } else if ("name".equalsIgnoreCase(key)) {

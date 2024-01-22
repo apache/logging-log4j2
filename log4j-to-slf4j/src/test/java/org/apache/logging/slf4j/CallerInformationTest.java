@@ -16,7 +16,7 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;

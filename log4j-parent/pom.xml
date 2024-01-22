@@ -55,7 +55,7 @@
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
-    <surefire.version>3.2.3</surefire.version>
+    <surefire.version>3.2.5</surefire.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
@@ -63,7 +63,7 @@
     <activemq.version>6.0.1</activemq.version>
     <angus-activation.version>2.0.1</angus-activation.version>
     <angus-mail.version>2.0.2</angus-mail.version>
-    <assertj.version>3.25.0</assertj.version>
+    <assertj.version>3.25.1</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
     <cassandra.version>4.0.10</cassandra.version>
@@ -78,10 +78,10 @@
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch-java.version>8.11.2</elasticsearch-java.version>
+    <elasticsearch-java.version>8.12.0</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <flapdoodle-embed.version>4.9.0</flapdoodle-embed.version>
+    <flapdoodle-embed.version>4.10.2</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.7.2</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
     <groovy.version>3.0.20</groovy.version>
@@ -129,7 +129,7 @@
     <mockito.version>4.11.0</mockito.version>
     <mongodb.version>4.11.1</mongodb.version>
     <nashorn.version>15.4</nashorn.version>
-    <netty.version>4.1.104.Final</netty.version>
+    <netty.version>4.1.106.Final</netty.version>
     <org.eclipse.osgi.version>3.13.0.v20180226-1711</org.eclipse.osgi.version>
     <org.eclipse.persistence.version>2.7.14</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
@@ -144,7 +144,7 @@
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.1</wiremock.version>
-    <woodstox.version>6.5.1</woodstox.version>
+    <woodstox.version>6.6.0</woodstox.version>
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
     <zstd.version>1.5.5-11</zstd.version>
@@ -245,6 +245,14 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-bom</artifactId>
         <version>${netty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-framework-bom</artifactId>
+        <version>${spring-framework.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -957,6 +965,18 @@
 
       <dependency>
         <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-log4j2</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-test</artifactId>
         <version>${spring-boot.version}</version>
         <exclusions>
@@ -970,18 +990,6 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>${spring-framework.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jcl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
         <version>${spring-framework.version}</version>
         <exclusions>
           <exclusion>

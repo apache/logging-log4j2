@@ -14,18 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.osgi.tests.felix;
+package org.apache.logging.log4j.jul.test;
 
-import org.apache.logging.log4j.osgi.tests.AbstractLoadBundleTest;
-import org.osgi.framework.launch.FrameworkFactory;
+import org.apache.logging.log4j.jul.DefaultLevelConverter;
+import org.junit.Assert;
+import org.junit.Test;
 
-/**
- * Tests loading the Core bundle into an Apache Felix OSGi container.
- */
-public class FelixLoadApiBundleTest extends AbstractLoadBundleTest {
+public class DefaultLevelConverterTest {
 
-    @Override
-    protected FrameworkFactory getFactory() {
-        return new org.apache.felix.framework.FrameworkFactory();
+    /**
+     * (LOG4J2-1108) NullPointerException when passing null to java.util.logging.Logger.setLevel().
+     */
+    @Test
+    public void testJulSetNull() {
+        Assert.assertEquals(null, new DefaultLevelConverter().toLevel(null));
     }
 }

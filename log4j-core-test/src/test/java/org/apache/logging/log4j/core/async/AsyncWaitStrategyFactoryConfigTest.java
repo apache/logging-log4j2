@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.lmax.disruptor.WaitStrategy;

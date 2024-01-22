@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 

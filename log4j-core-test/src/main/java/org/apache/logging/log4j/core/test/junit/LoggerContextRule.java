@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;

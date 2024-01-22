@@ -40,8 +40,9 @@ public class ContainerUtil {
      * been much nicer if Kubernetes would just put the container id in a standard environment variable.
      *
      * @see <a href="http://stackoverflow.com/a/25729598/12916">Stackoverflow</a> for a discussion on retrieving the containerId.
-     * @see <a href="https://github.com/jenkinsci/docker-workflow-plugin/blob/master/src/main/java/org/jenkinsci/plugins/docker/workflow/client/ControlGroup.java>ControlGroup</a>
+     * @see <a href="https://github.com/jenkinsci/docker-workflow-plugin/blob/master/src/main/java/org/jenkinsci/plugins/docker/workflow/client/ControlGroup.java">ControlGroup</a>
      * for the original version of this. Not much is actually left but it provided good inspiration.
+     * @return The container id.
      */
     public static String getContainerId() {
         try {
