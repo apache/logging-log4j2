@@ -40,7 +40,6 @@ public class StatusConfiguration {
     private static final PrintStream DEFAULT_STREAM = System.out;
 
     private static final Level DEFAULT_STATUS = Level.ERROR;
-    private static final Verbosity DEFAULT_VERBOSITY = Verbosity.QUIET;
 
     private final Collection<String> errorMessages = new LinkedBlockingQueue<>();
     private final StatusLogger logger = StatusLogger.getLogger();
@@ -49,12 +48,12 @@ public class StatusConfiguration {
 
     private PrintStream destination = DEFAULT_STREAM;
     private Level status = DEFAULT_STATUS;
-    private Verbosity verbosity = DEFAULT_VERBOSITY;
-    private String[] verboseClasses;
 
     /**
      * Specifies how verbose the StatusLogger should be.
+     * @deprecated This class is not used anymore and only kept for binary backward compatibility.
      */
+    @Deprecated
     public enum Verbosity {
         QUIET,
         VERBOSE;
@@ -64,7 +63,9 @@ public class StatusConfiguration {
          *
          * @param value property value to parse.
          * @return enum corresponding to value, or QUIET by default.
+         * @deprecated This class is not used anymore and only kept for binary backward compatibility.
          */
+        @Deprecated
         public static Verbosity toVerbosity(final String value) {
             return Boolean.parseBoolean(value) ? VERBOSE : QUIET;
         }
@@ -156,9 +157,10 @@ public class StatusConfiguration {
      *
      * @param verbosity basic filter for status logger messages.
      * @return {@code this}
+     * @deprecated This method is ineffective and only kept for binary backward compatibility.
      */
+    @Deprecated
     public StatusConfiguration withVerbosity(final String verbosity) {
-        this.verbosity = Verbosity.toVerbosity(verbosity);
         return this;
     }
 
@@ -167,9 +169,10 @@ public class StatusConfiguration {
      *
      * @param verboseClasses names of classes to filter if not using VERBOSE.
      * @return {@code this}
+     * @deprecated This method is ineffective and only kept for binary backward compatibility.
      */
+    @Deprecated
     public StatusConfiguration withVerboseClasses(final String... verboseClasses) {
-        this.verboseClasses = verboseClasses;
         return this;
     }
 
@@ -183,7 +186,8 @@ public class StatusConfiguration {
             } else {
                 final boolean configured = configureExistingStatusConsoleListener();
                 if (!configured) {
-                    registerNewStatusConsoleListener();
+                    final StatusConsoleListener listener = new StatusConsoleListener(this.status, this.destination);
+                    this.logger.registerListener(listener);
                 }
                 migrateSavedLogMessages();
             }
@@ -197,21 +201,10 @@ public class StatusConfiguration {
                 final StatusConsoleListener listener = (StatusConsoleListener) statusListener;
                 listener.setLevel(this.status);
                 this.logger.updateListenerLevel(this.status);
-                if (this.verbosity == Verbosity.QUIET) {
-                    listener.setFilters(this.verboseClasses);
-                }
                 configured = true;
             }
         }
         return configured;
-    }
-
-    private void registerNewStatusConsoleListener() {
-        final StatusConsoleListener listener = new StatusConsoleListener(this.status, this.destination);
-        if (this.verbosity == Verbosity.QUIET) {
-            listener.setFilters(this.verboseClasses);
-        }
-        this.logger.registerListener(listener);
     }
 
     private void migrateSavedLogMessages() {
