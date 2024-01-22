@@ -68,7 +68,7 @@ This layout is mainly useful for development purposes and should not be relied o
 For example, if a log message contains new lines, these are not escaped or encoded specially unless the configured pattern uses the `%encode{pattern}{CRLF}` wrapper pattern converter (which will encode a carriage return as the string `\r` and a line feed as the string `\n`) or some other `%encode` option.
 Similarly, other encoding options are available for other formats, but pattern layouts cannot make assumptions about the entire output.
 As such, when using unstructured layouts, no user-controlled input should be included in logs.
-It is strongly recommended that a structured layout is used instead for these situations.
+It is strongly recommended that a structured layout (e.g., `JsonTemplateLayout`) is used instead for these situations.
 Note that `StrLookup` plugins (those referenced by `${...}` templates in configuration files) that contain user-provided input should not be referenced by a pattern layout.
 
 === Structured Logging
