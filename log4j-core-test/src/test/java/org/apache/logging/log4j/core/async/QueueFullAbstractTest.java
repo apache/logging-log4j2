@@ -19,12 +19,13 @@ package org.apache.logging.log4j.core.async;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.RingBuffer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
@@ -36,7 +37,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -234,29 +234,19 @@ public abstract class QueueFullAbstractTest {
     }
 
     static long asyncRemainingCapacity(final Logger logger) {
-        if (logger instanceof AsyncLogger) {
-            try {
-                final Field f = field(AsyncLogger.class, "loggerDisruptor");
-                return ((AsyncLoggerDisruptor) f.get(logger))
-                        .getDisruptor()
-                        .getRingBuffer()
-                        .remainingCapacity();
-            } catch (final Exception ex) {
-                throw new RuntimeException(ex);
-            }
+        if (logger instanceof AsyncLogger asyncLogger) {
+            return Optional.ofNullable(asyncLogger.getAsyncLoggerDisruptor())
+                    .map(AsyncLoggerDisruptor::getRingBuffer)
+                    .map(RingBuffer::remainingCapacity)
+                    .orElse(0L);
         } else {
             final LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
-            if (loggerConfig instanceof AsyncLoggerConfig) {
-                try {
-                    final Object delegate =
-                            field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
-                    return ((Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor")
-                                    .get(delegate))
-                            .getRingBuffer()
-                            .remainingCapacity();
-                } catch (final Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+            if (loggerConfig instanceof AsyncLoggerConfig asyncLoggerConfig) {
+                return Optional.ofNullable(
+                                (AsyncLoggerConfigDisruptor) asyncLoggerConfig.getAsyncLoggerConfigDelegate())
+                        .map(AsyncLoggerConfigDisruptor::getRingBuffer)
+                        .map(RingBuffer::remainingCapacity)
+                        .orElse(0L);
             } else {
                 final Appender async = loggerConfig.getAppenders().get("async");
                 if (async instanceof AsyncAppender) {
@@ -287,26 +277,25 @@ public abstract class QueueFullAbstractTest {
 
     protected static void assertAsyncLogger(final LoggerContext ctx, final int expectedBufferSize) {
         assertThat(ctx).isInstanceOf(AsyncLoggerContext.class);
-        final RingBufferAdmin ringBufferAdmin = ((AsyncLoggerContext) ctx).createRingBufferAdmin();
-        assertThat(ringBufferAdmin.getRemainingCapacity()).isEqualTo(expectedBufferSize);
+        assertThat(((AsyncLoggerContext) ctx)
+                        .getAsyncLoggerDisruptor()
+                        .getRingBuffer()
+                        .getBufferSize())
+                .isEqualTo(expectedBufferSize);
 
         final Configuration config = ctx.getConfiguration();
         assertThat(config).isNotNull();
         assertThat(config.getRootLogger()).isNotInstanceOf(AsyncLoggerConfig.class);
     }
 
-    protected static void assertAsyncLoggerConfig(final LoggerContext ctx, final int expectedBufferSize)
-            throws ReflectiveOperationException {
+    protected static void assertAsyncLoggerConfig(final LoggerContext ctx, final int expectedBufferSize) {
         assertThat(ctx).isNotInstanceOf(AsyncLoggerContext.class);
 
         final Configuration config = ctx.getConfiguration();
         assertThat(config).isNotNull();
         assertThat(config.getRootLogger()).isInstanceOf(AsyncLoggerConfig.class);
-        final AsyncLoggerConfigDisruptor disruptorWrapper =
-                (AsyncLoggerConfigDisruptor) config.getAsyncLoggerConfigDelegate();
-        final Disruptor<?> disruptor = (Disruptor<?>)
-                field(AsyncLoggerConfigDisruptor.class, "disruptor").get(disruptorWrapper);
-        assertThat(disruptor.getBufferSize()).isEqualTo(expectedBufferSize);
+        final AsyncLoggerConfigDisruptor disruptor = (AsyncLoggerConfigDisruptor) config.getAsyncLoggerConfigDelegate();
+        assertThat(disruptor.getRingBuffer().getBufferSize()).isEqualTo(expectedBufferSize);
     }
 
     protected static void assertFormatMessagesInBackground() {

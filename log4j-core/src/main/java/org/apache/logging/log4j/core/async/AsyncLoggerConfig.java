@@ -27,7 +27,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -208,17 +207,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
         LOGGER.trace("AsyncLoggerConfig[{}] stopping...", displayName());
         setStopped();
         return true;
-    }
-
-    /**
-     * Creates and returns a new {@code RingBufferAdmin} that instruments the
-     * ringbuffer of this {@code AsyncLoggerConfig}.
-     *
-     * @param contextName name of the {@code LoggerContext}
-     * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
-     */
-    public RingBufferAdmin createRingBufferAdmin(final String contextName) {
-        return delegate.createRingBufferAdmin(contextName, getName());
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE

@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
@@ -76,10 +75,6 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
 
     public void setContextName(final String name) {
         contextName = name;
-    }
-
-    Disruptor<RingBufferLogEvent> getDisruptor() {
-        return disruptor;
     }
 
     /**
@@ -150,7 +145,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
      */
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
-        final Disruptor<RingBufferLogEvent> temp = getDisruptor();
+        final Disruptor<RingBufferLogEvent> temp = this.disruptor;
         if (temp == null) {
             LOGGER.trace("[{}] AsyncLoggerDisruptor: disruptor for this context already shut down.", contextName);
             return true; // disruptor was already shut down by another thread
@@ -196,17 +191,6 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private static boolean hasBacklog(final Disruptor<?> theDisruptor) {
         final RingBuffer<?> ringBuffer = theDisruptor.getRingBuffer();
         return !ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize());
-    }
-
-    /**
-     * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}.
-     *
-     * @param jmxContextName name of the {@code AsyncLoggerContext}
-     * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
-     */
-    public RingBufferAdmin createRingBufferAdmin(final String jmxContextName) {
-        final RingBuffer<RingBufferLogEvent> ring = disruptor == null ? null : disruptor.getRingBuffer();
-        return RingBufferAdmin.forAsyncLogger(ring, jmxContextName);
     }
 
     EventRoute getEventRoute(final Level logLevel) {
@@ -294,5 +278,10 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
                 fqcn,
                 msg.getFormattedMessage(),
                 thrown == null ? "" : Throwables.toStringList(thrown));
+    }
+
+    // package-protected for tests
+    RingBuffer<RingBufferLogEvent> getRingBuffer() {
+        return disruptor.getRingBuffer();
     }
 }

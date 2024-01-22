@@ -25,13 +25,13 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import java.util.function.LongSupplier;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
@@ -157,11 +157,14 @@ public class AsyncThreadContextTest {
 
         final Logger log = context.getLogger("com.foo.Bar");
         final String loggerContextName = context.getClass().getSimpleName();
-        RingBufferAdmin ring;
+        final LongSupplier remainingCapacity;
         if (context instanceof AsyncLoggerContext) {
-            ring = ((AsyncLoggerContext) context).createRingBufferAdmin();
+            remainingCapacity =
+                    ((AsyncLoggerContext) context).getAsyncLoggerDisruptor().getRingBuffer()::remainingCapacity;
         } else {
-            ring = ((AsyncLoggerConfig) log.get()).createRingBufferAdmin("");
+            remainingCapacity =
+                    ((AsyncLoggerConfigDisruptor) ((AsyncLoggerConfig) log.get()).getAsyncLoggerConfigDelegate())
+                            .getRingBuffer()::remainingCapacity;
         }
 
         for (int i = 0; i < LINE_COUNT; i++) {
@@ -169,7 +172,7 @@ public class AsyncThreadContextTest {
             if (i >= 128) {
                 waitAtMost(500, TimeUnit.MILLISECONDS)
                         .pollDelay(10, TimeUnit.MILLISECONDS)
-                        .until(() -> ring.getRemainingCapacity() > 0);
+                        .until(() -> remainingCapacity.getAsLong() > 0);
             }
             if ((i & 1) == 1) {
                 ThreadContext.put("count", String.valueOf(i));

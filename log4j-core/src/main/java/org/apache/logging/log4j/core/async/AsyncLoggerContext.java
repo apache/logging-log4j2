@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -131,13 +130,8 @@ public class AsyncLoggerContext extends LoggerContext {
         return true;
     }
 
-    /**
-     * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}
-     * objects in this {@code LoggerContext}.
-     *
-     * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
-     */
-    public RingBufferAdmin createRingBufferAdmin() {
-        return loggerDisruptor.createRingBufferAdmin(getName());
+    // package-protected for tests
+    AsyncLoggerDisruptor getAsyncLoggerDisruptor() {
+        return loggerDisruptor;
     }
 }

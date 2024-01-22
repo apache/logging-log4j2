@@ -39,7 +39,6 @@ import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
@@ -424,14 +423,8 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate#createRingBufferAdmin(java.lang.String,
-     * java.lang.String)
-     */
-    @Override
-    public RingBufferAdmin createRingBufferAdmin(final String contextName, final String loggerConfigName) {
-        return RingBufferAdmin.forAsyncLoggerConfig(disruptor.getRingBuffer(), contextName, loggerConfigName);
+    // package-protected for tests
+    RingBuffer<Log4jEventWrapper> getRingBuffer() {
+        return disruptor.getRingBuffer();
     }
 }

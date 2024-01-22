@@ -19,23 +19,12 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 
 /**
  * Encapsulates the mechanism used to log asynchronously. There is one delegate per configuration, which is shared by
  * all AsyncLoggerConfig objects in the configuration.
  */
 public interface AsyncLoggerConfigDelegate {
-
-    /**
-     * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of this
-     * {@code AsyncLoggerConfig}.
-     *
-     * @param contextName name of the {@code LoggerContext}
-     * @param loggerConfigName name of the logger config
-     * @return the RingBufferAdmin that instruments the ringbuffer
-     */
-    RingBufferAdmin createRingBufferAdmin(final String contextName, final String loggerConfigName);
 
     /**
      * Returns the {@code EventRoute} for the event with the specified level.

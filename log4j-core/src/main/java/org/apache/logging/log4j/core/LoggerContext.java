@@ -42,7 +42,6 @@ import org.apache.logging.log4j.core.config.LoggerContextAwarePostProcessor;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -436,13 +435,7 @@ public class LoggerContext extends AbstractLifeCycle
             }
 
             this.setStopping();
-            String name = getName();
-            try {
-                Server.unregisterLoggerContext(name); // LOG4J2-406, LOG4J2-500
-            } catch (final LinkageError | Exception e) {
-                // LOG4J2-1506 Hello Android, GAE
-                LOGGER.error("Unable to unregister MBeans", e);
-            }
+
             if (shutdownCallback != null) {
                 shutdownCallback.cancel();
                 shutdownCallback = null;
@@ -734,13 +727,6 @@ public class LoggerContext extends AbstractLifeCycle
                 prev.removeListener(this);
                 prev.stop();
                 notifyConfigurationStopped(prev);
-            }
-
-            try {
-                Server.reregisterMBeansAfterReconfigure();
-            } catch (final LinkageError | Exception e) {
-                // LOG4J2-716: Android has no java.lang.management
-                LOGGER.error("Could not reconfigure JMX", e);
             }
 
             return prev;
