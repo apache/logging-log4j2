@@ -38,7 +38,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -80,7 +79,7 @@ public class RingBufferLogEventTest {
                 level,
                 data,
                 t,
-                (StringMap) evt.getContextData(),
+                evt.getContextData(),
                 contextStack,
                 -1,
                 threadName,
@@ -116,7 +115,7 @@ public class RingBufferLogEventTest {
                 level,
                 data,
                 t,
-                (StringMap) evt.getContextData(),
+                evt.getContextData(),
                 contextStack,
                 -1,
                 threadName,
@@ -147,7 +146,7 @@ public class RingBufferLogEventTest {
                 level,
                 data,
                 t,
-                (StringMap) evt.getContextData(),
+                evt.getContextData(),
                 contextStack,
                 -1,
                 threadName,
@@ -178,7 +177,7 @@ public class RingBufferLogEventTest {
                 level,
                 data,
                 t,
-                (StringMap) evt.getContextData(),
+                evt.getContextData(),
                 contextStack,
                 -1,
                 threadName,
@@ -210,7 +209,7 @@ public class RingBufferLogEventTest {
                 level,
                 data,
                 t,
-                (StringMap) evt.getContextData(),
+                evt.getContextData(),
                 contextStack,
                 -1,
                 threadName,
@@ -218,7 +217,7 @@ public class RingBufferLogEventTest {
                 location,
                 new FixedPreciseClock(12345, 678),
                 new DummyNanoClock(1));
-        ((StringMap) evt.getContextData()).putValue("key", "value");
+        evt.getContextData().putValue("key", "value");
 
         final LogEvent actual = evt.toMemento();
         assertEquals(evt.getLoggerName(), actual.getLoggerName());
@@ -261,7 +260,7 @@ public class RingBufferLogEventTest {
                     level,
                     message,
                     t,
-                    (StringMap) evt.getContextData(),
+                    evt.getContextData(),
                     contextStack,
                     -1,
                     threadName,
@@ -269,7 +268,7 @@ public class RingBufferLogEventTest {
                     location,
                     new FixedPreciseClock(12345, 678),
                     new DummyNanoClock(1));
-            ((StringMap) evt.getContextData()).putValue("key", "value");
+            evt.getContextData().putValue("key", "value");
 
             final Message actual = evt.toMemento().getMessage();
             assertEquals("Hello {}!", actual.getFormat());
@@ -304,7 +303,7 @@ public class RingBufferLogEventTest {
                     level,
                     message,
                     t,
-                    (StringMap) evt.getContextData(),
+                    evt.getContextData(),
                     contextStack,
                     -1,
                     threadName,
@@ -312,7 +311,7 @@ public class RingBufferLogEventTest {
                     location,
                     new FixedPreciseClock(12345, 678),
                     new DummyNanoClock(1));
-            ((StringMap) evt.getContextData()).putValue("key", "value");
+            evt.getContextData().putValue("key", "value");
 
             final Message memento1 = evt.memento();
             final Message memento2 = evt.memento();

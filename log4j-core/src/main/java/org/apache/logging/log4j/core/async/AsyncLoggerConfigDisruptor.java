@@ -68,7 +68,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     public static class Log4jEventWrapper {
         public Log4jEventWrapper() {}
 
-        public Log4jEventWrapper(final MutableLogEvent mutableLogEvent) {
+        public Log4jEventWrapper(final LogEvent mutableLogEvent) {
             event = mutableLogEvent;
         }
 
@@ -107,8 +107,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         }
 
         @Override
-        public void onEvent(final Log4jEventWrapper event, final long sequence, final boolean endOfBatch)
-                throws Exception {
+        public void onEvent(final Log4jEventWrapper event, final long sequence, final boolean endOfBatch) {
             event.event.setEndOfBatch(endOfBatch);
             event.loggerConfig.logToAsyncLoggerConfigsOnCurrentThread(event.event);
             event.clear();
@@ -159,13 +158,11 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
                 ringBufferElement.loggerConfig = loggerConfig;
             };
 
-    private int ringBufferSize;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
     private Boolean mutable = Boolean.FALSE;
 
     private volatile Disruptor<Log4jEventWrapper> disruptor;
     private long backgroundThreadId; // LOG4J2-471
-    private EventFactory<Log4jEventWrapper> factory;
     private EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> translator;
     private volatile boolean alreadyLoggedWarning;
     private final AsyncWaitStrategyFactory asyncWaitStrategyFactory;
@@ -207,7 +204,8 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
                 return;
             }
             LOGGER.trace("AsyncLoggerConfigDisruptor creating new disruptor for this configuration.");
-            ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE);
+            final int ringBufferSize =
+                    DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE);
             waitStrategy = DisruptorUtil.createWaitStrategy(
                     Log4jPropertyKey.ASYNC_CONFIG_WAIT_STRATEGY, asyncWaitStrategyFactory);
 
@@ -223,7 +221,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
             asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
             translator = mutable ? MUTABLE_TRANSLATOR : TRANSLATOR;
-            factory = mutable ? MUTABLE_FACTORY : FACTORY;
+            final EventFactory<Log4jEventWrapper> factory = mutable ? MUTABLE_FACTORY : FACTORY;
             disruptor = new Disruptor<>(factory, ringBufferSize, threadFactory, ProducerType.MULTI, waitStrategy);
 
             final ExceptionHandler<Log4jEventWrapper> errorHandler =

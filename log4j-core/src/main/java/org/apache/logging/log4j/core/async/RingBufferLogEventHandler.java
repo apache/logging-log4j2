@@ -77,7 +77,4 @@ public class RingBufferLogEventHandler implements EventHandler<RingBufferLogEven
     public void onStart() {
         threadId = Thread.currentThread().getId();
     }
-
-    @Override
-    public void onShutdown() {}
 }

@@ -26,7 +26,10 @@ import org.apache.logging.log4j.message.Message;
  *     Consider this class private.
  * </p>
  */
-public class InternalAsyncUtil {
+public final class InternalAsyncUtil {
+
+    private InternalAsyncUtil() {}
+
     /**
      * Returns the specified message, with its content frozen unless system property
      * {@code log4j.format.msg.async} is true or the message class is annotated with

@@ -302,9 +302,11 @@ public abstract class QueueFullAbstractTest {
         final Configuration config = ctx.getConfiguration();
         assertThat(config).isNotNull();
         assertThat(config.getRootLogger()).isInstanceOf(AsyncLoggerConfig.class);
-        final AsyncLoggerConfigDisruptor disruptor = (AsyncLoggerConfigDisruptor) config.getAsyncLoggerConfigDelegate();
-        final Field sizeField = field(AsyncLoggerConfigDisruptor.class, "ringBufferSize");
-        assertThat(sizeField.get(disruptor)).isEqualTo(expectedBufferSize);
+        final AsyncLoggerConfigDisruptor disruptorWrapper =
+                (AsyncLoggerConfigDisruptor) config.getAsyncLoggerConfigDelegate();
+        final Disruptor<?> disruptor = (Disruptor<?>)
+                field(AsyncLoggerConfigDisruptor.class, "disruptor").get(disruptorWrapper);
+        assertThat(disruptor.getBufferSize()).isEqualTo(expectedBufferSize);
     }
 
     protected static void assertFormatMessagesInBackground() {

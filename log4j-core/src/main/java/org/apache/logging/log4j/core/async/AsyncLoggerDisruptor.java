@@ -103,7 +103,8 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             }
             setStarting();
             LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
-            int ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE);
+            final int ringBufferSize =
+                    DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE);
             final AsyncWaitStrategyFactory factory =
                     waitStrategyFactorySupplier.get(); // get factory from configuration
             waitStrategy = DisruptorUtil.createWaitStrategy(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY, factory);
