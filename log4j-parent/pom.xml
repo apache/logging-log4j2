@@ -81,7 +81,7 @@
     <elasticsearch-java.version>8.12.0</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <flapdoodle-embed.version>4.9.0</flapdoodle-embed.version>
+    <flapdoodle-embed.version>4.10.2</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.7.2</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
     <groovy.version>3.0.20</groovy.version>
