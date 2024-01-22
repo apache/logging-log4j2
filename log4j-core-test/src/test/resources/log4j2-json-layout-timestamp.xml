@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="INFO" packages="">
+<Configuration status="INFO">
 	<Appenders>
 		<List name="List">
 			<JsonLayout compact="true" eventEol="true" includeTimeMillis="true"/>

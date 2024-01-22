@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
-import static org.apache.logging.log4j.util.Unbox.*;
+import static org.apache.logging.log4j.util.Unbox.box;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;

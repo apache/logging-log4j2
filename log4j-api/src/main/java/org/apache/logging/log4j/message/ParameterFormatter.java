@@ -19,7 +19,13 @@ package org.apache.logging.log4j.message;
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Set;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**

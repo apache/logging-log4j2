@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
-import static org.apache.logging.log4j.util.Unbox.*;
+import static org.apache.logging.log4j.util.Unbox.box;
 
 import java.util.Date;
 

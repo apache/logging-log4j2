@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 import org.apache.logging.log4j.Marker;

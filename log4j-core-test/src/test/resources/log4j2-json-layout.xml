@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="INFO" packages="">
+<Configuration status="INFO">
 	<Appenders>
 		<File name="stdout" ignoreExceptions="false" fileName="target/test-json-layout.log" append="false">
 			<JsonLayout compact="true" eventEol="true"/>

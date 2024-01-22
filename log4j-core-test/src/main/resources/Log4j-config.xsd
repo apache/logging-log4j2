@@ -157,11 +157,6 @@
                <documentation>Enables the use of the strict XML format. Not supported in JSON configurations.</documentation>
             </annotation>
          </attribute>
-         <attribute name="verbose" type="tns:BooleanType" default="false">
-            <annotation>
-               <documentation>Enables diagnostic information while loading plugins.</documentation>
-            </annotation>
-         </attribute>
       </complexType>
    </element>
 

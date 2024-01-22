@@ -16,7 +16,7 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.slf4j.Logger;

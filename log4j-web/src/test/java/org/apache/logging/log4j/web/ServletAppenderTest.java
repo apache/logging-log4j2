@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.web;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

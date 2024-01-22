@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration packages="org.apache.logging.log4j.test" status="warn" name="TaglibLoggerTest">
+<Configuration status="warn" name="TaglibLoggerTest">
   <properties>
     <property name="filename">target/test.log</property>
   </properties>

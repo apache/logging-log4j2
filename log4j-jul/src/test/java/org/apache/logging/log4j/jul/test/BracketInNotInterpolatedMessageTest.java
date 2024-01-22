@@ -14,17 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jul;
+package org.apache.logging.log4j.jul.test;
 
 import static java.util.logging.Level.INFO;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.jul.LogManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

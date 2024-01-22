@@ -61,24 +61,6 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 * Use Java version-specific warnings in `StackLocator` (https://github.com/apache/logging-log4j2/pull/1760[1760])
 * Started logging a status error event instead of an NPE in `OsgiServiceLocator.loadServices(Class, Lookup, boolean)` when a bundle has no valid `BundleContext` for a service type
 * Implemented a CI-based release process
-* Update Eclipse Angus Activation to version https://github.com/eclipse-ee4j/angus-activation/releases/tag/2.0.1[2.0.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Eclipse Angus Mail to version https://github.com/eclipse-ee4j/angus-mail/releases/tag/2.0.2[2.0.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update `com.datastax.cassandra:cassandra-driver-core` to version 3.11.5 (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Apache Cassandra to version https://github.com/apache/cassandra/blob/cassandra-3.11/CHANGES.txt[3.11.16] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Apache Commons Compress to version https://commons.apache.org/proper/commons-compress/changes-report.html#a1.24.0[1.24.0] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Apache Commons CSV to version https://commons.apache.org/proper/commons-csv/changes-report.html#a1.10.0[1.10.0] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Jackson to version https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15.2[2.15.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Jakarta Activation API to version https://jakarta.ee/specifications/activation/2.1/changelog/[2.1.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Jakarta Mail API to version https://jakarta.ee/specifications/mail/2.1/changelog/[2.1.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update JCTools to version https://github.com/JCTools/JCTools/blob/master/RELEASE-NOTES.md[4.0.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Apache Kafka to version https://archive.apache.org/dist/kafka/3.4.0/RELEASE_NOTES.html[3.4.0] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Kubernetes client to version https://github.com/fabric8io/kubernetes-client/releases?q=5.12.4[5.12.4] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update `org.mongodb:mongodb-driver-core` to version 4.10.2 (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update `io.netty:netty-bom` to version 4.1.97 (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Spring Boot to version https://github.com/spring-projects/spring-boot/releases/tag/v2.7.15[2.7.15] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Spring Framework to version https://github.com/spring-projects/spring-framework/releases/tag/v5.3.29[5.3.29] (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Tomcat JULI to version 10.0.27 (https://github.com/apache/logging-log4j2/issues/1591[1591])
-* Update Woodstox to version https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION[6.5.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
 
 [#release-notes-2-21-0-fixed]
 === Fixed
@@ -126,3 +108,25 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 === Removed
 
 * Moved `log4j-jmx-gui` to https://github.com/apache/logging-log4j-jmx-gui/actions[its own repository] along with its own release cycle
+
+[#release-notes-2-21-0-updated]
+=== Updated
+
+* Update Eclipse Angus Activation to version https://github.com/eclipse-ee4j/angus-activation/releases/tag/2.0.1[2.0.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Eclipse Angus Mail to version https://github.com/eclipse-ee4j/angus-mail/releases/tag/2.0.2[2.0.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update `com.datastax.cassandra:cassandra-driver-core` to version `3.11.5` (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Apache Cassandra to version https://github.com/apache/cassandra/blob/cassandra-3.11/CHANGES.txt[3.11.16] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Apache Commons Compress to version https://commons.apache.org/proper/commons-compress/changes-report.html#a1.24.0[1.24.0] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Apache Commons CSV to version https://commons.apache.org/proper/commons-csv/changes-report.html#a1.10.0[1.10.0] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Jackson to version https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15.2[2.15.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Jakarta Activation API to version https://jakarta.ee/specifications/activation/2.1/changelog/[2.1.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Jakarta Mail API to version https://jakarta.ee/specifications/mail/2.1/changelog/[2.1.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update JCTools to version https://github.com/JCTools/JCTools/blob/master/RELEASE-NOTES.md[4.0.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Apache Kafka to version https://archive.apache.org/dist/kafka/3.4.0/RELEASE_NOTES.html[3.4.0] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Kubernetes client to version https://github.com/fabric8io/kubernetes-client/releases?q=5.12.4[5.12.4] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update `org.mongodb:mongodb-driver-core` to version `4.10.2` (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update `io.netty:netty-bom` to version `4.1.97` (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Spring Boot to version https://github.com/spring-projects/spring-boot/releases/tag/v2.7.15[2.7.15] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Spring Framework to version https://github.com/spring-projects/spring-framework/releases/tag/v5.3.29[5.3.29] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Tomcat JULI to version `10.0.27` (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Woodstox to version https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION[6.5.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])

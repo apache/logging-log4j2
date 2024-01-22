@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.security.KeyStore;
 import org.junit.jupiter.api.Test;

@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;

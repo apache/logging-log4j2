@@ -31,7 +31,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
@@ -49,8 +48,6 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
      * Allow the ConfigurationFactory class to be specified as a system property.
      */
     public static final String MERGE_STRATEGY_PROPERTY = "log4j.mergeStrategy";
-
-    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
 
     private final List<? extends AbstractConfiguration> configurations;
 
@@ -79,8 +76,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         for (final AbstractConfiguration config : configurations) {
             mergeStrategy.mergeRootProperties(rootNode, config);
         }
-        final StatusConfiguration statusConfig =
-                new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
+        final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
         for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
             final String key = entry.getKey();
             final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
@@ -92,8 +88,6 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
             } else if ("shutdownTimeout".equalsIgnoreCase(key)) {
                 shutdownTimeoutMillis = Long.parseLong(value);
-            } else if ("verbose".equalsIgnoreCase(key)) {
-                statusConfig.withVerbosity(value);
             } else if ("packages".equalsIgnoreCase(key)) {
                 pluginPackages.addAll(Arrays.asList(value.split(Patterns.COMMA_SEPARATOR)));
             } else if ("name".equalsIgnoreCase(key)) {
