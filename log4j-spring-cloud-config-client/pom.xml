@@ -33,45 +33,33 @@
   <description>Apache Log4j Spring Cloud Config Client Support</description>
 
   <properties>
+    <!-- Dependency versions -->
+    <spring-cloud.version>3.1.8</spring-cloud.version>
 
     <!--
       ~ OSGi and JPMS options
       -->
     <bnd-module-name>org.apache.logging.log4j.spring.cloud.config.client</bnd-module-name>
+    <bnd-extra-packages-options>
+      <!-- Used only for annotations -->
+      org.springframework.boot.autoconfigure;resolution:=optional
+    </bnd-extra-packages-options>
     <bnd-extra-module-options>
+      <!-- Optional dependencies should not be transitive -->
+      spring.boot.autoconfigure;transitive=false,
       <!-- Filebased module names: MUST be static -->
       spring.cloud.context;substitute="spring-cloud-context";static=true;transitive=false
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-
-    <!-- dependency versions -->
-    <spring-cloud.version>2021.0.9</spring-cloud.version>
-
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -84,28 +72,14 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-spring-boot</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-bus</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-config-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-bootstrap</artifactId>
+      <artifactId>spring-cloud-context</artifactId>
+      <version>${spring-cloud.version}</version>
     </dependency>
 
     <dependency>
@@ -114,21 +88,22 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Spring requires a `commons-logging` implementation and we excluded their own. -->
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jcl</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
       <scope>test</scope>
     </dependency>
 

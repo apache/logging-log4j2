@@ -536,8 +536,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     final ConfigurationSource source = ConfigurationSource.fromResource(configName, loader);
                     if (source != null) {
                         if (!factory.isActive()) {
-                            LOGGER.warn(
-                                    "Found configuration file {} for inactive ConfigurationFactory {}",
+                            LOGGER.error(
+                                    "Found configuration file `{}` for the inactive `{}`. This `ConfigurationFactory` implementation might be inactive due to a missing dependency.",
                                     configName,
                                     factory.getClass().getName());
                         }

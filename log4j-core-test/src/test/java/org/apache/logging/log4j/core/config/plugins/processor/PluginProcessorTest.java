@@ -17,7 +17,10 @@
 package org.apache.logging.log4j.core.config.plugins.processor;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 import java.util.Enumeration;
