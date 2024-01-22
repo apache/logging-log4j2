@@ -42,6 +42,7 @@ This release contains...
 * Possible NullPointerException in MongoDb4DocumentObject, MongoDbDocumentObject, DefaultNoSqlObject. (https://issues.apache.org/jira/browse/LOG4J2-3392[LOG4J2-3392])
 * Fix NPE in `CloseableThreadContext`. (https://github.com/apache/logging-log4j2/pull/1426[1426])
 * Fix NPE in `RollingFileManager`. (https://github.com/apache/logging-log4j2/pull/1645[1645])
+* Fix `log4j-spring-cloud-config-client` dependencies to include only those required. (https://github.com/apache/logging-log4j2/pull/2157[2157])
 * Workaround a Coursier/Ivy dependency resolution bug affecting `log4j-slf4j-impl` and `log4j-mongodb3`. (https://github.com/apache/logging-log4j2/pull/2065[2065])
 
 [#release-notes-3-x-x-removed]
@@ -69,5 +70,6 @@ This release contains...
 * Update `org.graalvm.truffle:truffle-api` to version `23.1.2` (https://github.com/apache/logging-log4j2/pull/2206[2206])
 * Update `org.mockito:mockito-bom` to version `5.9.0` (https://github.com/apache/logging-log4j2/pull/2194[2194])
 * Update `org.slf4j:slf4j-api` to version `2.0.10` (https://github.com/apache/logging-log4j2/pull/2136[2136])
+* Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.2` (https://github.com/apache/logging-log4j2/pull/2222[2222])
 * Update `org.springframework.boot:spring-boot-dependencies` to version `3.2.1` (https://github.com/apache/logging-log4j2/pull/2123[2123])
 * Update `uk.org.webcompere:system-stubs-core` to version `2.1.6` (https://github.com/apache/logging-log4j2/pull/2196[2196])
