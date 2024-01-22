@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.management.ObjectName;
 import org.junit.jupiter.api.Test;

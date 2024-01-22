@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration name="ConfigTest" status="error" packages="org.apache.logging.log4j.test"
+<Configuration name="ConfigTest" status="error"
                monitorInterval="5">
   <Appenders>
     <Console name="STDOUT">

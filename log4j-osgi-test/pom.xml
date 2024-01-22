@@ -136,6 +136,13 @@
     </dependency>
   </dependencies>
   <build>
+    <testResources>
+      <testResource>
+        <!-- Enable variable interpolation in resources -->
+        <filtering>true</filtering>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
     <plugins>
 
       <!--
@@ -194,6 +201,15 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <!-- Property files must be encoded in ISO-8859-1 -->
+          <propertiesEncoding>ISO-8859-1</propertiesEncoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <classpathDependencyExcludes>org.osgi:org.osgi.core</classpathDependencyExcludes>
@@ -204,6 +220,17 @@
             <!-- Used in `osgi.properties -->
             <felix.cache.rootdir>${project.build.directory}</felix.cache.rootdir>
           </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
+      <!-- Exclude `felix-cache` from `apache-rat-plugin` checks -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <exclude>felix-cache/**/*</exclude>
+          </excludes>
         </configuration>
       </plugin>
 

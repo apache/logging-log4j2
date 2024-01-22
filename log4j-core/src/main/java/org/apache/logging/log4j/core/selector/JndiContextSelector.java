@@ -140,18 +140,12 @@ public class JndiContextSelector implements NamedContextSelector {
             return lc;
         }
 
-        String loggingContextName = null;
-
-        try (final JndiManager jndiManager = JndiManager.getDefaultManager()) {
-            loggingContextName = jndiManager.lookup(Constants.JNDI_CONTEXT_NAME);
-        } catch (final NamingException ne) {
-            LOGGER.error("Unable to lookup {}", Constants.JNDI_CONTEXT_NAME, ne);
-        }
+        String loggingContextName = getContextName();
 
         return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null, configLocation);
     }
 
-    private String getContextName() {
+    private static String getContextName() {
         String loggingContextName = null;
 
         try (final JndiManager jndiManager = JndiManager.getDefaultManager()) {

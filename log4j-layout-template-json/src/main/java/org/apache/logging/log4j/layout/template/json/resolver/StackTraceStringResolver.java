@@ -22,7 +22,11 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.layout.template.json.util.*;
+import org.apache.logging.log4j.layout.template.json.util.CharSequencePointer;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.layout.template.json.util.Recycler;
+import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
+import org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter;
 
 /**
  * Exception stack trace to JSON string resolver used by {@link ExceptionResolver}.

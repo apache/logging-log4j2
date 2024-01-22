@@ -734,8 +734,7 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug" strict="true" name="XMLConfigTest"
-               packages="org.apache.logging.log4j.test">
+<Configuration status="debug" strict="true" name="XMLConfigTest">
   <Properties>
     <Property name="filename">target/test.log</Property>
   </Properties>
@@ -1125,7 +1124,7 @@ rootLogger = info, STDOUT
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="XMLConfigTest">
   <Properties>
     <Property name="filename">target/test.log</Property>
   </Properties>
@@ -1191,7 +1190,7 @@ rootLogger = info, STDOUT
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="RoutingTest">
   <Properties>
     <Property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</Property>
   </Properties>

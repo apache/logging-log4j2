@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.jul;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
 
@@ -67,6 +68,16 @@ class WrappedLogger extends ExtendedLoggerWrapper {
     @Override
     public <R> R exit(final R result) {
         return exit(FQCN, result);
+    }
+
+    @Override
+    public EntryMessage traceEntry() {
+        return enter(FQCN, null, (Object[]) null);
+    }
+
+    @Override
+    public EntryMessage traceEntry(final String message, final Object... params) {
+        return enter(FQCN, message, params);
     }
 
     @Override

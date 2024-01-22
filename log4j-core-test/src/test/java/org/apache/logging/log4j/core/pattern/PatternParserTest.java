@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.List;
@@ -113,7 +115,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :98  ] - Hello, world" + Strings.LINE_SEPARATOR;
+        final String expected = "INFO  [PatternParserTest        :100 ] - Hello, world" + Strings.LINE_SEPARATOR;
         assertTrue(str.endsWith(expected), "Expected to end with: " + expected + ". Actual: " + str);
     }
 

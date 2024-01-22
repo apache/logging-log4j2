@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.charset.Charset;

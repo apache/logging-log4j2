@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import javax.servlet.jsp.tagext.Tag;

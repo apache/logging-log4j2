@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.osgi.tests.junit;
+package org.apache.logging.log4j.osgi.tests;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -29,12 +29,12 @@ import org.osgi.framework.launch.FrameworkFactory;
 /**
  * JUnit rule to initialize and shutdown an OSGi framework.
  */
-public class OsgiRule extends ExternalResource {
+class OsgiRule extends ExternalResource {
 
     private final FrameworkFactory factory;
     private Framework framework;
 
-    public OsgiRule(final FrameworkFactory factory) {
+    OsgiRule(final FrameworkFactory factory) {
         this.factory = factory;
     }
 
@@ -62,12 +62,6 @@ public class OsgiRule extends ExternalResource {
                             e -> String.valueOf(e.getValue()),
                             (prev, next) -> next,
                             HashMap::new));
-            System.getProperties().forEach((k, v) -> {
-                final String key = String.valueOf(k);
-                if (key.startsWith("felix") || key.startsWith("org.osgi")) {
-                    configMap.put(key, String.valueOf(v));
-                }
-            });
             framework = factory.newFramework(configMap);
             framework.init();
             framework.start();
