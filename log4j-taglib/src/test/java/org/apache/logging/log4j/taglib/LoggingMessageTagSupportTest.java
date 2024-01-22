@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.io.Writer;
 import java.util.List;

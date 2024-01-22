@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.lang.reflect.Field;
 import org.apache.commons.lang3.reflect.FieldUtils;

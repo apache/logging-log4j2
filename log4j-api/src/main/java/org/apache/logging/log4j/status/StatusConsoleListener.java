@@ -31,8 +31,6 @@ public class StatusConsoleListener implements StatusListener {
 
     private Level level;
 
-    private String[] filters;
-
     private final PrintStream stream;
 
     private final Logger logger;
@@ -92,37 +90,21 @@ public class StatusConsoleListener implements StatusListener {
      */
     @Override
     public void log(final StatusData data) {
-        final boolean filtered = filtered(data);
-        if (!filtered) {
-            logger
-                    // Logging using _only_ the following 4 fields set by `StatusLogger#logMessage()`:
-                    .atLevel(data.getLevel())
-                    .withThrowable(data.getThrowable())
-                    .withLocation(data.getStackTraceElement())
-                    .log(data.getMessage());
-        }
+        logger
+                // Logging using _only_ the following 4 fields set by `StatusLogger#logMessage()`:
+                .atLevel(data.getLevel())
+                .withThrowable(data.getThrowable())
+                .withLocation(data.getStackTraceElement())
+                .log(data.getMessage());
     }
 
     /**
      * Adds package name filters to exclude.
      * @param filters An array of package names to exclude.
+     * @deprecated This method is ineffective and only kept for binary backward compatibility.
      */
-    public void setFilters(final String... filters) {
-        this.filters = filters;
-    }
-
-    private boolean filtered(final StatusData data) {
-        if (filters == null) {
-            return false;
-        }
-        final String caller = data.getStackTraceElement().getClassName();
-        for (final String filter : filters) {
-            if (caller.startsWith(filter)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    @Deprecated
+    public void setFilters(final String... filters) {}
 
     @Override
     public void close() throws IOException {
