@@ -69,20 +69,19 @@ For example, if a log message contains new lines, these are not escaped or encod
 Similarly, other encoding options are available for other formats, but pattern layouts cannot make assumptions about the entire output.
 As such, when using unstructured layouts, no user-controlled input should be included in logs.
 It is strongly recommended that a structured layout (e.g., `JsonTemplateLayout`) is used instead for these situations.
-Note that `StrLookup` plugins (those referenced by `${...}` templates in configuration files) that contain user-provided input should not be referenced by a pattern layout.
+Note that `StrLookup` plugins (those referenced by `${...}` templates in configuration files) that contain user-provided input should not be referenced by layouts.
 
 === Structured Logging
 
 When using a structured layout (most layouts besides pattern layout), log messages are encoded according to various output formats.
 These safely encode the various fields included in a log message.
-For example, the JSON template layout can be configured to output log messages in various JSON structures where all log data is properly encoded into safely parseable JSON.
+For example, the `JsonTemplateLayout` can be configured to output log messages in various JSON structures where all log data is properly encoded into safely parseable JSON.
 This is the recommended mode of operation for use with log parsing and log collection tools that rely on log files or arbitrary output streams.
 
 === Code Signing
 
 Log4j artifacts are all signed using PGP using a key from the Logging Services PMC https://downloads.apache.org/logging/KEYS[KEYS file].
 Information on how to verify releases signed with PGP is https://httpd.apache.org/dev/verification.html[documented here].
-Individual jar files are not signed using `jarsigner` (only PGP), and the Log4j plugin system does not rely on signed jars for validation (unlike the Java cryptography APIs for example).
 Thus, PGP signatures should be validated in your build process.
 
 === Java Security Manager
