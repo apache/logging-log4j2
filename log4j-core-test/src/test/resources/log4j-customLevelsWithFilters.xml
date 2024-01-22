@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="WARN" verbose="true">
+<Configuration status="WARN">
   <CustomLevels>
     <CustomLevel name="INFOM1" intLevel="399" />
     <CustomLevel name="INFOP1" intLevel="401" />

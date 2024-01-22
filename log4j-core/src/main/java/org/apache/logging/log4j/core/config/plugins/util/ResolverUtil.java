@@ -193,7 +193,7 @@ public class ResolverUtil {
                 final URL url = urls.nextElement();
                 final String urlPath = extractPath(url);
 
-                LOGGER.info("Scanning for classes in '{}' matching criteria {}", urlPath, test);
+                LOGGER.debug("Scanning for classes in '{}' matching criteria {}", urlPath, test);
                 // Check for a jar in a war in JBoss
                 if (VFSZIP.equals(url.getProtocol())) {
                     final String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
@@ -457,9 +457,7 @@ public class ResolverUtil {
             final ClassLoader loader = getClassLoader();
             if (test.doesMatchClass()) {
                 final String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Checking to see if class {} matches criteria {}", externalName, test);
-                }
+                LOGGER.debug("Checking to see if class {} matches criteria {}", externalName, test);
 
                 final Class<?> type = loader.loadClass(externalName);
                 if (test.matches(type)) {

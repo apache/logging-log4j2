@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.core.Logger;
