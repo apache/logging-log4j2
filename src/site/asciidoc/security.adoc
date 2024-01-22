@@ -50,7 +50,7 @@ The threat model that Log4j uses considers configuration files as safe input con
 == Threat Model
 
 Log4j is a low level library where configuration inputs and the classpath are expected to be controlled by the programmer.
-Configurations have the ability to execute arbitrary code through custom plugins.
+Configurations have the ability to execute arbitrary code.
 While specific Log4j plugins (such as a JNDI lookup) may use constraint validators or conditionals to require additional settings to opt in to functionality, this is not universally required by custom plugins.
 Specific security considerations involved in our threat model are detailed below.
 
