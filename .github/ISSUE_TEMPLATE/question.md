@@ -1,6 +1,10 @@
 ---
 name: Question
 about: Ask a question
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 As clearly indicated in [the Log4j support page](https://logging.apache.org/log4j/2.x/support.html#issues), **please use mailing lists for questions!**
