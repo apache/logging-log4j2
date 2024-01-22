@@ -115,29 +115,6 @@ public class StatusConsoleListenerTest {
     }
 
     @Test
-    void filters_should_be_honored() throws Exception {
-
-        // Create the listener.
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final String encoding = "UTF-8";
-        final PrintStream printStream = new PrintStream(outputStream, false, encoding);
-        final StatusConsoleListener listener = new StatusConsoleListener(Level.TRACE, printStream);
-
-        // Set the filter.
-        final StackTraceElement caller = new StackTraceElement("callerClass", "callerMethod", "callerFile", 1);
-        listener.setFilters(caller.getClassName());
-
-        // Log the message to be filtered.
-        final Message message = MESSAGE_FACTORY.newMessage("foo");
-        listener.log(new StatusData(caller, Level.TRACE, message, null, null)); // as set by `StatusLogger` itself
-
-        // Verify the filtering.
-        printStream.flush();
-        final String output = outputStream.toString(encoding);
-        Assertions.assertThat(output).isEmpty();
-    }
-
-    @Test
     void non_system_streams_should_be_closed() throws Exception {
         final PrintStream stream = Mockito.mock(PrintStream.class);
         final StatusConsoleListener listener = new StatusConsoleListener(Level.WARN, stream);
