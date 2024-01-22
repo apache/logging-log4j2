@@ -1,6 +1,10 @@
 ---
 name: Bug report
 about: Submit a bug report
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 ## Description
