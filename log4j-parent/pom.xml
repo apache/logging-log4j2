@@ -144,7 +144,6 @@
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.1</wiremock.version>
-    <woodstox.version>6.6.0</woodstox.version>
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
     <zstd.version>1.5.5-11</zstd.version>
@@ -1029,12 +1028,6 @@
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock-jre8</artifactId>
         <version>${wiremock.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.fasterxml.woodstox</groupId>
-        <artifactId>woodstox-core</artifactId>
-        <version>${woodstox.version}</version>
       </dependency>
 
       <dependency>

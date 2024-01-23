@@ -30,6 +30,7 @@
   <properties>
     <maven.compiler.release>9</maven.compiler.release>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <stax2-api.version>4.2.2</stax2-api.version>
   </properties>
   <dependencies>
     <!-- Naturally, all implementations require the log4j-api JAR -->
@@ -44,6 +45,14 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
+    </dependency>
+    <!-- Pinning `org.codehaus.woodstox:stax2-api` (which is injected by `com.fasterxml.jackson.dataformat:jackson-dataformat-xml`) to avoid `RequireUpperBoundDeps` failures: -->
+    <dependency>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>stax2-api</artifactId>
+      <version>${stax2-api.version}</version>
+      <scope>runtime</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>

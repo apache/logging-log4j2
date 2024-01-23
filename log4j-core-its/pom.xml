@@ -91,12 +91,6 @@
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- POM for jackson-dataformat-xml depends on woodstox-core -->
-    <dependency>
-      <groupId>com.fasterxml.woodstox</groupId>
-      <artifactId>woodstox-core</artifactId>
-      <optional>true</optional>
-    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api-test</artifactId>
