@@ -20,12 +20,14 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.async.BlockingAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests queue full scenarios with AsyncAppender.
+ * Tests queue full scenarios with AsyncLoggers in configuration.
  */
-public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
+@SetTestProperty(key = "AsyncLoggerConfig.ringBufferSize", value = "128")
+public class QueueFullAsyncLoggerConfigTest extends QueueFullAbstractTest {
 
     @Override
     @Test
@@ -36,7 +38,7 @@ public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
     }
 
     @Override
-    protected void checkConfig(final LoggerContext ctx) {
-        assertAsyncAppender(ctx);
+    protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
+        assertAsyncLoggerConfig(ctx, 128);
     }
 }

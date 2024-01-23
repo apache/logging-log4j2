@@ -16,27 +16,35 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.async.BlockingAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests queue full scenarios with AsyncAppender.
- */
-public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
+@Tag("async")
+public class AsyncLoggerConfigAutoFlushTest {
 
-    @Override
+    @TempLoggingDir
+    private static Path loggingPath;
+
     @Test
     @LoggerContextSource
-    protected void testNormalQueueFullKeepsMessagesInOrder(
-            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
-        super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
-    }
+    public void testFlushAtEndOfBatch(final LoggerContext ctx) throws Exception {
+        final File file =
+                loggingPath.resolve("AsyncLoggerConfigAutoFlushTest.log").toFile();
 
-    @Override
-    protected void checkConfig(final LoggerContext ctx) {
-        assertAsyncAppender(ctx);
+        final Logger log = ctx.getLogger("com.foo.Bar");
+        final String msg = "Message flushed with immediate flush=false";
+        log.info(msg);
+        ctx.stop(); // stop async thread
+        final String contents = Files.readString(file.toPath());
+        assertTrue(contents.contains(msg), "line1 correct");
     }
 }

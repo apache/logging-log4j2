@@ -17,26 +17,18 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.async.BlockingAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.test.junit.Named;
-import org.junit.jupiter.api.Test;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 
 /**
- * Tests queue full scenarios with AsyncAppender.
+ * Needs to be a separate class since {@link org.apache.logging.log4j.core.util.Constants#FORMAT_MESSAGES_IN_BACKGROUND}
+ * is immutable.
  */
-public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
-
-    @Override
-    @Test
-    @LoggerContextSource
-    protected void testNormalQueueFullKeepsMessagesInOrder(
-            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
-        super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
-    }
+@SetTestProperty(key = "AsyncLogger.formatMsg", value = "true")
+public class QueueFullAsyncLogger2Test extends QueueFullAsyncLoggerTest {
 
     @Override
     protected void checkConfig(final LoggerContext ctx) {
-        assertAsyncAppender(ctx);
+        super.checkConfig(ctx);
+        assertFormatMessagesInBackground();
     }
 }
