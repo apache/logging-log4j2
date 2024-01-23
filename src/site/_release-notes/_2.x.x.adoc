@@ -31,6 +31,7 @@ This releases contains ...
 [#release-notes-2-x-x-deprecated]
 === Deprecated
 
+* Deprecate the configuration attribute `verbose` (i.e., `<Configuration verbose="..."`) and `StatusConsoleListener` filters (https://github.com/apache/logging-log4j2/pull/2226[2226])
 * Deprecated the `RingBufferLogEventHandler` class for removal from the public API in 3.x
 
 [#release-notes-2-x-x-fixed]
