@@ -175,7 +175,17 @@ public class AsyncLoggerConfig extends LoggerConfig {
         } else {
             // otherwise, we leave it to the user preference
             final EventRoute eventRoute = delegate.getEventRoute(event.getLevel());
-            eventRoute.logMessage(this, event);
+            switch (eventRoute) {
+                case DISCARD:
+                    break;
+                case ENQUEUE:
+                    logInBackgroundThread(event);
+                    break;
+                case SYNCHRONOUS:
+                    logToAsyncLoggerConfigsOnCurrentThread(event);
+                    break;
+                default:
+            }
         }
     }
 
