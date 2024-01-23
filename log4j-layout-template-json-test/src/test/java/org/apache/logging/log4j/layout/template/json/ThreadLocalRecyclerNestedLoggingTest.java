@@ -38,6 +38,8 @@ public class ThreadLocalRecyclerNestedLoggingTest {
 
     private static final class ThrowableLoggingInGetMessage extends RuntimeException {
 
+        private static final long serialVersionUID = 10127;
+
         private final Logger logger;
 
         private ThrowableLoggingInGetMessage(final Logger logger) {

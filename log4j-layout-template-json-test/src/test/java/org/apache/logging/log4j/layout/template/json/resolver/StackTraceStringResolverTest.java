@@ -629,6 +629,7 @@ class StackTraceStringResolverTest {
 
         private static final String NON_ASCII_UTF8_TEXT = "அஆஇฬ๘";
 
+        @SuppressWarnings("StaticAssignmentOfThrowable")
         private static final NonAsciiUtf8MethodNameContainingException INSTANCE = createInstance();
 
         @SuppressWarnings("UnicodeInCode")

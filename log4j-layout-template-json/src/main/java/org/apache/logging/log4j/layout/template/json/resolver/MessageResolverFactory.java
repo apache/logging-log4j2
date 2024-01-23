@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * @see MessageResolver
+ * A {@link MessageResolver} factory.
  */
 @Plugin(name = "MessageResolverFactory", category = TemplateResolverFactory.CATEGORY)
 public final class MessageResolverFactory implements EventResolverFactory {

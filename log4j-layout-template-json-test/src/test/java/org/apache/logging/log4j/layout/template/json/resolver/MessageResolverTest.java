@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
 class MessageResolverTest {
 
     /**
-     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3080">LOG4J2-3080</a>
+     * A <a href="https://issues.apache.org/jira/browse/LOG4J2-3080">LOG4J2-3080</a> reproduction.
      */
     @Test
     @LoggerContextSource("messageFallbackKeyUsingJsonTemplateLayout.xml")

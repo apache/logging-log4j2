@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 class TimestampResolverTest {
 
     /**
-     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3183">LOG4J2-3183</a>
+     * Reproduces <a href="https://issues.apache.org/jira/browse/LOG4J2-3183">LOG4J2-3183</a>.
      */
     @Test
     void epoch_nanos_should_not_overlap() {

@@ -58,7 +58,7 @@ class InstantFormatterTest {
     }
 
     /**
-     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3614">LOG4J2-3614</a>
+     * Reproduces <a href="https://issues.apache.org/jira/browse/LOG4J2-3614">LOG4J2-3614</a>.
      */
     @Test
     void FastDateFormat_failures_should_be_handled() {

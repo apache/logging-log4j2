@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,7 +71,7 @@ public class TemplateResolverInterceptors {
                     final Map<String, PluginType<?>> pluginTypeByName,
                     final Class<V> valueClass,
                     final Class<C> contextClass) {
-        final List<I> interceptors = new LinkedList<>();
+        final List<I> interceptors = new ArrayList<>();
         final Set<String> pluginNames = pluginTypeByName.keySet();
         for (final String pluginName : pluginNames) {
             final PluginType<?> pluginType = pluginTypeByName.get(pluginName);
@@ -100,6 +100,7 @@ public class TemplateResolverInterceptors {
         }
     }
 
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     private static <V, C extends TemplateResolverContext<V, C>, I extends TemplateResolverInterceptor<V, C>>
             I castInterceptor(
                     final Class<V> valueClass,
