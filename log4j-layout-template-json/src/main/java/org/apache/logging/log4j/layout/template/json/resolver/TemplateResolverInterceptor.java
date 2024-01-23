@@ -49,7 +49,7 @@ public interface TemplateResolverInterceptor<V, C extends TemplateResolverContex
      * @param node the root object of the read template
      * @return the root object of the template to be compiled
      */
-    default Object processTemplateBeforeResolverInjection(C context, Object node) {
+    default Object processTemplateBeforeResolverInjection(final C context, final Object node) {
         return node;
     }
 }

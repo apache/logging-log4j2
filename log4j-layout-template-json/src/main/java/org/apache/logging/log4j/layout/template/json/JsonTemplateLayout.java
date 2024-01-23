@@ -507,7 +507,7 @@ public class JsonTemplateLayout implements StringLayout, LocationAware {
         }
 
         private void validate() {
-            Objects.requireNonNull(configuration, "config");
+            Objects.requireNonNull(configuration, "configuration");
             if (Strings.isBlank(eventTemplate) && Strings.isBlank(eventTemplateUri)) {
                 throw new IllegalArgumentException("both eventTemplate and eventTemplateUri are blank");
             }

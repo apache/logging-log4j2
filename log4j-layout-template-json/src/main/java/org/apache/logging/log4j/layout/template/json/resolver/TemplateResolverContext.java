@@ -52,7 +52,7 @@ interface TemplateResolverContext<V, C extends TemplateResolverContext<V, C>> {
      * @param node the root object of the read template
      * @return the root object of the template to be compiled
      */
-    default Object processTemplateBeforeResolverInjection(Object node) {
+    default Object processTemplateBeforeResolverInjection(final Object node) {
         return node;
     }
 }

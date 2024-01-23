@@ -201,7 +201,7 @@ public final class CaseConverterResolver implements EventResolver {
         if (strategyName == null) {
             return ErrorHandlingStrategy.REPLACE;
         }
-        for (ErrorHandlingStrategy strategy : ErrorHandlingStrategy.values()) {
+        for (final ErrorHandlingStrategy strategy : ErrorHandlingStrategy.values()) {
             if (strategy.name.equals(strategyName)) {
                 return strategy;
             }

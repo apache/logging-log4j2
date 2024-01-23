@@ -700,7 +700,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         } else {
             final long longNumber = number.longValue();
             final double doubleValue = number.doubleValue();
-            if (Double.compare(longNumber, doubleValue) == 0) {
+            if (Double.compare((double) longNumber, doubleValue) == 0) {
                 writeNumber(longNumber);
             } else {
                 writeNumber(doubleValue);
