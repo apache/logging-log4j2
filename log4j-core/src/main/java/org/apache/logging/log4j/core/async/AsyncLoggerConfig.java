@@ -65,7 +65,7 @@ import org.apache.logging.log4j.util.Strings;
 public class AsyncLoggerConfig extends LoggerConfig {
 
     private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = ThreadLocal.withInitial(() -> Boolean.FALSE);
-    private final AsyncLoggerConfigDelegate delegate;
+    private AsyncLoggerConfigDelegate delegate;
 
     @PluginFactory
     public static <B extends Builder<B>> B newAsyncBuilder() {
@@ -103,8 +103,19 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final boolean includeLocation,
             final LogEventFactory logEventFactory) {
         super(name, appenders, filter, level, additive, properties, config, includeLocation, logEventFactory);
-        delegate = config.getAsyncLoggerConfigDelegate();
+    }
+
+    @Override
+    public void initialize() {
+        final Configuration configuration = getConfiguration();
+        DisruptorConfiguration disruptorConfig = configuration.getExtension(DisruptorConfiguration.class);
+        if (disruptorConfig == null) {
+            disruptorConfig = DisruptorConfiguration.newBuilder().build();
+            configuration.addExtension(disruptorConfig);
+        }
+        delegate = disruptorConfig.getAsyncLoggerConfigDelegate();
         delegate.setLogEventFactory(getLogEventFactory());
+        super.initialize();
     }
 
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {

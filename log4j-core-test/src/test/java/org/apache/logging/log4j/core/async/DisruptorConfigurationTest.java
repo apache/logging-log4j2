@@ -28,19 +28,29 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("async")
-public class AsyncWaitStrategyFactoryConfigTest {
+public class DisruptorConfigurationTest {
 
     @Test
-    @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.xml")
+    void testAttributePriority() {
+        final DisruptorConfiguration disruptorConfig = DisruptorConfiguration.newBuilder()
+                .setFactoryClassName(DefaultAsyncWaitStrategyFactory.class.getName())
+                .setWaitFactory(YieldingWaitStrategyFactory.class.getName())
+                .build();
+        assertThat(disruptorConfig.getWaitStrategyFactory()).isInstanceOf(YieldingWaitStrategyFactory.class);
+    }
+
+    @Test
+    @LoggerContextSource
     public void testConfigWaitStrategyFactory(final LoggerContext context) throws Exception {
-        final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
-                context.getConfiguration().getAsyncWaitStrategyFactory();
+        final DisruptorConfiguration disruptorConfig =
+                context.getConfiguration().getExtension(DisruptorConfiguration.class);
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory = disruptorConfig.getWaitStrategyFactory();
         assertThat(asyncWaitStrategyFactory.getClass()).isEqualTo(YieldingWaitStrategyFactory.class);
         assertThat(asyncWaitStrategyFactory).isInstanceOf(YieldingWaitStrategyFactory.class);
     }
 
     @Test
-    @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.xml")
+    @LoggerContextSource
     public void testWaitStrategy(final LoggerContext context) throws Exception {
 
         final org.apache.logging.log4j.Logger logger = context.getRootLogger();
@@ -56,8 +66,9 @@ public class AsyncWaitStrategyFactoryConfigTest {
     @Test
     @LoggerContextSource("AsyncWaitStrategyIncorrectFactoryConfigTest.xml")
     public void testIncorrectConfigWaitStrategyFactory(final LoggerContext context) throws Exception {
-        final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
-                context.getConfiguration().getAsyncWaitStrategyFactory();
+        final DisruptorConfiguration disruptorConfig =
+                context.getConfiguration().getExtension(DisruptorConfiguration.class);
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory = disruptorConfig.getWaitStrategyFactory();
         assertThat(asyncWaitStrategyFactory).isNull(); // because invalid configuration
     }
 

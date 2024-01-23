@@ -294,7 +294,9 @@ public abstract class QueueFullAbstractTest {
         final Configuration config = ctx.getConfiguration();
         assertThat(config).isNotNull();
         assertThat(config.getRootLogger()).isInstanceOf(AsyncLoggerConfig.class);
-        final AsyncLoggerConfigDisruptor disruptor = (AsyncLoggerConfigDisruptor) config.getAsyncLoggerConfigDelegate();
+        final DisruptorConfiguration disruptorConfig = config.getExtension(DisruptorConfiguration.class);
+        final AsyncLoggerConfigDisruptor disruptor =
+                (AsyncLoggerConfigDisruptor) disruptorConfig.getAsyncLoggerConfigDelegate();
         assertThat(disruptor.getRingBuffer().getBufferSize()).isEqualTo(expectedBufferSize);
     }
 

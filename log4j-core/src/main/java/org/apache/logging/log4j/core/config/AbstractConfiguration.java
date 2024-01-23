@@ -42,16 +42,12 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.Version;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
-import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
-import org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor;
-import org.apache.logging.log4j.core.async.AsyncWaitStrategyFactory;
-import org.apache.logging.log4j.core.async.AsyncWaitStrategyFactoryConfig;
 import org.apache.logging.log4j.core.config.arbiters.Arbiter;
 import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
@@ -94,6 +90,8 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
  */
 @ServiceConsumer(value = ScriptManagerFactory.class, cardinality = Cardinality.SINGLE, resolution = Resolution.OPTIONAL)
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
+
+    private static final ConfigurationExtension[] EMPTY_EXTENSIONS = new ConfigurationExtension[0];
 
     /**
      * The instance factory for this configuration. This may be a child factory to a LoggerContext
@@ -158,11 +156,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final ConfigurationSource configurationSource;
     private final ConfigurationScheduler configurationScheduler;
     private final WatchManager watchManager;
-    private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
-    private AsyncWaitStrategyFactory asyncWaitStrategyFactory;
     private final WeakReference<LoggerContext> loggerContext;
     private final PropertyEnvironment contextProperties;
     private final Lock configLock = new ReentrantLock();
+    private ConfigurationExtension[] extensions = EMPTY_EXTENSIONS;
 
     /**
      * Constructor.
@@ -243,21 +240,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     public Node getRootNode() {
         return rootNode;
-    }
-
-    @Override
-    public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
-        // lazily instantiate only when requested by AsyncLoggers:
-        // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
-        if (asyncLoggerConfigDisruptor == null) {
-            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor(asyncWaitStrategyFactory);
-        }
-        return asyncLoggerConfigDisruptor;
-    }
-
-    @Override
-    public AsyncWaitStrategyFactory getAsyncWaitStrategyFactory() {
-        return asyncWaitStrategyFactory;
     }
 
     /**
@@ -358,8 +340,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (watchManager.getIntervalSeconds() >= 0) {
             watchManager.start();
         }
-        if (hasAsyncLoggers()) {
-            asyncLoggerConfigDisruptor.start();
+        for (final ConfigurationExtension extension : extensions) {
+            if (extension instanceof LifeCycle lifecycle) {
+                lifecycle.start();
+            }
         }
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggerConfigs.values()) {
@@ -374,18 +358,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         super.start();
         LOGGER.debug("Started configuration {} OK.", this);
-    }
-
-    private boolean hasAsyncLoggers() {
-        if (root instanceof AsyncLoggerConfig) {
-            return true;
-        }
-        for (final LoggerConfig logger : loggerConfigs.values()) {
-            if (logger instanceof AsyncLoggerConfig) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -430,9 +402,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             root.stop(timeout, timeUnit);
         }
 
-        if (hasAsyncLoggers()) {
-            LOGGER.trace("{} stopping AsyncLoggerConfigDisruptor.", cls);
-            asyncLoggerConfigDisruptor.stop(timeout, timeUnit);
+        for (final ConfigurationExtension extension : extensions) {
+            if (extension instanceof LifeCycle lifecycle) {
+                lifecycle.stop(timeout, timeUnit);
+            }
         }
 
         LOGGER.trace("{} notifying ReliabilityStrategies that appenders will be stopped.", cls);
@@ -732,12 +705,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 final List<CustomLevelConfig> copy = new ArrayList<>(customLevels);
                 copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
-            } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
-                AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
-                if (awsfc == null) {
-                    LOGGER.error("Unable to load AsyncWaitStrategyFactoryConfig");
+            } else if (child.isInstanceOf(ConfigurationExtension.class)) {
+                final ConfigurationExtension extension = child.getObject(ConfigurationExtension.class);
+                if (extension == null) {
+                    LOGGER.error("Unable to load configuration extension {}.", child.getName());
                 } else {
-                    asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
+                    addExtension(child.getObject());
                 }
             } else {
                 final List<String> expected = Arrays.asList(
@@ -772,6 +745,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                             "Unable to locate appender \"{}\" for logger config \"{}\"", ref.getRef(), loggerConfig);
                 }
             }
+            loggerConfig.initialize();
         }
 
         setParents();
@@ -1177,5 +1151,29 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override // TODO(ms): consider injecting here
     public void setNanoClock(final NanoClock nanoClock) {
         instanceFactory.registerBinding(NanoClock.KEY, () -> nanoClock);
+    }
+
+    @Override
+    public void addExtension(ConfigurationExtension extension) {
+        Objects.requireNonNull(extension);
+        extensions = Arrays.copyOf(extensions, extensions.length + 1);
+        extensions[extensions.length - 1] = extension;
+    }
+
+    @Override
+    public <T extends ConfigurationExtension> T getExtension(Class<T> extensionType) {
+        T result = null;
+        for (final ConfigurationExtension extension : extensions) {
+            if (extensionType.isInstance(extension)) {
+                if (result == null) {
+                    result = (T) extension;
+                } else {
+                    LOGGER.warn(
+                            "Multiple configuration elements found for type {}. Only the first will be used.",
+                            extensionType.getName());
+                }
+            }
+        }
+        return result;
     }
 }

@@ -852,6 +852,10 @@ public class LoggerConfig extends AbstractFilterable {
         return result;
     }
 
+    protected Configuration getConfiguration() {
+        return config;
+    }
+
     protected static class LevelAndRefs {
         public Level level;
         public List<AppenderRef> refs;

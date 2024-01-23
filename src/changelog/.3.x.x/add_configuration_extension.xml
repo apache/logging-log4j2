@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
+       type="added">
+  <description format="asciidoc">
+    Add a `ConfigurationExtension` mechanism to allow third-party JARs to extend the `&lt;Configuration&gt;` element.
+  </description>
+</entry>

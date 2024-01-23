@@ -101,12 +101,14 @@ public class AsyncLoggerConfigTest {
                 .setLevel(Level.INFO)
                 .setFilter(filter)
                 .build();
+        config.initialize();
         final Appender appender = mock(Appender.class);
         when(appender.isStarted()).thenReturn(true);
         when(appender.getName()).thenReturn("test");
         config.addAppender(appender, null, null);
+        final DisruptorConfiguration disruptorConfig = configuration.getExtension(DisruptorConfiguration.class);
         final AsyncLoggerConfigDisruptor disruptor =
-                (AsyncLoggerConfigDisruptor) configuration.getAsyncLoggerConfigDelegate();
+                (AsyncLoggerConfigDisruptor) disruptorConfig.getAsyncLoggerConfigDelegate();
         disruptor.start();
         try {
             config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);

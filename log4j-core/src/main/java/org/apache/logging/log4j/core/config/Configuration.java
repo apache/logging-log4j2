@@ -26,8 +26,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
-import org.apache.logging.log4j.core.async.AsyncWaitStrategyFactory;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
@@ -194,24 +192,6 @@ public interface Configuration extends Filterable {
     ScriptManager getScriptManager();
 
     /**
-     * Returns the {@code AsyncLoggerConfigDelegate} shared by all
-     * {@code AsyncLoggerConfig} instances defined in this Configuration.
-     *
-     * @return the {@code AsyncLoggerConfigDelegate}
-     */
-    AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate();
-
-    /**
-     * Returns the {@code AsyncWaitStrategyFactory} defined in this Configuration;
-     * this factory is used to create the LMAX disruptor {@code WaitStrategy} used
-     * by the disruptor ringbuffer for Async Loggers.
-     *
-     * @return the {@code AsyncWaitStrategyFactory}
-     * @since 2.17.3
-     */
-    AsyncWaitStrategyFactory getAsyncWaitStrategyFactory();
-
-    /**
      * Return the WatchManager.
      *
      * @return the WatchManager.
@@ -256,4 +236,21 @@ public interface Configuration extends Filterable {
     default RecyclerFactory getRecyclerFactory() {
         return getComponent(Key.forClass(RecyclerFactory.class));
     }
+
+    /**
+     * Registers a new configuration extension.
+     *
+     * @param extension a configuration extension.
+     * @since 3.0
+     */
+    void addExtension(ConfigurationExtension extension);
+
+    /**
+     * Returns an extension of the given type.
+     *
+     * @param extensionType a type of extension,
+     * @return an extension the matches the given type.
+     * @since 3.0
+     */
+    <T extends ConfigurationExtension> T getExtension(Class<T> extensionType);
 }

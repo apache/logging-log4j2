@@ -15,11 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration name="async-wait-1" >
-
-  <AsyncWaitStrategyFactory
-      class="org.apache.logging.log4j.core.async.AsyncWaitStrategyFactoryConfigTest$YieldingWaitStrategyFactory" />
-
+<Configuration name="AsyncWaitStrategyFactoryConfigTest" >
   <Appenders>
     <List name="WaitStrategyAppenderList" />
   </Appenders>
@@ -29,4 +25,7 @@
       <AppenderRef ref="WaitStrategyAppenderList"/>
     </AsyncRoot>
   </Loggers>
+
+  <AsyncWaitStrategyFactory
+          class="org.apache.logging.log4j.core.async.DisruptorConfigurationTest$YieldingWaitStrategyFactory" />
 </Configuration>
