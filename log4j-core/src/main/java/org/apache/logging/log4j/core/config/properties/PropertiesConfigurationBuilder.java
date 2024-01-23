@@ -56,7 +56,6 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private static final String STATUS_KEY = "status";
     private static final String SHUTDOWN_HOOK = "shutdownHook";
     private static final String SHUTDOWN_TIMEOUT = "shutdownTimeout";
-    private static final String VERBOSE = "verbose";
     private static final String DEST = "dest";
     private static final String PACKAGES = "packages";
     private static final String CONFIG_NAME = "name";
@@ -92,7 +91,6 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 .setShutdownHook(rootProperties.getProperty(SHUTDOWN_HOOK))
                 .setShutdownTimeout(
                         Long.parseLong(rootProperties.getProperty(SHUTDOWN_TIMEOUT, "0")), TimeUnit.MILLISECONDS)
-                .setVerbosity(rootProperties.getProperty(VERBOSE))
                 .setDestination(rootProperties.getProperty(DEST))
                 .setPackages(rootProperties.getProperty(PACKAGES))
                 .setConfigurationName(rootProperties.getProperty(CONFIG_NAME))
