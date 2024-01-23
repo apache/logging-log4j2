@@ -40,7 +40,7 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("DoubleBraceInitialization")
+@SuppressWarnings({"DoubleBraceInitialization", "UnnecessaryStringBuilder"})
 class JsonWriterTest {
 
     private static final JsonWriter WRITER = JsonWriter.newBuilder()
