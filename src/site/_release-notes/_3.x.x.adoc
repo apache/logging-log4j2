@@ -51,6 +51,7 @@ This release contains...
 * Removed legacy `2.x` properties configuration factory.
 * Remove `DefaultLogEventFactory`
 * Remove `org.apache.logging.log4j.core.parser` and related packages. (https://github.com/apache/logging-log4j2/pull/2154[2154])
+* Removed JMX support.
 * Remove `log4j-layout-jackson` module (https://github.com/apache/logging-log4j2/pull/2198[2198])
 * Remove `log4j-layout-jackson-xml` module (https://github.com/apache/logging-log4j2/pull/2198[2198])
 * Remove `log4j2.enable.threadlocals` property (https://github.com/apache/logging-log4j2/issues/2105[2105])
@@ -72,4 +73,5 @@ This release contains...
 * Update `org.slf4j:slf4j-api` to version `2.0.10` (https://github.com/apache/logging-log4j2/pull/2136[2136])
 * Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.2` (https://github.com/apache/logging-log4j2/pull/2222[2222])
 * Update `org.springframework.boot:spring-boot-dependencies` to version `3.2.1` (https://github.com/apache/logging-log4j2/pull/2123[2123])
+* Update `org.springframework:spring-framework-bom` to version `6.1.3` (https://github.com/apache/logging-log4j2/pull/2223[2223])
 * Update `uk.org.webcompere:system-stubs-core` to version `2.1.6` (https://github.com/apache/logging-log4j2/pull/2196[2196])
