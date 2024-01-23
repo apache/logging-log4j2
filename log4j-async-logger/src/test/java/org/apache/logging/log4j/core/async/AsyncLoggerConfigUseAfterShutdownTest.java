@@ -16,27 +16,31 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.nio.file.Path;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.async.BlockingAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests queue full scenarios with AsyncAppender.
- */
-public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
+@Tag("async")
+public class AsyncLoggerConfigUseAfterShutdownTest {
 
-    @Override
+    @TempLoggingDir
+    private static Path loggingPath;
+
     @Test
     @LoggerContextSource
-    protected void testNormalQueueFullKeepsMessagesInOrder(
-            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
-        super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
-    }
+    public void testNoErrorIfLogAfterShutdown(final LoggerContext ctx) throws Exception {
+        final Logger log = ctx.getLogger("com.foo.Bar");
+        log.info("some message");
+        ctx.stop(); // stop async thread
 
-    @Override
-    protected void checkConfig(final LoggerContext ctx) {
-        assertAsyncAppender(ctx);
+        // call the #logMessage() method to bypass the isEnabled check:
+        // before the LOG4J2-639 fix this would throw a NPE
+        log.logMessage(Level.INFO, null, "com.foo.Bar", null, new SimpleMessage("msg"), null);
     }
 }

@@ -16,27 +16,34 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.async.BlockingAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests queue full scenarios with AsyncAppender.
+ * Tests queue full scenarios with AsyncLoggers in configuration.
  */
-public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
+@SetTestProperty(key = "Web.isWebApp", value = "false")
+@SetTestProperty(key = "AsyncLoggerConfig.ringBufferSize", value = "128")
+public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFullAbstractTest {
 
     @Override
     @Test
     @LoggerContextSource
-    protected void testNormalQueueFullKeepsMessagesInOrder(
+    public void testLoggingFromToStringCausesOutOfOrderMessages(
             final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
-        super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
+        super.testLoggingFromToStringCausesOutOfOrderMessages(ctx, blockingAppender);
     }
 
     @Override
-    protected void checkConfig(final LoggerContext ctx) {
-        assertAsyncAppender(ctx);
+    protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
+        assertAsyncLoggerConfig(ctx, 128);
+        assertThat(Constants.isWebApp()).isFalse();
     }
 }

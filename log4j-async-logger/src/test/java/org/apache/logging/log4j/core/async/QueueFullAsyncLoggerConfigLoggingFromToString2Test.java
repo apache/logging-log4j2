@@ -17,26 +17,18 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.async.BlockingAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.test.junit.Named;
-import org.junit.jupiter.api.Test;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 
 /**
- * Tests queue full scenarios with AsyncAppender.
+ * Tests queue full scenarios with AsyncLoggers in configuration.
  */
-public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
+@SetTestProperty(key = "AsyncLogger.formatMsg", value = "true")
+public class QueueFullAsyncLoggerConfigLoggingFromToString2Test
+        extends QueueFullAsyncLoggerConfigLoggingFromToStringTest {
 
     @Override
-    @Test
-    @LoggerContextSource
-    protected void testNormalQueueFullKeepsMessagesInOrder(
-            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
-        super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
-    }
-
-    @Override
-    protected void checkConfig(final LoggerContext ctx) {
-        assertAsyncAppender(ctx);
+    protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
+        super.checkConfig(ctx);
+        assertFormatMessagesInBackground();
     }
 }
