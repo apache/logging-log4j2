@@ -173,7 +173,17 @@ public final class AsyncAppender extends AbstractAppender {
                 } else {
                     // delegate to the event router (which may discard, enqueue and block, or log in current thread)
                     final EventRoute route = asyncQueueFullPolicy.getRoute(dispatcher.getId(), memento.getLevel());
-                    route.logMessage(this, memento);
+                    switch (route) {
+                        case DISCARD:
+                            break;
+                        case ENQUEUE:
+                            logMessageInBackgroundThread(memento);
+                            break;
+                        case SYNCHRONOUS:
+                            logMessageInCurrentThread(memento);
+                            break;
+                        default:
+                    }
                 }
             } else {
                 error("Appender " + getName() + " is unable to write primary appenders. queue is full");
