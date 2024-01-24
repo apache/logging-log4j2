@@ -418,9 +418,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.level = null;
         this.threadName = null;
         this.loggerName = null;
-        this.message = null;
-        this.messageFormat = null;
-        clearMessageTextAndParameters();
+        clearMessage();
         this.thrown = null;
         this.thrownProxy = null;
         clearContextData();
@@ -431,7 +429,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.asyncLogger = null;
     }
 
-    private void clearMessageTextAndParameters() {
+    private void clearMessage() {
+        message = null;
+        messageFormat = null;
         // ensure that excessively long char[] arrays are not kept in memory forever
         if (Constants.ENABLE_THREADLOCALS) {
             StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
