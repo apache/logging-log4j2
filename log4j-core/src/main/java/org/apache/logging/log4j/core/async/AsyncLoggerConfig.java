@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
@@ -79,6 +80,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final String name = getLoggerName().equals(ROOT) ? Strings.EMPTY : getLoggerName();
             final LevelAndRefs container =
                     LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(), getConfig());
+            final String includeLocationConfigValue = getIncludeLocation();
             return new AsyncLoggerConfig(
                     name,
                     container.refs,
@@ -87,7 +89,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     isAdditivity(),
                     getProperties(),
                     getConfig(),
-                    includeLocation(getIncludeLocation()),
+                    Boolean.parseBoolean(includeLocationConfigValue),
                     getLogEventFactory());
         }
     }
@@ -116,9 +118,9 @@ public class AsyncLoggerConfig extends LoggerConfig {
         super.initialize();
     }
 
-    protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
+    protected void log(final LogEvent event, final Predicate<LoggerConfig> predicate) {
         // See LOG4J2-2301
-        if (predicate == LoggerConfigPredicate.ALL
+        if (predicate == null
                 && ASYNC_LOGGER_ENTERED.get() == Boolean.FALSE
                 &&
                 // Optimization: AsyncLoggerConfig is identical to LoggerConfig
@@ -132,7 +134,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 if (!isFiltered(event)) {
                     // Detect the first time we encounter an AsyncLoggerConfig. We must log
                     // to all non-async loggers first.
-                    processLogEvent(event, LoggerConfigPredicate.SYNCHRONOUS_ONLY);
+                    processLogEvent(event, lc -> !(lc instanceof AsyncLoggerConfig));
                     // Then pass the event to the background thread where
                     // all async logging is executed. It is important this
                     // happens at most once and after all synchronous loggers
@@ -206,7 +208,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     void logToAsyncLoggerConfigsOnCurrentThread(final LogEvent event) {
         // skip the filter, which was already called on the logging thread
-        processLogEvent(event, LoggerConfigPredicate.ASYNCHRONOUS_ONLY);
+        processLogEvent(event, lc -> lc instanceof AsyncLoggerConfig);
     }
 
     private String displayName() {
@@ -228,11 +230,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
         return true;
     }
 
-    // Note: for asynchronous loggers, includeLocation default is FALSE
-    protected static boolean includeLocation(final String includeLocationConfigValue) {
-        return Boolean.parseBoolean(includeLocationConfigValue);
-    }
-
     /**
      * An asynchronous root Logger.
      */
@@ -251,6 +248,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             public LoggerConfig build() {
                 final LevelAndRefs container =
                         LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(), getConfig());
+                final String includeLocationConfigValue = getIncludeLocation();
                 return new AsyncLoggerConfig(
                         LogManager.ROOT_LOGGER_NAME,
                         container.refs,
@@ -259,7 +257,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                         isAdditivity(),
                         getProperties(),
                         getConfig(),
-                        AsyncLoggerConfig.includeLocation(getIncludeLocation()),
+                        Boolean.parseBoolean(includeLocationConfigValue),
                         getLogEventFactory());
             }
         }

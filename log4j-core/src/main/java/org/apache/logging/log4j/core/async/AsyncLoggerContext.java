@@ -130,6 +130,11 @@ public class AsyncLoggerContext extends LoggerContext {
         return true;
     }
 
+    @Override
+    public boolean includeLocation() {
+        return false;
+    }
+
     // package-protected for tests
     AsyncLoggerDisruptor getAsyncLoggerDisruptor() {
         return loggerDisruptor;
