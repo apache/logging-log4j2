@@ -27,6 +27,7 @@ import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 @Configurable(printObject = true)
@@ -37,7 +38,8 @@ public final class DisruptorConfiguration extends AbstractLifeCycle implements C
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final AsyncWaitStrategyFactory waitStrategyFactory;
-    private AsyncLoggerConfigDisruptor loggerConfigDisruptor;
+    private final Lazy<AsyncLoggerConfigDisruptor> loggerConfigDisruptor =
+            Lazy.lazy(() -> new AsyncLoggerConfigDisruptor(getWaitStrategyFactory()));
 
     private DisruptorConfiguration(final AsyncWaitStrategyFactory waitStrategyFactory) {
         this.waitStrategyFactory = waitStrategyFactory;
@@ -48,26 +50,23 @@ public final class DisruptorConfiguration extends AbstractLifeCycle implements C
     }
 
     public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
-        if (loggerConfigDisruptor == null) {
-            loggerConfigDisruptor = new AsyncLoggerConfigDisruptor(waitStrategyFactory);
-        }
-        return loggerConfigDisruptor;
+        return loggerConfigDisruptor.get();
     }
 
     @Override
     public void start() {
-        if (loggerConfigDisruptor != null) {
+        if (loggerConfigDisruptor.isInitialized()) {
             LOGGER.info("Starting AsyncLoggerConfigDisruptor.");
-            loggerConfigDisruptor.start();
+            loggerConfigDisruptor.get().start();
         }
         super.start();
     }
 
     @Override
-    public boolean stop(long timeout, TimeUnit timeUnit) {
-        if (loggerConfigDisruptor != null) {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+        if (loggerConfigDisruptor.isInitialized()) {
             LOGGER.info("Stopping AsyncLoggerConfigDisruptor.");
-            loggerConfigDisruptor.stop(timeout, timeUnit);
+            loggerConfigDisruptor.get().stop(timeout, timeUnit);
         }
         return super.stop(timeout, timeUnit);
     }
@@ -97,36 +96,31 @@ public final class DisruptorConfiguration extends AbstractLifeCycle implements C
 
         @Override
         public DisruptorConfiguration build() {
-            final String effectiveClassName = Objects.toString(waitFactory, factoryClassName);
-            final AsyncWaitStrategyFactory effectiveFactory;
-            if (effectiveClassName != null) {
-                effectiveFactory = createWaitStrategyFactory(effectiveClassName);
-            } else {
-                effectiveFactory = null;
-            }
-            if (effectiveFactory != null) {
-                LOGGER.info("Using configured AsyncWaitStrategy factory {}.", effectiveClassName);
-            } else {
-                LOGGER.info("Using default AsyncWaitStrategy factory.");
-            }
-            return new DisruptorConfiguration(effectiveFactory);
+            return new DisruptorConfiguration(
+                    createWaitStrategyFactory(Objects.toString(waitFactory, factoryClassName)));
         }
 
         private static AsyncWaitStrategyFactory createWaitStrategyFactory(final String factoryClassName) {
-            try {
-                return LoaderUtil.newCheckedInstanceOf(factoryClassName, AsyncWaitStrategyFactory.class);
-            } catch (final ClassCastException e) {
-                LOGGER.error(
-                        "Ignoring factory '{}': it is not assignable to AsyncWaitStrategyFactory", factoryClassName);
-                return null;
-            } catch (ReflectiveOperationException | LinkageError e) {
-                LOGGER.warn(
-                        "Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}",
-                        factoryClassName,
-                        e.getMessage(),
-                        e);
-                return null;
+            if (factoryClassName != null) {
+                try {
+                    final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
+                            LoaderUtil.newCheckedInstanceOf(factoryClassName, AsyncWaitStrategyFactory.class);
+                    LOGGER.info("Using configured AsyncWaitStrategy factory {}.", factoryClassName);
+                    return asyncWaitStrategyFactory;
+                } catch (final ClassCastException e) {
+                    LOGGER.error(
+                            "Ignoring factory '{}': it is not assignable to AsyncWaitStrategyFactory",
+                            factoryClassName);
+                } catch (final ReflectiveOperationException | LinkageError e) {
+                    LOGGER.warn(
+                            "Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}",
+                            factoryClassName,
+                            e.getMessage(),
+                            e);
+                }
             }
+            LOGGER.info("Using default AsyncWaitStrategy factory.");
+            return null;
         }
     }
 }

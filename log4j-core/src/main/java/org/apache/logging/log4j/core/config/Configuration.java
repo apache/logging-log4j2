@@ -238,17 +238,25 @@ public interface Configuration extends Filterable {
     }
 
     /**
-     * Registers a new configuration extension.
-     *
-     * @param extension a configuration extension.
+     * Registers a new configuration extension, if it doesn't exist.
+     * <p>
+     *     To preventing polluting the main configuration element,
+     *     each JAR that wishes to extend the {@link Configuration} should use a single child element.
+     * </p>
+     * @param extensionType the concrete type of the extension,
+     * @param supplier a factory to create a new extension element,
+     * @return the current extension if present or a newly generated one.
      * @since 3.0
+     * @see #getExtension(Class)
      */
-    void addExtension(ConfigurationExtension extension);
+    <T extends ConfigurationExtension> T addExtensionIfAbsent(Class<T> extensionType, Supplier<? extends T> supplier);
 
     /**
      * Returns an extension of the given type.
-     *
-     * @param extensionType a type of extension,
+     * <p>
+     *     Only the first extension of the given type is returned.
+     * </p>
+     * @param extensionType a concrete type of the extension,
      * @return an extension the matches the given type.
      * @since 3.0
      */

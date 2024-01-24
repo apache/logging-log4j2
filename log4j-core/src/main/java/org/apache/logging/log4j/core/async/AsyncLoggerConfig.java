@@ -108,11 +108,9 @@ public class AsyncLoggerConfig extends LoggerConfig {
     @Override
     public void initialize() {
         final Configuration configuration = getConfiguration();
-        DisruptorConfiguration disruptorConfig = configuration.getExtension(DisruptorConfiguration.class);
-        if (disruptorConfig == null) {
-            disruptorConfig = DisruptorConfiguration.newBuilder().build();
-            configuration.addExtension(disruptorConfig);
-        }
+        final DisruptorConfiguration disruptorConfig = configuration.addExtensionIfAbsent(
+                DisruptorConfiguration.class,
+                () -> DisruptorConfiguration.newBuilder().build());
         delegate = disruptorConfig.getAsyncLoggerConfigDelegate();
         delegate.setLogEventFactory(getLogEventFactory());
         super.initialize();

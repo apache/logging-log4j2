@@ -17,6 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 /**
- * A {@link ConfigurationExtension} is used to add new child elements to a {@link Configuration}.
+ * Marker interface used by new child elements of a {@link Configuration}.
  */
 public interface ConfigurationExtension {}

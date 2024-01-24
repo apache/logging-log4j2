@@ -21,7 +21,6 @@ import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -91,7 +90,8 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
 @ServiceConsumer(value = ScriptManagerFactory.class, cardinality = Cardinality.SINGLE, resolution = Resolution.OPTIONAL)
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
-    private static final ConfigurationExtension[] EMPTY_EXTENSIONS = new ConfigurationExtension[0];
+    private static final List<String> EXPECTED_ELEMENTS =
+            List.of("\"Appenders\"", "\"Loggers\"", "\"Properties\"", "\"Scripts\"", "\"CustomLevels\"");
 
     /**
      * The instance factory for this configuration. This may be a child factory to a LoggerContext
@@ -159,7 +159,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final WeakReference<LoggerContext> loggerContext;
     private final PropertyEnvironment contextProperties;
     private final Lock configLock = new ReentrantLock();
-    private ConfigurationExtension[] extensions = EMPTY_EXTENSIONS;
+    private final List<ConfigurationExtension> extensions = new CopyOnWriteArrayList<>();
 
     /**
      * Constructor.
@@ -659,7 +659,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (!hasProperties) {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
-            Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
+            final Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
             instanceFactory.injectMembers(interpolator);
             runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);
@@ -676,6 +676,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
             createConfiguration(child, null);
             if (child.getObject() == null) {
+                LOGGER.warn(
+                        "Configuration element \"{}\" is ignored: try nesting it inside one of: {}.",
+                        child.getName(),
+                        EXPECTED_ELEMENTS);
                 continue;
             }
             if ("Scripts".equalsIgnoreCase(child.getName())) {
@@ -686,40 +690,28 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 appenders = child.getObject();
             } else if (child.isInstanceOf(Filter.class)) {
                 addFilter(child.getObject(Filter.class));
-            } else if ("Loggers".equalsIgnoreCase(child.getName())) {
-                final Loggers l = child.getObject();
+            } else if (child.isInstanceOf(Loggers.class)) {
+                final Loggers l = child.getObject(Loggers.class);
                 loggerConfigs = l.getMap();
                 setLoggers = true;
                 if (l.getRoot() != null) {
                     root = l.getRoot();
                     setRoot = true;
                 }
-            } else if ("CustomLevels".equalsIgnoreCase(child.getName())) {
-                final CustomLevels levels = child.getObject(CustomLevels.class);
-                if (levels == null) {
-                    LOGGER.error("Unable to load CustomLevels plugin");
-                } else {
-                    customLevels = levels.getCustomLevels();
-                }
+            } else if (child.isInstanceOf(CustomLevels.class)) {
+                customLevels = child.getObject(CustomLevels.class).getCustomLevels();
             } else if (child.isInstanceOf(CustomLevelConfig.class)) {
                 final List<CustomLevelConfig> copy = new ArrayList<>(customLevels);
                 copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
             } else if (child.isInstanceOf(ConfigurationExtension.class)) {
-                final ConfigurationExtension extension = child.getObject(ConfigurationExtension.class);
-                if (extension == null) {
-                    LOGGER.error("Unable to load configuration extension {}.", child.getName());
-                } else {
-                    addExtension(child.getObject());
-                }
+                addExtension(child.getObject(ConfigurationExtension.class));
             } else {
-                final List<String> expected = Arrays.asList(
-                        "\"Appenders\"", "\"Loggers\"", "\"Properties\"", "\"Scripts\"", "\"CustomLevels\"");
                 LOGGER.error(
                         "Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
                         child.getName(),
                         child.getObject().getClass().getName(),
-                        expected);
+                        EXPECTED_ELEMENTS);
             }
         }
 
@@ -1154,19 +1146,28 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     @Override
-    public void addExtension(ConfigurationExtension extension) {
-        Objects.requireNonNull(extension);
-        extensions = Arrays.copyOf(extensions, extensions.length + 1);
-        extensions[extensions.length - 1] = extension;
+    public <T extends ConfigurationExtension> T addExtensionIfAbsent(
+            final Class<T> extensionType, final Supplier<? extends T> supplier) {
+        for (final ConfigurationExtension extension : extensions) {
+            if (extensionType.isInstance(extension)) {
+                return extensionType.cast(extension);
+            }
+        }
+        return addExtension(supplier.get());
+    }
+
+    private <T extends ConfigurationExtension> T addExtension(final T extension) {
+        extensions.add(Objects.requireNonNull(extension));
+        return extension;
     }
 
     @Override
-    public <T extends ConfigurationExtension> T getExtension(Class<T> extensionType) {
+    public <T extends ConfigurationExtension> T getExtension(final Class<T> extensionType) {
         T result = null;
         for (final ConfigurationExtension extension : extensions) {
             if (extensionType.isInstance(extension)) {
                 if (result == null) {
-                    result = (T) extension;
+                    result = extensionType.cast(extension);
                 } else {
                     LOGGER.warn(
                             "Multiple configuration elements found for type {}. Only the first will be used.",
