@@ -415,26 +415,23 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     public void clear() {
         this.populated = false;
-
-        this.asyncLogger = null;
-        this.loggerName = null;
-        this.marker = null;
-        this.fqcn = null;
         this.level = null;
+        this.threadName = null;
+        this.loggerName = null;
         this.message = null;
         this.messageFormat = null;
+        clearMessageTextAndParameters();
         this.thrown = null;
         this.thrownProxy = null;
-        this.contextStack = null;
+        clearContextData();
+        this.marker = null;
+        this.fqcn = null;
         this.location = null;
-        if (contextData != null) {
-            if (contextData.isFrozen()) { // came from CopyOnWrite thread context
-                contextData = null;
-            } else {
-                contextData.clear();
-            }
-        }
+        this.contextStack = null;
+        this.asyncLogger = null;
+    }
 
+    private void clearMessageTextAndParameters() {
         // ensure that excessively long char[] arrays are not kept in memory forever
         if (Constants.ENABLE_THREADLOCALS) {
             StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
@@ -448,6 +445,16 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
             // buffers.
             messageText = null;
             parameters = null;
+        }
+    }
+
+    private void clearContextData() {
+        if (contextData != null) {
+            if (contextData.isFrozen()) { // came from CopyOnWrite thread context
+                contextData = null;
+            } else {
+                contextData.clear();
+            }
         }
     }
 
