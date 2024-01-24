@@ -939,4 +939,11 @@ public class LoggerContext extends AbstractLifeCycle
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new Logger(ctx, name, messageFactory);
     }
+
+    /**
+     * If {@code true} loggers will include location by default.
+     */
+    public boolean includeLocation() {
+        return true;
+    }
 }
