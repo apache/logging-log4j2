@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
  * Tests queue full scenarios with AsyncLoggers in configuration.
  */
 @SetTestProperty(key = "AsyncLoggerConfig.ringBufferSize", value = "128")
-public class QueueFullAsyncLoggerConfigTest extends QueueFullAbstractTest {
+public class QueueFullAsyncLoggerConfigTest extends QueueFullAsyncAbstractTest {
 
     @Override
     @Test

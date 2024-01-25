@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Timeout;
 @SetTestProperty(key = "AsyncLogger.ringBufferSize", value = "128")
 @SetTestProperty(key = "AsyncLogger.formatMsg", value = "true")
 @SetTestProperty(key = "AsyncLogger.queueFullPolicy", value = "Discard")
-public class QueueFullAsyncLogger3Test extends QueueFullAbstractTest {
+public class QueueFullAsyncLogger3Test extends QueueFullAsyncAbstractTest {
 
     @Override
     protected void checkConfig(final LoggerContext ctx) {

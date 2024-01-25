@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
  */
 @SetTestProperty(key = "Web.isWebApp", value = "false")
 @SetTestProperty(key = "AsyncLoggerConfig.ringBufferSize", value = "128")
-public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFullAbstractTest {
+public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFullAsyncAbstractTest {
 
     @Override
     @Test

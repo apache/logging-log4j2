@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
         key = "LoggerContext.selector",
         value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
 @SetTestProperty(key = "AsyncLogger.ringBufferSize", value = "128")
-public class QueueFullAsyncLoggerTest extends QueueFullAbstractTest {
+public class QueueFullAsyncLoggerTest extends QueueFullAsyncAbstractTest {
 
     @Override
     @Test

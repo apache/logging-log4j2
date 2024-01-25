@@ -73,6 +73,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-async-logger</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
     </dependency>
@@ -122,8 +127,6 @@
             <phase>test</phase>
             <configuration>
               <excludes>
-                <exclude>${log4j.skip.test1}</exclude>
-                <exclude>${log4j.skip.test2}</exclude>
                 <exclude>Log4jBridgeHandlerTest.java</exclude>
               </excludes>
             </configuration>
