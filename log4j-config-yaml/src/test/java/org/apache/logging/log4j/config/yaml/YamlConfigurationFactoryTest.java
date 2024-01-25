@@ -19,7 +19,7 @@ package org.apache.logging.log4j.config.yaml;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactoryTest;
+import org.apache.logging.log4j.core.test.config.AbstractConfigurationFactoryTest;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;

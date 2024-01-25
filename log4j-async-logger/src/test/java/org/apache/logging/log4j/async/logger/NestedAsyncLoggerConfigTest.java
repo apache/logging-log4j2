@@ -14,11 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.config;
+package org.apache.logging.log4j.async.logger;
 
 import org.apache.logging.log4j.core.test.config.AbstractNestedLoggerConfigTest;
 
-/**
- * Tests for LoggerConfig hierarchies.
- */
-public class NestedLoggerConfigTest extends AbstractNestedLoggerConfigTest {}
+public class NestedAsyncLoggerConfigTest extends AbstractNestedLoggerConfigTest {}

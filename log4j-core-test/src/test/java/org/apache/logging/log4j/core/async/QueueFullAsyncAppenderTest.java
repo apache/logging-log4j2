@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.async.BlockingAppender;
+import org.apache.logging.log4j.core.test.async.QueueFullAbstractTest;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;

@@ -26,10 +26,10 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.async.QueueFullAbstractTest;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.test.async.BlockingAppender;
+import org.apache.logging.log4j.core.test.async.QueueFullAbstractTest;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.test.ListStatusListener;
 

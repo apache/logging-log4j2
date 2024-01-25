@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.core.test.async;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.test.async.BlockingAppender;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
@@ -58,10 +57,10 @@ public abstract class QueueFullAbstractTest {
 
     protected static class Unlocker extends Thread {
 
-        final CountDownLatch countDownLatch;
+        public final CountDownLatch countDownLatch;
         final BlockingAppender blockingAppender;
 
-        Unlocker(final CountDownLatch countDownLatch, final BlockingAppender blockingAppender) {
+        public Unlocker(final CountDownLatch countDownLatch, final BlockingAppender blockingAppender) {
             this.countDownLatch = countDownLatch;
             this.blockingAppender = blockingAppender;
         }
