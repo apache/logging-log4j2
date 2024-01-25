@@ -92,12 +92,6 @@
       <artifactId>disruptor</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Required for AsyncLoggers -->
-    <dependency>
-      <groupId>com.lmax</groupId>
-      <artifactId>disruptor</artifactId>
-      <optional>true</optional>
-    </dependency>
     <!-- Required for console color support in Windows -->
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
