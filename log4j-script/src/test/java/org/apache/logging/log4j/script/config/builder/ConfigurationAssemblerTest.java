@@ -47,19 +47,11 @@ public class ConfigurationAssemblerTest {
 
     @Test
     public void testBuildConfiguration() throws Exception {
-        try {
-            System.setProperty(
-                    Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
-                    "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
-            final ConfigurationBuilder<BuiltConfiguration> builder =
-                    ConfigurationBuilderFactory.newConfigurationBuilder();
-            CustomConfigurationFactory.addTestFixtures("config name", builder);
-            final Configuration configuration = builder.build();
-            try (final LoggerContext ctx = Configurator.initialize(configuration)) {
-                validate(configuration);
-            }
-        } finally {
-            System.getProperties().remove(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey());
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        CustomConfigurationFactory.addTestFixtures("config name", builder);
+        final Configuration configuration = builder.build();
+        try (final LoggerContext ctx = Configurator.initialize(configuration)) {
+            validate(configuration);
         }
     }
 
@@ -69,13 +61,9 @@ public class ConfigurationAssemblerTest {
             System.setProperty(
                     Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.script.config.builder.CustomConfigurationFactory");
-            System.setProperty(
-                    Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
-                    "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
             final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
             validate(config);
         } finally {
-            System.getProperties().remove(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey());
             System.getProperties().remove(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey());
         }
     }
