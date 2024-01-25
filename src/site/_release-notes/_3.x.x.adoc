@@ -24,6 +24,7 @@ This release contains...
 === Added
 
 * Add and update DSLs for setting up dependency injection for test and non-test code. (https://github.com/apache/logging-log4j2/issues/2147[2147])
+* Add a `ConfigurationExtension` mechanism to allow third-party JARs to extend the `<Configuration>` element.
 * Add a new properties configuration factory based on `jackson-dataformat-properties`.
 
 [#release-notes-3-x-x-changed]
@@ -70,7 +71,7 @@ This release contains...
 * Update `org.assertj:assertj-core` to version `3.25.1` (https://github.com/apache/logging-log4j2/pull/2152[2152])
 * Update `org.elasticsearch.client:elasticsearch-rest-high-level-client` to version `7.17.17` (https://github.com/apache/logging-log4j2/pull/2237[2237])
 * Update `org.graalvm.truffle:truffle-api` to version `23.1.2` (https://github.com/apache/logging-log4j2/pull/2206[2206])
-* Update `org.mockito:mockito-bom` to version `5.9.0` (https://github.com/apache/logging-log4j2/pull/2194[2194])
+* Update `org.mockito:mockito-bom` to version `5.10.0` (https://github.com/apache/logging-log4j2/pull/2245[2245])
 * Update `org.slf4j:slf4j-api` to version `2.0.10` (https://github.com/apache/logging-log4j2/pull/2136[2136])
 * Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.2` (https://github.com/apache/logging-log4j2/pull/2222[2222])
 * Update `org.springframework.boot:spring-boot-dependencies` to version `3.2.1` (https://github.com/apache/logging-log4j2/pull/2123[2123])
