@@ -14,13 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.async;
 
 import java.nio.file.Path;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.selector.BasicContextSelector;
-import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.LateConfigAbstractTest;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
@@ -33,7 +31,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 @Tag("functional")
 @UsingStatusListener
-public class LateConfigTest extends LateConfigAbstractTest {
+public class AsyncLateConfigTest extends LateConfigAbstractTest {
 
     @TempLoggingDir
     private static Path loggingPath;
@@ -41,8 +39,8 @@ public class LateConfigTest extends LateConfigAbstractTest {
     static Stream<Log4jContextFactory> selectors() {
         final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
         return Stream.<ContextSelector>of(
-                        new ClassLoaderContextSelector(instanceFactory.newChildInstanceFactory()),
-                        new BasicContextSelector(instanceFactory.newChildInstanceFactory()))
+                        new AsyncLoggerContextSelector(instanceFactory.newChildInstanceFactory()),
+                        new BasicAsyncLoggerContextSelector(instanceFactory.newChildInstanceFactory()))
                 .map(Log4jContextFactory::new);
     }
 

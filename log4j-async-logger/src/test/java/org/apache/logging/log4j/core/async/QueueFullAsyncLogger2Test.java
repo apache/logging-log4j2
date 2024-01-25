@@ -24,11 +24,10 @@ import org.apache.logging.log4j.test.junit.SetTestProperty;
  * is immutable.
  */
 @SetTestProperty(key = "AsyncLogger.formatMsg", value = "true")
-public class QueueFullAsyncLogger2Test extends QueueFullAsyncLoggerTest {
+public class QueueFullAsyncLogger2Test extends QueueFullAsyncAbstractTest {
 
     @Override
     protected void checkConfig(final LoggerContext ctx) {
-        super.checkConfig(ctx);
         assertFormatMessagesInBackground();
     }
 }
