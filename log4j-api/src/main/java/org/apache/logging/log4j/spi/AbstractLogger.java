@@ -38,7 +38,6 @@ import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Supplier;
 
@@ -86,14 +85,14 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     /**
      * The default MessageFactory class.
      */
-    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS = createClassForProperty(
-            "log4j2.messageFactory", ReusableMessageFactory.class, ParameterizedMessageFactory.class);
+    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
+            ParameterizedMessageFactory.class;
 
     /**
      * The default FlowMessageFactory class.
      */
     public static final Class<? extends FlowMessageFactory> DEFAULT_FLOW_MESSAGE_FACTORY_CLASS =
-            createFlowClassForProperty("log4j2.flowMessageFactory", DefaultFlowMessageFactory.class);
+            DefaultFlowMessageFactory.class;
 
     private static final long serialVersionUID = 2L;
 
@@ -196,32 +195,6 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     protected Message catchingMsg(final Throwable throwable) {
         return messageFactory.newMessage(CATCHING);
-    }
-
-    private static Class<? extends MessageFactory> createClassForProperty(
-            final String property,
-            final Class<ReusableMessageFactory> reusableParameterizedMessageFactoryClass,
-            final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
-        try {
-            final String fallback = Constants.ENABLE_THREADLOCALS
-                    ? reusableParameterizedMessageFactoryClass.getName()
-                    : parameterizedMessageFactoryClass.getName();
-            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, fallback);
-            return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
-        } catch (final Throwable throwable) {
-            return parameterizedMessageFactoryClass;
-        }
-    }
-
-    private static Class<? extends FlowMessageFactory> createFlowClassForProperty(
-            final String property, final Class<DefaultFlowMessageFactory> defaultFlowMessageFactoryClass) {
-        try {
-            final String clsName = PropertiesUtil.getProperties()
-                    .getStringProperty(property, defaultFlowMessageFactoryClass.getName());
-            return LoaderUtil.loadClass(clsName).asSubclass(FlowMessageFactory.class);
-        } catch (final Throwable throwable) {
-            return defaultFlowMessageFactoryClass;
-        }
     }
 
     private static MessageFactory2 createDefaultMessageFactory() {

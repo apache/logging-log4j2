@@ -27,6 +27,8 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.function.Supplier;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
@@ -38,6 +40,8 @@ import java.util.function.Supplier;
  */
 @InternalApi
 public final class LoaderUtil {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * System property to set to ignore the thread context ClassLoader.
@@ -178,8 +182,8 @@ public final class LoaderUtil {
             return true;
         } catch (final ClassNotFoundException | LinkageError e) {
             return false;
-        } catch (final Throwable e) {
-            LowLevelLogUtil.logException("Unknown error checking for existence of class: " + className, e);
+        } catch (final Throwable error) {
+            LOGGER.error("Unknown error while checking existence of class `{}`", className, error);
             return false;
         }
     }
@@ -474,8 +478,8 @@ public final class LoaderUtil {
                     while (resourceEnum.hasMoreElements()) {
                         resources.add(new UrlResource(cl, resourceEnum.nextElement()));
                     }
-                } catch (final IOException e) {
-                    LowLevelLogUtil.logException(e);
+                } catch (final IOException error) {
+                    LOGGER.error("failed to collect resources of name `{}`", resource, error);
                 }
             }
         }

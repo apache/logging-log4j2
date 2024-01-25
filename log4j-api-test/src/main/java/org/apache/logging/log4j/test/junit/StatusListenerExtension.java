@@ -43,12 +43,12 @@ import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ModifierSupport;
 import org.junit.platform.commons.support.ReflectionSupport;
 
-class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListener>
+class StatusListenerExtension extends TypeBasedParameterResolver<ListStatusListener>
         implements BeforeAllCallback, BeforeEachCallback, TestExecutionExceptionHandler {
 
     private static final Object KEY = ListStatusListener.class;
 
-    public StatusLoggerExtension() {
+    public StatusListenerExtension() {
         super(ListStatusListener.class);
     }
 

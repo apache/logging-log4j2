@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * PropertySource backed by a properties file. Follows the same conventions as {@link PropertiesPropertySource}.
@@ -28,6 +30,8 @@ import java.util.Properties;
  * @since 2.10.0
  */
 public class PropertyFilePropertySource extends PropertiesPropertySource {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     public PropertyFilePropertySource(final String fileName) {
         this(fileName, true);
@@ -45,8 +49,8 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
         for (final URL url : LoaderUtil.findResources(fileName, useTccl)) {
             try (final InputStream in = url.openStream()) {
                 props.load(in);
-            } catch (final IOException e) {
-                LowLevelLogUtil.logException("Unable to read " + url, e);
+            } catch (final IOException error) {
+                LOGGER.error("Unable to read URL `{}`", url, error);
             }
         }
         return props;

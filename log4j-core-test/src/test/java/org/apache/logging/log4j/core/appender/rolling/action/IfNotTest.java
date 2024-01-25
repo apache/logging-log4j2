@@ -33,11 +33,13 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests the Not composite condition.
  */
-public class IfNotTest {
+@SetSystemProperty(key = StatusLogger.BUFFER_CAPACITY_PROPERTY_NAME, value = "10")
+class IfNotTest {
 
     @Test
     public void test() {

@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -26,21 +25,22 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests LoggersPlugin.
  */
-@LoggerContextSource("multipleRootLoggersTest.xml")
+@SetSystemProperty(key = StatusLogger.BUFFER_CAPACITY_PROPERTY_NAME, value = "10")
 public class LoggersPluginTest {
 
     @Test
-    public void testEmptyAttribute() throws Exception {
+    @LoggerContextSource("multipleRootLoggersTest.xml")
+    public void testEmptyAttribute() {
         final Logger logger = LogManager.getLogger();
         logger.info("Test");
         final StatusData data = StatusLogger.getLogger().getStatusData().get(0);
-        // System.out.println(data.getFormattedStatus());
 
-        assertEquals(Level.ERROR, data.getLevel());
-        assertTrue(data.getMessage().getFormattedMessage().contains("multiple root loggers"));
+        assertThat(data.getLevel()).isEqualTo(Level.ERROR);
+        assertThat(data.getMessage().getFormattedMessage()).contains("multiple root loggers");
     }
 }

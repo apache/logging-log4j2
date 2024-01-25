@@ -16,24 +16,22 @@
  */
 package org.apache.logging.log4j.status;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Objects;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 
 /**
- * {@link StatusListener} that writes to the console.
+ * A {@link StatusListener} that writes to the console.
  */
 @SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class StatusConsoleListener implements StatusListener {
 
-    private Level level;
+    private volatile Level level;
 
-    private final PrintStream stream;
-
-    private final Logger logger;
+    private volatile PrintStream stream;
 
     /**
      * Constructs a {@link StatusConsoleListener} instance writing to {@link System#out} using the supplied level.
@@ -56,50 +54,59 @@ public class StatusConsoleListener implements StatusListener {
      * @throws NullPointerException on null {@code level} or {@code stream}
      */
     public StatusConsoleListener(final Level level, final PrintStream stream) {
-        this(level, stream, SimpleLoggerFactory.getInstance());
-    }
-
-    StatusConsoleListener(final Level level, final PrintStream stream, final SimpleLoggerFactory loggerFactory) {
-        this.level = Objects.requireNonNull(level, "level");
-        this.stream = Objects.requireNonNull(stream, "stream");
-        this.logger = Objects.requireNonNull(loggerFactory, "loggerFactory")
-                .createSimpleLogger(
-                        "StatusConsoleListener", level, ParameterizedNoReferenceMessageFactory.INSTANCE, stream);
+        this.level = requireNonNull(level, "level");
+        this.stream = requireNonNull(stream, "stream");
     }
 
     /**
      * Sets the level to a new value.
-     * @param level The new Level.
+     *
+     * @param level the new level
+     * @throws NullPointerException on null {@code level}
      */
     public void setLevel(final Level level) {
-        this.level = level;
+        this.level = requireNonNull(level, "level");
     }
 
     /**
-     * Return the Log Level for which the Listener should receive events.
-     * @return the Log Level.
+     * Sets the output stream to a new value.
+     *
+     * @param stream the new output stream
+     * @throws NullPointerException on null {@code stream}
+     * @since 2.23.0
+     */
+    public void setStream(final PrintStream stream) {
+        this.stream = requireNonNull(stream, "stream");
+    }
+
+    /**
+     * Returns the level for which the listener should receive events.
+     *
+     * @return the log level
      */
     @Override
     public Level getStatusLevel() {
-        return this.level;
+        return level;
     }
 
     /**
      * Writes status messages to the console.
-     * @param data The StatusData.
+     *
+     * @param data a status data
+     * @throws NullPointerException on null {@code data}
      */
     @Override
     public void log(final StatusData data) {
-        logger
-                // Logging using _only_ the following 4 fields set by `StatusLogger#logMessage()`:
-                .atLevel(data.getLevel())
-                .withThrowable(data.getThrowable())
-                .withLocation(data.getStackTraceElement())
-                .log(data.getMessage());
+        requireNonNull(data, "data");
+        if (data.getLevel().isMoreSpecificThan(level)) {
+            final String formattedStatus = data.getFormattedStatus();
+            stream.println(formattedStatus);
+        }
     }
 
     /**
      * Adds package name filters to exclude.
+     *
      * @param filters An array of package names to exclude.
      * @deprecated This method is ineffective and only kept for binary backward compatibility.
      */
@@ -108,9 +115,11 @@ public class StatusConsoleListener implements StatusListener {
 
     @Override
     public void close() throws IOException {
-        // only want to close non-system streams
-        if (this.stream != System.out && this.stream != System.err) {
-            this.stream.close();
+        // Get local copy of the `volatile` member
+        final OutputStream localStream = stream;
+        // Close only non-system streams
+        if (localStream != System.out && localStream != System.err) {
+            localStream.close();
         }
     }
 }

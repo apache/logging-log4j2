@@ -42,9 +42,11 @@ import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 @StatusLoggerLevel("WARN")
 @ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
+@SetSystemProperty(key = StatusLogger.BUFFER_CAPACITY_PROPERTY_NAME, value = "200")
 public class AbstractLoggerTest {
 
     private static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");

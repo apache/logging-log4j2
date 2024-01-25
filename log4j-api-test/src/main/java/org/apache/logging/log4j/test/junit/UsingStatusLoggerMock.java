@@ -23,19 +23,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import org.apache.logging.log4j.status.StatusListener;
-import org.apache.logging.log4j.test.ListStatusListener;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Configures and injects a {@link StatusListener} of type
- * {@link ListStatusListener}, that will collect status messages for the test
- * context.
+ * Shortcut to {@link StatusLoggerMockExtension}.
  */
 @Retention(RUNTIME)
 @Target({TYPE, METHOD})
 @Documented
-@ExtendWith(ExtensionContextAnchor.class)
-@ExtendWith(TestPropertyResolver.class)
-@ExtendWith(StatusListenerExtension.class)
-public @interface UsingStatusListener {}
+@ExtendWith(StatusLoggerMockExtension.class)
+public @interface UsingStatusLoggerMock {}
