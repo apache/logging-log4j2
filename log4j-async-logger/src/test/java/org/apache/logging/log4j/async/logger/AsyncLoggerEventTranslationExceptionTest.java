@@ -46,7 +46,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 @ContextSelectorType(AsyncLoggerContextSelector.class)
 @SetSystemProperty(
         key = Log4jPropertyKey.Constant.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME,
-        value = "org.apache.logging.log4j.core.async.AsyncLoggerEventTranslationExceptionTest$TestExceptionHandler")
+        value = "org.apache.logging.log4j.async.logger.AsyncLoggerEventTranslationExceptionTest$TestExceptionHandler")
 class AsyncLoggerEventTranslationExceptionTest {
 
     @Test

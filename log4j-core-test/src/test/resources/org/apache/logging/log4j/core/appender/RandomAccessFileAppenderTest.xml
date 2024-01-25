@@ -17,19 +17,25 @@
   -->
 <Configuration status="OFF">
   <Appenders>
-    <RandomAccessFile name="RandomAccessFile" fileName="target/RandomAccessFileAppenderTest.log" immediateFlush="false" append="false">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</Pattern>
-        <!--
-        <Pattern>%d %p %c{1.} %C %location %line [%t] %X{aKey} %m %ex%n</Pattern>
-        -->
-      </PatternLayout>
+    <RandomAccessFile name="RandomAccessFile"
+                      fileName="${test:logging.path}/RandomAccessFile.log"
+                      immediateFlush="false"
+                      append="false">
+      <PatternLayout/>
     </RandomAccessFile>
+    <RollingRandomAccessFile name="RollingRandomAccessFile"
+                             fileName="${test:logging.path}/RollingRandomAccessFile.log"
+                             filePattern="${test:logging.path}/afterRollover-%i.log"
+                             append="false"
+                             immediateFlush="false">
+      <PatternLayout/>
+      <SizeBasedTriggeringPolicy size="250 B"/>
+    </RollingRandomAccessFile>
   </Appenders>
-
   <Loggers>
-    <AsyncRoot level="info" includeLocation="false">
+    <Root level="INFO">
       <AppenderRef ref="RandomAccessFile"/>
-    </AsyncRoot>
+      <AppenderRef ref="RollingRandomAccessFile"/>
+    </Root>
   </Loggers>
 </Configuration>

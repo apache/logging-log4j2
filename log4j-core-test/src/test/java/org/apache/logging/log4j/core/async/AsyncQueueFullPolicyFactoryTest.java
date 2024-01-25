@@ -14,17 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger;
+package org.apache.logging.log4j.core.async;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
-import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
-import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
-import org.apache.logging.log4j.core.async.DiscardingAsyncQueueFullPolicy;
-import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.AfterEach;

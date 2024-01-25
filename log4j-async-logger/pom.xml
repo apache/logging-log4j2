@@ -25,7 +25,7 @@
   </parent>
 
   <artifactId>log4j-async-logger</artifactId>
-  <name>Log4j Async Logger</name>
+  <name>Apache Log4j Async Logger</name>
   <description>Alternative implementation of logger that uses LMAX Disruptor.</description>
 
   <dependencies>
@@ -65,4 +65,22 @@
     </dependency>
 
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
