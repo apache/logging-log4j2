@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
