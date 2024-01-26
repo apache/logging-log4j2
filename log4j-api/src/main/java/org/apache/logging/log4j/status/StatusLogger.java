@@ -300,6 +300,11 @@ public class StatusLogger extends AbstractLogger {
 
     private final Collection<StatusListener> listeners;
 
+    /**
+     * Cache of the least-specific level available among {@link #listeners} to speed-up {@link #isEnabled(Level, Marker)}.
+     */
+    private volatile Level leastSpecificListenerLevel;
+
     private final transient ReadWriteLock listenerLock = new ReentrantReadWriteLock();
 
     private final transient Lock listenerReadLock = listenerLock.readLock();
@@ -342,6 +347,7 @@ public class StatusLogger extends AbstractLogger {
         this.config = requireNonNull(config, "config");
         this.defaultListener = requireNonNull(defaultListener, "defaultListener");
         this.listeners = new ArrayList<>(Collections.singleton(defaultListener));
+        this.leastSpecificListenerLevel = defaultListener.getStatusLevel();
     }
 
     /**
@@ -409,6 +415,7 @@ public class StatusLogger extends AbstractLogger {
         listenerWriteLock.lock();
         try {
             listeners.add(listener);
+            updateLeastSpecificListenerLevel();
         } finally {
             listenerWriteLock.unlock();
         }
@@ -425,9 +432,23 @@ public class StatusLogger extends AbstractLogger {
         try {
             closeListenerSafely(listener);
             listeners.remove(listener);
+            updateLeastSpecificListenerLevel();
         } finally {
             listenerWriteLock.unlock();
         }
+    }
+
+    private void updateLeastSpecificListenerLevel() {
+        Level localLeastSpecificListenerLevel = leastSpecificListenerLevel;
+        for (final StatusListener listener : listeners) {
+            final Level listenerLevel = listener.getStatusLevel();
+            if (listenerLevel.isLessSpecificThan(localLeastSpecificListenerLevel)) {
+                localLeastSpecificListenerLevel = listener.getStatusLevel();
+            }
+        }
+        // We must update `leastSpecificListenerLevel` in a single instruction!
+        // It is `volatile` and accessed by `getLevel()` and `isEnabled()` without listener locks for efficiency.
+        leastSpecificListenerLevel = localLeastSpecificListenerLevel;
     }
 
     /**
@@ -458,16 +479,18 @@ public class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Clears the event buffer and listeners.
+     * Clears the event buffer and removes the <em>registered</em> (not the default one!) listeners.
      */
     public void reset() {
         listenerWriteLock.lock();
         try {
-            Iterator<StatusListener> listenerIterator = listeners.iterator();
+            final Iterator<StatusListener> listenerIterator = listeners.iterator();
             while (listenerIterator.hasNext()) {
-                StatusListener listener = listenerIterator.next();
-                closeListenerSafely(listener);
-                listenerIterator.remove();
+                final StatusListener listener = listenerIterator.next();
+                if (listener != defaultListener) {
+                    closeListenerSafely(listener);
+                    listenerIterator.remove();
+                }
             }
         } finally {
             listenerWriteLock.unlock();
@@ -501,13 +524,13 @@ public class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Returns the level of the default listener.
+     * Returns the least specific level among listeners.
      *
-     * @return the default listener level
+     * @return the least specific listener level
      */
     @Override
     public Level getLevel() {
-        return defaultListener.getStatusLevel();
+        return leastSpecificListenerLevel;
     }
 
     @Override
@@ -736,12 +759,6 @@ public class StatusLogger extends AbstractLogger {
     @Override
     public boolean isEnabled(final Level level, final Marker marker) {
         requireNonNull(level, "level");
-        listenerReadLock.lock();
-        try {
-            return listeners.stream()
-                    .anyMatch(listener -> listener.getStatusLevel().isLessSpecificThan(level));
-        } finally {
-            listenerReadLock.unlock();
-        }
+        return leastSpecificListenerLevel.isLessSpecificThan(level);
     }
 }
