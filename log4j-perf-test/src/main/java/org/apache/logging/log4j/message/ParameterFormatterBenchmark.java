@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
