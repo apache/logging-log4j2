@@ -31,5 +31,5 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Retention(RUNTIME)
 @Target({TYPE, METHOD})
 @Documented
-@ExtendWith(StatusLoggerMockExtension.class)
+@ExtendWith({ExtensionContextAnchor.class, StatusLoggerMockExtension.class})
 public @interface UsingStatusLoggerMock {}
