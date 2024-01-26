@@ -30,6 +30,7 @@ This release contains...
 [#release-notes-3-x-x-changed]
 === Changed
 
+* Change the order of evaluation of `FormattedMessage` formatters. Messages are evaluated using `java.util.Format` only if they don't comply to the `java.text.MessageFormat` or `ParameterizedMessage` format. (https://github.com/apache/logging-log4j2/issues/1223[1223])
 * Split off YAML configuration into a new `log4j-config-yaml` module.
 * Update `com.google.code.java-allocation-instrumenter:java-allocation-instrumenter` to version `3.3.4` (https://github.com/apache/logging-log4j2/pull/2102[2102])
 * Update `com.google.guava:guava` to version `33.0.0-jre` (https://github.com/apache/logging-log4j2/pull/2108[2108])
@@ -37,6 +38,7 @@ This release contains...
 [#release-notes-3-x-x-fixed]
 === Fixed
 
+* Rewrote message parameter formatter with improved escape handling (https://github.com/apache/logging-log4j2/issues/1626[1626])
 * The MongoDb4 appender now supports long values to configure `collectionSize` (https://github.com/apache/logging-log4j2/issues/1747[1747])
 * Mark `JdkMapAdapterStringMap` as frozen if map is immutable. (https://github.com/apache/logging-log4j2/issues/2098[2098])
 * Prevents ClassCastException when trying to assign a SimpleLoggerContext to a core LoggerContext (https://issues.apache.org/jira/browse/LOG4J2-1921[LOG4J2-1921])
