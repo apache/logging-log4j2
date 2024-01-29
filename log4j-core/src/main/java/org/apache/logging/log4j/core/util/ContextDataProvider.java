@@ -36,6 +36,6 @@ public interface ContextDataProvider {
      * @return the context data in a StringMap.
      */
     default StringMap supplyStringMap() {
-        return new JdkMapAdapterStringMap(supplyContextData());
+        return new JdkMapAdapterStringMap(supplyContextData(), true);
     }
 }

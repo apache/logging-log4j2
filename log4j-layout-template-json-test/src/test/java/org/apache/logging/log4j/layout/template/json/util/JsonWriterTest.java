@@ -150,7 +150,7 @@ class JsonWriterTest {
 
     @Test
     void test_writeObject_StringMap() {
-        final StringMap map = new JdkMapAdapterStringMap(Collections.singletonMap("a", "b"));
+        final StringMap map = new JdkMapAdapterStringMap(Collections.singletonMap("a", "b"), true);
         final String expectedJson = "{'a':'b'}".replace('\'', '"');
         final String actualJson = withLockedWriterReturning(writer -> writer.use(() -> writer.writeObject(map)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
@@ -225,7 +225,7 @@ class JsonWriterTest {
                                         put("foo", "bar");
                                     }
                                 }),
-                                new JdkMapAdapterStringMap(Collections.singletonMap("a", "b"))));
+                                new JdkMapAdapterStringMap(Collections.singletonMap("a", "b"), true)));
                 put("key7", (StringBuilderFormattable) buffer -> buffer.append(7.7777777777777D));
             }
         };

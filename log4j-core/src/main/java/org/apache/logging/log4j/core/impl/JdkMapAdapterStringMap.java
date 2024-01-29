@@ -48,9 +48,14 @@ public class JdkMapAdapterStringMap implements StringMap {
     private transient String[] sortedKeys;
 
     public JdkMapAdapterStringMap() {
-        this(new HashMap<String, String>());
+        this(new HashMap<String, String>(), false);
     }
 
+    /**
+     * @deprecated for performance reasons since 2.23.
+     *             Use {@link #JdkMapAdapterStringMap(Map, boolean)} instead.
+     */
+    @Deprecated
     public JdkMapAdapterStringMap(final Map<String, String> map) {
         this.map = Objects.requireNonNull(map, "map");
         try {
@@ -58,6 +63,15 @@ public class JdkMapAdapterStringMap implements StringMap {
         } catch (final UnsupportedOperationException ignored) {
             immutable = true;
         }
+    }
+
+    /**
+     * @param map a JDK map,
+     * @param immutable must be {@code true} if the map is immutable or it should not be modified.
+     */
+    public JdkMapAdapterStringMap(final Map<String, String> map, final boolean immutable) {
+        this.map = Objects.requireNonNull(map, "map");
+        this.immutable = immutable;
     }
 
     @Override
