@@ -280,7 +280,6 @@
     <menu name="Internal Components" inherit="top" img="img/glyphicons/layers.png">
       <item name="API" href="log4j-api.html"/>
       <item name="Implementation" href="log4j-core.html"/>
-      <item name="Commons Logging Bridge" href="log4j-jcl.html"/>
       <item name="Log4j 1.2 API" href="log4j-1.2-api.html"/>
       <item name="SLF4J Binding" href="log4j-slf4j-impl.html"/>
       <item name="JUL Adapter" href="log4j-jul.html"/>
@@ -288,7 +287,6 @@
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j.html"/>
       <item name="JDBC Appender" href="log4j-jdbc-dbcp2.html"/>
       <item name="Apache Flume Appender" href="log4j-flume-ng.html"/>
-      <item name="Application Server Integration" href="log4j-appserver.html"/>
       <item name="MongoDB 4 appender" href="log4j-mongodb4.html"/>
       <item name="IO Streams" href="log4j-iostreams.html"/>
       <item name="Docker Support" href="log4j-docker.html"/>

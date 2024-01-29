@@ -235,7 +235,6 @@
     <module>log4j-1.2-api</module>
     <module>log4j-api</module>
     <module>log4j-api-test</module>
-    <module>log4j-appserver</module>
     <module>log4j-async-logger</module>
     <module>log4j-config-jackson</module>
     <module>log4j-config-properties</module>
@@ -247,7 +246,6 @@
     <module>log4j-flume-ng</module>
     <module>log4j-gc-test</module>
     <module>log4j-iostreams</module>
-    <module>log4j-jcl</module>
     <module>log4j-jctools</module>
     <module>log4j-jdbc</module>
     <module>log4j-jdbc-dbcp2</module>

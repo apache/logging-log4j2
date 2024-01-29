@@ -119,11 +119,6 @@ Flume Embedded Appender into an application.
         <version>${dollar}{log4j.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jcl</artifactId>
-        <version>${dollar}{log4j.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-core-asl</artifactId>
         <version>${dollar}{jackson.version}</version>
@@ -176,11 +171,6 @@ Flume Embedded Appender into an application.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-ext</artifactId>
-    </dependency>
-    <!-- Commson Logging to Log4j 2 binding -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jcl</artifactId>
     </dependency>
     <!-- Avro transport protocol - required for Flume -->
     <dependency>

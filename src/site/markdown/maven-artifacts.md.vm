@@ -183,13 +183,6 @@ then remove any log4j 1.x dependencies and add the following.
 
 #dependencies(['log4j-1.2-api'])
 
-$h3 Apache Commons Logging Bridge
-
-If existing components use Apache Commons Logging 1.x and you want to have this logging routed to Log4j 2,
-then add the following but do not remove any Commons Logging 1.x dependencies.
-
-#dependencies(['log4j-jcl'])
-
 $h3 SLF4J Bridge
 
 If existing components use SLF4J and you want to have this logging routed to Log4j 2, then add the
