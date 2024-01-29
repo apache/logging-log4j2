@@ -314,13 +314,7 @@ public class StatusLogger extends AbstractLogger {
 
     private final Queue<StatusData> buffer = new ConcurrentLinkedQueue<>();
 
-    /**
-     * Constructs the default instance.
-     * <b>Users should not create new instances, but use {@link #getLogger()} instead!</b>
-     *
-     * @since 2.23.0
-     */
-    public StatusLogger() {
+    private StatusLogger() {
         this(
                 StatusLogger.class.getSimpleName(),
                 ParameterizedNoReferenceMessageFactory.INSTANCE,
