@@ -293,7 +293,20 @@ public class StatusLogger extends AbstractLogger {
         }
     }
 
-    private static volatile StatusLogger INSTANCE = new StatusLogger();
+    /**
+     * Wrapper for the default instance for lazy initialization.
+     * <p>
+     * The initialization will be performed when the JVM initializes the class.
+     * Since {@code InstanceHolder} has no other fields or methods, class initialization occurs when the {@code INSTANCE} field is first referenced.
+     * </p>
+     *
+     * @see <a href="https://www.infoworld.com/article/2074979/double-checked-locking--clever--but-broken.html?page=2">Double-checked locking: Clever, but broken</a>
+     */
+    private static final class InstanceHolder {
+
+        private static volatile StatusLogger INSTANCE = new StatusLogger();
+
+    }
 
     private final Config config;
 
@@ -351,7 +364,7 @@ public class StatusLogger extends AbstractLogger {
      * @return the singleton instance
      */
     public static StatusLogger getLogger() {
-        return INSTANCE;
+        return InstanceHolder.INSTANCE;
     }
 
     /**
@@ -363,7 +376,7 @@ public class StatusLogger extends AbstractLogger {
      * @since 2.23.0
      */
     public static void setLogger(final StatusLogger logger) {
-        INSTANCE = requireNonNull(logger, "logger");
+        InstanceHolder.INSTANCE = requireNonNull(logger, "logger");
     }
 
     /**
