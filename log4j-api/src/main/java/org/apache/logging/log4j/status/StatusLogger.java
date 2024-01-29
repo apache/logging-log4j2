@@ -305,7 +305,6 @@ public class StatusLogger extends AbstractLogger {
     private static final class InstanceHolder {
 
         private static volatile StatusLogger INSTANCE = new StatusLogger();
-
     }
 
     private final Config config;
