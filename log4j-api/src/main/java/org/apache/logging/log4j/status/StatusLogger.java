@@ -506,6 +506,9 @@ public class StatusLogger extends AbstractLogger {
      * @return a thread-safe read-only collection of buffered events
      */
     public List<StatusData> getStatusData() {
+        // Wrapping the buffer clone with an unmodifiable list.
+        // By disallowing modifications, we make it clear to the user that mutations will not get propagated.
+        // `Collections.unmodifiableList(new ArrayList<>(...))` should be replaced with `List.of()` in Java 9+.
         return Collections.unmodifiableList(new ArrayList<>(buffer));
     }
 
