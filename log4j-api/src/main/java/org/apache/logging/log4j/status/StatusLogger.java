@@ -48,8 +48,8 @@ import org.apache.logging.log4j.util.Constants;
  * {@link StatusLogger} is expected to be a standalone, self-sufficient component that the logging system can rely on for low-level logging purposes.
  * <h3>Listeners</h3>
  * <p>
- * Each recorded event will first get buffered and used to notify the registered {@link StatusListener}s.
- * Listener registry is always initialized with a <em>default listener</em>, which is a {@link StatusConsoleListener}.
+ * Each recorded event will first get buffered and then used to notify the registered {@link StatusListener}s.
+ * If none are available, the <em>fallback listener</em> of type {@link StatusConsoleListener} will be used.
  * </p>
  * <p>
  * You can programmatically register listeners using {@link #registerListener(StatusListener)} method.
@@ -68,8 +68,8 @@ import org.apache.logging.log4j.util.Constants;
  * Consider the following example:
  * </p>
  * <ol>
- * <li>The default level is {@code ERROR}</li>
- * <li>You have <Configuration status="WARN">} in your {@code log4j2.xml}</li>
+ * <li>The default level (of fallback listener) is {@code ERROR}</li>
+ * <li>You have {@code <Configuration status="WARN">} in your {@code log4j2.xml}</li>
  * <li>Until your {@code log4j2.xml} configuration is read, the effective level will be {@code ERROR}</li>
  * <li>Once your {@code log4j2.xml} configuration is read, the effective level will be {@code WARN} as you configured</li>
  * </ol>
@@ -83,6 +83,7 @@ import org.apache.logging.log4j.util.Constants;
  * <h3>Debug mode</h3>
  * <p>
  * When the {@value Constants#LOG4J2_DEBUG} system property is present, any level-related filtering will be skipped and all events will be notified to listeners.
+ * If no listeners are available, the <em>fallback listener</em> of type {@link StatusConsoleListener} will be used.
  * </p>
  */
 public class StatusLogger extends AbstractLogger {
@@ -127,45 +128,45 @@ public class StatusLogger extends AbstractLogger {
     public static final String MAX_STATUS_ENTRIES = BUFFER_CAPACITY_PROPERTY_NAME;
 
     /**
-     * The name of the system property that can be configured with the {@link Level} name to use as the default listener level.
+     * The name of the system property that can be configured with the {@link Level} name to use as the fallback listener level.
      * <p>
-     * The listener registry is initialized with a default listener.
-     * This default listener will accept entries filtered by the level provided in this configuration.
+     * The fallback listener is used when the listener registry is empty.
+     * The fallback listener will accept entries filtered by the level provided in this configuration.
      * </p>
      *
      * @since 2.23.0
      */
-    public static final String DEFAULT_LISTENER_LEVEL_PROPERTY_NAME = "log4j2.StatusLogger.level";
+    public static final String FALLBACK_LISTENER_LEVEL_PROPERTY_NAME = "log4j2.StatusLogger.level";
 
     /**
-     * The default value of the {@link #DEFAULT_LISTENER_LEVEL_PROPERTY_NAME} system property: {@code ERROR}.
+     * The default value of the {@link #FALLBACK_LISTENER_LEVEL_PROPERTY_NAME} system property: {@code ERROR}.
      *
      * @since 2.23.0
      */
-    public static final Level DEFAULT_LISTENER_LEVEL_DEFAULT_VALUE = Level.ERROR;
+    public static final Level FALLBACK_LISTENER_LEVEL_DEFAULT_VALUE = Level.ERROR;
 
     /**
-     * The name of the system property that can be configured with the {@link Level} name to use as the default listener level.
+     * The name of the system property that can be configured with the {@link Level} name to use as the fallback listener level.
      * <p>
-     * The listener registry is initialized with a default listener.
-     * This default listener will accept entries filtered by the level provided in this configuration.
+     * The fallback listener is used when the listener registry is empty.
+     * The fallback listener will accept entries filtered by the level provided in this configuration.
      * </p>
      *
      * @since 2.8
-     * @deprecated Use {@link #DEFAULT_LISTENER_LEVEL_PROPERTY_NAME} instead.
+     * @deprecated Use {@link #FALLBACK_LISTENER_LEVEL_PROPERTY_NAME} instead.
      */
     @Deprecated
-    public static final String DEFAULT_STATUS_LISTENER_LEVEL = DEFAULT_LISTENER_LEVEL_PROPERTY_NAME;
+    public static final String DEFAULT_STATUS_LISTENER_LEVEL = FALLBACK_LISTENER_LEVEL_PROPERTY_NAME;
 
     /**
-     * The name of the system property that can be configured with a {@link java.time.format.DateTimeFormatter} pattern that will be passed to the default listener.
+     * The name of the system property that can be configured with a {@link java.time.format.DateTimeFormatter} pattern that will be used while formatting the created {@link StatusData}.
      *
      * @since 2.23.0
      */
     public static final String INSTANT_FORMAT_PROPERTY_NAME = "log4j2.StatusLogger.DateFormat";
 
     /**
-     * The name of the system property that can be configured with a {@link java.time.format.DateTimeFormatter} pattern that will be passed to the default listener.
+     * The name of the system property that can be configured with a {@link java.time.format.DateTimeFormatter} pattern that will be used while formatting the created {@link StatusData}.
      *
      * @since 2.11.0
      * @deprecated Use {@link #INSTANT_FORMAT_PROPERTY_NAME} instead.
@@ -193,7 +194,7 @@ public class StatusLogger extends AbstractLogger {
 
         private final int bufferCapacity;
 
-        private final Level defaultListenerLevel;
+        private final Level fallbackListenerLevel;
 
         @Nullable
         private final DateTimeFormatter instantFormatter;
@@ -204,13 +205,13 @@ public class StatusLogger extends AbstractLogger {
          *
          * @param debugEnabled the value of the {@value DEBUG_PROPERTY_NAME} property
          * @param bufferCapacity the value of the {@value BUFFER_CAPACITY_PROPERTY_NAME} property
-         * @param defaultListenerLevel the value of the {@value DEFAULT_LISTENER_LEVEL_PROPERTY_NAME} property
+         * @param fallbackListenerLevel the value of the {@value FALLBACK_LISTENER_LEVEL_PROPERTY_NAME} property
          * @param instantFormatter the value of the {@value INSTANT_FORMAT_PROPERTY_NAME} property
          */
         public Config(
                 boolean debugEnabled,
                 int bufferCapacity,
-                Level defaultListenerLevel,
+                Level fallbackListenerLevel,
                 @Nullable DateTimeFormatter instantFormatter) {
             this.debugEnabled = debugEnabled;
             if (bufferCapacity < 0) {
@@ -218,7 +219,7 @@ public class StatusLogger extends AbstractLogger {
                         "was expecting a positive `bufferCapacity`, found: " + bufferCapacity);
             }
             this.bufferCapacity = bufferCapacity;
-            this.defaultListenerLevel = requireNonNull(defaultListenerLevel, "defaultListenerLevel");
+            this.fallbackListenerLevel = requireNonNull(fallbackListenerLevel, "fallbackListenerLevel");
             this.instantFormatter = requireNonNull(instantFormatter, "instantFormatter");
         }
 
@@ -230,7 +231,7 @@ public class StatusLogger extends AbstractLogger {
             final Properties fileProvidedProperties = readPropertiesFile();
             this.debugEnabled = readDebugEnabled(fileProvidedProperties);
             this.bufferCapacity = readBufferCapacity(fileProvidedProperties);
-            this.defaultListenerLevel = readDefaultListenerLevel(fileProvidedProperties);
+            this.fallbackListenerLevel = readFallbackListenerLevel(fileProvidedProperties);
             this.instantFormatter = readInstantFormatter(fileProvidedProperties);
         }
 
@@ -253,9 +254,9 @@ public class StatusLogger extends AbstractLogger {
             return capacityString != null ? Integer.parseInt(capacityString) : BUFFER_CAPACITY_DEFAULT_VALUE;
         }
 
-        private static Level readDefaultListenerLevel(final Properties fileProvidedProperties) {
-            final String level = readProperty(fileProvidedProperties, DEFAULT_LISTENER_LEVEL_PROPERTY_NAME);
-            return level != null ? Level.valueOf(level) : DEFAULT_LISTENER_LEVEL_DEFAULT_VALUE;
+        private static Level readFallbackListenerLevel(final Properties fileProvidedProperties) {
+            final String level = readProperty(fileProvidedProperties, FALLBACK_LISTENER_LEVEL_PROPERTY_NAME);
+            return level != null ? Level.valueOf(level) : FALLBACK_LISTENER_LEVEL_DEFAULT_VALUE;
         }
 
         private static DateTimeFormatter readInstantFormatter(final Properties fileProvidedProperties) {
@@ -296,7 +297,7 @@ public class StatusLogger extends AbstractLogger {
 
     private final Config config;
 
-    private final StatusConsoleListener defaultListener;
+    private final StatusConsoleListener fallbackListener;
 
     private final Collection<StatusListener> listeners;
 
@@ -324,7 +325,7 @@ public class StatusLogger extends AbstractLogger {
                 StatusLogger.class.getSimpleName(),
                 ParameterizedNoReferenceMessageFactory.INSTANCE,
                 Config.getInstance(),
-                new StatusConsoleListener(Config.getInstance().defaultListenerLevel));
+                new StatusConsoleListener(Config.getInstance().fallbackListenerLevel));
     }
 
     /**
@@ -334,20 +335,20 @@ public class StatusLogger extends AbstractLogger {
      * @param name the logger name
      * @param messageFactory the message factory
      * @param config the configuration
-     * @param defaultListener the default listener
-     * @throws NullPointerException on null {@code name}, {@code messageFactory}, {@code config}, or {@code defaultListener}
+     * @param fallbackListener the fallback listener
+     * @throws NullPointerException on null {@code name}, {@code messageFactory}, {@code config}, or {@code fallbackListener}
      * @since 2.23.0
      */
     public StatusLogger(
             final String name,
             final MessageFactory messageFactory,
             final Config config,
-            final StatusConsoleListener defaultListener) {
+            final StatusConsoleListener fallbackListener) {
         super(requireNonNull(name, "name"), requireNonNull(messageFactory, "messageFactory"));
         this.config = requireNonNull(config, "config");
-        this.defaultListener = requireNonNull(defaultListener, "defaultListener");
-        this.listeners = new ArrayList<>(Collections.singleton(defaultListener));
-        this.leastSpecificListenerLevel = defaultListener.getStatusLevel();
+        this.fallbackListener = requireNonNull(fallbackListener, "fallbackListener");
+        this.listeners = new ArrayList<>(Collections.singleton(fallbackListener));
+        this.leastSpecificListenerLevel = fallbackListener.getStatusLevel();
     }
 
     /**
@@ -372,37 +373,37 @@ public class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Sets the level of the default listener.
+     * Sets the level of the fallback listener.
      *
      * @param level a level
      * @since 2.23.0
      */
-    public void setDefaultListenerLevel(final Level level) {
+    public void setFallbackListenerLevel(final Level level) {
         requireNonNull(level, "level");
-        defaultListener.setLevel(level);
+        fallbackListener.setLevel(level);
     }
 
     /**
-     * Sets the output of the default listener.
+     * Sets the output of the fallback listener.
      *
      * @param stream a print stream
      * @since 2.23.0
      */
-    public void setDefaultListenerOutput(final PrintStream stream) {
+    public void setFallbackListenerOutput(final PrintStream stream) {
         requireNonNull(stream, "stream");
-        defaultListener.setStream(stream);
+        fallbackListener.setStream(stream);
     }
 
     /**
-     * Sets the level of the default listener.
+     * Sets the level of the fallback listener.
      *
      * @param level a level
-     * @deprecated Use {@link #setDefaultListenerLevel(Level)} instead.
+     * @deprecated Use {@link #setFallbackListenerLevel(Level)} instead.
      */
     @Deprecated
     public void setLevel(final Level level) {
         requireNonNull(level, "level");
-        setDefaultListenerLevel(level);
+        setFallbackListenerLevel(level);
     }
 
     /**
@@ -439,29 +440,29 @@ public class StatusLogger extends AbstractLogger {
     }
 
     private void updateLeastSpecificListenerLevel() {
-        Level localLeastSpecificListenerLevel = leastSpecificListenerLevel;
+        Level foundLeastSpecificListenerLevel = fallbackListener.getStatusLevel();
         for (final StatusListener listener : listeners) {
             final Level listenerLevel = listener.getStatusLevel();
-            if (listenerLevel.isLessSpecificThan(localLeastSpecificListenerLevel)) {
-                localLeastSpecificListenerLevel = listener.getStatusLevel();
+            if (listenerLevel.isLessSpecificThan(foundLeastSpecificListenerLevel)) {
+                foundLeastSpecificListenerLevel = listener.getStatusLevel();
             }
         }
         // We must update `leastSpecificListenerLevel` in a single instruction!
         // It is `volatile` and accessed by `getLevel()` and `isEnabled()` without listener locks for efficiency.
-        leastSpecificListenerLevel = localLeastSpecificListenerLevel;
+        leastSpecificListenerLevel = foundLeastSpecificListenerLevel;
     }
 
     /**
      *
-     * Sets the level of the default listener.
+     * Sets the level of the fallback listener.
      *
      * @param level a level
-     * @deprecated Instead either use {@link #setDefaultListenerLevel(Level)}, or {@link #getListeners() get the specific listener} and change its {@link StatusListener#getStatusLevel() level}.
+     * @deprecated Instead either use {@link #setFallbackListenerLevel(Level)}, or {@link #getListeners() get the specific listener} and change its {@link StatusListener#getStatusLevel() level}.
      */
     @Deprecated
     public void updateListenerLevel(final Level level) {
         requireNonNull(level, "level");
-        setDefaultListenerLevel(level);
+        setFallbackListenerLevel(level);
     }
 
     /**
@@ -479,7 +480,7 @@ public class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Clears the event buffer and removes the <em>registered</em> (not the default one!) listeners.
+     * Clears the event buffer and removes the <em>registered</em> (not the fallback one!) listeners.
      */
     public void reset() {
         listenerWriteLock.lock();
@@ -487,10 +488,8 @@ public class StatusLogger extends AbstractLogger {
             final Iterator<StatusListener> listenerIterator = listeners.iterator();
             while (listenerIterator.hasNext()) {
                 final StatusListener listener = listenerIterator.next();
-                if (listener != defaultListener) {
-                    closeListenerSafely(listener);
-                    listenerIterator.remove();
-                }
+                closeListenerSafely(listener);
+                listenerIterator.remove();
             }
         } finally {
             listenerWriteLock.unlock();
@@ -556,15 +555,22 @@ public class StatusLogger extends AbstractLogger {
     }
 
     private void notifyListeners(final StatusData statusData) {
+        final boolean foundListeners;
         listenerReadLock.lock();
         try {
-            listeners.forEach(listener -> {
-                if (config.debugEnabled || listener.getStatusLevel().isLessSpecificThan(statusData.getLevel())) {
-                    listener.log(statusData);
-                }
-            });
+            foundListeners = !listeners.isEmpty();
+            listeners.forEach(listener -> notifyListener(listener, statusData));
         } finally {
             listenerReadLock.unlock();
+        }
+        if (!foundListeners) {
+            notifyListener(fallbackListener, statusData);
+        }
+    }
+
+    private void notifyListener(final StatusListener listener, final StatusData statusData) {
+        if (config.debugEnabled || listener.getStatusLevel().isLessSpecificThan(statusData.getLevel())) {
+            listener.log(statusData);
         }
     }
 

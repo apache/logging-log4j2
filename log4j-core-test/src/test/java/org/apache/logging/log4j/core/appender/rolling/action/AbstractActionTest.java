@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 @SetSystemProperty(key = StatusLogger.BUFFER_CAPACITY_PROPERTY_NAME, value = "10")
-@SetSystemProperty(key = StatusLogger.DEFAULT_LISTENER_LEVEL_PROPERTY_NAME, value = "WARN")
+@SetSystemProperty(key = StatusLogger.FALLBACK_LISTENER_LEVEL_PROPERTY_NAME, value = "WARN")
 class AbstractActionTest {
 
     // Test for LOG4J2-2658

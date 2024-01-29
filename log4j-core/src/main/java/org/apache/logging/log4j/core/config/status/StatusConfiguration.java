@@ -186,10 +186,10 @@ public class StatusConfiguration {
         try {
             if (!this.initialized) {
                 if (output != null) {
-                    LOGGER.setDefaultListenerOutput(output);
+                    LOGGER.setFallbackListenerOutput(output);
                 }
                 if (level != null) {
-                    LOGGER.setDefaultListenerLevel(level);
+                    LOGGER.setFallbackListenerLevel(level);
                 }
                 initialized = true;
             }

@@ -55,9 +55,9 @@ class XmlConfigurationPropsTest {
                 .isEqualTo(expectedConfigName);
         final StatusLogger statusLogger = StatusLogger.getLogger();
         if (expectedStatusLevel == null) {
-            verify(statusLogger, never()).setDefaultListenerLevel(any());
+            verify(statusLogger, never()).setFallbackListenerLevel(any());
         } else {
-            verify(statusLogger).setDefaultListenerLevel(eq(expectedStatusLevel));
+            verify(statusLogger).setFallbackListenerLevel(eq(expectedStatusLevel));
         }
         assertThat(config.getRootLogger().getExplicitLevel()).isEqualTo(expectedRootLevel);
     }

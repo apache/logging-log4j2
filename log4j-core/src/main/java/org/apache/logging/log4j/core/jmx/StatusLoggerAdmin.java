@@ -17,12 +17,17 @@
 package org.apache.logging.log4j.core.jmx;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
+import javax.management.ListenerNotFoundException;
 import javax.management.MBeanNotificationInfo;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
+import javax.management.NotificationFilter;
+import javax.management.NotificationListener;
 import javax.management.ObjectName;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
@@ -39,6 +44,10 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport
     private final ObjectName objectName;
     private final String contextName;
     private Level level = Level.WARN;
+
+    // Using `List` to allow duplicate `NotificationListener` occurrences as `NotificationBroadcasterSupport` does:
+    private final List<NotificationListener> registeredNotificationListeners =
+            Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Constructs a new {@code StatusLoggerAdmin} with the {@code Executor} to
@@ -62,27 +71,6 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
-        removeListeners(contextName);
-        StatusLogger.getLogger().registerListener(this);
-    }
-
-    /**
-     * Add listener to StatusLogger for this context, or replace it if it already exists.
-     *
-     * @param ctxName
-     */
-    private void removeListeners(final String ctxName) {
-        final StatusLogger logger = StatusLogger.getLogger();
-        final Iterable<StatusListener> listeners = logger.getListeners();
-        // Remove any StatusLoggerAdmin listeners already registered for this context
-        for (final StatusListener statusListener : listeners) {
-            if (statusListener instanceof StatusLoggerAdmin) {
-                final StatusLoggerAdmin adminListener = (StatusLoggerAdmin) statusListener;
-                if (ctxName != null && ctxName.equals(adminListener.contextName)) {
-                    logger.removeListener(adminListener);
-                }
-            }
-        }
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
@@ -91,6 +79,50 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport
         final String description = "StatusLogger has logged an event";
         return new MBeanNotificationInfo(notifTypes, name, description);
     }
+
+    /// BEGIN: Conditional `StatusListener` registration ///////////////////////////////////////////////////////////////
+
+    // `StatusLogger` contains a _fallback listener_ that defaults to a `StatusConsoleListener`.
+    // It is used to propagate logs when no listeners are available.
+    // If JMX registers itself always, unconditionally, this would render the fallback (console) listener ineffective.
+    // That is, no status logs would be written to console when `StatusLoggerAdmin` is in the classpath.
+    // To avoid this undesired behaviour, we register JMX status listener only when there is a party interested in these
+    // notifications.
+
+    @Override
+    public void addNotificationListener(
+            final NotificationListener listener, final NotificationFilter filter, final Object handback) {
+        super.addNotificationListener(listener, filter, handback);
+        registeredNotificationListeners.add(listener);
+        updateStatusListenerRegistration();
+    }
+
+    @Override
+    public void removeNotificationListener(final NotificationListener listener) throws ListenerNotFoundException {
+        super.removeNotificationListener(listener);
+        registeredNotificationListeners.remove(listener);
+        updateStatusListenerRegistration();
+    }
+
+    @Override
+    public void removeNotificationListener(
+            final NotificationListener listener, final NotificationFilter filter, final Object handback)
+            throws ListenerNotFoundException {
+        super.removeNotificationListener(listener, filter, handback);
+        registeredNotificationListeners.remove(listener);
+        updateStatusListenerRegistration();
+    }
+
+    private void updateStatusListenerRegistration() {
+        final StatusLogger logger = StatusLogger.getLogger();
+        if (registeredNotificationListeners.isEmpty()) {
+            logger.removeListener(this);
+        } else {
+            logger.registerListener(this);
+        }
+    }
+
+    /// END: Conditional `StatusListener` registration /////////////////////////////////////////////////////////////////
 
     @Override
     public String[] getStatusDataHistory() {
