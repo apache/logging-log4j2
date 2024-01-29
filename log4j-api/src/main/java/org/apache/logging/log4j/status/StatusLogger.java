@@ -25,7 +25,6 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -311,12 +310,7 @@ public class StatusLogger extends AbstractLogger {
 
     private final StatusConsoleListener fallbackListener;
 
-    private final Collection<StatusListener> listeners;
-
-    /**
-     * Cache of the least-specific level available among {@link #listeners} to speed-up {@link #isEnabled(Level, Marker)}.
-     */
-    private volatile Level leastSpecificListenerLevel;
+    private final List<StatusListener> listeners;
 
     private final transient ReadWriteLock listenerLock = new ReentrantReadWriteLock();
 
@@ -354,7 +348,6 @@ public class StatusLogger extends AbstractLogger {
         this.config = requireNonNull(config, "config");
         this.fallbackListener = requireNonNull(fallbackListener, "fallbackListener");
         this.listeners = new ArrayList<>(Collections.singleton(fallbackListener));
-        this.leastSpecificListenerLevel = fallbackListener.getStatusLevel();
     }
 
     /**
@@ -422,7 +415,6 @@ public class StatusLogger extends AbstractLogger {
         listenerWriteLock.lock();
         try {
             listeners.add(listener);
-            updateLeastSpecificListenerLevel();
         } finally {
             listenerWriteLock.unlock();
         }
@@ -437,25 +429,11 @@ public class StatusLogger extends AbstractLogger {
         requireNonNull(listener, "listener");
         listenerWriteLock.lock();
         try {
-            closeListenerSafely(listener);
             listeners.remove(listener);
-            updateLeastSpecificListenerLevel();
+            closeListenerSafely(listener);
         } finally {
             listenerWriteLock.unlock();
         }
-    }
-
-    private void updateLeastSpecificListenerLevel() {
-        Level foundLeastSpecificListenerLevel = fallbackListener.getStatusLevel();
-        for (final StatusListener listener : listeners) {
-            final Level listenerLevel = listener.getStatusLevel();
-            if (listenerLevel.isLessSpecificThan(foundLeastSpecificListenerLevel)) {
-                foundLeastSpecificListenerLevel = listener.getStatusLevel();
-            }
-        }
-        // We must update `leastSpecificListenerLevel` in a single instruction!
-        // It is `volatile` and accessed by `getLevel()` and `isEnabled()` without listener locks for efficiency.
-        leastSpecificListenerLevel = foundLeastSpecificListenerLevel;
     }
 
     /**
@@ -532,13 +510,22 @@ public class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Returns the least specific level among listeners.
+     * Returns the least specific level among listeners, if registered any; otherwise, the fallback listener level.
      *
-     * @return the least specific listener level
+     * @return the least specific listener level, if registered any; otherwise, the fallback listener level
      */
     @Override
     public Level getLevel() {
-        return leastSpecificListenerLevel;
+        Level leastSpecificLevel = fallbackListener.getStatusLevel();
+        // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
+        for (int listenerIndex = 0; listenerIndex < listeners.size(); listenerIndex++) {
+            final StatusListener listener = listeners.get(listenerIndex);
+            final Level listenerLevel = listener.getStatusLevel();
+            if (listenerLevel.isLessSpecificThan(leastSpecificLevel)) {
+                leastSpecificLevel = listenerLevel;
+            }
+        }
+        return leastSpecificLevel;
     }
 
     @Override
@@ -774,6 +761,6 @@ public class StatusLogger extends AbstractLogger {
     @Override
     public boolean isEnabled(final Level level, final Marker marker) {
         requireNonNull(level, "level");
-        return leastSpecificListenerLevel.isLessSpecificThan(level);
+        return getLevel().isLessSpecificThan(level);
     }
 }
