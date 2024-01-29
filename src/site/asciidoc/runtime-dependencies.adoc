@@ -224,10 +224,6 @@ The module info definition may be modified in the future to export these only to
 |org.apache.log4j
 |Automatic Module - It is unlikely any application using JPMS would use Log4j 1.x.
 
-|log4j-appserver
-|org.apache.logging.log4j.appserver
-|Automatic Module
-
 |log4j-docker
 |org.apache.logging.log4j.docker
 |Automatic Module
@@ -238,10 +234,6 @@ The module info definition may be modified in the future to export these only to
 
 |log4j-iostreams
 |org.apache.logging.log4j.iostreams
-|Automatic Module
-
-|log4j-jcl
-|org.apache.logging.log4j.jcl
 |Automatic Module
 
 |log4j-jpl
@@ -519,12 +511,6 @@ for the exact list of JAR files needed.
 |log4j-iostreams[[log4j-iostreams]]
 |The Log4j link:log4j-iostreams/index.html[IO Streams] module has no
 external dependencies. This only requires the Log4j API.
-
-|log4j-jcl[[log4j-jcl]]
-|The link:log4j-jcl/index.html[Commons Logging Bridge] requires
-http://commons.apache.org/proper/commons-logging/[Commons Logging]. See
-the link:log4j-jcl/dependencies.html#Dependency_Tree[Dependency Tree]
-for the exact list of JAR files needed.
 
 |log4j-jmx-gui[[log4j-jmx-gui]]
 |The Log4j link:log4j-jmx-gui/index.html[JMX GUI] requires the JConsole

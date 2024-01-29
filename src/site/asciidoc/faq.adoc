@@ -78,9 +78,6 @@ be safely excluded (given in the format `groupId:artifactId`).
 |ch.qos.logback:logback-core
 |org.apache.logging.log4j:log4j-to-slf4j
 
-|log4j-jcl
-3+|org.slf4j:jcl-over-slf4j
-
 |log4j-jul
 3+|org.slf4j:jul-to-slf4j
 
