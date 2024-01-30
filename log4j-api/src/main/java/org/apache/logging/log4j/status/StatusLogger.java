@@ -347,7 +347,7 @@ public class StatusLogger extends AbstractLogger {
         super(requireNonNull(name, "name"), requireNonNull(messageFactory, "messageFactory"));
         this.config = requireNonNull(config, "config");
         this.fallbackListener = requireNonNull(fallbackListener, "fallbackListener");
-        this.listeners = new ArrayList<>(Collections.singleton(fallbackListener));
+        this.listeners = new ArrayList<>();
     }
 
     /**
