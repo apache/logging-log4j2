@@ -29,6 +29,8 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+
+import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
@@ -98,14 +100,18 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
      * </p>
      */
     private static class Log4jEventWrapperHandler implements EventHandler<Log4jEventWrapper> {
+
         private static final int NOTIFY_PROGRESS_THRESHOLD = 50;
+
+        @Nullable
         private Sequence sequenceCallback;
+
         private int counter;
 
         /*
          * Overrides a method from Disruptor 4.x. Do not remove.
          */
-        public void setSequenceCallback(final Sequence sequenceCallback) {
+        public void setSequenceCallback(@Nullable final Sequence sequenceCallback) {
             this.sequenceCallback = sequenceCallback;
         }
 
@@ -125,7 +131,9 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
          */
         private void notifyIntermediateProgress(final long sequence) {
             if (++counter > NOTIFY_PROGRESS_THRESHOLD) {
-                sequenceCallback.set(sequence);
+                if (sequenceCallback != null) {
+                    sequenceCallback.set(sequence);
+                }
                 counter = 0;
             }
         }
