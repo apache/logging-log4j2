@@ -99,18 +99,14 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
      * </p>
      */
     private static class Log4jEventWrapperHandler implements EventHandler<Log4jEventWrapper> {
-
         private static final int NOTIFY_PROGRESS_THRESHOLD = 50;
-
-        @Nullable
         private Sequence sequenceCallback;
-
         private int counter;
 
         /*
          * Overrides a method from Disruptor 4.x. Do not remove.
          */
-        public void setSequenceCallback(@Nullable final Sequence sequenceCallback) {
+        public void setSequenceCallback(final Sequence sequenceCallback) {
             this.sequenceCallback = sequenceCallback;
         }
 
@@ -130,9 +126,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
          */
         private void notifyIntermediateProgress(final long sequence) {
             if (++counter > NOTIFY_PROGRESS_THRESHOLD) {
-                if (sequenceCallback != null) {
-                    sequenceCallback.set(sequence);
-                }
+                sequenceCallback.set(sequence);
                 counter = 0;
             }
         }
