@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.WeakHashMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -42,13 +43,16 @@ public class JdkMapAdapterStringMap implements StringMap {
         }
         return left.compareTo(right);
     };
+    // Cache of known unmodifiable map implementations.
+    // It is a cache, no need to synchronise it between threads.
+    private static Map<Class<?>, Void> UNMODIFIABLE_MAPS_CACHE = new WeakHashMap<>();
 
     private final Map<String, String> map;
     private boolean immutable = false;
     private transient String[] sortedKeys;
 
     public JdkMapAdapterStringMap() {
-        this(new HashMap<String, String>(), false);
+        this(new HashMap<>(), false);
     }
 
     /**
@@ -58,25 +62,41 @@ public class JdkMapAdapterStringMap implements StringMap {
     @Deprecated
     public JdkMapAdapterStringMap(final Map<String, String> map) {
         this.map = Objects.requireNonNull(map, "map");
-        try {
-            map.replace(Strings.EMPTY, Strings.EMPTY, Strings.EMPTY);
-        } catch (final UnsupportedOperationException ignored) {
+        // Known immutable implementations
+        if (UNMODIFIABLE_MAPS_CACHE.containsKey(map.getClass())) {
             immutable = true;
+        } else {
+            // Check with a NO-OP replacement
+            try {
+                map.replace(Strings.EMPTY, Strings.EMPTY, Strings.EMPTY);
+            } catch (final UnsupportedOperationException ignored) {
+                final WeakHashMap<Class<?>, Void> cache = new WeakHashMap<>(UNMODIFIABLE_MAPS_CACHE);
+                cache.put(map.getClass(), null);
+                UNMODIFIABLE_MAPS_CACHE = cache;
+                immutable = true;
+            }
         }
     }
 
     /**
+     * Constructs a new {@link StringMap}, based on a JDK map.
+     * <p>
+     *     The underlying map should not be modified after this call.
+     * </p>
+     * <p>
+     *     If the {@link Map} implementation does not allow modifications, {@code frozen} should be set to {@code true}.
+     * </p>
      * @param map a JDK map,
-     * @param immutable must be {@code true} if the map is immutable or it should not be modified.
+     * @param frozen if {@code true} this collection will be immutable.
      */
-    public JdkMapAdapterStringMap(final Map<String, String> map, final boolean immutable) {
+    public JdkMapAdapterStringMap(final Map<String, String> map, final boolean frozen) {
         this.map = Objects.requireNonNull(map, "map");
-        this.immutable = immutable;
+        this.immutable = frozen;
     }
 
     @Override
     public Map<String, String> toMap() {
-        return map;
+        return new HashMap<>(map);
     }
 
     private void assertNotFrozen() {

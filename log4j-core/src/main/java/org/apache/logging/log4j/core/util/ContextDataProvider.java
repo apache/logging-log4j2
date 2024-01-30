@@ -27,12 +27,20 @@ public interface ContextDataProvider {
 
     /**
      * Returns a Map containing context data to be injected into the event or null if no context data is to be added.
+     * <p>
+     *     Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
+     *     underlying context data will not be reflected in the returned object.
+     * </p>
      * @return A Map containing the context data or null.
      */
     Map<String, String> supplyContextData();
 
     /**
      * Returns the context data as a StringMap.
+     * <p>
+     *     Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
+     *     underlying context data will not be reflected in the returned object.
+     * </p>
      * @return the context data in a StringMap.
      */
     default StringMap supplyStringMap() {
