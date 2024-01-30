@@ -48,7 +48,6 @@ public class JdkMapAdapterStringMapTest {
 
     @Test
     public void testConstructorDisallowsNull() {
-        assertThrows(NullPointerException.class, () -> new JdkMapAdapterStringMap(null));
         assertThrows(NullPointerException.class, () -> new JdkMapAdapterStringMap(null, false));
     }
 
