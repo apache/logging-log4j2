@@ -42,7 +42,6 @@ import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.ReusableMessage;
-import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Helper class decoupling the {@code AsyncLoggerConfig} class from the LMAX Disruptor library.
@@ -139,7 +138,9 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
      * </p>
      */
     private static final class Log4jEventWrapperHandler3 extends Log4jEventWrapperHandler
-            implements SequenceReportingEventHandler<Log4jEventWrapper> {}
+            implements SequenceReportingEventHandler<Log4jEventWrapper> {
+        public Log4jEventWrapperHandler3() {}
+    }
 
     /**
      * Factory used to populate the RingBuffer with events. These event objects are then re-used during the life of the
@@ -175,8 +176,10 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private Log4jEventWrapperHandler createEventHandler() {
         if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 3) {
             try {
-                return LoaderUtil.newInstanceOf(
-                        "org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor$Log4jEventWrapperHandler3");
+                return (Log4jEventWrapperHandler) Class.forName(
+                                "org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor$Log4jEventWrapperHandler3")
+                        .getConstructor()
+                        .newInstance();
             } catch (final ReflectiveOperationException | LinkageError e) {
                 LOGGER.warn("Failed to create event handler for LMAX Disruptor 3.x, trying version 4.x.", e);
             }

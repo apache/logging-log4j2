@@ -152,7 +152,10 @@ class StatusListenerExtension extends TypeBasedParameterResolver<ListStatusListe
                 logger.atLevel(data.getLevel())
                         .withThrowable(data.getThrowable())
                         .withLocation(data.getStackTraceElement())
-                        .log("{} {}", formatter.format(Instant.ofEpochMilli(data.getTimestamp())), data.getMessage());
+                        .log(
+                                "{} {}",
+                                formatter.format(Instant.ofEpochMilli(data.getTimestamp())),
+                                data.getMessage().getFormattedMessage());
             });
         }
     }
