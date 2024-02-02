@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.apache.logging.log4j.test.junit.SerialUtil.deserialize;
+import static org.apache.logging.log4j.test.junit.SerialUtil.serialize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -25,11 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -47,7 +44,6 @@ import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -156,20 +152,6 @@ public class Log4jLogEventTest {
         assertEquals(evt.getThrownProxy(), evt2.getThrownProxy());
         assertEquals(evt.isEndOfBatch(), evt2.isEndOfBatch());
         assertEquals(evt.isIncludeLocation(), evt2.isIncludeLocation());
-    }
-
-    private byte[] serialize(final Log4jLogEvent event) throws IOException {
-        final ByteArrayOutputStream arr = new ByteArrayOutputStream();
-        final ObjectOutputStream out = new ObjectOutputStream(arr);
-        out.writeObject(event);
-        return arr.toByteArray();
-    }
-
-    private Log4jLogEvent deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        final ObjectInputStream in = new FilteredObjectInputStream(inArr);
-        final Log4jLogEvent result = (Log4jLogEvent) in.readObject();
-        return result;
     }
 
     // DO NOT REMOVE THIS COMMENT:

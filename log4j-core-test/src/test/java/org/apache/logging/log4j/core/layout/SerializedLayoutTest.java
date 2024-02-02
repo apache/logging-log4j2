@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +38,8 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.apache.logging.log4j.test.junit.ThreadContextRule;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -56,19 +55,11 @@ public class SerializedLayoutTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    static boolean useObjectInputStream = false;
-
     @Rule
     public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @BeforeClass
     public static void setupClass() {
-        try {
-            Class.forName("java.io.ObjectInputFilter");
-            useObjectInputStream = true;
-        } catch (final ClassNotFoundException ex) {
-            // Ignore the exception
-        }
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
@@ -130,20 +121,11 @@ public class SerializedLayoutTest {
         appender.stop();
 
         final List<byte[]> data = appender.getData();
-        assertTrue(data.size() > 0);
+        assertFalse(data.isEmpty());
         int i = 0;
         for (final byte[] item : data) {
-            final ByteArrayInputStream bais = new ByteArrayInputStream(item);
-            final ObjectInputStream ois =
-                    useObjectInputStream ? new ObjectInputStream(bais) : new FilteredObjectInputStream(bais);
-            LogEvent event;
-            try {
-                event = (LogEvent) ois.readObject();
-            } catch (final IOException ioe) {
-                System.err.println("Exception processing item " + i);
-                throw ioe;
-            }
-            assertTrue("Incorrect event", event.toString().equals(expected[i]));
+            assertEquals(
+                    "Incorrect event", expected[i], SerialUtil.deserialize(item).toString());
             ++i;
         }
         for (final Appender app : appenders.values()) {
@@ -175,8 +157,7 @@ public class SerializedLayoutTest {
         testSerialization();
         final File file = new File(DAT_PATH);
         final FileInputStream fis = new FileInputStream(file);
-        try (final ObjectInputStream ois =
-                useObjectInputStream ? new ObjectInputStream(fis) : new FilteredObjectInputStream(fis)) {
+        try (final ObjectInputStream ois = SerialUtil.getObjectInputStream(fis)) {
             final LogEvent event = (LogEvent) ois.readObject();
             assertNotNull(event);
         }

@@ -24,11 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -44,7 +40,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Tag;
@@ -227,12 +223,7 @@ class RingBufferLogEventTest {
                 new DummyNanoClock(1));
         ((StringMap) evt.getContextData()).putValue("key", "value");
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(evt);
-
-        final ObjectInputStream in = new FilteredObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        final RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
+        final RingBufferLogEvent other = SerialUtil.deserialize(SerialUtil.serialize(evt));
         assertThat(other.getLoggerName()).isEqualTo(loggerName);
         assertThat(other.getMarker()).isEqualTo(marker);
         assertThat(other.getLoggerFqcn()).isEqualTo(fqcn);

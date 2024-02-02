@@ -24,4 +24,8 @@ import java.util.List;
 public final class SerializationUtil {
     public static final List<String> REQUIRED_JAVA_CLASSES = List.of();
     public static final List<String> REQUIRED_JAVA_PACKAGES = List.of();
+
+    public static String stripArray(final Class<?> clazz) {
+        return null;
+    }
 }

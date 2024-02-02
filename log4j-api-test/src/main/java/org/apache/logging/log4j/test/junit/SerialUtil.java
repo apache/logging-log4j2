@@ -19,7 +19,10 @@ package org.apache.logging.log4j.test.junit;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import org.apache.logging.log4j.util.Constants;
@@ -38,10 +41,21 @@ public class SerialUtil {
      * @return the serialized object
      */
     public static byte[] serialize(final Serializable obj) {
+        return serialize(new Serializable[] {obj});
+    }
+
+    /**
+     * Serializes the specified object and returns the result as a byte array.
+     * @param objs an array of objects to serialize
+     * @return the serialized object
+     */
+    public static byte[] serialize(final Serializable... objs) {
         try {
             final ByteArrayOutputStream bas = new ByteArrayOutputStream(8192);
-            final ObjectOutputStream oos = new ObjectOutputStream(bas);
-            oos.writeObject(obj);
+            final ObjectOutput oos = new ObjectOutputStream(bas);
+            for (final Object obj : objs) {
+                oos.writeObject(obj);
+            }
             oos.flush();
             return bas.toByteArray();
         } catch (final Exception ex) {
@@ -58,16 +72,33 @@ public class SerialUtil {
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static <T> T deserialize(final byte[] data) {
         try {
-            final ByteArrayInputStream bas = new ByteArrayInputStream(data);
-            final ObjectInputStream ois;
-            if (Constants.JAVA_MAJOR_VERSION == 8) {
-                ois = new FilteredObjectInputStream(bas);
-            } else {
-                ois = new ObjectInputStream(bas);
-            }
+            final ObjectInputStream ois = getObjectInputStream(data);
             return (T) ois.readObject();
         } catch (final Exception ex) {
             throw new IllegalStateException("Could not deserialize", ex);
         }
+    }
+
+    /**
+     * Creates an {@link ObjectInputStream} adapted to the current Java version.
+     * @param data data to deserialize,
+     * @return an object input stream.
+     */
+    @SuppressFBWarnings("OBJECT_DESERIALIZATION")
+    public static ObjectInputStream getObjectInputStream(final byte[] data) throws IOException {
+        final ByteArrayInputStream bas = new ByteArrayInputStream(data);
+        return getObjectInputStream(bas);
+    }
+
+    /**
+     * Creates an {@link ObjectInputStream} adapted to the current Java version.
+     * @param stream stream of data to deserialize,
+     * @return an object input stream.
+     */
+    @SuppressFBWarnings("OBJECT_DESERIALIZATION")
+    public static ObjectInputStream getObjectInputStream(final InputStream stream) throws IOException {
+        return Constants.JAVA_MAJOR_VERSION == 8
+                ? new FilteredObjectInputStream(stream)
+                : new ObjectInputStream(stream);
     }
 }

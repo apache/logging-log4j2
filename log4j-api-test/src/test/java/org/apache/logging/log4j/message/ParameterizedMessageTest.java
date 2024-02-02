@@ -19,6 +19,7 @@ package org.apache.logging.log4j.message;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigDecimal;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.test.junit.SerialUtil;
@@ -149,7 +150,20 @@ public class ParameterizedMessageTest {
     }
 
     static Stream<Object> testSerializable() {
-        return Stream.of("World", new Object(), null);
+        @SuppressWarnings("EqualsHashCode")
+        class NonSerializable {
+            @Override
+            public boolean equals(final Object other) {
+                return other instanceof NonSerializable; // a very lenient equals()
+            }
+        }
+        return Stream.of(
+                "World",
+                new NonSerializable(),
+                new BigDecimal("123.456"),
+                // LOG4J2-3680
+                new RuntimeException(),
+                null);
     }
 
     @ParameterizedTest

@@ -44,7 +44,7 @@ public class DefaultObjectInputFilter implements ObjectInputFilter {
 
     @Override
     public Status checkInput(final FilterInfo filterInfo) {
-        Status status = null;
+        Status status;
         if (delegate != null) {
             status = delegate.checkInput(filterInfo);
             if (status != Status.UNDECIDED) {
@@ -59,9 +59,10 @@ public class DefaultObjectInputFilter implements ObjectInputFilter {
                 return status;
             }
         }
-        if (filterInfo.serialClass() != null) {
-            final String name = filterInfo.serialClass().getName();
-            if (isAllowedByDefault(name) || isRequiredPackage(name)) {
+        final Class<?> serialClass = filterInfo.serialClass();
+        if (serialClass != null) {
+            final String name = SerializationUtil.stripArray(serialClass);
+            if (isAllowedByDefault(name)) {
                 return Status.ALLOWED;
             }
         } else {
