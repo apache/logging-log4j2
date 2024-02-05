@@ -54,7 +54,9 @@ This release contains...
 
 * Removed legacy `2.x` properties configuration factory.
 * Remove `DefaultLogEventFactory`
+* Remove `log4j-appserver` module (https://github.com/apache/logging-log4j2/pull/2257[2257])
 * Remove `org.apache.logging.log4j.core.parser` and related packages. (https://github.com/apache/logging-log4j2/pull/2154[2154])
+* Remove `log4j-jcl` module (https://github.com/apache/logging-log4j2/pull/2257[2257])
 * Removed JMX support.
 * Remove `log4j-layout-jackson` module (https://github.com/apache/logging-log4j2/pull/2198[2198])
 * Remove `log4j-layout-jackson-xml` module (https://github.com/apache/logging-log4j2/pull/2198[2198])
@@ -74,6 +76,7 @@ This release contains...
 * Update `org.assertj:assertj-core` to version `3.25.2` (https://github.com/apache/logging-log4j2/pull/2246[2246])
 * Update `org.elasticsearch.client:elasticsearch-rest-high-level-client` to version `7.17.17` (https://github.com/apache/logging-log4j2/pull/2237[2237])
 * Update `org.graalvm.truffle:truffle-api` to version `23.1.2` (https://github.com/apache/logging-log4j2/pull/2206[2206])
+* Update `org.junit:junit-bom` to version `5.10.2` (https://github.com/apache/logging-log4j2/pull/2260[2260])
 * Update `org.mockito:mockito-bom` to version `5.10.0` (https://github.com/apache/logging-log4j2/pull/2245[2245])
 * Update `org.slf4j:slf4j-api` to version `2.0.10` (https://github.com/apache/logging-log4j2/pull/2136[2136])
 * Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.2` (https://github.com/apache/logging-log4j2/pull/2222[2222])
