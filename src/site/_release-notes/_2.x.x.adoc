@@ -54,5 +54,5 @@ This releases contains ...
 * Update `io.netty:netty-bom` to version `4.1.106.Final` (https://github.com/apache/logging-log4j2/pull/2225[2225])
 * Update `org.apache.logging:logging-parent` to version `10.6.0` (https://github.com/apache/logging-log4j2/pull/2197[2197])
 * Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.5` (https://github.com/apache/logging-log4j2/pull/2178[2178])
-* Update `org.assertj:assertj-core` to version `3.25.2` (https://github.com/apache/logging-log4j2/pull/2244[2244])
+* Update `org.assertj:assertj-core` to version `3.25.3` (https://github.com/apache/logging-log4j2/pull/2262[2262])
 * Update `org.codehaus.groovy:groovy-bom` to version `3.0.20` (https://github.com/apache/logging-log4j2/pull/2125[2125])
