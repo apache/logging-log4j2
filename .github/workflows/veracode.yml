@@ -53,7 +53,7 @@ jobs:
       uses: veracode/veracode-pipeline-scan-results-to-sarif@60b7700da8a577f989233dc4d206233322e386eb
       with:
         pipeline-results-json: results.json
-    - uses: github/codeql-action/upload-sarif@v3.23.1
+    - uses: github/codeql-action/upload-sarif@v3.24.0
       with:
         # Path to SARIF file relative to the root of the repository
         sarif_file: veracode-results.sarif
