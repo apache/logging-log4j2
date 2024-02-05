@@ -163,8 +163,7 @@ public final class SerializationUtil {
      * @see Class#getName()
      */
     public static String stripArray(final String name) {
-        int offset;
-        for (offset = 0; offset < name.length() && name.charAt(offset) == '['; offset++) {}
+        final int offset = name.lastIndexOf('[') + 1;
         if (offset == 0) {
             return name;
         }
@@ -191,8 +190,7 @@ public final class SerializationUtil {
             case "S":
                 return "short";
             default:
-                // Should never happen
-                return name;
+                throw new IllegalArgumentException("Unsupported array class signature '" + name + "'");
         }
     }
 
