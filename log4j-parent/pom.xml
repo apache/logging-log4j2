@@ -63,7 +63,7 @@
     <activemq.version>6.0.1</activemq.version>
     <angus-activation.version>2.0.1</angus-activation.version>
     <angus-mail.version>2.0.2</angus-mail.version>
-    <assertj.version>3.25.2</assertj.version>
+    <assertj.version>3.25.3</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
     <cassandra.version>4.0.10</cassandra.version>
@@ -116,7 +116,7 @@
     <jmh.version>1.37</jmh.version>
     <json-unit.version>2.38.0</json-unit.version>
     <junit.version>4.13.2</junit.version>
-    <junit-jupiter.version>5.10.1</junit-jupiter.version>
+    <junit-jupiter.version>5.10.2</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
     <kafka.version>3.6.1</kafka.version>
     <kubernetes-client.version>5.12.4</kubernetes-client.version>
