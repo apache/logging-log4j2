@@ -45,6 +45,7 @@ SBOM generation is streamlined by `logging-parent`, see https://logging.apache.o
 [#release-notes-2-22-0-fixed]
 === Fixed
 
+* Harden deserialization process by requiring the usage of `FilteredObjectInputStream` on Java 8 and `ObjectInputFilter` on Java 9+ to deserialize custom classes. (https://github.com/apache/logging-log4j2/issues/1884[1906])
 * Fix MDC pattern converter causing issues for `%notEmpty` (https://github.com/apache/logging-log4j2/issues/1922[1922])
 * Export missing OSGi & JPMS modules in `log4j-layout-template-json` and `log4j-1.2-api` (https://github.com/apache/logging-log4j2/issues/1895[1895])
 * Fix `spring-test` dependency scope change (https://issues.apache.org/jira/browse/LOG4J2-3675[LOG4J2-3675])
