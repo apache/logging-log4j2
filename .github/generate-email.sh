@@ -86,7 +86,7 @@ EOF
 
 announce)
     cat <<EOF
-To: log4j-user@logging.apache.org, dev@logging.apache.org
+To: announce@apache.org, log4j-user@logging.apache.org, dev@logging.apache.org
 Title: [ANNOUNCE] $PROJECT_NAME $PROJECT_VERSION released
 
 ${PROJECT_NAME} team is pleased to announce the $PROJECT_VERSION
