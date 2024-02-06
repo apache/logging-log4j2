@@ -27,12 +27,7 @@
   <packaging>jar</packaging>
   <name>Apache Log4j Commons Logging Bridge</name>
   <description>The Apache Log4j Commons Logging Adapter</description>
-  <properties>
-    <bnd-extra-module-options>
-      <!-- Filebase module names: MUST be static -->
-      commons.logging;substitute="commons-logging";transitive=false;static=true
-    </bnd-extra-module-options>
-  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

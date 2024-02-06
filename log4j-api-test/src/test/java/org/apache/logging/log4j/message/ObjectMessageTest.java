@@ -92,7 +92,13 @@ public class ObjectMessageTest {
                 return other instanceof NonSerializable; // a very lenient equals()
             }
         }
-        return Stream.of("World", new NonSerializable(), new BigDecimal("123.456"), null);
+        return Stream.of(
+                "World",
+                new NonSerializable(),
+                new BigDecimal("123.456"),
+                // LOG4J2-3680
+                new RuntimeException(),
+                null);
     }
 
     @ParameterizedTest

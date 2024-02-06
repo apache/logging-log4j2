@@ -36,7 +36,7 @@
       -->
     <bnd-extra-module-options>
       <!-- Filebased module names: MUST be static -->
-      javax.servlet.api;substitute="javax.servlet-api";transitive=true;static=true
+      javax.servlet.api;substitute="javax.servlet-api";transitive=false;static=true
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>

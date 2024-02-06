@@ -16,22 +16,18 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -61,28 +57,17 @@ public class LogEventTest {
                 .setThrown(child) //
                 .build();
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(event1);
-        oos.writeObject(event2);
+        final byte[] data = SerialUtil.serialize(event1, event2);
 
-        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream ois = new FilteredObjectInputStream(bais);
-        try {
-            ois.readObject();
-        } catch (final IOException ioe) {
-            fail("Exception processing event1");
-        }
-        try {
-            ois.readObject();
-        } catch (final IOException ioe) {
-            fail("Exception processing event2");
+        try (final ObjectInputStream ois = SerialUtil.getObjectInputStream(data)) {
+            assertDoesNotThrow(ois::readObject, "Failed to deserialize event1");
+            assertDoesNotThrow(ois::readObject, "Failed to deserialize event1");
         }
     }
 
     @Test
     public void testNanoTimeIsNotSerialized1() throws Exception {
-        final LogEvent event1 = Log4jLogEvent.newBuilder() //
+        final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
@@ -90,24 +75,18 @@ public class LogEventTest {
                 .setThreadName("this must be initialized or the test fails") //
                 .setNanoTime(12345678L) //
                 .build();
-        final LogEvent copy = new Log4jLogEvent.Builder(event1).build();
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(event1);
+        final LogEvent expected = new Log4jLogEvent.Builder(event).build();
+        final LogEvent actual = SerialUtil.deserialize(SerialUtil.serialize(event));
 
-        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream ois = new FilteredObjectInputStream(bais);
-
-        final LogEvent actual = (LogEvent) ois.readObject();
-        assertNotEquals(copy, actual, "Different event: nanoTime");
-        assertNotEquals(copy.getNanoTime(), actual.getNanoTime(), "Different nanoTime");
+        assertNotEquals(expected, actual, "Different event: nanoTime");
+        assertNotEquals(expected.getNanoTime(), actual.getNanoTime(), "Different nanoTime");
         assertEquals(0, actual.getNanoTime(), "deserialized nanoTime is zero");
     }
 
     @Test
     public void testNanoTimeIsNotSerialized2() throws Exception {
-        final LogEvent event1 = Log4jLogEvent.newBuilder() //
+        final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
@@ -117,17 +96,10 @@ public class LogEventTest {
                 .setThreadPriority(2) // this must be initialized or the test fails
                 .setNanoTime(0) //
                 .build();
-        final LogEvent event2 = new Log4jLogEvent.Builder(event1).build();
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(event1);
-
-        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream ois = new FilteredObjectInputStream(bais);
-
-        final LogEvent actual = (LogEvent) ois.readObject();
-        assertEquals(event2, actual, "both zero nanoTime");
+        final LogEvent expected = new Log4jLogEvent.Builder(event).build();
+        final LogEvent actual = SerialUtil.deserialize(SerialUtil.serialize(event));
+        assertEquals(expected, actual, "both zero nanoTime");
     }
 
     @Test

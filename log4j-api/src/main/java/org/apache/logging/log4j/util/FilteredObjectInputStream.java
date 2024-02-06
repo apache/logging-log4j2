@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.Collection;
 import java.util.Collections;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Extends {@link ObjectInputStream} to only allow some built-in Log4j classes and caller-specified classes to be
@@ -63,7 +64,7 @@ public class FilteredObjectInputStream extends ObjectInputStream {
 
     @Override
     protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-        final String name = desc.getName();
+        final String name = SerializationUtil.stripArray(desc.getName());
         if (!(isAllowedByDefault(name) || allowedExtraClasses.contains(name))) {
             throw new InvalidObjectException("Class is not allowed for deserialization: " + name);
         }

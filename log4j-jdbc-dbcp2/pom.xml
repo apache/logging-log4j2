@@ -33,10 +33,6 @@
       ~ OSGi and JPMS options
       -->
     <bnd-module-name>org.apache.logging.log4j.core.appender.db.jdbc</bnd-module-name>
-    <bnd-extra-module-options>
-      <!-- Module names -->
-      org.apache.commons.dbcp2;substitute="commons-dbcp2"
-    </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 

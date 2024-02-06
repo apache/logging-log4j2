@@ -79,12 +79,18 @@ public final class SerializationUtil {
             "java.math.BigInteger",
             // for Message delegate
             "java.rmi.MarshalledObject",
-            "[B",
-            // for MessagePatternAnalysis
-            "[I");
+            // all primitives
+            "boolean",
+            "byte",
+            "char",
+            "double",
+            "float",
+            "int",
+            "long",
+            "short");
 
-    public static final List<String> REQUIRED_JAVA_PACKAGES = Arrays.asList(
-            "java.lang.", "java.time", "java.util.", "org.apache.logging.log4j.", "[Lorg.apache.logging.log4j.");
+    public static final List<String> REQUIRED_JAVA_PACKAGES =
+            Arrays.asList("java.lang.", "java.time.", "java.util.", "org.apache.logging.log4j.");
 
     public static void writeWrappedObject(final Serializable obj, final ObjectOutputStream out) throws IOException {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -130,6 +136,61 @@ public final class SerializationUtil {
         if (!(stream instanceof FilteredObjectInputStream) && setObjectInputFilter == null) {
             throw new IllegalArgumentException(
                     "readObject requires a FilteredObjectInputStream or an ObjectInputStream that accepts an ObjectInputFilter");
+        }
+    }
+
+    /**
+     * Gets the class name of an array component recursively.
+     * <p>
+     *     If {@code clazz} is not an array class its name is returned.
+     * </p>
+     * @param clazz the binary name of a class.
+     */
+    public static String stripArray(final Class<?> clazz) {
+        Class<?> currentClazz = clazz;
+        while (currentClazz.isArray()) {
+            currentClazz = currentClazz.getComponentType();
+        }
+        return currentClazz.getName();
+    }
+
+    /**
+     * Gets the class name of an array component recursively.
+     * <p>
+     *     If {@code name} is not the name of an array class it is returned unchanged.
+     * </p>
+     * @param name the name of a class.
+     * @see Class#getName()
+     */
+    public static String stripArray(final String name) {
+        final int offset = name.lastIndexOf('[') + 1;
+        if (offset == 0) {
+            return name;
+        }
+        // Reference types
+        if (name.charAt(offset) == 'L') {
+            return name.substring(offset + 1, name.length() - 1);
+        }
+        // Primitive classes
+        switch (name.substring(offset)) {
+            case "Z":
+                return "boolean";
+            case "B":
+                return "byte";
+            case "C":
+                return "char";
+            case "D":
+                return "double";
+            case "F":
+                return "float";
+            case "I":
+                return "int";
+            case "J":
+                return "long";
+            case "S":
+                return "short";
+            default:
+                throw new IllegalArgumentException("Unsupported array class signature '" + name + "'");
         }
     }
 

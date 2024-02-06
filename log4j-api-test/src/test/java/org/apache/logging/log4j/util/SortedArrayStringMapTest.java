@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.apache.logging.log4j.test.junit.SerialUtil.deserialize;
+import static org.apache.logging.log4j.test.junit.SerialUtil.serialize;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,14 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -189,20 +186,6 @@ public class SortedArrayStringMapTest {
         }
         location = URLDecoder.decode(location, Charset.defaultCharset().name()); // replace %20 with ' ' etc
         return location.isEmpty() ? "." : location;
-    }
-
-    private byte[] serialize(final SortedArrayStringMap data) throws IOException {
-        final ByteArrayOutputStream arr = new ByteArrayOutputStream();
-        final ObjectOutputStream out = new ObjectOutputStream(arr);
-        out.writeObject(data);
-        return arr.toByteArray();
-    }
-
-    private SortedArrayStringMap deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        try (final ObjectInputStream in = new FilteredObjectInputStream(inArr)) {
-            return (SortedArrayStringMap) in.readObject();
-        }
     }
 
     @Test

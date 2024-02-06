@@ -28,17 +28,7 @@
   <packaging>jar</packaging>
   <name>Apache Log4j SLF4J 2.0 Binding</name>
   <description>The Apache Log4j SLF4J 2.0 API binding to Log4j 2 Core</description>
-  <properties>
 
-    <!--
-      ~ OSGi and JPMS options
-      -->
-    <bnd-extra-module-options>
-      <!-- The module descriptor is in `META-INF/versions/9`
-           BND can not find it -->
-      org.slf4j;substitute="slf4j-api"
-    </bnd-extra-module-options>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>

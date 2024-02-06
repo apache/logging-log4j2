@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.apache.logging.log4j.test.junit.SerialUtil.deserialize;
+import static org.apache.logging.log4j.test.junit.SerialUtil.serialize;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,11 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
@@ -43,10 +40,8 @@ import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -56,23 +51,11 @@ public class MutableLogEventTest {
     private static final StringMap CONTEXT_DATA = createContextData();
     private static final ThreadContext.ContextStack STACK = new MutableThreadContextStack(Arrays.asList("abc", "xyz"));
 
-    static boolean useObjectInputStream = false;
-
     private static StringMap createContextData() {
         final StringMap result = new SortedArrayStringMap();
         result.putValue("a", "1");
         result.putValue("b", "2");
         return result;
-    }
-
-    @BeforeAll
-    public static void setupClass() {
-        try {
-            Class.forName("java.io.ObjectInputFilter");
-            useObjectInputStream = true;
-        } catch (final ClassNotFoundException ex) {
-            // Ignore the exception
-        }
     }
 
     @Test
@@ -382,20 +365,5 @@ public class MutableLogEventTest {
         mutable.setIncludeLocation(false);
         final Log4jLogEvent immutable = mutable.toImmutable();
         assertThat(immutable.getSource()).isEqualTo(source);
-    }
-
-    private byte[] serialize(final MutableLogEvent event) throws IOException {
-        final ByteArrayOutputStream arr = new ByteArrayOutputStream();
-        final ObjectOutputStream out = new ObjectOutputStream(arr);
-        out.writeObject(event);
-        return arr.toByteArray();
-    }
-
-    private Log4jLogEvent deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        final ObjectInputStream in =
-                useObjectInputStream ? new ObjectInputStream(inArr) : new FilteredObjectInputStream(inArr);
-        final Log4jLogEvent result = (Log4jLogEvent) in.readObject();
-        return result;
     }
 }

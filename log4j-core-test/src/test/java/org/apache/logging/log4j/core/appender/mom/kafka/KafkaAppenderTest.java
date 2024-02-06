@@ -22,9 +22,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -46,7 +43,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -141,7 +138,9 @@ public class KafkaAppenderTest {
         assertNotNull(item);
         assertEquals(TOPIC_NAME, item.topic());
         assertNull(item.key());
-        assertEquals(LOG_MESSAGE, deserializeLogEvent(item.value()).getMessage().getFormattedMessage());
+        final byte[] data = item.value();
+        assertEquals(
+                LOG_MESSAGE, SerialUtil.<LogEvent>deserialize(data).getMessage().getFormattedMessage());
     }
 
     @Test
@@ -222,13 +221,6 @@ public class KafkaAppenderTest {
         assertArrayEquals(item.key(), keyValue);
         assertNotEquals(Long.valueOf(logEvent.getTimeMillis()), item.timestamp());
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
-    }
-
-    private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        try (final ObjectInput ois = new FilteredObjectInputStream(bis)) {
-            return (LogEvent) ois.readObject();
-        }
     }
 
     //    public void shouldRetryWhenTimeoutExceptionOccursOnSend() throws Exception {

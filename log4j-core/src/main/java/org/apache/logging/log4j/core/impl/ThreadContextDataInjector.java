@@ -133,7 +133,7 @@ public class ThreadContextDataInjector {
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
             // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
-            final StringMap result = new JdkMapAdapterStringMap(new HashMap<>(copy));
+            final StringMap result = new JdkMapAdapterStringMap(new HashMap<>(copy), false);
             for (int i = 0; i < props.size(); i++) {
                 final Property prop = props.get(i);
                 if (!copy.containsKey(prop.getName())) {
@@ -145,20 +145,20 @@ public class ThreadContextDataInjector {
         }
 
         private static JdkMapAdapterStringMap frozenStringMap(final Map<String, String> copy) {
-            final JdkMapAdapterStringMap result = new JdkMapAdapterStringMap(copy);
-            result.freeze();
-            return result;
+            return new JdkMapAdapterStringMap(copy, true);
         }
 
         @Override
         public ReadOnlyStringMap rawContextData() {
             final ReadOnlyThreadContextMap map = ThreadContext.getThreadContextMap();
-            if (map instanceof ReadOnlyStringMap) {
-                return (ReadOnlyStringMap) map;
+            if (map != null) {
+                return map.getReadOnlyContextData();
             }
             // note: default ThreadContextMap is null
             final Map<String, String> copy = ThreadContext.getImmutableContext();
-            return copy.isEmpty() ? ContextDataFactory.emptyFrozenContextData() : new JdkMapAdapterStringMap(copy);
+            return copy.isEmpty()
+                    ? ContextDataFactory.emptyFrozenContextData()
+                    : new JdkMapAdapterStringMap(copy, true);
         }
     }
 
