@@ -47,11 +47,26 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      */
     public abstract static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B> {
 
+        /**
+         * Determines whether to propagate logging exceptions
+         * <p>
+         *     If set to {@code true} (default), exceptions that occur during logging will appear in the status logger.
+         * </p>
+         * <p>
+         *     If set to {@code false}, exceptions will be propagates to the caller.
+         * </p>
+         */
         @PluginBuilderAttribute
         private boolean ignoreExceptions = true;
-
+        /**
+         * Formats the log events
+         */
         private Layout layout;
+        /**
+         * Name of the appender to use in references
+         */
         private String name;
+
         private Configuration configuration;
 
         public String getName() {

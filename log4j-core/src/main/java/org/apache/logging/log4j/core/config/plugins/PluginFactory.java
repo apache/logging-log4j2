@@ -35,7 +35,8 @@ import org.apache.logging.log4j.plugins.FactoryType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @FactoryType
-@Deprecated(since = "3.0.0")
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public @interface PluginFactory {
     // empty
 }

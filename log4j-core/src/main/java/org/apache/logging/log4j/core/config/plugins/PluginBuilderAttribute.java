@@ -35,7 +35,8 @@ import org.apache.logging.log4j.util.Strings;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @NameProvider(PluginBuilderAttributeNameProvider.class)
 @QualifierType
-@Deprecated(since = "3.0.0")
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public @interface PluginBuilderAttribute {
 
     /**

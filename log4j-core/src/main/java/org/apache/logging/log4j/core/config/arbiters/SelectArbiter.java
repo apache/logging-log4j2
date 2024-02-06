@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.config.arbiters;
 
 import java.util.List;
 import java.util.Optional;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
@@ -46,7 +46,7 @@ public class SelectArbiter {
         return opt.orElse(null);
     }
 
-    @PluginBuilderFactory
+    @Factory
     public static Builder newBuilder() {
         return new Builder();
     }

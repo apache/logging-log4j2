@@ -19,8 +19,9 @@ package org.apache.logging.log4j.core.config.plugins.util;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.plugins.di.resolver.PluginValueFactoryResolver;
 
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public class LegacyPluginValueFactoryResolver extends PluginValueFactoryResolver {
-    @SuppressWarnings("deprecation")
     public LegacyPluginValueFactoryResolver() {
         super(PluginValue.class);
     }

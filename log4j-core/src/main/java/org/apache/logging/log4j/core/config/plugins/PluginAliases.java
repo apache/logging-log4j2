@@ -32,7 +32,8 @@ import org.apache.logging.log4j.plugins.name.AliasesProvider;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD})
 @AliasesProvider(PluginAliasesProvider.class)
-@Deprecated(since = "3.0.0")
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public @interface PluginAliases {
 
     String[] value();

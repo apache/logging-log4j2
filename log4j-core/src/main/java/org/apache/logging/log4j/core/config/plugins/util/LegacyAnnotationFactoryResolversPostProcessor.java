@@ -28,6 +28,7 @@ import org.apache.logging.log4j.plugins.di.spi.FactoryResolversPostProcessor;
  */
 @Ordered(110)
 @ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
+@SuppressWarnings("removal")
 public class LegacyAnnotationFactoryResolversPostProcessor extends FactoryResolversPostProcessor {
     public LegacyAnnotationFactoryResolversPostProcessor() {
         super(List.of(

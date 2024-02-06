@@ -21,6 +21,8 @@ import java.util.List;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public class PluginAliasesProvider implements AnnotatedElementAliasesProvider<PluginAliases> {
     @Override
     public Collection<String> getAliases(final PluginAliases annotation) {

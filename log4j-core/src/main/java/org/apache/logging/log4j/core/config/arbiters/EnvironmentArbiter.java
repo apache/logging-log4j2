@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.config.arbiters;
 
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
@@ -46,7 +46,7 @@ public class EnvironmentArbiter implements Arbiter {
         return value != null && (propertyValue == null || value.equals(propertyValue));
     }
 
-    @PluginBuilderFactory
+    @Factory
     public static Builder newBuilder() {
         return new Builder();
     }

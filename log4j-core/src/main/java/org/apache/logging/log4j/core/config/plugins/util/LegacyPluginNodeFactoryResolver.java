@@ -24,7 +24,8 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 
-@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public class LegacyPluginNodeFactoryResolver implements FactoryResolver<Node> {
     @Override
     public boolean supportsKey(final Key<?> key) {

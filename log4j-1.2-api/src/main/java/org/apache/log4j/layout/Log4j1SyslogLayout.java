@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
@@ -34,6 +33,7 @@ import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -58,10 +58,9 @@ public final class Log4j1SyslogLayout extends AbstractStringLayout {
      * <li>escapeNL: Pattern to use for replacing newlines.</li>
      * <li>charset: The character set.</li>
      * </ul>
-     * @param <B> the builder type
      */
-    public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<Log4j1SyslogLayout> {
+    public static class Builder extends AbstractStringLayout.Builder<Builder>
+            implements org.apache.logging.log4j.plugins.util.Builder<Log4j1SyslogLayout> {
 
         public Builder() {
             setCharset(StandardCharsets.UTF_8);
@@ -105,30 +104,30 @@ public final class Log4j1SyslogLayout extends AbstractStringLayout {
             return messageLayout;
         }
 
-        public B setFacility(final Facility facility) {
+        public Builder setFacility(final Facility facility) {
             this.facility = facility;
             return asBuilder();
         }
 
-        public B setFacilityPrinting(final boolean facilityPrinting) {
+        public Builder setFacilityPrinting(final boolean facilityPrinting) {
             this.facilityPrinting = facilityPrinting;
             return asBuilder();
         }
 
-        public B setHeader(final boolean header) {
+        public Builder setHeader(final boolean header) {
             this.header = header;
             return asBuilder();
         }
 
-        public B setMessageLayout(final Layout messageLayout) {
+        public Builder setMessageLayout(final Layout messageLayout) {
             this.messageLayout = messageLayout;
             return asBuilder();
         }
     }
 
-    @PluginBuilderFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    @Factory
+    public static Builder newBuilder() {
+        return new Builder().asBuilder();
     }
 
     /**

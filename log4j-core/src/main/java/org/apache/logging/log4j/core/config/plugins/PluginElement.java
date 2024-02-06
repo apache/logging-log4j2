@@ -34,7 +34,8 @@ import org.apache.logging.log4j.plugins.name.NameProvider;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @NameProvider(PluginElementNameProvider.class)
 @QualifierType
-@Deprecated(since = "3.0.0")
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public @interface PluginElement {
 
     /**

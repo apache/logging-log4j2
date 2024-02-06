@@ -38,7 +38,16 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      */
     public abstract static class Builder<B extends Builder<B>> {
 
+        /**
+         * If not {@code null}, applies the filter to all events passing through this component
+         */
         private Filter filter;
+        /**
+         * A generic list of key/value properties
+         * <p>
+         *     The meaning of these properties depends on the component.
+         * </p>
+         */
         private Property[] propertyArray;
 
         public B asBuilder() {

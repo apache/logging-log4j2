@@ -24,11 +24,11 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 /**
@@ -72,7 +72,7 @@ public class FailOnceAppender extends AbstractAppender {
         return oldEvents;
     }
 
-    @PluginFactory
+    @Factory
     public static FailOnceAppender createAppender(
             @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name,
             @PluginAttribute("throwableClassName") final String throwableClassName) {

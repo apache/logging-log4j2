@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
@@ -35,7 +35,7 @@ public class DefaultArbiter implements Arbiter {
         return true;
     }
 
-    @PluginBuilderFactory
+    @Factory
     public static Builder newBuilder() {
         return new Builder();
     }

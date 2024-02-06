@@ -38,10 +38,10 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -252,13 +252,13 @@ public final class AsyncAppender extends AbstractAppender {
         }
     }
 
-    @PluginBuilderFactory
+    @Factory
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<AsyncAppender> {
+    public static class Builder extends AbstractFilterable.Builder<Builder>
+            implements org.apache.logging.log4j.plugins.util.Builder<AsyncAppender> {
 
         @PluginElement("AppenderRef")
         @Required(message = "No appender references provided to AsyncAppender")
@@ -277,6 +277,9 @@ public final class AsyncAppender extends AbstractAppender {
         @PluginBuilderAttribute
         private int bufferSize = DEFAULT_QUEUE_SIZE;
 
+        /**
+         * Name of the appender to use in references
+         */
         @PluginBuilderAttribute
         @Required(message = "No name provided for AsyncAppender")
         private String name;

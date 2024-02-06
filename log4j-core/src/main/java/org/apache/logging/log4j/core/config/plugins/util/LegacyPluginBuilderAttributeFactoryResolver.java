@@ -23,7 +23,8 @@ import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.resolver.AbstractAttributeFactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 
-@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public class LegacyPluginBuilderAttributeFactoryResolver<T>
         extends AbstractAttributeFactoryResolver<T, PluginBuilderAttribute> {
     public LegacyPluginBuilderAttributeFactoryResolver() {

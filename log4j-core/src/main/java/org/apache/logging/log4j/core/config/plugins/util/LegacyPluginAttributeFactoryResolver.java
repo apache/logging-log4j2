@@ -27,7 +27,8 @@ import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Strings;
 
-@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public class LegacyPluginAttributeFactoryResolver<T> extends AbstractAttributeFactoryResolver<T, PluginAttribute> {
     private static final Map<Type, Function<PluginAttribute, ?>> DEFAULT_VALUE_EXTRACTORS = Map.ofEntries(
             Map.entry(int.class, PluginAttribute::defaultInt),

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -38,12 +39,34 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      */
     public abstract static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
 
+        /**
+         * Determines whether to use a buffered {@code OutputStream}
+         * <p>
+         *     If set to {@code true} (default) the appender will buffer messages before sending them. This attribute is
+         *     ignored if {@code immediateFlush} is set to {@code true}.
+         * </p>
+         */
         @PluginBuilderAttribute
         private boolean bufferedIo = true;
 
+        /**
+         * Size of the buffer in bytes
+         */
         @PluginBuilderAttribute
         private int bufferSize = Constants.ENCODER_BYTE_BUFFER_SIZE;
 
+        /**
+         * Flushes the underlying {@code OutputStream} after each event
+         * <p>
+         *     The effects of this setting depend on the output stream implementation (see {@link OutputStream#flush()}.
+         *     In the case of files, for example, setting this attribute to {@code true}, guarantees that all bytes
+         *     written are passed to the operating system, but it <strong>does not</strong> guarantee that they are
+         *     actually written to a physical device.
+         * </p>
+         * <p>
+         *     Setting this to {@code true} automatically disables buffering.
+         * </p>
+         */
         @PluginBuilderAttribute
         private boolean immediateFlush = true;
 

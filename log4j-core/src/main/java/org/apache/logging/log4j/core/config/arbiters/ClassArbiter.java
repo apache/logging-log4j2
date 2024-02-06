@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.config.arbiters;
 
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -40,7 +40,7 @@ public class ClassArbiter implements Arbiter {
         return LoaderUtil.isClassAvailable(className);
     }
 
-    @PluginBuilderFactory
+    @Factory
     public static ClassArbiter.Builder newBuilder() {
         return new ClassArbiter.Builder();
     }

@@ -21,7 +21,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.util.Strings;
 
-@SuppressWarnings("deprecation")
+@Deprecated(since = "3.0", forRemoval = true)
+@SuppressWarnings("removal")
 public class PluginValueNameProvider implements AnnotatedElementNameProvider<PluginValue> {
     @Override
     public Optional<String> getSpecifiedName(final PluginValue annotation) {
