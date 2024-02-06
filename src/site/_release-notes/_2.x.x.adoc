@@ -28,6 +28,11 @@ This releases contains ...
 
 * Added support for LMAX Disruptor 4.x (https://github.com/apache/logging-log4j2/issues/1821[1821])
 
+[#release-notes-2-x-x-changed]
+=== Changed
+
+* Simplify BND configuration after upgrade from version `6.4.1` to `7.0.0`
+
 [#release-notes-2-x-x-deprecated]
 === Deprecated
 
@@ -37,6 +42,8 @@ This releases contains ...
 [#release-notes-2-x-x-fixed]
 === Fixed
 
+* Fix regression in `JdkMapAdapterStringMap` performance. (https://github.com/apache/logging-log4j2/issues/2238[2238])
+* Allow deserialization of all arrays of allowed classes. (https://issues.apache.org/jira/browse/LOG4J2-3680[LOG4J2-3680])
 * Fix forgotten `threadName` field in `RingBufferLogEvent#clear()` (https://github.com/apache/logging-log4j2/issues/2234[2234])
 * Fixed use of `SecurityManager` in `LoaderUtil` where `AccessController::doPrivileged` should only be invoked when a `SecurityManager` is installed. Some runtimes do not seem to have this method available. (https://github.com/apache/logging-log4j2/issues/2129[2129])
 * Fix `log4j-spring-cloud-config-client` dependencies to include only those required. (https://github.com/apache/logging-log4j2/pull/2157[2157])
