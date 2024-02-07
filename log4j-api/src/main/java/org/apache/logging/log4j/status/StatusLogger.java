@@ -446,8 +446,10 @@ public class StatusLogger extends AbstractLogger {
     /**
      * Returns buffered events.
      *
+     * @deprecated Instead of relying on the buffering provided by {@code StatusLogger}, users should register their own listeners to access to logged events.
      * @return a thread-safe read-only collection of buffered events
      */
+    @Deprecated
     public List<StatusData> getStatusData() {
         // Wrapping the buffer clone with an unmodifiable list.
         // By disallowing modifications, we make it clear to the user that mutations will not get propagated.
@@ -457,7 +459,10 @@ public class StatusLogger extends AbstractLogger {
 
     /**
      * Clears the event buffer.
+     *
+     * @deprecated Instead of relying on the buffering provided by {@code StatusLogger}, users should register their own listeners to access to logged events.
      */
+    @Deprecated
     public void clear() {
         buffer.clear();
     }
