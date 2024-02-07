@@ -98,7 +98,7 @@ public class StatusConsoleListener implements StatusListener {
     @Override
     public void log(final StatusData data) {
         requireNonNull(data, "data");
-        if (data.getLevel().isMoreSpecificThan(level)) {
+        if (level.isLessSpecificThan(data.getLevel())) {
             final String formattedStatus = data.getFormattedStatus();
             stream.println(formattedStatus);
         }
