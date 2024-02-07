@@ -30,7 +30,7 @@ class StatusLoggerLevelTest {
 
         // Verify the initial level
         final StatusLogger logger = StatusLogger.getLogger();
-        final Level fallbackListenerLevel = StatusLogger.FALLBACK_LISTENER_LEVEL_DEFAULT_VALUE;
+        final Level fallbackListenerLevel = Level.ERROR;
         assertThat(logger.getLevel()).isEqualTo(fallbackListenerLevel);
 
         // Register a less specific listener

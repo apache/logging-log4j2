@@ -96,53 +96,15 @@ public class StatusLogger extends AbstractLogger {
      * The cloning is necessary to avoid cyclic initialization.
      * </p>
      */
-    public static final String DEBUG_PROPERTY_NAME = "log4j2.debug";
+    private static final String DEBUG_PROPERTY_NAME = "log4j2.debug";
 
     /**
      * The name of the system property that can be configured with the maximum number of events buffered.
      * <p>
      * Once the limit is reached, older entries will be removed as new entries are added.
      * </p>
-     *
-     * @since 2.23.0
      */
-    public static final String BUFFER_CAPACITY_PROPERTY_NAME = "log4j2.status.entries";
-
-    /**
-     * The default value of the {@link #BUFFER_CAPACITY_PROPERTY_NAME} system property: {@code 0}.
-     *
-     * @since 2.23.0
-     */
-    public static final int BUFFER_CAPACITY_DEFAULT_VALUE = 0;
-
-    /**
-     * The name of the system property that can be configured with the maximum number of events buffered.
-     * <p>
-     * Once the limit is reached, older entries will be removed as new entries are added.
-     * </p>
-     *
-     * @deprecated Use {@link #BUFFER_CAPACITY_PROPERTY_NAME} instead.
-     */
-    @Deprecated
-    public static final String MAX_STATUS_ENTRIES = BUFFER_CAPACITY_PROPERTY_NAME;
-
-    /**
-     * The name of the system property that can be configured with the {@link Level} name to use as the fallback listener level.
-     * <p>
-     * The fallback listener is used when the listener registry is empty.
-     * The fallback listener will accept entries filtered by the level provided in this configuration.
-     * </p>
-     *
-     * @since 2.23.0
-     */
-    public static final String FALLBACK_LISTENER_LEVEL_PROPERTY_NAME = "log4j2.StatusLogger.level";
-
-    /**
-     * The default value of the {@link #FALLBACK_LISTENER_LEVEL_PROPERTY_NAME} system property: {@code ERROR}.
-     *
-     * @since 2.23.0
-     */
-    public static final Level FALLBACK_LISTENER_LEVEL_DEFAULT_VALUE = Level.ERROR;
+    public static final String MAX_STATUS_ENTRIES = "log4j2.status.entries";
 
     /**
      * The name of the system property that can be configured with the {@link Level} name to use as the fallback listener level.
@@ -152,26 +114,15 @@ public class StatusLogger extends AbstractLogger {
      * </p>
      *
      * @since 2.8
-     * @deprecated Use {@link #FALLBACK_LISTENER_LEVEL_PROPERTY_NAME} instead.
      */
-    @Deprecated
-    public static final String DEFAULT_STATUS_LISTENER_LEVEL = FALLBACK_LISTENER_LEVEL_PROPERTY_NAME;
-
-    /**
-     * The name of the system property that can be configured with a {@link java.time.format.DateTimeFormatter} pattern that will be used while formatting the created {@link StatusData}.
-     *
-     * @since 2.23.0
-     */
-    public static final String INSTANT_FORMAT_PROPERTY_NAME = "log4j2.StatusLogger.DateFormat";
+    public static final String DEFAULT_STATUS_LISTENER_LEVEL = "log4j2.StatusLogger.level";
 
     /**
      * The name of the system property that can be configured with a {@link java.time.format.DateTimeFormatter} pattern that will be used while formatting the created {@link StatusData}.
      *
      * @since 2.11.0
-     * @deprecated Use {@link #INSTANT_FORMAT_PROPERTY_NAME} instead.
      */
-    @Deprecated
-    public static final String STATUS_DATE_FORMAT = INSTANT_FORMAT_PROPERTY_NAME;
+    public static final String STATUS_DATE_FORMAT = "log4j2.StatusLogger.DateFormat";
 
     /**
      * The name of the file to be searched in the classpath to read properties from.
@@ -203,9 +154,9 @@ public class StatusLogger extends AbstractLogger {
          * <b>Users should not create new instances, but use {@link #getInstance()} instead</b>!
          *
          * @param debugEnabled the value of the {@value DEBUG_PROPERTY_NAME} property
-         * @param bufferCapacity the value of the {@value BUFFER_CAPACITY_PROPERTY_NAME} property
-         * @param fallbackListenerLevel the value of the {@value FALLBACK_LISTENER_LEVEL_PROPERTY_NAME} property
-         * @param instantFormatter the value of the {@value INSTANT_FORMAT_PROPERTY_NAME} property
+         * @param bufferCapacity the value of the {@value MAX_STATUS_ENTRIES} property
+         * @param fallbackListenerLevel the value of the {@value DEFAULT_STATUS_LISTENER_LEVEL} property
+         * @param instantFormatter the value of the {@value STATUS_DATE_FORMAT} property
          */
         public Config(
                 boolean debugEnabled,
@@ -224,9 +175,8 @@ public class StatusLogger extends AbstractLogger {
 
         /**
          * Constructs an instance using either system properties or a property file (i.e., {@value Config#PROPERTIES_FILE_NAME}) in the classpath, if available.
-         * <b>Users should not create new instances, but use {@link #getInstance()} instead</b>!
          */
-        public Config() {
+        private Config() {
             final Properties fileProvidedProperties = readPropertiesFile();
             this.debugEnabled = readDebugEnabled(fileProvidedProperties);
             this.bufferCapacity = readBufferCapacity(fileProvidedProperties);
@@ -249,17 +199,17 @@ public class StatusLogger extends AbstractLogger {
         }
 
         private static int readBufferCapacity(final Properties fileProvidedProperties) {
-            final String capacityString = readProperty(fileProvidedProperties, BUFFER_CAPACITY_PROPERTY_NAME);
-            return capacityString != null ? Integer.parseInt(capacityString) : BUFFER_CAPACITY_DEFAULT_VALUE;
+            final String capacityString = readProperty(fileProvidedProperties, MAX_STATUS_ENTRIES);
+            return capacityString != null ? Integer.parseInt(capacityString) : 0;
         }
 
         private static Level readFallbackListenerLevel(final Properties fileProvidedProperties) {
-            final String level = readProperty(fileProvidedProperties, FALLBACK_LISTENER_LEVEL_PROPERTY_NAME);
-            return level != null ? Level.valueOf(level) : FALLBACK_LISTENER_LEVEL_DEFAULT_VALUE;
+            final String level = readProperty(fileProvidedProperties, DEFAULT_STATUS_LISTENER_LEVEL);
+            return level != null ? Level.valueOf(level) : Level.ERROR;
         }
 
         private static DateTimeFormatter readInstantFormatter(final Properties fileProvidedProperties) {
-            final String format = readProperty(fileProvidedProperties, INSTANT_FORMAT_PROPERTY_NAME);
+            final String format = readProperty(fileProvidedProperties, STATUS_DATE_FORMAT);
             return format != null ? DateTimeFormatter.ofPattern(format) : null;
         }
 
@@ -320,6 +270,9 @@ public class StatusLogger extends AbstractLogger {
 
     private final Queue<StatusData> buffer = new ConcurrentLinkedQueue<>();
 
+    /**
+     * Constructs the default instance.
+     */
     private StatusLogger() {
         this(
                 StatusLogger.class.getSimpleName(),

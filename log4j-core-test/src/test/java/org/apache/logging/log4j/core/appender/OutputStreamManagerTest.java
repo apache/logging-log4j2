@@ -35,7 +35,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 /**
  * OutputStreamManager Tests.
  */
-@SetSystemProperty(key = StatusLogger.BUFFER_CAPACITY_PROPERTY_NAME, value = "10")
+@SetSystemProperty(key = "log4j2.status.entries", value = "10")
 class OutputStreamManagerTest {
 
     @Test

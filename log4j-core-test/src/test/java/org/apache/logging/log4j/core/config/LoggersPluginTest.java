@@ -30,7 +30,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 /**
  * Tests LoggersPlugin.
  */
-@SetSystemProperty(key = StatusLogger.BUFFER_CAPACITY_PROPERTY_NAME, value = "10")
+@SetSystemProperty(key = "log4j2.status.entries", value = "10")
 public class LoggersPluginTest {
 
     @Test
