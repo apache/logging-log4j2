@@ -65,3 +65,4 @@ This releases contains ...
 * Update `org.codehaus.groovy:groovy-bom` to version `3.0.20` (https://github.com/apache/logging-log4j2/pull/2125[2125])
 * Update `org.jctools:jctools-core` to version `4.0.3` (https://github.com/apache/logging-log4j2/pull/2270[2270])
 * Update `org.junit:junit-bom` to version `5.10.2` (https://github.com/apache/logging-log4j2/pull/2261[2261])
+* Update `org.zeromq:jeromq` to version `0.6.0` (https://github.com/apache/logging-log4j2/pull/2271[2271])
