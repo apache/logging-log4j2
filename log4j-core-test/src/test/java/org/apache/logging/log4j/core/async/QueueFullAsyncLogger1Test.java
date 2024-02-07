@@ -33,14 +33,14 @@ import org.junit.jupiter.api.Test;
         value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
 @SetTestProperty(key = "log4j2.asyncLoggerRingBufferSize", value = "128")
 @Tag(Tags.ASYNC_LOGGERS)
-public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstractTest {
+public class QueueFullAsyncLogger1Test extends QueueFullAbstractTest {
 
     @Override
     @Test
     @LoggerContextSource
-    public void testLoggingFromToStringCausesOutOfOrderMessages(
+    protected void testNormalQueueFullKeepsMessagesInOrder(
             final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
-        super.testLoggingFromToStringCausesOutOfOrderMessages(ctx, blockingAppender);
+        super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
     }
 
     @Override

@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests queue full scenarios with AsyncAppender.
  */
-public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
+public class QueueFullAsyncAppender1Test extends QueueFullAbstractTest {
 
     @Override
     @Test

@@ -17,21 +17,30 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
  */
-@SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
+@SetTestProperty(key = "log4j2.asyncLoggerConfigRingBufferSize", value = "128")
 @Tag(Tags.ASYNC_LOGGERS)
-public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2
-        extends QueueFullAsyncLoggerConfigLoggingFromToStringTest {
+public class QueueFullAsyncLoggerConfig1Test extends QueueFullAbstractTest {
+
+    @Override
+    @Test
+    @LoggerContextSource
+    protected void testNormalQueueFullKeepsMessagesInOrder(
+            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
+        super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
+    }
 
     @Override
     protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
-        super.checkConfig(ctx);
-        assertFormatMessagesInBackground();
+        assertAsyncLoggerConfig(ctx, 128);
     }
 }
