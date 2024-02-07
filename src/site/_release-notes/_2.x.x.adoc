@@ -63,4 +63,5 @@ This releases contains ...
 * Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.5` (https://github.com/apache/logging-log4j2/pull/2178[2178])
 * Update `org.assertj:assertj-core` to version `3.25.3` (https://github.com/apache/logging-log4j2/pull/2262[2262])
 * Update `org.codehaus.groovy:groovy-bom` to version `3.0.20` (https://github.com/apache/logging-log4j2/pull/2125[2125])
+* Update `org.jctools:jctools-core` to version `4.0.3` (https://github.com/apache/logging-log4j2/pull/2270[2270])
 * Update `org.junit:junit-bom` to version `5.10.2` (https://github.com/apache/logging-log4j2/pull/2261[2261])
