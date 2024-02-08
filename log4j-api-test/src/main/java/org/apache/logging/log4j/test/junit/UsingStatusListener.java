@@ -37,5 +37,5 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Documented
 @ExtendWith(ExtensionContextAnchor.class)
 @ExtendWith(TestPropertyResolver.class)
-@ExtendWith(StatusLoggerExtension.class)
+@ExtendWith(StatusListenerExtension.class)
 public @interface UsingStatusListener {}

@@ -33,11 +33,13 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests the Or composite condition.
  */
-public class IfAnyTest {
+@SetSystemProperty(key = "log4j2.status.entries", value = "10")
+class IfAnyTest {
 
     @Test
     public void test() {

@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Timeout;
 @SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
 @SetTestProperty(key = "log4j2.asyncQueueFullPolicy", value = "Discard")
 @Tag(Tags.ASYNC_LOGGERS)
-public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
+public class QueueFullAsyncLogger3Test extends QueueFullAbstractTest {
 
     @Override
     protected void checkConfig(final LoggerContext ctx) {

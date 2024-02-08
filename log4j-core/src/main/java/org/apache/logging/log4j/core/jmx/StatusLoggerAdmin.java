@@ -20,9 +20,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.management.MBeanNotificationInfo;
+import javax.management.MBeanRegistration;
+import javax.management.MBeanServer;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
+import javax.management.NotificationFilter;
+import javax.management.NotificationListener;
 import javax.management.ObjectName;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
@@ -33,12 +39,16 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Implementation of the {@code StatusLoggerAdminMBean} interface.
  */
 public class StatusLoggerAdmin extends NotificationBroadcasterSupport
-        implements StatusListener, StatusLoggerAdminMBean {
+        implements StatusListener, StatusLoggerAdminMBean, MBeanRegistration {
 
     private final AtomicLong sequenceNo = new AtomicLong();
     private final ObjectName objectName;
     private final String contextName;
     private Level level = Level.WARN;
+
+    private boolean statusListenerRegistered = false;
+
+    private final Lock statusListenerRegistrationGuard = new ReentrantLock();
 
     /**
      * Constructs a new {@code StatusLoggerAdmin} with the {@code Executor} to
@@ -62,27 +72,6 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
-        removeListeners(contextName);
-        StatusLogger.getLogger().registerListener(this);
-    }
-
-    /**
-     * Add listener to StatusLogger for this context, or replace it if it already exists.
-     *
-     * @param ctxName
-     */
-    private void removeListeners(final String ctxName) {
-        final StatusLogger logger = StatusLogger.getLogger();
-        final Iterable<StatusListener> listeners = logger.getListeners();
-        // Remove any StatusLoggerAdmin listeners already registered for this context
-        for (final StatusListener statusListener : listeners) {
-            if (statusListener instanceof StatusLoggerAdmin) {
-                final StatusLoggerAdmin adminListener = (StatusLoggerAdmin) statusListener;
-                if (ctxName != null && ctxName.equals(adminListener.contextName)) {
-                    logger.removeListener(adminListener);
-                }
-            }
-        }
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
@@ -91,6 +80,61 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport
         final String description = "StatusLogger has logged an event";
         return new MBeanNotificationInfo(notifTypes, name, description);
     }
+
+    /// BEGIN: Conditional `StatusListener` registration ///////////////////////////////////////////////////////////////
+
+    // `StatusLogger` contains a _fallback listener_ that defaults to a `StatusConsoleListener`.
+    // It is used to propagate logs when no listeners are available.
+    // If JMX registers itself always, unconditionally, this would render the fallback (console) listener ineffective.
+    // That is, no status logs would be written to console when `StatusLoggerAdmin` is in the classpath.
+    // To avoid this undesired behaviour, we register JMX status listener conditionally:
+    // only when there is a party interested in these notifications.
+    // `addNotificationListener()` is a good place to figure out such an interest.
+    // Though `removeNotificationListener()` is not a good place to determine the lack of interest[1].
+    // Hence, we remove the JMX status listener on JMX bean deregistration.
+    //
+    // [1] https://github.com/apache/logging-log4j2/pull/2249#discussion_r1469336334
+
+    @Override
+    public void addNotificationListener(
+            final NotificationListener listener, final NotificationFilter filter, final Object handback) {
+        super.addNotificationListener(listener, filter, handback);
+        statusListenerRegistrationGuard.lock();
+        try {
+            if (!statusListenerRegistered) {
+                StatusLogger.getLogger().registerListener(this);
+                statusListenerRegistered = true;
+            }
+        } finally {
+            statusListenerRegistrationGuard.unlock();
+        }
+    }
+
+    @Override
+    public ObjectName preRegister(final MBeanServer server, final ObjectName name) {
+        return name;
+    }
+
+    @Override
+    public void postRegister(final Boolean registrationDone) {}
+
+    @Override
+    public void preDeregister() {}
+
+    @Override
+    public void postDeregister() {
+        statusListenerRegistrationGuard.lock();
+        try {
+            if (statusListenerRegistered) {
+                StatusLogger.getLogger().removeListener(this);
+                statusListenerRegistered = false;
+            }
+        } finally {
+            statusListenerRegistrationGuard.unlock();
+        }
+    }
+
+    /// END: Conditional `StatusListener` registration /////////////////////////////////////////////////////////////////
 
     @Override
     public String[] getStatusDataHistory() {

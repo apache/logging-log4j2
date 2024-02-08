@@ -18,13 +18,17 @@ package org.apache.logging.log4j.util;
 
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Base64 encodes Strings. This utility is only necessary because the mechanism to do this changed in Java 8 and
  * the original method was removed in Java 9.
  */
 public final class Base64Util {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static Method encodeMethod = null;
     private static Object encoder = null;
@@ -41,7 +45,7 @@ public final class Base64Util {
                 final Class<?> clazz = LoaderUtil.loadClass("javax.xml.bind.DataTypeConverter");
                 encodeMethod = clazz.getMethod("printBase64Binary");
             } catch (Exception ex2) {
-                LowLevelLogUtil.logException("Unable to create a Base64 Encoder", ex2);
+                LOGGER.error("Unable to create a Base64 Encoder", ex2);
             }
         }
     }

@@ -26,8 +26,7 @@ import org.junit.jupiter.api.Tag;
  */
 @SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
 @Tag(Tags.ASYNC_LOGGERS)
-public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2
-        extends QueueFullAsyncLoggerConfigLoggingFromToStringTest {
+public class QueueFullAsyncLoggerConfig2Test extends QueueFullAsyncLoggerConfig1Test {
 
     @Override
     protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {

@@ -17,19 +17,17 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
-import org.junit.jupiter.api.Tag;
 
 /**
- * Tests queue full scenarios with AsyncLoggers in configuration.
+ * Needs to be a separate class since {@link org.apache.logging.log4j.core.util.Constants#FORMAT_MESSAGES_IN_BACKGROUND}
+ * is immutable.
  */
 @SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
-@Tag(Tags.ASYNC_LOGGERS)
-public class QueueFullAsyncLoggerConfigTest2 extends QueueFullAsyncLoggerConfigTest {
+public class QueueFullAsyncAppender2Test extends QueueFullAsyncAppender1Test {
 
     @Override
-    protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
+    protected void checkConfig(final LoggerContext ctx) {
         super.checkConfig(ctx);
         assertFormatMessagesInBackground();
     }

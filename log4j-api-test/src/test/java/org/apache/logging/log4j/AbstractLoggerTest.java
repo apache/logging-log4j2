@@ -42,9 +42,12 @@ import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 @StatusLoggerLevel("WARN")
 @ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
+@SetSystemProperty(key = "log4j2.status.entries", value = "200")
+@SetSystemProperty(key = "log4j2.StatusLogger.level", value = "WARN")
 public class AbstractLoggerTest {
 
     private static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");

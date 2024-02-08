@@ -19,12 +19,15 @@ package org.apache.logging.log4j.util;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
 public class OsgiServiceLocator {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final boolean OSGI_AVAILABLE = checkOsgiAvailable();
 
@@ -38,8 +41,8 @@ public class OsgiServiceLocator {
             return clazz.getMethod("getBundle", Class.class).invoke(null, OsgiServiceLocator.class) != null;
         } catch (final ClassNotFoundException | NoSuchMethodException | LinkageError e) {
             return false;
-        } catch (final Throwable e) {
-            LowLevelLogUtil.logException("Unknown error checking OSGI environment.", e);
+        } catch (final Throwable error) {
+            LOGGER.error("Unknown error checking OSGI environment.", error);
             return false;
         }
     }

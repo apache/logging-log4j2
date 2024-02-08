@@ -20,16 +20,20 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.junit.Tags;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests queue full scenarios with AsyncLoggers in configuration.
+ * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
-@SetTestProperty(key = "log4j2.asyncLoggerConfigRingBufferSize", value = "128")
+@SetTestProperty(
+        key = Constants.LOG4J_CONTEXT_SELECTOR,
+        value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+@SetTestProperty(key = "log4j2.asyncLoggerRingBufferSize", value = "128")
 @Tag(Tags.ASYNC_LOGGERS)
-public class QueueFullAsyncLoggerConfigTest extends QueueFullAbstractTest {
+public class QueueFullAsyncLogger1Test extends QueueFullAbstractTest {
 
     @Override
     @Test
@@ -40,7 +44,7 @@ public class QueueFullAsyncLoggerConfigTest extends QueueFullAbstractTest {
     }
 
     @Override
-    protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
-        assertAsyncLoggerConfig(ctx, 128);
+    protected void checkConfig(final LoggerContext ctx) {
+        assertAsyncLogger(ctx, 128);
     }
 }

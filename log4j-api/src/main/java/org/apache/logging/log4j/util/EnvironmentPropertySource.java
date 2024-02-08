@@ -20,6 +20,8 @@ import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.Collection;
 import java.util.Map;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * PropertySource implementation that uses environment variables as a source.
@@ -33,7 +35,10 @@ import java.util.Map;
 @ServiceProvider(value = PropertySource.class, resolution = Resolution.OPTIONAL)
 public class EnvironmentPropertySource implements PropertySource {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     private static final String PREFIX = "LOG4J_";
+
     private static final int DEFAULT_PRIORITY = 100;
 
     @Override
@@ -41,10 +46,9 @@ public class EnvironmentPropertySource implements PropertySource {
         return DEFAULT_PRIORITY;
     }
 
-    private void logException(final SecurityException e) {
+    private void logException(final SecurityException error) {
         // There is no status logger yet.
-        LowLevelLogUtil.logException(
-                "The system environment variables are not available to Log4j due to security restrictions: " + e, e);
+        LOGGER.error("The system environment variables are not available to Log4j due to security restrictions", error);
     }
 
     @Override

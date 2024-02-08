@@ -16,14 +16,16 @@
  */
 package org.apache.logging.log4j.status;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.logging.log4j.util.Chars.SPACE;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
 
@@ -34,50 +36,84 @@ public class StatusData implements Serializable {
 
     private static final long serialVersionUID = -4341916115118014017L;
 
-    private final long timestamp;
+    private final Instant instant;
+
+    @Nullable
+    private final DateTimeFormatter instantFormatter;
+
+    @Nullable
     private final StackTraceElement caller;
+
     private final Level level;
-    private final Message msg;
-    private String threadName;
+
+    private final Message message;
+
+    private final String threadName;
+
+    @Nullable
     private final Throwable throwable;
 
     /**
-     * Creates the StatusData object.
+     * Constructs the instance using given properties.
      *
-     * @param caller The method that created the event.
-     * @param level The logging level.
-     * @param msg The message String.
-     * @param t The Error or Exception that occurred.
-     * @param threadName The thread name
+     * @param caller the method that created the event
+     * @param level a logging level
+     * @param message a message
+     * @param throwable the error occurred
+     * @param threadName the thread name
      */
     public StatusData(
-            final StackTraceElement caller,
+            @Nullable final StackTraceElement caller,
             final Level level,
-            final Message msg,
-            final Throwable t,
-            final String threadName) {
-        this.timestamp = System.currentTimeMillis();
+            final Message message,
+            @Nullable final Throwable throwable,
+            @Nullable final String threadName) {
+        this(caller, level, message, throwable, threadName, null);
+    }
+
+    StatusData(
+            @Nullable final StackTraceElement caller,
+            final Level level,
+            final Message message,
+            @Nullable final Throwable throwable,
+            @Nullable final String threadName,
+            @Nullable final DateTimeFormatter instantFormatter) {
+        this.instantFormatter = instantFormatter;
+        this.instant = Instant.now();
         this.caller = caller;
-        this.level = level;
-        this.msg = msg;
-        this.throwable = t;
-        this.threadName = threadName;
+        this.level = requireNonNull(level, "level");
+        this.message = requireNonNull(message, "message");
+        this.throwable = throwable;
+        this.threadName =
+                threadName != null ? threadName : Thread.currentThread().getName();
     }
 
     /**
-     * Returns the event's timestamp.
+     * Returns the instant of the event.
      *
-     * @return The event's timestamp.
+     * @return the event's instant
      */
+    public Instant getInstant() {
+        return instant;
+    }
+
+    /**
+     * Returns the instant of the event.
+     *
+     * @return the event's instant
+     * @deprecated Use {@link #getInstant()} instead.
+     */
+    @Deprecated
     public long getTimestamp() {
-        return timestamp;
+        return instant.toEpochMilli();
     }
 
     /**
-     * Returns the StackTraceElement for the method that created the event.
+     * Returns the method that created the event.
      *
-     * @return The StackTraceElement.
+     * @return the method that created the event
      */
+    @Nullable
     public StackTraceElement getStackTraceElement() {
         return caller;
     }
@@ -85,7 +121,7 @@ public class StatusData implements Serializable {
     /**
      * Returns the logging level for the event.
      *
-     * @return The logging level.
+     * @return the event's logging level
      */
     public Level getLevel() {
         return level;
@@ -94,32 +130,35 @@ public class StatusData implements Serializable {
     /**
      * Returns the message associated with the event.
      *
-     * @return The message associated with the event.
+     * @return the message associated with the event
      */
     public Message getMessage() {
-        return msg;
+        return message;
     }
 
+    /**
+     * Returns the name of the thread associated with the event.
+     *
+     * @return the name of the thread associated with the event
+     */
     public String getThreadName() {
-        if (threadName == null) {
-            threadName = Thread.currentThread().getName();
-        }
         return threadName;
     }
 
     /**
-     * Returns the Throwable associated with the event.
+     * Returns the error associated with the event.
      *
-     * @return The Throwable associated with the event.
+     * @return the error associated with the event
      */
+    @Nullable
     public Throwable getThrowable() {
         return throwable;
     }
 
     /**
-     * Formats the StatusData for viewing.
+     * Formats the event in to a log line for viewing.
      *
-     * @return The formatted status data as a String.
+     * @return the formatted event
      */
     @SuppressFBWarnings(
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
@@ -127,38 +166,36 @@ public class StatusData implements Serializable {
     @SuppressWarnings("DefaultCharset")
     public String getFormattedStatus() {
         final StringBuilder sb = new StringBuilder();
-        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
-        sb.append(format.format(new Date(timestamp)));
+        final String formattedInstant =
+                instantFormatter != null ? instantFormatter.format(instant) : instant.toString();
+        sb.append(formattedInstant);
         sb.append(SPACE);
         sb.append(getThreadName());
         sb.append(SPACE);
         sb.append(level.toString());
         sb.append(SPACE);
-        sb.append(msg.getFormattedMessage());
-        final Object[] params = msg.getParameters();
-        Throwable t;
-        if (throwable == null && params != null && params[params.length - 1] instanceof Throwable) {
-            t = (Throwable) params[params.length - 1];
+        sb.append(message.getFormattedMessage());
+        final Object[] parameters = message.getParameters();
+        Throwable effectiveThrowable;
+        if (throwable == null && parameters != null && parameters[parameters.length - 1] instanceof Throwable) {
+            effectiveThrowable = (Throwable) parameters[parameters.length - 1];
         } else {
-            t = throwable;
+            effectiveThrowable = throwable;
         }
-        if (t != null) {
+        if (effectiveThrowable != null) {
             sb.append(SPACE);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            t.printStackTrace(new PrintStream(baos));
+            effectiveThrowable.printStackTrace(new PrintStream(baos));
             /*
              * https://errorprone.info/bugpattern/DefaultCharset
              *
              * Since Java 9 we'll be able to provide a charset.
              */
-            sb.append(baos.toString());
+            sb.append(baos);
         }
         return sb.toString();
     }
 
-    /**
-     * Used in tests
-     */
     @Override
     public String toString() {
         return getMessage().getFormattedMessage();

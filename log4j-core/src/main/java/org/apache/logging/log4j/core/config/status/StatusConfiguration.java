@@ -16,38 +16,37 @@
  */
 package org.apache.logging.log4j.core.config.status;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.status.StatusConsoleListener;
-import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Configuration for setting up {@link StatusConsoleListener} instances.
+ * Configuration for setting up the {@link StatusLogger} fallback listener.
  */
 public class StatusConfiguration {
 
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    private static final PrintStream DEFAULT_STREAM = System.out;
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private static final Level DEFAULT_STATUS = Level.ERROR;
-
-    private final Collection<String> errorMessages = new LinkedBlockingQueue<>();
-    private final StatusLogger logger = StatusLogger.getLogger();
+    private final Lock lock = new ReentrantLock();
 
     private volatile boolean initialized;
 
-    private PrintStream destination = DEFAULT_STREAM;
-    private Level status = DEFAULT_STATUS;
+    @Nullable
+    private PrintStream output;
+
+    @Nullable
+    private Level level;
 
     /**
      * Specifies how verbose the StatusLogger should be.
@@ -72,82 +71,86 @@ public class StatusConfiguration {
     }
 
     /**
-     * Logs an error message to the StatusLogger. If the StatusLogger hasn't been set up yet, queues the message to be
-     * logged after initialization.
+     * Logs an error message to the {@link StatusLogger}.
      *
-     * @param message error message to log.
+     * @param message error message to log
+     * @deprecated Use {@link StatusLogger#getLogger()} and then {@link StatusLogger#error(String)} instead.
      */
+    @Deprecated
     public void error(final String message) {
-        if (!this.initialized) {
-            this.errorMessages.add(message);
-        } else {
-            this.logger.error(message);
-        }
+        LOGGER.error(message);
     }
 
     /**
-     * Specifies the destination for StatusLogger events. This can be {@code out} (default) for using
-     * {@link System#out standard out}, {@code err} for using {@link System#err standard error}, or a file URI to
-     * which log events will be written. If the provided URI is invalid, then the default destination of standard
-     * out will be used.
+     * Sets the output of the {@link StatusLogger} fallback listener.
+     * <p>
+     * Accepted values are as follows:
+     * </p>
+     * <ul>
+     * <li>{@code out} (i.e., {@link System#out})</li>
+     * <li>{@code err} (i.e., {@link System#err})</li>
+     * <li>a URI (e.g., {@code file:///path/to/log4j-status-logs.txt})</li>
+     * </ul>
+     * <p>
+     * Invalid values will be ignored.
+     * </p>
      *
-     * @param destination where status log messages should be output.
+     * @param destination destination where {@link StatusLogger} messages should be output
      * @return {@code this}
      */
-    public StatusConfiguration withDestination(final String destination) {
+    public StatusConfiguration withDestination(@Nullable final String destination) {
         try {
-            this.destination = parseStreamName(destination);
-        } catch (final URISyntaxException e) {
-            this.error("Could not parse URI [" + destination + "]. Falling back to default of stdout.");
-            this.destination = DEFAULT_STREAM;
-        } catch (final FileNotFoundException e) {
-            this.error("File could not be found at [" + destination + "]. Falling back to default of stdout.");
-            this.destination = DEFAULT_STREAM;
+            this.output = parseStreamName(destination);
+        } catch (final URISyntaxException error) {
+            LOGGER.error("Could not parse provided URI: {}", destination, error);
+        } catch (final FileNotFoundException error) {
+            LOGGER.error("File could not be found: {}", destination, error);
         }
         return this;
     }
 
-    private PrintStream parseStreamName(final String name) throws URISyntaxException, FileNotFoundException {
-        if (name == null || name.equalsIgnoreCase("out")) {
-            return DEFAULT_STREAM;
+    @Nullable
+    private static PrintStream parseStreamName(@Nullable final String name)
+            throws URISyntaxException, FileNotFoundException {
+        if (name != null) {
+            if (name.equalsIgnoreCase("out")) {
+                return System.out;
+            } else if (name.equalsIgnoreCase("err")) {
+                return System.err;
+            } else {
+                final URI destUri = NetUtils.toURI(name);
+                final File output = FileUtils.fileFromUri(destUri);
+                if (output != null) {
+                    final FileOutputStream fos = new FileOutputStream(output);
+                    return new PrintStream(fos, true);
+                }
+            }
         }
-        if (name.equalsIgnoreCase("err")) {
-            return System.err;
-        }
-        final URI destUri = NetUtils.toURI(name);
-        final File output = FileUtils.fileFromUri(destUri);
-        if (output == null) {
-            // don't want any NPEs, no sir
-            return DEFAULT_STREAM;
-        }
-        final FileOutputStream fos = new FileOutputStream(output);
-        return new PrintStream(fos, true);
+        return null;
     }
 
     /**
-     * Specifies the logging level by name to use for filtering StatusLogger messages.
+     * Sets the level of the {@link StatusLogger} fallback listener.
      *
-     * @param status name of logger level to filter below.
+     * @param level a level name
      * @return {@code this}
-     * @see Level
      */
-    public StatusConfiguration withStatus(final String status) {
-        this.status = Level.toLevel(status, null);
-        if (this.status == null) {
-            this.error("Invalid status level specified: " + status + ". Defaulting to ERROR.");
-            this.status = Level.ERROR;
+    public StatusConfiguration withStatus(@Nullable final String level) {
+        this.level = Level.toLevel(level, null);
+        if (this.level == null) {
+            LOGGER.error("Invalid status level: {}", level);
         }
         return this;
     }
 
     /**
-     * Specifies the logging level to use for filtering StatusLogger messages.
+     * Sets the level of the {@link StatusLogger} fallback listener.
      *
-     * @param status logger level to filter below.
+     * @param level a level
      * @return {@code this}
      */
-    public StatusConfiguration withStatus(final Level status) {
-        this.status = status;
+    public StatusConfiguration withStatus(@Nullable final Level level) {
+        this.level = level;
         return this;
     }
 
@@ -180,38 +183,20 @@ public class StatusConfiguration {
      * Configures and initializes the StatusLogger using the configured options in this instance.
      */
     public void initialize() {
-        if (!this.initialized) {
-            if (this.status == Level.OFF) {
-                this.initialized = true;
-            } else {
-                final boolean configured = configureExistingStatusConsoleListener();
-                if (!configured) {
-                    final StatusConsoleListener listener = new StatusConsoleListener(this.status, this.destination);
-                    this.logger.registerListener(listener);
+        lock.lock();
+        try {
+            if (!this.initialized) {
+                final StatusConsoleListener fallbackListener = LOGGER.getFallbackListener();
+                if (output != null) {
+                    fallbackListener.setStream(output);
                 }
-                migrateSavedLogMessages();
+                if (level != null) {
+                    fallbackListener.setLevel(level);
+                }
+                initialized = true;
             }
+        } finally {
+            lock.unlock();
         }
-    }
-
-    private boolean configureExistingStatusConsoleListener() {
-        boolean configured = false;
-        for (final StatusListener statusListener : this.logger.getListeners()) {
-            if (statusListener instanceof StatusConsoleListener) {
-                final StatusConsoleListener listener = (StatusConsoleListener) statusListener;
-                listener.setLevel(this.status);
-                this.logger.updateListenerLevel(this.status);
-                configured = true;
-            }
-        }
-        return configured;
-    }
-
-    private void migrateSavedLogMessages() {
-        for (final String message : this.errorMessages) {
-            this.logger.error(message);
-        }
-        this.initialized = true;
-        this.errorMessages.clear();
     }
 }
