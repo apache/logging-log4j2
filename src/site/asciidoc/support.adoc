@@ -132,8 +132,15 @@ While neither the Apache Software Foundation nor the Apache Logging Services pro
 
 The following aims to be a list of all commercial support services involving one or more Log4j committers.
 
-[#tidelift]
-=== Tidelift
+https://volkan.yazi.ci[Abstract Dynamics]::
+Consultancy services offered by PMC member https://www.linkedin.com/in/yazicivo[Volkan Yazıcı]
 
+https://copernik.eu[Copernik]::
+Consultancy services offered by PMC member https://www.linkedin.com/in/ppkarwasz[Piotr Karwasz]
+
+https://grobmeier.solutions[Grobmeier Solutions]::
+Consultancy services offered by PMC member https://www.linkedin.com/in/grobmeier/[Christian Grobmeier]
+
+[#tidelift]
+https://tidelift.com[Tidelift]::
 Some Log4j maintainers receive funding from Tidelift for their maintenance efforts.
-See https://tidelift.com[the Tidelift website] for details.
