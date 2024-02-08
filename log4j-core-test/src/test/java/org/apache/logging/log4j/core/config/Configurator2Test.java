@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class ConfiguratorTest {
+public class Configurator2Test {
 
     @Test
     public void testInitializeFromAbsoluteFilePath() {

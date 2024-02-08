@@ -28,9 +28,10 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class TestNoLanguages {
+public class NoLanguagesTest {
 
     private LoggerContext ctx = null;
 
@@ -43,8 +44,8 @@ public class TestNoLanguages {
         }
     }
 
-    @org.junit.jupiter.api.Test
-    public void testBuilderWithScripts() throws Exception {
+    @Test
+    public void testBuilderWithScripts() {
         final String script =
                 "if (logEvent.getLoggerName().equals(\"NoLocation\")) {\n" + "                return \"NoLocation\";\n"
                         + "            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf(\"FLOW\")) {\n"

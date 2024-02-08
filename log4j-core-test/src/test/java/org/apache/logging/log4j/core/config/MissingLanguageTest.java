@@ -34,7 +34,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 
 @SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "beanshell, Javascript")
 @Tag("functional")
-public class TestMissingLanguage {
+public class MissingLanguageTest {
 
     private LoggerContext ctx = null;
 
@@ -48,7 +48,7 @@ public class TestMissingLanguage {
     }
 
     @org.junit.jupiter.api.Test
-    public void testBuilderWithScripts() throws Exception {
+    public void testBuilderWithScripts() {
         final String script =
                 "if (logEvent.getLoggerName().equals(\"NoLocation\")) {\n" + "                return \"NoLocation\";\n"
                         + "            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf(\"FLOW\")) {\n"

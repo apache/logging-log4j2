@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(AsyncLoggers.class)
-public class AsyncLoggerTestArgumentFreedOnError {
+public class AsyncLoggerArgumentFreedOnErrorTest {
 
     @BeforeClass
     public static void beforeClass() {

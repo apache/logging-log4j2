@@ -66,7 +66,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 
 @SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "beanshell, Groovy, Javascript")
 @Tag("functional")
-public class TestConfigurator {
+public class Configurator1Test {
 
     private static final String CONFIG_NAME = "TestConfigurator";
 

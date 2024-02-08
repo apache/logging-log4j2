@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(AsyncLoggers.class)
-public class AsyncLoggerTestNanoTime {
+public class AsyncLoggerNanoTimeTest {
 
     @BeforeClass
     public static void beforeClass() {
