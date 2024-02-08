@@ -16,21 +16,16 @@
  */
 package org.apache.logging.log4j.test.junit;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
-import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.ListStatusListener;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -43,12 +38,12 @@ import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ModifierSupport;
 import org.junit.platform.commons.support.ReflectionSupport;
 
-class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListener>
+class StatusListenerExtension extends TypeBasedParameterResolver<ListStatusListener>
         implements BeforeAllCallback, BeforeEachCallback, TestExecutionExceptionHandler {
 
     private static final Object KEY = ListStatusListener.class;
 
-    public StatusLoggerExtension() {
+    public StatusListenerExtension() {
         super(ListStatusListener.class);
     }
 
@@ -130,33 +125,19 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         }
 
         @Override
-        public void close() throws Throwable {
+        public void close() {
             statusLogger.removeListener(statusListener);
         }
 
         public void handleException(final ExtensionContext context, final Throwable throwable) {
-            final Logger logger = new SimpleLogger(
-                    "StatusLoggerExtension",
-                    Level.ALL,
-                    false,
-                    false,
-                    false,
-                    false,
+            final StatusListener listener = new StatusConsoleListener(Level.ALL, System.err);
+            listener.log(new StatusData(
                     null,
-                    ParameterizedNoReferenceMessageFactory.INSTANCE,
-                    PropertiesUtil.getProperties(),
-                    System.err);
-            logger.error("Test {} failed.\nDumping status data:", context.getDisplayName());
-            final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault());
-            statusListener.getStatusData().forEach(data -> {
-                logger.atLevel(data.getLevel())
-                        .withThrowable(data.getThrowable())
-                        .withLocation(data.getStackTraceElement())
-                        .log(
-                                "{} {}",
-                                formatter.format(Instant.ofEpochMilli(data.getTimestamp())),
-                                data.getMessage().getFormattedMessage());
-            });
+                    Level.ERROR,
+                    new ParameterizedMessage("Test `{}` has failed, dumping status data...", context.getDisplayName()),
+                    throwable,
+                    null));
+            statusListener.getStatusData().forEach(listener::log);
         }
     }
 
@@ -186,14 +167,14 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             // NOP
         }
 
         @Override
         public Stream<StatusData> getStatusData() {
             synchronized (statusData) {
-                final List<StatusData> clone = (List<StatusData>) statusData.clone();
+                final List<StatusData> clone = new ArrayList<>(statusData);
                 return parent != null ? Stream.concat(parent.getStatusData(), clone.stream()) : clone.stream();
             }
         }

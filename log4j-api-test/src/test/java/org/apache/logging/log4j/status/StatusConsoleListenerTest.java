@@ -19,11 +19,9 @@ package org.apache.logging.log4j.status;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
-import org.apache.logging.log4j.simple.SimpleLogger;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -33,38 +31,19 @@ public class StatusConsoleListenerTest {
     public static final MessageFactory MESSAGE_FACTORY = ParameterizedNoReferenceMessageFactory.INSTANCE;
 
     @Test
-    void SimpleLogger_should_be_used() {
-
-        // Create a mock `SimpleLoggerFactory`.
-        final SimpleLogger logger = Mockito.mock(SimpleLogger.class);
-        final LogBuilder logBuilder = Mockito.mock(LogBuilder.class);
-        Mockito.when(logger.atLevel(Mockito.any())).thenReturn(logBuilder);
-        Mockito.when(logBuilder.withThrowable(Mockito.any())).thenReturn(logBuilder);
-        Mockito.when(logBuilder.withLocation(Mockito.any())).thenReturn(logBuilder);
-        final SimpleLoggerFactory loggerFactory = Mockito.mock(SimpleLoggerFactory.class);
-        Mockito.when(loggerFactory.createSimpleLogger(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(logger);
+    void StatusData_getFormattedStatus_should_be_used() {
 
         // Create the listener.
         final PrintStream stream = Mockito.mock(PrintStream.class);
-        final Level level = Mockito.mock(Level.class);
-        final StatusConsoleListener listener = new StatusConsoleListener(level, stream, loggerFactory);
+        final StatusConsoleListener listener = new StatusConsoleListener(Level.ALL, stream);
 
         // Log a message.
-        final StackTraceElement caller = Mockito.mock(StackTraceElement.class);
         final Message message = Mockito.mock(Message.class);
-        final Throwable throwable = Mockito.mock(Throwable.class);
-        final StatusData statusData = new StatusData(caller, level, message, throwable, null);
+        final StatusData statusData = Mockito.spy(new StatusData(null, Level.TRACE, message, null, null));
         listener.log(statusData);
 
         // Verify the call.
-        Mockito.verify(loggerFactory)
-                .createSimpleLogger(
-                        Mockito.eq("StatusConsoleListener"), Mockito.same(level), Mockito.any(), Mockito.same(stream));
-        Mockito.verify(logger).atLevel(Mockito.same(level));
-        Mockito.verify(logBuilder).withThrowable(Mockito.same(throwable));
-        Mockito.verify(logBuilder).withLocation(Mockito.same(caller));
-        Mockito.verify(logBuilder).log(Mockito.same(message));
+        Mockito.verify(statusData).getFormattedStatus();
     }
 
     @Test

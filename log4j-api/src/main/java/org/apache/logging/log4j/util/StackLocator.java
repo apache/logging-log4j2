@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.Predicate;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class.
@@ -51,6 +53,8 @@ import java.util.function.Predicate;
 @InternalApi
 public final class StackLocator {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     /** TODO Consider removing now that we require Java 8. */
     static final int JDK_7U25_OFFSET;
 
@@ -75,18 +79,18 @@ public final class StackLocator {
             } else {
                 o = getCallerClassMethod.invoke(null, 1);
                 if (o == sunReflectionClass) {
-                    LowLevelLogUtil.log(
-                            "WARNING: Unexpected result from sun.reflect.Reflection.getCallerClass(int), adjusting offset for future calls.");
+                    LOGGER.warn(
+                            "Unexpected result from `sun.reflect.Reflection.getCallerClass(int)`, adjusting offset for future calls.");
                     java7u25CompensationOffset = 1;
                 }
             }
         } catch (final Exception | LinkageError e) {
             if (Constants.JAVA_MAJOR_VERSION > 8) {
-                LowLevelLogUtil.log(
-                        "WARNING: Runtime environment or build system does not support multi-release JARs. This will impact location-based features.");
+                LOGGER.warn(
+                        "Runtime environment or build system does not support multi-release JARs. This will impact location-based features.");
             } else {
-                LowLevelLogUtil.log(
-                        "WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact location-based features.");
+                LOGGER.warn(
+                        "`sun.reflect.Reflection.getCallerClass(int)` is not supported. This will impact location-based features.");
             }
             getCallerClassMethod = null;
             java7u25CompensationOffset = -1;

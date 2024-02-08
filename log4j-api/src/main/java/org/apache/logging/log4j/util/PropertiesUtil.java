@@ -37,6 +37,8 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em>
@@ -54,8 +56,12 @@ import java.util.concurrent.ConcurrentSkipListSet;
 @ServiceConsumer(value = PropertySource.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public final class PropertiesUtil {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
+
     private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
+
     private static final Lazy<PropertiesUtil> COMPONENT_PROPERTIES =
             Lazy.lazy(() -> new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME, false));
 
@@ -104,13 +110,13 @@ public final class PropertiesUtil {
         if (null != in) {
             try {
                 props.load(in);
-            } catch (final IOException e) {
-                LowLevelLogUtil.logException("Unable to read " + source, e);
+            } catch (final IOException error) {
+                LOGGER.error("Unable to read source `{}`", source, error);
             } finally {
                 try {
                     in.close();
-                } catch (final IOException e) {
-                    LowLevelLogUtil.logException("Unable to close " + source, e);
+                } catch (final IOException error) {
+                    LOGGER.error("Unable to close source `{}`", source, error);
                 }
             }
         }
@@ -238,8 +244,11 @@ public final class PropertiesUtil {
                 return Charset.forName(mapped);
             }
         }
-        LowLevelLogUtil.log("Unable to get Charset '" + charsetName + "' for property '" + name + "', using default "
-                + defaultValue + " and continuing.");
+        LOGGER.error(
+                "Unable to read charset `{}` from property `{}`. Falling back to the default: `{}`",
+                charsetName,
+                name,
+                defaultValue);
         return defaultValue;
     }
 
@@ -424,8 +433,8 @@ public final class PropertiesUtil {
     public static Properties getSystemProperties() {
         try {
             return new Properties(System.getProperties());
-        } catch (final SecurityException ex) {
-            LowLevelLogUtil.logException("Unable to access system properties.", ex);
+        } catch (final SecurityException error) {
+            LOGGER.error("Unable to access system properties.", error);
             // Sandboxed - can't read System Properties
             return new Properties();
         }

@@ -33,14 +33,16 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests the And composite condition.
  */
-public class IfAllTest {
+@SetSystemProperty(key = "log4j2.status.entries", value = "10")
+class IfAllTest {
 
     @Test
-    public void testAccept() {
+    void testAccept() {
         final PathCondition TRUE = new FixedCondition(true);
         final PathCondition FALSE = new FixedCondition(false);
         assertTrue(IfAll.createAndCondition(TRUE, TRUE).accept(null, null, null));
@@ -50,12 +52,12 @@ public class IfAllTest {
     }
 
     @Test
-    public void testEmptyIsFalse() {
+    void testEmptyIsFalse() {
         assertFalse(IfAll.createAndCondition().accept(null, null, null));
     }
 
     @Test
-    public void testBeforeTreeWalk() {
+    void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
         final IfAll and = IfAll.createAndCondition(counter, counter, counter);
         and.beforeFileTreeWalk();
@@ -63,14 +65,14 @@ public class IfAllTest {
     }
 
     @Test
-    public void testCreateAndConditionCalledProgrammaticallyThrowsNPEWhenComponentsNotSpecified() {
+    void testCreateAndConditionCalledProgrammaticallyThrowsNPEWhenComponentsNotSpecified() {
         PathCondition[] components = null;
         assertThrows(NullPointerException.class, () -> IfAll.createAndCondition(components));
     }
 
     @ParameterizedTest
     @ValueSource(strings = "No components provided for IfAll")
-    public void testCreateAndConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenComponentsNotSpecified(
+    void testCreateAndConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenComponentsNotSpecified(
             final String expectedMessage) {
         final PluginEntry nullEntry = null;
         final PluginType<IfAll> type = new PluginType<>(nullEntry, IfAll.class, "Dummy");

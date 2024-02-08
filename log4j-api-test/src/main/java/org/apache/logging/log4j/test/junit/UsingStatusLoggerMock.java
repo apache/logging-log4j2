@@ -14,28 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.test.junit;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.test.junit.Named;
-import org.junit.jupiter.api.Test;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Tests queue full scenarios with AsyncAppender.
+ * Shortcut to {@link StatusLoggerMockExtension}.
  */
-public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
-
-    @Override
-    @Test
-    @LoggerContextSource
-    protected void testNormalQueueFullKeepsMessagesInOrder(
-            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
-        super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
-    }
-
-    @Override
-    protected void checkConfig(final LoggerContext ctx) {
-        assertAsyncAppender(ctx);
-    }
-}
+@Retention(RUNTIME)
+@Target({TYPE, METHOD})
+@Documented
+@ExtendWith({ExtensionContextAnchor.class, StatusLoggerMockExtension.class})
+public @interface UsingStatusLoggerMock {}
