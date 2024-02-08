@@ -21,12 +21,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingStatusLoggerMock;
@@ -53,11 +55,11 @@ class XmlConfigurationPropsTest {
                 .isInstanceOf(XmlConfiguration.class)
                 .extracting(Configuration::getName)
                 .isEqualTo(expectedConfigName);
-        final StatusLogger statusLogger = StatusLogger.getLogger();
+        final StatusConsoleListener fallbackListener = StatusLogger.getLogger().getFallbackListener();
         if (expectedStatusLevel == null) {
-            verify(statusLogger, never()).setFallbackListenerLevel(any());
+            verify(fallbackListener, never()).setLevel(any());
         } else {
-            verify(statusLogger).setFallbackListenerLevel(eq(expectedStatusLevel));
+            verify(fallbackListener).setLevel(eq(expectedStatusLevel));
         }
         assertThat(config.getRootLogger().getExplicitLevel()).isEqualTo(expectedRootLevel);
     }

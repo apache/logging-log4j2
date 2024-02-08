@@ -325,37 +325,24 @@ public class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Sets the level of the fallback listener.
+     * Returns the fallback listener.
      *
-     * @param level a level
-     * @since 2.23.0
+     * @return the fallback listener
      */
-    public void setFallbackListenerLevel(final Level level) {
-        requireNonNull(level, "level");
-        fallbackListener.setLevel(level);
-    }
-
-    /**
-     * Sets the output of the fallback listener.
-     *
-     * @param stream a print stream
-     * @since 2.23.0
-     */
-    public void setFallbackListenerOutput(final PrintStream stream) {
-        requireNonNull(stream, "stream");
-        fallbackListener.setStream(stream);
+    public StatusConsoleListener getFallbackListener() {
+        return fallbackListener;
     }
 
     /**
      * Sets the level of the fallback listener.
      *
      * @param level a level
-     * @deprecated Use {@link #setFallbackListenerLevel(Level)} instead.
+     * @deprecated Instead use the {@link StatusConsoleListener#setLevel(Level) setLevel(Level)} method on the fallback listener returned by {@link #getFallbackListener()}.
      */
     @Deprecated
     public void setLevel(final Level level) {
         requireNonNull(level, "level");
-        setFallbackListenerLevel(level);
+        fallbackListener.setLevel(level);
     }
 
     /**
@@ -390,16 +377,15 @@ public class StatusLogger extends AbstractLogger {
     }
 
     /**
-     *
      * Sets the level of the fallback listener.
      *
      * @param level a level
-     * @deprecated Instead either use {@link #setFallbackListenerLevel(Level)}, or {@link #getListeners() get the specific listener} and change its {@link StatusListener#getStatusLevel() level}.
+     * @deprecated Instead use the {@link StatusConsoleListener#setLevel(Level) setLevel(Level)} method on the fallback listener returned by {@link #getFallbackListener()}.
      */
     @Deprecated
     public void updateListenerLevel(final Level level) {
         requireNonNull(level, "level");
-        setFallbackListenerLevel(level);
+        fallbackListener.setLevel(level);
     }
 
     /**

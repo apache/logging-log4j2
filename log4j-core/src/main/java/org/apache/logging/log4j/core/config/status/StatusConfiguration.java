@@ -28,6 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -185,11 +186,12 @@ public class StatusConfiguration {
         lock.lock();
         try {
             if (!this.initialized) {
+                final StatusConsoleListener fallbackListener = LOGGER.getFallbackListener();
                 if (output != null) {
-                    LOGGER.setFallbackListenerOutput(output);
+                        fallbackListener.setStream(output);
                 }
                 if (level != null) {
-                    LOGGER.setFallbackListenerLevel(level);
+                    fallbackListener.setLevel(level);
                 }
                 initialized = true;
             }

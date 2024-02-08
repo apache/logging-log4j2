@@ -20,7 +20,9 @@ import static org.apache.logging.log4j.test.junit.ExtensionContextAnchor.getAttr
 import static org.apache.logging.log4j.test.junit.ExtensionContextAnchor.setAttribute;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
+import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -36,6 +38,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * Similarly, we cannot replace the mock in between tests, since it is already stored in {@code static} fields.
  * That is why we only reset the mocked instance before each test.
  * </p>
+ *
+ * @see UsingStatusLoggerMock
  */
 class StatusLoggerMockExtension implements BeforeAllCallback, BeforeEachCallback, AfterAllCallback {
 
@@ -47,12 +51,20 @@ class StatusLoggerMockExtension implements BeforeAllCallback, BeforeEachCallback
     public void beforeAll(final ExtensionContext context) throws Exception {
         setAttribute(INITIAL_STATUS_LOGGER_KEY, StatusLogger.getLogger(), context);
         final StatusLogger statusLogger = mock(StatusLogger.class);
+        stubFallbackListener(statusLogger);
         StatusLogger.setLogger(statusLogger);
     }
 
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
-        reset(StatusLogger.getLogger());
+        final StatusLogger statusLogger = StatusLogger.getLogger();
+        reset(statusLogger); // Stubs get reset too!
+        stubFallbackListener(statusLogger);
+    }
+
+    private static void stubFallbackListener(final StatusLogger statusLogger) {
+        final StatusConsoleListener fallbackListener = mock(StatusConsoleListener.class);
+        when(statusLogger.getFallbackListener()).thenReturn(fallbackListener);
     }
 
     @Override
