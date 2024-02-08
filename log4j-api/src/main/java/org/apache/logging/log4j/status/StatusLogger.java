@@ -44,7 +44,7 @@ import org.apache.logging.log4j.util.Constants;
 /**
  * Records events that occur in the logging system.
  * {@link StatusLogger} is expected to be a standalone, self-sufficient component that the logging system can rely on for low-level logging purposes.
- * <h3>Listeners</h3>
+ * <h2>Listeners</h3>
  * <p>
  * Each recorded event will first get buffered and then used to notify the registered {@link StatusListener}s.
  * If none are available, the <em>fallback listener</em> of type {@link StatusConsoleListener} will be used.
@@ -78,11 +78,12 @@ import org.apache.logging.log4j.util.Constants;
  * {@code StatusLogger} is designed as a singleton class accessed statically.
  * If you are running an application containing multiple Log4j configurations (e.g., in a servlet environment with multiple containers) and you happen to have differing {@code StatusLogger} configurations (e.g, one {@code log4j2.xml} containing {@code <Configuration status="ERROR">} while the other {@code <Configuration status="INFO">}), the last loaded configuration will be effective one.
  * </p>
- * <h3>Configuration properties</h3>
+ * <h2>Configuration properties</h3>
  * <p>
  * The list of available properties for configuring the {@code StatusLogger} is shared below.
  * </p>
  * <table>
+ * <caption>available properties for configuring the <code>StatusLogger</code></caption>
  * <tr>
  *     <th>Name</th>
  *     <th>Default</th>
@@ -116,7 +117,7 @@ import org.apache.logging.log4j.util.Constants;
  *     <td>The debug mode toggle.</td>
  * </tr>
  * </table>
- * <h3>Debug mode</h3>
+ * <h2>Debug mode</h3>
  * <p>
  * When the {@value Constants#LOG4J2_DEBUG} system property is present, any level-related filtering will be skipped and all events will be notified to listeners.
  * If no listeners are available, the <em>fallback listener</em> of type {@link StatusConsoleListener} will be used.
