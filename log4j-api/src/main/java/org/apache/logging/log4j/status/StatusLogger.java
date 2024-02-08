@@ -21,7 +21,6 @@ import static java.util.Objects.requireNonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -79,6 +78,44 @@ import org.apache.logging.log4j.util.Constants;
  * {@code StatusLogger} is designed as a singleton class accessed statically.
  * If you are running an application containing multiple Log4j configurations (e.g., in a servlet environment with multiple containers) and you happen to have differing {@code StatusLogger} configurations (e.g, one {@code log4j2.xml} containing {@code <Configuration status="ERROR">} while the other {@code <Configuration status="INFO">}), the last loaded configuration will be effective one.
  * </p>
+ * <h3>Configuration properties</h3>
+ * <p>
+ * The list of available properties for configuring the {@code StatusLogger} is shared below.
+ * </p>
+ * <table>
+ * <tr>
+ *     <th>Name</th>
+ *     <th>Default</th>
+ *     <th>Description</th>
+ * </tr>
+ * <tr>
+ *     <td><code>{@value MAX_STATUS_ENTRIES}</code></td>
+ *     <td>0</td>
+ *     <td>
+ *         The maximum number of events buffered.
+ *         Once the limit is reached, older entries will be removed as new entries are added.
+ *     </td>
+ * </tr>
+ * <tr>
+ *     <td><code>{@value DEFAULT_STATUS_LISTENER_LEVEL}</code></td>
+ *     <td>{@code ERROR}</td>
+ *     <td>
+ *         The {@link Level} name to use as the fallback listener level.<br/>
+ *         The fallback listener is used when the listener registry is empty.
+ *         The fallback listener will accept entries filtered by the level provided in this configuration.
+ *     </td>
+ * </tr>
+ * <tr>
+ *     <td><code>{@value STATUS_DATE_FORMAT}</code></td>
+ *     <td>{@code null}</td>
+ *     <td>A {@link java.time.format.DateTimeFormatter} pattern to format the created {@link StatusData}.</td>
+ * </tr>
+ * <tr>
+ *     <td><code>{@value #DEBUG_PROPERTY_NAME}</code></td>
+ *     <td>false</td>
+ *     <td>The debug mode toggle.</td>
+ * </tr>
+ * </table>
  * <h3>Debug mode</h3>
  * <p>
  * When the {@value Constants#LOG4J2_DEBUG} system property is present, any level-related filtering will be skipped and all events will be notified to listeners.

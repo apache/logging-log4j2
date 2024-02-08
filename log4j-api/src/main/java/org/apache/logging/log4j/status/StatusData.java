@@ -48,7 +48,6 @@ public class StatusData implements Serializable {
 
     private final Message message;
 
-    @Nullable
     private final String threadName;
 
     @Nullable

@@ -188,7 +188,7 @@ public class StatusConfiguration {
             if (!this.initialized) {
                 final StatusConsoleListener fallbackListener = LOGGER.getFallbackListener();
                 if (output != null) {
-                        fallbackListener.setStream(output);
+                    fallbackListener.setStream(output);
                 }
                 if (level != null) {
                     fallbackListener.setLevel(level);
