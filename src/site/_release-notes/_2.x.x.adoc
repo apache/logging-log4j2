@@ -52,7 +52,7 @@ This releases contains ...
 [#release-notes-2-x-x-updated]
 === Updated
 
-* Update `actions/upload-artifact` to version `4.3.0` (https://github.com/apache/logging-log4j2/pull/2240[2240])
+* Update `actions/upload-artifact` to version `4.3.1` (https://github.com/apache/logging-log4j2/pull/2265[2265])
 * Update `apache/logging-parent` to version `` (https://github.com/apache/logging-log4j2/pull/2192[2192])
 * Update `co.elastic.clients:elasticsearch-java` to version `8.12.1` (https://github.com/apache/logging-log4j2/pull/2269[2269])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
