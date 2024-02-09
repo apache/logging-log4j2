@@ -19,7 +19,8 @@ package org.apache.logging.log4j.util;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
-import org.apache.logging.log4j.internal.StringBuilderRecycler;
+
+import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
 
 /**
  * <em>Consider this class private.</em>
@@ -29,10 +30,11 @@ import org.apache.logging.log4j.internal.StringBuilderRecycler;
 @InternalApi
 public final class Strings {
 
-    private static final StringBuilderRecycler STRING_BUILDER_RECYCLER = StringBuilderRecycler.of(
-            Constants.MAX_REUSABLE_MESSAGE_SIZE,
-            0,
-            Constants.ENABLE_THREADLOCALS);
+    // 518 allows the `StringBuilder` to resize three times from its initial size.
+    // This should be sufficient for most use cases.
+    private static final int MAX_FORMAT_BUFFER_LENGTH = 518;
+
+    private static final ThreadLocal<StringBuilder> FORMAT_BUFFER_REF = ThreadLocal.withInitial(StringBuilder::new);
 
     /**
      * The empty string.
@@ -322,11 +324,12 @@ public final class Strings {
         } else if (isEmpty(str2)) {
             return str1;
         }
-        final StringBuilder sb = STRING_BUILDER_RECYCLER.acquire();
+        final StringBuilder sb = FORMAT_BUFFER_REF.get();
         try {
             return sb.append(str1).append(str2).toString();
         } finally {
-            STRING_BUILDER_RECYCLER.release(sb);
+            trimToMaxSize(sb, MAX_FORMAT_BUFFER_LENGTH);
+            sb.setLength(0);
         }
     }
 
@@ -342,14 +345,15 @@ public final class Strings {
         if (count < 0) {
             throw new IllegalArgumentException("count");
         }
-        final StringBuilder sb = STRING_BUILDER_RECYCLER.acquire();
+        final StringBuilder sb = FORMAT_BUFFER_REF.get();
         try {
             for (int index = 0; index < count; index++) {
                 sb.append(str);
             }
             return sb.toString();
         } finally {
-            STRING_BUILDER_RECYCLER.release(sb);
+            trimToMaxSize(sb, MAX_FORMAT_BUFFER_LENGTH);
+            sb.setLength(0);
         }
     }
 }

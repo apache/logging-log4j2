@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.util.Arrays;
-
-import org.apache.logging.log4j.internal.StringBuilderRecycler;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+
+import java.util.Arrays;
+
+import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
 
 /**
  * Reusable parameterized message. This message is mutable and is not safe to be accessed or modified by multiple
@@ -36,18 +37,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     private static final int MAX_PARAMS = 10;
     private static final long serialVersionUID = 7800075879295123856L;
 
-    private static final StringBuilderRecycler STRING_BUILDER_RECYCLER = StringBuilderRecycler.of(
-            Constants.MAX_REUSABLE_MESSAGE_SIZE,
-            // This value indicates the maximum recursion depth before the recycler starts creating new instances.
-            // Consider a `ParameterizedMessage` containing an argument such that its `toString()` causes another (i.e.,
-            // recursive) `ParameterizedMessage` formatting. This value indicates the depth we support garbage-free
-            // formatting in such nested formatting situations. When this depth is exceeded, code still works, but
-            // starts generating garbage due to new `StringBuilder` allocations.
-            3,
-            Constants.ENABLE_THREADLOCALS);
-
     private String messagePattern;
     private final MessagePatternAnalysis patternAnalysis = new MessagePatternAnalysis();
+    private final StringBuilder formatBuffer = new StringBuilder(Constants.MAX_REUSABLE_MESSAGE_SIZE);
     private int argCount;
     private transient Object[] varargs;
     private transient Object[] params = new Object[MAX_PARAMS];
@@ -345,12 +337,12 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
      */
     @Override
     public String getFormattedMessage() {
-        final StringBuilder sb = STRING_BUILDER_RECYCLER.acquire();
         try {
-            formatTo(sb);
-            return sb.toString();
+            formatTo(formatBuffer);
+            return formatBuffer.toString();
         } finally {
-            STRING_BUILDER_RECYCLER.release(sb);
+            trimToMaxSize(formatBuffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+            formatBuffer.setLength(0);
         }
     }
 
