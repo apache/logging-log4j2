@@ -73,13 +73,13 @@
       java.naming;transitive=false,
       org.apache.commons.csv;transitive=false,
       org.fusesource.jansi;transitive=false,
+      org.zeromq.jeromq;transitive=false,
       <!-- A module descriptor is only available in version 1.2.16+, hence it is not detected -->
       com.conversantmedia.disruptor;substitute="disruptor";transitive=false;static=true,
       <!-- Filebased module names: MUST be static -->
       kafka.clients;substitute="kafka-clients";transitive=false;static=true,
       javax.jms.api;substitute="javax.jms-api";transitive=false;static=true,
-      javax.mail.api;substitute="javax.mail-api";transitive=false;static=true,
-      jeromq;transitive=false;static=true
+      javax.mail.api;substitute="javax.mail-api";transitive=false;static=true
     </bnd-extra-module-options>
   </properties>
   <dependencies>
