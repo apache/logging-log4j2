@@ -96,7 +96,7 @@
     <assertj.version>3.25.3</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <commons-codec.version>1.16.0</commons-codec.version>
+    <commons-codec.version>1.16.1</commons-codec.version>
     <commons-compress.version>1.25.0</commons-compress.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <commons-dbcp2.version>2.11.0</commons-dbcp2.version>
