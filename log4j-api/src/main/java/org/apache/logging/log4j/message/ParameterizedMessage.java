@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import org.apache.logging.log4j.internal.StringBuilderRecycler;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.internal.SerializationUtil;
 
@@ -78,15 +79,15 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     private static final long serialVersionUID = -665975803997290697L;
 
-    private static final StringBuilderRecycler STRING_BUILDER_RECYCLER = StringBuilderRecycler.ofEnvironment(
-            // This value indicates the maximum recursion depth supported before the recycler starts creating new
-            // instances.
-            // Consider a `ParameterizedMessage` containing an argument whose `toString()` causes another
-            // `ParameterizedMessage` formatting.
-            // This value indicates the depth we support garbage-free formatting in such nested formatting situations.
-            // When this depth is exceeded, code still works, but starts generating garbage due to new `StringBuilder`
-            // allocations.
-            3);
+    private static final StringBuilderRecycler STRING_BUILDER_RECYCLER = StringBuilderRecycler.of(
+            Constants.MAX_REUSABLE_MESSAGE_SIZE,
+            // This value indicates the maximum recursion depth before the recycler starts creating new instances.
+            // Consider a `ParameterizedMessage` containing an argument such that its `toString()` causes another (i.e.,
+            // recursive) `ParameterizedMessage` formatting. This value indicates the depth we support garbage-free
+            // formatting in such nested formatting situations. When this depth is exceeded, code still works, but
+            // starts generating garbage due to new `StringBuilder` allocations.
+            3,
+            Constants.ENABLE_THREADLOCALS);
 
     private final String pattern;
 

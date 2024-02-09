@@ -30,9 +30,13 @@ import org.apache.logging.log4j.util.StringBuilders;
  */
 final class ThreadLocalStringBuilderRecycler implements StringBuilderRecycler {
 
+    private final int maxLength;
+
     private final ThreadLocal<StringBuilder> stringBuilderHolder = ThreadLocal.withInitial(StringBuilder::new);
 
-    ThreadLocalStringBuilderRecycler() {}
+    ThreadLocalStringBuilderRecycler(final int maxLength) {
+        this.maxLength = maxLength;
+    }
 
     @Override
     public StringBuilder acquire() {
@@ -47,7 +51,7 @@ final class ThreadLocalStringBuilderRecycler implements StringBuilderRecycler {
 
     @Override
     public void release(final StringBuilder stringBuilder) {
-        StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_CAPACITY);
+        StringBuilders.trimToMaxSize(stringBuilder, maxLength);
         stringBuilder.setLength(0);
         stringBuilderHolder.set(stringBuilder);
     }

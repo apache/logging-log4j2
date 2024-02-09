@@ -17,10 +17,11 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
+
+import org.apache.logging.log4j.internal.StringBuilderRecycler;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Reusable parameterized message. This message is mutable and is not safe to be accessed or modified by multiple
@@ -32,10 +33,18 @@ import org.apache.logging.log4j.util.StringBuilders;
 @PerformanceSensitive("allocation")
 public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable, Clearable {
 
-    private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARAMS = 10;
     private static final long serialVersionUID = 7800075879295123856L;
-    private transient ThreadLocal<StringBuilder> buffer; // non-static: LOG4J2-1583
+
+    private static final StringBuilderRecycler STRING_BUILDER_RECYCLER = StringBuilderRecycler.of(
+            Constants.MAX_REUSABLE_MESSAGE_SIZE,
+            // This value indicates the maximum recursion depth before the recycler starts creating new instances.
+            // Consider a `ParameterizedMessage` containing an argument such that its `toString()` causes another (i.e.,
+            // recursive) `ParameterizedMessage` formatting. This value indicates the depth we support garbage-free
+            // formatting in such nested formatting situations. When this depth is exceeded, code still works, but
+            // starts generating garbage due to new `StringBuilder` allocations.
+            3,
+            Constants.ENABLE_THREADLOCALS);
 
     private String messagePattern;
     private final MessagePatternAnalysis patternAnalysis = new MessagePatternAnalysis();
@@ -336,25 +345,13 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
      */
     @Override
     public String getFormattedMessage() {
-        final StringBuilder sb = getBuffer();
-        formatTo(sb);
-        final String result = sb.toString();
-        StringBuilders.trimToMaxSize(sb, Constants.MAX_REUSABLE_MESSAGE_SIZE);
-        return result;
-    }
-
-    private StringBuilder getBuffer() {
-        if (buffer == null) {
-            buffer = new ThreadLocal<>();
+        final StringBuilder sb = STRING_BUILDER_RECYCLER.acquire();
+        try {
+            formatTo(sb);
+            return sb.toString();
+        } finally {
+            STRING_BUILDER_RECYCLER.release(sb);
         }
-        StringBuilder result = buffer.get();
-        if (result == null) {
-            final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
-            result = new StringBuilder(Math.max(MIN_BUILDER_SIZE, currentPatternLength * 2));
-            buffer.set(result);
-        }
-        result.setLength(0);
-        return result;
     }
 
     @Override
@@ -374,8 +371,10 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
 
     @Override
     public String toString() {
-        return "ReusableParameterizedMessage[messagePattern=" + getFormat() + ", stringArgs="
-                + Arrays.toString(getParameters()) + ", throwable=" + getThrowable() + ']';
+        // Avoid formatting arguments!
+        // It can cause recursion, which can become pretty unpleasant while troubleshooting.
+        return "ReusableParameterizedMessage[messagePattern=" + getFormat() + ", argCount=" + getParameterCount() +
+                ", throwableProvided=" + (getThrowable() != null) + ']';
     }
 
     @Override

@@ -29,7 +29,10 @@ import org.apache.logging.log4j.internal.StringBuilderRecycler;
 @InternalApi
 public final class Strings {
 
-    private static final StringBuilderRecycler STRING_BUILDER_RECYCLER = StringBuilderRecycler.ofEnvironment(0);
+    private static final StringBuilderRecycler STRING_BUILDER_RECYCLER = StringBuilderRecycler.of(
+            Constants.MAX_REUSABLE_MESSAGE_SIZE,
+            0,
+            Constants.ENABLE_THREADLOCALS);
 
     /**
      * The empty string.

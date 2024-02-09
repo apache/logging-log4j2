@@ -32,9 +32,12 @@ import org.apache.logging.log4j.util.StringBuilders;
  */
 final class QueueingThreadLocalStringBuilderRecycler implements StringBuilderRecycler {
 
+    private final int maxLength;
+
     private final ThreadLocal<Queue<StringBuilder>> queueHolder;
 
-    QueueingThreadLocalStringBuilderRecycler(final int threadLocalQueueCapacity) {
+    QueueingThreadLocalStringBuilderRecycler(final int maxLength, final int threadLocalQueueCapacity) {
+        this.maxLength = maxLength;
         this.queueHolder = ThreadLocal.withInitial(() -> new ArrayQueue<>(threadLocalQueueCapacity));
     }
 
@@ -47,7 +50,7 @@ final class QueueingThreadLocalStringBuilderRecycler implements StringBuilderRec
 
     @Override
     public void release(final StringBuilder stringBuilder) {
-        StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_CAPACITY);
+        StringBuilders.trimToMaxSize(stringBuilder, maxLength);
         stringBuilder.setLength(0);
         final Queue<StringBuilder> queue = queueHolder.get();
         queue.offer(stringBuilder);
