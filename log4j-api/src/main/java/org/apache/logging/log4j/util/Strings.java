@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
+import org.apache.logging.log4j.internal.StringBuilderRecycler;
 
 /**
  * <em>Consider this class private.</em>
@@ -28,7 +29,7 @@ import java.util.Objects;
 @InternalApi
 public final class Strings {
 
-    private static final ThreadLocal<StringBuilder> tempStr = ThreadLocal.withInitial(StringBuilder::new);
+    private static final StringBuilderRecycler STRING_BUILDER_RECYCLER = StringBuilderRecycler.ofEnvironment(0);
 
     /**
      * The empty string.
@@ -318,11 +319,11 @@ public final class Strings {
         } else if (isEmpty(str2)) {
             return str1;
         }
-        final StringBuilder sb = tempStr.get();
+        final StringBuilder sb = STRING_BUILDER_RECYCLER.acquire();
         try {
             return sb.append(str1).append(str2).toString();
         } finally {
-            sb.setLength(0);
+            STRING_BUILDER_RECYCLER.release(sb);
         }
     }
 
@@ -338,14 +339,14 @@ public final class Strings {
         if (count < 0) {
             throw new IllegalArgumentException("count");
         }
-        final StringBuilder sb = tempStr.get();
+        final StringBuilder sb = STRING_BUILDER_RECYCLER.acquire();
         try {
             for (int index = 0; index < count; index++) {
                 sb.append(str);
             }
             return sb.toString();
         } finally {
-            sb.setLength(0);
+            STRING_BUILDER_RECYCLER.release(sb);
         }
     }
 }
