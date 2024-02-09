@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
+
+import java.util.Arrays;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
-import java.util.Arrays;
-
-import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
 
 /**
  * Reusable parameterized message. This message is mutable and is not safe to be accessed or modified by multiple
@@ -365,8 +364,8 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     public String toString() {
         // Avoid formatting arguments!
         // It can cause recursion, which can become pretty unpleasant while troubleshooting.
-        return "ReusableParameterizedMessage[messagePattern=" + getFormat() + ", argCount=" + getParameterCount() +
-                ", throwableProvided=" + (getThrowable() != null) + ']';
+        return "ReusableParameterizedMessage[messagePattern=" + getFormat() + ", argCount=" + getParameterCount()
+                + ", throwableProvided=" + (getThrowable() != null) + ']';
     }
 
     @Override

@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.message;
 
-import com.google.errorprone.annotations.InlineMe;
-import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
-import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
+import static org.apache.logging.log4j.message.ParameterFormatter.analyzePattern;
+import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
 
+import com.google.errorprone.annotations.InlineMe;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
-
-import static org.apache.logging.log4j.message.ParameterFormatter.analyzePattern;
-import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
+import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * A {@link Message} accepting argument placeholders in the formatting pattern.
@@ -80,9 +79,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     private static final long serialVersionUID = -665975803997290697L;
 
-    private static final ThreadLocal<FormatBufferHolder> FORMAT_BUFFER_HOLDER_REF = Constants.ENABLE_THREADLOCALS
-            ? ThreadLocal.withInitial(FormatBufferHolder::new)
-            : null;
+    private static final ThreadLocal<FormatBufferHolder> FORMAT_BUFFER_HOLDER_REF =
+            Constants.ENABLE_THREADLOCALS ? ThreadLocal.withInitial(FormatBufferHolder::new) : null;
 
     private static final class FormatBufferHolder {
 

@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
+
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
-
-import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
 
 /**
  * <em>Consider this class private.</em>
