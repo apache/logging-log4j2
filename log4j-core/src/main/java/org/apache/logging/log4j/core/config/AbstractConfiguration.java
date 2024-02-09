@@ -647,18 +647,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
-        if (rootNode.hasChildren() && rootNode.getChildren().get(0).getName().equalsIgnoreCase("Properties")) {
-            final Node first = rootNode.getChildren().get(0);
-            createConfiguration(first, null);
-            if (first.getObject() != null) {
-                final StrLookup lookup = (StrLookup) first.getObject();
-                if (lookup instanceof LoggerContextAware) {
-                    ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
+        // Find the "Properties" node first
+        boolean hasProperties = false;
+        for (final Node node : rootNode.getChildren()) {
+            if ("Properties".equalsIgnoreCase(node.getName())) {
+                hasProperties = true;
+                createConfiguration(node, null);
+                if (node.getObject() != null) {
+                    final StrLookup lookup = node.getObject();
+                    runtimeStrSubstitutor.setVariableResolver(lookup);
+                    configurationStrSubstitutor.setVariableResolver(lookup);
                 }
-                runtimeStrSubstitutor.setVariableResolver(lookup);
-                configurationStrSubstitutor.setVariableResolver(lookup);
+                break;
             }
-        } else {
+        }
+        if (!hasProperties) {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
             final Interpolator interpolator = new Interpolator(lookup, pluginPackages);
@@ -670,7 +673,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         boolean setLoggers = false;
         boolean setRoot = false;
         for (final Node child : rootNode.getChildren()) {
-            if (child.getName().equalsIgnoreCase("Properties")) {
+            if ("Properties".equalsIgnoreCase(child.getName())) {
                 if (tempLookup == runtimeStrSubstitutor.getVariableResolver()) {
                     LOGGER.error("Properties declaration must be the first element in the configuration");
                 }
@@ -680,7 +683,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (child.getObject() == null) {
                 continue;
             }
-            if (child.getName().equalsIgnoreCase("Scripts")) {
+            if ("Scripts".equalsIgnoreCase(child.getName())) {
                 for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
                     if (script instanceof ScriptRef) {
                         LOGGER.error(
@@ -690,11 +693,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         scriptManager.addScript(script);
                     }
                 }
-            } else if (child.getName().equalsIgnoreCase("Appenders")) {
+            } else if ("Appenders".equalsIgnoreCase(child.getName())) {
                 appenders = child.getObject();
             } else if (child.isInstanceOf(Filter.class)) {
                 addFilter(child.getObject(Filter.class));
-            } else if (child.getName().equalsIgnoreCase("Loggers")) {
+            } else if (child.isInstanceOf(Loggers.class)) {
                 final Loggers l = child.getObject();
                 loggerConfigs = l.getMap();
                 setLoggers = true;
@@ -702,7 +705,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     root = l.getRoot();
                     setRoot = true;
                 }
-            } else if (child.getName().equalsIgnoreCase("CustomLevels")) {
+            } else if (child.isInstanceOf(CustomLevels.class)) {
                 customLevels = child.getObject(CustomLevels.class).getCustomLevels();
             } else if (child.isInstanceOf(CustomLevelConfig.class)) {
                 final List<CustomLevelConfig> copy = new ArrayList<>(customLevels);
