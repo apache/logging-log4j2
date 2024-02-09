@@ -137,12 +137,12 @@ public class ParameterizedMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertThat("Should use current param value").isEqualTo("Test message XYZ", actual);
+        assertThat(actual).isEqualTo("Test message XYZ").as("Should use current param value");
 
         // modify parameter after calling msg.getFormattedMessage
         param.set("000");
         final String after = msg.getFormattedMessage();
-        assertThat("Should not change after rendered once").isEqualTo("Test message XYZ", after);
+        assertThat(after).isEqualTo("Test message XYZ").as("Should not change after rendered once");
     }
 
     static Stream<Object> testSerializable() {
