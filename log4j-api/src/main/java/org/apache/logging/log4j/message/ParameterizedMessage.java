@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import static org.apache.logging.log4j.message.ParameterFormatter.analyzePattern;
+import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
 
 import com.google.errorprone.annotations.InlineMe;
 import java.io.IOException;
@@ -28,7 +29,6 @@ import java.util.Objects;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
@@ -44,10 +44,6 @@ import org.apache.logging.log4j.util.internal.SerializationUtil;
  * {bar
  * {buzz}
  * </pre>
- * <p>
- * This class was originally written for <a href="http://lilithapp.com/">Lilith</a> by Jörn Huxhorn and licensed under the LGPL.
- * It has been relicensed here with his permission providing that this attribution remain.
- * </p>
  */
 public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
@@ -83,9 +79,15 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     private static final long serialVersionUID = -665975803997290697L;
 
-    private static final ThreadLocal<StringBuilder> STRING_BUILDER_HOLDER = Constants.ENABLE_THREADLOCALS
-            ? ThreadLocal.withInitial(() -> new StringBuilder(Constants.MAX_REUSABLE_MESSAGE_SIZE))
-            : null;
+    private static final ThreadLocal<FormatBufferHolder> FORMAT_BUFFER_HOLDER_REF =
+            Constants.ENABLE_THREADLOCALS ? ThreadLocal.withInitial(FormatBufferHolder::new) : null;
+
+    private static final class FormatBufferHolder {
+
+        private final StringBuilder buffer = new StringBuilder(Constants.MAX_REUSABLE_MESSAGE_SIZE);
+
+        private boolean used = false;
+    }
 
     private final String pattern;
 
@@ -242,16 +244,25 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     @Override
     public String getFormattedMessage() {
         if (formattedMessage == null) {
-            if (STRING_BUILDER_HOLDER != null) {
-                final StringBuilder buffer = STRING_BUILDER_HOLDER.get();
-                buffer.setLength(0);
+            final FormatBufferHolder bufferHolder;
+            // If there isn't a format buffer to reuse
+            if (FORMAT_BUFFER_HOLDER_REF == null || (bufferHolder = FORMAT_BUFFER_HOLDER_REF.get()).used) {
+                final StringBuilder buffer = new StringBuilder(Constants.MAX_REUSABLE_MESSAGE_SIZE);
                 formatTo(buffer);
                 formattedMessage = buffer.toString();
-                StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
-            } else {
-                final StringBuilder buffer = new StringBuilder();
-                formatTo(buffer);
-                formattedMessage = buffer.toString();
+            }
+            // If there is a format buffer to reuse
+            else {
+                bufferHolder.used = true;
+                final StringBuilder buffer = bufferHolder.buffer;
+                try {
+                    formatTo(buffer);
+                    formattedMessage = buffer.toString();
+                } finally {
+                    trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+                    buffer.setLength(0);
+                    bufferHolder.used = false;
+                }
             }
         }
         return formattedMessage;
@@ -355,26 +366,28 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     @Override
     public String toString() {
-        return "ParameterizedMessage[messagePattern=" + pattern + ", stringArgs=" + Arrays.toString(args)
-                + ", throwable=" + throwable + ']';
+        // Avoid formatting arguments!
+        // It can cause recursion, which can become pretty unpleasant while troubleshooting.
+        return "ParameterizedMessage[messagePattern=" + pattern + ", argCount=" + args.length + ", throwableProvided="
+                + (throwable != null) + ']';
     }
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeInt(args.length);
-        for (int i = 0; i < args.length; i++) {
-            SerializationUtil.writeWrappedObject(
-                    args[i] instanceof Serializable ? (Serializable) args[i] : String.valueOf(args[i]), out);
+        for (final Object arg : args) {
+            final Serializable serializableArg = arg instanceof Serializable ? (Serializable) arg : String.valueOf(arg);
+            SerializationUtil.writeWrappedObject(serializableArg, out);
         }
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
-        final int length = in.readInt();
-        args = new Object[length];
-        for (int i = 0; i < args.length; i++) {
-            args[i] = SerializationUtil.readWrappedObject(in);
+        final int argCount = in.readInt();
+        args = new Object[argCount];
+        for (int argIndex = 0; argIndex < args.length; argIndex++) {
+            args[argIndex] = SerializationUtil.readWrappedObject(in);
         }
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
+
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
@@ -28,7 +30,11 @@ import java.util.Objects;
 @InternalApi
 public final class Strings {
 
-    private static final ThreadLocal<StringBuilder> tempStr = ThreadLocal.withInitial(StringBuilder::new);
+    // 518 allows the `StringBuilder` to resize three times from its initial size.
+    // This should be sufficient for most use cases.
+    private static final int MAX_FORMAT_BUFFER_LENGTH = 518;
+
+    private static final ThreadLocal<StringBuilder> FORMAT_BUFFER_REF = ThreadLocal.withInitial(StringBuilder::new);
 
     /**
      * The empty string.
@@ -318,10 +324,11 @@ public final class Strings {
         } else if (isEmpty(str2)) {
             return str1;
         }
-        final StringBuilder sb = tempStr.get();
+        final StringBuilder sb = FORMAT_BUFFER_REF.get();
         try {
             return sb.append(str1).append(str2).toString();
         } finally {
+            trimToMaxSize(sb, MAX_FORMAT_BUFFER_LENGTH);
             sb.setLength(0);
         }
     }
@@ -338,13 +345,14 @@ public final class Strings {
         if (count < 0) {
             throw new IllegalArgumentException("count");
         }
-        final StringBuilder sb = tempStr.get();
+        final StringBuilder sb = FORMAT_BUFFER_REF.get();
         try {
             for (int index = 0; index < count; index++) {
                 sb.append(str);
             }
             return sb.toString();
         } finally {
+            trimToMaxSize(sb, MAX_FORMAT_BUFFER_LENGTH);
             sb.setLength(0);
         }
     }
