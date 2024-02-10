@@ -18,9 +18,12 @@ package org.apache.logging.log4j.status;
 
 import static java.util.Objects.requireNonNull;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.Level;
 
 /**
@@ -29,8 +32,16 @@ import org.apache.logging.log4j.Level;
 @SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class StatusConsoleListener implements StatusListener {
 
+    private final Lock lock = new ReentrantLock();
+
+    private final Level initialLevel;
+
+    private final PrintStream initialStream;
+
+    // `volatile` is necessary to correctly read the `level` without holding the lock
     private volatile Level level;
 
+    // `volatile` is necessary to correctly read the `stream` without holding the lock
     private volatile PrintStream stream;
 
     /**
@@ -54,8 +65,8 @@ public class StatusConsoleListener implements StatusListener {
      * @throws NullPointerException on null {@code level} or {@code stream}
      */
     public StatusConsoleListener(final Level level, final PrintStream stream) {
-        this.level = requireNonNull(level, "level");
-        this.stream = requireNonNull(stream, "stream");
+        this.initialLevel = this.level = requireNonNull(level, "level");
+        this.initialStream = this.stream = requireNonNull(stream, "stream");
     }
 
     /**
@@ -65,7 +76,16 @@ public class StatusConsoleListener implements StatusListener {
      * @throws NullPointerException on null {@code level}
      */
     public void setLevel(final Level level) {
-        this.level = requireNonNull(level, "level");
+        requireNonNull(level, "level");
+        // Check if a mutation (and locking!) is necessary at all
+        if (!this.level.equals(level)) {
+            lock.lock();
+            try {
+                this.level = level;
+            } finally {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -76,7 +96,23 @@ public class StatusConsoleListener implements StatusListener {
      * @since 2.23.0
      */
     public void setStream(final PrintStream stream) {
-        this.stream = requireNonNull(stream, "stream");
+        requireNonNull(stream, "stream");
+        // Check if a mutation (and locking!) is necessary at all
+        if (this.stream != stream) {
+            @Nullable OutputStream oldStream = null;
+            lock.lock();
+            try {
+                if (this.stream != stream) {
+                    oldStream = this.stream;
+                    this.stream = stream;
+                }
+            } finally {
+                lock.unlock();
+            }
+            if (oldStream != null) {
+                closeNonSystemStream(oldStream);
+            }
+        }
     }
 
     /**
@@ -113,13 +149,33 @@ public class StatusConsoleListener implements StatusListener {
     @Deprecated
     public void setFilters(final String... filters) {}
 
+    /**
+     * Resets the level and output stream to its initial values, and closes the output stream, if it is a non-system one.
+     */
     @Override
-    public void close() throws IOException {
-        // Get local copy of the `volatile` member
-        final OutputStream localStream = stream;
+    public void close() {
+        final OutputStream oldStream;
+        lock.lock();
+        try {
+            oldStream = stream;
+            stream = initialStream;
+            level = initialLevel;
+        } finally {
+            lock.unlock();
+        }
+        closeNonSystemStream(oldStream);
+    }
+
+    private static void closeNonSystemStream(final OutputStream stream) {
         // Close only non-system streams
-        if (localStream != System.out && localStream != System.err) {
-            localStream.close();
+        if (stream != System.out && stream != System.err) {
+            try {
+                stream.close();
+            } catch (IOException error) {
+                // We are at the lowest level of the system.
+                // Hence, there is nothing better we can do but dumping the failure.
+                error.printStackTrace(System.err);
+            }
         }
     }
 }

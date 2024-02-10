@@ -16,15 +16,18 @@
  */
 package org.apache.logging.log4j.status;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class StatusConsoleListenerTest {
 
@@ -34,16 +37,16 @@ public class StatusConsoleListenerTest {
     void StatusData_getFormattedStatus_should_be_used() {
 
         // Create the listener.
-        final PrintStream stream = Mockito.mock(PrintStream.class);
+        final PrintStream stream = mock(PrintStream.class);
         final StatusConsoleListener listener = new StatusConsoleListener(Level.ALL, stream);
 
         // Log a message.
-        final Message message = Mockito.mock(Message.class);
-        final StatusData statusData = Mockito.spy(new StatusData(null, Level.TRACE, message, null, null));
+        final Message message = mock(Message.class);
+        final StatusData statusData = spy(new StatusData(null, Level.TRACE, message, null, null));
         listener.log(statusData);
 
         // Verify the call.
-        Mockito.verify(statusData).getFormattedStatus();
+        verify(statusData).getFormattedStatus();
     }
 
     @Test
@@ -86,7 +89,7 @@ public class StatusConsoleListenerTest {
         final String output = outputStream.toString(encoding);
 
         // Verify the output.
-        Assertions.assertThat(output)
+        assertThat(output)
                 .contains(expectedThrowable.getMessage())
                 .contains(expectedMessage.getFormattedMessage())
                 .doesNotContain(discardedThrowable.getMessage())
@@ -94,10 +97,42 @@ public class StatusConsoleListenerTest {
     }
 
     @Test
-    void non_system_streams_should_be_closed() throws Exception {
-        final PrintStream stream = Mockito.mock(PrintStream.class);
+    void non_system_streams_should_be_closed() {
+        final PrintStream stream = mock(PrintStream.class);
         final StatusConsoleListener listener = new StatusConsoleListener(Level.WARN, stream);
         listener.close();
-        Mockito.verify(stream).close();
+        verify(stream).close();
+    }
+
+    @Test
+    void close_should_reset_to_initials() {
+
+        // Create the listener
+        final PrintStream initialStream = mock(PrintStream.class);
+        final Level initialLevel = Level.TRACE;
+        final StatusConsoleListener listener = new StatusConsoleListener(initialLevel, initialStream);
+
+        // Verify the initial state
+        assertThat(listener.getStatusLevel()).isEqualTo(initialLevel);
+        assertThat(listener).hasFieldOrPropertyWithValue("stream", initialStream);
+
+        // Update the state
+        final PrintStream newStream = mock(PrintStream.class);
+        listener.setStream(newStream);
+        final Level newLevel = Level.DEBUG;
+        listener.setLevel(newLevel);
+
+        // Verify the update
+        verify(initialStream).close();
+        assertThat(listener.getStatusLevel()).isEqualTo(newLevel);
+        assertThat(listener).hasFieldOrPropertyWithValue("stream", newStream);
+
+        // Close the listener
+        listener.close();
+
+        // Verify the reset
+        verify(newStream).close();
+        assertThat(listener.getStatusLevel()).isEqualTo(initialLevel);
+        assertThat(listener).hasFieldOrPropertyWithValue("stream", initialStream);
     }
 }
