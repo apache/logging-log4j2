@@ -60,6 +60,7 @@ import org.apache.logging.log4j.util.Constants;
  * <li>Passing system properties to the Java process (e.g., {@code -Dlog4j2.StatusLogger.level=INFO})</li>
  * <li>Providing properties in a {@value StatusLogger#PROPERTIES_FILE_NAME} file in the classpath</li>
  * <li>Using Log4j configuration (i.e., {@code <Configuration status="WARN" dest="out">} in a {@code log4j2.xml} in the classpath)</li>
+ * <li>Programmatically (e.g., {@code StatusLogger.getLogger().setLevel(Level.WARN)})</li>
  * </ol>
  * <p>
  * It is crucial to understand that there is a time between the first {@code StatusLogger} access and a configuration file (e.g., {@code log4j2.xml}) read.
@@ -76,7 +77,7 @@ import org.apache.logging.log4j.util.Constants;
  * </p>
  * <p>
  * {@code StatusLogger} is designed as a singleton class accessed statically.
- * If you are running an application containing multiple Log4j configurations (e.g., in a servlet environment with multiple containers) and you happen to have differing {@code StatusLogger} configurations (e.g, one {@code log4j2.xml} containing {@code <Configuration status="ERROR">} while the other {@code <Configuration status="INFO">}), the last loaded configuration will be effective one.
+ * If you are running an application containing multiple Log4j configurations (e.g., in a servlet environment with multiple containers) and you happen to have differing {@code StatusLogger} configurations (e.g, one {@code log4j2.xml} containing {@code <Configuration status="ERROR">} while the other {@code <Configuration status="INFO">}), the last loaded configuration will be the effective one.
  * </p>
  * <h2>Configuration properties</h3>
  * <p>
