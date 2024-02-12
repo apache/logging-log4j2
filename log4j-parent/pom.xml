@@ -78,7 +78,7 @@
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch-java.version>8.12.0</elasticsearch-java.version>
+    <elasticsearch-java.version>8.12.1</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.10.2</flapdoodle-embed.version>
@@ -110,7 +110,7 @@
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>4.0.3</jctools.version>
     <je.version>18.3.12</je.version>
-    <jeromq.version>0.5.4</jeromq.version>
+    <jeromq.version>0.6.0</jeromq.version>
     <jetty.version>9.4.53.v20231009</jetty.version>
     <jmdns.version>3.5.9</jmdns.version>
     <jmh.version>1.37</jmh.version>
