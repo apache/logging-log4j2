@@ -182,6 +182,7 @@ public class StatusLogger extends AbstractLogger {
 
         private final int bufferCapacity;
 
+        @Nullable
         private final Level fallbackListenerLevel;
 
         @Nullable
@@ -193,22 +194,23 @@ public class StatusLogger extends AbstractLogger {
          *
          * @param debugEnabled the value of the {@value DEBUG_PROPERTY_NAME} property
          * @param bufferCapacity the value of the {@value MAX_STATUS_ENTRIES} property
-         * @param fallbackListenerLevel the value of the {@value DEFAULT_STATUS_LISTENER_LEVEL} property
          * @param instantFormatter the value of the {@value STATUS_DATE_FORMAT} property
          */
-        public Config(
-                boolean debugEnabled,
-                int bufferCapacity,
-                Level fallbackListenerLevel,
-                @Nullable DateTimeFormatter instantFormatter) {
+        public Config(boolean debugEnabled, int bufferCapacity, @Nullable DateTimeFormatter instantFormatter) {
             this.debugEnabled = debugEnabled;
             if (bufferCapacity < 0) {
                 throw new IllegalArgumentException(
                         "was expecting a positive `bufferCapacity`, found: " + bufferCapacity);
             }
             this.bufferCapacity = bufferCapacity;
-            this.fallbackListenerLevel = requireNonNull(fallbackListenerLevel, "fallbackListenerLevel");
-            this.instantFormatter = requireNonNull(instantFormatter, "instantFormatter");
+            // Public ctor intentionally doesn't set `fallbackListenerLevel`.
+            // Because, if public ctor is used, it means user is programmatically creating a `Config` instance.
+            // Hence, they will use the public `StatusLogger` ctor too.
+            // There they need to provide the fallback listener explicitly anyway.
+            // Therefore, there is no need to ask for a `fallbackListenerLevel` here.
+            // Since this `fallbackListenerLevel` is only used by the private `StatusLogger` ctor.
+            this.fallbackListenerLevel = null;
+            this.instantFormatter = instantFormatter;
         }
 
         /**
@@ -441,7 +443,7 @@ public class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Clears the event buffer and removes the <em>registered</em> (not the fallback one!) listeners.
+     * Clears the event buffer, removes the <em>registered</em> (not the fallback one!) listeners, and resets the fallback listener.
      */
     public void reset() {
         listenerWriteLock.lock();
@@ -455,6 +457,7 @@ public class StatusLogger extends AbstractLogger {
         } finally {
             listenerWriteLock.unlock();
         }
+        fallbackListener.close();
         buffer.clear();
     }
 
