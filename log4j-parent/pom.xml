@@ -68,7 +68,7 @@
     <bsh.version>2.0b6</bsh.version>
     <cassandra.version>4.0.10</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
-    <commons-codec.version>1.16.0</commons-codec.version>
+    <commons-codec.version>1.16.1</commons-codec.version>
     <commons-compress.version>1.25.0</commons-compress.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <commons-dbcp2.version>2.11.0</commons-dbcp2.version>
@@ -108,7 +108,7 @@
     <jansi.version>2.4.1</jansi.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
     <jconsole.version>1.7.0</jconsole.version>
-    <jctools.version>4.0.2</jctools.version>
+    <jctools.version>4.0.3</jctools.version>
     <je.version>18.3.12</je.version>
     <jeromq.version>0.6.0</jeromq.version>
     <jetty.version>9.4.53.v20231009</jetty.version>
