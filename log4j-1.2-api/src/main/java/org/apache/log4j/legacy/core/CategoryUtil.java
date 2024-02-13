@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.spi.LoggerContext;
 
@@ -127,7 +128,7 @@ public final class CategoryUtil {
      */
     public static void setLevel(final Logger logger, final Level level) {
         if (isCore(logger)) {
-            asCore(logger).setLevel(level);
+            Configurator.setLevel(asCore(logger), level);
         }
     }
 

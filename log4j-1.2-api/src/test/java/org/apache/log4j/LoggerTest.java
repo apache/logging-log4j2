@@ -26,16 +26,19 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -76,8 +79,10 @@ public class LoggerTest {
     }
 
     @After
-    public void tearDown() {
+    @Before
+    public void resetTest() {
         LoggerContext.getContext().reconfigure();
+        Configurator.setAllLevels(Logger.getRootLogger().getName(), org.apache.logging.log4j.Level.DEBUG);
         a1 = null;
         a2 = null;
     }
@@ -490,6 +495,48 @@ public class LoggerTest {
             appender.stop();
         } finally {
             ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
+        }
+    }
+
+    @Test
+    public void testSetLevel() {
+        final Logger a = Logger.getLogger("a");
+        final Logger a_b = Logger.getLogger("a.b");
+        final Logger a_b_c = Logger.getLogger("a.b.c");
+        // test default for this test
+        assertEquals(Level.DEBUG, a.getLevel());
+        assertEquals(Level.DEBUG, a_b.getLevel());
+        assertEquals(Level.DEBUG, a_b_c.getLevel());
+        // all
+        for (Level level : new Level[] { /*Level.ALL,*/ Level.DEBUG, Level.ERROR, Level.FATAL, Level.INFO, /*Level.OFF,*/ Level.TRACE, Level.WARN }) {
+            a.setLevel(level);
+            assertTrue(level.toString(), a.isEnabledFor(level));
+            assertTrue(level.toString(), a_b.isEnabledFor(level));
+            assertTrue(level.toString(), a_b_c.isEnabledFor(level));
+            assertEquals(level, a.getLevel());
+            assertEquals(Level.DEBUG, a_b.getLevel());
+            assertEquals(Level.DEBUG, a_b_c.getLevel());
+        }
+    }
+
+    @Test
+    public void testSetPriority() {
+        final Logger a = Logger.getLogger("a");
+        final Logger a_b = Logger.getLogger("a.b");
+        final Logger a_b_c = Logger.getLogger("a.b.c");
+        // test default for this test
+        assertEquals(Priority.DEBUG, a.getPriority());
+        assertEquals(Priority.DEBUG, a_b.getPriority());
+        assertEquals(Priority.DEBUG, a_b_c.getPriority());
+        // all
+        for (Priority level : Level.getAllPossiblePriorities()) {
+            a.setPriority(level);
+            assertTrue(level.toString(), a.isEnabledFor(level));
+            assertTrue(level.toString(), a_b.isEnabledFor(level));
+            assertTrue(level.toString(), a_b_c.isEnabledFor(level));
+            assertEquals(level, a.getLevel());
+            assertEquals(Priority.DEBUG, a_b.getPriority());
+            assertEquals(Priority.DEBUG, a_b_c.getPriority());
         }
     }
 
