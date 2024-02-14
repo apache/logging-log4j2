@@ -410,7 +410,7 @@ public class StatusLogger extends AbstractLogger {
      * Sets the level of the fallback listener.
      *
      * @param level a level
-     * @deprecated Instead use the {@link #setLevel(Level))} method.
+     * @deprecated Instead use the {@link #setLevel(Level)} method.
      */
     @Deprecated
     public void updateListenerLevel(final Level level) {
