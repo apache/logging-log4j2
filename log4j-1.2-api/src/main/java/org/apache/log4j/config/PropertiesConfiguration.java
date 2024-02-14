@@ -45,7 +45,6 @@ import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -313,8 +312,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
             status = OptionConverter.toBoolean(value, false) ? "debug" : "error";
         }
 
-        final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(status);
-        statusConfig.initialize();
+        getStatusConfiguration().withStatus(status).initialize();
 
         // if log4j.reset=true then reset hierarchy
         final String reset = properties.getProperty(RESET_KEY);

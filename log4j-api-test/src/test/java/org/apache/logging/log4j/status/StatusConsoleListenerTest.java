@@ -105,7 +105,7 @@ public class StatusConsoleListenerTest {
     }
 
     @Test
-    void close_should_reset_to_initials() {
+    void reset_should_restore_initials() {
 
         // Create the listener
         final PrintStream initialStream = mock(PrintStream.class);
@@ -128,7 +128,7 @@ public class StatusConsoleListenerTest {
         assertThat(listener).hasFieldOrPropertyWithValue("stream", newStream);
 
         // Close the listener
-        listener.close();
+        listener.reset();
 
         // Verify the reset
         verify(newStream).close();

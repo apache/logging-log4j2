@@ -55,6 +55,7 @@ import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
@@ -145,6 +146,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private AsyncWaitStrategyFactory asyncWaitStrategyFactory;
     private NanoClock nanoClock = new DummyNanoClock();
     private final WeakReference<LoggerContext> loggerContext;
+    private final StatusConfiguration statusConfiguration;
 
     /**
      * Constructor.
@@ -158,6 +160,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.put(Configuration.CONTEXT_PROPERTIES, propertyMap);
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
+        statusConfiguration =
+                new StatusConfiguration().withStatus(getDefaultStatus()).withConfiguration(this);
         setState(State.INITIALIZING);
     }
 
@@ -451,6 +455,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         setStopped();
         LOGGER.debug("Stopped {} OK", this);
+        statusConfiguration.stop();
         return true;
     }
 
@@ -1230,5 +1235,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void setNanoClock(final NanoClock nanoClock) {
         this.nanoClock = Objects.requireNonNull(nanoClock, "nanoClock");
+    }
+
+    protected StatusConfiguration getStatusConfiguration() {
+        return statusConfiguration;
     }
 }

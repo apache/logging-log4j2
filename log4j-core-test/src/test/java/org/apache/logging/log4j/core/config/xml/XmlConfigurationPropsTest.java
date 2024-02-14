@@ -17,20 +17,17 @@
 package org.apache.logging.log4j.core.config.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.status.StatusConfigurationHelper;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusConsoleListener;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingStatusLoggerMock;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -45,6 +42,12 @@ class XmlConfigurationPropsTest {
 
     private static final String CONFIG1_NAME = "XmlConfigurationPropsTest1";
 
+    @AfterEach
+    void resetStatusConsoleListenerLevel() {
+        StatusConfigurationHelper.getStatusConsoleListener()
+                .setLevel(StatusConfigurationHelper.getDefaultStatusLevel());
+    }
+
     private void testConfiguration(
             final Configuration config,
             final String expectedConfigName,
@@ -54,12 +57,12 @@ class XmlConfigurationPropsTest {
                 .isInstanceOf(XmlConfiguration.class)
                 .extracting(Configuration::getName)
                 .isEqualTo(expectedConfigName);
-        final StatusConsoleListener fallbackListener = StatusLogger.getLogger().getFallbackListener();
-        if (expectedStatusLevel == null) {
-            verify(fallbackListener, never()).setLevel(any());
-        } else {
-            verify(fallbackListener).setLevel(eq(expectedStatusLevel));
-        }
+        final StatusConsoleListener consoleListener = StatusConfigurationHelper.getStatusConsoleListener();
+        assertThat(consoleListener.getStatusLevel())
+                .isEqualTo(
+                        expectedStatusLevel == null
+                                ? StatusConfigurationHelper.getDefaultStatusLevel()
+                                : expectedStatusLevel);
         assertThat(config.getRootLogger().getExplicitLevel()).isEqualTo(expectedRootLevel);
     }
 

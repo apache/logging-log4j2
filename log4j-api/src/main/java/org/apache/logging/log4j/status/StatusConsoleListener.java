@@ -51,7 +51,7 @@ public class StatusConsoleListener implements StatusListener {
      * @throws NullPointerException on null {@code level}
      */
     public StatusConsoleListener(final Level level) {
-        this(level, System.out);
+        this(level, System.err);
     }
 
     /**
@@ -149,11 +149,15 @@ public class StatusConsoleListener implements StatusListener {
     @Deprecated
     public void setFilters(final String... filters) {}
 
+    @Override
+    public void close() {
+        closeNonSystemStream(stream);
+    }
+
     /**
      * Resets the level and output stream to its initial values, and closes the output stream, if it is a non-system one.
      */
-    @Override
-    public void close() {
+    public void reset() {
         final OutputStream oldStream;
         lock.lock();
         try {
@@ -171,7 +175,7 @@ public class StatusConsoleListener implements StatusListener {
         if (stream != System.out && stream != System.err) {
             try {
                 stream.close();
-            } catch (IOException error) {
+            } catch (final IOException error) {
                 // We are at the lowest level of the system.
                 // Hence, there is nothing better we can do but dumping the failure.
                 error.printStackTrace(System.err);

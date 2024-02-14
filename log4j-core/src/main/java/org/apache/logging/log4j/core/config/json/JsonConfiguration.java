@@ -64,7 +64,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 }
             }
             processAttributes(rootNode, root);
-            final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
+            final StatusConfiguration statusConfig = getStatusConfiguration();
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry :
                     rootNode.getAttributes().entrySet()) {

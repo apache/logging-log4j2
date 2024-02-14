@@ -46,7 +46,6 @@ import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -745,8 +744,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             status = OptionConverter.toBoolean(confDebug, true) ? "debug" : "error";
         }
 
-        final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(status);
-        statusConfig.initialize();
+        getStatusConfiguration().withStatus(status).initialize();
 
         final String threshold = subst(element.getAttribute(THRESHOLD_ATTR));
         if (threshold != null) {

@@ -366,21 +366,10 @@ public class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Returns the fallback listener.
-     *
-     * @return the fallback listener
-     */
-    public StatusConsoleListener getFallbackListener() {
-        return fallbackListener;
-    }
-
-    /**
      * Sets the level of the fallback listener.
      *
      * @param level a level
-     * @deprecated Instead use the {@link StatusConsoleListener#setLevel(Level) setLevel(Level)} method on the fallback listener returned by {@link #getFallbackListener()}.
      */
-    @Deprecated
     public void setLevel(final Level level) {
         requireNonNull(level, "level");
         fallbackListener.setLevel(level);
@@ -421,7 +410,7 @@ public class StatusLogger extends AbstractLogger {
      * Sets the level of the fallback listener.
      *
      * @param level a level
-     * @deprecated Instead use the {@link StatusConsoleListener#setLevel(Level) setLevel(Level)} method on the fallback listener returned by {@link #getFallbackListener()}.
+     * @deprecated Instead use the {@link #setLevel(Level))} method.
      */
     @Deprecated
     public void updateListenerLevel(final Level level) {
@@ -458,7 +447,7 @@ public class StatusLogger extends AbstractLogger {
         } finally {
             listenerWriteLock.unlock();
         }
-        fallbackListener.close();
+        fallbackListener.reset();
         buffer.clear();
     }
 

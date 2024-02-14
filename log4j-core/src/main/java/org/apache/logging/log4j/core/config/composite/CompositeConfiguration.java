@@ -76,7 +76,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         for (final AbstractConfiguration config : configurations) {
             mergeStrategy.mergeRootProperties(rootNode, config);
         }
-        final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
+        final StatusConfiguration statusConfig = getStatusConfiguration();
         for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
             final String key = entry.getKey();
             final String value = getConfigurationStrSubstitutor().replace(entry.getValue());

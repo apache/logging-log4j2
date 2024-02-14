@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.util.Patterns;
  * @since 2.4
  */
 public class BuiltConfiguration extends AbstractConfiguration {
-    private final StatusConfiguration statusConfig;
     protected Component rootComponent;
     private Component loggersComponent;
     private Component appendersComponent;
@@ -51,7 +50,6 @@ public class BuiltConfiguration extends AbstractConfiguration {
     public BuiltConfiguration(
             final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
         super(loggerContext, source);
-        statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
                 case "Scripts": {
@@ -131,8 +129,9 @@ public class BuiltConfiguration extends AbstractConfiguration {
         super.createAdvertiser(advertiserString, configSource, buffer, contentType);
     }
 
+    @Override
     public StatusConfiguration getStatusConfiguration() {
-        return statusConfig;
+        return super.getStatusConfiguration();
     }
 
     public void setPluginPackages(final String packages) {

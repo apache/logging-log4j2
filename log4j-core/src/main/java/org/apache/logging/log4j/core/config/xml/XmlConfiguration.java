@@ -106,7 +106,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
-            final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
+            final StatusConfiguration statusConfig = getStatusConfiguration();
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 final String key = entry.getKey();

@@ -43,6 +43,7 @@ This releases contains ...
 === Fixed
 
 * Fix regression in `JdkMapAdapterStringMap` performance. (https://github.com/apache/logging-log4j2/issues/2238[2238])
+* Fix the behavior of `Logger#setLevel` and `Logger#getLevel` in the Log4j 1.2 bridge. (https://github.com/apache/logging-log4j2/issues/2282[2282])
 * Allow deserialization of all arrays of allowed classes. (https://issues.apache.org/jira/browse/LOG4J2-3680[LOG4J2-3680])
 * Fix forgotten `threadName` field in `RingBufferLogEvent#clear()` (https://github.com/apache/logging-log4j2/issues/2234[2234])
 * Fix `StringBuilder` cache corruption on recursive access

@@ -23,22 +23,33 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Configuration for setting up the {@link StatusLogger} fallback listener.
  */
 public class StatusConfiguration {
 
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    static final Level DEFAULT_LEVEL = Level.toLevel(
+            PropertiesUtil.getProperties().getStringProperty(StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL), Level.ERROR);
 
-    private final Lock lock = new ReentrantLock();
+    // Guard all accesses to listener and activeConfigurations
+    private static final Lock lock = new ReentrantLock();
+    // Package-protected for testing
+    static StatusConsoleListener listener = new StatusConsoleListener(DEFAULT_LEVEL);
+    private static Map<Configuration, Void> activeConfigurations = new WeakHashMap<>();
 
     private volatile boolean initialized;
 
@@ -47,6 +58,9 @@ public class StatusConfiguration {
 
     @Nullable
     private Level level;
+
+    @Nullable
+    private Configuration configuration;
 
     /**
      * Specifies how verbose the StatusLogger should be.
@@ -180,20 +194,59 @@ public class StatusConfiguration {
     }
 
     /**
+     * Sets the logger context associated with this configuration.
+     * @param configuration A logger context.
+     * @return this
+     */
+    public StatusConfiguration withConfiguration(final Configuration configuration) {
+        this.configuration = configuration;
+        return this;
+    }
+
+    /**
      * Configures and initializes the StatusLogger using the configured options in this instance.
      */
     public void initialize() {
         lock.lock();
         try {
-            if (!this.initialized) {
-                final StatusConsoleListener fallbackListener = LOGGER.getFallbackListener();
+            if (!initialized) {
+                final boolean registerListener = activeConfigurations.isEmpty();
+                if (configuration != null) {
+                    activeConfigurations.put(configuration, null);
+                } else {
+                    LOGGER.error("The required `configuration` parameter is missing.");
+                    return;
+                }
                 if (output != null) {
-                    fallbackListener.setStream(output);
+                    listener.setStream(output);
                 }
                 if (level != null) {
-                    fallbackListener.setLevel(level);
+                    listener.setLevel(level);
+                }
+                if (registerListener) {
+                    StatusLogger.getLogger().registerListener(listener);
                 }
                 initialized = true;
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Stops the associated status logger.
+     */
+    public void stop() {
+        lock.lock();
+        try {
+            if (configuration != null) {
+                activeConfigurations.remove(configuration, null);
+            } else {
+                LOGGER.error("The required `configuration` parameter is missing.");
+                return;
+            }
+            if (activeConfigurations.isEmpty()) {
+                StatusLogger.getLogger().removeListener(listener);
             }
         } finally {
             lock.unlock();

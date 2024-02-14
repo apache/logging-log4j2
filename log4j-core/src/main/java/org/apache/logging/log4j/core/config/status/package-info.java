@@ -19,7 +19,7 @@
  * Configuration classes for the {@link org.apache.logging.log4j.status.StatusLogger} API.
  */
 @Export
-@Version("2.20.2")
+@Version("2.23.0")
 package org.apache.logging.log4j.core.config.status;
 
 import org.osgi.annotation.bundle.Export;
