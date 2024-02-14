@@ -111,7 +111,7 @@
     <jctools.version>4.0.3</jctools.version>
     <je.version>18.3.12</je.version>
     <jeromq.version>0.6.0</jeromq.version>
-    <jetty.version>9.4.53.v20231009</jetty.version>
+    <jetty.version>9.4.54.v20240208</jetty.version>
     <jmdns.version>3.5.9</jmdns.version>
     <jmh.version>1.37</jmh.version>
     <json-unit.version>2.38.0</json-unit.version>
@@ -129,7 +129,7 @@
     <mockito.version>4.11.0</mockito.version>
     <mongodb.version>4.11.1</mongodb.version>
     <nashorn.version>15.4</nashorn.version>
-    <netty.version>4.1.106.Final</netty.version>
+    <netty.version>4.1.107.Final</netty.version>
     <org.eclipse.osgi.version>3.13.0.v20180226-1711</org.eclipse.osgi.version>
     <org.eclipse.persistence.version>2.7.14</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
