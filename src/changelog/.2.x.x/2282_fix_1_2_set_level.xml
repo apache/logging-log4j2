@@ -5,6 +5,6 @@
        type="fixed">
   <issue id="2282" link="https://github.com/apache/logging-log4j2/issues/2282"/>
   <description format="asciidoc">
-    The core.Logger#setLevel method should work like Configurator#setLevel.
+    Fix the behavior of `Logger#setLevel` and `Logger#getLevel` in the Log4j 1.2 bridge.
   </description>
 </entry>

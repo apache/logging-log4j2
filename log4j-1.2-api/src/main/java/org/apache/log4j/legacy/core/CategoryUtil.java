@@ -133,6 +133,21 @@ public final class CategoryUtil {
     }
 
     /**
+     * Returns the level explicitly set on the logger.
+     * <p>
+     *     If the Log4j API implementation does not support it, returns the effective level instead.
+     * </p>
+     */
+    public static Level getExplicitLevel(final Logger logger) {
+        return isCore(logger) ? getExplicitLevel(asCore(logger)) : logger.getLevel();
+    }
+
+    private static Level getExplicitLevel(final org.apache.logging.log4j.core.Logger logger) {
+        final LoggerConfig config = logger.get();
+        return config.getName().equals(logger.getName()) ? config.getExplicitLevel() : null;
+    }
+
+    /**
      * Adds an appender to the logger. This method requires a check for the presence
      * of Log4j Core or it will cause a {@code ClassNotFoundException}.
      *

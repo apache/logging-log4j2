@@ -29,6 +29,7 @@ import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LogEventWrapper;
 import org.apache.log4j.helpers.AppenderAttachableImpl;
 import org.apache.log4j.helpers.NullEnumeration;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.legacy.core.CategoryUtil;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.HierarchyEventListener;
@@ -384,25 +385,7 @@ public class Category implements AppenderAttachable {
     }
 
     public Level getEffectiveLevel() {
-        switch (logger.getLevel().getStandardLevel()) {
-            case ALL:
-                return Level.ALL;
-            case TRACE:
-                return Level.TRACE;
-            case DEBUG:
-                return Level.DEBUG;
-            case INFO:
-                return Level.INFO;
-            case WARN:
-                return Level.WARN;
-            case ERROR:
-                return Level.ERROR;
-            case FATAL:
-                return Level.FATAL;
-            default:
-                // TODO Should this be an IllegalStateException?
-                return Level.OFF;
-        }
+        return OptionConverter.convertLevel(logger.getLevel());
     }
 
     /**
@@ -417,7 +400,8 @@ public class Category implements AppenderAttachable {
     }
 
     public final Level getLevel() {
-        return getEffectiveLevel();
+        final org.apache.logging.log4j.Level v2Level = CategoryUtil.getExplicitLevel(logger);
+        return v2Level != null ? OptionConverter.convertLevel(v2Level) : null;
     }
 
     private String getLevelStr(final Priority priority) {
@@ -460,7 +444,7 @@ public class Category implements AppenderAttachable {
     }
 
     public final Level getPriority() {
-        return getEffectiveLevel();
+        return getLevel();
     }
 
     public ResourceBundle getResourceBundle() {
