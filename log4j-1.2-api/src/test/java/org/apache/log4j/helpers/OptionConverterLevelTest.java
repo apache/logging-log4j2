@@ -18,9 +18,10 @@ package org.apache.log4j.helpers;
 
 import static org.apache.log4j.helpers.OptionConverter.toLog4j1Level;
 import static org.apache.log4j.helpers.OptionConverter.toLog4j2Level;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -43,22 +44,18 @@ public class OptionConverterLevelTest {
 
     /**
      * Test if the standard levels are transformed correctly.
-     *
-     * @param log4j1Level
-     * @param log4j2Level
      */
     @ParameterizedTest
     @MethodSource("standardLevels")
     public void testStandardLevelConversion(final Level log4j1Level, final org.apache.logging.log4j.Level log4j2Level) {
-        assertEquals(log4j2Level, OptionConverter.convertLevel(log4j1Level));
-        assertEquals(log4j1Level, OptionConverter.convertLevel(log4j2Level));
+        assertThat(log4j2Level).isSameAs(OptionConverter.convertLevel(log4j1Level));
+        assertThat(log4j1Level).isSameAs(OptionConverter.convertLevel(log4j2Level));
+        assertThat(OptionConverter.toLevel(org.apache.logging.log4j.Level.class.getName(), log4j2Level.name(), null))
+                .isSameAs(OptionConverter.convertLevel(log4j2Level));
     }
 
     /**
      * Test if the conversion works at an integer level.
-     *
-     * @param log4j1Level
-     * @param log4j2Level
      */
     @ParameterizedTest
     @MethodSource("standardLevels")

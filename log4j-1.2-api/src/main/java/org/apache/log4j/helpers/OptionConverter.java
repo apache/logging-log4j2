@@ -630,16 +630,36 @@ public class OptionConverter {
             return null;
         }
 
-        LOGGER.debug("toLevel" + ":class=[" + clazz + "]" + ":pri=[" + levelName + "]");
+        LOGGER.debug("toLevel:class=[{}]:pri=[{}]", clazz, levelName);
 
         // Support for levels defined in Log4j2.
         if (LOG4J2_LEVEL_CLASS.equals(clazz)) {
             final org.apache.logging.log4j.Level v2Level =
                     org.apache.logging.log4j.Level.getLevel(toRootUpperCase(levelName));
             if (v2Level != null) {
-                return new LevelWrapper(v2Level);
+                switch (v2Level.name()) {
+                    case "ALL":
+                        return Level.ALL;
+                    case "DEBUG":
+                        return Level.DEBUG;
+                    case "ERROR":
+                        return Level.ERROR;
+                    case "FATAL":
+                        return Level.FATAL;
+                    case "INFO":
+                        return Level.INFO;
+                    case "OFF":
+                        return Level.OFF;
+                    case "WARN":
+                        return Level.WARN;
+                    case "TRACE":
+                        return Level.TRACE;
+                    default:
+                        return new LevelWrapper(v2Level);
+                }
+            } else {
+                return defaultValue;
             }
-            return defaultValue;
         }
         try {
             final Class<?> customLevel = LoaderUtil.loadClass(clazz);
