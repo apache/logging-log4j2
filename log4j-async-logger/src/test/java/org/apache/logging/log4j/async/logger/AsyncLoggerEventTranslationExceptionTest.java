@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.sdk.logger.AbstractLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;

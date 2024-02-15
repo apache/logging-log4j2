@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -36,6 +37,8 @@ import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.message.FlowMessageFactory;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -46,6 +49,7 @@ import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Provides instance binding defaults.
@@ -61,6 +65,16 @@ import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
  * @see StrSubstitutor
  */
 public class DefaultBundle {
+
+    @SingletonFactory
+    public MessageFactory defaultMessageFactory() {
+        return LoggingSystem.getMessageFactory();
+    }
+
+    @SingletonFactory
+    public FlowMessageFactory defaultFlowMessageFactory() {
+        return LoggingSystem.getFlowMessageFactory();
+    }
 
     @SingletonFactory
     public RecyclerFactory defaultRecyclerFactory() {
@@ -142,5 +156,12 @@ public class DefaultBundle {
     @ConditionalOnMissingBinding
     public Level defaultStatusLevel() {
         return Level.ERROR;
+    }
+
+    @SingletonFactory
+    @Named("StatusLogger")
+    @ConditionalOnMissingBinding
+    public Logger defaultStatusLogger() {
+        return StatusLogger.getLogger();
     }
 }

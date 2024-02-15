@@ -33,12 +33,16 @@ import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.sdk.logger.AbstractLogger;
 import org.apache.logging.log4j.spi.recycler.Recycler;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * AsyncLogger is a logger designed for high throughput and low latency logging. It does not perform any I/O in the
@@ -59,6 +63,7 @@ import org.apache.logging.log4j.util.StringMap;
  * and they will flush to disk at the end of each batch. This means that even with immediateFlush=false, there will
  * never be any items left in the buffer; all log events will all be written to disk in a very efficient manner.
  */
+@NullMarked
 public class AsyncLogger extends Logger {
     // Implementation note: many methods in this class are tuned for performance. MODIFY WITH CARE!
     // Specifically, try to keep the hot methods to 35 bytecodes or less:
@@ -86,8 +91,11 @@ public class AsyncLogger extends Logger {
             final LoggerContext context,
             final String name,
             final MessageFactory messageFactory,
+            final FlowMessageFactory flowMessageFactory,
+            final RecyclerFactory recyclerFactory,
+            final org.apache.logging.log4j.Logger statusLogger,
             final AsyncLoggerDisruptor loggerDisruptor) {
-        super(context, name, messageFactory);
+        super(context, name, messageFactory, flowMessageFactory, recyclerFactory, statusLogger);
         final Configuration configuration = context.getConfiguration();
         this.translatorRecycler = configuration
                 .getRecyclerFactory()
@@ -107,7 +115,7 @@ public class AsyncLogger extends Logger {
     @Override
     protected void updateConfiguration(final Configuration newConfig) {
         nanoClock = newConfig.getNanoClock();
-        includeLocation = newConfig.getLoggerConfig(name).isIncludeLocation();
+        includeLocation = newConfig.getLoggerConfig(getName()).isIncludeLocation();
         super.updateConfiguration(newConfig);
     }
 
@@ -149,26 +157,26 @@ public class AsyncLogger extends Logger {
      * This re-uses a {@code RingBufferLogEventTranslator} instance cached in a {@code ThreadLocal} to avoid creating
      * unnecessary objects with each event.
      *
-     * @param fqcn fully qualified name of the caller
-     * @param location the Location of the caller.
-     * @param level level at which the caller wants to log the message
-     * @param marker message marker
-     * @param message the log message
-     * @param thrown a {@code Throwable} or {@code null}
+     * @param fqcn      fully qualified name of the caller
+     * @param location  the Location of the caller.
+     * @param level     level at which the caller wants to log the message
+     * @param marker    message marker
+     * @param message   the log message
+     * @param throwable a {@code Throwable} or {@code null}
      */
     @Override
-    public void log(
-            final Level level,
-            final Marker marker,
+    protected void doLog(
             final String fqcn,
-            final StackTraceElement location,
+            final @Nullable StackTraceElement location,
+            final Level level,
+            final @Nullable Marker marker,
             final Message message,
-            final Throwable thrown) {
+            final @Nullable Throwable throwable) {
         // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
 
         final RingBufferLogEventTranslator translator = translatorRecycler.acquire();
         try {
-            initTranslator(translator, fqcn, location, level, marker, message, thrown);
+            initTranslator(translator, fqcn, location, level, marker, message, throwable);
             translator.updateThreadValues();
             publish(translator);
         } finally {
@@ -220,7 +228,7 @@ public class AsyncLogger extends Logger {
 
         translator.setBasicValues(
                 this,
-                name,
+                getName(),
                 marker,
                 fqcn,
                 level,
@@ -246,7 +254,7 @@ public class AsyncLogger extends Logger {
 
         translator.setBasicValues(
                 this,
-                name,
+                getName(),
                 marker,
                 fqcn,
                 level,

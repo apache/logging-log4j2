@@ -43,20 +43,25 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Cancellable;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
 import org.apache.logging.log4j.spi.LoggerRegistry;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Terminable;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
@@ -64,7 +69,7 @@ import org.apache.logging.log4j.util.PropertyEnvironment;
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
  * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
- * filters, etc and will be atomically updated whenever a reconfigure occurs.
+ * filters, etc. and will be atomically updated whenever a reconfigure occurs.
  */
 public class LoggerContext extends AbstractLifeCycle
         implements org.apache.logging.log4j.spi.LoggerContext,
@@ -208,8 +213,40 @@ public class LoggerContext extends AbstractLifeCycle
         this.nullConfiguration = new NullConfiguration(this);
     }
 
+    /**
+     * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
+     * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
+     * MessageFactory {@link LoggingSystem#getMessageFactory()}.
+     *
+     * @param logger The logger to check
+     * @param messageFactory The message factory to check.
+     */
+    public static void checkMessageFactory(final ExtendedLogger logger, final MessageFactory messageFactory) {
+        final String name = logger.getName();
+        final MessageFactory loggerMessageFactory = logger.getMessageFactory();
+        final MessageFactory currentMessageFactory = LoggingSystem.getMessageFactory();
+        if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
+            StatusLogger.getLogger()
+                    .warn(
+                            "The Logger {} was created with the message factory {} and is now requested with the "
+                                    + "message factory {}, which may create log events with unexpected formatting.",
+                            name,
+                            loggerMessageFactory,
+                            messageFactory);
+        } else if (messageFactory == null && loggerMessageFactory != currentMessageFactory) {
+            StatusLogger.getLogger()
+                    .warn(
+                            "The Logger {} was created with the message factory {} and is now requested with a null "
+                                    + "message factory (defaults to {}), which may create log events with unexpected "
+                                    + "formatting.",
+                            name,
+                            loggerMessageFactory,
+                            currentMessageFactory.getClass().getName());
+        }
+    }
+
     private void initializeInstanceFactory() {
-        final var ref = Lazy.weak(this);
+        final Lazy<LoggerContext> ref = Lazy.weak(this);
         instanceFactory.registerBinding(KEY, ref);
         instanceFactory.registerInstancePostProcessor(new LoggerContextAwarePostProcessor(this));
     }
@@ -223,10 +260,12 @@ public class LoggerContext extends AbstractLifeCycle
         return properties;
     }
 
+    @Override
     public void addShutdownListener(final LoggerContextShutdownAware listener) {
         listeners.get().add(listener);
     }
 
+    @Override
     public List<LoggerContextShutdownAware> getListeners() {
         return listeners.get();
     }
@@ -250,8 +289,8 @@ public class LoggerContext extends AbstractLifeCycle
      * @see LogManager#getContext()
      */
     public static LoggerContext getContext() {
-        final var context = LogManager.getContext();
-        if (context instanceof LoggerContext ctx) {
+        final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext();
+        if (context instanceof final LoggerContext ctx) {
             return ctx;
         }
         throw new IllegalStateException(
@@ -276,8 +315,8 @@ public class LoggerContext extends AbstractLifeCycle
      * @see LogManager#getContext(boolean)
      */
     public static LoggerContext getContext(final boolean currentContext) {
-        final var context = LogManager.getContext(currentContext);
-        if (context instanceof LoggerContext ctx) {
+        final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(currentContext);
+        if (context instanceof final LoggerContext ctx) {
             return ctx;
         }
         throw new IllegalStateException(
@@ -306,8 +345,9 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public static LoggerContext getContext(
             final ClassLoader loader, final boolean currentContext, final URI configLocation) {
-        final var context = LogManager.getContext(loader, currentContext, configLocation);
-        if (context instanceof LoggerContext ctx) {
+        final org.apache.logging.log4j.spi.LoggerContext context =
+                LogManager.getContext(loader, currentContext, configLocation);
+        if (context instanceof final LoggerContext ctx) {
             return ctx;
         }
         throw new IllegalStateException(
@@ -374,7 +414,6 @@ public class LoggerContext extends AbstractLifeCycle
                     this.shutdownCallback = ((ShutdownCallbackRegistry) factory).addShutdownCallback(new Runnable() {
                         @Override
                         public void run() {
-                            @SuppressWarnings("resource")
                             final LoggerContext context = LoggerContext.this;
                             LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping {}", context);
                             context.stop(shutdownTimeoutMillis, TimeUnit.MILLISECONDS);
@@ -576,13 +615,18 @@ public class LoggerContext extends AbstractLifeCycle
         // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
         Logger logger = loggerRegistry.getLogger(name, messageFactory);
         if (logger != null) {
-            AbstractLogger.checkMessageFactory(logger, messageFactory);
+            checkMessageFactory(logger, messageFactory);
             return logger;
         }
-
-        logger = newInstance(this, name, messageFactory);
-        loggerRegistry.putIfAbsent(name, messageFactory, logger);
-        return loggerRegistry.getLogger(name, messageFactory);
+        final MessageFactory actualMessageFactory =
+                messageFactory != null ? messageFactory : instanceFactory.getInstance(MessageFactory.class);
+        final FlowMessageFactory flowMessageFactory = instanceFactory.getInstance(FlowMessageFactory.class);
+        final RecyclerFactory recyclerFactory = instanceFactory.getInstance(RecyclerFactory.class);
+        final org.apache.logging.log4j.Logger statusLogger =
+                instanceFactory.getInstance(Constants.DEFAULT_STATUS_LOGGER_KEY);
+        logger = newInstance(this, name, actualMessageFactory, flowMessageFactory, recyclerFactory, statusLogger);
+        loggerRegistry.putIfAbsent(name, actualMessageFactory, logger);
+        return loggerRegistry.getLogger(name, actualMessageFactory);
     }
 
     /**
@@ -591,6 +635,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @return the LoggerRegistry.
      * @since 2.17.2
      */
+    @Override
     public LoggerRegistry<Logger> getLoggerRegistry() {
         return loggerRegistry;
     }
@@ -936,8 +981,14 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     // LOG4J2-151: changed visibility from private to protected
-    protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
-        return new Logger(ctx, name, messageFactory);
+    protected Logger newInstance(
+            final LoggerContext ctx,
+            final String name,
+            final MessageFactory messageFactory,
+            final FlowMessageFactory flowMessageFactory,
+            final RecyclerFactory recyclerFactory,
+            final org.apache.logging.log4j.Logger statusLogger) {
+        return new Logger(ctx, name, messageFactory, flowMessageFactory, recyclerFactory, statusLogger);
     }
 
     /**

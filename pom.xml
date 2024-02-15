@@ -263,6 +263,7 @@
     <module>log4j-plugins</module>
     <module>log4j-plugins-test</module>
     <module>log4j-script</module>
+    <module>log4j-sdk</module>
     <module>log4j-slf4j2-impl</module>
     <module>log4j-slf4j-impl</module>
     <module>log4j-spring-cloud-config-client</module>
@@ -508,6 +509,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-script</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-sdk</artifactId>
         <version>${project.version}</version>
       </dependency>
 

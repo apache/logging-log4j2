@@ -24,9 +24,9 @@
     <relativePath>../log4j-parent</relativePath>
   </parent>
 
-  <artifactId>log4j-async-logger</artifactId>
-  <name>Apache Log4j Async Logger</name>
-  <description>Alternative implementation of logger that uses LMAX Disruptor.</description>
+  <artifactId>log4j-sdk</artifactId>
+  <name>Apache Log4j SDK</name>
+  <description>Helpers to implement Log4j 2.x API.</description>
 
   <properties>
     <bnd-extra-package-options>
@@ -45,23 +45,12 @@
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <artifactId>log4j-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.lmax</groupId>
-      <artifactId>disruptor</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility</artifactId>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -72,28 +61,10 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.29.2-GA</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <annotationProcessorPaths combine.children="append">
-            <path>
-              <groupId>org.apache.logging.log4j</groupId>
-              <artifactId>log4j-plugin-processor</artifactId>
-              <version>${project.version}</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

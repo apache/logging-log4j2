@@ -28,12 +28,15 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.sdk.logger.AbstractLogger;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The core implementation of the {@link org.apache.logging.log4j.Logger} interface. Besides providing an implementation
@@ -43,6 +46,7 @@ import org.apache.logging.log4j.util.Supplier;
  * unit tests or bridging legacy Log4j 1.x code. Future versions of this class may or may not include the various
  * methods that are noted as not being part of the public API.
  */
+@NullMarked
 public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
@@ -50,31 +54,27 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
      */
     protected volatile PrivateConfig privateConfig;
 
-    // FIXME: ditto to the above
     private final LoggerContext context;
 
     /**
      * The constructor.
      *
      * @param context The LoggerContext this Logger is associated with.
-     * @param messageFactory The message factory.
      * @param name The name of the Logger.
+     * @param messageFactory The message factory to use for logging methods.
+     * @param flowMessageFactory The flow message factory to use for flow logging methods.
+     * @param recyclerFactory The recycler to use for log builder instances.
      */
-    protected Logger(final LoggerContext context, final String name, final MessageFactory messageFactory) {
-        super(name, messageFactory);
+    protected Logger(
+            final LoggerContext context,
+            final String name,
+            final MessageFactory messageFactory,
+            final FlowMessageFactory flowMessageFactory,
+            final RecyclerFactory recyclerFactory,
+            final org.apache.logging.log4j.Logger statusLogger) {
+        super(name, messageFactory, flowMessageFactory, recyclerFactory, statusLogger);
         this.context = context;
         privateConfig = new PrivateConfig(context.getConfiguration(), this);
-    }
-
-    /**
-     * This is used to construct an InternalLoggerContext, which makes SimpleLoggerContext conmpatible with core.
-     * @param context the InternalLoggerContext.
-     * @param name the Logger name.
-     */
-    protected Logger(final LoggerContext context, final String name) {
-        super(name);
-        this.context = context;
-        privateConfig = null;
     }
 
     /**
@@ -95,10 +95,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         }
         final String lcName = lc.getName();
         final MessageFactory messageFactory = getMessageFactory();
-        if (context.hasLogger(lcName, messageFactory)) {
-            return context.getLogger(lcName, messageFactory);
-        }
-        return new Logger(context, lcName, messageFactory);
+        return context.getLogger(lcName, messageFactory);
     }
 
     /**
@@ -149,33 +146,30 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     @Override
-    public void logMessage(
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
-        final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;
-        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
-        strategy.log(this, getName(), fqcn, marker, level, msg, t);
-    }
-
-    @Override
-    protected void log(
-            final Level level,
-            final Marker marker,
+    protected void doLog(
             final String fqcn,
-            final StackTraceElement location,
-            final Message message,
-            final Throwable throwable) {
+            final @Nullable StackTraceElement location,
+            final Level level,
+            final @Nullable Marker marker,
+            final @Nullable Message message,
+            final @Nullable Throwable throwable) {
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, getName(), fqcn, location, marker, level, message, throwable);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
-        return privateConfig.filter(level, marker, message, t);
+    public boolean isEnabled(final Level level, final Marker marker) {
+        return privateConfig.filter(level, marker, null);
     }
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String message) {
         return privateConfig.filter(level, marker, message);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
+        return privateConfig.filter(level, marker, message, t);
     }
 
     @Override

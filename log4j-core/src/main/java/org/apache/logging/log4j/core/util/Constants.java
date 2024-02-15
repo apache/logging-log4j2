@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Key;
@@ -49,6 +50,9 @@ public final class Constants {
     public static boolean JNDI_JDBC_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_JDBC);
 
     public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = new @Named("StatusLogger") Key<>() {};
+
+    public static final Key<Logger> DEFAULT_STATUS_LOGGER_KEY =
+            Key.builder(Logger.class).get().withName("StatusLogger").withQualifierType(Named.class);
 
     /**
      * JNDI context name string literal.

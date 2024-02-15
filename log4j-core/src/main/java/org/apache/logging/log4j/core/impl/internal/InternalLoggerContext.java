@@ -29,27 +29,45 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Creates a SimpleLoggerContext compatible with log4j-core. This class is internal to Log4j.
  */
+@NullMarked
 public class InternalLoggerContext extends LoggerContext {
-
-    private final org.apache.logging.log4j.spi.LoggerContext parentLoggerContext;
 
     private static final LoggerConfig LOGGER_CONFIG = new LoggerConfig.RootLogger();
 
+    private final org.apache.logging.log4j.spi.LoggerContext parentLoggerContext;
+    private final MessageFactory defaultMessageFactory;
+    private final FlowMessageFactory defaultFlowMessageFactory;
+    private final RecyclerFactory recyclerFactory;
+
     public InternalLoggerContext(org.apache.logging.log4j.spi.LoggerContext loggerContext) {
-        super();
         this.parentLoggerContext = loggerContext;
+        this.defaultMessageFactory = LoggingSystem.getMessageFactory();
+        this.defaultFlowMessageFactory = LoggingSystem.getFlowMessageFactory();
+        this.recyclerFactory = LoggingSystem.getRecyclerFactory();
         setStarted();
     }
 
     @Override
-    protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
+    protected Logger newInstance(
+            final LoggerContext ctx,
+            final String name,
+            final MessageFactory messageFactory,
+            final FlowMessageFactory flowMessageFactory,
+            final RecyclerFactory recyclerFactory,
+            final org.apache.logging.log4j.Logger statusLogger) {
         return new InternalLogger(this, name);
     }
 
@@ -62,8 +80,14 @@ public class InternalLoggerContext extends LoggerContext {
         private final ExtendedLogger logger;
         private final InternalLoggerContext loggerContext;
 
-        public InternalLogger(InternalLoggerContext loggerContext, String name) {
-            super(loggerContext, name);
+        public InternalLogger(final InternalLoggerContext loggerContext, final String name) {
+            super(
+                    loggerContext,
+                    name,
+                    defaultMessageFactory,
+                    defaultFlowMessageFactory,
+                    recyclerFactory,
+                    StatusLogger.getLogger());
             this.loggerContext = loggerContext;
             this.logger = parentLoggerContext.getLogger(name);
         }
@@ -92,16 +116,13 @@ public class InternalLoggerContext extends LoggerContext {
         }
 
         @Override
-        public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {}
-
-        @Override
-        protected void log(
-                Level level,
-                Marker marker,
-                String fqcn,
-                StackTraceElement location,
-                Message message,
-                Throwable throwable) {
+        protected void doLog(
+                final String fqcn,
+                @Nullable final StackTraceElement location,
+                final Level level,
+                @Nullable final Marker marker,
+                final Message message,
+                @Nullable final Throwable throwable) {
             logger.log(level, marker, message, throwable);
         }
 

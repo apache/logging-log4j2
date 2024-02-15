@@ -47,7 +47,7 @@ import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.sdk.logger.AbstractLogger;
 import org.apache.logging.log4j.util.InternalApi;
 
 /**

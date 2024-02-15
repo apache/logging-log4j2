@@ -22,8 +22,10 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -78,8 +80,15 @@ public class AsyncLoggerContext extends LoggerContext {
     }
 
     @Override
-    protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
-        return new AsyncLogger(ctx, name, messageFactory, loggerDisruptor);
+    protected Logger newInstance(
+            final LoggerContext ctx,
+            final String name,
+            final MessageFactory messageFactory,
+            final FlowMessageFactory flowMessageFactory,
+            final RecyclerFactory recyclerFactory,
+            final org.apache.logging.log4j.Logger statusLogger) {
+        return new AsyncLogger(
+                ctx, name, messageFactory, flowMessageFactory, recyclerFactory, statusLogger, loggerDisruptor);
     }
 
     @Override

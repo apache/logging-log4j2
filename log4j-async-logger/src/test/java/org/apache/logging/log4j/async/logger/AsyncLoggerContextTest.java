@@ -22,6 +22,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.internal.recycler.DummyRecyclerFactoryProvider;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -30,7 +32,14 @@ public class AsyncLoggerContextTest {
 
     @Test
     public void testNewInstanceReturnsAsyncLogger() {
-        final Logger logger = new AsyncLoggerContext("a").newInstance(new LoggerContext("a"), "a", null);
+        final Logger logger = new AsyncLoggerContext("a")
+                .newInstance(
+                        new LoggerContext("a"),
+                        "a",
+                        null,
+                        null,
+                        new DummyRecyclerFactoryProvider().createForEnvironment(null),
+                        StatusLogger.getLogger());
         assertTrue(logger instanceof AsyncLogger);
 
         CoreLoggerContexts.stopLoggerContext(); // stop async thread
