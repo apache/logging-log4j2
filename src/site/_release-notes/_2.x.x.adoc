@@ -43,6 +43,7 @@ This releases contains ...
 === Fixed
 
 * Fix regression in `JdkMapAdapterStringMap` performance. (https://github.com/apache/logging-log4j2/issues/2238[2238])
+* Fix the behavior of `Logger#setLevel` and `Logger#getLevel` in the Log4j 1.2 bridge. (https://github.com/apache/logging-log4j2/issues/2282[2282])
 * Allow deserialization of all arrays of allowed classes. (https://issues.apache.org/jira/browse/LOG4J2-3680[LOG4J2-3680])
 * Fix forgotten `threadName` field in `RingBufferLogEvent#clear()` (https://github.com/apache/logging-log4j2/issues/2234[2234])
 * Fix `StringBuilder` cache corruption on recursive access
@@ -54,7 +55,7 @@ This releases contains ...
 === Updated
 
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
-* Update `io.netty:netty-bom` to version `4.1.106.Final` (https://github.com/apache/logging-log4j2/pull/2225[2225])
+* Update `io.netty:netty-bom` to version `4.1.107.Final` (https://github.com/apache/logging-log4j2/pull/2284[2284])
 * Update `org.apache.logging:logging-parent` to version `10.6.0` (https://github.com/apache/logging-log4j2/pull/2197[2197])
 * Update `org.eclipse.jetty:jetty-bom` to version `9.4.54.v20240208` (https://github.com/apache/logging-log4j2/pull/2287[2287])
 * Update `org.jctools:jctools-core` to version `4.0.3` (https://github.com/apache/logging-log4j2/pull/2270[2270])
