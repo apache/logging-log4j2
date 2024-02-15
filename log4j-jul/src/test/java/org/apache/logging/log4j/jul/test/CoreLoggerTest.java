@@ -113,22 +113,25 @@ public class CoreLoggerTest extends AbstractLoggerTest {
         assertEquals(Level.INFO, a_b.getLevel());
         assertEquals(Level.INFO, a_b_c.getLevel());
         // all levels
-        for (final Level level : new Level[] {
-            Level.ALL,
+        final Level[] levels = new Level[] {
+            Level.OFF,
+            Level.SEVERE,
+            Level.WARNING,
+            Level.INFO,
             Level.CONFIG,
             Level.FINE,
             Level.FINER,
             Level.FINEST,
-            Level.INFO,
-            Level.OFF,
-            Level.SEVERE,
-            Level.WARNING
-        }) {
+            Level.ALL
+        };
+        for (int i = 0; i < levels.length - 1; i++) {
+            final Level level = levels[i];
+            final Level nextLevel = levels[i + 1];
             a.setLevel(level);
             assertEquals(level, a.getLevel());
-            assertTrue(a.isLoggable(level));
-            assertTrue(a_b.isLoggable(level));
-            assertTrue(a_b_c.isLoggable(level));
+            assertTrue(a.isLoggable(level) && !a.isLoggable(nextLevel));
+            assertTrue(a_b.isLoggable(level) && !a.isLoggable(nextLevel));
+            assertTrue(a_b_c.isLoggable(level) && !a.isLoggable(nextLevel));
         }
     }
 
