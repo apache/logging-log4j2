@@ -18,6 +18,7 @@ package org.apache.logging.log4j.jul;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  * Log4j Core implementation of the JUL {@link Logger} class. <strong>Note that this implementation does
@@ -44,7 +45,7 @@ public class CoreLogger extends ApiLogger {
     @Override
     public void setLevel(final Level level) throws SecurityException {
         super.doSetLevel(level); // checks permissions
-        logger.setLevel(LevelTranslator.toLevel(level));
+        Configurator.setLevel(logger, LevelTranslator.toLevel(level));
     }
 
     /**

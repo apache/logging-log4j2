@@ -18,8 +18,10 @@ package org.apache.logging.log4j.jul.test;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,6 +48,7 @@ public class CoreLoggerTest extends AbstractLoggerTest {
 
     @Before
     public void setUp() throws Exception {
+        LogManager.getLogManager().reset();
         logger = Logger.getLogger(LOGGER_NAME);
         logger.setFilter(null);
         assertThat(logger.getLevel(), equalTo(Level.FINE));
@@ -98,6 +101,38 @@ public class CoreLoggerTest extends AbstractLoggerTest {
         assertThat(logger.getLevel(), equalTo(Level.FINE));
         assertThat(childLogger.getLevel(), equalTo(Level.FINE));
         assertThat(childLogger.isLoggable(Level.ALL), is(false));
+    }
+
+    @Test
+    public void testSetLevelIssue2281() {
+        final Logger a = Logger.getLogger("a");
+        final Logger a_b = Logger.getLogger("a.b");
+        final Logger a_b_c = Logger.getLogger("a.b.c");
+        // test default for this test
+        assertEquals(Level.INFO, a.getLevel());
+        assertEquals(Level.INFO, a_b.getLevel());
+        assertEquals(Level.INFO, a_b_c.getLevel());
+        // all levels
+        final Level[] levels = new Level[] {
+            Level.OFF,
+            Level.SEVERE,
+            Level.WARNING,
+            Level.INFO,
+            Level.CONFIG,
+            Level.FINE,
+            Level.FINER,
+            Level.FINEST,
+            Level.ALL
+        };
+        for (int i = 0; i < levels.length - 1; i++) {
+            final Level level = levels[i];
+            final Level nextLevel = levels[i + 1];
+            a.setLevel(level);
+            assertEquals(level, a.getLevel());
+            assertTrue(a.isLoggable(level) && !a.isLoggable(nextLevel));
+            assertTrue(a_b.isLoggable(level) && !a.isLoggable(nextLevel));
+            assertTrue(a_b_c.isLoggable(level) && !a.isLoggable(nextLevel));
+        }
     }
 
     @Test
