@@ -18,8 +18,10 @@ package org.apache.logging.log4j.jul.test;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,6 +48,7 @@ public class CoreLoggerTest extends AbstractLoggerTest {
 
     @Before
     public void setUp() throws Exception {
+        LogManager.getLogManager().reset();
         logger = Logger.getLogger(LOGGER_NAME);
         logger.setFilter(null);
         assertThat(logger.getLevel(), equalTo(Level.FINE));
@@ -98,6 +101,35 @@ public class CoreLoggerTest extends AbstractLoggerTest {
         assertThat(logger.getLevel(), equalTo(Level.FINE));
         assertThat(childLogger.getLevel(), equalTo(Level.FINE));
         assertThat(childLogger.isLoggable(Level.ALL), is(false));
+    }
+
+    @Test
+    public void testSetLevelIssue2281() {
+        final Logger a = Logger.getLogger("a");
+        final Logger a_b = Logger.getLogger("a.b");
+        final Logger a_b_c = Logger.getLogger("a.b.c");
+        // test default for this test
+        assertEquals(Level.INFO, a.getLevel());
+        assertEquals(Level.INFO, a_b.getLevel());
+        assertEquals(Level.INFO, a_b_c.getLevel());
+        // all levels
+        for (final Level level : new Level[] {
+            Level.ALL,
+            Level.CONFIG,
+            Level.FINE,
+            Level.FINER,
+            Level.FINEST,
+            Level.INFO,
+            Level.OFF,
+            Level.SEVERE,
+            Level.WARNING
+        }) {
+            a.setLevel(level);
+            assertEquals(level, a.getLevel());
+            assertTrue(a.isLoggable(level));
+            assertTrue(a_b.isLoggable(level));
+            assertTrue(a_b_c.isLoggable(level));
+        }
     }
 
     @Test
