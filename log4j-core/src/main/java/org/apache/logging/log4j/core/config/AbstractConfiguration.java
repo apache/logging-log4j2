@@ -674,9 +674,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         boolean setRoot = false;
         for (final Node child : rootNode.getChildren()) {
             if ("Properties".equalsIgnoreCase(child.getName())) {
-                if (tempLookup == runtimeStrSubstitutor.getVariableResolver()) {
-                    LOGGER.error("Properties declaration must be the first element in the configuration");
-                }
+                // We already used this node
                 continue;
             }
             createConfiguration(child, null);
