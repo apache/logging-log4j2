@@ -17,9 +17,6 @@
 package org.apache.logging.log4j.plugins.validation.validators;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverterFactory;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -33,13 +30,7 @@ public class ValidPortValidator implements ConstraintValidator<ValidPort> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final TypeConverter<Integer> converter;
     private ValidPort annotation;
-
-    @Inject
-    public ValidPortValidator(final TypeConverterFactory factory) {
-        converter = factory.getTypeConverter(Integer.class);
-    }
 
     @Override
     public void initialize(final ValidPort annotation) {
@@ -48,14 +39,20 @@ public class ValidPortValidator implements ConstraintValidator<ValidPort> {
 
     @Override
     public boolean isValid(final String name, final Object value) {
-        if (value instanceof CharSequence) {
-            return isValid(name, converter.convert(value.toString(), -1));
-        }
-        if (!(value instanceof Integer)) {
+        final int port;
+        if (value instanceof Integer i) {
+            port = i;
+        } else if (value instanceof CharSequence cs) {
+            try {
+                port = Integer.parseInt(cs, 0, cs.length(), 10);
+            } catch (final NumberFormatException ignored) {
+                LOGGER.error(annotation.message());
+                return false;
+            }
+        } else {
             LOGGER.error(annotation.message());
             return false;
         }
-        final int port = (int) value;
         if (port < 0 || port > 65535) {
             LOGGER.error(annotation.message());
             return false;
