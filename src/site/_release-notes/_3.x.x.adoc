@@ -76,6 +76,7 @@ This release contains...
 * Update `org.apache.maven.surefire:surefire-junit47` to version `3.2.5` (https://github.com/apache/logging-log4j2/pull/2177[2177])
 * Update `org.apache.tomcat:tomcat-juli` to version `10.1.18` (https://github.com/apache/logging-log4j2/pull/2176[2176])
 * Update `org.assertj:assertj-core` to version `3.25.3` (https://github.com/apache/logging-log4j2/pull/2263[2263])
+* Update `org.eclipse.jetty:jetty-bom` to version `9.4.54.v20240208` (https://github.com/apache/logging-log4j2/pull/2285[2285])
 * Update `org.elasticsearch.client:elasticsearch-rest-high-level-client` to version `7.17.18` (https://github.com/apache/logging-log4j2/pull/2268[2268])
 * Update `org.graalvm.truffle:truffle-api` to version `23.1.2` (https://github.com/apache/logging-log4j2/pull/2206[2206])
 * Update `org.jctools:jctools-core` to version `4.0.3` (https://github.com/apache/logging-log4j2/pull/2267[2267])
