@@ -53,20 +53,20 @@ public class OrderedComparator implements Comparator<AnnotatedElement> {
     }
 
     private static String getName(final AnnotatedElement element) {
-        if (element instanceof Class<?>) {
-            return Keys.getName((Class<?>) element);
+        if (element instanceof Class<?> clazz) {
+            return Keys.getName(clazz);
         }
-        if (element instanceof Field) {
-            return Keys.getName((Field) element);
+        if (element instanceof Field field) {
+            return Keys.getName(field);
         }
-        if (element instanceof Parameter) {
-            return Keys.getName((Parameter) element);
+        if (element instanceof Parameter parameter) {
+            return Keys.getName(parameter);
         }
-        if (element instanceof Method) {
-            return Keys.getName((Method) element);
+        if (element instanceof Method method) {
+            return Keys.getName(method);
         }
-        if (element instanceof AnnotatedType) {
-            return Keys.getName((AnnotatedType) element);
+        if (element instanceof AnnotatedType annotatedType) {
+            return Keys.getName(annotatedType);
         }
         return Strings.EMPTY;
     }
