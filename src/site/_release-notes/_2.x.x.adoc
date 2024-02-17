@@ -58,6 +58,7 @@ This releases contains ...
 
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
 * Update `commons-codec:commons-codec` to version `1.16.1` (https://github.com/apache/logging-log4j2/pull/2277[2277])
+* Update `github/codeql-action` to version `3.24.3` (https://github.com/apache/logging-log4j2/pull/2295[2295])
 * Update `io.netty:netty-bom` to version `4.1.107.Final` (https://github.com/apache/logging-log4j2/pull/2284[2284])
 * Update `org.apache.logging:logging-parent` to version `10.6.0` (https://github.com/apache/logging-log4j2/pull/2197[2197])
 * Update `org.eclipse.jetty:jetty-bom` to version `9.4.54.v20240208` (https://github.com/apache/logging-log4j2/pull/2287[2287])
