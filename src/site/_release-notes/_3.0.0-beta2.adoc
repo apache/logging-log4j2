@@ -1,0 +1,92 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= 3.0.0-beta2 (2024-02-17)
+
+This release provides a continuation of the modularisation process of Log4j Core.
+The following features were moved to separate artifacts:
+
+* The async logger feature was moved to `log4j-async-logger` and it was upgraded to use LMAX Disruptor 4.x.
+The async appender is still available by default in `log4j-core`.
+* The YAML configuration is available now in `log4j-config-yaml`.
+* The Java properties configuration was removed and replaced with a similar format based on https://github.com/FasterXML/jackson-dataformats-text/tree/2.17/properties[`jackson-dataformat-properties`].
+
+Other features were removed:
+
+* Jetty 9.x users are encouraged to migrate to Jetty 10.x or later and replace `log4j-appserver` with `log4j-slf4j2-impl`.
+* Tomcat JULI support will be available from a third-party (cf. https://github.com/copernik-eu/log4j-plugins/pull/102[copernik-eu/log4j-plugins]).
+* Apache Commons Logging users are encouraged to upgrade `commons-logging` to version 1.3.0 or later and remove `log4j-jcl`.
+* Support for the XML layout was dropped.
+* Support for JMX was dropped and will be replaced with a more recent technology.
+
+
+[#release-notes-3-0-0-beta2-added]
+=== Added
+
+* Add and update DSLs for setting up dependency injection for test and non-test code. (https://github.com/apache/logging-log4j2/issues/2147[2147])
+* Add a `ConfigurationExtension` mechanism to allow third-party JARs to extend the `<Configuration>` element.
+* Add a new properties configuration factory based on `jackson-dataformat-properties`.
+
+[#release-notes-3-0-0-beta2-changed]
+=== Changed
+
+* Change the order of evaluation of `FormattedMessage` formatters. Messages are evaluated using `java.util.Format` only if they don't comply to the `java.text.MessageFormat` or `ParameterizedMessage` format. (https://github.com/apache/logging-log4j2/issues/1223[1223])
+* Split off async logger support into a new `log4j-async-logger` module.
+* Split off YAML configuration into a new `log4j-config-yaml` module.
+
+[#release-notes-3-0-0-beta2-fixed]
+=== Fixed
+
+* Rewrote message parameter formatter with improved escape handling (https://github.com/apache/logging-log4j2/issues/1626[1626])
+* The MongoDb4 appender now supports long values to configure `collectionSize` (https://github.com/apache/logging-log4j2/issues/1747[1747])
+* Mark `JdkMapAdapterStringMap` as frozen if map is immutable. (https://github.com/apache/logging-log4j2/issues/2098[2098])
+* Fix regression in `JdkMapAdapterStringMap` performance. (https://github.com/apache/logging-log4j2/issues/2238[2238])
+* Prevents ClassCastException when trying to assign a SimpleLoggerContext to a core LoggerContext (https://issues.apache.org/jira/browse/LOG4J2-1921[LOG4J2-1921])
+* Possible NullPointerException in MongoDb4DocumentObject, MongoDbDocumentObject, DefaultNoSqlObject. (https://issues.apache.org/jira/browse/LOG4J2-3392[LOG4J2-3392])
+* Fix NPE in `CloseableThreadContext`. (https://github.com/apache/logging-log4j2/pull/1426[1426])
+* Fix NPE in `RollingFileManager`. (https://github.com/apache/logging-log4j2/pull/1645[1645])
+* Fix `log4j-spring-cloud-config-client` dependencies to include only those required. (https://github.com/apache/logging-log4j2/pull/2157[2157])
+* Workaround a Coursier/Ivy dependency resolution bug affecting `log4j-slf4j-impl` and `log4j-mongodb3`. (https://github.com/apache/logging-log4j2/pull/2065[2065])
+
+[#release-notes-3-0-0-beta2-removed]
+=== Removed
+
+* Removed legacy `2.x` properties configuration factory.
+* Remove `DefaultLogEventFactory`
+* Remove `log4j-appserver` module (https://github.com/apache/logging-log4j2/pull/2257[2257])
+* Remove `org.apache.logging.log4j.core.parser` and related packages. (https://github.com/apache/logging-log4j2/pull/2154[2154])
+* Remove `log4j-jcl` module (https://github.com/apache/logging-log4j2/pull/2257[2257])
+* Removed JMX support.
+* Remove `log4j-layout-jackson` module (https://github.com/apache/logging-log4j2/pull/2198[2198])
+* Remove `log4j-layout-jackson-xml` module (https://github.com/apache/logging-log4j2/pull/2198[2198])
+* Remove `log4j2.enable.threadlocals` property (https://github.com/apache/logging-log4j2/issues/2105[2105])
+
+[#release-notes-3-0-0-beta2-updated]
+=== Updated
+
+* Update `apache/logging-parent` to version `` (https://github.com/apache/logging-log4j2/pull/2191[2191])
+* Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2127[2127])
+* Update `commons-codec:commons-codec` to version `1.16.1` (https://github.com/apache/logging-log4j2/pull/2276[2276])
+* Update `io.netty:netty-bom` to version `4.1.107.Final` (https://github.com/apache/logging-log4j2/pull/2283[2283])
+* Update `org.apache.logging:logging-parent` to version `10.6.0` (https://github.com/apache/logging-log4j2/pull/2193[2193])
+* Update `org.apache.tomcat:tomcat-juli` to version `10.1.18` (https://github.com/apache/logging-log4j2/pull/2176[2176])
+* Update `org.eclipse.jetty:jetty-bom` to version `9.4.54.v20240208` (https://github.com/apache/logging-log4j2/pull/2285[2285])
+* Update `org.jctools:jctools-core` to version `4.0.3` (https://github.com/apache/logging-log4j2/pull/2267[2267])
+* Update `org.slf4j:slf4j-api` to version `2.0.10` (https://github.com/apache/logging-log4j2/pull/2136[2136])
+* Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.2` (https://github.com/apache/logging-log4j2/pull/2222[2222])
+* Update `org.springframework.cloud:spring-cloud-context` to version `4.1.1` (https://github.com/apache/logging-log4j2/pull/2236[2236])
+* Update `org.springframework:spring-framework-bom` to version `6.1.4` (https://github.com/apache/logging-log4j2/pull/2294[2294])
