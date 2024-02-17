@@ -120,8 +120,8 @@
 
     <!-- Spring requires an implementation of `commons-logging` and we excluded `spring-jcl` above -->
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jcl</artifactId>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
       <scope>test</scope>
     </dependency>
 
