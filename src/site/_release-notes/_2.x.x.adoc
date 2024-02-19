@@ -44,7 +44,7 @@ This releases contains ...
 
 * Fix regression in `JdkMapAdapterStringMap` performance. (https://github.com/apache/logging-log4j2/issues/2238[2238])
 * Fix the behavior of `Logger#setLevel` and `Logger#getLevel` in the Log4j 1.2 bridge. (https://github.com/apache/logging-log4j2/issues/2282[2282])
-* Fix the behavior of `CoreLogger#setLevel` in the log4j-jul module. (https://github.com/apache/logging-log4j2/issues/2282[2282])
+* Fix the behavior of `CoreLogger#getLevel` and `CoreLogger#setLevel` in the `log4j-jul` module. (https://github.com/apache/logging-log4j2/issues/2282[2282])
 * Allow deserialization of all arrays of allowed classes. (https://issues.apache.org/jira/browse/LOG4J2-3680[LOG4J2-3680])
 * Allow the <Properties> node to appear in any position in the configuration element.
 * Fix forgotten `threadName` field in `RingBufferLogEvent#clear()` (https://github.com/apache/logging-log4j2/issues/2234[2234])
@@ -59,6 +59,7 @@ This releases contains ...
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
 * Update `commons-codec:commons-codec` to version `1.16.1` (https://github.com/apache/logging-log4j2/pull/2277[2277])
 * Update `github/codeql-action` to version `3.24.3` (https://github.com/apache/logging-log4j2/pull/2295[2295])
+* Update `io.fabric8:docker-maven-plugin` to version `0.44.0` (https://github.com/apache/logging-log4j2/pull/2299[2299])
 * Update `io.netty:netty-bom` to version `4.1.107.Final` (https://github.com/apache/logging-log4j2/pull/2284[2284])
 * Update `org.apache.logging:logging-parent` to version `10.6.0` (https://github.com/apache/logging-log4j2/pull/2197[2197])
 * Update `org.eclipse.jetty:jetty-bom` to version `9.4.54.v20240208` (https://github.com/apache/logging-log4j2/pull/2287[2287])
