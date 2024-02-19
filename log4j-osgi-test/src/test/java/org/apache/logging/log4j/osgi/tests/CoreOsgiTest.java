@@ -48,6 +48,7 @@ public class CoreOsgiTest {
         return options(
                 linkBundle("org.apache.logging.log4j.api"),
                 linkBundle("org.apache.logging.log4j.plugins"),
+                linkBundle("org.apache.logging.log4j.sdk"),
                 linkBundle("org.apache.logging.log4j.core"),
                 linkBundle("org.apache.logging.log4j.1.2.api").start(false),
                 // required by Pax Exam's logging
