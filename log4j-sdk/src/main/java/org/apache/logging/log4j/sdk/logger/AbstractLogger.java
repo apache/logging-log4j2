@@ -285,8 +285,10 @@ public abstract class AbstractLogger implements ExtendedLogger {
         return false;
     }
 
-    // <editor-fold desc="Message factories">
+    // <editor-fold desc="Unconditional logging">
     // Methods that always log a message regardless of the current logger level.
+
+    // <editor-fold desc="Logging methods">
     @PerformanceSensitive
     protected void logMessage(
             final String fqcn,
@@ -519,6 +521,58 @@ public abstract class AbstractLogger implements ExtendedLogger {
         final Message msg = messageFactory.newMessage(message, params);
         logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
     }
+    // </editor-fold>
+
+    // <editor-fold desc="Flow messages">
+    protected @Nullable EntryMessage logEnterMessage(
+            final String fqcn, final @Nullable String format, final @Nullable Object... params) {
+        final EntryMessage entryMessage = flowMessageFactory.newEntryMessage(format, params);
+        logMessageSafely(fqcn, null, Level.TRACE, ENTRY_MARKER, entryMessage, null);
+        return entryMessage;
+    }
+
+    protected @Nullable EntryMessage logEnterMessage(final String fqcn, final @Nullable Message message) {
+        final EntryMessage entryMessage = flowMessageFactory.newEntryMessage(message);
+        logMessageSafely(fqcn, null, Level.TRACE, ENTRY_MARKER, entryMessage, null);
+        return entryMessage;
+    }
+
+    protected void logExitMessage(
+            final String fqcn, final @Nullable EntryMessage message, final @Nullable Object result) {
+        logMessageSafely(
+                fqcn, null, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
+    }
+
+    protected void logExitMessage(final String fqcn, final @Nullable Message message, final @Nullable Object result) {
+        logMessageSafely(
+                fqcn, null, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
+    }
+
+    protected void logExitMessage(final String fqcn, final @Nullable String format, final @Nullable Object result) {
+        logMessageSafely(fqcn, null, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(format, result), null);
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Miscellaneous">
+    protected void logCatchingMessage(final String fqcn, final Level level, final @Nullable Throwable throwable) {
+        logMessageSafely(fqcn, null, level, CATCHING_MARKER, messageFactory.newMessage(CATCHING), throwable);
+    }
+
+    protected void logPrintfMessage(
+            final String fqcn,
+            final Level level,
+            final @Nullable Marker marker,
+            final String format,
+            final Object... params) {
+        final Message message = new StringFormattedMessage(format, params);
+        logMessageSafely(fqcn, null, level, marker, message, message.getThrowable());
+    }
+
+    protected void logThrowingMessage(final String fqcn, final Level level, final Throwable throwable) {
+        logMessageSafely(fqcn, null, level, THROWING_MARKER, messageFactory.newMessage(THROWING), throwable);
+    }
+    // </editor-fold>
+
     // </editor-fold>
 
     // <editor-fold desc="Filter methods">
@@ -1073,162 +1127,6 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Throwable throwable) {
         // This method does NOT check the level
         logMessageSafely(fqcn, location, level, marker, message, throwable);
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Flow messages">
-    /**
-     * Logs entry to a method with location information.
-     *
-     * @param fqcn The fully qualified class name of the <b>caller</b>.
-     * @param format The format String for the parameters.
-     * @param params The parameters to the method.
-     * @return The EntryMessage.
-     */
-    protected @Nullable EntryMessage enter(
-            final String fqcn, final @Nullable String format, final @Nullable Object... params) {
-        EntryMessage entryMsg = null;
-        if (isEnabled(Level.TRACE, ENTRY_MARKER)) {
-            logMessageSafely(
-                    fqcn,
-                    null,
-                    Level.TRACE,
-                    ENTRY_MARKER,
-                    entryMsg = flowMessageFactory.newEntryMessage(format, params),
-                    null);
-        }
-        return entryMsg;
-    }
-
-    /**
-     * Logs entry to a method with location information.
-     *
-     * @param fqcn The fully qualified class name of the <b>caller</b>.
-     * @param message the Message.
-     * @return The EntryMessage.
-     * @since 2.6
-     */
-    protected @Nullable EntryMessage enter(final String fqcn, final @Nullable Message message) {
-        EntryMessage flowMessage = null;
-        if (isEnabled(Level.TRACE, ENTRY_MARKER)) {
-            logMessageSafely(
-                    fqcn,
-                    null,
-                    Level.TRACE,
-                    ENTRY_MARKER,
-                    flowMessage = flowMessageFactory.newEntryMessage(message),
-                    null);
-        }
-        return flowMessage;
-    }
-
-    /**
-     * Logs entry to a method with location information.
-     *
-     * @param fqcn The fully qualified class name of the <b>caller</b>.
-     * @param format Format String for the parameters.
-     * @param paramSuppliers The Suppliers of the parameters.
-     * @return The EntryMessage.
-     */
-    @SuppressWarnings("deprecation")
-    protected @Nullable EntryMessage enter(
-            final String fqcn, final @Nullable String format, final Supplier<?>... paramSuppliers) {
-        EntryMessage entryMsg = null;
-        if (isEnabled(Level.TRACE, ENTRY_MARKER)) {
-            final Message message =
-                    entryMsg = flowMessageFactory.newEntryMessage(format, LambdaUtil.getAll(paramSuppliers));
-            logMessageSafely(fqcn, null, Level.TRACE, ENTRY_MARKER, message, null);
-        }
-        return entryMsg;
-    }
-
-    /**
-     * Logs exiting from a method with the result and location information.
-     *
-     * @param fqcn The fully qualified class name of the <b>caller</b>.
-     * @param <R> The type of the parameter and object being returned.
-     * @param result The result being returned from the method call.
-     * @return the return value passed to this method.
-     */
-    protected <R> R exit(final String fqcn, final R result) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER)) {
-            final Message exitMessage = flowMessageFactory.newExitMessage(null, result);
-            logMessageSafely(fqcn, null, Level.TRACE, EXIT_MARKER, exitMessage, null);
-        }
-        return result;
-    }
-
-    protected <R> @Nullable R exit(final String fqcn, final @Nullable EntryMessage message, final @Nullable R result) {
-        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out
-        // calling isEnabled().
-        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            final Message exitMessage = flowMessageFactory.newExitMessage(result, message);
-            logMessageSafely(fqcn, null, Level.TRACE, EXIT_MARKER, exitMessage, null);
-        }
-        return result;
-    }
-
-    protected <R> @Nullable R exit(final String fqcn, final @Nullable Message message, final @Nullable R result) {
-        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out
-        // calling isEnabled().
-        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            final Message exitMessage = flowMessageFactory.newExitMessage(result, message);
-            logMessageSafely(fqcn, null, Level.TRACE, EXIT_MARKER, exitMessage, null);
-        }
-        return result;
-    }
-
-    /**
-     * Logs exiting from a method with the result and location information.
-     *
-     * @param fqcn The fully qualified class name of the <b>caller</b>.
-     * @param format The format string.
-     * @param <R> The type of the parameter and object being returned.
-     * @param result The result being returned from the method call.
-     * @return the return value passed to this method.
-     */
-    protected <R> @Nullable R exit(final String fqcn, final @Nullable String format, final @Nullable R result) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER)) {
-            final Message exitMessage = flowMessageFactory.newExitMessage(format, result);
-            logMessageSafely(fqcn, null, Level.TRACE, EXIT_MARKER, exitMessage, null);
-        }
-        return result;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Miscellaneous">
-    protected void catching(final String fqcn, final Level level, final @Nullable Throwable throwable) {
-        if (isEnabled(level, CATCHING_MARKER)) {
-            logMessageSafely(fqcn, null, level, CATCHING_MARKER, messageFactory.newMessage(CATCHING), throwable);
-        }
-    }
-
-    protected void printf(
-            final String fqcn,
-            final Level level,
-            final @Nullable Marker marker,
-            final String format,
-            final Object... params) {
-        if (isEnabled(level, marker, format, params)) {
-            final Message message = new StringFormattedMessage(format, params);
-            logMessageSafely(fqcn, null, level, marker, message, message.getThrowable());
-        }
-    }
-
-    /**
-     * Logs a Throwable to be thrown.
-     *
-     * @param <T> the type of the Throwable.
-     * @param fqcn the fully qualified class name of this Logger implementation.
-     * @param level The logging Level.
-     * @param throwable The Throwable.
-     * @return the Throwable.
-     */
-    protected <T extends Throwable> T throwing(final String fqcn, final Level level, final T throwable) {
-        if (isEnabled(level, THROWING_MARKER)) {
-            logMessageSafely(fqcn, null, level, THROWING_MARKER, messageFactory.newMessage(THROWING), throwable);
-        }
-        return throwable;
     }
     // </editor-fold>
 
@@ -3877,73 +3775,163 @@ public abstract class AbstractLogger implements ExtendedLogger {
     // </editor-fold>
 
     // <editor-fold desc="Flow messages">
-    @Override
-    public @Nullable EntryMessage traceEntry() {
-        return enter(FQCN, null, EMPTY_PARAMS);
+    private @Nullable EntryMessage enter(final @Nullable String format, final @Nullable Object... params) {
+        EntryMessage entryMessage = null;
+        if (isEnabled(Level.TRACE, ENTRY_MARKER)) {
+            entryMessage = logEnterMessage(FQCN, format, params);
+        }
+        return entryMessage;
     }
 
     @Override
-    public @Nullable EntryMessage traceEntry(final String format, final Object... params) {
-        return enter(FQCN, format, params);
+    public final @Nullable EntryMessage traceEntry() {
+        return enter(null, EMPTY_PARAMS);
+    }
+
+    @Override
+    public final @Nullable EntryMessage traceEntry(final String format, final Object... params) {
+        return enter(format, params);
+    }
+
+    @SuppressWarnings("deprecation")
+    private @Nullable EntryMessage enter(final @Nullable String format, final Supplier<?>... paramSuppliers) {
+        EntryMessage entryMessage = null;
+        if (isEnabled(Level.TRACE, ENTRY_MARKER)) {
+            entryMessage = logEnterMessage(FQCN, format, LambdaUtil.getAll(paramSuppliers));
+        }
+        return entryMessage;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public @Nullable EntryMessage traceEntry(final Supplier<?>... paramSuppliers) {
-        return enter(FQCN, null, paramSuppliers);
+    public final @Nullable EntryMessage traceEntry(final Supplier<?>... paramSuppliers) {
+        return enter(null, paramSuppliers);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public @Nullable EntryMessage traceEntry(final String format, final Supplier<?>... paramSuppliers) {
-        return enter(FQCN, format, paramSuppliers);
+    public final @Nullable EntryMessage traceEntry(final String format, final Supplier<?>... paramSuppliers) {
+        return enter(format, paramSuppliers);
     }
 
     @Override
-    public @Nullable EntryMessage traceEntry(final @Nullable Message message) {
-        return enter(FQCN, message);
+    public final @Nullable EntryMessage traceEntry(final @Nullable Message message) {
+        EntryMessage entryMessage = null;
+        if (isEnabled(Level.TRACE, ENTRY_MARKER)) {
+            entryMessage = logEnterMessage(FQCN, message);
+        }
+        return entryMessage;
+    }
+
+    private <R> @Nullable R exit(final @Nullable String format, final @Nullable R result) {
+        if (isEnabled(Level.TRACE, EXIT_MARKER)) {
+            logExitMessage(FQCN, format, result);
+        }
+        return result;
     }
 
     @Override
-    public void traceExit() {
-        exit(FQCN, (String) null, null);
+    public final void traceExit() {
+        exit((String) null, null);
     }
 
     @Override
-    public <R> @Nullable R traceExit(final R result) {
-        return exit(FQCN, (String) null, result);
+    public final <R> @Nullable R traceExit(final @Nullable R result) {
+        return exit((String) null, result);
     }
 
     @Override
-    public <R> @Nullable R traceExit(final String format, final R result) {
-        return exit(FQCN, format, result);
+    public final <R> @Nullable R traceExit(final String format, final @Nullable R result) {
+        return exit(format, result);
+    }
+
+    private <R> @Nullable R exit(final @Nullable EntryMessage message, final @Nullable R result) {
+        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out
+        // calling isEnabled().
+        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+            logExitMessage(FQCN, message, result);
+        }
+        return result;
     }
 
     @Override
-    public void traceExit(final EntryMessage message) {
-        exit(FQCN, message, null);
+    public final void traceExit(final EntryMessage message) {
+        exit(message, null);
     }
 
     @Override
-    public <R> @Nullable R traceExit(final EntryMessage message, final R result) {
-        return exit(FQCN, message, result);
+    public final <R> @Nullable R traceExit(final EntryMessage message, final @Nullable R result) {
+        return exit(message, result);
     }
 
     @Override
-    public <R> @Nullable R traceExit(final @Nullable Message message, final R result) {
-        return exit(FQCN, message, result);
+    public final <R> @Nullable R traceExit(final @Nullable Message message, final @Nullable R result) {
+        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out
+        // calling isEnabled().
+        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+            logExitMessage(FQCN, message, result);
+        }
+        return result;
+    }
+
+    @Override
+    public void entry() {
+        enter(null, EMPTY_PARAMS);
+    }
+
+    @Override
+    public void entry(final Object... params) {
+        enter(null, params);
+    }
+
+    @Override
+    public void exit() {
+        exit((String) null, null);
+    }
+
+    @Override
+    public <R> R exit(final R result) {
+        return exit((String) null, result);
     }
     // </editor-fold>
 
     // <editor-fold desc="Miscellaneous">
     @Override
-    public void catching(final Level level, final @Nullable Throwable throwable) {
-        catching(FQCN, level, throwable);
+    public final void catching(final Level level, final @Nullable Throwable throwable) {
+        if (isEnabled(level, CATCHING_MARKER)) {
+            logCatchingMessage(FQCN, level, throwable);
+        }
     }
 
     @Override
-    public void catching(final @Nullable Throwable throwable) {
-        catching(FQCN, Level.ERROR, throwable);
+    public final void catching(final @Nullable Throwable throwable) {
+        catching(Level.ERROR, throwable);
+    }
+
+    @Override
+    public final void printf(
+            final Level level, final @Nullable Marker marker, final String format, final Object... params) {
+        if (isEnabled(level, marker, format, params)) {
+            logPrintfMessage(FQCN, level, marker, format, params);
+        }
+    }
+
+    @Override
+    public final void printf(final Level level, final String format, final Object... params) {
+        printf(level, null, format, params);
+    }
+
+    @Override
+    public final <T extends Throwable> T throwing(final T throwable) {
+        return throwing(Level.ERROR, throwable);
+    }
+
+    @Override
+    public final <T extends Throwable> T throwing(final Level level, final T throwable) {
+        if (isEnabled(level, THROWING_MARKER)) {
+            logThrowingMessage(FQCN, level, throwable);
+        }
+        return throwable;
     }
 
     @SuppressWarnings("unchecked")
@@ -3960,26 +3948,6 @@ public abstract class AbstractLogger implements ExtendedLogger {
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public void printf(final Level level, final @Nullable Marker marker, final String format, final Object... params) {
-        printf(FQCN, level, marker, format, params);
-    }
-
-    @Override
-    public void printf(final Level level, final String format, final Object... params) {
-        printf(FQCN, level, null, format, params);
-    }
-
-    @Override
-    public <T extends Throwable> T throwing(final T throwable) {
-        return throwing(FQCN, Level.ERROR, throwable);
-    }
-
-    @Override
-    public <T extends Throwable> T throwing(final Level level, final T throwable) {
-        return throwing(FQCN, level, throwable);
     }
     // </editor-fold>
 
