@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
+       type="changed">
+  <issue id="2296" link="https://github.com/apache/logging-log4j2/pull/2296"/>
+  <description format="asciidoc">Improve performance of `CloseableThreadContext#closeMap()`</description>
+</entry>

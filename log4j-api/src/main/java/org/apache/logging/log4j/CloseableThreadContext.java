@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -203,18 +203,22 @@ public class CloseableThreadContext {
         }
 
         private void closeMap() {
-            for (final Iterator<Map.Entry<String, String>> it =
-                            originalValues.entrySet().iterator();
-                    it.hasNext(); ) {
-                final Map.Entry<String, String> entry = it.next();
+            final Map<String, String> valuesToReplace = new HashMap<>(originalValues.size());
+            final List<String> keysToRemove = new ArrayList<>(originalValues.size());
+            for (final Map.Entry<String, String> entry : originalValues.entrySet()) {
                 final String key = entry.getKey();
                 final String originalValue = entry.getValue();
                 if (null == originalValue) {
-                    ThreadContext.remove(key);
+                    keysToRemove.add(key);
                 } else {
-                    ThreadContext.put(key, originalValue);
+                    valuesToReplace.put(key, originalValue);
                 }
-                it.remove();
+            }
+            if (!valuesToReplace.isEmpty()) {
+                ThreadContext.putAll(valuesToReplace);
+            }
+            if (!keysToRemove.isEmpty()) {
+                ThreadContext.removeAll(keysToRemove);
             }
         }
 
