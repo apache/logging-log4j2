@@ -203,9 +203,9 @@ public class CloseableThreadContext {
         }
 
         private void closeMap() {
-            Map<String, String> valuesToReplace = new HashMap<>(originalValues.size());
-            List<String> keysToRemove = new ArrayList<>(originalValues.size());
-            for (Map.Entry<String, String> entry : originalValues.entrySet()) {
+            final Map<String, String> valuesToReplace = new HashMap<>(originalValues.size());
+            final List<String> keysToRemove = new ArrayList<>(originalValues.size());
+            for (final Map.Entry<String, String> entry : originalValues.entrySet()) {
                 final String key = entry.getKey();
                 final String originalValue = entry.getValue();
                 if (null == originalValue) {
