@@ -69,7 +69,7 @@
     <cassandra.version>4.0.10</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
     <commons-codec.version>1.16.1</commons-codec.version>
-    <commons-compress.version>1.25.0</commons-compress.version>
+    <commons-compress.version>1.26.0</commons-compress.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <commons-dbcp2.version>2.11.0</commons-dbcp2.version>
     <commons-io.version>2.15.1</commons-io.version>
