@@ -67,6 +67,7 @@ This release contains...
 === Updated
 
 * Update `apache/logging-parent` to version `` (https://github.com/apache/logging-log4j2/pull/2191[2191])
+* Update `co.elastic.logging:log4j2-ecs-layout` to version `1.6.0` (https://github.com/apache/logging-log4j2/pull/2303[2303])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2127[2127])
 * Update `com.github.h-thurow:simple-jndi` to version `0.24.0` (https://github.com/apache/logging-log4j2/pull/2195[2195])
 * Update `commons-codec:commons-codec` to version `1.16.1` (https://github.com/apache/logging-log4j2/pull/2276[2276])
