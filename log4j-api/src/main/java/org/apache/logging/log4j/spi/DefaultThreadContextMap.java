@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -57,7 +56,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
                 @Override
                 protected Map<String, String> childValue(final Map<String, String> parentValue) {
                     return parentValue != null && isMapEnabled //
-                            ? Collections.unmodifiableMap(new HashMap<>(parentValue)) //
+                            ? UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(parentValue)
                             : null;
                 }
             };
@@ -84,22 +83,24 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         if (!useMap) {
             return;
         }
-        Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<>(1) : new HashMap<>(map);
-        map.put(key, value);
-        localMap.set(Collections.unmodifiableMap(map));
+        UnmodifiableArrayBackedMap map = (UnmodifiableArrayBackedMap) localMap.get();
+        if (map == null) {
+            map = UnmodifiableArrayBackedMap.EMPTY_MAP;
+        }
+        map = map.copyAndPut(key, value);
+        localMap.set(map);
     }
 
     public void putAll(final Map<String, String> m) {
         if (!useMap) {
             return;
         }
-        Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<>(m.size()) : new HashMap<>(map);
-        for (final Map.Entry<String, String> e : m.entrySet()) {
-            map.put(e.getKey(), e.getValue());
+        UnmodifiableArrayBackedMap map = (UnmodifiableArrayBackedMap) localMap.get();
+        if (map == null) {
+            map = UnmodifiableArrayBackedMap.EMPTY_MAP;
         }
-        localMap.set(Collections.unmodifiableMap(map));
+        map = map.copyAndPutAll(m);
+        localMap.set(map);
     }
 
     @Override
@@ -110,22 +111,18 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
 
     @Override
     public void remove(final String key) {
-        final Map<String, String> map = localMap.get();
+        UnmodifiableArrayBackedMap map = (UnmodifiableArrayBackedMap) localMap.get();
         if (map != null) {
-            final Map<String, String> copy = new HashMap<>(map);
-            copy.remove(key);
-            localMap.set(Collections.unmodifiableMap(copy));
+            map = map.copyAndRemove(key);
+            localMap.set(map);
         }
     }
 
     public void removeAll(final Iterable<String> keys) {
-        final Map<String, String> map = localMap.get();
+        UnmodifiableArrayBackedMap map = (UnmodifiableArrayBackedMap) localMap.get();
         if (map != null) {
-            final Map<String, String> copy = new HashMap<>(map);
-            for (final String key : keys) {
-                copy.remove(key);
-            }
-            localMap.set(Collections.unmodifiableMap(copy));
+            map = map.copyAndRemoveAll(keys);
+            localMap.set(map);
         }
     }
 
