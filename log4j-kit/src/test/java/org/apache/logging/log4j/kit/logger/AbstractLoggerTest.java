@@ -26,7 +26,7 @@ import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.MethodInfo;
 import org.junit.jupiter.api.Test;
 
-public class AbstractLoggerTest {
+class AbstractLoggerTest {
 
     private static final int MAX_INLINE_SIZE = 35;
     /**
