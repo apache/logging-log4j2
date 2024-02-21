@@ -271,6 +271,9 @@
     <module>log4j-to-jul</module>
     <module>log4j-web</module>
 
+    <!-- Internal modules: -->
+    <module>log4j-internal-docgen</module>
+
   </modules>
 
   <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
@@ -568,6 +571,7 @@
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
             <exclude>.surefire-*</exclude>
+            <exclude>**/.log4j-*</exclude>
           </excludes>
         </configuration>
       </plugin>

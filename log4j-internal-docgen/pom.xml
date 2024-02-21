@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
+  </parent>
+
+  <artifactId>log4j-internal-docgen</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Apache Log4j internal documentation generator</name>
+  <description>Internal module for generating the plugin documentation</description>
+
+  <properties>
+
+    <!-- This module is only available for generating documentation during `site` phase.
+         Hence, skip it for several plugins. -->
+    <bnd.skip>true</bnd.skip>
+    <bnd.baseline.skip>true</bnd.baseline.skip>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>true</maven.install.skip>
+    <sign.skip>true</sign.skip>
+    <spotbugs.skip>true</spotbugs.skip>
+
+    <!-- Versions of libraries whose plugin descriptors will be documented: -->
+    <docgen.log4j.version>2.23.0-SNAPSHOT</docgen.log4j.version>
+
+  </properties>
+
+  <build>
+    <plugins>
+
+      <!-- Download plugin descriptors -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>download-plugin-descriptors</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <outputDirectory>${project.build.directory}/plugin-descriptors</outputDirectory>
+              <artifactItems>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-1.2-api</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-cassandra</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-core</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-couchdb</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-docker</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-flume-ng</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-jakarta-web</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-jdbc-dbcp2</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-jpa</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-layout-template-json</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-mongodb3</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-mongodb4</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-spring-boot</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-docgen-maven-plugin</artifactId>
+        <version>${log4j-docgen.version}</version>
+        <executions>
+          <execution>
+            <id>generate-plugin-docs</id>
+            <goals>
+              <goal>generate-documentation</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <descriptorFileMatchers>
+                <descriptorFileMatcher>
+                  <baseDirectory>${project.build.directory}/plugin-descriptors</baseDirectory>
+                  <pathPatterns>glob:**/*.xml</pathPatterns>
+                </descriptorFileMatcher>
+              </descriptorFileMatchers>
+              <templateDirectory>${project.build.resources[0].directory}/templates</templateDirectory>
+              <scalarsTemplate>
+                <source>scalars.adoc.ftl</source>
+                <target>${project.build.directory}/plugin-docs/scalars.adoc</target>
+              </scalarsTemplate>
+              <interfaceTemplate>
+                <source>interface.adoc.ftl</source>
+                <target>${project.build.directory}/plugin-docs/%g/%a/%c.adoc</target>
+              </interfaceTemplate>
+              <pluginTemplate>
+                <source>plugin.adoc.ftl</source>
+                <target>${project.build.directory}/plugin-docs/%g/%a/%c.adoc</target>
+              </pluginTemplate>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
