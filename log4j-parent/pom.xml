@@ -156,7 +156,7 @@
     <system-stubs.version>2.1.6</system-stubs.version>
     <tomcat-juli.version>10.1.19</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
-    <wiremock.version>2.35.1</wiremock.version>
+    <wiremock.version>2.35.2</wiremock.version>
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
     <zstd.version>1.5.5-11</zstd.version>
