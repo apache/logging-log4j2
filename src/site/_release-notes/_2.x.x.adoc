@@ -31,6 +31,7 @@ This releases contains ...
 [#release-notes-2-x-x-changed]
 === Changed
 
+* Improve performance of `CloseableThreadContext#closeMap()` (https://github.com/apache/logging-log4j2/pull/2296[2296])
 * Simplify BND configuration after upgrade from version `6.4.1` to `7.0.0`
 
 [#release-notes-2-x-x-deprecated]
@@ -57,6 +58,7 @@ This releases contains ...
 === Updated
 
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.16.1` (https://github.com/apache/logging-log4j2/pull/2126[2126])
+* Update `com.github.tomakehurst:wiremock-jre8` to version `2.35.2` (https://github.com/apache/logging-log4j2/pull/2306[2306])
 * Update `commons-codec:commons-codec` to version `1.16.1` (https://github.com/apache/logging-log4j2/pull/2277[2277])
 * Update `github/codeql-action` to version `3.24.3` (https://github.com/apache/logging-log4j2/pull/2295[2295])
 * Update `io.fabric8:docker-maven-plugin` to version `0.44.0` (https://github.com/apache/logging-log4j2/pull/2299[2299])
