@@ -1,6 +1,7 @@
-<!-- vim: set syn=markdown : -->
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one or more
+// vim: set syn=markdown :
+
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
@@ -14,27 +15,23 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
--->
-#set($dollar = '$')
-#set($h1='#')
-#set($h2='##')
-
-$h1 Flume Appender
+////
+= Flume Appender
 
 The Flume Appender allows applications to send events to Flume Agents.
 
-$h2 Remote Agent
+== Remote Agent
 
-Including the Log4j flume-ng jar in your Maven-based project as a dependency should cause all the
-transitive dependencies necessary for the remote Agent to function to be included.
+Including the Log4j flume-ng jar in your Maven-based project as a dependency should cause all the transitive dependencies necessary for the remote Agent to function to be included.
 
-$h2 Persistent Agent
+== Persistent Agent
 
-The persistent agent uses Berkeley DB. The following dependency should be added to your pom.xml
-in addition to the log4j-flume-ng dependency.
+The persistent agent uses Berkeley DB.
+The following dependency should be added to your pom.xml in addition to the log4j-flume-ng dependency.
 
-<!-- TODO: use variables for dependency versions -->
-```
+// TODO: use variables for dependency versions
+
+----
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -58,14 +55,13 @@ in addition to the log4j-flume-ng dependency.
       <layout>default</layout>
     </repository>
   </repositories>
-```
+----
 
-$h2 Embedded Agent
+== Embedded Agent
 
-The following is a sample pom file for Maven that can be used as a template for integrating the
-Flume Embedded Appender into an application.
+The following is a sample pom file for Maven that can be used as a template for integrating the Flume Embedded Appender into an application.
 
-```
+----
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -86,57 +82,57 @@ Flume Embedded Appender into an application.
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${dollar}{slf4j.version}</version>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
-        <version>${dollar}{slf4j.version}</version>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <version>${dollar}{log4j.version}</version>
+        <version>${log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-1.2-api</artifactId>
-        <version>${dollar}{log4j.version}</version>
+        <version>${log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>${dollar}{log4j.version}</version>
+        <version>${log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-flume-ng</artifactId>
-        <version>${dollar}{log4j.version}</version>
+        <version>${log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${dollar}{log4j.version}</version>
+        <version>${log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-core-asl</artifactId>
-        <version>${dollar}{jackson.version}</version>
+        <version>${jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-mapper-asl</artifactId>
-        <version>${dollar}{jackson.version}</version>
+        <version>${jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-jaxrs</artifactId>
-        <version>${dollar}{jackson.version}</version>
+        <version>${jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-xc</artifactId>
-        <version>${dollar}{jackson.version}</version>
+        <version>${jackson.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -216,8 +212,9 @@ Flume Embedded Appender into an application.
     </dependency>
   </dependencies>
 </project>
-```
+----
 
-$h2 Requirements
+== Requirements
+
 The Flume Appender requires the Log4J 2 API.
-For more information, see [Runtime Dependencies](runtime-dependencies.html).
+For more information, see link:runtime-dependencies.html[Runtime Dependencies].
