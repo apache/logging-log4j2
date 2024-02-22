@@ -1,6 +1,7 @@
-<!-- vim: set syn=markdown : -->
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one or more
+// vim: set syn=markdown :
+
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
@@ -14,22 +15,18 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
--->
+////
+= Apache Log4j JSON Template Layout module
 
-# Log4j 2 JDBC Connection Source with Apache Commons DBCP 2
+This module provides a customizable, efficient, and garbage-free JSON generating Apache Log4j layout.
+It encodes log events according to the structure described by the JSON template provided.
 
-This module adds a connection source for JDBC Appenders. The PoolingDriverConnectionSource 
-provides connection pooling through Apache Commons DBCP 2. 
+== Requirements
 
-## Requirements
+This module was introduced in Log4j 2.14.0.
 
-This module was introduced in Log4j 2.11.0 and requires Apache Commons DBCP 2 to provide
-connection pooling.
-
-Some features may require optional
-[dependencies](../runtime-dependencies.html). These dependencies are specified in the
-documentation for those features.
+Some features may require optional link:../runtime-dependencies.html[dependencies].
+These dependencies are specified in the documentation for those features.
 
 Some Log4j features require external dependencies.
-See the [Dependency Tree](dependencies.html#Dependency_Tree)
-for the exact list of JAR files needed for these features.
+See the link:dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed for these features.
