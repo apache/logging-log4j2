@@ -872,6 +872,7 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-docgen-maven-plugin</artifactId>
         <version>${log4j-docgen.version}</version>
+        <inherited>false</inherited>
         <executions>
           <execution>
             <id>generate-plugin-docs</id>
@@ -879,7 +880,6 @@
               <goal>generate-documentation</goal>
             </goals>
             <phase>pre-site</phase>
-            <inherited>false</inherited>
             <configuration>
               <descriptorFileMatchers>
                 <descriptorFileMatcher>
@@ -900,6 +900,22 @@
                 <source>plugin.adoc.ftl</source>
                 <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/%g/%a/%c.adoc</target>
               </pluginTemplate>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-plugin-schema</id>
+            <goals>
+              <goal>generate-schema</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <descriptorFileMatchers>
+                <descriptorFileMatcher>
+                  <baseDirectory>${project.build.directory}/plugin-descriptors</baseDirectory>
+                  <pathPatterns>glob:**/*.xml</pathPatterns>
+                </descriptorFileMatcher>
+              </descriptorFileMatchers>
+              <schemaFile>${project.build.directory}/generated-sources/site/resources/config.xsd</schemaFile>
             </configuration>
           </execution>
         </executions>
