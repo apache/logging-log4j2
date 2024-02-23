@@ -36,6 +36,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
@@ -345,8 +347,11 @@ public class StatusLogger extends AbstractLogger {
 
     /**
      * Constructs the default instance.
+     * <p>
+     * This method is visible for tests.
+     * </p>
      */
-    private StatusLogger() {
+    StatusLogger() {
         this(
                 StatusLogger.class.getSimpleName(),
                 ParameterizedNoReferenceMessageFactory.INSTANCE,
@@ -561,15 +566,22 @@ public class StatusLogger extends AbstractLogger {
     }
 
     @Override
+    @SuppressFBWarnings("INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE")
     public void logMessage(
             final String fqcn,
             final Level level,
             final Marker marker,
             final Message message,
             final Throwable throwable) {
-        final StatusData statusData = createStatusData(fqcn, level, message, throwable);
-        buffer(statusData);
-        notifyListeners(statusData);
+        try {
+            final StatusData statusData = createStatusData(fqcn, level, message, throwable);
+            buffer(statusData);
+            notifyListeners(statusData);
+        } catch (final Exception error) {
+            // We are at the lowest level of the system.
+            // Hence, there is nothing better we can do but dumping the failure.
+            error.printStackTrace(System.err);
+        }
     }
 
     private void buffer(final StatusData statusData) {

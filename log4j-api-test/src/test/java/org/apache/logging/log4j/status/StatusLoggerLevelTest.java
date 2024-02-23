@@ -22,16 +22,14 @@ import static org.mockito.Mockito.when;
 
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
 
 class StatusLoggerLevelTest {
 
     @Test
-    @ResourceLock("log4j2.StatusLogger")
     void effective_level_should_be_the_least_specific_one() {
 
         // Verify the initial level
-        final StatusLogger logger = StatusLogger.getLogger();
+        final StatusLogger logger = new StatusLogger();
         final Level fallbackListenerLevel = Level.ERROR;
         assertThat(logger.getLevel()).isEqualTo(fallbackListenerLevel);
 
