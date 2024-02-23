@@ -344,6 +344,7 @@
          See https://github.com/apache/logging-log4j-tools/issues/89 -->
     <log4j.changelog.versionPattern><![CDATA[^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>(0|[1-9]\d*)(-[a-zA-Z][0-9a-zA-Z-]*)?)$]]></log4j.changelog.versionPattern>
 
+
   </properties>
 
   <dependencyManagement>
@@ -784,47 +785,73 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <inherited>false</inherited>
-        <configuration combine.self="override">
-          <skip>false</skip>
-          <generateProjectInfo>false</generateProjectInfo>
-          <generateReports>false</generateReports>
-          <siteDirectory>${project.build.directory}/generated-sources/site</siteDirectory>
-          <locales>en</locales>
-          <!-- Exclude the navigation file for Maven 1 sites as it interferes with the site generation. -->
-          <moduleExcludes>
-            <xdoc>navigation.xml</xdoc>
-          </moduleExcludes>
-          <attributes>
-            <Log4jReleaseVersion>${revision}</Log4jReleaseVersion>
-          </attributes>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctor-maven-plugin</artifactId>
-            <version>${asciidoctor-maven-plugin.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
 
-      <!-- We (sadly) use `maven-site-plugin`, which handles AsciiDoc files.
-           Hence, skip the `asciidoctor-maven-plugin` redundant execution inherited from the parent. -->
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>export-asciidoc-to-html</id>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <eruby>erb</eruby>
+          <enableVerbose>true</enableVerbose>
+          <sourceDirectory>src/site/asciidoc</sourceDirectory>
+          <outputDirectory>target/site</outputDirectory>
+          <preserveDirectories>true</preserveDirectories>
+
+          <templateDirs>
+            <dir>src/asciidoc/templates</dir>
+          </templateDirs>
+
+          <attributes>
+            <icons>font</icons>
+            <iconfont-remote>never</iconfont-remote>
+            <iconfont-name>font-awesome</iconfont-name>
+            <toc>left</toc>
+          </attributes>
+        </configuration>
+
       </plugin>
+
+
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-site-plugin</artifactId>-->
+<!--        <inherited>false</inherited>-->
+<!--        <configuration combine.self="override">-->
+<!--          <skip>false</skip>-->
+<!--          <generateProjectInfo>false</generateProjectInfo>-->
+<!--          <generateReports>false</generateReports>-->
+<!--          <siteDirectory>${project.build.directory}/generated-sources/site</siteDirectory>-->
+<!--          <locales>en</locales>-->
+<!--          &lt;!&ndash; Exclude the navigation file for Maven 1 sites as it interferes with the site generation. &ndash;&gt;-->
+<!--          <moduleExcludes>-->
+<!--            <xdoc>navigation.xml</xdoc>-->
+<!--          </moduleExcludes>-->
+<!--          <attributes>-->
+<!--            <Log4jReleaseVersion>${revision}</Log4jReleaseVersion>-->
+<!--          </attributes>-->
+<!--        </configuration>-->
+<!--        <dependencies>-->
+<!--          <dependency>-->
+<!--            <groupId>org.asciidoctor</groupId>-->
+<!--            <artifactId>asciidoctor-maven-plugin</artifactId>-->
+<!--            <version>${asciidoctor-maven-plugin.version}</version>-->
+<!--          </dependency>-->
+<!--        </dependencies>-->
+<!--      </plugin>-->
+
+      <!-- We (sadly) use `maven-site-plugin`, which handles AsciiDoc files.
+           Hence, skip the `asciidoctor-maven-plugin` redundant execution inherited from the parent. -->
+<!--      <plugin>-->
+<!--        <groupId>org.asciidoctor</groupId>-->
+<!--        <artifactId>asciidoctor-maven-plugin</artifactId>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>export-asciidoc-to-html</id>-->
+<!--            <configuration>-->
+<!--              <skip>true</skip>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
 
       <!-- ███████ ███    ██ ██████         ███████ ██ ████████ ███████
            ██      ████   ██ ██   ██ ██     ██      ██    ██    ██
