@@ -22,3 +22,15 @@
 
 This releases contains ...
 
+
+[#release-notes-2-x-x-changed]
+=== Changed
+
+* Improve performance of `CloseableThreadContext#closeMap()` (https://github.com/apache/logging-log4j2/pull/2296[2296])
+
+[#release-notes-2-x-x-updated]
+=== Updated
+
+* Update `co.elastic.clients:elasticsearch-java` to version `8.12.2` (https://github.com/apache/logging-log4j2/pull/2315[2315])
+* Update `com.github.tomakehurst:wiremock-jre8` to version `2.35.2` (https://github.com/apache/logging-log4j2/pull/2306[2306])
+* Update `io.fabric8:docker-maven-plugin` to version `0.44.0` (https://github.com/apache/logging-log4j2/pull/2299[2299])
