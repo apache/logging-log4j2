@@ -34,7 +34,7 @@
 
   <properties>
     <!-- Dependency version -->
-    <spring-boot.version>3.2.2</spring-boot.version>
+    <spring-boot.version>3.2.3</spring-boot.version>
     <spring-cloud.version>4.1.1</spring-cloud.version>
     <spring-framework.version>6.1.4</spring-framework.version>
 

@@ -19,3 +19,12 @@
 
 This release contains...
 
+
+[#release-notes-3-x-x-updated]
+=== Updated
+
+* Update `co.elastic.logging:log4j2-ecs-layout` to version `1.6.0` (https://github.com/apache/logging-log4j2/pull/2303[2303])
+* Update `com.github.tomakehurst:wiremock-jre8` to version `2.35.2` (https://github.com/apache/logging-log4j2/pull/2305[2305])
+* Update `org.apache.commons:commons-compress` to version `1.26.0` (https://github.com/apache/logging-log4j2/pull/2300[2300])
+* Update `org.apache.tomcat:tomcat-juli` to version `10.1.19` (https://github.com/apache/logging-log4j2/pull/2302[2302])
+* Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.3` (https://github.com/apache/logging-log4j2/pull/2316[2316])
