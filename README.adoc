@@ -20,4 +20,4 @@ https://search.maven.org/artifact/org.apache.logging.log4j/log4j-api[image:https
 https://github.com/apache/logging-log4j2/security/code-scanning[image:https://github.com/apache/logging-log4j2/actions/workflows/codeql-analysis.yaml/badge.svg?branch=2.x[CodeQL (2.x)]]
 
 Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
-For further information (support, download, etc.) see https://logging.apache.org/log4j[the project website].
+For further information (support, download, etc.) see https://logging.apache.org/log4j[https://commons.wikimedia.org/w/index.php?title=Template:Special&oldid=854953263].
