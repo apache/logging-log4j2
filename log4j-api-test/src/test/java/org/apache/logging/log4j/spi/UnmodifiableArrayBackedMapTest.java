@@ -24,16 +24,22 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 
 public class UnmodifiableArrayBackedMapTest {
     private static final int TEST_DATA_SIZE = 5;
+
     private HashMap<String, String> getTestParameters() {
-        HashMap<String, String> params = new HashMap<>();
-        for (int i = 0; i < TEST_DATA_SIZE; i++) {
+        return getTestParameters(TEST_DATA_SIZE);
+    }
+
+    private HashMap<String, String> getTestParameters(int numParams) {
+        HashMap<String, String> params = new LinkedHashMap<>();
+        for (int i = 0; i < numParams; i++) {
             params.put("" + i, "value" + i);
         }
 
@@ -58,18 +64,31 @@ public class UnmodifiableArrayBackedMapTest {
 
     @Test
     public void testCopyAndRemoveAll() {
-        HashMap<String, String> params = getTestParameters();
-        params.put("extra_key", "extra_value");
-        UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
-        testMap = testMap.copyAndRemoveAll(getTestParameters().keySet());
-        testMap = testMap.copyAndRemove("not_present");
-        assertEquals(1, testMap.size());
+        HashMap<String, String> initialMapContents = getTestParameters(15);
+        initialMapContents.put("extra_key", "extra_value");
 
-        assertFalse(testMap.containsKey("2"));
-        assertFalse(testMap.containsValue("value2"));
+        HashSet<String> keysToRemove = new LinkedHashSet<>();
+        keysToRemove.add("3");
+        keysToRemove.add("11");
+        keysToRemove.add("definitely_not_found");
+
+        UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(initialMapContents);
+        testMap = testMap.copyAndRemoveAll(keysToRemove);
+        assertEquals(14, testMap.size());
+
+        assertFalse(testMap.containsKey("3"));
+        assertFalse(testMap.containsValue("value3"));
+        assertFalse(testMap.containsKey("11"));
+        assertFalse(testMap.containsValue("value11"));
 
         assertTrue(testMap.containsKey("extra_key"));
         assertTrue(testMap.containsValue("extra_value"));
+        assertTrue(testMap.containsKey("1"));
+        assertTrue(testMap.containsValue("value1"));
+        assertTrue(testMap.containsKey("0"));
+        assertTrue(testMap.containsValue("value0"));
+        assertTrue(testMap.containsKey("14"));
+        assertTrue(testMap.containsValue("value14"));
     }
 
     @Test
@@ -175,7 +194,6 @@ public class UnmodifiableArrayBackedMapTest {
             fail("clear() wasn't blocked");
         } catch (UnsupportedOperationException e) {
         }
-
     }
 
     @Test
@@ -210,7 +228,6 @@ public class UnmodifiableArrayBackedMapTest {
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
         assertNotEquals(params, testMap.copyAndPut("1", "different value"));
         assertNotEquals(testMap.copyAndPut("1", "different value"), params);
-
     }
 
     @Test
@@ -225,7 +242,6 @@ public class UnmodifiableArrayBackedMapTest {
         testMap = testMap.copyAndRemove("1").copyAndRemove("2");
         assertNotEquals(params, testMap);
         assertNotEquals(testMap, params);
-
     }
 
     @Test
@@ -237,7 +253,6 @@ public class UnmodifiableArrayBackedMapTest {
         assertNotEquals(new HashMap<>(), testMap);
         assertNotEquals(UnmodifiableArrayBackedMap.EMPTY_MAP, params);
         assertNotEquals(testMap, new HashMap<>());
-
     }
 
     @Test

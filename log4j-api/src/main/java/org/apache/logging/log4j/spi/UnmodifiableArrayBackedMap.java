@@ -55,7 +55,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
     /**
      * Implementation of Map.Entry. The implementation is simple since each instance
      * contains an index in the array, then getKey() and getValue() retrieve from
-     * the array.  Blocks modifications.
+     * the array. Blocks modifications.
      */
     private class UnmodifiableEntry implements Map.Entry<String, String> {
         private final int index;
@@ -91,7 +91,8 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
     }
 
     /**
-     * Simple Entry iterator, tracking solely the index in the array.  Blocks modifications.
+     * Simple Entry iterator, tracking solely the index in the array. Blocks
+     * modifications.
      */
     private class UnmodifiableEntryIterator implements Iterator<Map.Entry<String, String>> {
         private int index;
@@ -258,25 +259,37 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * @return
      */
     UnmodifiableArrayBackedMap copyAndRemove(String key) {
-        boolean foundKeyToRemove = false;
-
         UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries);
+        int indexToRemove = -1;
         for (int oldIndex = 0; oldIndex < numEntries; oldIndex++) {
-            if (!foundKeyToRemove
-                    && keysAndValues[oldIndex * 2].hashCode() == key.hashCode()
-                    && keysAndValues[oldIndex * 2].equals(key)) {
-                foundKeyToRemove = true;
-                continue;
-            } else {
-                String keyToKeep = keysAndValues[oldIndex * 2];
-                String value = keysAndValues[oldIndex * 2 + 1];
-                newMap.add(keyToKeep, value);
+            if (keysAndValues[oldIndex * 2].hashCode() == key.hashCode() && keysAndValues[oldIndex * 2].equals(key)) {
+                indexToRemove = oldIndex;
+                break;
             }
         }
 
-        if (!foundKeyToRemove) {
+        if (indexToRemove == -1) {
+            // key not found, no change necessary
             return this;
         }
+        if (indexToRemove > 0) {
+            // copy entries before the removed one
+            System.arraycopy(keysAndValues, 0, newMap.keysAndValues, 0, indexToRemove * 2);
+        }
+        if (indexToRemove < (numEntries + 1)) {
+            // copy entries after the removed one
+            int nextIndexToCopy = indexToRemove + 1;
+            int numRemainingEntries = numEntries - nextIndexToCopy;
+            System.arraycopy(
+                    keysAndValues,
+                    nextIndexToCopy * 2,
+                    newMap.keysAndValues,
+                    indexToRemove * 2,
+                    numRemainingEntries * 2);
+        }
+
+        newMap.numEntries = numEntries - 1;
+
         return newMap;
     }
 
@@ -296,17 +309,48 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
             keysToRemoveSet.add(key);
         }
 
+        int firstIndexToKeep = -1;
+        int lastIndexToKeep = -1;
+        int destinationIndex = 0;
+        int numEntriesKept = 0;
         // build the new map
         UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries);
         for (int indexInCurrentMap = 0; indexInCurrentMap < numEntries; indexInCurrentMap++) {
             // for each key in this map, check whether it's in the set we built above
             String key = keysAndValues[indexInCurrentMap * 2];
             if (!keysToRemoveSet.contains(key)) {
-                // this key should be removed - or in this case, not copied.
-                String value = keysAndValues[indexInCurrentMap * 2 + 1];
-                newMap.add(key, value);
+                if (firstIndexToKeep == -1) {
+                    firstIndexToKeep = indexInCurrentMap;
+                }
+                lastIndexToKeep = indexInCurrentMap;
+            } else if (lastIndexToKeep > 0) {
+                // we hit a remove, copy any keys that are known ready
+                int numEntriesToCopy = lastIndexToKeep - firstIndexToKeep + 1;
+                System.arraycopy(
+                        keysAndValues,
+                        firstIndexToKeep * 2,
+                        newMap.keysAndValues,
+                        destinationIndex * 2,
+                        numEntriesToCopy * 2);
+                firstIndexToKeep = -1;
+                lastIndexToKeep = -1;
+                destinationIndex += numEntriesToCopy;
+                numEntriesKept += numEntriesToCopy;
             }
         }
+
+        if (lastIndexToKeep > -1) {
+            int numEntriesToCopy = lastIndexToKeep - firstIndexToKeep + 1;
+            System.arraycopy(
+                    keysAndValues,
+                    firstIndexToKeep * 2,
+                    newMap.keysAndValues,
+                    destinationIndex * 2,
+                    numEntriesToCopy * 2);
+            numEntriesKept += numEntriesToCopy;
+        }
+
+        newMap.numEntries = numEntriesKept;
 
         return newMap;
     }
