@@ -22,10 +22,12 @@ import static org.mockito.Mockito.when;
 
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 class StatusLoggerLevelTest {
 
     @Test
+    @ResourceLock("log4j2.StatusLogger")
     void effective_level_should_be_the_least_specific_one() {
 
         // Verify the initial level

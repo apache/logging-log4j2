@@ -22,6 +22,8 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +35,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
@@ -158,10 +161,25 @@ public class StatusLogger extends AbstractLogger {
 
     /**
      * The name of the system property that can be configured with a {@link java.time.format.DateTimeFormatter} pattern that will be used while formatting the created {@link StatusData}.
+     * <p>
+     * When not provided, {@link Instant#toString()} will be used.
+     * </p>
      *
+     * @see #STATUS_DATE_FORMAT_ZONE
      * @since 2.11.0
      */
     public static final String STATUS_DATE_FORMAT = "log4j2.StatusLogger.DateFormat";
+
+    /**
+     * The name of the system property that can be configured with a time-zone ID (e.g., {@code Europe/Amsterdam}, {@code UTC+01:00}) that will be used while formatting the created {@link StatusData}.
+     * <p>
+     * When not provided, {@link ZoneId#systemDefault()} will be used.
+     * </p>
+     *
+     * @see #STATUS_DATE_FORMAT
+     * @since 2.23.1
+     */
+    public static final String STATUS_DATE_FORMAT_ZONE = "log4j2.StatusLogger.DateFormatZone";
 
     /**
      * The name of the file to be searched in the classpath to read properties from.
@@ -215,10 +233,16 @@ public class StatusLogger extends AbstractLogger {
         }
 
         /**
-         * Constructs an instance using either system properties or a property file (i.e., {@value Config#PROPERTIES_FILE_NAME}) in the classpath, if available.
+         * Constructs the default instance using either system properties or a property file (i.e., {@value Config#PROPERTIES_FILE_NAME}) in the classpath, if available.
          */
         private Config() {
-            final Properties fileProvidedProperties = readPropertiesFile();
+            this(readPropertiesFile());
+        }
+
+        /**
+         * The lowest-level constructor intended for tests.
+         */
+        Config(final Properties fileProvidedProperties) {
             this.debugEnabled = readDebugEnabled(fileProvidedProperties);
             this.bufferCapacity = readBufferCapacity(fileProvidedProperties);
             this.fallbackListenerLevel = readFallbackListenerLevel(fileProvidedProperties);
@@ -251,7 +275,13 @@ public class StatusLogger extends AbstractLogger {
 
         private static DateTimeFormatter readInstantFormatter(final Properties fileProvidedProperties) {
             final String format = readProperty(fileProvidedProperties, STATUS_DATE_FORMAT);
-            return format != null ? DateTimeFormatter.ofPattern(format) : null;
+            if (format == null) {
+                return null;
+            }
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+            final String zoneId = readProperty(fileProvidedProperties, STATUS_DATE_FORMAT_ZONE);
+            final ZoneId effectiveZoneId = zoneId != null ? ZoneId.of(zoneId) : ZoneId.systemDefault();
+            return formatter.withZone(effectiveZoneId);
         }
 
         private static String readProperty(final Properties fileProvidedProperties, final String propertyName) {
@@ -299,6 +329,8 @@ public class StatusLogger extends AbstractLogger {
 
     private final Config config;
 
+    private final Supplier<Instant> clock;
+
     private final StatusConsoleListener fallbackListener;
 
     private final List<StatusListener> listeners;
@@ -319,6 +351,7 @@ public class StatusLogger extends AbstractLogger {
                 StatusLogger.class.getSimpleName(),
                 ParameterizedNoReferenceMessageFactory.INSTANCE,
                 Config.getInstance(),
+                Instant::now,
                 new StatusConsoleListener(Config.getInstance().fallbackListenerLevel));
     }
 
@@ -338,8 +371,21 @@ public class StatusLogger extends AbstractLogger {
             final MessageFactory messageFactory,
             final Config config,
             final StatusConsoleListener fallbackListener) {
+        this(name, messageFactory, config, Instant::now, fallbackListener);
+    }
+
+    /**
+     * The lowest-level constructor intended for tests.
+     */
+    StatusLogger(
+            final String name,
+            final MessageFactory messageFactory,
+            final Config config,
+            final Supplier<Instant> clock,
+            final StatusConsoleListener fallbackListener) {
         super(requireNonNull(name, "name"), requireNonNull(messageFactory, "messageFactory"));
         this.config = requireNonNull(config, "config");
+        this.clock = requireNonNull(clock, "clock");
         this.fallbackListener = requireNonNull(fallbackListener, "fallbackListener");
         this.listeners = new ArrayList<>();
     }
@@ -562,7 +608,8 @@ public class StatusLogger extends AbstractLogger {
             final Message message,
             @Nullable final Throwable throwable) {
         final StackTraceElement caller = getStackTraceElement(fqcn);
-        return new StatusData(caller, level, message, throwable, null, config.instantFormatter);
+        final Instant instant = clock.get();
+        return new StatusData(caller, level, message, throwable, null, config.instantFormatter, instant);
     }
 
     @Nullable

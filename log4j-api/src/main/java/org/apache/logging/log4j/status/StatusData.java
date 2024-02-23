@@ -68,7 +68,7 @@ public class StatusData implements Serializable {
             final Message message,
             @Nullable final Throwable throwable,
             @Nullable final String threadName) {
-        this(caller, level, message, throwable, threadName, null);
+        this(caller, level, message, throwable, threadName, null, Instant.now());
     }
 
     StatusData(
@@ -77,9 +77,10 @@ public class StatusData implements Serializable {
             final Message message,
             @Nullable final Throwable throwable,
             @Nullable final String threadName,
-            @Nullable final DateTimeFormatter instantFormatter) {
+            @Nullable final DateTimeFormatter instantFormatter,
+            final Instant instant) {
         this.instantFormatter = instantFormatter;
-        this.instant = Instant.now();
+        this.instant = instant;
         this.caller = caller;
         this.level = requireNonNull(level, "level");
         this.message = requireNonNull(message, "message");
