@@ -19,6 +19,7 @@ package org.apache.logging.log4j.status;
 import static java.util.Objects.requireNonNull;
 
 import edu.umd.cs.findbugs.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -36,8 +37,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
@@ -181,7 +180,7 @@ public class StatusLogger extends AbstractLogger {
      * @see #STATUS_DATE_FORMAT
      * @since 2.23.1
      */
-    public static final String STATUS_DATE_FORMAT_ZONE = "log4j2.StatusLogger.DateFormatZone";
+    static final String STATUS_DATE_FORMAT_ZONE = "log4j2.StatusLogger.DateFormatZone";
 
     /**
      * The name of the file to be searched in the classpath to read properties from.
