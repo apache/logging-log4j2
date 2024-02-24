@@ -795,7 +795,6 @@
               <directory>src/site/resources</directory>
             </resource>
           </resources>
-          <eruby>erb</eruby>
           <enableVerbose>true</enableVerbose>
           <sourceDirectory>src/site/asciidoc</sourceDirectory>
           <outputDirectory>target/site</outputDirectory>
@@ -803,16 +802,11 @@
           <templateDirs>
             <dir>src/asciidoc/templates</dir>
           </templateDirs>
-
           <attributes>
             <source-highlighter>rouge</source-highlighter>
-            <icons>font</icons>
-            <iconfont-remote>never</iconfont-remote>
-            <iconfont-name>font-awesome</iconfont-name>
             <toc>left</toc>
           </attributes>
         </configuration>
-
       </plugin>
 
 
