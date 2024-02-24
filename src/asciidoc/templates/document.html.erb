@@ -39,16 +39,13 @@
     <link rel="stylesheet" href="<%= normalize_web_path((attr :stylesheet), attr(:stylesdir, '')) %>">
   <%
   end
-  %>
-  <%
+
   if attr? :icons, 'font' %>
     <link rel="stylesheet" href="<%= normalize_web_path(%(#{attr 'iconfont-name', 'font-awesome'}.css), (attr :stylesdir, '')) %>"><%
   end
   %>
-  <!-- Coderay CSS -->
-  <style>
-  <%= Asciidoctor::Stylesheets.instance.coderay_stylesheet_data %>
-  </style>
+  <!-- Code Highlighter -->
+  <%= syntax_highlighter&.docinfo :head, self, {} %>
   <%= (docinfo_content = docinfo).empty? ? nil : %(#{docinfo_content}) %>
 </head>
 <body<%= @id && %( id="#{@id}") %> class="<%= [(attr :doctype),((attr? 'toc-class') && (attr? :toc) && (attr? 'toc-placement', 'auto') ? %(#{attr 'toc-class'} toc-#{attr 'toc-position', 'left'}) : nil)].compact * ' ' %>"<%= (attr? 'max-width') ? %( style="max-width: #{attr 'max-width'};") : nil %>><%
