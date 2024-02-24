@@ -32,7 +32,10 @@
     end
   %>
   <title><%= doctitle(:sanitize => true) || (attr 'untitled-label') %></title>
+
+  <link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/fonts.css">
+
   <%
   if Asciidoctor::DEFAULT_STYLESHEET_KEYS.include?(attr :stylesheet)
     %><%= Asciidoctor::Stylesheets.instance.embed_primary_stylesheet %><%
