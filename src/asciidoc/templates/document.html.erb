@@ -43,50 +43,32 @@
     <link rel="stylesheet" href="<%= normalize_web_path((attr :stylesheet), attr(:stylesdir, '')) %>">
   <%
   end
-
-  if attr? :icons, 'font' %>
-    <link rel="stylesheet" href="<%= normalize_web_path(%(#{attr 'iconfont-name', 'font-awesome'}.css), (attr :stylesdir, '')) %>"><%
-  end
   %>
   <!-- Code Highlighter -->
   <%= syntax_highlighter&.docinfo :head, self, {} %>
   <%= (docinfo_content = docinfo).empty? ? nil : %(#{docinfo_content}) %>
 </head>
-<body<%= @id && %( id="#{@id}") %> class="<%= [(attr :doctype),((attr? 'toc-class') && (attr? :toc) && (attr? 'toc-placement', 'auto') ? %(#{attr 'toc-class'} toc-#{attr 'toc-position', 'left'}) : nil)].compact * ' ' %>"<%= (attr? 'max-width') ? %( style="max-width: #{attr 'max-width'};") : nil %>><%
-  unless noheader %>
-  <div id="header"><%
-    if doctype == 'manpage' %>
-      <h1><%= doctitle %> Manual Page</h1><%
-    if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
-        <div id="toc" class="<%= attr 'toc-class', 'toc' %>">
-          <div id="toctitle"><%= attr 'toc-title' %></div>
-          <%= converter.convert self, 'outline' %>
-        </div><%
-    end %>
-      <h2><%= attr 'manname-title' %></h2>
-      <div class="sectionbody">
-        <p><%= %(#{attr :manname} - #{attr :manpurpose}) %></p>
-      </div><%
-    else
-      if has_header?
-        unless notitle %>
-          <h1><%= @header.title %></h1><%
+<body<%= @id && %( id="#{@id}") %> class="<%= [(attr :doctype),((attr? 'toc-class') && (attr? :toc) && (attr? 'toc-placement', 'auto') ? %(#{attr 'toc-class'} toc-#{attr 'toc-position', 'left'}) : nil)].compact * ' ' %>"<%= (attr? 'max-width') ? %( style="max-width: #{attr 'max-width'};") : nil %>>
+<div id="header"><%
+  if has_header?
+    unless notitle %>
+      <h1><%= @header.title %></h1><%
     end
     if (attr? :author) || (attr? :revnumber) || (attr? :revdate) || (attr? :revremark) %>
           <div class="details"><%
             if attr? :author %>
               <span id="author" class="author"><%= attr :author %></span><br><%
-            if attr? :email %>
-                <span id="email" class="email"><%= sub_macros(attr :email) %></span><br><%
-            end
-            if (authorcount = (attr :authorcount).to_i) > 1
-              (2..authorcount).each do |idx| %>
-                  <span id="author<%= idx %>" class="author"><%= attr %(author_#{idx}) %></span><br><%
-            if attr?  %(email_#{idx}) %>
-                    <span id="email<%= idx %>" class="email"><%= sub_macros(attr %(email_#{idx})) %></span><br><%
-            end
-            end
-            end
+              if attr? :email %>
+                  <span id="email" class="email"><%= sub_macros(attr :email) %></span><br><%
+              end
+              if (authorcount = (attr :authorcount).to_i) > 1
+                (2..authorcount).each do |idx| %>
+                    <span id="author<%= idx %>" class="author"><%= attr %(author_#{idx}) %></span><br><%
+                  if attr?  %(email_#{idx}) %>
+                          <span id="email<%= idx %>" class="email"><%= sub_macros(attr %(email_#{idx})) %></span><br><%
+                  end
+                end
+              end
             end
             if attr? :revnumber %>
               <span id="revnumber"><%= ((attr 'version-label') || '').downcase %> <%= attr :revnumber %><%= attr?(:revdate) ? ',' : '' %></span><%
@@ -100,41 +82,41 @@
             end %>
           </div><%
     end
-    end
-    if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
-        <div id="toc" class="<%= attr 'toc-class', 'toc' %>">
-          <div id="toctitle"><%= attr 'toc-title' %></div>
-          <%= converter.convert self, 'outline' %>
-        </div><%
-    end
-    end %>
-  </div><%
-  end %>
+  end
+  if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
+      <div id="toc" class="<%= attr 'toc-class', 'toc' %>">
+        <div id="toctitle"><%= attr 'toc-title' %></div>
+        Hello world
+        <%= converter.convert self, 'outline' %>
+      </div><%
+  end
+%>
+
 <div id="content">
   <%= content %>
 </div><%
   unless !footnotes? || attr?(:nofootnotes) %>
-  <div id="footnotes">
-    <hr><%
-    footnotes.each do |fn| %>
-      <div class="footnote" id="_footnote_<%= fn.index %>">
-        <a href="#_footnoteref_<%= fn.index %>"><%= fn.index %></a>. <%= fn.text %>
-      </div><%
-    end %>
-  </div><%
+    <div id="footnotes">
+      <hr><%
+      footnotes.each do |fn| %>
+        <div class="footnote" id="_footnote_<%= fn.index %>">
+          <a href="#_footnoteref_<%= fn.index %>"><%= fn.index %></a>. <%= fn.text %>
+        </div><%
+      end %>
+    </div><%
   end %><%
   unless nofooter %>
-  <div id="footer">
-    <div id="footer-text"><%
-      if attr? :revnumber %>
-        <%= %(#{attr 'version-label'} #{attr :revnumber}) %><br><%
-      end
-      if attr? 'last-update-label' %>
-        <%= %(#{attr 'last-update-label'} #{attr :docdatetime}) %><%
-      end %><%= (docinfo_content = (docinfo :footer)).empty? ? nil : %(
-    #{docinfo_content}) %>
-    </div>
-  </div><%
+    <div id="footer">
+      <div id="footer-text"><%
+        if attr? :revnumber %>
+          <%= %(#{attr 'version-label'} #{attr :revnumber}) %><br><%
+        end
+        if attr? 'last-update-label' %>
+          <%= %(#{attr 'last-update-label'} #{attr :docdatetime}) %><%
+        end %><%= (docinfo_content = (docinfo :footer)).empty? ? nil : %(
+      #{docinfo_content}) %>
+      </div>
+    </div><%
   end %>
 </body>
 </html>
