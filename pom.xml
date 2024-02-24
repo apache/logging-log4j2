@@ -790,6 +790,11 @@
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
         <configuration>
+          <resources>
+            <resource>
+              <directory>src/site/resources</directory>
+            </resource>
+          </resources>
           <eruby>erb</eruby>
           <enableVerbose>true</enableVerbose>
           <sourceDirectory>src/site/asciidoc</sourceDirectory>
