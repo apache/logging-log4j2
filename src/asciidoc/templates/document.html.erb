@@ -86,9 +86,18 @@
   </nav>
 </div>
 
+<%
+  if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
+  <div id="toc" class="toc2">
+    <div id="toctitle"><%= attr 'toc-title' %></div>
+    <%= converter.convert self, 'outline' %>
+  </div><%
+  end
+%>
+
 <div id="content">
-  <h1><%= doctitle %></h1>
-  <%= content %>
+    <h1><%= doctitle %></h1>
+    <%= content %>
 </div><%
   unless !footnotes? || attr?(:nofootnotes) %>
     <div id="footnotes">
