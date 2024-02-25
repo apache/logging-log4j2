@@ -1,0 +1,127 @@
+#header {
+    display: flex;
+    max-width: 100%;
+    height: 10vh;
+    align-items: center;
+}
+
+#header .logo img {
+    max-height: 6vh;
+}
+
+#header .logo {
+    margin-right: 3em;
+}
+
+#header .main-menu {
+    flex-grow: 1;
+}
+
+#header .main-menu > ul,
+#header .secondary-menu > ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+}
+
+#header .main-menu > ul li a,
+#header .secondary-menu > ul li a {
+    font-family: 'Open Sans', serif;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#header .main-menu ul li,
+#header .secondary-menu ul li {
+    margin-right: 1.5em;
+}
+
+#header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#header nav ul li {
+    float: left;
+}
+
+#header nav ul li a {
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+#header .menu-drop-down {
+    display: none;
+    position: absolute;
+    flex-direction: column;
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    background-color: white;
+}
+
+#header .menu-drop-down a {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+#header nav ul li:hover .menu-drop-down {
+    display: flex;
+}
+
+#header .menu-drop-down a:hover {
+    background-color: #f1f1f1;
+}
+
+/** Footer */
+
+#footer .footer-blocks {
+    display: flex;
+    justify-content: center;
+    background-color: #333;
+}
+
+#footer .footer-blocks div {
+    padding: 2em;
+    min-width: 30%;
+    color: white;
+}
+
+#footer .footer-blocks div h3 {
+    color: lightgray;
+}
+
+#footer .footer-blocks div ul {
+    list-style: none;
+    margin-left: 0;
+}
+#footer .footer-blocks div ul li a {
+    color: white;
+    font-family: 'Open Sans', serif;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#footer .footer-text {
+    width: 100%;
+}
+
+#footer .footer-text div {
+    line-height: 1.4em;
+    font-family: 'Open Sans', serif;
+    font-size: 1em;
+    color: white;
+    width: 80%;
+    padding: 1em;
+}
+
+
+
