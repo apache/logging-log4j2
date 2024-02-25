@@ -3,6 +3,8 @@
     max-width: 100%;
     height: 10vh;
     align-items: center;
+    background-color: white;
+    z-index: 10000;
 }
 
 #header .logo img {
@@ -81,6 +83,9 @@
 }
 
 /** Footer */
+#footer {
+    z-index: 1000;
+}
 
 #footer .footer-blocks {
     display: flex;
@@ -123,5 +128,9 @@
     padding: 1em;
 }
 
+#toc.toc2 {
+    padding-top: 15vh;
+    border-top: 1px solid #e7e7e9;
+}
 
 
