@@ -35,33 +35,59 @@
 
   <link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/fonts.css">
+  <%= Asciidoctor::Stylesheets.instance.embed_primary_stylesheet %>
+  <link rel="stylesheet" href="/css/logging-custom.css">
 
-  <%
-  if Asciidoctor::DEFAULT_STYLESHEET_KEYS.include?(attr :stylesheet)
-    %><%= Asciidoctor::Stylesheets.instance.embed_primary_stylesheet %><%
-  elsif attr? :stylesheet %>
-    <link rel="stylesheet" href="<%= normalize_web_path((attr :stylesheet), attr(:stylesdir, '')) %>">
-  <%
-  end
-  %>
   <!-- Code Highlighter -->
   <%= syntax_highlighter&.docinfo :head, self, {} %>
   <%= (docinfo_content = docinfo).empty? ? nil : %(#{docinfo_content}) %>
+
 </head>
-<body<%= @id && %( id="#{@id}") %> class="<%= [(attr :doctype),((attr? 'toc-class') && (attr? :toc) && (attr? 'toc-placement', 'auto') ? %(#{attr 'toc-class'} toc-#{attr 'toc-position', 'left'}) : nil)].compact * ' ' %>"<%= (attr? 'max-width') ? %( style="max-width: #{attr 'max-width'};") : nil %>>
+<body>
 <div id="header">
-  <h1><%= @header.title %></h1>
-  <%
-  if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
-      <div id="toc" class="<%= attr 'toc-class', 'toc' %>">
-        <div id="toctitle"><%= attr 'toc-title' %></div>
-        <%= converter.convert self, 'outline' %>
-      </div><%
-  end
-%>
+  <div class="logo">
+    <img src="/images/logo.png" />
+  </div>
+  <nav class="main-menu">
+    <ul>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Downloads</a></li>
+      <li>
+        <a href="#">Learn <i class="fa fa-chevron-circle-down" aria-hidden="true"></i></a>
+        <ul class="menu-drop-down">
+          <li><a href="#">Getting Started</a></li>
+          <li><a href="#">Manual</a></li>
+          <li><a href="#">Guides</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Release Notes</a></li>
+      <li><a href="#">Support</a></li>
+      <li><a href="#">Security</a></li>
+      <li><a href="#">Contribute</a></li>
+    </ul>
+  </nav>
+
+  <nav class="secondary-menu">
+    <ul>
+      <li>
+        <a href="#">Apache <i class="fa fa-chevron-circle-down" aria-hidden="true"></i></a>
+        <ul class="menu-drop-down">
+          <li><a target="_blank" href="https://www.apache.org/">Home</a></li>
+          <li><a target="_blank" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+          <li><a target="_blank" href="https://www.apache.org/licenses/">License</a></li>
+          <li><a target="_blank" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+          <li><a target="_blank" href="https://www.apache.org/events/current-event.html">Current Events</a></li>
+          <li><a target="_blank" href="https://www.apache.org/security/">Security</a></li>
+          <li><a target="_blank" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy</a></li>
+        </ul>
+      </li>
+      <li><a href="https://logging.apache.org">Logging</a></li>
+    </ul>
+  </nav>
 </div>
 
 <div id="content">
+  <h1><%= doctitle %></h1>
   <%= content %>
 </div><%
   unless !footnotes? || attr?(:nofootnotes) %>
@@ -76,7 +102,44 @@
   end %><%
   unless nofooter %>
     <div id="footer">
-      <div id="footer-text"><%
+      <div class="footer-blocks">
+        <div>
+          <h3>Project</h3>
+          <ul>
+            <li><a href="https://github.com/apache/logging-log4j2">Github</a></li>
+            <li><a href="hhttps://github.com/apache/logging-log4j2/issues">Issues</a></li>
+            <li><a href="https://logging.apache.org/log4j/2.x/download.html">Downloads</a></li>
+            <li><a href="#">Release Notes</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Security</a></li>
+            <li><a href="#">Contribute</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Learn</h3>
+          <ul>
+            <li><a href="#">Getting Started</a></li>
+            <li><a href="#">Manual</a></li>
+            <li><a href="#">Guides</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>The ASF</h3>
+          <ul>
+            <li><a target="_blank" href="https://www.apache.org/">Home</a></li>
+            <li><a target="_blank" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+            <li><a target="_blank" href="https://www.apache.org/licenses/">License</a></li>
+            <li><a target="_blank" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+            <li><a target="_blank" href="https://www.apache.org/events/current-event.html">Current Events</a></li>
+            <li><a target="_blank" href="https://www.apache.org/security/">Security</a></li>
+            <li><a target="_blank" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-text">
+        <div>
+        <%
         if attr? :revnumber %>
           <%= %(#{attr 'version-label'} #{attr :revnumber}) %><br><%
         end
@@ -84,8 +147,33 @@
           <%= %(#{attr 'last-update-label'} #{attr :docdatetime}) %><%
         end %><%= (docinfo_content = (docinfo :footer)).empty? ? nil : %(
       #{docinfo_content}) %>
+        </div>
+        <div>
+          Copyright © 2017-2024 The Apache Software Foundation. Licensed under the Apache Software License, Version 2.0 Please read our privacy policy.
+          <br/>
+          Apache, Chainsaw, log4cxx, Log4j, Log4net, log4php and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation. Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners.
+        </div>
       </div>
     </div><%
   end %>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var menuItems = document.querySelectorAll('#header nav > ul > li');
+
+        for (var i = 0; i < menuItems.length; i++) {
+            menuItems[i].addEventListener('click', function(event) {
+                var subMenu = this.getElementsByClassName('menu-drop-down')[0];
+                if (subMenu.style.display === 'flex') {
+                    subMenu.style.display = 'none';
+                } else {
+                    subMenu.style.display = 'flex';
+                }
+
+                // Prevent navigating to '#' link on parent menu item
+                event.preventDefault();
+            });
+        }
+    });
+</script>
 </body>
 </html>
