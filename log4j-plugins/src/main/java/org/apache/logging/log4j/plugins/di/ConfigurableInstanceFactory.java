@@ -19,6 +19,7 @@ package org.apache.logging.log4j.plugins.di;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.function.Supplier;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Ordered;
@@ -33,7 +34,6 @@ import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidationException;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Configuration manager for the state of an instance factory. Configurable instance factories can form a

@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,9 +31,7 @@ public class XmlConfigurationFactoryTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(
-                ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey(),
-                "target/test-classes/log4j1-file.xml");
+        System.setProperty("log4j2.Version1.configuration", "target/test-classes/log4j1-file.xml");
     }
 
     @Test

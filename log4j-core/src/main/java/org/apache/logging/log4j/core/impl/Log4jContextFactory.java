@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.lang.NullMarked;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -40,7 +41,6 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
@@ -79,7 +79,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     /**
-     * Constructs a Log4jContextFactory using the ContextSelector from {@link Log4jPropertyKey#CONTEXT_SELECTOR_CLASS_NAME}
+     * Constructs a Log4jContextFactory using the ContextSelector from {@link CoreKeys.LoggerContext#selector()}
      * and the provided ShutdownRegistrationStrategy.
      *
      * @param shutdownCallbackRegistry the ShutdownRegistrationStrategy to use
@@ -432,7 +432,9 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     public boolean isShutdownHookEnabled() {
         return !isWebApp()
-                && PropertiesUtil.getProperties().getBooleanProperty(Log4jPropertyKey.SHUTDOWN_HOOK_ENABLED, true);
+                && PropertyEnvironment.getGlobal()
+                        .getProperty(CoreKeys.LoggerContext.class)
+                        .shutdownHookEnabled();
     }
 
     @Override

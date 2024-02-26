@@ -47,7 +47,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.ConfigurationSourceTest;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.core.test.TestConstants;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -101,20 +103,20 @@ public class UrlConnectionFactoryTest {
     }
 
     @Test
+    @SetTestProperty(key = TestConstants.CONFIGURATION_BASIC_AUTH_USERNAME, value = "foo")
+    @SetTestProperty(key = TestConstants.CONFIGURATION_BASIC_AUTH_PASSWORD, value = "bar")
+    @SetTestProperty(key = TestConstants.CONFIGURATION_ALLOWED_PROTOCOLS, value = "http")
     public void testBadCrdentials() throws Exception {
-        System.setProperty("log4j2.Configuration.username", "foo");
-        System.setProperty("log4j2.Configuration.password", "bar");
-        System.setProperty("log4j2.Configuration.allowedProtocols", "http");
         final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
         final ConfigurationSource source = ConfigurationSource.fromUri(uri);
         assertNull(source, "A ConfigurationSource should not have been returned");
     }
 
     @Test
+    @SetTestProperty(key = TestConstants.CONFIGURATION_BASIC_AUTH_USERNAME, value = "testuser")
+    @SetTestProperty(key = TestConstants.CONFIGURATION_BASIC_AUTH_PASSWORD, value = "password")
+    @SetTestProperty(key = TestConstants.CONFIGURATION_ALLOWED_PROTOCOLS, value = "http")
     public void withAuthentication() throws Exception {
-        System.setProperty("log4j2.Configuration.username", "testuser");
-        System.setProperty("log4j2.Configuration.password", "password");
-        System.setProperty("log4j2.Configuration.allowedProtocols", "http");
         final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
         final ConfigurationSource source = ConfigurationSource.fromUri(uri);
         assertNotNull(source, "No ConfigurationSource returned");
@@ -134,7 +136,7 @@ public class UrlConnectionFactoryTest {
 
     private int verifyNotModified(final URI uri, final long lastModifiedMillis) throws Exception {
         final HttpURLConnection urlConnection = UrlConnectionFactory.createConnection(
-                uri.toURL(), lastModifiedMillis, null, null, PropertiesUtil.getProperties());
+                uri.toURL(), lastModifiedMillis, null, null, PropertyEnvironment.getGlobal());
         urlConnection.connect();
 
         try {

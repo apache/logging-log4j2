@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
+import static org.apache.logging.log4j.core.test.TestConstants.JNDI_ENABLE_LOOKUP;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -75,14 +76,14 @@ public class InterpolatorTest {
                 protected void before() throws Throwable {
                     System.setProperty(TESTKEY, TESTVAL);
                     System.setProperty(TESTKEY2, TESTVAL);
-                    System.setProperty("log4j2.*.JNDI.enableLookup", "true");
+                    System.setProperty(JNDI_ENABLE_LOOKUP, "true");
                 }
 
                 @Override
                 protected void after() {
                     System.clearProperty(TESTKEY);
                     System.clearProperty(TESTKEY2);
-                    System.clearProperty("log4j2.*.JNDI.enableLookup");
+                    System.clearProperty(JNDI_ENABLE_LOOKUP);
                 }
             })
             .around(new JndiRule(

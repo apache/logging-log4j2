@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.plugins.condition;
 
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Provides runtime context to a {@link Condition}.
@@ -51,7 +50,7 @@ public class ConditionContext {
     }
 
     public static ConditionContext of(final InstanceFactory instanceFactory) {
-        final PropertyEnvironment environment = PropertiesUtil.getProperties();
+        final PropertyEnvironment environment = PropertyEnvironment.getGlobal();
         final ClassLoader classLoader = LoaderUtil.getClassLoader(ConditionContext.class, LoaderUtil.class);
         return new ConditionContext(environment, classLoader, instanceFactory);
     }

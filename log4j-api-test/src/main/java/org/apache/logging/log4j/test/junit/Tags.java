@@ -14,25 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.plugins.condition.Conditional;
+package org.apache.logging.log4j.test.junit;
 
 /**
- * Checks if a Log4j property is present or matches a specific non-empty value.
+ * A set of tags for JUnit 5 tests.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD})
-@Documented
-@Conditional(OnPropertyKeyCondition.class)
-public @interface ConditionalOnPropertyKey {
-    Log4jPropertyKey key();
+public final class Tags {
 
-    String value() default "";
+    /**
+     * Marks tests that don't modify the global environment.
+     * <p>
+     *     These tests can safely be run in parallel.
+     * </p>
+     */
+    public static final String PARALLEL = "parallel";
+
+    private Tags() {}
 }

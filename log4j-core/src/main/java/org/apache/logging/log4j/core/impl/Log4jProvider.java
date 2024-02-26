@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
@@ -48,5 +49,22 @@ public class Log4jProvider extends Provider {
     @Override
     public LoggerContextFactory getLoggerContextFactory() {
         return instanceFactory.getInstance(Key.forClass(LoggerContextFactory.class));
+    }
+
+    @Override
+    public String getThreadContextMap() {
+        final PropertyEnvironment environment = instanceFactory.getInstance(PropertyEnvironment.class);
+        final CoreKeys.ThreadContext threadContext = environment.getProperty(CoreKeys.ThreadContext.class);
+        if (threadContext.enable() && threadContext.enableMap()) {
+
+            if (threadContext.mapClass() != null) {
+                return threadContext.mapClass();
+            }
+
+            return threadContext.garbageFree()
+                    ? "org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap"
+                    : "org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap";
+        }
+        return "org.apache.logging.log4j.spi.NoOpThreadContextMap";
     }
 }

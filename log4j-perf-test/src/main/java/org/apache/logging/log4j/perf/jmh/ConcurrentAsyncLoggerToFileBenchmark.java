@@ -27,9 +27,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -85,7 +84,7 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
         @Setup
         public final void before() throws IOException {
             Files.deleteIfExists(Path.of("target", "ConcurrentAsyncLoggerToFileBenchmark.log"));
-            System.setProperty(LoggingSystemProperty.Constant.WEB_IS_WEBAPP, "false");
+            System.setProperty(TestConstants.WEB_IS_WEB_APP, "false");
             asyncLoggerType.setProperties();
             queueFullPolicy.setProperties();
             logger = LogManager.getLogger(ConcurrentAsyncLoggerToFileBenchmark.class);
@@ -100,14 +99,13 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
 
         @SuppressWarnings("unused") // Used by JMH
         public enum QueueFullPolicy {
-            ENQUEUE(Map.of(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(), "Default")),
+            ENQUEUE(Map.of(TestConstants.ASYNC_QUEUE_FULL_POLICY_CLASS_NAME, "Default")),
             ENQUEUE_UNSYNCHRONIZED(Map.of(
-                    Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(), "Default",
-                    Log4jPropertyKey.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL.getKey(), "false",
-                    Log4jPropertyKey.ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL.getKey(), "false")),
+                    TestConstants.ASYNC_QUEUE_FULL_POLICY_CLASS_NAME, "Default",
+                    TestConstants.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, "false",
+                    TestConstants.ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, "false")),
             SYNCHRONOUS(Map.of(
-                    Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(),
-                    SynchronousAsyncQueueFullPolicy.class.getName()));
+                    TestConstants.ASYNC_QUEUE_FULL_POLICY_CLASS_NAME, SynchronousAsyncQueueFullPolicy.class.getName()));
 
             private final Map<String, String> properties;
 
@@ -132,14 +130,14 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
                 switch (this) {
                     case ASYNC_CONTEXT:
                         System.setProperty(
-                                Log4jPropertyKey.CONFIG_LOCATION.getKey(), "ConcurrentAsyncLoggerToFileBenchmark.xml");
+                                TestConstants.CONFIGURATION_FILE, "ConcurrentAsyncLoggerToFileBenchmark.xml");
                         System.setProperty(
-                                Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getKey(),
+                                TestConstants.LOGGER_CONTEXT_SELECTOR,
                                 "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
                         break;
                     case ASYNC_CONFIG:
                         System.setProperty(
-                                Log4jPropertyKey.CONFIG_LOCATION.getKey(),
+                                TestConstants.CONFIGURATION_FILE,
                                 "ConcurrentAsyncLoggerToFileBenchmark-asyncConfig.xml");
                         break;
                     default:

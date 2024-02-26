@@ -25,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.jdbc.appender.JdbcAppender;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -64,7 +64,7 @@ public class JdbcAppenderBenchmark {
         createTable(connectionHSQLDB, toCreateTableSqlStringHQLDB("fmLogEntry"));
         createTable(connectionH2, toCreateTableSqlStringH2("fmLogEntry"));
 
-        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "log4j2-jdbc-appender.xml");
+        System.setProperty(TestConstants.CONFIGURATION_FILE, "log4j2-jdbc-appender.xml");
         final LoggerContext context = LoggerContext.getContext(false);
         if (context.getConfiguration() instanceof DefaultConfiguration) {
             context.reconfigure();
@@ -141,7 +141,7 @@ public class JdbcAppenderBenchmark {
                     .getManager()
                     .close();
         } finally {
-            System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
+            System.clearProperty(TestConstants.CONFIGURATION_FILE);
             // context.reconfigure();
             // StatusLogger.getLogger().reset();
 

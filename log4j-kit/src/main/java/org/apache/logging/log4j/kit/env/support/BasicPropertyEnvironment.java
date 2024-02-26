@@ -25,6 +25,9 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
@@ -169,6 +172,15 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         return null;
     }
 
+    protected @Nullable Path toPath(final String value) {
+        try {
+            return Paths.get(value);
+        } catch (final InvalidPathException e) {
+            statusLogger.warn("Invalid path value {}: {}.", value, e.getMessage(), e);
+        }
+        return null;
+    }
+
     protected @Nullable Level toLevel(final String value) {
         return Level.toLevel(value, null);
     }
@@ -254,6 +266,9 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
             }
             if (Level.class.equals(clazz)) {
                 return getObjectPropertyWithStringDefault(name, defaultValue, this::toLevel);
+            }
+            if (Path.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toPath);
             }
             if (String.class.equals(clazz)) {
                 return getObjectPropertyWithStringDefault(name, defaultValue, x -> x);

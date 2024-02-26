@@ -22,17 +22,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 @Tag("async")
-@SetSystemProperty(key = Log4jPropertyKey.Constant.GC_ENABLE_DIRECT_ENCODERS, value = "true")
-@SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, value = "true")
+@SetTestProperty(key = TestConstants.GC_ENABLE_DIRECT_ENCODERS, value = "true")
+@SetTestProperty(key = TestConstants.ASYNC_FORMAT_MESSAGES_IN_BACKGROUND, value = "true")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
 public class AsyncLoggerTestArgumentFreedOnErrorTest {
 

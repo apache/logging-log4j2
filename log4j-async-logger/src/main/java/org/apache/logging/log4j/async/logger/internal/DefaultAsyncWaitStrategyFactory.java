@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.async.logger.internal;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.BusySpinWaitStrategy;
 import com.lmax.disruptor.SleepingWaitStrategy;
@@ -23,64 +25,51 @@ import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.async.logger.AsyncLoggerKeys;
 import org.apache.logging.log4j.async.logger.AsyncWaitStrategyFactory;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyKey;
-import org.apache.logging.log4j.util.Strings;
 
 public class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
-    static final String DEFAULT_WAIT_STRATEGY_CLASSNAME = TimeoutBlockingWaitStrategy.class.getName();
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private final PropertyKey propertyKey;
 
-    public DefaultAsyncWaitStrategyFactory(PropertyKey key) {
-        this.propertyKey = key;
+    private final AsyncLoggerKeys.DisruptorProperties disruptorProps;
+
+    public DefaultAsyncWaitStrategyFactory(final AsyncLoggerKeys.DisruptorProperties disruptorProps) {
+        this.disruptorProps = disruptorProps;
     }
 
     @Override
     public WaitStrategy createWaitStrategy() {
-        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyKey, "TIMEOUT");
-        LOGGER.trace("DefaultAsyncWaitStrategyFactory property {}={}", propertyKey, strategy);
-        final String strategyUp = Strings.toRootUpperCase(strategy);
+        final String strategy = disruptorProps.waitStrategy() != null ? disruptorProps.waitStrategy() : "TIMEOUT";
+        LOGGER.trace("DefaultAsyncWaitStrategyFactory strategy name: {}", strategy);
         // String (not enum) is deliberately used here to avoid IllegalArgumentException being thrown. In case of
         // incorrect property value, default WaitStrategy is created.
-        switch (strategyUp) {
-            case "SLEEP":
-                final String component = propertyKey.getComponent();
-                PropertyKey key = Log4jPropertyKey.findKey(component, "sleepTimeNs");
-                final long sleepTimeNs = PropertiesUtil.getProperties().getLongProperty(key, 100L);
-                key = Log4jPropertyKey.findKey(component, "retries");
-                final int retries = PropertiesUtil.getProperties().getIntegerProperty(key, 200);
+        return switch (toRootUpperCase(strategy)) {
+            case "SLEEP" -> {
                 LOGGER.trace(
                         "DefaultAsyncWaitStrategyFactory creating SleepingWaitStrategy(retries={}, sleepTimeNs={})",
-                        retries,
-                        sleepTimeNs);
-                return new SleepingWaitStrategy(retries, sleepTimeNs);
-            case "YIELD":
+                        disruptorProps.retries(),
+                        disruptorProps.sleepTimeNS());
+                yield new SleepingWaitStrategy(disruptorProps.retries(), disruptorProps.sleepTimeNS());
+            }
+            case "YIELD" -> {
                 LOGGER.trace("DefaultAsyncWaitStrategyFactory creating YieldingWaitStrategy");
-                return new YieldingWaitStrategy();
-            case "BLOCK":
+                yield new YieldingWaitStrategy();
+            }
+            case "BLOCK" -> {
                 LOGGER.trace("DefaultAsyncWaitStrategyFactory creating BlockingWaitStrategy");
-                return new BlockingWaitStrategy();
-            case "BUSYSPIN":
+                yield new BlockingWaitStrategy();
+            }
+            case "BUSYSPIN" -> {
                 LOGGER.trace("DefaultAsyncWaitStrategyFactory creating BusySpinWaitStrategy");
-                return new BusySpinWaitStrategy();
-            case "TIMEOUT":
-                return createDefaultWaitStrategy(propertyKey);
-            default:
-                return createDefaultWaitStrategy(propertyKey);
-        }
-    }
-
-    static WaitStrategy createDefaultWaitStrategy(final PropertyKey propertyKey) {
-        final String component = propertyKey.getComponent();
-        final PropertyKey key = Log4jPropertyKey.findKey(component, "timeout");
-        final long timeoutMillis = PropertiesUtil.getProperties().getLongProperty(key, 10L);
-        LOGGER.trace(
-                "DefaultAsyncWaitStrategyFactory creating TimeoutBlockingWaitStrategy(timeout={}, unit=MILLIS)",
-                timeoutMillis);
-        return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
+                yield new BusySpinWaitStrategy();
+            }
+            default -> {
+                LOGGER.trace(
+                        "DefaultAsyncWaitStrategyFactory creating TimeoutBlockingWaitStrategy(timeout={}, unit=MILLIS)",
+                        disruptorProps.timeout());
+                yield new TimeoutBlockingWaitStrategy(disruptorProps.timeout(), TimeUnit.MILLISECONDS);
+            }
+        };
     }
 }

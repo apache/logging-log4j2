@@ -24,16 +24,18 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.impl.CoreKeys.Console;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -41,8 +43,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
 
 /**
  * Appends log events to <code>System.out</code> or <code>System.err</code> using a layout specified by the user. The
@@ -65,8 +65,6 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     private static final AtomicInteger COUNT = new AtomicInteger();
     private final Target target;
 
-    private static final PropertiesUtil sysProps = new PropertiesUtil(new SystemPropertiesPropertySource());
-
     /**
      * Enumeration of console destinations.
      */
@@ -77,7 +75,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             @Override
             public Charset getDefaultCharset() {
                 // "sun.stdout.encoding" is only set when running from the console.
-                return getCharset("sun.stdout.encoding", Charset.defaultCharset());
+                return getCharset("sun.stdout.encoding");
             }
         },
 
@@ -86,15 +84,29 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             @Override
             public Charset getDefaultCharset() {
                 // "sun.stderr.encoding" is only set when running from the console.
-                return getCharset("sun.stderr.encoding", Charset.defaultCharset());
+                return getCharset("sun.stderr.encoding");
             }
         };
 
         public abstract Charset getDefaultCharset();
+    }
 
-        protected Charset getCharset(final String property, final Charset defaultCharset) {
-            return sysProps.getCharsetProperty(property, defaultCharset);
+    // We don't use PropertyEnvironment, because we just need a very specific source
+    // and the property name does NOT start with log4j.
+    private static Charset getCharset(final String property) {
+        String charsetName = null;
+        try {
+            charsetName = System.getProperty(property);
+            if (charsetName != null) {
+                return Charset.forName(charsetName);
+            }
+        } catch (final SecurityException e) {
+            LOGGER.warn(
+                    "{} lacks permissions to access system property {}.", ConsoleAppender.class.getName(), property, e);
+        } catch (final UnsupportedCharsetException e) {
+            LOGGER.warn("The requested charset '{}' is not available.", charsetName, e);
         }
+        return Charset.defaultCharset();
     }
 
     private ConsoleAppender(
@@ -169,7 +181,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             final PropertyEnvironment propertyEnvironment =
                     configuration != null && configuration.getLoggerContext() != null
                             ? configuration.getLoggerContext().getEnvironment()
-                            : PropertiesUtil.getProperties();
+                            : PropertyEnvironment.getGlobal();
             return new ConsoleAppender(
                     getName(),
                     layout,
@@ -183,7 +195,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
     private static OutputStreamManager getDefaultManager(
             final Target target, final boolean follow, final boolean direct, final Layout layout) {
-        final OutputStream os = getOutputStream(follow, direct, target, PropertiesUtil.getProperties());
+        final OutputStream os = getOutputStream(follow, direct, target, PropertyEnvironment.getGlobal());
 
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
         final String managerName = target.name() + '.' + follow + '.' + direct + "-" + COUNT.get();
@@ -219,8 +231,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
-        if (!properties.isOsWindows()
-                || properties.getBooleanProperty(Log4jPropertyKey.CONSOLE_JANSI_ENABLED, true)
+        if (!PropertiesUtil.getProperties().isOsWindows()
+                || !Boolean.FALSE.equals(properties.getProperty(Console.class).jansiEnabled())
                 || direct) {
             return outputStream;
         }

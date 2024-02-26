@@ -22,12 +22,12 @@ import org.junitpioneer.jupiter.DisabledUntil;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-@DisabledUntil(date = "2024-04-01", reason = "Disable until `log4j-api` 3.x is removed")
 class PropertiesUtilPropertyEnvironmentTest extends AbstractPropertyNamesTest {
 
     @Test
     @SetEnvironmentVariable(key = "LOG4J_MESSAGE_FACTORY", value = "env")
     @SetEnvironmentVariable(key = "LOG4J_TRANSPORT_SECURITY_KEY_STORE_PATH", value = "env")
+    @DisabledUntil(date = "2024-04-01")
     void environment_variables_are_recognized() {
         final PropertyEnvironment environment = new PropertiesUtilPropertyEnvironment(PROPERTIES_UTIL, LOGGER);
         assertPropertiesAreSet("env", environment);

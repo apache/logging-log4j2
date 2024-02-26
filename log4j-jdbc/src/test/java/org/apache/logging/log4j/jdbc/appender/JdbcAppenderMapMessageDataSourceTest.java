@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import static org.apache.logging.log4j.core.test.TestConstants.JNDI_ENABLE_JDBC;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -56,7 +57,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.*.JNDI.enableJDBC", "true");
+        System.setProperty(JNDI_ENABLE_JDBC, "true");
     }
 
     public JdbcAppenderMapMessageDataSourceTest() {

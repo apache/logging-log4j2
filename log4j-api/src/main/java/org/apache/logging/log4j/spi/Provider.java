@@ -246,6 +246,27 @@ public class Provider {
     }
 
     protected ThreadContextMap createThreadContextMap() {
+        // Temporarily copied from Log4j 2.x API until Log4j 3.x API is removed
+
+        // Standard Log4j API implementations are internal and can be only specified by name:
+        final String threadContextMap = getThreadContextMap();
+        if (threadContextMap != null) {
+            /*
+             * The constructors are called explicitly to improve GraalVM support.
+             *
+             * The class names of the package-private implementations from version 2.23.1 must be recognized even
+             * if the class is moved.
+             */
+            switch (threadContextMap) {
+                case "org.apache.logging.log4j.spi.NoOpThreadContextMap":
+                    return new NoOpThreadContextMap();
+                case "org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap":
+                    return new GarbageFreeSortedArrayThreadContextMap();
+                case "org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap":
+                    return new CopyOnWriteSortedArrayThreadContextMap();
+            }
+        }
+        //
         final PropertiesUtil environment = PropertiesUtil.getProperties();
         final String customThreadContextMap = environment.getStringProperty(THREAD_CONTEXT_MAP_CLASS);
         if (customThreadContextMap != null) {

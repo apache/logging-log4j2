@@ -28,13 +28,13 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.util.NameUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
-    private static final String FILE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
+    private static final String FILE_SEP = PropertyEnvironment.getGlobal().getStringProperty("file.separator");
 
     private static final String IN_MEMORY = "InMemory";
 

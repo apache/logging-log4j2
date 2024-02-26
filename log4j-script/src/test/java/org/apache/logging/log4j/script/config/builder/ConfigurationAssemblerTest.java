@@ -40,7 +40,8 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.TestConstants;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
 public class ConfigurationAssemblerTest {
@@ -56,16 +57,12 @@ public class ConfigurationAssemblerTest {
     }
 
     @Test
+    @SetTestProperty(
+            key = TestConstants.CONFIGURATION_CONFIGURATION_FACTORY,
+            value = "org.apache.logging.log4j.script.config.builder.CustomConfigurationFactory")
     public void testCustomConfigurationFactory() throws Exception {
-        try {
-            System.setProperty(
-                    Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
-                    "org.apache.logging.log4j.script.config.builder.CustomConfigurationFactory");
-            final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
-            validate(config);
-        } finally {
-            System.getProperties().remove(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey());
-        }
+        final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
+        validate(config);
     }
 
     private void validate(final Configuration config) {

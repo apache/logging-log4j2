@@ -731,6 +731,21 @@ public class PropertiesUtil implements PropertyEnvironment {
             if (literal.containsKey(key)) {
                 return literal.get(key);
             }
+            // This part is temporarily copied from 2.x to prepare
+            // the removal of Log4j API 3.x
+            final List<CharSequence> tokens = PropertySource.UtilV2.tokenize(key);
+            final boolean hasTokens = !tokens.isEmpty();
+            for (final PropertySource source : sources) {
+                if (hasTokens) {
+                    final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
+                    if (normalKey != null && sourceContainsProperty(source, normalKey)) {
+                        return sourceGetProperty(source, normalKey);
+                    }
+                }
+                if (sourceContainsProperty(source, key)) {
+                    return sourceGetProperty(source, key);
+                }
+            }
             String result = null;
             final String contextKey = getContextKey(key);
             if (contextName != null && !contextName.equals(PropertySource.SYSTEM_CONTEXT)) {
@@ -778,6 +793,21 @@ public class PropertiesUtil implements PropertyEnvironment {
         public boolean hasProperty(final String key) {
             if (literal.containsKey(key)) {
                 return true;
+            }
+            // This part is temporarily copied from 2.x to prepare
+            // the removal of Log4j API 3.x
+            final List<CharSequence> tokens = PropertySource.UtilV2.tokenize(key);
+            final boolean hasTokens = !tokens.isEmpty();
+            for (final PropertySource source : sources) {
+                if (hasTokens) {
+                    final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
+                    if (normalKey != null && sourceContainsProperty(source, normalKey)) {
+                        return true;
+                    }
+                }
+                if (sourceContainsProperty(source, key)) {
+                    return true;
+                }
             }
             final String contextKey = getContextKey(key);
             if (!contextName.equals(PropertySource.SYSTEM_CONTEXT)) {

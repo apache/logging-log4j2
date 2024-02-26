@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.async.logger;
 
+import static org.apache.logging.log4j.core.test.TestConstants.ASYNC_LOGGER_RING_BUFFER_SIZE;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.async.BlockingAppender;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
@@ -28,7 +30,7 @@ import org.junit.jupiter.api.Test;
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
 @ContextSelectorType(AsyncLoggerContextSelector.class)
-@SetTestProperty(key = "AsyncLogger.ringBufferSize", value = "128")
+@SetTestProperty(key = ASYNC_LOGGER_RING_BUFFER_SIZE, value = "128")
 public class QueueFullAsyncLoggerTest extends QueueFullAsyncAbstractTest {
 
     @Override

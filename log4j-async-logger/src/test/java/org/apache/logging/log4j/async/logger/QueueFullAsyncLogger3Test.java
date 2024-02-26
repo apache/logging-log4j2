@@ -17,6 +17,9 @@
 package org.apache.logging.log4j.async.logger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.apache.logging.log4j.core.test.TestConstants.ASYNC_FORMAT_MESSAGES_IN_BACKGROUND;
+import static org.apache.logging.log4j.core.test.TestConstants.ASYNC_LOGGER_RING_BUFFER_SIZE;
+import static org.apache.logging.log4j.core.test.TestConstants.ASYNC_QUEUE_FULL_POLICY_CLASS_NAME;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
@@ -39,9 +42,9 @@ import org.junit.jupiter.api.Timeout;
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
 @ContextSelectorType(AsyncLoggerContextSelector.class)
-@SetTestProperty(key = "AsyncLogger.ringBufferSize", value = "128")
-@SetTestProperty(key = "AsyncLogger.formatMsg", value = "true")
-@SetTestProperty(key = "AsyncLogger.queueFullPolicy", value = "Discard")
+@SetTestProperty(key = ASYNC_LOGGER_RING_BUFFER_SIZE, value = "128")
+@SetTestProperty(key = ASYNC_FORMAT_MESSAGES_IN_BACKGROUND, value = "true")
+@SetTestProperty(key = ASYNC_QUEUE_FULL_POLICY_CLASS_NAME, value = "Discard")
 public class QueueFullAsyncLogger3Test extends QueueFullAsyncAbstractTest {
 
     @Override

@@ -25,12 +25,16 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.DisabledUntil;
 
 @ContextSelectorType(NamedLoggerContextPropertiesTest.TestContextSelector.class)
+@DisabledUntil(
+        date = "2024-04-01",
+        reason = "There is currently no property source that retrieves data from META-INF/log4j2.<context name>.json")
 public class NamedLoggerContextPropertiesTest {
 
     @Test

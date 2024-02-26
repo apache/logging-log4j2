@@ -64,17 +64,21 @@ public class TestPropertySource implements PropertySource {
     public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
         final CharSequence camelCase = Util.joinAsCamelCase(tokens);
         // Do not use Strings to prevent recursive initialization
-        return camelCase.length() > 0 ? PREFIX + camelCase.toString() : null;
+        return camelCase.length() > 0 ? camelCase.toString() : null;
     }
 
     @Override
     public String getProperty(final String key) {
-        return getProperties().getProperty(key);
+        return getProperties().getProperty(removePrefix(key));
     }
 
     @Override
     public boolean containsProperty(final String key) {
-        return getProperties().containsProperty(key);
+        return getProperties().containsProperty(removePrefix(key));
+    }
+
+    private static String removePrefix(final String key) {
+        return key.startsWith(PREFIX) ? key.substring(PREFIX.length()) : key;
     }
 
     private static class JUnitTestProperties implements TestProperties {

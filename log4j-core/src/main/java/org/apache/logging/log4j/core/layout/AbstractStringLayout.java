@@ -21,12 +21,12 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.impl.CoreKeys;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -96,10 +96,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
 
     protected static final int MAX_STRING_BUILDER_SIZE = Math.max(
             DEFAULT_STRING_BUILDER_SIZE,
-            PropertiesUtil.getProperties()
-                    .getIntegerProperty(
-                            Log4jPropertyKey.GC_LAYOUT_STRING_BUILDER_MAX_SIZE,
-                            Math.multiplyExact(2, DEFAULT_STRING_BUILDER_SIZE)));
+            PropertyEnvironment.getGlobal().getProperty(CoreKeys.GC.class).layoutStringBuilderMaxSize());
 
     protected static Recycler<StringBuilder> createStringBuilderRecycler(final RecyclerFactory recyclerFactory) {
         return recyclerFactory.create(() -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE), stringBuilder -> {

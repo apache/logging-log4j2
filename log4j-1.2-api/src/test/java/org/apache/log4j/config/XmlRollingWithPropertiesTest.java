@@ -16,12 +16,12 @@
  */
 package org.apache.log4j.config;
 
+import static org.apache.logging.log4j.core.config.ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Paths;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LegacyLoggerContextSource;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -35,11 +35,11 @@ public class XmlRollingWithPropertiesTest {
 
     @Test
     @SetSystemProperty(key = "test.directory", value = TEST_DIR)
+    @SetSystemProperty(key = LOG4J1_CONFIGURATION_FILE_PROPERTY, value = "log4j1-rolling-properties.xml")
     @CleanUpDirectories(TEST_DIR)
-    @LegacyLoggerContextSource("log4j1-rolling-properties.xml")
-    public void testProperties(final LoggerContext context) {
+    public void testProperties() {
         // ${test.directory}/logs/etl.log
-        final Logger logger = context.getLogger("test");
+        final Logger logger = LoggerContext.getContext(false).getLogger("test");
         logger.debug("This is a test of the root logger");
         assertThat(Paths.get(TEST_DIR, "logs/etl.log")).exists().isNotEmptyFile();
     }

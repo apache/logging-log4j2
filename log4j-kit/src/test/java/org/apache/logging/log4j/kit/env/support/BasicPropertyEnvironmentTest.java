@@ -20,6 +20,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -80,7 +82,8 @@ class BasicPropertyEnvironmentTest {
             @Nullable Duration durationAttr,
             @Nullable String stringAttr,
             @Nullable StandardLevel enumAttr,
-            @Nullable Level levelAttr) {}
+            @Nullable Level levelAttr,
+            @Nullable Path pathAttr) {}
 
     @Log4jProperty
     record DefaultScalarValues(
@@ -88,7 +91,8 @@ class BasicPropertyEnvironmentTest {
             @Log4jProperty(defaultValue = "PT8H") Duration durationAttr,
             @Log4jProperty(defaultValue = "Hello child!") String stringAttr,
             @Log4jProperty(defaultValue = "WARN") StandardLevel enumAttr,
-            @Log4jProperty(defaultValue = "INFO") Level levelAttr) {}
+            @Log4jProperty(defaultValue = "INFO") Level levelAttr,
+            @Log4jProperty(defaultValue = "app.log") Path pathAttr) {}
 
     private static final Map<String, String> SCALAR_PROPS = Map.of(
             "ScalarValues.charsetAttr",
@@ -100,18 +104,32 @@ class BasicPropertyEnvironmentTest {
             "ScalarValues.enumAttr",
             "WARN",
             "ScalarValues.levelAttr",
-            "INFO");
+            "INFO",
+            "ScalarValues.pathAttr",
+            "app.log");
 
     @Test
     void should_support_scalar_values() {
-        assertMapConvertsTo(Map.of(), new ScalarValues(null, null, null, null, null));
+        assertMapConvertsTo(Map.of(), new ScalarValues(null, null, null, null, null, null));
         assertMapConvertsTo(
                 SCALAR_PROPS,
-                new ScalarValues(UTF_8, Duration.ofHours(8), "Hello child!", StandardLevel.WARN, Level.INFO));
+                new ScalarValues(
+                        UTF_8,
+                        Duration.ofHours(8),
+                        "Hello child!",
+                        StandardLevel.WARN,
+                        Level.INFO,
+                        Paths.get("app.log")));
         // Default values
         assertMapConvertsTo(
                 SCALAR_PROPS,
-                new DefaultScalarValues(UTF_8, Duration.ofHours(8), "Hello child!", StandardLevel.WARN, Level.INFO));
+                new DefaultScalarValues(
+                        UTF_8,
+                        Duration.ofHours(8),
+                        "Hello child!",
+                        StandardLevel.WARN,
+                        Level.INFO,
+                        Paths.get("app.log")));
     }
 
     @Log4jProperty

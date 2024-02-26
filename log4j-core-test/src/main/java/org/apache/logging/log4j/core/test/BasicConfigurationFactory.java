@@ -24,9 +24,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  *
@@ -61,7 +61,7 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
             super(
                     loggerContext,
                     ConfigurationSource.NULL_SOURCE,
-                    loggerContext != null ? loggerContext.getEnvironment() : PropertiesUtil.getProperties(),
+                    loggerContext != null ? loggerContext.getEnvironment() : PropertyEnvironment.getGlobal(),
                     loggerContext != null
                             ? (ConfigurableInstanceFactory) loggerContext.getInstanceFactory()
                             : DI.createInitializedFactory());

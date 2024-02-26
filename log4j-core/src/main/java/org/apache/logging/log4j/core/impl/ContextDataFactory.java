@@ -21,9 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.util.IndexedStringMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -34,7 +32,7 @@ import org.apache.logging.log4j.util.StringMap;
  * instances may be either populated with key-value pairs from the context, or completely replaced altogether.
  * <p>
  * By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
- * {@link Log4jPropertyKey#THREAD_CONTEXT_DATA_CLASS_NAME}
+ * {@link CoreKeys.ThreadContext#contextData()}
  * to the fully qualified class name of a class implementing the {@code StringMap}
  * interface. The class must have a public default constructor, and if possible should also have a public constructor
  * that takes a single {@code int} argument for the initial capacity.
@@ -46,9 +44,9 @@ import org.apache.logging.log4j.util.StringMap;
  * @since 2.7
  */
 public class ContextDataFactory {
-    private static final String CLASS_NAME =
-            PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.THREAD_CONTEXT_DATA_CLASS_NAME);
-    private static final Class<? extends StringMap> CACHED_CLASS = createCachedClass(CLASS_NAME);
+    private static final Class<? extends StringMap> CACHED_CLASS = PropertyEnvironment.getGlobal()
+            .getProperty(CoreKeys.ThreadContext.class)
+            .contextData();
 
     /**
      * In LOG4J2-2649 (https://issues.apache.org/jira/browse/LOG4J2-2649),
@@ -65,17 +63,6 @@ public class ContextDataFactory {
 
     static {
         EMPTY_STRING_MAP.freeze();
-    }
-
-    private static Class<? extends StringMap> createCachedClass(final String className) {
-        if (className == null) {
-            return null;
-        }
-        try {
-            return Loader.loadClass(className).asSubclass(IndexedStringMap.class);
-        } catch (final Exception any) {
-            return null;
-        }
     }
 
     private static Constructor<? extends StringMap> createDefaultConstructor(

@@ -27,8 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.URIConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
@@ -186,8 +186,10 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
     private static LoggerContextProvider configureLegacyLoggerContextSource(
             final LegacyLoggerContextSource source, final Class<?> testClass, final Log4jContextFactory factory) {
         final String configLocation = source.value();
-        System.setProperty(Log4jPropertyKey.CONFIG_V1_FILE_NAME.getSystemKey(), configLocation);
-        System.setProperty(Log4jPropertyKey.CONFIG_V1_COMPATIBILITY_ENABLED.getSystemKey(), "true");
+        final String configurationKey = TestConstants.VERSION1_CONFIGURATION;
+        final String compatibilityKey = TestConstants.VERSION1_COMPATIBILITY;
+        System.setProperty(configurationKey, configLocation);
+        System.setProperty(compatibilityKey, "true");
         final String contextName = testClass.getSimpleName();
         final LoggerContext context =
                 factory.getContext(FQCN, testClass.getClassLoader(), null, false, (URI) null, contextName);
@@ -197,8 +199,8 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
         }
         final Runnable cleaner = () -> {
             context.close();
-            System.clearProperty(Log4jPropertyKey.CONFIG_V1_FILE_NAME.getSystemKey());
-            System.clearProperty(Log4jPropertyKey.CONFIG_V1_COMPATIBILITY_ENABLED.getSystemKey());
+            System.clearProperty(configurationKey);
+            System.clearProperty(compatibilityKey);
         };
         return new LoggerContextResource(context, cleaner);
     }

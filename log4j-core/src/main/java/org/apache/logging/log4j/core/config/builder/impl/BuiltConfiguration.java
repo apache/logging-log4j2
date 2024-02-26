@@ -25,11 +25,11 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -56,7 +56,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
         super(
                 loggerContext,
                 source,
-                loggerContext != null ? loggerContext.getEnvironment() : PropertiesUtil.getProperties(),
+                loggerContext != null ? loggerContext.getEnvironment() : PropertyEnvironment.getGlobal(),
                 loggerContext != null
                         ? (ConfigurableInstanceFactory) loggerContext.getInstanceFactory()
                         : DI.createInitializedFactory());

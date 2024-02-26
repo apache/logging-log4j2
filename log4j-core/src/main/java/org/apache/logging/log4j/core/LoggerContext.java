@@ -43,11 +43,16 @@ import org.apache.logging.log4j.core.config.LoggerContextAwarePostProcessor;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.URIConfigurationFactory;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.impl.CoreKeys;
 import org.apache.logging.log4j.core.util.Cancellable;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.kit.env.internal.ContextualEnvironmentPropertySource;
+import org.apache.logging.log4j.kit.env.internal.ContextualJavaPropsPropertySource;
+import org.apache.logging.log4j.kit.env.support.CompositePropertyEnvironment;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
@@ -64,8 +69,6 @@ import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.jspecify.annotations.Nullable;
 
@@ -201,9 +204,12 @@ public class LoggerContext extends AbstractLifeCycle
         }
     }
 
-    @Override
     public PropertyEnvironment getEnvironment() {
         return environment;
+    }
+
+    private CoreKeys.LoggerContext contextProperties() {
+        return environment.getProperty(CoreKeys.LoggerContext.class);
     }
 
     @Override
@@ -303,7 +309,7 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public void start() {
         LOGGER.debug("Starting {}...", this);
-        if (getEnvironment().getBooleanProperty(Log4jPropertyKey.STACKTRACE_ON_START, false)) {
+        if (contextProperties().stacktraceOnStart()) {
             LOGGER.debug(
                     "Stack trace to locate invoker",
                     new Exception("Not a real error, showing stack trace to locate invoker"));
@@ -455,7 +461,6 @@ public class LoggerContext extends AbstractLifeCycle
      *
      * @return the name.
      */
-    @Override
     public String getName() {
         return contextName;
     }
@@ -591,16 +596,6 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public InstanceFactory getInstanceFactory() {
         return instanceFactory;
-    }
-
-    /**
-     * Creates a child instance factory. This allows unrelated Configurations to register their own factories.
-     *
-     * @return new ConfigurableInstanceFactory
-     * @since 3.0.0
-     */
-    public ConfigurableInstanceFactory newChildInstanceFactory() {
-        return instanceFactory.newChildInstanceFactory();
     }
 
     /**
@@ -944,7 +939,16 @@ public class LoggerContext extends AbstractLifeCycle
         }
 
         private PropertyEnvironment createProperties(final String contextName, final ClassLoader loader) {
-            return PropertiesUtil.getContextProperties(loader, contextName);
+            final PropertyEnvironment parentEnvironment = parentInstanceFactory.getInstance(PropertyEnvironment.class);
+            final org.apache.logging.log4j.Logger statusLogger =
+                    parentInstanceFactory.getInstance(Constants.DEFAULT_STATUS_LOGGER_KEY);
+            return new CompositePropertyEnvironment(
+                    parentEnvironment,
+                    List.of(
+                            new ContextualJavaPropsPropertySource(contextName),
+                            new ContextualEnvironmentPropertySource(contextName)),
+                    loader,
+                    statusLogger);
         }
 
         private ConfigurableInstanceFactory createInstanceFactory(

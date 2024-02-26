@@ -21,8 +21,8 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 
 /**
  * Generates a unique ID. The generated UUID will be unique for approximately 8,925 years so long as
@@ -38,7 +38,7 @@ public final class UuidUtil {
     private static final int SEQUENCE_MASK = 0x3FFF;
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
     private static final long INITIAL_UUID_SEQNO =
-            PropertiesUtil.getProperties().getLongProperty(Log4jPropertyKey.UUID_SEQUENCE, 0);
+            PropertyEnvironment.getGlobal().getProperty(CoreKeys.UUID.class).sequence();
 
     private static final long LOW_MASK = 0xffffffffL;
     private static final long MID_MASK = 0xffff00000000L;
@@ -77,7 +77,7 @@ public final class UuidUtil {
         System.arraycopy(mac, index, node, 2, length);
         final ByteBuffer buf = ByteBuffer.wrap(node);
         long rand = INITIAL_UUID_SEQNO;
-        String assigned = PropertiesUtil.getProperties().getStringProperty(ASSIGNED_SEQUENCES);
+        String assigned = PropertyEnvironment.getGlobal().getStringProperty(ASSIGNED_SEQUENCES);
         final long[] sequences;
         if (assigned == null) {
             sequences = new long[0];

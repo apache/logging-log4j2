@@ -23,7 +23,6 @@ import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.recycler.AbstractRecycler;
 import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
@@ -52,7 +51,7 @@ public final class JCToolsRecyclerFactoryProvider implements RecyclerFactoryProv
     @Override
     public RecyclerFactory createForEnvironment(final PropertyEnvironment environment) {
         requireNonNull(environment, "environment");
-        final int capacity = environment.getIntegerProperty(LoggingSystemProperty.RECYCLER_CAPACITY, DEFAULT_CAPACITY);
+        final int capacity = environment.getIntegerProperty("Recycler.capacity", DEFAULT_CAPACITY);
         if (capacity < 1) {
             throw new IllegalArgumentException("was expecting a `capacity` greater than 1, found: " + capacity);
         }

@@ -18,8 +18,8 @@ package org.apache.logging.log4j.kubernetes;
 
 import io.fabric8.kubernetes.client.Config;
 import java.time.Duration;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import java.util.function.Supplier;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 
 /**
  * Obtains properties used to configure the Kubernetes client.
@@ -53,51 +53,62 @@ public class KubernetesClientProperties {
     private static final String WATCH_RECONNECT_INTERVAL = "watchReconnectInterval";
     private static final String WATCH_RECONNECT_LIMIT = "watchReconnectLimit";
 
-    private final PropertyEnvironment props = PropertiesUtil.getProperties();
+    private final PropertyEnvironment props = PropertyEnvironment.getGlobal();
     private final Config base;
 
     public KubernetesClientProperties(final Config base) {
         this.base = base;
     }
 
+    private String getStringProperty(final String property, final Supplier<String> fallback) {
+        for (final String prefix : PREFIXES) {
+            final String value = props.getStringProperty(prefix + property);
+            if (value != null) {
+                return value;
+            }
+        }
+        return fallback.get();
+    }
+
     public String getApiVersion() {
-        return props.getStringProperty(PREFIXES, API_VERSION, base::getApiVersion);
+        return getStringProperty(API_VERSION, base::getApiVersion);
     }
 
     public String getCaCertFile() {
-        return props.getStringProperty(PREFIXES, CA_CERT_FILE, base::getCaCertFile);
+        return getStringProperty(CA_CERT_FILE, base::getCaCertFile);
     }
 
     public String getCaCertData() {
-        return props.getStringProperty(PREFIXES, CA_CERT_DATA, base::getCaCertData);
+        return getStringProperty(CA_CERT_DATA, base::getCaCertData);
     }
 
     public String getClientCertFile() {
-        return props.getStringProperty(PREFIXES, CLIENT_CERT_FILE, base::getClientCertFile);
+        return getStringProperty(CLIENT_CERT_FILE, base::getClientCertFile);
     }
 
     public String getClientCertData() {
-        return props.getStringProperty(PREFIXES, CLIENT_CERT_DATA, base::getClientCertData);
+        return getStringProperty(CLIENT_CERT_DATA, base::getClientCertData);
     }
 
     public String getClientKeyFile() {
-        return props.getStringProperty(PREFIXES, CLIENT_KEY_FILE, base::getClientKeyFile);
+        return getStringProperty(CLIENT_KEY_FILE, base::getClientKeyFile);
     }
 
     public String getClientKeyData() {
-        return props.getStringProperty(PREFIXES, CLIENT_KEY_DATA, base::getClientKeyData);
+        return getStringProperty(CLIENT_KEY_DATA, base::getClientKeyData);
     }
 
     public String getClientKeyAlgo() {
-        return props.getStringProperty(PREFIXES, CLIENT_KEY_ALGO, base::getClientKeyAlgo);
+        return getStringProperty(CLIENT_KEY_ALGO, base::getClientKeyAlgo);
     }
 
     public String getClientKeyPassphrase() {
-        return props.getStringProperty(PREFIXES, CLIENT_KEY_PASSPHRASE, base::getClientKeyPassphrase);
+        return getStringProperty(CLIENT_KEY_PASSPHRASE, base::getClientKeyPassphrase);
     }
 
     public int getConnectionTimeout() {
-        final Duration timeout = props.getDurationProperty(PREFIXES, CONNECTION_TIMEOUT, null);
+        final String stringProperty = getStringProperty(CONNECTION_TIMEOUT, null);
+        final Duration timeout = stringProperty != null ? Duration.parse(stringProperty) : null;
         if (timeout != null) {
             return (int) timeout.toMillis();
         }
@@ -105,15 +116,16 @@ public class KubernetesClientProperties {
     }
 
     public String getHttpProxy() {
-        return props.getStringProperty(PREFIXES, HTTP_PROXY, base::getHttpProxy);
+        return getStringProperty(HTTP_PROXY, base::getHttpProxy);
     }
 
     public String getHttpsProxy() {
-        return props.getStringProperty(PREFIXES, HTTPS_PROXY, base::getHttpsProxy);
+        return getStringProperty(HTTPS_PROXY, base::getHttpsProxy);
     }
 
     public int getLoggingInterval() {
-        final Duration interval = props.getDurationProperty(PREFIXES, LOGGING_INTERVAL, null);
+        final String stringProperty = getStringProperty(CONNECTION_TIMEOUT, null);
+        final Duration interval = stringProperty != null ? Duration.parse(stringProperty) : null;
         if (interval != null) {
             return (int) interval.toMillis();
         }
@@ -121,15 +133,15 @@ public class KubernetesClientProperties {
     }
 
     public String getMasterUrl() {
-        return props.getStringProperty(PREFIXES, MASTER_URL, base::getMasterUrl);
+        return getStringProperty(MASTER_URL, base::getMasterUrl);
     }
 
     public String getNamespace() {
-        return props.getStringProperty(PREFIXES, NAMESPACE, base::getNamespace);
+        return getStringProperty(NAMESPACE, base::getNamespace);
     }
 
     public String[] getNoProxy() {
-        final String result = props.getStringProperty(PREFIXES, NO_PROXY, null);
+        final String result = getStringProperty(NO_PROXY, null);
         if (result != null) {
             return result.replace("\\s", "").split(",");
         }
@@ -137,19 +149,19 @@ public class KubernetesClientProperties {
     }
 
     public String getPassword() {
-        return props.getStringProperty(PREFIXES, PASSWORD, base::getPassword);
+        return getStringProperty(PASSWORD, base::getPassword);
     }
 
     public String getProxyUsername() {
-        return props.getStringProperty(PREFIXES, PROXY_USERNAME, base::getProxyUsername);
+        return getStringProperty(PROXY_USERNAME, base::getProxyUsername);
     }
 
     public String getProxyPassword() {
-        return props.getStringProperty(PREFIXES, PROXY_PASSWORD, base::getProxyPassword);
+        return getStringProperty(PROXY_PASSWORD, base::getProxyPassword);
     }
 
     public int getRequestTimeout() {
-        final Duration interval = props.getDurationProperty(PREFIXES, REQUEST_TIMEOUT, null);
+        final Duration interval = Duration.parse(getStringProperty(REQUEST_TIMEOUT, null));
         if (interval != null) {
             return (int) interval.toMillis();
         }
@@ -157,7 +169,7 @@ public class KubernetesClientProperties {
     }
 
     public long getRollingTimeout() {
-        final Duration interval = props.getDurationProperty(PREFIXES, ROLLING_TIMEOUT, null);
+        final Duration interval = Duration.parse(getStringProperty(ROLLING_TIMEOUT, null));
         if (interval != null) {
             return interval.toMillis();
         }
@@ -165,15 +177,18 @@ public class KubernetesClientProperties {
     }
 
     public Boolean isTrustCerts() {
-        return props.getBooleanProperty(PREFIXES, TRUST_CERTS, base::isTrustCerts);
+        final String stringProperty = getStringProperty(TRUST_CERTS, () -> null);
+        return stringProperty != null
+                ? Boolean.parseBoolean(stringProperty)
+                : ((Supplier<Boolean>) base::isTrustCerts).get();
     }
 
     public String getUsername() {
-        return props.getStringProperty(PREFIXES, USERNAME, base::getUsername);
+        return getStringProperty(USERNAME, base::getUsername);
     }
 
     public int getWatchReconnectInterval() {
-        final Duration interval = props.getDurationProperty(PREFIXES, WATCH_RECONNECT_INTERVAL, null);
+        final Duration interval = Duration.parse(getStringProperty(WATCH_RECONNECT_INTERVAL, null));
         if (interval != null) {
             return (int) interval.toMillis();
         }
@@ -181,7 +196,7 @@ public class KubernetesClientProperties {
     }
 
     public int getWatchReconnectLimit() {
-        final Duration interval = props.getDurationProperty(PREFIXES, WATCH_RECONNECT_LIMIT, null);
+        final Duration interval = Duration.parse(getStringProperty(WATCH_RECONNECT_LIMIT, null));
         if (interval != null) {
             return (int) interval.toMillis();
         }

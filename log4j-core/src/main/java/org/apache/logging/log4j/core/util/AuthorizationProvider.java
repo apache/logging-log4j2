@@ -17,27 +17,32 @@
 package org.apache.logging.log4j.core.util;
 
 import java.net.URLConnection;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Interface to be implemented to add an Authorization header to an HTTP request.
  */
+@FunctionalInterface
 public interface AuthorizationProvider {
 
     void addAuthorization(URLConnection urlConnection);
 
-    static AuthorizationProvider getAuthorizationProvider(final PropertyEnvironment properties) {
-        final String authClass = properties.getStringProperty(Log4jPropertyKey.CONFIG_AUTH_PROVIDER);
-        if (authClass != null) {
+    static AuthorizationProvider getAuthorizationProvider(final PropertyEnvironment env) {
+        final CoreKeys.Configuration configuration = env.getProperty(CoreKeys.Configuration.class);
+        if (configuration.authorizationProvider() != null) {
             try {
-                return LoaderUtil.newInstanceOfUnchecked(authClass, AuthorizationProvider.class);
-            } catch (final RuntimeException | LinkageError e) {
-                StatusLogger.getLogger().warn("Unable to create {}, using default", authClass, e);
+                return LoaderUtil.newInstanceOf(configuration.authorizationProvider());
+            } catch (final ReflectiveOperationException | LinkageError e) {
+                StatusLogger.getLogger()
+                        .warn(
+                                "Unable to create {}, using default",
+                                configuration.authorizationProvider().getName(),
+                                e);
             }
         }
-        return new BasicAuthorizationProvider(properties);
+        return new BasicAuthorizationProvider(configuration.basicAuth());
     }
 }

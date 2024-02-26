@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.gctests;
 
+import static org.apache.logging.log4j.core.test.TestConstants.ASYNC_LOGGER_RING_BUFFER_SIZE;
+import static org.apache.logging.log4j.core.test.TestConstants.LOGGER_CONTEXT_SELECTOR;
+import static org.apache.logging.log4j.core.test.TestConstants.THREAD_CONTEXT_GARBAGE_FREE;
+import static org.apache.logging.log4j.core.test.TestConstants.setSystemProperty;
+
 import org.apache.logging.log4j.async.logger.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -40,12 +43,9 @@ public class GcFreeAsyncLoggingTest {
      * This code runs in a separate process, instrumented with the Google Allocation Instrumenter.
      */
     public static void main(final String[] args) throws Exception {
-        System.setProperty(LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED.getSystemKey(), "true");
-        System.setProperty(
-                Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getSystemKey(), "128"); // minimum ringbuffer size
-        System.setProperty(
-                Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
-                AsyncLoggerContextSelector.class.getName());
+        setSystemProperty(THREAD_CONTEXT_GARBAGE_FREE, "true");
+        setSystemProperty(ASYNC_LOGGER_RING_BUFFER_SIZE, "128"); // minimum ringbuffer size
+        setSystemProperty(LOGGER_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeAsyncLoggingTest.class);
     }
 }

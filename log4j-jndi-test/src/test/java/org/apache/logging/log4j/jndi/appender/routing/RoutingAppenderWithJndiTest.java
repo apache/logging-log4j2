@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.jndi.appender.routing;
 
+import static org.apache.logging.log4j.core.test.TestConstants.JNDI_ENABLE_LOOKUP;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -45,7 +46,7 @@ public class RoutingAppenderWithJndiTest {
     public static LoggerContextRule loggerContextRule = new LoggerContextRule(getLocation());
 
     private static String getLocation() {
-        System.setProperty("log4j2.*.JNDI.enableLookup", "true");
+        System.setProperty(JNDI_ENABLE_LOOKUP, "true");
         return "log4j-routing-by-jndi.xml";
     }
 

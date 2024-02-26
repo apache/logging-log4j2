@@ -17,17 +17,17 @@
 package org.apache.logging.log4j.core.time;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.impl.CoreKeys;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
 import org.apache.logging.log4j.core.time.internal.SystemMillisClock;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Factory for {@code Clock} objects.
@@ -42,7 +42,7 @@ public final class ClockFactory {
 
     /**
      * Returns a {@code Clock} instance depending on the value of system
-     * property {@link Log4jPropertyKey#CONFIG_CLOCK}.
+     * property {@link CoreKeys.Configuration#clock()}.
      * <p>
      * If system property {@code log4j.Clock=CachedClock} is specified,
      * this method returns an instance of {@link CachedClock}. If system
@@ -72,11 +72,11 @@ public final class ClockFactory {
     @SingletonFactory
     @Deprecated(forRemoval = true)
     public Clock clock(final PropertyEnvironment environment) {
-        final String customClock = environment.getStringProperty(Log4jPropertyKey.CONFIG_CLOCK);
-        if (customClock == null) {
+        final CoreKeys.Configuration configuration = environment.getProperty(CoreKeys.Configuration.class);
+        if (configuration.clock() == null) {
             return logSupportedPrecision(new SystemClock());
         }
-        return switch (customClock) {
+        return switch (configuration.clock()) {
             case "SystemMillisClock" -> logSupportedPrecision(new SystemMillisClock());
             case "CachedClock", "org.apache.logging.log4j.core.time.internal.CachedClock" -> logSupportedPrecision(
                     CachedClock.instance());

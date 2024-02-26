@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * This configuration defaults to no logging.
@@ -36,7 +36,7 @@ public class NullConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public NullConfiguration() {
-        super(null, ConfigurationSource.NULL_SOURCE, PropertiesUtil.getProperties(), DI.createInitializedFactory());
+        super(null, ConfigurationSource.NULL_SOURCE, PropertyEnvironment.getGlobal(), DI.createInitializedFactory());
         setName(NULL_NAME);
         final LoggerConfig root = getRootLogger();
         root.setLevel(Level.OFF);

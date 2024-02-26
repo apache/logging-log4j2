@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.nio.file.Path;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.net.ssl.TrustManagerFactory;
+import org.apache.logging.log4j.core.impl.CoreKeys;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -62,6 +64,17 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
         }
     }
 
+    static TrustStoreConfiguration createKeyStoreConfiguration(final CoreKeys.KeyStore props)
+            throws StoreConfigurationException {
+        return createKeyStoreConfiguration(
+                props.location(),
+                props.password(),
+                props.passwordEnvVar(),
+                props.passwordFile(),
+                props.type(),
+                props.keyManagerFactoryAlgorithm());
+    }
+
     /**
      * Creates a KeyStoreConfiguration.
      *
@@ -78,15 +91,13 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
      */
     @PluginFactory
     public static TrustStoreConfiguration createKeyStoreConfiguration(
-            // @formatter:off
             @PluginAttribute final String location,
             @PluginAttribute(sensitive = true) final char[] password,
             @PluginAttribute final String passwordEnvironmentVariable,
-            @PluginAttribute final String passwordFile,
+            @PluginAttribute final Path passwordFile,
             @PluginAttribute("type") final String keyStoreType,
             @PluginAttribute final String trustManagerFactoryAlgorithm)
             throws StoreConfigurationException {
-        // @formatter:on
 
         if (password != null && passwordEnvironmentVariable != null && passwordFile != null) {
             throw new IllegalStateException(

@@ -74,7 +74,7 @@ class OnPropertyConditionTest {
     }
 
     @Test
-    @SetTestProperty(key = "OnPropertyConditionTest", value = "first")
+    @SetTestProperty(key = "log4j.OnPropertyConditionTest", value = "first")
     void whenPropertyMatchesFirst() {
         instanceFactory.registerBundle(Fixture.class);
         final String value = instanceFactory.getInstance(String.class);
@@ -82,7 +82,7 @@ class OnPropertyConditionTest {
     }
 
     @Test
-    @SetTestProperty(key = "OnPropertyConditionTest", value = "second")
+    @SetTestProperty(key = "log4j.OnPropertyConditionTest", value = "second")
     void whenPropertyMatchesSecond() {
         instanceFactory.registerBundle(Fixture.class);
         final String value = instanceFactory.getInstance(String.class);
@@ -90,7 +90,7 @@ class OnPropertyConditionTest {
     }
 
     @Test
-    @SetTestProperty(key = "PropertyThree", value = "")
+    @SetTestProperty(key = "log4j.PropertyThree", value = "")
     void whenPropertyPresent() {
         instanceFactory.registerBundle(Fixture.class);
         final String value = instanceFactory.getInstance(String.class);
@@ -98,7 +98,7 @@ class OnPropertyConditionTest {
     }
 
     @Test
-    @SetTestProperty(key = "Applied", value = "")
+    @SetTestProperty(key = "log4j.Applied", value = "")
     void whenPropertyPresentForConditionalClass() {
         instanceFactory.registerBundle(AppliedToMethods.class);
         instanceFactory.registerBundle(Fixture.class);

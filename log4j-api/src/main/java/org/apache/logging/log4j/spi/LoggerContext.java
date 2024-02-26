@@ -19,8 +19,6 @@ package org.apache.logging.log4j.spi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Anchor point for logging implementations.
@@ -48,15 +46,6 @@ public interface LoggerContext {
      */
     default String getName() {
         return "";
-    }
-
-    /**
-     * Returns the PropertyEnvironment associated with the LoggerContext.
-     * @return the PropertyEnvironment.
-     * @since 3.0
-     */
-    default PropertyEnvironment getEnvironment() {
-        return PropertiesUtil.getContextProperties(LoggerContext.class.getClassLoader(), getName());
     }
 
     /**

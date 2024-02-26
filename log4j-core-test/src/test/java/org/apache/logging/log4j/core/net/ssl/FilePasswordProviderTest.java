@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
 public class FilePasswordProviderTest {
@@ -31,20 +32,20 @@ public class FilePasswordProviderTest {
     public void testGetPassword() throws Exception {
         final String PASSWORD = "myPass123";
         final Path path = Files.createTempFile("testPass", ".txt");
-        Files.write(path, PASSWORD.getBytes(Charset.defaultCharset()));
+        Files.writeString(path, PASSWORD, Charset.defaultCharset());
 
-        final char[] actual = new FilePasswordProvider(path.toString()).getPassword();
+        final char[] actual = new FilePasswordProvider(path).getPassword();
         Files.delete(path);
         assertArrayEquals(PASSWORD.toCharArray(), actual);
     }
 
     @Test
-    public void testConstructorDisallowsNull() throws Exception {
+    public void testConstructorDisallowsNull() {
         assertThrows(NullPointerException.class, () -> new FilePasswordProvider(null));
     }
 
     @Test
-    public void testConstructorFailsIfFileDoesNotExist() throws Exception {
-        assertThrows(NoSuchFileException.class, () -> new FilePasswordProvider("nosuchfile"));
+    public void testConstructorFailsIfFileDoesNotExist() {
+        assertThrows(NoSuchFileException.class, () -> new FilePasswordProvider(Paths.get("nosuchfile")));
     }
 }

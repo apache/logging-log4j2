@@ -34,13 +34,20 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.TestProperties;
+import org.apache.logging.log4j.test.junit.Resources;
+import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * Unit test for simple App.
  */
+@UsingTestProperties
+@ResourceLock(Resources.THREAD_CONTEXT)
+@ResourceLock(Resources.LOG_MANAGER)
 public class MutableThreadContextMapFilterTest implements MutableThreadContextMapFilter.FilterConfigUpdateListener {
 
     static final String CONFIG = "MutableThreadContextMapFilterTest.xml";
@@ -62,8 +69,8 @@ public class MutableThreadContextMapFilterTest implements MutableThreadContextMa
     }
 
     @Test
-    public void filterTest() throws Exception {
-        System.setProperty("configLocation", "target/test-classes/testConfig.json");
+    public void filterTest(final TestProperties properties) throws Exception {
+        properties.setProperty("configLocation", "target/test-classes/testConfig.json");
         ThreadContext.put("loginId", "rgoers");
         Path source = new File("target/test-classes/emptyConfig.json").toPath();
         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);

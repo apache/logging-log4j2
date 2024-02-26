@@ -18,9 +18,9 @@ package org.apache.logging.log4j.jul;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Utility class to convert between JDK Levels and Log4j 2 Levels.
@@ -45,14 +45,14 @@ public final class LevelTranslator {
     private static final LevelConverter LEVEL_CONVERTER;
 
     static {
-        final String levelConverterClassName =
-                PropertiesUtil.getProperties().getStringProperty(JulPropertyKey.LEVEL_CONVERTER);
-        if (levelConverterClassName != null) {
+        final Class<? extends LevelConverter> levelConverterClass =
+                PropertyEnvironment.getGlobal().getProperty(JulKeys.JUL.class).levelConverter();
+        if (levelConverterClass != null) {
             LevelConverter levelConverter;
             try {
-                levelConverter = LoaderUtil.newCheckedInstanceOf(levelConverterClassName, LevelConverter.class);
+                levelConverter = LoaderUtil.newInstanceOf(levelConverterClass);
             } catch (final Exception e) {
-                LOGGER.error("Could not create custom LevelConverter [{}].", levelConverterClassName, e);
+                LOGGER.error("Could not create custom LevelConverter [{}].", levelConverterClass.getName(), e);
                 levelConverter = new DefaultLevelConverter();
             }
             LEVEL_CONVERTER = levelConverter;

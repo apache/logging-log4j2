@@ -16,7 +16,8 @@
   ~ limitations under the License.
   -->
 <Configuration name="ConfigTest" status="ERROR">
-  <MutableThreadContextMapFilter configLocation="${sys:configLocation}" pollInterval="1" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+  <MutableThreadContextMapFilter configLocation="${test:configLocation}" pollInterval="1" onMatch="ACCEPT"
+                                 onMismatch="NEUTRAL"/>
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>

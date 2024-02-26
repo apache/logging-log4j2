@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
+import static org.apache.logging.log4j.core.test.TestConstants.JNDI_ENABLE_LOOKUP;
 import static org.junit.Assert.fail;
 
 import java.io.Serializable;
@@ -54,7 +55,7 @@ public class JndiRestrictedLookupTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.*.JNDI.enableLookup", "true");
+        System.setProperty(JNDI_ENABLE_LOOKUP, "true");
     }
 
     @Test

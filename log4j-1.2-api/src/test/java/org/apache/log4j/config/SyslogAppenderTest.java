@@ -16,13 +16,13 @@
  */
 package org.apache.log4j.config;
 
-import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.CONFIG_V1_FILE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServer;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServerFactory;
 import org.junit.jupiter.api.AfterAll;
@@ -42,12 +42,12 @@ public class SyslogAppenderTest {
     public static void beforeClass() throws IOException {
         initTCPTestEnvironment();
         System.setProperty("syslog.port", Integer.toString(syslogServer.getLocalPort()));
-        System.setProperty(CONFIG_V1_FILE_NAME.getKey(), "target/test-classes/log4j1-syslog.xml");
+        System.setProperty(TestConstants.VERSION1_CONFIGURATION, "target/test-classes/log4j1-syslog.xml");
     }
 
     @AfterAll
     public static void cleanup() {
-        System.clearProperty(CONFIG_V1_FILE_NAME.getKey());
+        System.clearProperty(TestConstants.VERSION1_CONFIGURATION);
         syslogServer.shutdown();
     }
 

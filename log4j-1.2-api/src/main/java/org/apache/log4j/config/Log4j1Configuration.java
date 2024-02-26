@@ -24,9 +24,9 @@ import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Base Configuration for Log4j 1.
@@ -58,7 +58,7 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
                 configurationSource,
                 Optional.ofNullable(loggerContext)
                         .map(LoggerContext::getEnvironment)
-                        .orElseGet(PropertiesUtil::getProperties),
+                        .orElseGet(PropertyEnvironment::getGlobal),
                 Optional.ofNullable(loggerContext)
                         .map(ctx -> (ConfigurableInstanceFactory) ctx.getInstanceFactory())
                         .orElseGet(DI::createInitializedFactory));

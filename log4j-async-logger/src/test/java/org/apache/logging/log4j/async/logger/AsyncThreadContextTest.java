@@ -32,31 +32,25 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.test.junit.InitializesThreadContext;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Unbox;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 @Tag("sleepy")
-@SetTestProperty(
-        key = Log4jPropertyKey.Constant.ASYNC_LOGGER_RING_BUFFER_SIZE,
-        value = "128") // minimum ringbuffer size
-@SetTestProperty(
-        key = Log4jPropertyKey.Constant.ASYNC_CONFIG_RING_BUFFER_SIZE,
-        value = "128") // minimum ringbuffer size
+@SetTestProperty(key = TestConstants.ASYNC_LOGGER_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
+@SetTestProperty(key = TestConstants.ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
 @InitializesThreadContext
 public class AsyncThreadContextTest {
 
@@ -93,11 +87,8 @@ public class AsyncThreadContextTest {
         COPY_ON_WRITE;
 
         void init() {
-            System.clearProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS);
             final String PACKAGE = "org.apache.logging.log4j.spi.";
-            System.setProperty(
-                    LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS, PACKAGE + implClassSimpleName());
-            PropertiesUtil.getProperties().reload();
+            TestConstants.setSystemProperty(TestConstants.THREAD_CONTEXT_MAP_CLASS, PACKAGE + implClassSimpleName());
             LoggingSystem.reset();
             ThreadContextTestAccess.init();
         }

@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.core.lookup.Lookup;
 import org.apache.logging.log4j.jndi.JndiManager;
@@ -36,7 +35,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Lookup
 @Plugin("jndi")
 @RequiredProperty(
-        name = Log4jPropertyKey.Constant.JNDI_ENABLE_LOOKUP,
+        name = "JNDI.enableLookup",
         value = "true",
         message = "JNDI must be enabled by setting JNDI.enableLookup=true")
 public class JndiLookup extends AbstractLookup {

@@ -44,6 +44,8 @@ public class PropertiesUtilPropertyEnvironment extends BasicPropertyEnvironment 
 
     @Override
     public String getStringProperty(final String name) {
-        return propsUtil.getStringProperty(PREFIX + name);
+        // TODO: temporary hack to allow the usage of legacy names like "log4j.configuration"
+        // or "log4j1.compatibility"
+        return propsUtil.getStringProperty(name.startsWith("log4j") ? name : PREFIX + name);
     }
 }

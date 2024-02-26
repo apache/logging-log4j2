@@ -50,4 +50,8 @@ public final class JndiUtil {
             return null;
         }
     }
+
+    public static boolean isJndiJdbcEnabled() {
+        return JndiManager.isJndiJdbcEnabled();
+    }
 }

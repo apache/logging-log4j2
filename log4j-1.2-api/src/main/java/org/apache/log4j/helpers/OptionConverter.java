@@ -443,6 +443,8 @@ public final class OptionConverter {
             j += DELIM_START_LEN;
             final String key = val.substring(j, k);
             // first try in System properties
+            // We intentionally use PropertiesUtil here to retrieve properties not
+            // prefixed by "log4j."
             String replacement = PropertiesUtil.getProperties().getStringProperty(key, null);
             // then try props parameter
             if (replacement == null && props != null) {

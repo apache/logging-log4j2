@@ -51,7 +51,7 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.arbiters.Arbiter;
 import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.impl.CoreKeys;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -69,6 +69,7 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
@@ -82,7 +83,6 @@ import org.apache.logging.log4j.plugins.util.OrderedComparator;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.NameUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.jspecify.annotations.NullMarked;
@@ -782,9 +782,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         addAppender(appender);
         final LoggerConfig rootLoggerConfig = getRootLogger();
         rootLoggerConfig.addAppender(appender, null, null);
-        final String defaultLevelName = environment.getStringProperty(Log4jPropertyKey.CONFIG_DEFAULT_LEVEL);
-        final Level defaultLevel = Level.toLevel(defaultLevelName, Level.ERROR);
-        rootLoggerConfig.setLevel(defaultLevel);
+        final Level defaultLevel =
+                environment.getProperty(CoreKeys.Configuration.class).level();
+        rootLoggerConfig.setLevel(defaultLevel != null ? defaultLevel : Level.ERROR);
     }
 
     /**
@@ -888,7 +888,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
         final String strategy =
-                getEnvironment().getStringProperty(Log4jPropertyKey.CONFIG_RELIABILITY_STRATEGY, "AwaitCompletion");
+                getEnvironment().getProperty(CoreKeys.Configuration.class).reliabilityStrategy();
         return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig, strategy);
     }
 

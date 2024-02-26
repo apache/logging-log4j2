@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * The default configuration writes all output to the Console using the default logging level. You configure default
@@ -43,7 +43,7 @@ public class DefaultConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public DefaultConfiguration() {
-        super(null, ConfigurationSource.NULL_SOURCE, PropertiesUtil.getProperties(), DI.createInitializedFactory());
+        super(null, ConfigurationSource.NULL_SOURCE, PropertyEnvironment.getGlobal(), DI.createInitializedFactory());
         setToDefault();
     }
 

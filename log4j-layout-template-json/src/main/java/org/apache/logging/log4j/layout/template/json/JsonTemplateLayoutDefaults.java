@@ -20,14 +20,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 
 public final class JsonTemplateLayoutDefaults {
 
     private JsonTemplateLayoutDefaults() {}
 
-    private static final PropertyEnvironment PROPERTIES = PropertiesUtil.getProperties();
+    private static final PropertyEnvironment PROPERTIES = PropertyEnvironment.getGlobal();
 
     public static Charset getCharset() {
         final String charsetName = PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.charset");

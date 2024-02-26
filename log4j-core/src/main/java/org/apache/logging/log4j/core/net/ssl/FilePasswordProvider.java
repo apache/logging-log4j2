@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 /**
@@ -51,14 +50,14 @@ class FilePasswordProvider implements PasswordProvider {
 
     /**
      * Constructs a new FilePasswordProvider with the specified path.
-     * @param passwordFile the path to the password file
+     * @param passwordPath the path to the password file
      * @throws NoSuchFileException if the password file does not exist when this FilePasswordProvider is constructed
      */
     @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "The file name comes from a configuration option.")
-    public FilePasswordProvider(final String passwordFile) throws NoSuchFileException {
-        this.passwordPath = Paths.get(passwordFile);
+    public FilePasswordProvider(final Path passwordPath) throws NoSuchFileException {
+        this.passwordPath = passwordPath;
         if (!Files.exists(passwordPath)) {
-            throw new NoSuchFileException("PasswordFile '" + passwordFile + "' does not exist");
+            throw new NoSuchFileException("PasswordFile '" + passwordPath + "' does not exist");
         }
     }
 
