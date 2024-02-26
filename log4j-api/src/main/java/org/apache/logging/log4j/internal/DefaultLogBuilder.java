@@ -20,38 +20,39 @@ import java.util.Arrays;
 import org.apache.logging.log4j.BridgeAware;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.spi.recycler.Recycler;
-import org.apache.logging.log4j.spi.recycler.RecyclerAware;
-import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
-import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Collects data for a log event and then logs it. This class should be considered private.
  */
-@InternalApi
-public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware<LogBuilder> {
+public class DefaultLogBuilder implements BridgeAware, LogBuilder {
 
+    private static Message EMPTY_MESSAGE = new SimpleMessage("");
     private static final String FQCN = DefaultLogBuilder.class.getName();
-    private static final Message EMPTY_MESSAGE = new SimpleMessage(Strings.EMPTY);
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private ExtendedLogger logger;
     private Level level;
     private Marker marker;
     private Throwable throwable;
     private StackTraceElement location;
+    private volatile boolean inUse;
+    private long threadId;
     private String fqcn = FQCN;
-    private Recycler<LogBuilder> recycler;
 
     public DefaultLogBuilder(final ExtendedLogger logger, final Level level) {
         this.logger = logger;
         this.level = level;
+        this.threadId = Thread.currentThread().getId();
+        this.inUse = level != null;
     }
 
     public DefaultLogBuilder() {
@@ -74,6 +75,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
         this.marker = null;
         this.throwable = null;
         this.location = null;
+        this.inUse = true;
         return this;
     }
 
@@ -96,14 +98,18 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     }
 
     @Override
-    public LogBuilder withLocation(final StackTraceElement location) {
+    public LogBuilder withLocation(StackTraceElement location) {
         this.location = location;
         return this;
     }
 
+    public boolean isInUse() {
+        return inUse;
+    }
+
     @Override
-    public void log(final Message message) {
-        if (isEnabled(message)) {
+    public void log(Message message) {
+        if (isValid() && isEnabled(message)) {
             logMessage(message);
         }
     }
@@ -112,7 +118,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     @SuppressWarnings("deprecation")
     public Message logAndGet(final Supplier<Message> messageSupplier) {
         Message message = null;
-        if (isEnabled(message = messageSupplier.get())) {
+        if (isValid() && isEnabled(message = messageSupplier.get())) {
             logMessage(message);
         }
         return message;
@@ -120,21 +126,21 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
 
     @Override
     public void log(final CharSequence message) {
-        if (isEnabled(message)) {
+        if (isValid() && isEnabled(message)) {
             logMessage(logger.getMessageFactory().newMessage(message));
         }
     }
 
     @Override
-    public void log(final String message) {
-        if (isEnabled(message)) {
+    public void log(String message) {
+        if (isValid() && isEnabled(message)) {
             logMessage(logger.getMessageFactory().newMessage(message));
         }
     }
 
     @Override
-    public void log(final String message, final Object... params) {
-        if (isEnabled(message, params)) {
+    public void log(String message, Object... params) {
+        if (isValid() && isEnabled(message, params)) {
             logMessage(logger.getMessageFactory().newMessage(message, params));
         }
     }
@@ -143,7 +149,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     @SuppressWarnings("deprecation")
     public void log(String message, Supplier<?>... params) {
         final Object[] objs;
-        if (isEnabled(message, objs = LambdaUtil.getAll(params))) {
+        if (isValid() && isEnabled(message, objs = LambdaUtil.getAll(params))) {
             logMessage(logger.getMessageFactory().newMessage(message, objs));
         }
     }
@@ -155,147 +161,129 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     }
 
     @Override
-    public void log(final Object message) {
-        if (isEnabled(message)) {
+    public void log(Object message) {
+        if (isValid() && isEnabled(message)) {
             logMessage(logger.getMessageFactory().newMessage(message));
         }
     }
 
     @Override
-    public void log(final String message, final Object p0) {
-        if (isEnabled(message, p0)) {
+    public void log(String message, Object p0) {
+        if (isValid() && isEnabled(message, p0)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0));
         }
     }
 
     @Override
-    public void log(final String message, final Object p0, final Object p1) {
-        if (isEnabled(message, p0, p1)) {
+    public void log(String message, Object p0, Object p1) {
+        if (isValid() && isEnabled(message, p0, p1)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1));
         }
     }
 
     @Override
-    public void log(final String message, final Object p0, final Object p1, final Object p2) {
-        if (isEnabled(message, p0, p1, p2)) {
+    public void log(String message, Object p0, Object p1, Object p2) {
+        if (isValid() && isEnabled(message, p0, p1, p2)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2));
         }
     }
 
     @Override
-    public void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-        if (isEnabled(message, p0, p1, p2, p3)) {
+    public void log(String message, Object p0, Object p1, Object p2, Object p3) {
+        if (isValid() && isEnabled(message, p0, p1, p2, p3)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3));
         }
     }
 
     @Override
-    public void log(
-            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-        if (isEnabled(message, p0, p1, p2, p3, p4)) {
+    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+        if (isValid() && isEnabled(message, p0, p1, p2, p3, p4)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4));
         }
     }
 
     @Override
-    public void log(
-            final String message,
-            final Object p0,
-            final Object p1,
-            final Object p2,
-            final Object p3,
-            final Object p4,
-            final Object p5) {
-        if (isEnabled(message, p0, p1, p2, p3, p4, p5)) {
+    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+        if (isValid() && isEnabled(message, p0, p1, p2, p3, p4, p5)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5));
         }
     }
 
     @Override
-    public void log(
-            final String message,
-            final Object p0,
-            final Object p1,
-            final Object p2,
-            final Object p3,
-            final Object p4,
-            final Object p5,
-            final Object p6) {
-        if (isEnabled(message, p0, p1, p2, p3, p4, p5, p6)) {
+    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+        if (isValid() && isEnabled(message, p0, p1, p2, p3, p4, p5, p6)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6));
         }
     }
 
     @Override
     public void log(
-            final String message,
-            final Object p0,
-            final Object p1,
-            final Object p2,
-            final Object p3,
-            final Object p4,
-            final Object p5,
-            final Object p6,
-            final Object p7) {
-        if (isEnabled(message, p0, p1, p2, p3, p4, p5, p6, p7)) {
+            String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+        if (isValid() && isEnabled(message, p0, p1, p2, p3, p4, p5, p6, p7)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7));
         }
     }
 
     @Override
     public void log(
-            final String message,
-            final Object p0,
-            final Object p1,
-            final Object p2,
-            final Object p3,
-            final Object p4,
-            final Object p5,
-            final Object p6,
-            final Object p7,
-            final Object p8) {
-        if (isEnabled(message, p0, p1, p2, p3, p4, p5, p6, p7, p8)) {
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8) {
+        if (isValid() && isEnabled(message, p0, p1, p2, p3, p4, p5, p6, p7, p8)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8));
         }
     }
 
     @Override
     public void log(
-            final String message,
-            final Object p0,
-            final Object p1,
-            final Object p2,
-            final Object p3,
-            final Object p4,
-            final Object p5,
-            final Object p6,
-            final Object p7,
-            final Object p8,
-            final Object p9) {
-        if (isEnabled(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)) {
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9) {
+        if (isValid() && isEnabled(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
         }
     }
 
     @Override
     public void log() {
-        if (isEnabled(EMPTY_MESSAGE)) {
+        if (isValid() && isEnabled(EMPTY_MESSAGE)) {
             logMessage(EMPTY_MESSAGE);
         }
     }
 
-    private void logMessage(final Message message) {
+    private void logMessage(Message message) {
         try {
             logger.logMessage(level, marker, fqcn, location, message, throwable);
         } finally {
-            this.level = null;
-            this.marker = null;
-            this.throwable = null;
-            this.location = null;
-            if (recycler != null) {
-                recycler.release(this);
-            }
+            inUse = false;
         }
+    }
+
+    private boolean isValid() {
+        if (!inUse) {
+            LOGGER.warn("Attempt to reuse LogBuilder was ignored. {}", StackLocatorUtil.getCallerClass(2));
+            return false;
+        }
+        if (this.threadId != Thread.currentThread().getId()) {
+            LOGGER.warn("LogBuilder can only be used on the owning thread. {}", StackLocatorUtil.getCallerClass(2));
+            return false;
+        }
+        return true;
     }
 
     protected boolean isEnabled(Message message) {
@@ -406,10 +394,5 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
         return throwable != null
                 ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
-    }
-
-    @Override
-    public void setRecycler(Recycler<LogBuilder> recycler) {
-        this.recycler = recycler;
     }
 }

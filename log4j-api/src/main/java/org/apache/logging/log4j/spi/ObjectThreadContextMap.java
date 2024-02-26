@@ -16,13 +16,38 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.Map;
+
 /**
- * Legacy interface for backward compatibility with extensions to ThreadContextMap.
- * These methods have since been moved to default methods on ThreadContextMap.
+ * Extension service provider interface to allow putting Object values in the
+ * {@link org.apache.logging.log4j.ThreadContext}.
  *
  * @see ThreadContextMap
  * @since 2.8
- * @deprecated use {@link ThreadContextMap} directly
  */
-@Deprecated(forRemoval = true, since = "3.0")
-public interface ObjectThreadContextMap extends CleanableThreadContextMap {}
+public interface ObjectThreadContextMap extends CleanableThreadContextMap {
+
+    /**
+     * Returns the Object value for the specified key, or {@code null} if the specified key does not exist in this
+     * collection.
+     *
+     * @param key the key whose value to return
+     * @return the value for the specified key or {@code null}
+     */
+    <V> V getValue(String key);
+
+    /**
+     * Puts the specified key-value pair into the collection.
+     *
+     * @param key the key to add or remove. Keys may be {@code null}.
+     * @param value the value to add. Values may be {@code null}.
+     */
+    <V> void putValue(String key, V value);
+
+    /**
+     * Puts all given key-value pairs into the collection.
+     *
+     * @param values the map of key-value pairs to add
+     */
+    <V> void putAllValues(Map<String, V> values);
+}

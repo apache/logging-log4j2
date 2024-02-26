@@ -14,20 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.spi;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.message.Message;
 
 /**
- * Extended interface to allow bridges between logging systems to convey the
- * correct location information.
- *
+ * Logger that accepts the location of the caller.
  */
-public interface BridgeAware {
-
-    /**
-     * To set fully qualified class name of the entry point to the logging system. This
-     * class will not appear in the location information.
-     *
-     * @param fqcn fully qualified class name
-     */
-    void setEntryPoint(final String fqcn);
+public interface LocationAwareLogger {
+    void logMessage(
+            final Level level,
+            final Marker marker,
+            final String fqcn,
+            final StackTraceElement location,
+            final Message message,
+            final Throwable throwable);
 }

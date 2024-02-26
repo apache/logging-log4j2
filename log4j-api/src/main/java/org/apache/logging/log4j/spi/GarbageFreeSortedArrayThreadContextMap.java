@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_INHERITABLE;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,16 +34,32 @@ import org.apache.logging.log4j.util.StringMap;
  * </p>
  * @since 2.7
  */
-class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ThreadContextMap {
+class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ObjectThreadContextMap {
+
+    /**
+     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
+     * {@code ThreadLocal} (value is not "true") in the implementation.
+     */
+    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
+
+    /**
+     * The default initial capacity.
+     */
+    protected static final int DEFAULT_INITIAL_CAPACITY = 16;
+
+    /**
+     * System property name that can be used to control the data structure's initial capacity.
+     */
+    protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
     protected final ThreadLocal<StringMap> localMap;
-    protected final int initialCapacity;
+    private final int initialCapacity;
 
     public GarbageFreeSortedArrayThreadContextMap() {
         this(
-                PropertiesUtil.getProperties().getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE),
+                PropertiesUtil.getProperties().getBooleanProperty(INHERITABLE_MAP),
                 PropertiesUtil.getProperties()
-                        .getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY));
+                        .getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
     GarbageFreeSortedArrayThreadContextMap(final boolean inheritableMap, final int initialCapacity) {
@@ -59,7 +71,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap(final boolean inheritableMap) {
         if (inheritableMap) {
-            return new InheritableThreadLocal<>() {
+            return new InheritableThreadLocal<StringMap>() {
                 @Override
                 protected StringMap childValue(final StringMap parentValue) {
                     return parentValue != null ? createStringMap(parentValue) : null;
@@ -78,18 +90,6 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
      * @return an implementation of the {@code StringMap} used to back this thread context map
      */
     protected StringMap createStringMap() {
-        return createStringMap(initialCapacity);
-    }
-
-    /**
-     * Returns an implementation of the {@code StringMap} used to back this thread context map.
-     * <p>
-     * Subclasses may override.
-     * </p>
-     * @return an implementation of the {@code StringMap} used to back this thread context map
-     * @param initialCapacity initial capacity of the StringMap
-     */
-    protected StringMap createStringMap(final int initialCapacity) {
         return new SortedArrayStringMap(initialCapacity);
     }
 
@@ -149,7 +149,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public String get(final String key) {
-        return getValue(key);
+        return (String) getValue(key);
     }
 
     @Override

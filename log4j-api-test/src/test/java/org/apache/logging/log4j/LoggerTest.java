@@ -34,21 +34,19 @@ import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ObjectMessage;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.test.TestLogger;
-import org.apache.logging.log4j.test.TestLoggerContextFactory;
-import org.apache.logging.log4j.test.junit.LoggerContextFactoryExtension;
 import org.apache.logging.log4j.test.junit.Resources;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
@@ -57,11 +55,7 @@ import org.junitpioneer.jupiter.ReadsSystemProperty;
 @ReadsSystemProperty
 public class LoggerTest {
 
-    @RegisterExtension
-    public static final LoggerContextFactoryExtension EXTENSION =
-            new LoggerContextFactoryExtension(new TestLoggerContextFactory());
-
-    private static class TestReusableMessageFactory {
+    private static class TestParameterizedMessageFactory {
         // empty
     }
 
@@ -82,7 +76,7 @@ public class LoggerTest {
         assertThat(
                 "Incorrect message 1",
                 results.get(0),
-                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:78) Hello"));
+                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:72) Hello"));
         assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
         assertThat(
                 "Incorrect message 3",
@@ -91,13 +85,13 @@ public class LoggerTest {
         assertThat(
                 "Throwable incorrect in message 3",
                 results.get(2),
-                containsString("org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:80)"));
+                containsString("org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:74)"));
     }
 
     @Test
     public void basicFlow() {
-        logger.traceEntry();
-        logger.traceExit();
+        logger.entry();
+        logger.exit();
         assertEquals(2, results.size());
         assertThat(results.get(0)).isEqualTo("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(1)).isEqualTo("EXIT[ FLOW ] TRACE Exit");
@@ -172,19 +166,8 @@ public class LoggerTest {
     @Test
     public void flowTracingString_SupplierOfObjectMessages() {
         final EntryMessage msg = logger.traceEntry(
-                "doFoo(a={}, b={})",
-                new Supplier<Message>() {
-                    @Override
-                    public Message get() {
-                        return new ObjectMessage(1);
-                    }
-                },
-                new Supplier<Message>() {
-                    @Override
-                    public Message get() {
-                        return new ObjectMessage(2);
-                    }
-                });
+                "doFoo(a={}, b={})", (Supplier<Message>) () -> new ObjectMessage(1), (Supplier<Message>)
+                        () -> new ObjectMessage(2));
         logger.traceExit(msg, 3);
         assertThat(results).hasSize(2);
         assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter").contains("doFoo(a=1, b=2)");
@@ -193,20 +176,8 @@ public class LoggerTest {
 
     @Test
     public void flowTracingString_SupplierOfStrings() {
-        final EntryMessage msg = logger.traceEntry(
-                "doFoo(a={}, b={})",
-                new Supplier<String>() {
-                    @Override
-                    public String get() {
-                        return "1";
-                    }
-                },
-                new Supplier<String>() {
-                    @Override
-                    public String get() {
-                        return "2";
-                    }
-                });
+        final EntryMessage msg =
+                logger.traceEntry("doFoo(a={}, b={})", (Supplier<String>) () -> "1", (Supplier<String>) () -> "2");
         logger.traceExit(msg, 3);
         assertThat(results).hasSize(2);
         assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter").contains("doFoo(a=1, b=2)");
@@ -267,7 +238,6 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
     @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void getFormatterLogger() {
         // The TestLogger logger was already created in an instance variable for this class.
@@ -286,7 +256,6 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
     @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void getFormatterLogger_Class() {
         // The TestLogger logger was already created in an instance variable for this class.
@@ -303,12 +272,14 @@ public class LoggerTest {
                 testLogger.getEntries().get(0));
     }
 
-    private static void assertMessageFactoryInstanceOf(final MessageFactory factory, final Class<?> cls) {
+    private static void assertMessageFactoryInstanceOf(MessageFactory factory, final Class<?> cls) {
+        if (factory instanceof MessageFactory2Adapter) {
+            factory = ((MessageFactory2Adapter) factory).getOriginal();
+        }
         assertTrue(factory.getClass().isAssignableFrom(cls));
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
     @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void getFormatterLogger_Object() {
         // The TestLogger logger was already created in an instance variable for this class.
@@ -326,7 +297,6 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
     @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void getFormatterLogger_String() {
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
@@ -343,13 +313,12 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
-    public void getLogger_Class_ReusableMessageFactory() {
+    public void getLogger_Class_ParameterizedMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
-        final MessageFactory messageFactory = new ReusableMessageFactory();
+        final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
         final TestLogger testLogger =
-                (TestLogger) LogManager.getLogger(TestReusableMessageFactory.class, messageFactory);
+                (TestLogger) LogManager.getLogger(TestParameterizedMessageFactory.class, messageFactory);
         assertNotNull(testLogger);
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
@@ -358,7 +327,6 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
     public void getLogger_Class_StringFormatterMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
@@ -374,13 +342,12 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
-    public void getLogger_Object_ReusableMessageFactory() {
+    public void getLogger_Object_ParameterizedMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
-        final MessageFactory messageFactory = new ReusableMessageFactory();
+        final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
         final TestLogger testLogger =
-                (TestLogger) LogManager.getLogger(new TestReusableMessageFactory(), messageFactory);
+                (TestLogger) LogManager.getLogger(new TestParameterizedMessageFactory(), messageFactory);
         assertNotNull(testLogger);
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
@@ -389,12 +356,14 @@ public class LoggerTest {
     }
 
     private void assertEqualMessageFactory(final MessageFactory messageFactory, final TestLogger testLogger) {
-        final MessageFactory actual = testLogger.getMessageFactory();
+        MessageFactory actual = testLogger.getMessageFactory();
+        if (actual instanceof MessageFactory2Adapter) {
+            actual = ((MessageFactory2Adapter) actual).getOriginal();
+        }
         assertEquals(messageFactory, actual);
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
     public void getLogger_Object_StringFormatterMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
@@ -411,7 +380,6 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
     public void getLogger_String_MessageFactoryMismatch() {
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger =
@@ -419,7 +387,7 @@ public class LoggerTest {
         assertNotNull(testLogger);
         assertEqualMessageFactory(messageFactory, testLogger);
         final TestLogger testLogger2 = (TestLogger)
-                LogManager.getLogger("getLogger_String_MessageFactoryMismatch", new ReusableMessageFactory());
+                LogManager.getLogger("getLogger_String_MessageFactoryMismatch", ParameterizedMessageFactory.INSTANCE);
         assertNotNull(testLogger2);
         // TODO: How to test?
         // This test context always creates new loggers, other test context impls I tried fail other tests.
@@ -432,11 +400,10 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
-    public void getLogger_String_ReusableMessageFactory() {
-        final MessageFactory messageFactory = new ReusableMessageFactory();
+    public void getLogger_String_ParameterizedMessageFactory() {
+        final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
         final TestLogger testLogger =
-                (TestLogger) LogManager.getLogger("getLogger_String_ReusableMessageFactory", messageFactory);
+                (TestLogger) LogManager.getLogger("getLogger_String_ParameterizedMessageFactory", messageFactory);
         assertNotNull(testLogger);
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
@@ -445,7 +412,6 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
     public void getLogger_String_SimpleMessageFactory() {
         final SimpleMessageFactory messageFactory = SimpleMessageFactory.INSTANCE;
         final TestLogger testLogger =
@@ -458,7 +424,6 @@ public class LoggerTest {
     }
 
     @Test
-    @ResourceLock("log4j2.TestLogger")
     public void getLogger_String_StringFormatterMessageFactory() {
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger =
@@ -607,7 +572,7 @@ public class LoggerTest {
     @Test
     @UsingThreadContextMap
     public void mdc() {
-        ThreadContext.put("TestYear", Integer.valueOf(2010).toString());
+        ThreadContext.put("TestYear", Integer.toString(2010));
         logger.debug("Debug message");
         final String testYear = ThreadContext.get("TestYear");
         assertNotNull(testYear, "Test Year is null");

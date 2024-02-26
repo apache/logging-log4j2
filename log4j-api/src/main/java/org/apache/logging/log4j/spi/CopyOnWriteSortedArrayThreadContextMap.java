@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_INHERITABLE;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +34,23 @@ import org.apache.logging.log4j.util.StringMap;
  *
  * @since 2.7
  */
-class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ThreadContextMap, CopyOnWrite {
+class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ObjectThreadContextMap, CopyOnWrite {
+
+    /**
+     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
+     * {@code ThreadLocal} (value is not "true") in the implementation.
+     */
+    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
+
+    /**
+     * The default initial capacity.
+     */
+    protected static final int DEFAULT_INITIAL_CAPACITY = 16;
+
+    /**
+     * System property name that can be used to control the data structure's initial capacity.
+     */
+    protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
     private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
 
@@ -47,13 +59,13 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     private final ThreadLocal<StringMap> localMap;
-    protected final int initialCapacity;
+    private final int initialCapacity;
 
     public CopyOnWriteSortedArrayThreadContextMap() {
         this(
-                PropertiesUtil.getProperties().getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE),
+                PropertiesUtil.getProperties().getBooleanProperty(INHERITABLE_MAP),
                 PropertiesUtil.getProperties()
-                        .getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY));
+                        .getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
     CopyOnWriteSortedArrayThreadContextMap(final boolean inheritableMap, final int initialCapacity) {
@@ -61,9 +73,11 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         this.initialCapacity = initialCapacity;
     }
 
+    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
+    // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap(final boolean inheritableMap) {
         if (inheritableMap) {
-            return new InheritableThreadLocal<>() {
+            return new InheritableThreadLocal<StringMap>() {
                 @Override
                 protected StringMap childValue(final StringMap parentValue) {
                     if (parentValue == null) {
@@ -147,13 +161,13 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public String get(final String key) {
-        return getValue(key);
+        return (String) getValue(key);
     }
 
     @Override
     public <V> V getValue(final String key) {
         final StringMap map = localMap.get();
-        return map == null ? null : map.getValue(key);
+        return map == null ? null : map.<V>getValue(key);
     }
 
     @Override

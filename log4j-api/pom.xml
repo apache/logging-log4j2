@@ -52,4 +52,12 @@
 
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.framework</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
 </project>

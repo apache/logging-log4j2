@@ -14,20 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.slf4j;
 
-/**
- * Extended interface to allow bridges between logging systems to convey the
- * correct location information.
- *
- */
-public interface BridgeAware {
+import org.apache.logging.log4j.util.ProviderActivator;
+import org.osgi.annotation.bundle.Header;
 
-    /**
-     * To set fully qualified class name of the entry point to the logging system. This
-     * class will not appear in the location information.
-     *
-     * @param fqcn fully qualified class name
-     */
-    void setEntryPoint(final String fqcn);
+@Header(name = org.osgi.framework.Constants.BUNDLE_ACTIVATOR, value = "${@class}")
+@Header(
+        name = org.osgi.framework.Constants.BUNDLE_ACTIVATIONPOLICY,
+        value = org.osgi.framework.Constants.ACTIVATION_LAZY)
+public class Activator extends ProviderActivator {
+
+    public Activator() {
+        super(new SLF4JProvider());
+    }
 }

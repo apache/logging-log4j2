@@ -23,7 +23,6 @@ import org.apache.logging.log4j.spi.LoggingSystemProperty;
  *
  * @since 2.6.2
  */
-@InternalApi
 public final class Constants {
 
     private static final LazyBoolean isWebApp = new LazyBoolean(() -> PropertiesUtil.getProperties()
@@ -37,6 +36,11 @@ public final class Constants {
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
      */
+    public static final boolean IS_WEB_APP = PropertiesUtil.getProperties()
+            .getBooleanProperty(
+                    "log4j2.is.webapp",
+                    isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet"));
+
     public static boolean isWebApp() {
         return isWebApp.getAsBoolean();
     }
@@ -49,6 +53,19 @@ public final class Constants {
         isWebApp.reset();
     }
 
+    /**
+     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
+     * <p>
+     * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
+     * "log4j2.enable.threadlocals" to "false".
+     * </p>
+     */
+    public static final boolean ENABLE_THREADLOCALS =
+            !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty("log4j2.enable.threadlocals", true);
+
+    /**
+     * Java major version.
+     */
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 
     /**
@@ -56,15 +73,39 @@ public final class Constants {
      * After a large message has been delivered to the appenders, the StringBuilder is trimmed to this size.
      * <p>
      * The default value is 518, which allows the StringBuilder to resize three times from its initial size.
-     * Users can override with system property {@link LoggingSystemProperty#GC_REUSABLE_MESSAGE_MAX_SIZE}.
+     * Users can override with system property "log4j.maxReusableMsgSize".
      * </p>
      * @since 2.9
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE =
-            size(LoggingSystemProperty.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
 
-    private static int size(final PropertyKey property, final int defaultValue) {
+    /**
+     * Name of the system property that will turn on TRACE level internal log4j2 status logging.
+     * <p>
+     * If system property {@value} is either defined empty or its value equals to {@code true} (ignoring case), all internal log4j2 logging will be
+     * printed to the console. The presence of this system property overrides any value set in the configuration's
+     * {@code <Configuration status="<level>" ...>} status attribute, as well as any value set for
+     * system property {@code org.apache.logging.log4j.simplelog.StatusLogger.level}.
+     * </p>
+     */
+    public static final String LOG4J2_DEBUG = "log4j2.debug";
+
+    private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    }
+
+    /**
+     * Determines if a named Class can be loaded or not.
+     *
+     * @param className The class name.
+     * @return {@code true} if the class could be found or {@code false} otherwise.
+     */
+    private static boolean isClassAvailable(final String className) {
+        try {
+            return LoaderUtil.loadClass(className) != null;
+        } catch (final Throwable e) {
+            return false;
+        }
     }
 
     /**

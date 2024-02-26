@@ -16,49 +16,51 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
-
 /**
- * Provides an abstract superclass for {@link MessageFactory2} implementations with default implementations (and for
- * {@link MessageFactory} by extension).
+ * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
+ * extension.)
+ * <p>
+ * Enables the use of <code>{}</code> parameter markers in message strings.
+ * </p>
+ * <p>
+ * Creates {@link ParameterizedMessage} instances for {@link #newMessage(String, Object...)}.
+ * </p>
  * <p>
  * This class is immutable.
  * </p>
+ *
  * <p>
  * <strong>Note to implementors:</strong>
  * </p>
  * <p>
- * Subclasses can implement the {@link MessageFactory2} methods when they can most effectively build {@link Message}
- * instances. If a subclass does not implement {@link MessageFactory2} methods, these calls are routed through
- * {@link #newMessage(String, Object...)} in this class.
+ * This class implements all {@link MessageFactory2} methods.
  * </p>
  */
-public abstract class AbstractMessageFactory implements MessageFactory2, Serializable {
-    private static final long serialVersionUID = -1307891137684031187L;
+public final class ParameterizedMessageFactory extends AbstractMessageFactory {
+    /**
+     * Instance of ParameterizedMessageFactory.
+     */
+    public static final ParameterizedMessageFactory INSTANCE = new ParameterizedMessageFactory();
 
-    @Override
-    public Message newMessage(final CharSequence message) {
-        return new SimpleMessage(message);
-    }
+    private static final long serialVersionUID = -8970940216592525651L;
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Constructs a message factory.
+     */
+    public ParameterizedMessageFactory() {}
+
+    /**
+     * Creates {@link ParameterizedMessage} instances.
      *
-     * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.Object)
+     * @param message The message pattern.
+     * @param params The message parameters.
+     * @return The Message.
+     *
+     * @see MessageFactory#newMessage(String, Object...)
      */
     @Override
-    public Message newMessage(final Object message) {
-        return new ObjectMessage(message);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.String)
-     */
-    @Override
-    public Message newMessage(final String message) {
-        return new SimpleMessage(message);
+    public Message newMessage(final String message, final Object... params) {
+        return new ParameterizedMessage(message, params);
     }
 
     /**
@@ -66,7 +68,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message, final Object p0) {
-        return newMessage(message, new Object[] {p0});
+        return new ParameterizedMessage(message, p0);
     }
 
     /**
@@ -74,7 +76,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1) {
-        return newMessage(message, new Object[] {p0, p1});
+        return new ParameterizedMessage(message, p0, p1);
     }
 
     /**
@@ -82,7 +84,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
-        return newMessage(message, new Object[] {p0, p1, p2});
+        return new ParameterizedMessage(message, p0, p1, p2);
     }
 
     /**
@@ -91,7 +93,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
     @Override
     public Message newMessage(
             final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-        return newMessage(message, new Object[] {p0, p1, p2, p3});
+        return new ParameterizedMessage(message, p0, p1, p2, p3);
     }
 
     /**
@@ -100,7 +102,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
     @Override
     public Message newMessage(
             final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-        return newMessage(message, new Object[] {p0, p1, p2, p3, p4});
+        return new ParameterizedMessage(message, p0, p1, p2, p3, p4);
     }
 
     /**
@@ -115,7 +117,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
             final Object p3,
             final Object p4,
             final Object p5) {
-        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5});
+        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5);
     }
 
     /**
@@ -131,7 +133,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
             final Object p4,
             final Object p5,
             final Object p6) {
-        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5, p6});
+        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     /**
@@ -148,7 +150,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
             final Object p5,
             final Object p6,
             final Object p7) {
-        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7});
+        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     /**
@@ -166,7 +168,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
             final Object p6,
             final Object p7,
             final Object p8) {
-        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7, p8});
+        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     /**
@@ -185,6 +187,6 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
             final Object p7,
             final Object p8,
             final Object p9) {
-        return newMessage(message, new Object[] {p0, p1, p2, p3, p4, p5, p6, p7, p8, p9});
+        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 }

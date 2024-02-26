@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -41,9 +40,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
-import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,6 +53,7 @@ import org.slf4j.MDC;
 @LoggerContextSource
 public class LoggerTest {
 
+    private static final Object OBJ = new Object();
     // Log4j objects
     private Logger logger;
     // Logback objects
@@ -80,8 +81,22 @@ public class LoggerTest {
     }
 
     @Test
+    public void basicFlowDepreacted() {
+        logger.entry();
+        logger.exit();
+        assertThat(list.strList, hasSize(2));
+    }
+
+    @Test
+    public void simpleFlowDeprecated() {
+        logger.entry(OBJ);
+        logger.exit(0);
+        assertThat(list.strList, hasSize(2));
+    }
+
+    @Test
     public void simpleFlow() {
-        logger.traceEntry("foo");
+        logger.entry(OBJ);
         logger.traceExit(0);
         assertThat(list.strList, hasSize(2));
     }
@@ -113,7 +128,7 @@ public class LoggerTest {
         final Logger testLogger = testMessageFactoryMismatch(
                 "getLogger_String_MessageFactoryMismatch",
                 StringFormatterMessageFactory.INSTANCE,
-                new ReusableMessageFactory());
+                ParameterizedMessageFactory.INSTANCE);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertThat(list.strList, hasSize(1));
         assertThat(list.strList, hasItem(String.format("%,d", Integer.MAX_VALUE)));
@@ -138,12 +153,17 @@ public class LoggerTest {
         return testLogger;
     }
 
-    private static void checkMessageFactory(final MessageFactory messageFactory, final Logger testLogger) {
-        if (messageFactory == null) {
-            assertSame(LoggingSystem.getMessageFactory(), testLogger.getMessageFactory());
+    private static void checkMessageFactory(final MessageFactory messageFactory1, final Logger testLogger1) {
+        if (messageFactory1 == null) {
+            assertEquals(
+                    AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS,
+                    testLogger1.getMessageFactory().getClass());
         } else {
-            final MessageFactory actual = testLogger.getMessageFactory();
-            assertEquals(messageFactory, actual);
+            MessageFactory actual = testLogger1.getMessageFactory();
+            if (actual instanceof MessageFactory2Adapter) {
+                actual = ((MessageFactory2Adapter) actual).getOriginal();
+            }
+            assertEquals(messageFactory1, actual);
         }
     }
 

@@ -19,6 +19,7 @@ package org.apache.logging.log4j;
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 import aQute.bnd.annotation.baseline.BaselineIgnore;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -27,8 +28,9 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
+ * <p>
  * <table>
- * <caption>Levels</caption>
+ * <caption>Level names with description</caption>
  * <tr>
  * <th>Name</th>
  * <th>Description</th>
@@ -66,14 +68,15 @@ import org.apache.logging.log4j.util.Strings;
  * <td>All events should be logged.</td>
  * </tr>
  * </table>
+ * </p>
  * <p>
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those that are
  * more specific to pass through the filter. A special level, {@link #ALL}, is guaranteed to capture all levels when
  * used in logging configurations.
  * </p>
  */
-@BaselineIgnore("3.0.0")
-public final class Level implements Comparable<Level> {
+@BaselineIgnore("2.22.0")
+public final class Level implements Comparable<Level>, Serializable {
 
     private static final Level[] EMPTY_ARRAY = {};
 
@@ -119,14 +122,14 @@ public final class Level implements Comparable<Level> {
      */
     public static final Level ALL = new Level("ALL", StandardLevel.ALL.intLevel());
 
-    public static final String NAMESPACE = "Level";
-
     /**
      * Category to be used by custom levels.
      *
      * @since 2.1
      */
-    public static final String CATEGORY = NAMESPACE;
+    public static final String CATEGORY = "Level";
+
+    private static final long serialVersionUID = 1581082L;
 
     private final String name;
     private final int intLevel;
@@ -171,7 +174,7 @@ public final class Level implements Comparable<Level> {
      *
      * @param minLevel The minimum level to test.
      * @param maxLevel The maximum level to test.
-     * @return true if this level is in between the given levels
+     * @return True true if this level is in between the given levels
      * @since 2.4
      */
     public boolean isInRange(final Level minLevel, final Level maxLevel) {
@@ -190,7 +193,7 @@ public final class Level implements Comparable<Level> {
      *
      * @param level
      *            The level to test.
-     * @return True if this Level is less specific or the same as the given Level.
+     * @return True if this level Level is less specific or the same as the given Level.
      */
     public boolean isLessSpecificThan(final Level level) {
         return this.intLevel >= level.intLevel;
@@ -206,7 +209,7 @@ public final class Level implements Comparable<Level> {
      * </p>
      *
      * @param level The level to test.
-     * @return True if this Level is more specific or the same as the given Level.
+     * @return True if this level Level is more specific or the same as the given Level.
      */
     public boolean isMoreSpecificThan(final Level level) {
         return this.intLevel <= level.intLevel;
@@ -222,12 +225,12 @@ public final class Level implements Comparable<Level> {
 
     @Override
     public int compareTo(final Level other) {
-        return Integer.compare(intLevel, other.intLevel);
+        return intLevel < other.intLevel ? -1 : (intLevel > other.intLevel ? 1 : 0);
     }
 
     @Override
     public boolean equals(final Object other) {
-        return other == this;
+        return other instanceof Level && other == this;
     }
 
     public Class<Level> getDeclaringClass() {
@@ -362,5 +365,10 @@ public final class Level implements Comparable<Level> {
      */
     public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name) {
         return Enum.valueOf(enumType, name);
+    }
+
+    // for deserialization
+    private Object readResolve() {
+        return Level.valueOf(this.name);
     }
 }

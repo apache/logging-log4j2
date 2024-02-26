@@ -16,13 +16,37 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.Map;
+import org.apache.logging.log4j.util.StringMap;
+
 /**
- * Legacy interface for backward compatibility with extensions to ThreadContextMap.
- * These methods have since been moved to default methods on ThreadContextMap.
+ * Extension service provider interface to implement additional custom MDC behavior for
+ * {@link org.apache.logging.log4j.ThreadContext}.
+ *
+ * Consider implementing {@link CleanableThreadContextMap} instead.
  *
  * @see ThreadContextMap
  * @since 2.7
- * @deprecated use {@link ThreadContextMap} directly
  */
-@Deprecated(forRemoval = true, since = "3.0")
-public interface ThreadContextMap2 extends ThreadContextMap {}
+public interface ThreadContextMap2 extends ThreadContextMap {
+
+    /**
+     * Puts all given context map entries into the current thread's
+     * context map.
+     *
+     * <p>If the current thread does not have a context map it is
+     * created as a side effect.</p>
+     * @param map The map.
+     * @since 2.7
+     */
+    void putAll(final Map<String, String> map);
+
+    /**
+     * Returns the context data for reading. Note that regardless of whether the returned context data has been
+     * {@linkplain StringMap#freeze() frozen} (made read-only) or not, callers should not attempt to modify
+     * the returned data structure.
+     *
+     * @return the {@code StringMap}
+     */
+    StringMap getReadOnlyContextData();
+}

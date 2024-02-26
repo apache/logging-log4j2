@@ -20,12 +20,13 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
 
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
@@ -40,17 +41,43 @@ public final class LoaderUtil {
 
     private static final ClassLoader[] EMPTY_CLASS_LOADER_ARRAY = {};
 
+    /**
+     * System property to set to ignore the thread context ClassLoader.
+     *
+     * @since 2.1
+     */
+    public static final String IGNORE_TCCL_PROPERTY = "log4j.ignoreTCL";
+
     // this variable must be lazily loaded; otherwise, we get a nice circular class loading problem where LoaderUtil
     // wants to use PropertiesUtil, but then PropertiesUtil wants to use LoaderUtil.
     private static Boolean ignoreTCCL;
     static Boolean forceTcclOnly;
 
-    static {
-        if (System.getSecurityManager() != null) {
-            LowLevelLogUtil.log(
-                    "A custom SecurityManager was detected; Log4j no longer supports security permissions.");
+    static final RuntimePermission GET_CLASS_LOADER = new RuntimePermission("getClassLoader");
+    static final LazyBoolean GET_CLASS_LOADER_DISABLED = new LazyBoolean(() -> {
+        if (System.getSecurityManager() == null) {
+            return false;
         }
-    }
+        try {
+            AccessController.checkPermission(GET_CLASS_LOADER);
+            // seems like we'll be ok
+            return false;
+        } catch (final SecurityException ignored) {
+            try {
+                // let's see if we can obtain that permission
+                AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                    AccessController.checkPermission(GET_CLASS_LOADER);
+                    return null;
+                });
+                return false;
+            } catch (final SecurityException ignore) {
+                // no chance
+                return true;
+            }
+        }
+    });
+
+    private static final PrivilegedAction<ClassLoader> TCCL_GETTER = new ThreadContextClassLoaderGetter();
 
     private LoaderUtil() {}
 
@@ -65,13 +92,18 @@ public final class LoaderUtil {
 
     // TODO: this method could use some explanation
     public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
-        final ClassLoader loader1 = class1 == null ? null : class1.getClassLoader();
-        final ClassLoader loader2 = class2 == null ? null : class2.getClassLoader();
-        final ClassLoader referenceLoader = Thread.currentThread().getContextClassLoader();
-        if (isChild(referenceLoader, loader1)) {
-            return isChild(referenceLoader, loader2) ? referenceLoader : loader2;
-        }
-        return isChild(loader1, loader2) ? loader1 : loader2;
+        PrivilegedAction<ClassLoader> action = () -> {
+            final ClassLoader loader1 = class1 == null ? null : class1.getClassLoader();
+            final ClassLoader loader2 = class2 == null ? null : class2.getClassLoader();
+            final ClassLoader referenceLoader = GET_CLASS_LOADER_DISABLED.getAsBoolean()
+                    ? getThisClassLoader()
+                    : Thread.currentThread().getContextClassLoader();
+            if (isChild(referenceLoader, loader1)) {
+                return isChild(referenceLoader, loader2) ? referenceLoader : loader2;
+            }
+            return isChild(loader1, loader2) ? loader1 : loader2;
+        };
+        return runPrivileged(action);
     }
 
     /**
@@ -95,22 +127,45 @@ public final class LoaderUtil {
     }
 
     /**
-     * Looks up the ClassLoader for this current thread falling back to either the
+     * Looks up the ClassLoader for this current thread. If this class does not have the runtime permission
+     * {@code getClassLoader}, then the only ClassLoader this attempts to look up is the loader behind this
+     * class. When a SecurityManager is installed, this attempts to make a privileged call to get the current
+     * {@linkplain Thread#getContextClassLoader() thread context ClassLoader}, falling back to either the
      * ClassLoader of this class or the {@linkplain ClassLoader#getSystemClassLoader() system ClassLoader}.
+     * When no SecurityManager is present, the same lookups are performed without use of {@link AccessController}.
      * If none of these strategies can obtain a ClassLoader, then this returns {@code null}.
      *
      * @return the current thread's ClassLoader, a fallback loader, or null if no fallback can be determined
      */
     public static ClassLoader getThreadContextClassLoader() {
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        if (contextClassLoader != null) {
-            return contextClassLoader;
+        try {
+            return GET_CLASS_LOADER_DISABLED.getAsBoolean() ? getThisClassLoader() : runPrivileged(TCCL_GETTER);
+        } catch (final SecurityException ignored) {
+            return null;
         }
-        final ClassLoader thisClassLoader = getThisClassLoader();
-        if (thisClassLoader != null) {
-            return thisClassLoader;
+    }
+
+    private static ClassLoader getThisClassLoader() {
+        return LoaderUtil.class.getClassLoader();
+    }
+
+    private static <T> T runPrivileged(final PrivilegedAction<T> action) {
+        return System.getSecurityManager() != null ? AccessController.doPrivileged(action) : action.run();
+    }
+
+    private static class ThreadContextClassLoaderGetter implements PrivilegedAction<ClassLoader> {
+        @Override
+        public ClassLoader run() {
+            final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+            if (contextClassLoader != null) {
+                return contextClassLoader;
+            }
+            final ClassLoader thisClassLoader = getThisClassLoader();
+            if (thisClassLoader != null || GET_CLASS_LOADER_DISABLED.getAsBoolean()) {
+                return thisClassLoader;
+            }
+            return ClassLoader.getSystemClassLoader();
         }
-        return ClassLoader.getSystemClassLoader();
     }
 
     public static ClassLoader[] getClassLoaders() {
@@ -140,10 +195,6 @@ public final class LoaderUtil {
         return classLoaders.toArray(EMPTY_CLASS_LOADER_ARRAY);
     }
 
-    private static ClassLoader getThisClassLoader() {
-        return LoaderUtil.class.getClassLoader();
-    }
-
     private static void accumulateLayerClassLoaders(
             final ModuleLayer layer, final Collection<ClassLoader> classLoaders) {
         for (final Module module : layer.modules()) {
@@ -157,8 +208,8 @@ public final class LoaderUtil {
     }
 
     /**
-     * Adds the provided loader to the loaders collection, and traverses up the tree until either a null
-     * value or a classloader which has already been added is encountered.
+     * Adds the provided loader to the loaders collection, and traverses up the tree until either a null value or a
+     * classloader which has already been added is encountered.
      */
     private static void accumulateClassLoaders(final ClassLoader loader, final Collection<ClassLoader> loaders) {
         // Some implementations may use null to represent the bootstrap class loader.
@@ -180,16 +231,15 @@ public final class LoaderUtil {
             return true;
         } catch (final ClassNotFoundException | LinkageError e) {
             return false;
-        } catch (final Throwable e) {
-            LowLevelLogUtil.logException("Unknown error checking for existence of class: " + className, e);
+        } catch (final Throwable error) {
+            // LOGGER.error("Unknown error while checking existence of class `{}`", className, error);
             return false;
         }
     }
 
     /**
-     * Loads and initializes a class given its fully qualified class name. This method respects the
-     * {@link LoggingSystemProperty#LOADER_IGNORE_THREAD_CONTEXT_LOADER} Log4j property. If this property is specified
-     * and set to anything besides {@code false}, then this class's ClassLoader will be used.
+     * Loads a class by name. This method respects the {@link #IGNORE_TCCL_PROPERTY} Log4j property. If this property is
+     * specified and set to anything besides {@code false}, then the default ClassLoader will be used.
      *
      * @param className fully qualified class name to load
      * @return the loaded class
@@ -310,6 +360,58 @@ public final class LoaderUtil {
     /**
      * Loads and instantiates a class given by a property name.
      *
+     * @param propertyName The property name to look up a class name for.
+     * @param clazz        The class to cast it to.
+     * @param <T>          The type to cast it to.
+     * @return new instance of the class given in the property or {@code null} if the property was unset.
+     * @throws ClassNotFoundException      if the class isn't available to the usual ClassLoaders
+     * @throws ExceptionInInitializerError if an exception was thrown while initializing the class
+     * @throws LinkageError                if the linkage of the class fails for any other reason
+     * @throws ClassCastException          if the class is not compatible with the generic type parameter provided
+     * @throws NoSuchMethodException       if no zero-arg constructor exists
+     * @throws SecurityException           if this class is not allowed to access declared members of the provided class
+     * @throws IllegalAccessException      if the class can't be instantiated through a public constructor
+     * @throws InstantiationException      if the provided class is abstract or an interface
+     * @throws InvocationTargetException   if an exception is thrown by the constructor
+     * @since 2.5
+     */
+    public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
+            throws ReflectiveOperationException {
+        return newCheckedInstanceOfProperty(propertyName, clazz, () -> null);
+    }
+
+    /**
+     * Loads and instantiates a class given by a property name.
+     *
+     * @param propertyName    The property name to look up a class name for.
+     * @param clazz           The class to cast it to.
+     * @param defaultSupplier Supplier of a default value if the property is not present.
+     * @param <T>             The type to cast it to.
+     * @return new instance of the class given in the property or {@code null} if the property was unset.
+     * @throws ClassNotFoundException      if the class isn't available to the usual ClassLoaders
+     * @throws ExceptionInInitializerError if an exception was thrown while initializing the class
+     * @throws LinkageError                if the linkage of the class fails for any other reason
+     * @throws ClassCastException          if the class is not compatible with the generic type parameter provided
+     * @throws NoSuchMethodException       if no zero-arg constructor exists
+     * @throws SecurityException           if this class is not allowed to access declared members of the provided class
+     * @throws IllegalAccessException      if the class can't be instantiated through a public constructor
+     * @throws InstantiationException      if the provided class is abstract or an interface
+     * @throws InvocationTargetException   if an exception is thrown by the constructor
+     * @since 2.22
+     */
+    public static <T> T newCheckedInstanceOfProperty(
+            final String propertyName, final Class<T> clazz, final Supplier<T> defaultSupplier)
+            throws ReflectiveOperationException {
+        final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
+        if (className == null) {
+            return defaultSupplier.get();
+        }
+        return newCheckedInstanceOf(className, clazz);
+    }
+
+    /**
+     * Loads and instantiates a class given by a property name.
+     *
      * @param propertyKey The property name to look up a class name for.
      * @param clazz        The class to cast it to.
      * @param defaultSupplier Supplier of a default value if the property is not present.
@@ -410,8 +512,7 @@ public final class LoaderUtil {
     private static boolean isIgnoreTccl() {
         // we need to lazily initialize this, but concurrent access is not an issue
         if (ignoreTCCL == null) {
-            final String ignoreTccl = PropertiesUtil.getProperties()
-                    .getStringProperty(LoggingSystemProperty.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null);
+            final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(IGNORE_TCCL_PROPERTY, null);
             ignoreTCCL = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim());
         }
         return ignoreTCCL;
@@ -420,7 +521,7 @@ public final class LoaderUtil {
     private static boolean isForceTccl() {
         if (forceTcclOnly == null) {
             // PropertiesUtil.getProperties() uses that code path so don't use that!
-            forceTcclOnly = Boolean.getBoolean(LoggingSystemProperty.LOADER_FORCE_THREAD_CONTEXT_LOADER.getSystemKey());
+            forceTcclOnly = Boolean.getBoolean("log4j2.Loader.forceTCLOnly");
         }
         return forceTcclOnly;
     }
@@ -433,7 +534,11 @@ public final class LoaderUtil {
      * @since 2.1
      */
     public static Collection<URL> findResources(final String resource) {
-        final Collection<UrlResource> urlResources = findUrlResources(resource);
+        return findResources(resource, true);
+    }
+
+    static Collection<URL> findResources(final String resource, final boolean useTccl) {
+        final Collection<UrlResource> urlResources = findUrlResources(resource, useTccl);
         final Collection<URL> resources = new LinkedHashSet<>(urlResources.size());
         for (final UrlResource urlResource : urlResources) {
             resources.add(urlResource.getUrl());
@@ -441,25 +546,24 @@ public final class LoaderUtil {
         return resources;
     }
 
-    /**
-     * This method will only find resources that follow the JPMS rules for encapsulation. Resources
-     * on the class path should be found as normal along with resources with no package name in all
-     * modules. Resources within packages in modules must declare those resources open to org.apache.logging.log4j.
-     *
-     * @param resource The resource to locate.
-     * @return The located resources.
-     */
-    public static Collection<UrlResource> findUrlResources(final String resource) {
+    public static Collection<UrlResource> findUrlResources(final String resource, final boolean useTccl) {
+        // @formatter:off
+        final ClassLoader[] candidates = {
+            useTccl ? getThreadContextClassLoader() : null,
+            LoaderUtil.class.getClassLoader(),
+            GET_CLASS_LOADER_DISABLED.getAsBoolean() ? null : ClassLoader.getSystemClassLoader()
+        };
+        // @formatter:on
         final Collection<UrlResource> resources = new LinkedHashSet<>();
-        for (final ClassLoader cl : getClassLoaders()) {
+        for (final ClassLoader cl : candidates) {
             if (cl != null) {
                 try {
                     final Enumeration<URL> resourceEnum = cl.getResources(resource);
                     while (resourceEnum.hasMoreElements()) {
                         resources.add(new UrlResource(cl, resourceEnum.nextElement()));
                     }
-                } catch (final IOException e) {
-                    LowLevelLogUtil.logException(e);
+                } catch (final IOException error) {
+                    // LOGGER.error("failed to collect resources of name `{}`", resource, error);
                 }
             }
         }

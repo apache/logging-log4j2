@@ -16,28 +16,31 @@
  */
 package org.apache.logging.log4j;
 
-import aQute.bnd.annotation.baseline.BaselineIgnore;
+import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.NoSuchElementException;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
+import org.apache.logging.log4j.spi.CleanableThreadContextMap;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.DefaultThreadContextStack;
+import org.apache.logging.log4j.spi.NoOpThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap2;
+import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.util.InternalApi;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * The ThreadContext allows applications to store information either in a Map or a Stack.
  * <p>
  * <b><em>The MDC is managed on a per thread basis</em></b>. To enable automatic inheritance of <i>copies</i> of the MDC
- * to newly created threads, enable the {@link LoggingSystemProperty#THREAD_CONTEXT_MAP_INHERITABLE}
+ * to newly created threads, enable the {@value org.apache.logging.log4j.spi.DefaultThreadContextMap#INHERITABLE_MAP}
  * Log4j system property.
  * </p>
  * @see <a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">Thread Context Manual</a>
@@ -49,14 +52,18 @@ public final class ThreadContext {
      */
     private static class EmptyThreadContextStack extends AbstractCollection<String> implements ThreadContextStack {
 
+        private static final long serialVersionUID = 1L;
+
+        private static final Iterator<String> EMPTY_ITERATOR = new EmptyIterator<>();
+
         @Override
         public String pop() {
-            return Strings.EMPTY;
+            return null;
         }
 
         @Override
         public String peek() {
-            return Strings.EMPTY;
+            return null;
         }
 
         @Override
@@ -128,7 +135,7 @@ public final class ThreadContext {
 
         @Override
         public Iterator<String> iterator() {
-            return Collections.emptyIterator();
+            return EMPTY_ITERATOR;
         }
 
         @Override
@@ -139,6 +146,29 @@ public final class ThreadContext {
         @Override
         public ContextStack getImmutableStackOrNull() {
             return this;
+        }
+    }
+
+    /**
+     * An empty iterator. Since Java 1.7 added the Collections.emptyIterator() method, we have to make do.
+     *
+     * @param <E> the type of the empty iterator
+     */
+    private static class EmptyIterator<E> implements Iterator<E> {
+
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public E next() {
+            throw new NoSuchElementException("This is an empty iterator!");
+        }
+
+        @Override
+        public void remove() {
+            // no-op
         }
     }
 
@@ -157,6 +187,11 @@ public final class ThreadContext {
     @SuppressWarnings("PublicStaticCollectionField")
     public static final ThreadContextStack EMPTY_STACK = new EmptyThreadContextStack();
 
+    private static final String DISABLE_MAP = "log4j2.disableThreadContextMap";
+    private static final String DISABLE_STACK = "log4j2.disableThreadContextStack";
+    private static final String DISABLE_ALL = "log4j2.disableThreadContext";
+
+    private static boolean useStack;
     private static ThreadContextMap contextMap;
     private static ThreadContextStack contextStack;
     private static ReadOnlyThreadContextMap readOnlyContextMap;
@@ -172,10 +207,20 @@ public final class ThreadContext {
     /**
      * <em>Consider private, used for testing.</em>
      */
-    @InternalApi
     public static void init() {
-        contextMap = LoggingSystem.createContextMap();
-        contextStack = LoggingSystem.createContextStack();
+        ThreadContextMapFactory.init();
+        contextMap = null;
+        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
+        final boolean disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
+        useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || disableAll);
+        final boolean useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
+
+        contextStack = new DefaultThreadContextStack(useStack);
+        if (!useMap) {
+            contextMap = new NoOpThreadContextMap();
+        } else {
+            contextMap = ThreadContextMapFactory.createThreadContextMap();
+        }
         if (contextMap instanceof ReadOnlyThreadContextMap) {
             readOnlyContextMap = (ReadOnlyThreadContextMap) contextMap;
         } else {
@@ -226,7 +271,15 @@ public final class ThreadContext {
      * @since 2.7
      */
     public static void putAll(final Map<String, String> m) {
-        contextMap.putAll(m);
+        if (contextMap instanceof ThreadContextMap2) {
+            ((ThreadContextMap2) contextMap).putAll(m);
+        } else if (contextMap instanceof DefaultThreadContextMap) {
+            ((DefaultThreadContextMap) contextMap).putAll(m);
+        } else {
+            for (final Map.Entry<String, String> entry : m.entrySet()) {
+                contextMap.put(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     /**
@@ -260,7 +313,15 @@ public final class ThreadContext {
      * @since 2.8
      */
     public static void removeAll(final Iterable<String> keys) {
-        contextMap.removeAll(keys);
+        if (contextMap instanceof CleanableThreadContextMap) {
+            ((CleanableThreadContextMap) contextMap).removeAll(keys);
+        } else if (contextMap instanceof DefaultThreadContextMap) {
+            ((DefaultThreadContextMap) contextMap).removeAll(keys);
+        } else {
+            for (final String key : keys) {
+                contextMap.remove(key);
+            }
+        }
     }
 
     /**
@@ -311,8 +372,16 @@ public final class ThreadContext {
      * Returns a read-only view of the internal data structure used to store thread context key-value pairs,
      * or {@code null} if the internal data structure does not implement the
      * {@code ReadOnlyThreadContextMap} interface.
+     * <p>
+     * The {@link DefaultThreadContextMap} implementation does not implement {@code ReadOnlyThreadContextMap}, so by
+     * default this method returns {@code null}.
+     * </p>
      *
      * @return the internal data structure used to store thread context key-value pairs or {@code null}
+     * @see ThreadContextMapFactory
+     * @see DefaultThreadContextMap
+     * @see org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap
+     * @see org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap
      * @since 2.8
      */
     public static ReadOnlyThreadContextMap getThreadContextMap() {
@@ -358,11 +427,9 @@ public final class ThreadContext {
      * Sets this thread's stack.
      *
      * @param stack The stack to use.
-     * @throws NullPointerException if stack is null
      */
     public static void setStack(final Collection<String> stack) {
-        Objects.requireNonNull(stack, "No stack provided");
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || !useStack) {
             return;
         }
         contextStack.clear();
@@ -416,7 +483,6 @@ public final class ThreadContext {
      * </p>
      *
      * @param message The new diagnostic context information.
-     * @throws UnsupportedOperationException if the context stack is disabled
      */
     public static void push(final String message) {
         contextStack.push(message);
@@ -433,7 +499,6 @@ public final class ThreadContext {
      *
      * @param message The new diagnostic context information.
      * @param args Parameters for the message.
-     * @throws UnsupportedOperationException if the context stack is disabled
      */
     public static void push(final String message, final Object... args) {
         contextStack.push(ParameterizedMessage.format(message, args));
@@ -490,7 +555,6 @@ public final class ThreadContext {
      *
      * @see #getDepth
      * @param depth The number of elements to keep.
-     * @throws IllegalArgumentException if depth is negative
      */
     public static void trim(final int depth) {
         contextStack.trim(depth);
@@ -499,20 +563,20 @@ public final class ThreadContext {
     /**
      * The ThreadContext Stack interface.
      */
-    @BaselineIgnore("3.0.0")
-    public interface ContextStack extends Collection<String> {
+    public interface ContextStack extends Serializable, Collection<String> {
 
         /**
-         * Returns the element at the top of the stack. If the stack is empty, then the empty string is returned.
+         * Returns the element at the top of the stack.
          *
          * @return The element at the top of the stack.
+         * @throws java.util.NoSuchElementException if the stack is empty.
          */
         String pop();
 
         /**
-         * Returns the element at the top of the stack without removing it or the empty string if the stack is empty.
+         * Returns the element at the top of the stack without removing it or null if the stack is empty.
          *
-         * @return the element at the top of the stack or the empty string if the stack is empty.
+         * @return the element at the top of the stack or null if the stack is empty.
          */
         String peek();
 
@@ -520,8 +584,6 @@ public final class ThreadContext {
          * Pushes an element onto the stack.
          *
          * @param message The element to add.
-         * @throws NullPointerException if message is null
-         * @throws UnsupportedOperationException if the context stack is disabled
          */
         void push(String message);
 
@@ -543,7 +605,6 @@ public final class ThreadContext {
          * Trims elements from the end of the stack.
          *
          * @param depth The maximum number of items in the stack to keep.
-         * @throws IllegalArgumentException if depth is negative
          */
         void trim(int depth);
 

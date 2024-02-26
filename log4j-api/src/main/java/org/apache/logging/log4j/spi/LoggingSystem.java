@@ -70,7 +70,7 @@ public class LoggingSystem {
     private static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
 
     private static final String API_VERSION = "Log4jAPIVersion";
-    private static final String[] COMPATIBLE_API_VERSIONS = {"3.0.0"};
+    private static final String[] COMPATIBLE_API_VERSIONS = {"2.6.0", "3.0.0"};
 
     public static final int THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY = 16;
 
@@ -202,7 +202,7 @@ public class LoggingSystem {
     }
 
     private static List<Provider> loadLegacyProviders() {
-        return LoaderUtil.findUrlResources(PROVIDER_RESOURCE).stream()
+        return LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false).stream()
                 .map(urlResource -> loadLegacyProvider(urlResource.getUrl(), urlResource.getClassLoader()))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

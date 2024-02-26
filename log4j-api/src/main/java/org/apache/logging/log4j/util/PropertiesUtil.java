@@ -51,7 +51,7 @@ import org.apache.logging.log4j.internal.CopyOnWriteNavigableSet;
  * <p>
  * Provides utility methods for managing {@link Properties} instances as well as access to the global configuration
  * system. Properties by default are loaded from the system properties, system environment, and a classpath resource
- * file named {@value #LOG4J_SYSTEM_PROPERTIES_FILE_NAME}. Additional properties can be loaded by implementing a custom
+ * file named {@value #LOG4J_PROPERTIES_FILE_NAME}. Additional properties can be loaded by implementing a custom
  * {@link PropertySource} service and specifying it via a {@link ServiceLoader} file called
  * {@code META-INF/services/org.apache.logging.log4j.util.PropertySource} with a list of fully qualified class names
  * implementing that interface.
@@ -63,6 +63,7 @@ import org.apache.logging.log4j.internal.CopyOnWriteNavigableSet;
 @ServiceConsumer(value = PropertySource.class, cardinality = Cardinality.MULTIPLE)
 public class PropertiesUtil implements PropertyEnvironment {
 
+    private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
     private static final String LOG4J_NAMESPACE = "component";
     private static final String LOG4J_CONTEXT_PREFIX = "log4j2.context.";
     private static final String DELIMITER = ".";
@@ -144,6 +145,31 @@ public class PropertiesUtil implements PropertyEnvironment {
 
     private PropertiesUtil(final String contextName, final List<PropertySource> sources) {
         this.environment = new Environment(contextName, sources);
+    }
+
+    /**
+     * Loads and closes the given property input stream. If an error occurs, log to the status logger.
+     *
+     * @param in     a property input stream.
+     * @param source a source object describing the source, like a resource string or a URL.
+     * @return a new Properties object
+     */
+    static Properties loadClose(final InputStream in, final Object source) {
+        final Properties props = new Properties();
+        if (null != in) {
+            try {
+                props.load(in);
+            } catch (final IOException error) {
+                // LOGGER.error("Unable to read source `{}`", source, error);
+            } finally {
+                try {
+                    in.close();
+                } catch (final IOException error) {
+                    // LOGGER.error("Unable to close source `{}`", source, error);
+                }
+            }
+        }
+        return props;
     }
 
     public static boolean hasThreadProperties() {
@@ -731,6 +757,21 @@ public class PropertiesUtil implements PropertyEnvironment {
             if (literal.containsKey(key)) {
                 return literal.get(key);
             }
+            // This part is temporarily copied from 2.x to prepare
+            // the removal of Log4j API 3.x
+            final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+            final boolean hasTokens = !tokens.isEmpty();
+            for (final PropertySource source : sources) {
+                if (hasTokens) {
+                    final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
+                    if (normalKey != null && sourceContainsProperty(source, normalKey)) {
+                        return sourceGetProperty(source, normalKey);
+                    }
+                }
+                if (sourceContainsProperty(source, key)) {
+                    return sourceGetProperty(source, key);
+                }
+            }
             String result = null;
             final String contextKey = getContextKey(key);
             if (contextName != null && !contextName.equals(PropertySource.SYSTEM_CONTEXT)) {
@@ -778,6 +819,21 @@ public class PropertiesUtil implements PropertyEnvironment {
         public boolean hasProperty(final String key) {
             if (literal.containsKey(key)) {
                 return true;
+            }
+            // This part is temporarily copied from 2.x to prepare
+            // the removal of Log4j API 3.x
+            final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+            final boolean hasTokens = !tokens.isEmpty();
+            for (final PropertySource source : sources) {
+                if (hasTokens) {
+                    final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
+                    if (normalKey != null && sourceContainsProperty(source, normalKey)) {
+                        return true;
+                    }
+                }
+                if (sourceContainsProperty(source, key)) {
+                    return true;
+                }
             }
             final String contextKey = getContextKey(key);
             if (!contextName.equals(PropertySource.SYSTEM_CONTEXT)) {
