@@ -17,102 +17,89 @@
 package org.apache.logging.log4j.status;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
-import java.util.function.Supplier;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
+import uk.org.webcompere.systemstubs.SystemStubs;
 
 class StatusLoggerDateTest {
 
-    private static final String INSTANT_YEAR = "1970";
-
-    private static final String INSTANT_MONTH = "12";
-
-    private static final String INSTANT_DAY = "27";
-
-    private static final String INSTANT_HOUR = "12";
-
-    private static final String INSTANT_MINUTE = "34";
-
-    private static final String INSTANT_SECOND = "56";
-
-    private static final String INSTANT_FRACTION = "789";
-
-    private static final Instant INSTANT = Instant.parse(INSTANT_YEAR
-            + '-'
-            + INSTANT_MONTH
-            + '-'
-            + INSTANT_DAY
-            + 'T'
-            + INSTANT_HOUR
-            + ':'
-            + INSTANT_MINUTE
-            + ':'
-            + INSTANT_SECOND
-            + '.'
-            + INSTANT_FRACTION
-            + 'Z');
-
-    private static final Supplier<Instant> CLOCK = () -> INSTANT;
-
     @ParameterizedTest
-    @CsvSource({
-        "yyyy-MM-dd," + (INSTANT_YEAR + '-' + INSTANT_MONTH + '-' + INSTANT_DAY),
-        "HH:mm:ss," + (INSTANT_HOUR + ':' + INSTANT_MINUTE + ':' + INSTANT_SECOND),
-        "HH:mm:ss.SSS," + (INSTANT_HOUR + ':' + INSTANT_MINUTE + ':' + INSTANT_SECOND + '.' + INSTANT_FRACTION)
-    })
-    void common_date_patterns_should_work(final String instantPattern, final String formattedInstant) {
+    @CsvSource({"yyyy-MM-dd", "HH:mm:ss", "HH:mm:ss.SSS"})
+    void common_date_patterns_should_work(final String instantPattern) {
 
         // Create a `StatusLogger` configuration
         final Properties statusLoggerConfigProperties = new Properties();
         statusLoggerConfigProperties.put(StatusLogger.STATUS_DATE_FORMAT, instantPattern);
-        statusLoggerConfigProperties.put(StatusLogger.STATUS_DATE_FORMAT_ZONE, "UTC");
+        final ZoneId zoneId = ZoneId.of("UTC");
+        statusLoggerConfigProperties.put(StatusLogger.STATUS_DATE_FORMAT_ZONE, zoneId.toString());
         final StatusLogger.Config statusLoggerConfig = new StatusLogger.Config(statusLoggerConfigProperties);
 
-        // Create a `StatusConsoleListener` recording `StatusData`
-        final StatusConsoleListener statusConsoleListener = mock(StatusConsoleListener.class);
-        when(statusConsoleListener.getStatusLevel()).thenReturn(Level.ALL);
-        final List<StatusData> loggedStatusData = new ArrayList<>();
-        doAnswer((Answer<Void>) invocation -> {
-                    final StatusData statusData = invocation.getArgument(0, StatusData.class);
-                    loggedStatusData.add(statusData);
-                    return null;
-                })
-                .when(statusConsoleListener)
-                .log(Mockito.any());
+        // Verify the formatter
+        final DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(instantPattern).withZone(zoneId);
+        verifyFormatter(statusLoggerConfig.instantFormatter, formatter);
+    }
 
-        // Create the `StatusLogger`
-        final StatusLogger logger = new StatusLogger(
-                StatusLoggerDateTest.class.getSimpleName(),
-                ParameterizedNoReferenceMessageFactory.INSTANCE,
-                statusLoggerConfig,
-                CLOCK,
-                statusConsoleListener);
+    @Test
+    void invalid_date_format_should_cause_fallback_to_defaults() throws Exception {
+        final String invalidFormat = "l";
+        verifyInvalidDateFormatAndZone(invalidFormat, "UTC", "failed reading the instant format", null);
+    }
 
-        // Log a message
-        final String message = "test message";
-        final Level level = Level.ERROR;
-        final Throwable throwable = new RuntimeException("test failure");
-        logger.log(level, message, throwable);
+    @Test
+    void invalid_date_format_zone_should_cause_fallback_to_defaults() throws Exception {
+        final String invalidZone = "XXX";
+        final String format = "yyyy";
+        verifyInvalidDateFormatAndZone(
+                format,
+                invalidZone,
+                "Failed reading the instant formatting zone ID",
+                DateTimeFormatter.ofPattern(format).withZone(ZoneId.systemDefault()));
+    }
 
-        // Verify the logging
-        assertThat(loggedStatusData).hasSize(1);
-        final StatusData statusData = loggedStatusData.get(0);
-        assertThat(statusData.getLevel()).isEqualTo(level);
-        assertThat(statusData.getThrowable()).isSameAs(throwable);
-        assertThat(statusData.getFormattedStatus())
-                .matches("(?s)^" + formattedInstant + " .+ " + level + ' ' + message + ".*" + throwable.getMessage()
-                        + ".*");
+    private static void verifyInvalidDateFormatAndZone(
+            final String format,
+            final String zone,
+            final String stderrMessage,
+            @Nullable final DateTimeFormatter formatter)
+            throws Exception {
+
+        // Create a `StatusLogger` configuration using invalid input
+        final Properties statusLoggerConfigProperties = new Properties();
+        statusLoggerConfigProperties.put(StatusLogger.STATUS_DATE_FORMAT, format);
+        statusLoggerConfigProperties.put(StatusLogger.STATUS_DATE_FORMAT_ZONE, zone);
+        final StatusLogger.Config[] statusLoggerConfigRef = {null};
+        final String stderr = SystemStubs.tapSystemErr(
+                () -> statusLoggerConfigRef[0] = new StatusLogger.Config(statusLoggerConfigProperties));
+        final StatusLogger.Config statusLoggerConfig = statusLoggerConfigRef[0];
+
+        // Verify the stderr dump
+        assertThat(stderr).contains(stderrMessage);
+
+        // Verify the formatter
+        verifyFormatter(statusLoggerConfig.instantFormatter, formatter);
+    }
+
+    /**
+     * {@link DateTimeFormatter} doesn't have an {@link Object#equals(Object)} implementation, hence <a href="https://stackoverflow.com/a/63887712/1278899">this manual <em>behavioral</em> comparison</a>.
+     *
+     * @param actual the actual formatter
+     * @param expected the expected formatter
+     */
+    private static void verifyFormatter(@Nullable DateTimeFormatter actual, @Nullable DateTimeFormatter expected) {
+        if (expected == null) {
+            assertThat(actual).isNull();
+        } else {
+            assertThat(actual).isNotNull();
+            final Instant instant = Instant.now();
+            assertThat(actual.format(instant)).isEqualTo(expected.format(instant));
+        }
     }
 }

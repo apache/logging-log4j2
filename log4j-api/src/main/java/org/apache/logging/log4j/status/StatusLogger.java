@@ -36,7 +36,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
@@ -150,6 +149,16 @@ public class StatusLogger extends AbstractLogger {
     public static final String MAX_STATUS_ENTRIES = "log4j2.status.entries";
 
     /**
+     * The default fallback listener buffer capacity.
+     * <p>
+     * This constant is intended for tests.
+     * </p>
+     *
+     * @see #MAX_STATUS_ENTRIES
+     */
+    static final int DEFAULT_FALLBACK_LISTENER_BUFFER_CAPACITY = 0;
+
+    /**
      * The name of the system property that can be configured with the {@link Level} name to use as the fallback listener level.
      * <p>
      * The fallback listener is used when the listener registry is empty.
@@ -159,6 +168,14 @@ public class StatusLogger extends AbstractLogger {
      * @since 2.8
      */
     public static final String DEFAULT_STATUS_LISTENER_LEVEL = "log4j2.StatusLogger.level";
+
+    /**
+     * The default fallback listener level.
+     * <p>
+     * This constant is intended for tests and indeed makes things awfully confusing given the {@link #DEFAULT_STATUS_LISTENER_LEVEL} property, which is actually intended to be a property <em>name</em>, not its <em>default value</em>.
+     * </p>
+     */
+    static final Level DEFAULT_FALLBACK_LISTENER_LEVEL = Level.ERROR;
 
     /**
      * The name of the system property that can be configured with a {@link java.time.format.DateTimeFormatter} pattern that will be used while formatting the created {@link StatusData}.
@@ -200,13 +217,16 @@ public class StatusLogger extends AbstractLogger {
 
         private final boolean debugEnabled;
 
-        private final int bufferCapacity;
+        // Visible for tests
+        final int bufferCapacity;
 
+        // Visible for tests
         @Nullable
-        private final Level fallbackListenerLevel;
+        final Level fallbackListenerLevel;
 
+        // Visible for tests
         @Nullable
-        private final DateTimeFormatter instantFormatter;
+        final DateTimeFormatter instantFormatter;
 
         /**
          * Constructs an instance using the given properties.
@@ -265,26 +285,90 @@ public class StatusLogger extends AbstractLogger {
         }
 
         private static int readBufferCapacity(final Properties fileProvidedProperties) {
-            final String capacityString = readProperty(fileProvidedProperties, MAX_STATUS_ENTRIES);
-            return capacityString != null ? Integer.parseInt(capacityString) : 0;
+            final String propertyName = MAX_STATUS_ENTRIES;
+            final String capacityString = readProperty(fileProvidedProperties, propertyName);
+            final int defaultCapacity = DEFAULT_FALLBACK_LISTENER_BUFFER_CAPACITY;
+            int effectiveCapacity = defaultCapacity;
+            if (capacityString != null) {
+                try {
+                    final int capacity = Integer.parseInt(capacityString);
+                    if (capacity < 0) {
+                        final String message =
+                                String.format("was expecting a positive buffer capacity, found: %d", capacity);
+                        throw new IllegalArgumentException(message);
+                    }
+                    effectiveCapacity = capacity;
+                } catch (final Exception error) {
+                    final String message = String.format(
+                            "Failed reading the buffer capacity from the `%s` property: `%s`. Falling back to the default: %d.",
+                            propertyName, capacityString, defaultCapacity);
+                    final IllegalArgumentException extendedError = new IllegalArgumentException(message, error);
+                    // There is no logging system at this stage.
+                    // There is nothing we can do but simply dumping the failure.
+                    extendedError.printStackTrace(System.err);
+                }
+            }
+            return effectiveCapacity;
         }
 
         private static Level readFallbackListenerLevel(final Properties fileProvidedProperties) {
-            final String level = readProperty(fileProvidedProperties, DEFAULT_STATUS_LISTENER_LEVEL);
-            return level != null ? Level.valueOf(level) : Level.ERROR;
+            final String propertyName = DEFAULT_STATUS_LISTENER_LEVEL;
+            final String level = readProperty(fileProvidedProperties, propertyName);
+            final Level defaultLevel = DEFAULT_FALLBACK_LISTENER_LEVEL;
+            try {
+                return level != null ? Level.valueOf(level) : defaultLevel;
+            } catch (final Exception error) {
+                final String message = String.format(
+                        "Failed reading the level from the `%s` property: `%s`. Falling back to the default: `%s`.",
+                        propertyName, level, defaultLevel);
+                final IllegalArgumentException extendedError = new IllegalArgumentException(message, error);
+                // There is no logging system at this stage.
+                // There is nothing we can do but simply dumping the failure.
+                extendedError.printStackTrace(System.err);
+                return defaultLevel;
+            }
         }
 
+        @Nullable
         private static DateTimeFormatter readInstantFormatter(final Properties fileProvidedProperties) {
-            final String format = readProperty(fileProvidedProperties, STATUS_DATE_FORMAT);
+            final String formatPropertyName = STATUS_DATE_FORMAT;
+            final String format = readProperty(fileProvidedProperties, formatPropertyName);
             if (format == null) {
                 return null;
             }
-            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-            final String zoneId = readProperty(fileProvidedProperties, STATUS_DATE_FORMAT_ZONE);
-            final ZoneId effectiveZoneId = zoneId != null ? ZoneId.of(zoneId) : ZoneId.systemDefault();
-            return formatter.withZone(effectiveZoneId);
+            final DateTimeFormatter formatter;
+            try {
+                formatter = DateTimeFormatter.ofPattern(format);
+            } catch (final Exception error) {
+                final String message = String.format(
+                        "failed reading the instant format from the `%s` property: `%s`", formatPropertyName, format);
+                final IllegalArgumentException extendedError = new IllegalArgumentException(message, error);
+                // There is no logging system at this stage.
+                // There is nothing we can do but simply dumping the failure.
+                extendedError.printStackTrace(System.err);
+                return null;
+            }
+            final String zonePropertyName = STATUS_DATE_FORMAT_ZONE;
+            final String zoneIdString = readProperty(fileProvidedProperties, zonePropertyName);
+            final ZoneId defaultZoneId = ZoneId.systemDefault();
+            ZoneId zoneId = defaultZoneId;
+            if (zoneIdString != null) {
+                try {
+                    zoneId = ZoneId.of(zoneIdString);
+                } catch (final Exception error) {
+                    final String message = String.format(
+                            "Failed reading the instant formatting zone ID from the `%s` property: `%s`. Falling back to the default: `%s`.",
+                            zonePropertyName, zoneIdString, defaultZoneId);
+                    final IllegalArgumentException extendedError = new IllegalArgumentException(message, error);
+                    // There is no logging system at this stage.
+                    // There is nothing we can do but simply dumping the failure.
+                    extendedError.printStackTrace(System.err);
+                }
+            }
+            return formatter.withZone(zoneId);
         }
 
+        @Nullable
         private static String readProperty(final Properties fileProvidedProperties, final String propertyName) {
             final String systemProvidedValue = System.getProperty(propertyName);
             return systemProvidedValue != null
@@ -306,9 +390,11 @@ public class StatusLogger extends AbstractLogger {
             try (final InputStream stream = url.openStream()) {
                 properties.load(stream);
             } catch (final IOException error) {
+                final String message = String.format("failed reading properties from `%s`", PROPERTIES_FILE_NAME);
+                final RuntimeException extendedError = new RuntimeException(message, error);
                 // There is no logging system at this stage.
                 // There is nothing we can do but simply dumping the failure.
-                error.printStackTrace(System.err);
+                extendedError.printStackTrace(System.err);
             }
             return properties;
         }
@@ -329,8 +415,6 @@ public class StatusLogger extends AbstractLogger {
     }
 
     private final Config config;
-
-    private final Supplier<Instant> clock;
 
     private final StatusConsoleListener fallbackListener;
 
@@ -355,7 +439,6 @@ public class StatusLogger extends AbstractLogger {
                 StatusLogger.class.getSimpleName(),
                 ParameterizedNoReferenceMessageFactory.INSTANCE,
                 Config.getInstance(),
-                Instant::now,
                 new StatusConsoleListener(Config.getInstance().fallbackListenerLevel));
     }
 
@@ -375,21 +458,8 @@ public class StatusLogger extends AbstractLogger {
             final MessageFactory messageFactory,
             final Config config,
             final StatusConsoleListener fallbackListener) {
-        this(name, messageFactory, config, Instant::now, fallbackListener);
-    }
-
-    /**
-     * The lowest-level constructor intended for tests.
-     */
-    StatusLogger(
-            final String name,
-            final MessageFactory messageFactory,
-            final Config config,
-            final Supplier<Instant> clock,
-            final StatusConsoleListener fallbackListener) {
         super(requireNonNull(name, "name"), requireNonNull(messageFactory, "messageFactory"));
         this.config = requireNonNull(config, "config");
-        this.clock = requireNonNull(clock, "clock");
         this.fallbackListener = requireNonNull(fallbackListener, "fallbackListener");
         this.listeners = new ArrayList<>();
     }
@@ -517,7 +587,10 @@ public class StatusLogger extends AbstractLogger {
             listener.close();
         } catch (final IOException error) {
             final String message = String.format("failed closing listener: %s", listener);
-            new RuntimeException(message, error).printStackTrace(System.err);
+            final RuntimeException extendedError = new RuntimeException(message, error);
+            // There is no logging system at this stage.
+            // There is nothing we can do but simply dumping the failure.
+            extendedError.printStackTrace(System.err);
         }
     }
 
@@ -619,7 +692,7 @@ public class StatusLogger extends AbstractLogger {
             final Message message,
             @Nullable final Throwable throwable) {
         final StackTraceElement caller = getStackTraceElement(fqcn);
-        final Instant instant = clock.get();
+        final Instant instant = Instant.now();
         return new StatusData(caller, level, message, throwable, null, config.instantFormatter, instant);
     }
 

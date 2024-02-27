@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.status;
 
+import static org.apache.logging.log4j.status.StatusLogger.DEFAULT_FALLBACK_LISTENER_LEVEL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
+import uk.org.webcompere.systemstubs.SystemStubs;
 
 class StatusLoggerLevelTest {
 
@@ -30,7 +33,7 @@ class StatusLoggerLevelTest {
 
         // Verify the initial level
         final StatusLogger logger = new StatusLogger();
-        final Level fallbackListenerLevel = Level.ERROR;
+        final Level fallbackListenerLevel = DEFAULT_FALLBACK_LISTENER_LEVEL;
         assertThat(logger.getLevel()).isEqualTo(fallbackListenerLevel);
 
         // Register a less specific listener
@@ -81,5 +84,24 @@ class StatusLoggerLevelTest {
         // Remove the last listener
         logger.removeListener(listener1);
         assertThat(logger.getLevel()).isEqualTo(fallbackListenerLevel); // Verify that the level is changed
+    }
+
+    @Test
+    void invalid_level_should_cause_fallback_to_defaults() throws Exception {
+
+        // Create a `StatusLogger` configuration using an invalid level
+        final Properties statusLoggerConfigProperties = new Properties();
+        final String invalidLevelName = "FOO";
+        statusLoggerConfigProperties.put(StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL, invalidLevelName);
+        final StatusLogger.Config[] statusLoggerConfigRef = {null};
+        final String stderr = SystemStubs.tapSystemErr(
+                () -> statusLoggerConfigRef[0] = new StatusLogger.Config(statusLoggerConfigProperties));
+        final StatusLogger.Config statusLoggerConfig = statusLoggerConfigRef[0];
+
+        // Verify the stderr dump
+        assertThat(stderr).contains("Failed reading the level");
+
+        // Verify the level
+        assertThat(statusLoggerConfig.fallbackListenerLevel).isEqualTo(DEFAULT_FALLBACK_LISTENER_LEVEL);
     }
 }
