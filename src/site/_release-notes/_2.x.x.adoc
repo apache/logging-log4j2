@@ -32,6 +32,9 @@ This releases contains ...
 === Updated
 
 * Update `co.elastic.clients:elasticsearch-java` to version `8.12.2` (https://github.com/apache/logging-log4j2/pull/2315[2315])
+* Update `co.elastic.logging:log4j2-ecs-layout` to version `1.6.0` (https://github.com/apache/logging-log4j2/pull/2301[2301])
 * Update `com.github.tomakehurst:wiremock-jre8` to version `2.35.2` (https://github.com/apache/logging-log4j2/pull/2306[2306])
 * Update `github/codeql-action` to version `3.24.5` (https://github.com/apache/logging-log4j2/pull/2317[2317])
 * Update `io.fabric8:docker-maven-plugin` to version `0.44.0` (https://github.com/apache/logging-log4j2/pull/2299[2299])
+* Update `org.apache.commons:commons-compress` to version `1.26.0` (https://github.com/apache/logging-log4j2/pull/2304[2304])
+* Update `org.apache.kafka:kafka-clients` to version `3.7.0` (https://github.com/apache/logging-log4j2/pull/2326[2326])
