@@ -28,8 +28,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -254,20 +257,27 @@ public class StatusLogger extends AbstractLogger {
         }
 
         /**
-         * Constructs the default instance using either system properties or a property file (i.e., {@value Config#PROPERTIES_FILE_NAME}) in the classpath, if available.
+         * Constructs the default instance using system properties and a property file (i.e., {@value Config#PROPERTIES_FILE_NAME}) in the classpath, if available.
          */
         private Config() {
-            this(readPropertiesFile());
+            this(PropertiesUtilsDouble.readAllAvailableProperties());
         }
 
         /**
-         * The lowest-level constructor intended for tests.
+         * A low-level constructor intended for tests.
          */
-        Config(final Properties fileProvidedProperties) {
-            this.debugEnabled = readDebugEnabled(fileProvidedProperties);
-            this.bufferCapacity = readBufferCapacity(fileProvidedProperties);
-            this.fallbackListenerLevel = readFallbackListenerLevel(fileProvidedProperties);
-            this.instantFormatter = readInstantFormatter(fileProvidedProperties);
+        Config(final Properties... propertiesList) {
+            this(PropertiesUtilsDouble.normalizeProperties(propertiesList));
+        }
+
+        /**
+         * The lowest-level constructor.
+         */
+        private Config(final Map<String, Object> normalizedProperties) {
+            this.debugEnabled = readDebugEnabled(normalizedProperties);
+            this.bufferCapacity = readBufferCapacity(normalizedProperties);
+            this.fallbackListenerLevel = readFallbackListenerLevel(normalizedProperties);
+            this.instantFormatter = readInstantFormatter(normalizedProperties);
         }
 
         /**
@@ -279,14 +289,14 @@ public class StatusLogger extends AbstractLogger {
             return INSTANCE;
         }
 
-        private static boolean readDebugEnabled(final Properties fileProvidedProperties) {
-            final String debug = readProperty(fileProvidedProperties, DEBUG_PROPERTY_NAME);
+        private static boolean readDebugEnabled(final Map<String, Object> normalizedProperties) {
+            final String debug = PropertiesUtilsDouble.readProperty(normalizedProperties, DEBUG_PROPERTY_NAME);
             return debug != null;
         }
 
-        private static int readBufferCapacity(final Properties fileProvidedProperties) {
+        private static int readBufferCapacity(final Map<String, Object> normalizedProperties) {
             final String propertyName = MAX_STATUS_ENTRIES;
-            final String capacityString = readProperty(fileProvidedProperties, propertyName);
+            final String capacityString = PropertiesUtilsDouble.readProperty(normalizedProperties, propertyName);
             final int defaultCapacity = DEFAULT_FALLBACK_LISTENER_BUFFER_CAPACITY;
             int effectiveCapacity = defaultCapacity;
             if (capacityString != null) {
@@ -311,9 +321,9 @@ public class StatusLogger extends AbstractLogger {
             return effectiveCapacity;
         }
 
-        private static Level readFallbackListenerLevel(final Properties fileProvidedProperties) {
+        private static Level readFallbackListenerLevel(final Map<String, Object> normalizedProperties) {
             final String propertyName = DEFAULT_STATUS_LISTENER_LEVEL;
-            final String level = readProperty(fileProvidedProperties, propertyName);
+            final String level = PropertiesUtilsDouble.readProperty(normalizedProperties, propertyName);
             final Level defaultLevel = DEFAULT_FALLBACK_LISTENER_LEVEL;
             try {
                 return level != null ? Level.valueOf(level) : defaultLevel;
@@ -330,9 +340,11 @@ public class StatusLogger extends AbstractLogger {
         }
 
         @Nullable
-        private static DateTimeFormatter readInstantFormatter(final Properties fileProvidedProperties) {
+        private static DateTimeFormatter readInstantFormatter(final Map<String, Object> normalizedProperties) {
+
+            // Read the format
             final String formatPropertyName = STATUS_DATE_FORMAT;
-            final String format = readProperty(fileProvidedProperties, formatPropertyName);
+            final String format = PropertiesUtilsDouble.readProperty(normalizedProperties, formatPropertyName);
             if (format == null) {
                 return null;
             }
@@ -348,8 +360,10 @@ public class StatusLogger extends AbstractLogger {
                 extendedError.printStackTrace(System.err);
                 return null;
             }
+
+            // Read the zone
             final String zonePropertyName = STATUS_DATE_FORMAT_ZONE;
-            final String zoneIdString = readProperty(fileProvidedProperties, zonePropertyName);
+            final String zoneIdString = PropertiesUtilsDouble.readProperty(normalizedProperties, zonePropertyName);
             final ZoneId defaultZoneId = ZoneId.systemDefault();
             ZoneId zoneId = defaultZoneId;
             if (zoneIdString != null) {
@@ -367,13 +381,37 @@ public class StatusLogger extends AbstractLogger {
             }
             return formatter.withZone(zoneId);
         }
+    }
+
+    /**
+     * This is a thin double of {@link org.apache.logging.log4j.util.PropertiesUtil}.
+     * <p>
+     * We could have used {@code PropertiesUtil}, {@link org.apache.logging.log4j.util.PropertyFilePropertySource}, etc.
+     * Consequently, they would delegate to {@link org.apache.logging.log4j.util.LoaderUtil}, etc.
+     * All these mechanisms expect a working {@code StatusLogger}.
+     * In order to be self-sufficient, we cannot rely on them, hence this <em>double</em>.
+     * </p>
+     */
+    static final class PropertiesUtilsDouble {
 
         @Nullable
-        private static String readProperty(final Properties fileProvidedProperties, final String propertyName) {
-            final String systemProvidedValue = System.getProperty(propertyName);
-            return systemProvidedValue != null
-                    ? systemProvidedValue
-                    : (String) fileProvidedProperties.get(propertyName);
+        static String readProperty(final Map<String, Object> normalizedProperties, final String propertyName) {
+            final String normalizedPropertyName = normalizePropertyName(propertyName);
+            final Object value = normalizedProperties.get(normalizedPropertyName);
+            return (value instanceof String) ? (String) value : null;
+        }
+
+        static Map<String, Object> readAllAvailableProperties() {
+            final Properties systemProperties = System.getProperties();
+            final Properties environmentProperties = readEnvironmentProperties();
+            final Properties fileProvidedProperties = readPropertiesFile();
+            return normalizeProperties(systemProperties, environmentProperties, fileProvidedProperties);
+        }
+
+        private static Properties readEnvironmentProperties() {
+            final Properties properties = new Properties();
+            properties.putAll(System.getenv());
+            return properties;
         }
 
         // We need to roll out our own `.properties` reader.
@@ -397,6 +435,55 @@ public class StatusLogger extends AbstractLogger {
                 extendedError.printStackTrace(System.err);
             }
             return properties;
+        }
+
+        private static Map<String, Object> normalizeProperties(Properties... propertiesList) {
+            Map<String, Object> map = new HashMap<>();
+            for (Properties properties : propertiesList) {
+                properties.forEach((name, value) -> {
+                    final boolean relevant = isRelevantPropertyName(name);
+                    if (relevant) {
+                        final String normalizedName = normalizePropertyName((String) name);
+                        map.put(normalizedName, value);
+                    }
+                });
+            }
+            return map;
+        }
+
+        /**
+         * Filter to exclude irrelevant property names (i.e., non-string and not {@code log4j}-prefixed) to speed up matching.
+         * @param propertyName a property name
+         * @return {@code true}, if the property name is relevant; {@code false}, otherwise
+         */
+        private static boolean isRelevantPropertyName(@Nullable final Object propertyName) {
+            return propertyName instanceof String && ((String) propertyName).matches("^(?i)log4j.*");
+        }
+
+        /**
+         * An imperfect property name normalization routine.
+         * <p>
+         * It is imperfect, because {@code foo.bar} would match with {@code fo.obar}.
+         * But it is good enough for the {@code StatusLogger} needs.
+         * </p>
+         *
+         * @param propertyName the input property name
+         * @return the normalized property name
+         */
+        private static String normalizePropertyName(final String propertyName) {
+            return propertyName
+                    // Remove separators:
+                    // - dots (properties)
+                    // - dashes (kebab-case)
+                    // - underscores (environment variables)
+                    .replaceAll("[._-]", "")
+                    // Replace all non-ASCII characters.
+                    // Don't remove, otherwise `fooàö` would incorrectly match with `foo`.
+                    // It is safe to replace them with dots, since we've just removed all dots above.
+                    .replaceAll("\\P{InBasic_Latin}", ".")
+                    // Lowercase ASCII – this is safe, since we've just removed all non-ASCII
+                    .toLowerCase(Locale.US)
+                    .replaceAll("^log4j2", "log4j");
         }
     }
 
