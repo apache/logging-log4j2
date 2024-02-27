@@ -189,7 +189,7 @@ public class StatusLogger extends AbstractLogger {
      * @see #STATUS_DATE_FORMAT_ZONE
      * @since 2.11.0
      */
-    public static final String STATUS_DATE_FORMAT = "log4j2.StatusLogger.DateFormat";
+    public static final String STATUS_DATE_FORMAT = "log4j2.StatusLogger.dateFormat";
 
     /**
      * The name of the system property that can be configured with a time-zone ID (e.g., {@code Europe/Amsterdam}, {@code UTC+01:00}) that will be used while formatting the created {@link StatusData}.
@@ -200,7 +200,7 @@ public class StatusLogger extends AbstractLogger {
      * @see #STATUS_DATE_FORMAT
      * @since 2.23.1
      */
-    static final String STATUS_DATE_FORMAT_ZONE = "log4j2.StatusLogger.DateFormatZone";
+    static final String STATUS_DATE_FORMAT_ZONE = "log4j2.StatusLogger.dateFormatZone";
 
     /**
      * The name of the file to be searched in the classpath to read properties from.
