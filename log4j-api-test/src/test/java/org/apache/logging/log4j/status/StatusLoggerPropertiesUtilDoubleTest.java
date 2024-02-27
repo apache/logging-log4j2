@@ -33,30 +33,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class StatusLoggerPropertiesUtilDoubleTest {
 
-    private static final String[] NOT_PREFIXED_MATCHING_PROPERTY_NAMES = new String[] {
-        // For system properties:
-        "StatusLogger.DateFormat",
-        "StatusLogger.dateFormat",
-        "StatusLogger.dateformat",
-        "StatusLogger.Dateformat",
-        "Status.Logger.Dateformat",
-        "Status.Logger.Date.Format",
-        "statusLoggerDateFormat",
-        "Status.Logger.Date.Format",
-        "status.logger.date.format",
-        // For environment variables:
-        "STATUSLOGGER_DATEFORMAT",
-        "STATUS_LOGGER_DATE_FORMAT"
+    private static final String[] MATCHING_PROPERTY_NAMES = new String[] {
+        // System properties for version range `[, 2.10)`
+        "log4j2.StatusLogger.DateFormat",
+        // System properties for version range `[2.10, 3)`
+        "log4j2.statusLoggerDateFormat",
+        // System properties for version range `[3,)`
+        "log4j2.StatusLogger.dateFormat",
+        // Environment variables
+        "LOG4J_STATUS_LOGGER_DATE_FORMAT"
     };
-
-    private static final String[] MATCHING_PROPERTY_NAMES = Stream.of(
-                    // For system properties:
-                    "log4j.", "log4j2.",
-                    // For environment variables:
-                    "LOG4J_", "LOG4J2_")
-            .flatMap(prefix -> Arrays.stream(NOT_PREFIXED_MATCHING_PROPERTY_NAMES)
-                    .map(notPrefixedPropertyName -> prefix + notPrefixedPropertyName))
-            .toArray(String[]::new);
 
     private static final String[] NOT_MATCHING_PROPERTY_NAMES =
             new String[] {"log4j2.StatusLogger$DateFormat", "log4j2.StàtusLögger.DateFormat"};
