@@ -37,3 +37,4 @@ This releases contains ...
 * Update `github/codeql-action` to version `3.24.5` (https://github.com/apache/logging-log4j2/pull/2317[2317])
 * Update `io.fabric8:docker-maven-plugin` to version `0.44.0` (https://github.com/apache/logging-log4j2/pull/2299[2299])
 * Update `org.apache.commons:commons-compress` to version `1.26.0` (https://github.com/apache/logging-log4j2/pull/2304[2304])
+* Update `org.apache.kafka:kafka-clients` to version `3.7.0` (https://github.com/apache/logging-log4j2/pull/2326[2326])
