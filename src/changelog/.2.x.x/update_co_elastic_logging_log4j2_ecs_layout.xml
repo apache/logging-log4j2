@@ -3,6 +3,6 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
        type="updated">
-  <issue id="2317" link="https://github.com/apache/logging-log4j2/pull/2317"/>
-  <description format="asciidoc">Update `github/codeql-action` to version `3.24.5`</description>
+  <issue id="2301" link="https://github.com/apache/logging-log4j2/pull/2301"/>
+  <description format="asciidoc">Update `co.elastic.logging:log4j2-ecs-layout` to version `1.6.0`</description>
 </entry>
