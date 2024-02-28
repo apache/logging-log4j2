@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.sdk.logger;
+package org.apache.logging.log4j.kit.logger;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
@@ -22,12 +22,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.kit.logger.internal.DefaultLogBuilder;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
-import org.apache.logging.log4j.sdk.logger.internal.DefaultLogBuilder;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactory;

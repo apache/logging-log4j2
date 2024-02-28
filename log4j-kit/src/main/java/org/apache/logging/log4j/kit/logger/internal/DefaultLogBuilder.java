@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.sdk.logger.internal;
+package org.apache.logging.log4j.kit.logger.internal;
 
 import java.util.Arrays;
 import org.apache.logging.log4j.BridgeAware;

@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.kit.logger.AbstractLogger;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -47,7 +48,6 @@ import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.sdk.logger.AbstractLogger;
 import org.apache.logging.log4j.util.InternalApi;
 
 /**

@@ -253,6 +253,7 @@
     <module>log4j-jndi-test</module>
     <module>log4j-jpl</module>
     <module>log4j-jul</module>
+    <module>log4j-kit</module>
     <module>log4j-kubernetes</module>
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-test</module>
@@ -263,7 +264,6 @@
     <module>log4j-plugins</module>
     <module>log4j-plugins-test</module>
     <module>log4j-script</module>
-    <module>log4j-sdk</module>
     <module>log4j-slf4j2-impl</module>
     <module>log4j-slf4j-impl</module>
     <module>log4j-spring-cloud-config-client</module>
@@ -514,7 +514,7 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-sdk</artifactId>
+        <artifactId>log4j-kit</artifactId>
         <version>${project.version}</version>
       </dependency>
 

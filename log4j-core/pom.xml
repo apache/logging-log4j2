@@ -72,11 +72,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-plugins</artifactId>
+      <artifactId>log4j-kit</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-sdk</artifactId>
+      <artifactId>log4j-plugins</artifactId>
     </dependency>
     <!-- The dependency on the plugin processor is only required to ensure the processor is built before core. We
        don't want the dependency to be included by consumers -->

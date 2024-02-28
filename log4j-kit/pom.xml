@@ -24,8 +24,8 @@
     <relativePath>../log4j-parent</relativePath>
   </parent>
 
-  <artifactId>log4j-sdk</artifactId>
-  <name>Apache Log4j SDK</name>
+  <artifactId>log4j-kit</artifactId>
+  <name>Apache Log4j Kit</name>
   <description>Helpers to implement Log4j 2.x API.</description>
 
   <properties>

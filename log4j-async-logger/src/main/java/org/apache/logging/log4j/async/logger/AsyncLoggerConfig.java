@@ -30,10 +30,10 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
+import org.apache.logging.log4j.kit.logger.AbstractLogger;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.sdk.logger.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
