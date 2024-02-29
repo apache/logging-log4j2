@@ -80,8 +80,8 @@ abstract class AbstractLoadBundleTest {
         return installBundle("org.apache.logging.log4j.plugins");
     }
 
-    private Bundle getSdkBundle() throws BundleException {
-        return installBundle("org.apache.logging.log4j.sdk");
+    private Bundle getKitBundle() throws BundleException {
+        return installBundle("org.apache.logging.log4j.kit");
     }
 
     private Bundle getCoreBundle() throws BundleException {
@@ -105,23 +105,23 @@ abstract class AbstractLoadBundleTest {
         final List<Bundle> spiFly = startApacheSpiFly();
         final Bundle api = getApiBundle();
         final Bundle plugins = getPluginsBundle();
-        final Bundle sdk = getSdkBundle();
+        final Bundle kit = getKitBundle();
         final Bundle core = getCoreBundle();
 
         assertEquals("api is not in INSTALLED state", Bundle.INSTALLED, api.getState());
         assertEquals("plugins is not in INSTALLED state", Bundle.INSTALLED, plugins.getState());
-        assertEquals("sdk is not in INSTALLED state", Bundle.INSTALLED, sdk.getState());
+        assertEquals("kit is not in INSTALLED state", Bundle.INSTALLED, kit.getState());
         assertEquals("core is not in INSTALLED state", Bundle.INSTALLED, core.getState());
 
         // 1st start-stop
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, sdk, plugins, core);
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, sdk, api);
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, kit, plugins, core);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, kit, api);
 
         // 2nd start-stop
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, sdk, plugins, core);
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, sdk, api);
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, kit, plugins, core);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, kit, api);
 
-        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, plugins, sdk, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, plugins, kit, api);
         uninstall(spiFly);
     }
 
@@ -134,10 +134,10 @@ abstract class AbstractLoadBundleTest {
         final List<Bundle> spiFly = startApacheSpiFly();
         final Bundle api = getApiBundle();
         final Bundle plugins = getPluginsBundle();
-        final Bundle sdk = getSdkBundle();
+        final Bundle kit = getKitBundle();
         final Bundle core = getCoreBundle();
 
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, sdk, plugins);
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, kit, plugins);
         // fails if LOG4J2-1637 is not fixed
         try {
             core.start();
@@ -157,8 +157,8 @@ abstract class AbstractLoadBundleTest {
         }
         assertEquals(String.format("`%s` bundle state mismatch", core), Bundle.ACTIVE, core.getState());
 
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, sdk, api);
-        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, plugins, sdk, api);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, kit, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, plugins, kit, api);
         uninstall(spiFly);
     }
 
@@ -171,12 +171,12 @@ abstract class AbstractLoadBundleTest {
 
         final List<Bundle> spiFly = startApacheSpiFly();
         final Bundle api = getApiBundle();
-        final Bundle sdk = getSdkBundle();
+        final Bundle kit = getKitBundle();
         final Bundle plugins = getPluginsBundle();
         final Bundle core = getCoreBundle();
         final Bundle compat = get12ApiBundle();
 
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, sdk, plugins, core);
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, kit, plugins, core);
 
         final Class<?> coreClassFromCore = core.loadClass("org.apache.logging.log4j.core.Core");
         final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
@@ -191,8 +191,8 @@ abstract class AbstractLoadBundleTest {
                 levelClassFrom12API.getClassLoader(),
                 levelClassFromAPI.getClassLoader());
 
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, sdk, api);
-        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, compat, core, plugins, sdk, api);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, plugins, kit, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, compat, core, plugins, kit, api);
         uninstall(spiFly);
     }
 
