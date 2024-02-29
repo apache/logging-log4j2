@@ -334,7 +334,7 @@
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
     <!-- Dependency versions -->
-    <log4j-docgen.version>0.8.0-SNAPSHOT</log4j-docgen.version>
+    <log4j-docgen.version>1.0.0-SNAPSHOT</log4j-docgen.version>
 
     <!-- Versions of libraries whose plugin descriptors will be documented: -->
     <docgen.log4j.version>2.23.0-SNAPSHOT</docgen.log4j.version>
@@ -873,7 +873,25 @@
         <artifactId>log4j-docgen-maven-plugin</artifactId>
         <version>${log4j-docgen.version}</version>
         <inherited>false</inherited>
+
+        <!-- Common docgen configuration -->
+        <configuration>
+          <descriptorFileMatchers>
+            <descriptorFileMatcher>
+              <baseDirectory>${project.build.directory}/plugin-descriptors</baseDirectory>
+              <pathPatterns>glob:**/*.xml</pathPatterns>
+            </descriptorFileMatcher>
+          </descriptorFileMatchers>
+          <typeFilter>
+            <excludes>
+              <exclude>java\..+</exclude>
+            </excludes>
+          </typeFilter>
+        </configuration>
+
         <executions>
+
+          <!-- Generate AsciiDoc from download plugin descriptors -->
           <execution>
             <id>generate-plugin-docs</id>
             <goals>
@@ -881,12 +899,6 @@
             </goals>
             <phase>pre-site</phase>
             <configuration>
-              <descriptorFileMatchers>
-                <descriptorFileMatcher>
-                  <baseDirectory>${project.build.directory}/plugin-descriptors</baseDirectory>
-                  <pathPatterns>glob:**/*.xml</pathPatterns>
-                </descriptorFileMatcher>
-              </descriptorFileMatchers>
               <templateDirectory>${project.basedir}/src/docgen-templates</templateDirectory>
               <scalarsTemplate>
                 <source>scalars.adoc.ftl</source>
@@ -902,6 +914,8 @@
               </pluginTemplate>
             </configuration>
           </execution>
+
+          <!-- Generate XSD from download plugin descriptors -->
           <execution>
             <id>generate-plugin-schema</id>
             <goals>
@@ -909,16 +923,12 @@
             </goals>
             <phase>pre-site</phase>
             <configuration>
-              <descriptorFileMatchers>
-                <descriptorFileMatcher>
-                  <baseDirectory>${project.build.directory}/plugin-descriptors</baseDirectory>
-                  <pathPatterns>glob:**/*.xml</pathPatterns>
-                </descriptorFileMatcher>
-              </descriptorFileMatchers>
               <schemaFile>${project.build.directory}/generated-sources/site/resources/config.xsd</schemaFile>
             </configuration>
           </execution>
+
         </executions>
+
       </plugin>
 
       <plugin>
