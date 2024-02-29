@@ -39,7 +39,7 @@
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- Override of the parent POM version -->
-    <mongodb.version>3.12.11</mongodb.version>
+    <mongodb.version>5.0.0</mongodb.version>
   </properties>
 
   <!-- Use explicit versions as a temporary workaround to a Coursier/Ivy bug:
