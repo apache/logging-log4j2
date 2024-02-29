@@ -27,7 +27,7 @@ Class:: `${type.className}`
 <#if sourcedType.groupId?has_content && sourcedType.artifactId?has_content>
 Provider:: `${sourcedType.groupId}:${sourcedType.artifactId}`
 
-</#if>${(type.description.text)!'N/A'}
+</#if>${(type.description.text)!}
 
 [#${type.className?replace('.', '_')}-XML-snippet]
 == XML snippet
@@ -48,16 +48,16 @@ ${indent}${attr.name}="${attr.defaultValue!}"${attr?is_last?then(has_elements?th
         </#list>
         <#if has_elements>
             <#list type.elements as element>
+                <#assign multiplicitySuffix = (element.multiplicity == '*')?then('<!-- multiple occurrences allowed -->','')/>
+                <#assign elementName = 'a-' + element.type?keep_after_last('.') + '-implementation'/>
                 <#if lookup[element.type]??>
                     <#assign element_type = lookup[element.type].type/>
                     <#-- @ftlvariable name="element_type" type="org.apache.logging.log4j.docgen.model.AbstractType" -->
                     <#if element_type.name?? && !element_type.implementations?has_content>
-                    <#-- @ftlvariable name="element_type" type="org.apache.logging.log4j.docgen.model.PluginType" -->
-    <${element_type.name}/>
-                    <#else>
-    <a-${element.type?keep_after_last('.')}-implementation/><#if element.multiplicity == '*'><!-- multiple occurrences allowed --></#if>
+                        <#assign elementName = element_type.name/>
                     </#if>
                 </#if>
+    <${elementName}/>${multiplicitySuffix}
             </#list>
 </${type.name}>
         </#if>
@@ -68,17 +68,18 @@ ${indent}${attr.name}="${attr.defaultValue!}"${attr?is_last?then(has_elements?th
 [#${type.className?replace('.', '_')}-attributes]
 == Attributes
 
-Required attributes are in **bold face**.
+Optional attributes are denoted by `?`-suffixed types.
 
 [cols="1m,1m,1m,5"]
 |===
 |Name|Type|Default|Description
 
     <#list type.attributes?sort_by('name') as attr>
-|${attr.required?then('**', '')}${attr.name}${attr.required?then('**', '')}
-|xref:../../scalars.adoc#${attr.type?replace('.', '_')}[${attr.type?contains('.')?then(attr.type?keep_after_last('.'), attr.type)}]
+        <#assign requirementSuffix = attr.required?then('', '?')/>
+|${attr.name}
+|xref:../../scalars.adoc#${attr.type?replace('.', '_')}[${attr.type?contains('.')?then(attr.type?keep_after_last('.'), attr.type)}]${requirementSuffix}
 |${attr.defaultValue!}
-a|${(attr.description.text)!'N/A'}
+a|${(attr.description.text)!}
 
     </#list>
 |===
@@ -88,19 +89,41 @@ a|${(attr.description.text)!'N/A'}
 [#${type.className?replace('.', '_')}-components]
 == Nested components
 
-Required components are in **bold face**.
+Optional components are denoted by `?`-suffixed types.
 
 [cols="1m,1m,5"]
 |===
 |Tag|Type|Description
 
     <#list type.elements?sort_by('type') as element>
+        <#assign requirementSuffix = element.required?then('', '?')/>
+        <#assign descriptionCell = (element.description.text)!/>
+        <#assign elementName = element.type?contains('.')?then(element.type?keep_after_last('.'), element.type)/>
         <#if lookup[element.type]??>
-|${element.required?then('**', '') + (lookup[element.type].type.name!'N/A') + element.required?then('**', '')}
-|xref:${element.type}.adoc[${element.type?contains('.')?then(element.type?keep_after_last('.'), element.type)}]
-a|${(element.description.text)!'N/A'}
-
+            <#assign elementSourcedType = lookup[element.type]/>
+            <#assign elementType = elementSourcedType.type/>
+            <#assign tagCell = elementType.name!/>
+            <#switch elementType.class.simpleName>
+                <#case 'PluginType'>
+                <#case 'AbstractType'>
+|${tagCell}
+|xref:../../${elementSourcedType.groupId}/${elementSourcedType.artifactId}/${element.type}.adoc[${elementName}]${requirementSuffix}
+a|${descriptionCell}
+                    <#break>
+                <#case 'ScalarType'>
+|${tagCell}
+|xref:../scalars.adoc#${element.type?replace('.', '_')}[${elementName}]${requirementSuffix}
+a|${descriptionCell}
+                    <#break>
+                <#default>
+                    <#stop 'Unknown type `' + element.type + '` modelled in class `' + elementType.class.name + '`'/>
+            </#switch>
+        <#else>
+|
+|${elementName}${requirementSuffix}
+a|${descriptionCell}
         </#if>
+
     </#list>
 |===
 </#if>
@@ -110,6 +133,7 @@ a|${(element.description.text)!'N/A'}
 == Known implementations
 
     <#list type.implementations as impl>
-* xref:${impl}.adoc[${impl?contains('.')?then(impl?keep_after_last('.'), impl)}]
+        <#assign implSourcedType = lookup[impl]/>
+* xref:../../${implSourcedType.groupId}/${implSourcedType.artifactId}/${impl}.adoc[${impl?contains('.')?then(impl?keep_after_last('.'), impl)}]
     </#list>
 </#if>

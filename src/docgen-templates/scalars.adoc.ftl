@@ -32,14 +32,14 @@ Type converter plugins are used to convert simple `String` values into other typ
 Provider:: `${sourcedType.groupId}:${sourcedType.artifactId}`
     </#if>
 
-${scalar.description.text}
+${(scalar.description.text)!}
     <#if scalar.values?size != 0>
 
 [#${scalar.className?replace('.', '_')}-values]
 === Possible values
 
         <#list scalar.values as value>
-`${value.name}`:: ${(value.description.text)!'N/A'}
+`${value.name}`:: ${(value.description.text)!}
         </#list>
     </#if>
 </#list>
