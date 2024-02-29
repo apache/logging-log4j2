@@ -305,12 +305,15 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         if (indexToRemove == -1) {
             // key not found, no change necessary
             return this;
+        } else if (numEntries == 1) {
+            // we have 1 item and we're about to remove it
+            return EMPTY_MAP;
         }
         if (indexToRemove > 0) {
             // copy entries before the removed one
             System.arraycopy(backingArray, 1, newMap.backingArray, 1, indexToRemove * 2);
         }
-        if (indexToRemove < (numEntries + 1)) {
+        if (indexToRemove + 1 < numEntries) {
             // copy entries after the removed one
             int nextIndexToCopy = indexToRemove + 1;
             int numRemainingEntries = numEntries - nextIndexToCopy;
@@ -395,6 +398,10 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
                     getArrayIndexForKey(destinationIndex),
                     numEntriesToCopy * 2);
             numEntriesKept += numEntriesToCopy;
+        }
+
+        if (numEntriesKept == 0) {
+            return EMPTY_MAP;
         }
 
         newMap.numEntries = numEntriesKept;

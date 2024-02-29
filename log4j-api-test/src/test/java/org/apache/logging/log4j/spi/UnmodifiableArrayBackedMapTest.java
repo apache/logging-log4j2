@@ -216,6 +216,7 @@ public class UnmodifiableArrayBackedMapTest {
 
     @Test
     public void testCopyAndRemove() {
+        // general removing from well-populated set
         HashMap<String, String> params = getTestParameters();
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
         testMap = testMap.copyAndRemove("2");
@@ -224,6 +225,25 @@ public class UnmodifiableArrayBackedMapTest {
         assertFalse(testMap.containsKey("2"));
         assertTrue(testMap.containsKey("1"));
         assertFalse(testMap.containsValue("value2"));
+
+        // test removing from empty set
+        testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPut("test", "test");
+        testMap = testMap.copyAndRemove("test");
+        assertTrue(testMap.isEmpty());
+
+        // test removing first of two elements
+        testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPut("test1", "test1");
+        testMap = testMap.copyAndPut("test2", "test2");
+        testMap = testMap.copyAndRemove("test1");
+        assertFalse(testMap.containsKey("test1"));
+        assertTrue(testMap.containsKey("test2"));
+
+        // test removing second of two elements
+        testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPut("test1", "test1");
+        testMap = testMap.copyAndPut("test2", "test2");
+        testMap = testMap.copyAndRemove("test2");
+        assertTrue(testMap.containsKey("test1"));
+        assertFalse(testMap.containsKey("test2"));
     }
 
     /**
