@@ -36,13 +36,13 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Implementation of a LogEvent.
  */
 public class Log4jLogEvent implements LogEvent {
 
-    private final String loggerFqcn;
     private final Marker marker;
     private final Level level;
     private final String loggerName;
@@ -55,11 +55,13 @@ public class Log4jLogEvent implements LogEvent {
     private long threadId;
     private String threadName;
     private int threadPriority;
-    private StackTraceElement source;
-    private boolean includeLocation;
     private boolean endOfBatch = false;
     /** @since Log4J 2.4 */
     private final long nanoTime;
+    // Location data
+    private final String loggerFqcn;
+    private @Nullable StackTraceElement source;
+    private boolean includeLocation;
 
     /** LogEvent Builder helper class. */
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<LogEvent> {
@@ -327,7 +329,7 @@ public class Log4jLogEvent implements LogEvent {
             final long threadId,
             final String threadName,
             final int threadPriority,
-            final StackTraceElement source,
+            final @Nullable StackTraceElement source,
             final long timestampMillis,
             final int nanoOfMillisecond,
             final long nanoTime) {
@@ -510,13 +512,14 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public StackTraceElement getSource() {
-        if (source != null) {
-            return source;
+        if (source == null && loggerFqcn != null) {
+            source = includeLocation ? StackLocatorUtil.calcLocation(loggerFqcn) : null;
         }
-        if (loggerFqcn == null || !includeLocation) {
-            return null;
-        }
-        source = StackLocatorUtil.calcLocation(loggerFqcn);
+        return peekSource();
+    }
+
+    @Override
+    public @Nullable StackTraceElement peekSource() {
         return source;
     }
 

@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides contextual information about a logged message. Besides containing a
@@ -48,16 +49,12 @@ public interface LogEvent {
 
     /**
      * Returns a copy of this log event.
+     * <p>
+     *     Location information for both events might be computed by this method.
+     * </p>
      */
     default LogEvent toMemento() {
         return new MementoLogEvent(this);
-    }
-
-    /**
-     * Returns a copy of this log event and overrides the {@code includeLocation} option.
-     */
-    default LogEvent toMemento(final boolean includeLocation) {
-        return new MementoLogEvent(this, includeLocation);
     }
 
     /**
@@ -141,11 +138,21 @@ public interface LogEvent {
     Instant getInstant();
 
     /**
-     * Gets the source of logging request.
+     * Gets the source of the logging call or computes it.
      *
-     * @return source of logging request, may be null.
+     * @return source of logging request, may be {@code null} if {@link #isIncludeLocation()} is {@code false}.
+     * @implNote The implementation must be idempotent: multiple calls to this method must always return the same value.
      */
     StackTraceElement getSource();
+
+    /**
+     * Gets the source of the logging call.
+     *
+     * @return source of logging request or {@code  null} if currently unknown.
+     * @implNote This method must be side effect free.
+     */
+    @Nullable
+    StackTraceElement peekSource();
 
     /**
      * Gets the thread name.

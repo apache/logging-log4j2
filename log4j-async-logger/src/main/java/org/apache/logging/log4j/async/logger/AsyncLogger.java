@@ -39,7 +39,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -130,33 +129,6 @@ public class AsyncLogger extends Logger {
      * This re-uses a {@code RingBufferLogEventTranslator} instance cached in a {@code ThreadLocal} to avoid creating
      * unnecessary objects with each event.
      *
-     * @param fqcn fully qualified name of the caller
-     * @param level level at which the caller wants to log the message
-     * @param marker message marker
-     * @param message the log message
-     * @param thrown a {@code Throwable} or {@code null}
-     */
-    @Override
-    public void logMessage(
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
-        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
-
-        final RingBufferLogEventTranslator translator = translatorRecycler.acquire();
-        try {
-            initTranslator(translator, fqcn, level, marker, message, thrown);
-            translator.updateThreadValues();
-            publish(translator);
-        } finally {
-            translatorRecycler.release(translator);
-        }
-    }
-
-    /**
-     * Enqueues the specified log event data for logging in a background thread.
-     * <p>
-     * This re-uses a {@code RingBufferLogEventTranslator} instance cached in a {@code ThreadLocal} to avoid creating
-     * unnecessary objects with each event.
-     *
      * @param fqcn      fully qualified name of the caller
      * @param location  the Location of the caller.
      * @param level     level at which the caller wants to log the message
@@ -170,7 +142,7 @@ public class AsyncLogger extends Logger {
             final @Nullable StackTraceElement location,
             final Level level,
             final @Nullable Marker marker,
-            final Message message,
+            final @Nullable Message message,
             final @Nullable Throwable throwable) {
         // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
 
@@ -220,11 +192,11 @@ public class AsyncLogger extends Logger {
     private void initTranslator(
             final RingBufferLogEventTranslator translator,
             final String fqcn,
-            final StackTraceElement location,
+            final @Nullable StackTraceElement location,
             final Level level,
-            final Marker marker,
-            final Message message,
-            final Throwable thrown) {
+            final @Nullable Marker marker,
+            final @Nullable Message message,
+            final @Nullable Throwable thrown) {
 
         translator.setBasicValues(
                 this,
@@ -232,57 +204,16 @@ public class AsyncLogger extends Logger {
                 marker,
                 fqcn,
                 level,
-                message, //
+                message,
                 // don't construct ThrowableProxy until required
                 thrown,
-
                 // needs shallow copy to be fast (LOG4J2-154)
-                ThreadContext.getImmutableStack(), //
+                ThreadContext.getImmutableStack(),
                 location,
-                clock, //
-                nanoClock, //
-                contextDataInjector);
-    }
-
-    private void initTranslator(
-            final RingBufferLogEventTranslator translator,
-            final String fqcn,
-            final Level level,
-            final Marker marker,
-            final Message message,
-            final Throwable thrown) {
-
-        translator.setBasicValues(
-                this,
-                getName(),
-                marker,
-                fqcn,
-                level,
-                message, //
-                // don't construct ThrowableProxy until required
-                thrown,
-
-                // needs shallow copy to be fast (LOG4J2-154)
-                ThreadContext.getImmutableStack(), //
-
-                // location (expensive to calculate)
-                calcLocationIfRequested(fqcn), //
-                clock, //
-                nanoClock, //
-                contextDataInjector);
-    }
-
-    /**
-     * Returns the caller location if requested, {@code null} otherwise.
-     *
-     * @param fqcn fully qualified caller name.
-     * @return the caller location if requested, {@code null} otherwise.
-     */
-    private StackTraceElement calcLocationIfRequested(final String fqcn) {
-        // location: very expensive operation. LOG4J2-153:
-        // Only include if "includeLocation=true" is specified,
-        // exclude if not specified or if "false" was specified.
-        return includeLocation ? StackLocatorUtil.calcLocation(fqcn) : null;
+                clock,
+                nanoClock,
+                contextDataInjector,
+                requiresLocation());
     }
 
     /**

@@ -117,8 +117,7 @@ public final class RewriteAppender extends AbstractAppender {
     @Override
     public boolean requiresLocation() {
         for (final AppenderControl control : appenders.values()) {
-            final Appender appender = control.getAppender();
-            if (appender.requiresLocation()) {
+            if (control.getAppender().requiresLocation()) {
                 return true;
             }
         }

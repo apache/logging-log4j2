@@ -24,7 +24,10 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This class is responsible for writing elements that make up a log event into
@@ -32,29 +35,33 @@ import org.apache.logging.log4j.util.StringMap;
  * the ringbuffer event, the disruptor will update the sequence number so that
  * the event can be consumed by another thread.
  */
+@NullMarked
 public class RingBufferLogEventTranslator implements EventTranslator<RingBufferLogEvent> {
 
     private ContextDataInjector contextDataInjector;
     private AsyncLogger asyncLogger;
     String loggerName;
-    protected Marker marker;
-    protected String fqcn;
+    protected @Nullable Marker marker;
     protected Level level;
-    protected Message message;
-    protected Throwable thrown;
+    protected @Nullable Message message;
+    protected @Nullable Throwable thrown;
     private ContextStack contextStack;
     private long threadId = Thread.currentThread().getId();
     private String threadName = Thread.currentThread().getName();
     private int threadPriority = Thread.currentThread().getPriority();
-    private StackTraceElement location;
     private Clock clock;
     private NanoClock nanoClock;
+    // Location data
+    protected String fqcn;
+    private @Nullable StackTraceElement location;
+    private boolean requiresLocation;
 
-    // @Override
+    // Called right before relinquishing control from the thread.
     @Override
     public void translateTo(final RingBufferLogEvent event, final long sequence) {
         try {
             final StringMap contextData = event.getContextData();
+            // Compute location if necessary
             event.setValues(
                     asyncLogger,
                     loggerName,
@@ -70,7 +77,8 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
                     threadId,
                     threadName,
                     threadPriority,
-                    location,
+                    // compute location if necessary
+                    requiresLocation ? StackLocatorUtil.calcLocation(fqcn) : location,
                     clock,
                     nanoClock);
         } finally {
@@ -82,47 +90,36 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
      * Release references held by this object to allow objects to be garbage-collected.
      */
     void clear() {
-        setBasicValues(
-                null, // asyncLogger
-                null, // loggerName
-                null, // marker
-                null, // fqcn
-                null, // level
-                null, // data
-                null, // t
-                null, // contextStack
-                null, // location
-                null, // clock
-                null, // nanoClock
-                null // contextDataInjector
-                );
+        setBasicValues(null, null, null, null, null, null, null, null, null, null, null, null, false);
     }
 
     public void setBasicValues(
-            final AsyncLogger anAsyncLogger,
-            final String aLoggerName,
-            final Marker aMarker,
-            final String theFqcn,
-            final Level aLevel,
-            final Message msg,
-            final Throwable aThrowable,
-            final ContextStack aContextStack,
-            final StackTraceElement aLocation,
-            final Clock aClock,
-            final NanoClock aNanoClock,
-            final ContextDataInjector aContextDataInjector) {
-        this.asyncLogger = anAsyncLogger;
-        this.loggerName = aLoggerName;
-        this.marker = aMarker;
-        this.fqcn = theFqcn;
-        this.level = aLevel;
-        this.message = msg;
-        this.thrown = aThrowable;
-        this.contextStack = aContextStack;
-        this.location = aLocation;
-        this.clock = aClock;
-        this.nanoClock = aNanoClock;
-        this.contextDataInjector = aContextDataInjector;
+            final AsyncLogger asyncLogger,
+            final String loggerName,
+            final @Nullable Marker marker,
+            final String fqcn,
+            final Level level,
+            final @Nullable Message message,
+            final @Nullable Throwable throwable,
+            final ContextStack contextStack,
+            final @Nullable StackTraceElement location,
+            final Clock clock,
+            final NanoClock nanoClock,
+            final ContextDataInjector contextDataInjector,
+            final boolean includeLocation) {
+        this.asyncLogger = asyncLogger;
+        this.loggerName = loggerName;
+        this.marker = marker;
+        this.fqcn = fqcn;
+        this.level = level;
+        this.message = message;
+        this.thrown = throwable;
+        this.contextStack = contextStack;
+        this.location = location;
+        this.clock = clock;
+        this.nanoClock = nanoClock;
+        this.contextDataInjector = contextDataInjector;
+        this.requiresLocation = location == null && includeLocation;
     }
 
     public void updateThreadValues() {

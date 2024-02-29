@@ -39,6 +39,7 @@ import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Class that is both a Flume and Log4j Event.
@@ -237,6 +238,11 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     @Override
     public StackTraceElement getSource() {
         return event.getSource();
+    }
+
+    @Override
+    public @Nullable StackTraceElement peekSource() {
+        return event.peekSource();
     }
 
     /**

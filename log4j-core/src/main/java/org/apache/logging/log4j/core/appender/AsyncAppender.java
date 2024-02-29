@@ -162,8 +162,12 @@ public final class AsyncAppender extends AbstractAppender {
         if (!isStarted()) {
             throw new IllegalStateException("AsyncAppender " + getName() + " is not active");
         }
-        final LogEvent memento = logEvent.toMemento(includeLocation);
+        // Modifications to the original `logEvent`:
+        // 1. Format message, if it is not thread-safe.
         InternalAsyncUtil.makeMessageImmutable(logEvent.getMessage());
+        // 2. Compute location, unless disabled.
+        InternalAsyncUtil.makeLocationImmutable(this, logEvent);
+        final LogEvent memento = logEvent.toMemento();
         if (!transfer(memento)) {
             if (blocking) {
                 if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031

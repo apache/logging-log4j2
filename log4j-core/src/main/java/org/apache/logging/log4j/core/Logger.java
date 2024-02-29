@@ -140,7 +140,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         return privateConfig.loggerConfig;
     }
 
-    @Override
     protected boolean requiresLocation() {
         return privateConfig.requiresLocation;
     }

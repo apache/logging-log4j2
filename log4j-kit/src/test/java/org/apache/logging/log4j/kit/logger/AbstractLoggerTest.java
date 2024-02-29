@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 class AbstractLoggerTest {
 
     private static final int MAX_INLINE_SIZE = 35;
+    private static final String OBJECT = "Ljava/lang/Object;";
     /**
      * List of methods that currently don't fit into 35 bytes.
      */
@@ -36,13 +37,12 @@ class AbstractLoggerTest {
             "<clinit>()V",
             "<init>(",
             "handleLogMessageException(Ljava/lang/Throwable;Ljava/lang/String;Lorg/apache/logging/log4j/message/Message;)V",
-            // logging methods with Supplier, MessageSupplier or more than 2 parameters
-            "logMessage(Ljava/lang/String;Lorg/apache/logging/log4j/Level;Lorg/apache/logging/log4j/Marker;Lorg/apache/logging/log4j/util/MessageSupplier;Ljava/lang/Throwable;)V",
-            "logMessage(Ljava/lang/String;Lorg/apache/logging/log4j/Level;Lorg/apache/logging/log4j/Marker;Lorg/apache/logging/log4j/util/Supplier;Ljava/lang/Throwable;)V",
-            "logMessage(Ljava/lang/String;Lorg/apache/logging/log4j/Level;Lorg/apache/logging/log4j/Marker;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;",
-            "logMessage(Ljava/lang/String;Lorg/apache/logging/log4j/Level;Lorg/apache/logging/log4j/Marker;Ljava/lang/String;[Lorg/apache/logging/log4j/util/Supplier;)V",
-            // logging methods with more than 3 parameters
-            "logIfEnabled(Ljava/lang/String;Lorg/apache/logging/log4j/Level;Lorg/apache/logging/log4j/Marker;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;");
+            // unconditional logging methods with more than 7 parameters
+            "logMessage(Ljava/lang/String;Lorg/apache/logging/log4j/Level;Lorg/apache/logging/log4j/Marker;Ljava/lang/String;"
+                    + OBJECT.repeat(8),
+            // conditional logging methods with more than 3 parameters
+            "logIfEnabled(Ljava/lang/String;Lorg/apache/logging/log4j/Level;Lorg/apache/logging/log4j/Marker;Ljava/lang/String;"
+                    + OBJECT.repeat(4));
 
     @Test
     void does_not_exceed_MaxInlineSize() throws Exception {

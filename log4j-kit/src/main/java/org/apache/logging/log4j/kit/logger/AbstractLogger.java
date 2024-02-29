@@ -34,7 +34,6 @@ import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Supplier;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -234,10 +233,9 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @PerformanceSensitive
-    // NOTE: This is a hot method. Current implementation compiles to 15 bytes of byte code.
-    // This is within the 35 byte MaxInlineSize threshold. Modify with care!
-    private @Nullable StackTraceElement getLocation(final String fqcn, final @Nullable StackTraceElement location) {
-        return location != null ? location : requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
+    private static @Nullable Throwable getThrowable(
+            final @Nullable Message message, final @Nullable Throwable throwable) {
+        return throwable != null ? throwable : message != null ? message.getThrowable() : null;
     }
 
     @PerformanceSensitive
@@ -258,7 +256,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Message message,
             final @Nullable Throwable throwable) {
         try {
-            doLog(fqcn, getLocation(fqcn, location), level, marker, message, throwable);
+            doLog(fqcn, location, level, marker, message, getThrowable(message, throwable));
         } catch (final Throwable t) {
             // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
             handleLogMessageException(t, fqcn, message);
@@ -281,10 +279,6 @@ public abstract class AbstractLogger implements ExtendedLogger {
                 throwable);
     }
 
-    protected boolean requiresLocation() {
-        return false;
-    }
-
     // <editor-fold desc="Unconditional logging">
     // Methods that always log a message regardless of the current logger level.
 
@@ -296,8 +290,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Marker marker,
             final CharSequence message,
             final @Nullable Throwable throwable) {
-        final Message msg = messageFactory.newMessage(message);
-        logMessageSafely(fqcn, null, level, marker, msg, throwable);
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message), throwable);
     }
 
     @PerformanceSensitive
@@ -307,8 +300,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Marker marker,
             final Object message,
             final @Nullable Throwable throwable) {
-        final Message msg = messageFactory.newMessage(message);
-        logMessageSafely(fqcn, null, level, marker, msg, throwable);
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message), throwable);
     }
 
     @SuppressWarnings("deprecation")
@@ -318,9 +310,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Marker marker,
             final MessageSupplier messageSupplier,
             final @Nullable Throwable throwable) {
-        final Message msg = LambdaUtil.get(messageSupplier);
-        final Throwable effectiveThrowable = (throwable == null && msg != null) ? msg.getThrowable() : throwable;
-        logMessageSafely(fqcn, null, level, marker, msg, effectiveThrowable);
+        logMessageSafely(fqcn, null, level, marker, LambdaUtil.get(messageSupplier), throwable);
     }
 
     @SuppressWarnings("deprecation")
@@ -330,9 +320,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Marker marker,
             final Supplier<?> messageSupplier,
             final @Nullable Throwable throwable) {
-        final Message msg = LambdaUtil.getMessage(messageSupplier, messageFactory);
-        final Throwable effectiveThrowable = (throwable == null && msg != null) ? msg.getThrowable() : throwable;
-        logMessageSafely(fqcn, null, level, marker, msg, effectiveThrowable);
+        logMessageSafely(fqcn, null, level, marker, LambdaUtil.getMessage(messageSupplier, messageFactory), throwable);
     }
 
     @PerformanceSensitive
@@ -342,15 +330,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Marker marker,
             final String message,
             final @Nullable Throwable throwable) {
-        final Message msg = messageFactory.newMessage(message);
-        logMessageSafely(fqcn, null, level, marker, msg, throwable);
-    }
-
-    @PerformanceSensitive
-    protected void logMessage(
-            final String fqcn, final Level level, final @Nullable Marker marker, final String message) {
-        final Message msg = messageFactory.newMessage(message);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message), throwable);
     }
 
     @PerformanceSensitive
@@ -360,8 +340,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Marker marker,
             final String message,
             final Object p0) {
-        final Message msg = messageFactory.newMessage(message, p0);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message, p0), null);
     }
 
     @PerformanceSensitive
@@ -372,8 +351,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final String message,
             final Object p0,
             final Object p1) {
-        final Message msg = messageFactory.newMessage(message, p0, p1);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message, p0, p1), null);
     }
 
     protected void logMessage(
@@ -384,8 +362,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final Object p0,
             final Object p1,
             final Object p2) {
-        final Message msg = messageFactory.newMessage(message, p0, p1, p2);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message, p0, p1, p2), null);
     }
 
     protected void logMessage(
@@ -397,8 +374,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final Object p1,
             final Object p2,
             final Object p3) {
-        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message, p0, p1, p2, p3), null);
     }
 
     protected void logMessage(
@@ -411,8 +387,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final Object p2,
             final Object p3,
             final Object p4) {
-        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message, p0, p1, p2, p3, p4), null);
     }
 
     protected void logMessage(
@@ -426,8 +401,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final Object p3,
             final Object p4,
             final Object p5) {
-        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5), null);
     }
 
     protected void logMessage(
@@ -442,8 +416,8 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final Object p4,
             final Object p5,
             final Object p6) {
-        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(
+                fqcn, null, level, marker, messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6), null);
     }
 
     protected void logMessage(
@@ -459,8 +433,8 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final Object p5,
             final Object p6,
             final Object p7) {
-        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(
+                fqcn, null, level, marker, messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7), null);
     }
 
     protected void logMessage(
@@ -477,8 +451,13 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final Object p6,
             final Object p7,
             final Object p8) {
-        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(
+                fqcn,
+                null,
+                level,
+                marker,
+                messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8),
+                null);
     }
 
     protected void logMessage(
@@ -496,8 +475,13 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final Object p7,
             final Object p8,
             final Object p9) {
-        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(
+                fqcn,
+                null,
+                level,
+                marker,
+                messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9),
+                null);
     }
 
     @SuppressWarnings("deprecation")
@@ -507,8 +491,8 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Marker marker,
             final String message,
             final Supplier<?>... paramSuppliers) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.getAll(paramSuppliers));
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(
+                fqcn, null, level, marker, messageFactory.newMessage(message, LambdaUtil.getAll(paramSuppliers)), null);
     }
 
     @PerformanceSensitive
@@ -518,8 +502,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Marker marker,
             final String message,
             final Object... params) {
-        final Message msg = messageFactory.newMessage(message, params);
-        logMessageSafely(fqcn, null, level, marker, msg, msg.getThrowable());
+        logMessageSafely(fqcn, null, level, marker, messageFactory.newMessage(message, params), null);
     }
     // </editor-fold>
 
@@ -564,8 +547,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final @Nullable Marker marker,
             final String format,
             final Object... params) {
-        final Message message = new StringFormattedMessage(format, params);
-        logMessageSafely(fqcn, null, level, marker, message, message.getThrowable());
+        logMessageSafely(fqcn, null, level, marker, new StringFormattedMessage(format, params), null);
     }
 
     protected void logThrowingMessage(final String fqcn, final Level level, final Throwable throwable) {
@@ -892,7 +874,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
     public void logIfEnabled(
             final String fqcn, final Level level, final @Nullable Marker marker, final String message) {
         if (isEnabled(level, marker, message)) {
-            logMessage(fqcn, level, marker, message);
+            logMessage(fqcn, level, marker, message, (Throwable) null);
         }
     }
 
@@ -1189,7 +1171,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void debug(final Marker marker, final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.DEBUG, marker, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.DEBUG, marker, message, null);
     }
 
     @Override
@@ -1225,7 +1207,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void debug(final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.DEBUG, null, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.DEBUG, null, message, null);
     }
 
     @Override
@@ -1542,7 +1524,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void error(final @Nullable Marker marker, final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.ERROR, marker, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.ERROR, marker, message, null);
     }
 
     @Override
@@ -1588,7 +1570,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void error(final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.ERROR, null, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.ERROR, null, message, null);
     }
 
     @Override
@@ -1905,7 +1887,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void fatal(final @Nullable Marker marker, final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.FATAL, marker, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.FATAL, marker, message, null);
     }
 
     @Override
@@ -1951,7 +1933,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void fatal(final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.FATAL, null, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.FATAL, null, message, null);
     }
 
     @Override
@@ -2268,7 +2250,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void info(final @Nullable Marker marker, final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.INFO, marker, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.INFO, marker, message, null);
     }
 
     @Override
@@ -2314,7 +2296,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void info(final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.INFO, null, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.INFO, null, message, null);
     }
 
     @Override
@@ -2631,7 +2613,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void log(final Level level, final @Nullable Marker marker, final @Nullable Message message) {
-        logIfEnabled(FQCN, level, marker, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, level, marker, message, null);
     }
 
     @Override
@@ -2692,7 +2674,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void log(final Level level, final @Nullable Message message) {
-        logIfEnabled(FQCN, level, null, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, level, null, message, null);
     }
 
     @Override
@@ -3049,7 +3031,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void trace(final @Nullable Marker marker, final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.TRACE, marker, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.TRACE, marker, message, null);
     }
 
     @Override
@@ -3095,7 +3077,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void trace(final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.TRACE, null, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.TRACE, null, message, null);
     }
 
     @Override
@@ -3412,7 +3394,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void warn(final @Nullable Marker marker, final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.WARN, marker, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.WARN, marker, message, null);
     }
 
     @Override
@@ -3458,7 +3440,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
 
     @Override
     public void warn(final @Nullable Message message) {
-        logIfEnabled(FQCN, Level.WARN, null, message, message != null ? message.getThrowable() : null);
+        logIfEnabled(FQCN, Level.WARN, null, message, null);
     }
 
     @Override

@@ -165,7 +165,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
     private void logToAsyncDelegate(final LogEvent event) {
         // Passes on the event to a separate thread that will call
         // asyncCallAppenders(LogEvent).
-        populateLazilyInitializedFields(event);
         if (!delegate.tryEnqueue(event, this)) {
             handleQueueFull(event);
         }
@@ -191,11 +190,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 default:
             }
         }
-    }
-
-    private void populateLazilyInitializedFields(final LogEvent event) {
-        event.getSource();
-        event.getThreadName();
     }
 
     void logInBackgroundThread(final LogEvent event) {
