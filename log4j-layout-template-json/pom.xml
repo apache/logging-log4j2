@@ -27,7 +27,6 @@
   </parent>
 
   <artifactId>log4j-layout-template-json</artifactId>
-
   <name>Apache Log4j JSON Template Layout</name>
   <description>Apache Log4j Layout for producing JSON output that is structured according to a user-provided template.</description>
 
@@ -63,5 +62,44 @@
     </dependency>
 
   </dependencies>
+
+  <build>
+    <plugins>
+
+      <!-- Modules that contain `log4j-core` plugins, must be compiled with: `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-core</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
+      <!-- Disable Failsafe, tests are in the `-test` module. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <!-- Disable Surefire, tests are in the `-test` module. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>
