@@ -91,7 +91,7 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <angus-activation.version>2.0.1</angus-activation.version>
+    <angus-activation.version>2.0.2</angus-activation.version>
     <angus-mail.version>2.0.2</angus-mail.version>
     <assertj.version>3.25.3</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
