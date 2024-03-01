@@ -18,12 +18,19 @@ package org.apache.logging.log4j.status;
 
 import static org.apache.logging.log4j.status.StatusLogger.DEFAULT_FALLBACK_LISTENER_LEVEL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Properties;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import uk.org.webcompere.systemstubs.SystemStubs;
 
 class StatusLoggerLevelTest {
@@ -103,5 +110,80 @@ class StatusLoggerLevelTest {
 
         // Verify the level
         assertThat(statusLoggerConfig.fallbackListenerLevel).isEqualTo(DEFAULT_FALLBACK_LISTENER_LEVEL);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void debug_mode_should_override_log_filtering(final boolean debugEnabled) {
+
+        // Create a logger with debug enabled
+        final StatusLogger.Config loggerConfig = new StatusLogger.Config(debugEnabled, 0, null);
+        final Level loggerLevel = Level.ERROR;
+        final StatusConsoleListener fallbackListener = mock(StatusConsoleListener.class);
+        when(fallbackListener.getStatusLevel()).thenReturn(loggerLevel);
+        final StatusLogger logger = new StatusLogger(
+                StatusLoggerLevelTest.class.getSimpleName(),
+                ParameterizedNoReferenceMessageFactory.INSTANCE,
+                loggerConfig,
+                fallbackListener);
+
+        // Log at all levels
+        final Level[] levels = Level.values();
+        for (final Level level : levels) {
+            logger.log(level, "test for level `{}`", level);
+        }
+
+        // Calculate the number of expected messages
+        final int expectedMessageCount;
+        if (debugEnabled) {
+            expectedMessageCount = levels.length;
+        } else {
+            expectedMessageCount = (int) Arrays.stream(levels)
+                    .filter(loggerLevel::isLessSpecificThan)
+                    .count();
+        }
+
+        // Verify the fallback listener invocation
+        assertThat(expectedMessageCount).isGreaterThan(0);
+        verify(fallbackListener, times(expectedMessageCount)).log(any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void debug_mode_should_override_listener_filtering(final boolean debugEnabled) {
+
+        // Create a logger with debug enabled
+        final StatusLogger.Config loggerConfig = new StatusLogger.Config(debugEnabled, 0, null);
+        final StatusLogger logger = new StatusLogger(
+                StatusLoggerLevelTest.class.getSimpleName(),
+                ParameterizedNoReferenceMessageFactory.INSTANCE,
+                loggerConfig,
+                new StatusConsoleListener(Level.ERROR));
+
+        // Register a listener
+        final Level listenerLevel = Level.INFO;
+        final StatusListener listener = mock(StatusListener.class);
+        when(listener.getStatusLevel()).thenReturn(listenerLevel);
+        logger.registerListener(listener);
+
+        // Log at all levels
+        final Level[] levels = Level.values();
+        for (final Level level : levels) {
+            logger.log(level, "test for level `{}`", level);
+        }
+
+        // Calculate the number of expected messages
+        final int expectedMessageCount;
+        if (debugEnabled) {
+            expectedMessageCount = levels.length;
+        } else {
+            expectedMessageCount = (int) Arrays.stream(levels)
+                    .filter(listenerLevel::isLessSpecificThan)
+                    .count();
+        }
+
+        // Verify the listener invocation
+        assertThat(expectedMessageCount).isGreaterThan(0);
+        verify(listener, times(expectedMessageCount)).log(any());
     }
 }
