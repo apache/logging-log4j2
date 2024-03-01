@@ -93,7 +93,7 @@
     <hsqldb.version>2.7.2</hsqldb.version>
     <jackson-bom.version>2.16.1</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
-    <jakarta-activation.version>2.1.2</jakarta-activation.version>
+    <jakarta-activation.version>2.1.3</jakarta-activation.version>
     <jakarta-mail.version>2.1.2</jakarta-mail.version>
     <!-- BOM with Jakarta EE 9 APIs: -->
     <jakartaee-bom.version>9.1.0</jakartaee-bom.version>
@@ -1195,86 +1195,5 @@
 
     </plugins>
   </build>
-
-  <profiles>
-
-    <!-- `plugin-processing` profile containing configuration specific to `@Plugin`-annotated members -->
-    <profile>
-
-      <id>plugin-processing</id>
-
-      <!-- Profile gets activated using a file instead of, say, a property.
-           Since a Maven property lookup requires model interpolation and that hasn't happened at this stage yet.
-           See: https://maven.apache.org/ref/3.9.6/maven-model-builder -->
-      <activation>
-        <file>
-          <exists>.log4j-plugin-processing-activator</exists>
-        </file>
-      </activation>
-
-      <build>
-        <plugins>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <annotationProcessorPaths combine.children="append">
-                <!-- Include `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` that generates `log4j-plugins.xml`.
-                     `DescriptorGenerator` must precede `PluginProcessor`, since the latter *claims* the `@Plugin`.
-                     Once claimed, `javac` doesn't pass those sources to other processors. -->
-                <path>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-docgen</artifactId>
-                  <version>${log4j-docgen.version}</version>
-                </path>
-                <!-- `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` for generating `META-INF/org/apache/.../Log4j2Plugins.dat`: -->
-                <path>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-core</artifactId>
-                  <version>${project.version}</version>
-                </path>
-              </annotationProcessorPaths>
-              <compilerArgs combine.children="append">
-                <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
-                <arg>-Alog4j.docgen.descriptorFilePath=${project.build.directory}/log4j-plugins.xml</arg>
-                <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
-                <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
-                <arg>-Alog4j.docgen.version=${project.version}</arg>
-                <arg>-Alog4j.docgen.description=${project.description}</arg>
-              </compilerArgs>
-            </configuration>
-          </plugin>
-
-          <!-- Attach the generated `log4j-plugins.xml` -->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-plugin-descriptor</id>
-                <goals>
-                  <goal>attach-artifact</goal>
-                </goals>
-                <phase>package</phase>
-                <configuration>
-                  <artifacts>
-                    <artifact>
-                      <file>${project.build.directory}/log4j-plugins.xml</file>
-                      <type>xml</type>
-                      <classifier>log4j-plugins</classifier>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-        </plugins>
-      </build>
-
-    </profile>
-
-  </profiles>
 
 </project>

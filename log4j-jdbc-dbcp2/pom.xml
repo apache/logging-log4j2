@@ -16,9 +16,7 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
@@ -27,10 +25,8 @@
   </parent>
 
   <artifactId>log4j-jdbc-dbcp2</artifactId>
-
   <name>Apache Log4j JDBC DBCP 2</name>
   <description>Connection source for the JDBC Appender using Apache Commons DBCP2.</description>
-
   <properties>
 
     <!--
@@ -77,4 +73,26 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!--
+            ~ Modules that contain `log4j-core` plugins, must be compiled with:
+            ~
+            ~   org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor
+            -->
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-core</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

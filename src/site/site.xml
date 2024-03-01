@@ -277,8 +277,6 @@
         <item name="Developer Notes" href="/manual/plugins.html#DeveloperNotes"/>
       </item>
 
-      <item name="Plugin reference" href="/plugin-reference.html"/>
-
       <item name="Programmatic Log4j Configuration" href="/manual/customconfig.html" collapse="true">
         <item name="ConfigurationBuilder API" href="/manual/customconfig.html#ConfigurationBuilder"/>
         <item name="Understanding ConfigurationFactory" href="/manual/customconfig.html#ConfigurationFactory"/>

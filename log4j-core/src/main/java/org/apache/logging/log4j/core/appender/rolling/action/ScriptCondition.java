@@ -89,8 +89,8 @@ public class ScriptCondition {
      *            <li>pathList - a {@code java.util.List} containing {@link org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes} objects. (The script is
      *            free to modify and return this list.)</li>
      *            <li>substitutor - a {@link org.apache.logging.log4j.core.lookup.StrSubstitutor} that can be used to look up variables embedded in the base
-     *            dir or other properties</li>
-     *            <li>statusLogger - the {@link StatusLogger} that can be used to log events during script execution</li>
+     *            dir or other properties
+     *            <li>statusLogger - the {@link StatusLogger} that can be used to log events during script execution
      *            <li>any properties declared in the configuration</li>
      *            </ul>
      * @param configuration the configuration

@@ -16,9 +16,7 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
@@ -27,10 +25,9 @@
   </parent>
 
   <artifactId>log4j-core-test</artifactId>
-
+  <packaging>jar</packaging>
   <name>Apache Log4j Core Tests</name>
   <description>The Apache Log4j Implementation Tests</description>
-
   <properties>
     <!-- Ignore less important (high rank) bugs for test artifacts -->
     <spotbugs.maxRank>9</spotbugs.maxRank>
@@ -353,6 +350,21 @@
 
   <build>
     <plugins>
+
+      <!-- Enable Log4j plugin processing -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-core</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
