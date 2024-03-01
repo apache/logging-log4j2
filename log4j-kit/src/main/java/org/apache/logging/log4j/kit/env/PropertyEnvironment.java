@@ -53,8 +53,7 @@ public interface PropertyEnvironment {
      * @param defaultValue the default value to use if the property is undefined
      * @return the boolean value of the property or {@code defaultValue} if undefined.
      */
-    @Nullable
-    Boolean getBooleanProperty(String name, @Nullable Boolean defaultValue);
+    Boolean getBooleanProperty(String name, Boolean defaultValue);
 
     /**
      * Gets the named property as a Charset value.
@@ -62,6 +61,7 @@ public interface PropertyEnvironment {
      * @param name the name of the property to look up
      * @return the Charset value of the property or {@link Charset#defaultCharset()} if undefined.
      */
+    @SuppressWarnings("null")
     default Charset getCharsetProperty(final String name) {
         return getCharsetProperty(name, Charset.defaultCharset());
     }
@@ -73,39 +73,26 @@ public interface PropertyEnvironment {
      * @param defaultValue the default value to use if the property is undefined
      * @return the Charset value of the property or {@code defaultValue} if undefined.
      */
-    @Nullable
-    Charset getCharsetProperty(String name, @Nullable Charset defaultValue);
+    Charset getCharsetProperty(String name, Charset defaultValue);
 
     /**
      * Gets the named property as a Class value.
      *
      * @param name         the name of the property to look up
+     * @param upperBound the upper bound for the class
      * @return the Class value of the property or {@code null} if it can not be loaded.
      */
-    default @Nullable Class<?> getClassProperty(final String name) {
-        return getClassProperty(name, null);
-    }
-
-    /**
-     * Gets the named property as a Class value.
-     *
-     * @param name         the name of the property to look up
-     * @param defaultValue the default value to use if the property is undefined
-     * @return the Class value of the property or {@code defaultValue} if it can not be loaded.
-     */
-    default @Nullable Class<?> getClassProperty(final String name, final @Nullable Class<?> defaultValue) {
-        return getClassProperty(name, defaultValue, Object.class);
-    }
+    <T> @Nullable Class<? extends T> getClassProperty(final String name, final Class<T> upperBound);
 
     /**
      * Gets the named property as a subclass of {@code upperBound}.
      *
      * @param name         the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
+     * @param upperBound the upper bound for the class
      * @return the Class value of the property or {@code defaultValue} if it can not be loaded.
      */
-    <T> @Nullable Class<? extends T> getClassProperty(
-            String name, @Nullable Class<? extends T> defaultValue, Class<T> upperBound);
+    <T> Class<? extends T> getClassProperty(String name, Class<? extends T> defaultValue, Class<T> upperBound);
 
     /**
      * Gets the named property as {@link Duration}.

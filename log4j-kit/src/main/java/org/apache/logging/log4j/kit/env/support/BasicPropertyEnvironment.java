@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.kit.env.support;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
@@ -26,6 +27,10 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.kit.env.Log4jProperty;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
@@ -46,102 +51,39 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
     }
 
     @Override
-    public @Nullable Boolean getBooleanProperty(final String name, final @Nullable Boolean defaultValue) {
-        final String prop = getStringProperty(name);
-        return prop == null ? defaultValue : Boolean.parseBoolean(prop);
+    public Boolean getBooleanProperty(final String name, final Boolean defaultValue) {
+        return getObjectPropertyWithTypedDefault(name, this::toBoolean, defaultValue);
     }
 
     @Override
-    public @Nullable Charset getCharsetProperty(final String name, final @Nullable Charset defaultValue) {
-        final String charsetName = getStringProperty(name);
-        if (charsetName == null) {
-            return defaultValue;
-        }
-        try {
-            return Charset.forName(charsetName);
-        } catch (final IllegalCharsetNameException | UnsupportedOperationException e) {
-            statusLogger.warn(
-                    "Unable to get Charset '{}' for property '{}', using default '{}'.",
-                    charsetName,
-                    name,
-                    defaultValue,
-                    e);
-        }
-        return defaultValue;
+    public Charset getCharsetProperty(final String name, final Charset defaultValue) {
+        return getObjectPropertyWithTypedDefault(name, this::toCharset, defaultValue);
     }
 
     @Override
-    public <T> @Nullable Class<? extends T> getClassProperty(
-            final String name, final @Nullable Class<? extends T> defaultValue, final Class<T> upperBound) {
-        final String className = getStringProperty(name);
-        if (className == null) {
-            return defaultValue;
-        }
-        try {
-            final Class<?> clazz = getClassForName(className);
-            if (upperBound.isAssignableFrom(clazz)) {
-                return (Class<? extends T>) clazz;
-            }
-            statusLogger.warn(
-                    "Unable to get Class '{}' for property '{}': class does not extend {}.",
-                    className,
-                    name,
-                    upperBound.getName());
-        } catch (final ReflectiveOperationException e) {
-            statusLogger.warn(
-                    "Unable to get Class '{}' for property '{}', using default '{}'.",
-                    className,
-                    name,
-                    defaultValue,
-                    e);
-        }
-        return defaultValue;
-    }
-
-    protected Class<?> getClassForName(final String className) throws ReflectiveOperationException {
-        return Class.forName(className);
+    public <T> @Nullable Class<? extends T> getClassProperty(final String name, final Class<T> upperBound) {
+        return getClassProperty(name, null, upperBound);
     }
 
     @Override
-    public @Nullable Duration getDurationProperty(final String name, final @Nullable Duration defaultValue) {
-        final String prop = getStringProperty(name);
-        if (prop != null) {
-            try {
-                return Duration.parse(prop);
-            } catch (final DateTimeParseException ignored) {
-                statusLogger.warn(
-                        "Invalid Duration value '{}' for property '{}', using default '{}'.", prop, name, defaultValue);
-            }
-        }
-        return defaultValue;
+    public <T> Class<? extends T> getClassProperty(
+            final String name, final Class<? extends T> defaultValue, final Class<T> upperBound) {
+        return getObjectPropertyWithTypedDefault(name, className -> toClass(className, upperBound), defaultValue);
     }
 
     @Override
-    public @Nullable Integer getIntegerProperty(final String name, final @Nullable Integer defaultValue) {
-        final String prop = getStringProperty(name);
-        if (prop != null) {
-            try {
-                return Integer.parseInt(prop);
-            } catch (final Exception ignored) {
-                statusLogger.warn(
-                        "Invalid integer value '{}' for property '{}', using default '{}'.", prop, name, defaultValue);
-            }
-        }
-        return defaultValue;
+    public Duration getDurationProperty(final String name, final Duration defaultValue) {
+        return getObjectPropertyWithTypedDefault(name, this::toDuration, defaultValue);
     }
 
     @Override
-    public @Nullable Long getLongProperty(final String name, final @Nullable Long defaultValue) {
-        final String prop = getStringProperty(name);
-        if (prop != null) {
-            try {
-                return Long.parseLong(prop);
-            } catch (final Exception ignored) {
-                statusLogger.warn(
-                        "Invalid long value '{}' for property '{}', using default '{}'.", prop, name, defaultValue);
-            }
-        }
-        return defaultValue;
+    public Integer getIntegerProperty(final String name, final Integer defaultValue) {
+        return getObjectPropertyWithTypedDefault(name, this::toInteger, defaultValue);
+    }
+
+    @Override
+    public Long getLongProperty(final String name, final Long defaultValue) {
+        return getObjectPropertyWithTypedDefault(name, this::toLong, defaultValue);
     }
 
     @Override
@@ -149,22 +91,95 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
 
     @Override
     public <T> T getProperty(final Class<T> propertyClass) {
+        if (!propertyClass.isAnnotationPresent(Log4jProperty.class)) {
+            throw new IllegalArgumentException("Unsupported configuration properties class '" + propertyClass.getName()
+                    + "': missing '@Log4jProperty' annotation.");
+        }
+        return getRecordProperty(null, propertyClass);
+    }
+
+    protected Class<?> getClassForName(final String className) throws ReflectiveOperationException {
+        return Class.forName(className);
+    }
+
+    protected Boolean toBoolean(final String value) {
+        return Boolean.valueOf(value);
+    }
+
+    protected @Nullable Charset toCharset(final String value) {
+        try {
+            return Charset.forName(value);
+        } catch (final IllegalCharsetNameException | UnsupportedOperationException e) {
+            statusLogger.warn("Invalid Charset value '{}': {}", value, e.getMessage(), e);
+        }
+        return null;
+    }
+
+    protected @Nullable Duration toDuration(final CharSequence value) {
+        try {
+            return Duration.parse(value);
+        } catch (final DateTimeParseException e) {
+            statusLogger.warn("Invalid Duration value '{}': {}", value, e.getMessage(), e);
+        }
+        return null;
+    }
+
+    protected char[] toCharArray(final String value) {
+        return value.toCharArray();
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> @Nullable Class<? extends T> toClass(final String className, final Class<T> upperBound) {
+        try {
+            final Class<?> clazz = getClassForName(className);
+            if (upperBound.isAssignableFrom(clazz)) {
+                return (Class<? extends T>) clazz;
+            }
+            statusLogger.warn("Invalid Class value '{}': class does not extend {}.", className, upperBound.getName());
+        } catch (final ReflectiveOperationException e) {
+            statusLogger.warn("Invalid Class value '{}': {}", className, e.getMessage(), e);
+        }
+        return null;
+    }
+
+    protected <T extends Enum<T>> @Nullable T toEnum(final String value, final Class<T> enumClass) {
+        try {
+            return Enum.valueOf(enumClass, value);
+        } catch (final IllegalArgumentException e) {
+            statusLogger.warn("Invalid enum value '{}' of type {}.", value, enumClass.getName(), e);
+        }
+        return null;
+    }
+
+    protected @Nullable Integer toInteger(final String value) {
+        try {
+            return Integer.valueOf(value);
+        } catch (final NumberFormatException e) {
+            statusLogger.warn("Invalid integer value '{}': {}.", value, e.getMessage(), e);
+        }
+        return null;
+    }
+
+    protected @Nullable Long toLong(final String value) {
+        try {
+            return Long.valueOf(value);
+        } catch (final NumberFormatException e) {
+            statusLogger.warn("Invalid long value '{}': {}.", value, e.getMessage(), e);
+        }
+        return null;
+    }
+
+    protected @Nullable Level toLevel(final String value) {
+        return Level.toLevel(value, null);
+    }
+
+    private <T> T getRecordProperty(final @Nullable String parentPrefix, final Class<T> propertyClass) {
         if (!propertyClass.isRecord()) {
             throw new IllegalArgumentException("Unsupported configuration properties class '" + propertyClass.getName()
                     + "': class is not a record.");
         }
-        if (propertyClass.getAnnotation(Log4jProperty.class) == null) {
-            throw new IllegalArgumentException("Unsupported configuration properties class '" + propertyClass.getName()
-                    + "': missing '@Log4jProperty' annotation.");
-        }
-        return getProperty(null, propertyClass);
-    }
-
-    private <T> T getProperty(final @Nullable String parentPrefix, final Class<T> propertyClass) {
-        final Log4jProperty annotation = propertyClass.getAnnotation(Log4jProperty.class);
-        final String prefix = parentPrefix != null
-                ? parentPrefix
-                : annotation != null && annotation.name().isEmpty() ? propertyClass.getSimpleName() : annotation.name();
+        final String prefix =
+                parentPrefix != null ? parentPrefix : getPropertyName(propertyClass, propertyClass::getSimpleName);
 
         @SuppressWarnings("unchecked")
         final Constructor<T>[] constructors = (Constructor<T>[]) propertyClass.getDeclaredConstructors();
@@ -178,66 +193,73 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         final Constructor<T> constructor = constructors[0];
 
         final Parameter[] parameters = constructor.getParameters();
-        final Object[] initArgs = new Object[parameters.length];
+        final @Nullable Object[] initArgs = new Object[parameters.length];
         for (int i = 0; i < initArgs.length; i++) {
-            initArgs[i] = getProperty(prefix, parameters[i]);
+            final String name = prefix + "." + getPropertyName(parameters[i], parameters[i]::getName);
+            final String defaultValue = getPropertyDefaultAsString(parameters[i]);
+            initArgs[i] = getObjectProperty(name, parameters[i].getParameterizedType(), defaultValue);
         }
         try {
             return constructor.newInstance(initArgs);
         } catch (final ReflectiveOperationException e) {
-            statusLogger.warn("Unable to parse configuration properties class {}.", propertyClass.getName(), e);
-            return null;
+            throw new IllegalArgumentException(
+                    "Unable to parse configuration properties class " + propertyClass.getName() + ": " + e.getMessage(),
+                    e);
         }
     }
 
-    private Object getProperty(final String parentPrefix, final Parameter parameter) {
-        if (!parameter.isNamePresent()) {
-            statusLogger.warn("Missing parameter name on configuration parameter {}.", parameter);
-            return null;
-        }
-        final String key = parentPrefix + "." + parameter.getName();
-        final Class<?> type = parameter.getType();
-        if (boolean.class.equals(type)) {
-            return getBooleanProperty(key);
-        }
-        if (Class.class.equals(type)) {
-            return getClassProperty(key, parameter.getAnnotatedType().getType());
-        }
-        if (Charset.class.equals(type)) {
-            return getCharsetProperty(key);
-        }
-        if (Duration.class.equals(type)) {
-            return getDurationProperty(key);
-        }
-        if (Enum.class.isAssignableFrom(type)) {
-            final String prop = getStringProperty(key);
-            if (prop != null) {
-                try {
-                    return Enum.valueOf((Class<? extends Enum>) type, prop);
-                } catch (final IllegalArgumentException e) {
-                    statusLogger.warn("Invalid {} value '{}' for property '{}'.", type.getSimpleName(), prop, key);
-                }
-            }
-            return null;
-        }
-        if (int.class.equals(type)) {
-            return getIntegerProperty(key);
-        }
-        if (long.class.equals(type)) {
-            return getLongProperty(key);
-        }
-        return String.class.equals(type) ? getStringProperty(key) : getProperty(key, type);
-    }
-
-    private Object getClassProperty(final String key, final Type type) {
-        Class<?> upperBound = Object.class;
-        if (type instanceof final ParameterizedType parameterizedType) {
+    private @Nullable Object getObjectProperty(
+            final String name, final Type type, final @Nullable String defaultValue) {
+        if (type instanceof final ParameterizedType parameterizedType
+                && parameterizedType.getRawType().equals(Class.class)) {
             final Type[] arguments = parameterizedType.getActualTypeArguments();
-            if (arguments.length > 0) {
-                upperBound = findUpperBound(arguments[0]);
+            final Class<?> upperBound = arguments.length > 0 ? findUpperBound(arguments[0]) : Object.class;
+            return getObjectPropertyWithStringDefault(name, defaultValue, className -> toClass(className, upperBound));
+        }
+        if (type instanceof final Class<?> clazz) {
+            if (clazz.isRecord()) {
+                return getRecordProperty(name, clazz);
+            }
+            if (char[].class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toCharArray);
+            }
+            if (boolean.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(
+                        name, Objects.toString(defaultValue, "false"), this::toBoolean);
+            }
+            if (Boolean.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toBoolean);
+            }
+            if (Charset.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toCharset);
+            }
+            if (Duration.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toDuration);
+            }
+            if (Enum.class.isAssignableFrom(clazz)) {
+                return getObjectPropertyWithStringDefault(
+                        name, defaultValue, value -> toEnum(value, (Class<? extends Enum>) clazz));
+            }
+            if (int.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, Objects.toString(defaultValue, "0"), this::toInteger);
+            }
+            if (Integer.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toInteger);
+            }
+            if (long.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, Objects.toString(defaultValue, "0"), this::toLong);
+            }
+            if (Long.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toLong);
+            }
+            if (Level.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toLevel);
+            }
+            if (String.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, x -> x);
             }
         }
-        return getClassProperty(key, null, upperBound);
+        throw new IllegalArgumentException("Unsupported property of type '" + type.getTypeName() + "'");
     }
 
     private Class<?> findUpperBound(final Type type) {
@@ -250,5 +272,51 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
             bounds = new Type[0];
         }
         return bounds.length > 0 && bounds[0] instanceof final Class<?> clazz ? clazz : Object.class;
+    }
+
+    private String getPropertyName(final AnnotatedElement element, final Supplier<String> fallback) {
+        if (element.isAnnotationPresent(Log4jProperty.class)) {
+            final String specifiedName =
+                    element.getAnnotation(Log4jProperty.class).name();
+            if (!specifiedName.isEmpty()) {
+                return specifiedName;
+            }
+        }
+        return fallback.get();
+    }
+
+    private @Nullable String getPropertyDefaultAsString(final AnnotatedElement parameter) {
+        if (parameter.isAnnotationPresent(Log4jProperty.class)) {
+            final String defaultValue =
+                    parameter.getAnnotation(Log4jProperty.class).defaultValue();
+            if (!defaultValue.isEmpty()) {
+                return defaultValue;
+            }
+        }
+        return null;
+    }
+
+    private <T> @Nullable Object getObjectPropertyWithStringDefault(
+            final String name, final @Nullable String defaultValue, final Function<? super String, ?> converter) {
+        final String prop = getStringProperty(name);
+        if (prop != null) {
+            final @Nullable Object value = converter.apply(prop);
+            if (value != null) {
+                return value;
+            }
+        }
+        return defaultValue != null ? converter.apply(defaultValue) : null;
+    }
+
+    private <T> T getObjectPropertyWithTypedDefault(
+            final String name, final Function<? super String, ? extends @Nullable T> converter, final T defaultValue) {
+        final String prop = getStringProperty(name);
+        if (prop != null) {
+            final @Nullable T value = converter.apply(prop);
+            if (value != null) {
+                return value;
+            }
+        }
+        return defaultValue;
     }
 }
