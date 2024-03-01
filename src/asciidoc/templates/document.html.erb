@@ -44,10 +44,19 @@
 
 </head>
 <body>
+<%
+  if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
+  <div id="toc" class="toc2">
+    <div class="logo">
+      <img src="/images/logo.png" />
+    </div>
+    <div id="toctitle"><%= attr 'toc-title' %></div>
+    <%= converter.convert self, 'outline' %>
+  </div><%
+  end
+%>
+
 <div id="header">
-  <div class="logo">
-    <img src="/images/logo.png" />
-  </div>
   <nav class="main-menu">
     <ul>
       <li><a href="#">About</a></li>
@@ -85,15 +94,6 @@
     </ul>
   </nav>
 </div>
-
-<%
-  if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
-  <div id="toc" class="toc2">
-    <div id="toctitle"><%= attr 'toc-title' %></div>
-    <%= converter.convert self, 'outline' %>
-  </div><%
-  end
-%>
 
 <div id="content">
     <h1><%= doctitle %></h1>
