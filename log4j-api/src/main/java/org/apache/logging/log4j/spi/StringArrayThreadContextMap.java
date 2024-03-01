@@ -28,8 +28,8 @@ import org.apache.logging.log4j.util.TriConsumer;
  * An equivalent for DefaultThreadContxtMap, except that it's backed by
  * UnmodifiableArrayBackedMap. An instance of UnmodifiableArrayBackedMap can be
  * represented as a single Object[], which can safely be stored on the
- * ThreadLocal<> with no fear of classloader-related memory leaks. Performance
- * of the underlying UnmodifiableArrayBackedMap exceeds HashMap<> in all
+ * ThreadLocal with no fear of classloader-related memory leaks. Performance
+ * of the underlying UnmodifiableArrayBackedMap exceeds HashMap in all
  * supported operations other than get(). Note that get() performance scales
  * linearly with the current map size, and callers are advised to minimize this
  * work.
