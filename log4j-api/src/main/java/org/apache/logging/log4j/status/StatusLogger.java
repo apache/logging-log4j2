@@ -526,8 +526,7 @@ public class StatusLogger extends AbstractLogger {
                 StatusLogger.class.getSimpleName(),
                 ParameterizedNoReferenceMessageFactory.INSTANCE,
                 Config.getInstance(),
-                new StatusConsoleListener(Config.getInstance().fallbackListenerLevel,
-                    Config.getInstance().debugEnabled));
+                new StatusConsoleListener(Config.getInstance().fallbackListenerLevel));
     }
 
     /**

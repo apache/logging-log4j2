@@ -44,9 +44,6 @@ public class StatusConsoleListener implements StatusListener {
     // `volatile` is necessary to correctly read the `stream` without holding the lock
     private volatile PrintStream stream;
 
-    // whether or not enables debug mode
-    private final boolean debugEnabled;
-
     /**
      * Constructs a {@link StatusConsoleListener} instance writing to {@link System#out} using the supplied level.
      *
@@ -54,18 +51,7 @@ public class StatusConsoleListener implements StatusListener {
      * @throws NullPointerException on null {@code level}
      */
     public StatusConsoleListener(final Level level) {
-        this(level, false);
-    }
-
-    /**
-     * Constructs a {@link StatusConsoleListener} instance writing to {@link System#out} using the supplied level.
-     *
-     * @param level the level of status messages that should appear on the console
-     * @param debugEnabled whether or not enables debug mode
-     * @throws NullPointerException on null {@code level}
-     */
-    public StatusConsoleListener(final Level level, final boolean debugEnabled) {
-        this(level, System.out, debugEnabled);
+        this(level, System.out);
     }
 
     /**
@@ -79,25 +65,8 @@ public class StatusConsoleListener implements StatusListener {
      * @throws NullPointerException on null {@code level} or {@code stream}
      */
     public StatusConsoleListener(final Level level, final PrintStream stream) {
-        this(level, stream, false);
-    }
-
-    /**
-     * Constructs a {@link StatusConsoleListener} instance using the supplied level and stream.
-     * <p>
-     * Make sure not to use a logger stream of some sort to avoid creating an infinite loop of indirection!
-     * </p>
-     *
-     * @param level the level of status messages that should appear on the console
-     * @param stream the stream to write to
-     * @param debugEnabled whether or not enables debug mode
-     * @throws NullPointerException on null {@code level} or {@code stream}
-     */
-    public StatusConsoleListener(final Level level, final PrintStream stream,
-        final boolean debugEnabled) {
         this.initialLevel = this.level = requireNonNull(level, "level");
         this.initialStream = this.stream = requireNonNull(stream, "stream");
-        this.debugEnabled = debugEnabled;
     }
 
     /**
@@ -165,7 +134,7 @@ public class StatusConsoleListener implements StatusListener {
     @Override
     public void log(final StatusData data) {
         requireNonNull(data, "data");
-        if (debugEnabled || level.isLessSpecificThan(data.getLevel())) {
+        if (level.isLessSpecificThan(data.getLevel())) {
             final String formattedStatus = data.getFormattedStatus();
             stream.println(formattedStatus);
         }
