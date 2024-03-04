@@ -35,9 +35,6 @@ public @interface Log4jProperty {
 
     /**
      * Provides a name for the configuration property.
-     * <p>
-     *
-     * </p>
      */
     String name() default "";
 

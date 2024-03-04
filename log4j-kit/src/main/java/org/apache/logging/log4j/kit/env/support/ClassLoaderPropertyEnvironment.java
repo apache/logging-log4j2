@@ -14,22 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.kit.env;
+package org.apache.logging.log4j.kit.env.support;
+
+import org.apache.logging.log4j.Logger;
 
 /**
- * Provides methods to modify the set of {@link PropertySource}s used by a {@link PropertyEnvironment}.
+ * An environment implementation that uses a specific classloader to load classes.
  */
-public interface ConfigurablePropertyEnvironment extends PropertyEnvironment {
+public abstract class ClassLoaderPropertyEnvironment extends BasicPropertyEnvironment {
 
-    /**
-     * Adds a property source to the environment.
-     * @param source A property source.
-     */
-    void addPropertySource(PropertySource source);
+    private final ClassLoader loader;
 
-    /**
-     * Removes a property source from the environment.
-     * @param source A property source.
-     */
-    void removePropertySource(PropertySource source);
+    public ClassLoaderPropertyEnvironment(final ClassLoader loader, final Logger statusLogger) {
+        super(statusLogger);
+        this.loader = loader;
+    }
+
+    @Override
+    protected Class<?> getClassForName(final String className) throws ReflectiveOperationException {
+        return Class.forName(className, true, loader);
+    }
 }

@@ -29,8 +29,7 @@ public interface PropertySource {
     /**
      * Provides the priority of the property source.
      * <p>
-     *     Property sources are ordered according to the natural ordering of their priority. Sources with lower
-     *     numerical value take precedence over those with higher numerical value.
+     *     Sources with higher priority override values from sources with lower priority.
      * </p>
      *
      * @return priority value

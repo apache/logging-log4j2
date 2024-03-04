@@ -18,26 +18,22 @@ package org.apache.logging.log4j.kit.env.support;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.TreeSet;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.kit.env.ConfigurablePropertyEnvironment;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.kit.env.PropertySource;
-import org.apache.logging.log4j.kit.env.internal.CopyOnWriteNavigableSet;
 import org.jspecify.annotations.Nullable;
 
-public class PropertySourcePropertyEnvironment extends ClassloaderPropertyEnvironment
-        implements ConfigurablePropertyEnvironment {
+/**
+ * An environment implementation that supports multiple {@link PropertySource}s.
+ */
+public class CompositePropertyEnvironment extends ClassLoaderPropertyEnvironment {
 
     private final Collection<PropertySource> sources =
-            new CopyOnWriteNavigableSet<>(Comparator.comparing(PropertySource::getPriority));
-    private final Map<String, Optional<String>> stringCache = new ConcurrentHashMap<>();
-    private final Map<Class<?>, Object> classCache = new ConcurrentHashMap<>();
+            new TreeSet<>(Comparator.comparing(PropertySource::getPriority).reversed());
 
-    public PropertySourcePropertyEnvironment(
+    public CompositePropertyEnvironment(
             final @Nullable PropertyEnvironment parentEnvironment,
             final Collection<? extends PropertySource> sources,
             final ClassLoader loader,
@@ -51,39 +47,18 @@ public class PropertySourcePropertyEnvironment extends ClassloaderPropertyEnviro
 
     @Override
     public @Nullable String getStringProperty(final String name) {
-        return stringCache
-                .computeIfAbsent(name, key -> sources.stream()
-                        .map(source -> source.getProperty(key))
-                        .filter(Objects::nonNull)
-                        .findFirst())
+        return sources.stream()
+                .map(source -> source.getProperty(name))
+                .filter(Objects::nonNull)
+                .findFirst()
                 .orElse(null);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getProperty(final Class<T> propertyClass) {
-        return (T) classCache.computeIfAbsent(propertyClass, super::getProperty);
-    }
-
-    @Override
-    public void addPropertySource(final PropertySource source) {
-        sources.add(Objects.requireNonNull(source));
-        stringCache.clear();
-        classCache.clear();
-    }
-
-    @Override
-    public void removePropertySource(final PropertySource source) {
-        sources.remove(Objects.requireNonNull(source));
-        stringCache.clear();
-        classCache.clear();
     }
 
     private record ParentEnvironmentPropertySource(PropertyEnvironment parentEnvironment) implements PropertySource {
 
         @Override
         public int getPriority() {
-            return Integer.MAX_VALUE;
+            return Integer.MIN_VALUE;
         }
 
         @Override

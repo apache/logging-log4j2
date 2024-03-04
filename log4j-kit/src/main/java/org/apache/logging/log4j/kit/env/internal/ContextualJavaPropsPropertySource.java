@@ -26,16 +26,20 @@ import org.jspecify.annotations.Nullable;
  *     Should have a slightly lower priority than global system properties.
  * </p>
  */
-public class ContextPropertiesPropertySource implements PropertySource {
+public class ContextualJavaPropsPropertySource implements PropertySource {
 
-    private static final int DEFAULT_PRIORITY = 0;
+    private static final int DEFAULT_PRIORITY = 100;
 
     private final String prefix;
     private final int priority;
 
-    public ContextPropertiesPropertySource(final String contextName, final int priorityOffset) {
-        this.prefix = "log4j2." + contextName + ".";
-        this.priority = DEFAULT_PRIORITY + priorityOffset;
+    public ContextualJavaPropsPropertySource(final String contextName) {
+        this(contextName, DEFAULT_PRIORITY);
+    }
+
+    public ContextualJavaPropsPropertySource(final String contextName, final int priority) {
+        this.prefix = "log4j.contexts." + contextName + ".";
+        this.priority = priority;
     }
 
     @Override

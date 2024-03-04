@@ -27,16 +27,20 @@ import org.jspecify.annotations.Nullable;
  *     Should haves a slightly lower priority than global environment variables.
  * </p>
  */
-public class ContextEnvironmentPropertySource implements PropertySource {
+public class ContextualEnvironmentPropertySource implements PropertySource {
 
-    private static final int DEFAULT_PRIORITY = 100;
+    private static final int DEFAULT_PRIORITY = 0;
 
     private final String prefix;
     private final int priority;
 
-    public ContextEnvironmentPropertySource(final String contextName, final int priorityOffset) {
+    public ContextualEnvironmentPropertySource(final String contextName) {
+        this(contextName, DEFAULT_PRIORITY);
+    }
+
+    public ContextualEnvironmentPropertySource(final String contextName, final int priority) {
         this.prefix = "log4j2." + contextName + ".";
-        this.priority = DEFAULT_PRIORITY + priorityOffset;
+        this.priority = priority;
     }
 
     @Override
