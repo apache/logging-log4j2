@@ -97,6 +97,7 @@
 
 #footer .footer-blocks {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     background-color: #333333;
 }
@@ -132,7 +133,6 @@
     font-family: 'Open Sans', serif;
     font-size: 1em;
     color: white;
-    width: 80%;
     padding: 1em;
 }
 
@@ -211,6 +211,16 @@
 }
 
 
+@media screen and (max-width: 1100px) {
+    .table-of-content {
+        display: none;
+    }
+
+    #content {
+        width: 95vw;
+        max-width: 100%;
+    }
+}
 
 
 
