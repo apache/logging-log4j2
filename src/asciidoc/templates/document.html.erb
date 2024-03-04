@@ -50,42 +50,51 @@
     <img src="/images/log4j-logo.png" />
   </div>
 
-  <nav class="main-menu">
-    <ul>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Downloads</a></li>
-      <li>
-        <a href="#">Learn <i class="fa fa-chevron-circle-down" aria-hidden="true"></i></a>
-        <ul class="menu-drop-down">
-          <li><a href="#">Getting Started</a></li>
-          <li><a href="#">Manual</a></li>
-          <li><a href="#">Guides</a></li>
-        </ul>
-      </li>
-      <li><a href="#">Release Notes</a></li>
-      <li><a href="#">Support</a></li>
-      <li><a href="#">Security</a></li>
-      <li><a href="#">Contribute</a></li>
-    </ul>
-  </nav>
+  <div class="menu-mobile">
+    <i class="fa fa-bars" aria-hidden="true"></i>
+  </div>
 
-  <nav class="secondary-menu">
-    <ul>
-      <li>
-        <a href="#">Apache <i class="fa fa-chevron-circle-down" aria-hidden="true"></i></a>
-        <ul class="menu-drop-down">
-          <li><a target="_blank" href="https://www.apache.org/">Home</a></li>
-          <li><a target="_blank" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
-          <li><a target="_blank" href="https://www.apache.org/licenses/">License</a></li>
-          <li><a target="_blank" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
-          <li><a target="_blank" href="https://www.apache.org/events/current-event.html">Current Events</a></li>
-          <li><a target="_blank" href="https://www.apache.org/security/">Security</a></li>
-          <li><a target="_blank" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy</a></li>
-        </ul>
-      </li>
-      <li><a href="https://logging.apache.org">Logging</a></li>
-    </ul>
-  </nav>
+  <div class="navs">
+    <div class="menu-mobile-close">
+      <i class="fa fa-window-close" aria-hidden="true"></i>
+    </div>
+    <nav class="main-menu">
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Downloads</a></li>
+        <li>
+          <a href="#">Learn <i class="fa fa-chevron-circle-down" aria-hidden="true"></i></a>
+          <ul class="menu-drop-down">
+            <li><a href="#">Getting Started</a></li>
+            <li><a href="#">Manual</a></li>
+            <li><a href="#">Guides</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Release Notes</a></li>
+        <li><a href="#">Support</a></li>
+        <li><a href="#">Security</a></li>
+        <li><a href="#">Contribute</a></li>
+      </ul>
+    </nav>
+
+    <nav class="secondary-menu">
+      <ul>
+        <li>
+          <a href="#">Apache <i class="fa fa-chevron-circle-down" aria-hidden="true"></i></a>
+          <ul class="menu-drop-down">
+            <li><a target="_blank" href="https://www.apache.org/">Home</a></li>
+            <li><a target="_blank" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+            <li><a target="_blank" href="https://www.apache.org/licenses/">License</a></li>
+            <li><a target="_blank" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+            <li><a target="_blank" href="https://www.apache.org/events/current-event.html">Current Events</a></li>
+            <li><a target="_blank" href="https://www.apache.org/security/">Security</a></li>
+            <li><a target="_blank" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy</a></li>
+          </ul>
+        </li>
+        <li><a href="https://logging.apache.org">Logging</a></li>
+      </ul>
+    </nav>
+  </div>
 </div>
 
 <div class="content-container">
@@ -191,6 +200,34 @@
             pin: '.table-of-content',
             animation: tween,
             toggleActions: 'play none none reverse'
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var menuIcon = document.querySelector('.menu-mobile');
+        var menuIconClose = document.querySelector('.menu-mobile-close');
+        var menu = document.querySelector('.navs');
+
+        var duration = 0.7;
+        menuIcon.addEventListener('click', function () {
+            if (menu.classList.contains('menu-open')) {
+                gsap.to(menu, {duration: duration, ease: "power3.out", right: "-100%", onComplete: function() {
+                    menu.classList.remove('menu-open');
+                }});
+            } else {
+                gsap.to(menu, {duration: duration, ease: "power3.out", right: "0%", onStart: function() {
+                    menu.classList.add('menu-open');
+                }});
+            }
+        });
+
+        menuIconClose.addEventListener('click', function () {
+            if (menu.classList.contains('menu-open')) {
+                gsap.to(menu, {duration: duration, ease: "power3.out", right: "-100%", onComplete: function() {
+                    menu.classList.remove('menu-open');
+                }});
+            }
         });
     });
 </script>

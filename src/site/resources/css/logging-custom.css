@@ -4,7 +4,7 @@
     max-width: 100%;
     align-items: center;
     z-index: 10000;
-    background-color: #e7e7e7;
+    background-color: #f9f8f8;
     border-bottom: 1px solid lightgrey;
 
 }
@@ -38,21 +38,26 @@
 
 #header .main-menu ul li,
 #header .secondary-menu ul li {
-    margin-right: 1.5em;
+    margin-right: 1.3em;
 }
 
-#header nav ul {
+#header .navs {
+    display: flex;
+    width: 100%;
+}
+
+#header .navs nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
 }
 
-#header nav ul li {
+#header .navs nav ul li {
     float: left;
 }
 
-#header nav ul li a {
+#header .navs nav ul li a {
     display: block;
     text-align: center;
     padding: 14px 16px;
@@ -76,7 +81,7 @@
     text-align: left;
 }
 
-#header nav ul li:hover .menu-drop-down {
+#header .navs nav ul li:hover .menu-drop-down {
     display: flex;
 }
 
@@ -136,7 +141,7 @@
 }
 
 
-.content-container .content {
+#content {
     width: 80vw;
     overflow: auto;
     height: 100%;
@@ -147,6 +152,67 @@
     padding: 2em;
     background-color: #fff;
 }
+
+/** Small screens < 1400px */
+@media (max-width: 1400px) {
+    #content {
+        max-width: 56em;
+    }
+
+    .table-of-content {
+        width: 25vw;
+    }
+
+    .content-container .content {
+        width: 75vw;
+    }
+
+    .menu-mobile {
+        display: block;
+        flex-grow: 1;
+        cursor: pointer;
+        text-align: right;
+        font-size: 2em;
+    }
+
+    .menu-mobile-close {
+        display: block;
+        text-align: right;
+        cursor: pointer;
+        padding: 1em;
+        font-size: 2em;
+    }
+
+    #header .navs {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 300px;
+        height: 100%;
+        background: white;
+        z-index: 1000;
+        display: block;
+    }
+
+    .main-menu ul, .secondary-menu ul {
+        flex-direction: column;
+    }
+}
+
+/* Ensure the menu icon is visible on larger screens */
+@media screen and (min-width: 1400px) {
+    .menu-mobile {
+        display: none;
+    }
+
+    .menu-mobile-close {
+        display: none;
+    }
+}
+
+
+
+
 
 
 
