@@ -44,19 +44,12 @@
 
 </head>
 <body>
-<%
-  if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
-  <div id="toc" class="toc2">
-    <div class="logo">
-      <img src="/images/logo.png" />
-    </div>
-    <div id="toctitle"><%= attr 'toc-title' %></div>
-    <%= converter.convert self, 'outline' %>
-  </div><%
-  end
-%>
 
 <div id="header">
+  <div class="logo">
+    <img src="/images/log4j-logo.png" />
+  </div>
+
   <nav class="main-menu">
     <ul>
       <li><a href="#">About</a></li>
@@ -95,20 +88,35 @@
   </nav>
 </div>
 
-<div id="content">
-    <h1><%= doctitle %></h1>
-    <%= content %>
-</div><%
-  unless !footnotes? || attr?(:nofootnotes) %>
-    <div id="footnotes">
-      <hr><%
-      footnotes.each do |fn| %>
-        <div class="footnote" id="_footnote_<%= fn.index %>">
-          <a href="#_footnoteref_<%= fn.index %>"><%= fn.index %></a>. <%= fn.text %>
-        </div><%
-      end %>
+<div class="content-container">
+  <%
+    if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
+    <div class="table-of-content">
+
+      <div class="table-of-content-title" id="toctitle"><%= attr 'toc-title' %></div>
+      <%= converter.convert self, 'outline' %>
     </div><%
-  end %><%
+    end
+  %>
+
+  <div id="content">
+      <h1><%= doctitle %></h1>
+      <%= content %>
+  </div><%
+    unless !footnotes? || attr?(:nofootnotes) %>
+      <div id="footnotes">
+        <hr><%
+        footnotes.each do |fn| %>
+          <div class="footnote" id="_footnote_<%= fn.index %>">
+            <a href="#_footnoteref_<%= fn.index %>"><%= fn.index %></a>. <%= fn.text %>
+          </div><%
+        end %>
+      </div><%
+    end %>
+</div>
+
+
+  <%
   unless nofooter %>
     <div id="footer">
       <div class="footer-blocks">
@@ -165,6 +173,27 @@
       </div>
     </div><%
   end %>
+
+<script src="/js/gsap-3.12.5.min.js"></script>
+<script src="/js/ScrollTrigger-3.12.5.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let tween = gsap.to(".table-of-content", {
+            delay:0.1,
+            duration: 0.5,
+            backgroundColor: '#ededed',
+            ease: "power3.out"
+        });
+
+        ScrollTrigger.create({
+            trigger: '.table-of-content',
+            start: 'top top',
+            pin: '.table-of-content',
+            animation: tween,
+            toggleActions: 'play none none reverse'
+        });
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var menuItems = document.querySelectorAll('#header nav > ul > li');

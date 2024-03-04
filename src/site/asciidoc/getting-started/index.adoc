@@ -1,0 +1,76 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Getting started with Apache Log4j
+
+Apache Log4j is a framework that helps you understand, what a software system actually does.
+Imagine you are joining a new project as a junior developer and you are overwhelmed by the
+hundreds of thousands of lines of code. Reading all those lines will cost you a lot of time.
+To understand such a system you can connect to it using a debugger and follow every step the system does.
+Or you can read a log file: a file, where the system writes information about it's state, what it does
+and with what data it currently operates.
+
+This is similar to a debugger, but also has some advantages that a debugger does not have:
+
+You can look into the past. When you write log files for production systems, you can spot errors
+that happened, even when they are few days old.
+Sometimes, you are also not able to reproduce a very specific error with the debugger, no matter
+how accurately a user describes their problem. With well done logs, you may have access to information,
+that a user can't tell you.
+
+Frameworks like Log4j don't only allow you to write basic strings to files. Log4j is able
+to write to different kinds of outputs, from Console to Queues and even databases.
+
+== What do I need to know?
+
+Logging Frameworks are fundamental, and Log4j is also fundamental. To work with it, you don't require
+any special skills except for Java coding skills. If you know Exceptions, basic XML rules (for configuration)
+and general Java syntax (Strings, maybe Lambda basics) you are good to go.
+
+== Installing Apache Log4j
+
+The best way to install Log4j is by using a build tool such as Maven or Gradle.
+
+[source,xml,indent=0,role="primary"]
+.Maven
+----
+<dependency>
+    <groupId>com.example</groupId>
+    <artifactId>some-library</artifactId>
+    <version>1.2.3</version>
+</dependency>
+----
+
+[source,indent=0,role="secondary"]
+.Gradle
+----
+compile 'com.example:some-library:1.2.3'
+----
+
+
+<dependencies>
+<dependency>
+<groupId>org.apache.logging.log4j</groupId>
+<artifactId>log4j-api</artifactId>
+<version>2.22.1</version>
+</dependency>
+<dependency>
+<groupId>org.apache.logging.log4j</groupId>
+<artifactId>log4j-core</artifactId>
+<version>2.22.1</version>
+</dependency>
+</dependencies>

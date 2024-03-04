@@ -1,12 +1,20 @@
 #header {
     display: flex;
     height: 10vh;
-    width: 80vw;
     max-width: 100%;
-    margin-right:0;
     align-items: center;
-    background-color: white;
     z-index: 10000;
+    background-color: #e7e7e7;
+    border-bottom: 1px solid lightgrey;
+
+}
+
+#header .logo {
+    margin-right: 1.5em;
+}
+
+#header .logo img {
+    max-height: 6vh;
 }
 
 #header .main-menu {
@@ -79,12 +87,13 @@
 /** Footer */
 #footer {
     z-index: 1000;
+    background-color: #333333;
 }
 
 #footer .footer-blocks {
     display: flex;
     justify-content: center;
-    background-color: #333;
+    background-color: #333333;
 }
 
 #footer .footer-blocks div {
@@ -122,20 +131,23 @@
     padding: 1em;
 }
 
-
-#toc .logo img {
-    max-height: 6vh;
+.content-container {
+    display: flex;
 }
 
-#toc .logo {
-    margin-bottom: 2em;
-    text-align: center;
+
+.content-container .content {
+    width: 80vw;
+    overflow: auto;
+    height: 100%;
 }
 
-#toc.toc2 {
-    padding-top: 2em;
+.table-of-content {
     width: 20vw;
-    border-top: 1px solid #e7e7e9;
+    padding: 2em;
+    background-color: #fff;
 }
+
+
 
 
