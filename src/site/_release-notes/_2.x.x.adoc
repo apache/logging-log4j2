@@ -49,3 +49,4 @@ This releases contains ...
 * Update `org.apache.commons:commons-dbcp2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2344[2344])
 * Update `org.apache.kafka:kafka-clients` to version `3.7.0` (https://github.com/apache/logging-log4j2/pull/2326[2326])
 * Update `org.codehaus.groovy:groovy-bom` to version `3.0.21` (https://github.com/apache/logging-log4j2/pull/2345[2345])
+* Update `org.eclipse.angus:angus-activation` to version `2.0.2` (https://github.com/apache/logging-log4j2/pull/2336[2336])
