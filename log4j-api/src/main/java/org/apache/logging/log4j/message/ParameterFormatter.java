@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -61,6 +63,8 @@ final class ParameterFormatter {
     private static final char DELIM_START = '{';
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
+
+    private static final Logger STATUS_LOGGER = StatusLogger.getLogger();
 
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
@@ -236,7 +240,10 @@ final class ParameterFormatter {
             final String message = String.format(
                     "found %d argument placeholders, but provided %d for pattern `%s`",
                     analysis.placeholderCount, args.length, pattern);
-            throw new IllegalArgumentException(message);
+            final Throwable error = new IllegalArgumentException(message);
+            STATUS_LOGGER.error("parameter formatting failure", error);
+            buffer.append(pattern);
+            return;
         }
 
         // Fast-path for patterns containing no escapes
@@ -250,7 +257,7 @@ final class ParameterFormatter {
         }
     }
 
-    static void formatMessageContainingNoEscapes(
+    private static void formatMessageContainingNoEscapes(
             final StringBuilder buffer,
             final String pattern,
             final Object[] args,
@@ -271,7 +278,7 @@ final class ParameterFormatter {
         buffer.append(pattern, precedingTextStartIndex, pattern.length());
     }
 
-    static void formatMessageContainingEscapes(
+    private static void formatMessageContainingEscapes(
             final StringBuilder buffer,
             final String pattern,
             final Object[] args,
