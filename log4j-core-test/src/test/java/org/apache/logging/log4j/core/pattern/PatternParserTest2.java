@@ -22,9 +22,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.junit.jupiter.api.Test;
 
 public class PatternParserTest2 {
+
+    private static final Configuration CONFIGURATION = new NullConfiguration();
 
     @Test
     public void testParseConvertBackslashes() {
@@ -58,7 +62,7 @@ public class PatternParserTest2 {
 
     private void parse(
             final String pattern, final boolean convert, final StringBuilder buf, final Date date, final int i) {
-        final PatternParser parser0 = new PatternParser(null, "Converter", null);
+        final PatternParser parser0 = new PatternParser(CONFIGURATION, "Converter", null);
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
         parser0.parse(pattern, converters, fields, false, false, convert);

@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies the relative ordering of a {@link ConfigurationFactory} plugin.
+ * Identifies the relative ordering of a {@link AbstractConfigurationFactory} plugin.
  *
  * @see OrderComparator
  */

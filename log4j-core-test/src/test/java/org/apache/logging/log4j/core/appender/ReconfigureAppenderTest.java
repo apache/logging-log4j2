@@ -134,13 +134,15 @@ public class ReconfigureAppenderTest {
         config_builder.add(config_builder.newRootLogger(Level.INFO));
 
         // Initialise the logger context.
-        final LoggerContext logger_context = Configurator.initialize(config_builder.build());
+        final BuiltConfiguration configuration = config_builder.build();
+        final LoggerContext logger_context = Configurator.initialize(configuration);
 
         // Retrieve the logger.
         final Logger logger = (Logger) LogManager.getLogger(this.getClass());
 
-        final Builder pattern_builder =
-                PatternLayout.newBuilder().setPattern("[%d{dd-MM-yy HH:mm:ss}] %p %m %throwable %n");
+        final Builder pattern_builder = PatternLayout.newBuilder()
+                .setConfiguration(configuration)
+                .setPattern("[%d{dd-MM-yy HH:mm:ss}] %p %m %throwable %n");
 
         final PatternLayout pattern_layout = (PatternLayout) pattern_builder.build();
 

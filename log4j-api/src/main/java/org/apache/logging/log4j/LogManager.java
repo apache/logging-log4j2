@@ -23,8 +23,11 @@ import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -54,6 +57,28 @@ public class LogManager {
 
     // for convenience
     private static final String FQCN = LogManager.class.getName();
+
+    private static volatile LoggerContextFactory factory;
+
+    /*
+     * Scans the classpath to find all logging implementation. Currently, only one will be used but this could be
+     * extended to allow multiple implementations to be used.
+     */
+    static {
+        // Shortcut binding to force a specific logging implementation.
+        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
+        final String factoryClassName =
+                managerProps.getStringProperty(LoggingSystemProperty.LOGGER_CONTEXT_FACTORY_CLASS);
+        if (factoryClassName != null) {
+            try {
+                factory = LoaderUtil.newCheckedInstanceOf(factoryClassName, LoggerContextFactory.class);
+            } catch (final ClassNotFoundException cnfe) {
+                LOGGER.error("Unable to locate configured LoggerContextFactory {}", factoryClassName);
+            } catch (final Exception ex) {
+                LOGGER.error("Unable to create configured LoggerContextFactory {}", factoryClassName, ex);
+            }
+        }
+    }
 
     /**
      * Prevents instantiation
@@ -387,7 +412,7 @@ public class LogManager {
      * @return The LoggerContextFactory.
      */
     public static LoggerContextFactory getFactory() {
-        return LoggingSystem.getLoggerContextFactory();
+        return factory != null ? factory : LoggingSystem.getProvider().getLoggerContextFactory();
     }
 
     /**
@@ -405,7 +430,7 @@ public class LogManager {
      * @see LoggingSystem
      */
     public static void setFactory(final LoggerContextFactory factory) {
-        LoggingSystem.getInstance().setLoggerContextFactory(factory);
+        LogManager.factory = factory;
     }
 
     /**

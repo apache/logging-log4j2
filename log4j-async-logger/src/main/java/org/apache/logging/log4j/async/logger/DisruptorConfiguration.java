@@ -20,16 +20,30 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationExtension;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.jspecify.annotations.Nullable;
 
+/**
+ * A container for:
+ * <ol>
+ *     <li>A user provided wait strategy factory.</li>
+ *     <li>The common {@link AsyncLoggerConfigDisruptor} instance shared by all logger configs.</li>
+ * </ol>
+ * TODO: the only reason the disruptor needs a holder is that
+ * {@link org.apache.logging.log4j.plugins.di.InstanceFactory} is currently unable to stop the services it creates.
+ * In the future the disruptor will be in the instance factory.
+ */
 @Configurable(printObject = true)
 @Plugin("Disruptor")
 @PluginAliases("AsyncWaitStrategyFactory")
@@ -37,37 +51,35 @@ public final class DisruptorConfiguration extends AbstractLifeCycle implements C
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final AsyncWaitStrategyFactory waitStrategyFactory;
-    private final Lazy<AsyncLoggerConfigDisruptor> loggerConfigDisruptor =
-            Lazy.lazy(() -> new AsyncLoggerConfigDisruptor(getWaitStrategyFactory()));
+    private final @Nullable AsyncWaitStrategyFactory waitStrategyFactory;
+    private final Lazy<AsyncLoggerConfigDisruptor> loggerConfigDisruptor;
 
-    private DisruptorConfiguration(final AsyncWaitStrategyFactory waitStrategyFactory) {
+    private DisruptorConfiguration(
+            final @Nullable AsyncWaitStrategyFactory waitStrategyFactory, final Configuration configuration) {
         this.waitStrategyFactory = waitStrategyFactory;
+        this.loggerConfigDisruptor =
+                Lazy.lazy(() -> configuration.getComponent(Key.forClass(AsyncLoggerConfigDisruptor.class)));
     }
 
-    public AsyncWaitStrategyFactory getWaitStrategyFactory() {
+    public @Nullable AsyncWaitStrategyFactory getWaitStrategyFactory() {
         return waitStrategyFactory;
     }
 
-    public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
+    AsyncLoggerConfigDisruptor getLoggerConfigDisruptor() {
         return loggerConfigDisruptor.get();
     }
 
     @Override
     public void start() {
-        if (loggerConfigDisruptor.isInitialized()) {
-            LOGGER.info("Starting AsyncLoggerConfigDisruptor.");
-            loggerConfigDisruptor.get().start();
-        }
+        LOGGER.info("Starting AsyncLoggerConfigDisruptor.");
+        loggerConfigDisruptor.get().start();
         super.start();
     }
 
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
-        if (loggerConfigDisruptor.isInitialized()) {
-            LOGGER.info("Stopping AsyncLoggerConfigDisruptor.");
-            loggerConfigDisruptor.get().stop(timeout, timeUnit);
-        }
+        LOGGER.info("Stopping AsyncLoggerConfigDisruptor.");
+        loggerConfigDisruptor.get().stop(timeout, timeUnit);
         return super.stop(timeout, timeUnit);
     }
 
@@ -84,6 +96,8 @@ public final class DisruptorConfiguration extends AbstractLifeCycle implements C
         @PluginBuilderAttribute
         private String waitFactory;
 
+        private Configuration configuration;
+
         public Builder setFactoryClassName(final String factoryClassName) {
             this.factoryClassName = factoryClassName;
             return this;
@@ -94,19 +108,21 @@ public final class DisruptorConfiguration extends AbstractLifeCycle implements C
             return this;
         }
 
-        @Override
-        public DisruptorConfiguration build() {
-            return new DisruptorConfiguration(
-                    createWaitStrategyFactory(Objects.toString(waitFactory, factoryClassName)));
+        @Inject
+        public Builder setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
         }
 
-        private static AsyncWaitStrategyFactory createWaitStrategyFactory(final String factoryClassName) {
+        @Override
+        public DisruptorConfiguration build() {
+            final String factoryClassName = Objects.toString(waitFactory, this.factoryClassName);
             if (factoryClassName != null) {
                 try {
                     final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
                             LoaderUtil.newCheckedInstanceOf(factoryClassName, AsyncWaitStrategyFactory.class);
                     LOGGER.info("Using configured AsyncWaitStrategy factory {}.", factoryClassName);
-                    return asyncWaitStrategyFactory;
+                    return new DisruptorConfiguration(asyncWaitStrategyFactory, configuration);
                 } catch (final ClassCastException e) {
                     LOGGER.error(
                             "Ignoring factory '{}': it is not assignable to AsyncWaitStrategyFactory",
@@ -118,9 +134,10 @@ public final class DisruptorConfiguration extends AbstractLifeCycle implements C
                             e.getMessage(),
                             e);
                 }
+            } else {
+                LOGGER.info("Using default AsyncWaitStrategy factory.");
             }
-            LOGGER.info("Using default AsyncWaitStrategy factory.");
-            return null;
+            return new DisruptorConfiguration(null, configuration);
         }
     }
 }

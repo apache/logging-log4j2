@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger;
+package org.apache.logging.log4j.async.logger.internal;
 
 import com.lmax.disruptor.AlertException;
 import com.lmax.disruptor.BatchEventProcessor;
@@ -46,7 +46,7 @@ import java.util.concurrent.locks.ReentrantLock;
 //
 // Log4j 3.0.0 NOTE:
 // Implementation was updated to use Lock/Condition API for https://github.com/apache/logging-log4j2/issues/1532
-class TimeoutBlockingWaitStrategy implements WaitStrategy {
+public class TimeoutBlockingWaitStrategy implements WaitStrategy {
     private final Lock mutex = new ReentrantLock();
     private final Condition condition = mutex.newCondition();
     private final long timeoutInNanos;

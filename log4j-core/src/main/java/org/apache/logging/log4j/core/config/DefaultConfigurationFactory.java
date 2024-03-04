@@ -27,13 +27,12 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
@@ -42,20 +41,10 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Default factory for using a plugin selected based on the configuration source.
  */
-public class DefaultConfigurationFactory extends ConfigurationFactory {
+public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
 
     private static final String ALL_TYPES = "*";
     private static final String OVERRIDE_PARAM = "override";
-
-    private final Lazy<List<ConfigurationFactory>> configurationFactories;
-    private final StrSubstitutor substitutor;
-
-    @Inject
-    public DefaultConfigurationFactory(
-            final ConfigurableInstanceFactory instanceFactory, final StrSubstitutor substitutor) {
-        configurationFactories = Lazy.lazy(() -> loadConfigurationFactories(instanceFactory));
-        this.substitutor = substitutor;
-    }
 
     /**
      * Default Factory Constructor.
@@ -67,9 +56,11 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     @Override
     public Configuration getConfiguration(
             final LoggerContext loggerContext, final String name, final URI configLocation) {
-
+        final InstanceFactory instanceFactory = loggerContext.getInstanceFactory();
+        final List<ConfigurationFactory> configurationFactories = loadConfigurationFactories(instanceFactory);
+        final StrSubstitutor substitutor = instanceFactory.getInstance(ConfigurationStrSubstitutor.class);
         if (configLocation == null) {
-            PropertyEnvironment properties = loggerContext.getProperties();
+            PropertyEnvironment properties = loggerContext.getEnvironment();
             if (properties == null) {
                 properties = PropertiesUtil.getProperties();
             }
@@ -80,7 +71,8 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 if (sources.length > 1) {
                     final List<AbstractConfiguration> configs = new ArrayList<>();
                     for (final String sourceLocation : sources) {
-                        final Configuration config = getConfiguration(loggerContext, sourceLocation.trim());
+                        final Configuration config =
+                                getConfiguration(null, loggerContext, sourceLocation.trim(), configurationFactories);
                         if (config != null) {
                             if (config instanceof AbstractConfiguration) {
                                 configs.add((AbstractConfiguration) config);
@@ -93,21 +85,21 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                         }
                     }
                     if (configs.size() > 1) {
-                        return new CompositeConfiguration(configs);
+                        return new CompositeConfiguration(loggerContext, configs);
                     } else if (configs.size() == 1) {
                         return configs.get(0);
                     }
                 }
-                return getConfiguration(loggerContext, configLocationStr);
+                return getConfiguration(null, loggerContext, configLocationStr, configurationFactories);
             } else {
                 final String log4j1ConfigStr =
                         substitutor.replace(properties.getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY));
                 if (log4j1ConfigStr != null) {
                     System.setProperty(LOG4J1_EXPERIMENTAL.getSystemKey(), "true");
-                    return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
+                    return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr, configurationFactories);
                 }
             }
-            for (final ConfigurationFactory factory : configurationFactories.get()) {
+            for (final ConfigurationFactory factory : configurationFactories) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -126,7 +118,8 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
             if (sources.length > 1) {
                 final List<AbstractConfiguration> configs = new ArrayList<>();
                 for (final String sourceLocation : sources) {
-                    final Configuration config = getConfiguration(loggerContext, sourceLocation.trim());
+                    final Configuration config =
+                            getConfiguration(null, loggerContext, sourceLocation.trim(), configurationFactories);
                     if (config instanceof AbstractConfiguration) {
                         configs.add((AbstractConfiguration) config);
                     } else {
@@ -134,10 +127,10 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                         return null;
                     }
                 }
-                return new CompositeConfiguration(configs);
+                return new CompositeConfiguration(loggerContext, configs);
             }
             final String configLocationStr = configLocation.toString();
-            for (final ConfigurationFactory factory : configurationFactories.get()) {
+            for (final ConfigurationFactory factory : configurationFactories) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -152,13 +145,13 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
             }
         }
 
-        Configuration config = getConfiguration(loggerContext, true, name);
+        Configuration config = getConfiguration(loggerContext, true, name, configurationFactories);
         if (config == null) {
-            config = getConfiguration(loggerContext, true, null);
+            config = getConfiguration(loggerContext, true, null, configurationFactories);
             if (config == null) {
-                config = getConfiguration(loggerContext, false, name);
+                config = getConfiguration(loggerContext, false, name, configurationFactories);
                 if (config == null) {
-                    config = getConfiguration(loggerContext, false, null);
+                    config = getConfiguration(loggerContext, false, null, configurationFactories);
                 }
             }
         }
@@ -173,31 +166,30 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                         + "to show Log4j 2 internal initialization logging. "
                         + "See https://logging.apache.org/log4j/2.x/manual/configuration.html for instructions on how to configure Log4j 2",
                 LoggingSystemProperty.STATUS_LOGGER_DEBUG);
-        return new DefaultConfiguration();
-    }
-
-    private Configuration getConfiguration(final LoggerContext loggerContext, final String configLocationStr) {
-        return getConfiguration(null, loggerContext, configLocationStr);
+        return new DefaultConfiguration(loggerContext);
     }
 
     private Configuration getConfiguration(
-            final String requiredVersion, final LoggerContext loggerContext, final String configLocationStr) {
+            final String requiredVersion,
+            final LoggerContext loggerContext,
+            final String configLocation,
+            final Iterable<? extends ConfigurationFactory> configurationFactories) {
         ConfigurationSource source = null;
         try {
-            source = ConfigurationSource.fromUri(NetUtils.toURI(configLocationStr));
+            source = ConfigurationSource.fromUri(NetUtils.toURI(configLocation));
         } catch (final Exception ex) {
             // Ignore the error and try as a String.
             LOGGER.catching(Level.DEBUG, ex);
         }
         if (source != null) {
-            for (final ConfigurationFactory factory : configurationFactories.get()) {
+            for (final ConfigurationFactory factory : configurationFactories) {
                 if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
                     continue;
                 }
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
-                        if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
+                        if (type.equals(ALL_TYPES) || configLocation.endsWith(type)) {
                             final Configuration config = factory.getConfiguration(loggerContext, source);
                             if (config != null) {
                                 return config;
@@ -210,10 +202,14 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         return null;
     }
 
-    private Configuration getConfiguration(final LoggerContext loggerContext, final boolean isTest, final String name) {
+    private Configuration getConfiguration(
+            final LoggerContext loggerContext,
+            final boolean isTest,
+            final CharSequence name,
+            final Iterable<? extends ConfigurationFactory> configurationFactories) {
         final boolean named = Strings.isNotEmpty(name);
         final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
-        for (final ConfigurationFactory factory : configurationFactories.get()) {
+        for (final ConfigurationFactory factory : configurationFactories) {
             String configName;
             final String prefix = isTest ? factory.getTestPrefix() : factory.getDefaultPrefix();
             final String[] types = factory.getSupportedTypes();
@@ -229,13 +225,15 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
 
                 final ConfigurationSource source = ConfigurationSource.fromResource(configName, loader);
                 if (source != null) {
-                    if (!factory.isActive()) {
+                    try {
+                        return factory.getConfiguration(loggerContext, source);
+                    } catch (final LinkageError e) {
                         LOGGER.warn(
-                                "Found configuration file {} for inactive ConfigurationFactory {}",
-                                configName,
-                                factory.getClass().getName());
+                                "Failed to create configuration from resource {} using {}.",
+                                source,
+                                factory.getClass().getName(),
+                                e);
                     }
-                    return factory.getConfiguration(loggerContext, source);
                 }
             }
         }
@@ -250,8 +248,10 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         if (source != null) {
+            final List<ConfigurationFactory> configurationFactories =
+                    loadConfigurationFactories(loggerContext.getInstanceFactory());
             final String config = source.getLocation();
-            for (final ConfigurationFactory factory : configurationFactories.get()) {
+            for (final ConfigurationFactory factory : configurationFactories) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -303,11 +303,11 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         return new String[] {configLocations};
     }
 
-    private static List<ConfigurationFactory> loadConfigurationFactories(
-            final ConfigurableInstanceFactory instanceFactory) {
+    private static List<ConfigurationFactory> loadConfigurationFactories(final InstanceFactory instanceFactory) {
         final List<ConfigurationFactory> factories = new ArrayList<>();
 
-        Optional.ofNullable(PropertiesUtil.getProperties()
+        Optional.ofNullable(instanceFactory
+                        .getInstance(PropertyEnvironment.class)
                         .getStringProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME))
                 .flatMap(DefaultConfigurationFactory::tryLoadFactoryClass)
                 .map(clazz -> {
@@ -342,7 +342,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
 
     private static Optional<Class<? extends ConfigurationFactory>> tryLoadFactoryClass(final String factoryClass) {
         try {
-            return Optional.of(Loader.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
+            return Optional.of(Loader.loadClass(factoryClass).asSubclass(AbstractConfigurationFactory.class));
         } catch (final Exception ex) {
             LOGGER.error("Unable to load ConfigurationFactory class {}", factoryClass, ex);
             return Optional.empty();

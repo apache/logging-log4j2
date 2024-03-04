@@ -22,12 +22,15 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfigurationFactory;
 import org.apache.logging.log4j.core.config.composite.DefaultMergeStrategy;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
+import org.apache.logging.log4j.core.lookup.RuntimeStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
@@ -39,14 +42,15 @@ import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.spi.CopyOnWrite;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -57,7 +61,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @see ContextSelector
  * @see ShutdownCallbackRegistry
  * @see NanoClock
- * @see ConfigurationFactory
+ * @see AbstractConfigurationFactory
  * @see MergeStrategy
  * @see InterpolatorFactory
  * @see ContextDataInjector
@@ -67,16 +71,31 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class DefaultBundle {
 
     @SingletonFactory
+    @ConditionalOnMissingBinding
+    public Provider provider(final ConfigurableInstanceFactory instanceFactory) {
+        return new Log4jProvider(instanceFactory);
+    }
+
+    @SingletonFactory
+    @ConditionalOnMissingBinding
+    public LoggerContextFactory loggerContextFactory(final ConfigurableInstanceFactory instanceFactory) {
+        return new Log4jContextFactory(instanceFactory);
+    }
+
+    @SingletonFactory
+    @ConditionalOnMissingBinding
     public MessageFactory defaultMessageFactory() {
         return LoggingSystem.getMessageFactory();
     }
 
     @SingletonFactory
+    @ConditionalOnMissingBinding
     public FlowMessageFactory defaultFlowMessageFactory() {
         return LoggingSystem.getFlowMessageFactory();
     }
 
     @SingletonFactory
+    @ConditionalOnMissingBinding
     public RecyclerFactory defaultRecyclerFactory() {
         return LoggingSystem.getRecyclerFactory();
     }
@@ -99,20 +118,17 @@ public class DefaultBundle {
         return new DummyNanoClock();
     }
 
-    @Factory
+    @SingletonFactory
     @ConditionalOnMissingBinding
     public ContextDataInjector defaultContextDataInjector() {
         final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
-
-        // note: map may be null (if legacy custom ThreadContextMap was installed by user)
-        if (threadContextMap == null) {
-            // for non StringMap-based context maps
-            return new ThreadContextDataInjector.ForDefaultThreadContextMap();
+        if (threadContextMap != null) {
+            return threadContextMap instanceof CopyOnWrite
+                    ? new ThreadContextDataInjector.ForCopyOnWriteThreadContextMap()
+                    : new ThreadContextDataInjector.ForGarbageFreeThreadContextMap();
         }
-        if (threadContextMap instanceof CopyOnWrite) {
-            return new ThreadContextDataInjector.ForCopyOnWriteThreadContextMap();
-        }
-        return new ThreadContextDataInjector.ForGarbageFreeThreadContextMap();
+        // for non StringMap-based context maps
+        return new ThreadContextDataInjector.ForDefaultThreadContextMap();
     }
 
     @SingletonFactory
@@ -134,15 +150,20 @@ public class DefaultBundle {
 
     @SingletonFactory
     @ConditionalOnMissingBinding
-    public StrSubstitutor strSubstitutor(final InterpolatorFactory factory) {
-        return new StrSubstitutor(factory.newInterpolator(null));
+    public ConfigurationStrSubstitutor configurationStrSubstitutor(final InterpolatorFactory factory) {
+        return new ConfigurationStrSubstitutor(factory.newInterpolator(null));
     }
 
     @SingletonFactory
     @ConditionalOnMissingBinding
-    public ConfigurationFactory configurationFactory(
-            final ConfigurableInstanceFactory instanceFactory, final StrSubstitutor substitutor) {
-        return new DefaultConfigurationFactory(instanceFactory, substitutor);
+    public RuntimeStrSubstitutor runtimeStrSubstitutor(final InterpolatorFactory factory) {
+        return new RuntimeStrSubstitutor(factory.newInterpolator(null));
+    }
+
+    @SingletonFactory
+    @ConditionalOnMissingBinding
+    public ConfigurationFactory configurationFactory() {
+        return new DefaultConfigurationFactory();
     }
 
     @SingletonFactory

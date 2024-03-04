@@ -55,7 +55,7 @@ public interface LoggerContext {
      * @return the PropertyEnvironment.
      * @since 3.0
      */
-    default PropertyEnvironment getProperties() {
+    default PropertyEnvironment getEnvironment() {
         return PropertiesUtil.getContextProperties(LoggerContext.class.getClassLoader(), getName());
     }
 

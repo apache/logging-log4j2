@@ -19,7 +19,6 @@ package org.apache.logging.log4j.async.logger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.core.impl.LogEventFactory;
 
 /**
  * Encapsulates the mechanism used to log asynchronously. There is one delegate per configuration, which is shared by
@@ -43,13 +42,4 @@ public interface AsyncLoggerConfigDelegate {
     void enqueueEvent(LogEvent event, AsyncLoggerConfig asyncLoggerConfig);
 
     boolean tryEnqueue(LogEvent event, AsyncLoggerConfig asyncLoggerConfig);
-
-    /**
-     * Notifies the delegate what LogEventFactory an AsyncLoggerConfig is using, so the delegate can determine
-     * whether to populate the ring buffer with mutable log events or not. This method may be invoked multiple times
-     * for all AsyncLoggerConfigs that use this delegate.
-     *
-     * @param logEventFactory the factory used
-     */
-    void setLogEventFactory(LogEventFactory logEventFactory);
 }

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.annotation.ConditionalOnPropertyKey;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
@@ -28,6 +28,7 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.SingletonFactory;
+import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.di.InjectException;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.util.PropertyEnvironment;
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.util.PropertyKey;
  * @see Log4jPropertyKey
  * @see ContextSelector
  * @see ShutdownCallbackRegistry
- * @see ConfigurationFactory
+ * @see AbstractConfigurationFactory
  * @see MergeStrategy
  * @see ContextDataInjector
  * @see LogEventFactory
@@ -61,12 +62,14 @@ public class SystemPropertyBundle {
     }
 
     @ConditionalOnPropertyKey(key = Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     public ContextSelector systemPropertyContextSelector() throws ClassNotFoundException {
         return newInstanceOfProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME, ContextSelector.class);
     }
 
     @ConditionalOnPropertyKey(key = Log4jPropertyKey.SHUTDOWN_CALLBACK_REGISTRY)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(100)
     public ShutdownCallbackRegistry systemPropertyShutdownCallbackRegistry() throws ClassNotFoundException {
@@ -74,6 +77,7 @@ public class SystemPropertyBundle {
     }
 
     @ConditionalOnPropertyKey(key = Log4jPropertyKey.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME)
+    @ConditionalOnMissingBinding
     @Factory
     public ContextDataInjector systemPropertyContextDataInjector() throws ClassNotFoundException {
         return newInstanceOfProperty(
@@ -81,18 +85,21 @@ public class SystemPropertyBundle {
     }
 
     @ConditionalOnPropertyKey(key = Log4jPropertyKey.LOG_EVENT_FACTORY_CLASS_NAME)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     public LogEventFactory systemPropertyLogEventFactory() throws ClassNotFoundException {
         return newInstanceOfProperty(Log4jPropertyKey.LOG_EVENT_FACTORY_CLASS_NAME, LogEventFactory.class);
     }
 
     @ConditionalOnPropertyKey(key = Log4jPropertyKey.CONFIG_MERGE_STRATEGY)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     public MergeStrategy systemPropertyMergeStrategy() throws ClassNotFoundException {
         return newInstanceOfProperty(Log4jPropertyKey.CONFIG_MERGE_STRATEGY, MergeStrategy.class);
     }
 
     @ConditionalOnPropertyKey(key = Log4jPropertyKey.STATUS_DEFAULT_LEVEL)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Named("StatusLogger")
     public Level systemPropertyDefaultStatusLevel() {

@@ -47,6 +47,7 @@ import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -307,7 +308,7 @@ public class PropertyConfigurator implements Configurator {
     Configuration doConfigure(
             final Properties properties, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
         final PropertiesConfiguration configuration =
-                new PropertiesConfiguration(LogManager.getContext(classLoader), properties);
+                new PropertiesConfiguration((LoggerContext) LogManager.getContext(classLoader), properties);
         configuration.doConfigure();
 
         repository = loggerRepository;

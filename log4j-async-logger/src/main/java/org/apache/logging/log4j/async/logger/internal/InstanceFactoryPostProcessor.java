@@ -14,29 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger;
+package org.apache.logging.log4j.async.logger.internal;
 
-import com.lmax.disruptor.WaitStrategy;
-import java.util.function.Supplier;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
+import org.apache.logging.log4j.plugins.Ordered;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 
-/**
- * This interface allows users to configure a custom Disruptor WaitStrategy used for
- * Async Loggers and Async LoggerConfigs.
- *
- * @since 2.17.3
- */
-@FunctionalInterface
-public interface AsyncWaitStrategyFactory extends Supplier<WaitStrategy> {
-    /**
-     * Creates and returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
-     * This WaitStrategy will be used by Log4j Async Loggers and Async LoggerConfigs.
-     *
-     * @return the WaitStrategy instance to be used by Async Loggers and Async LoggerConfigs
-     */
-    WaitStrategy createWaitStrategy();
-
+@Ordered(Ordered.LAST - 2000)
+@ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
+public class InstanceFactoryPostProcessor implements ConfigurableInstanceFactoryPostProcessor {
     @Override
-    default WaitStrategy get() {
-        return createWaitStrategy();
+    public void postProcessFactory(final ConfigurableInstanceFactory factory) {
+        factory.registerBundle(new DefaultBundle());
     }
 }

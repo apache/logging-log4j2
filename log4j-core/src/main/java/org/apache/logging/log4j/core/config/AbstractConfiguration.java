@@ -22,6 +22,7 @@ import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -72,21 +73,25 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
-import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
+import org.apache.logging.log4j.plugins.util.OrderedComparator;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.NameUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
+import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
  */
+@NullMarked
 @ServiceConsumer(value = ScriptManagerFactory.class, cardinality = Cardinality.SINGLE, resolution = Resolution.OPTIONAL)
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
@@ -151,13 +156,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final Interpolator tempLookup;
     private final StrSubstitutor runtimeStrSubstitutor;
     private final StrSubstitutor configurationStrSubstitutor;
-    private LoggerConfig root = new LoggerConfig();
+    private LoggerConfig root;
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
     private final ConfigurationScheduler configurationScheduler;
     private final WatchManager watchManager;
     private final WeakReference<LoggerContext> loggerContext;
-    private final PropertyEnvironment contextProperties;
+    private final PropertyEnvironment environment;
     private final Lock configLock = new ReentrantLock();
     private final List<ConfigurationExtension> extensions = new CopyOnWriteArrayList<>();
 
@@ -165,30 +170,43 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Constructor.
      */
     protected AbstractConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
+        this(
+                Objects.requireNonNull(loggerContext),
+                configurationSource,
+                loggerContext.getEnvironment(),
+                (ConfigurableInstanceFactory) loggerContext.getInstanceFactory());
+    }
+
+    protected AbstractConfiguration(
+            final @Nullable LoggerContext loggerContext,
+            final ConfigurationSource configurationSource,
+            final PropertyEnvironment environment,
+            final ConfigurableInstanceFactory parentInstanceFactory) {
         this.loggerContext = new WeakReference<>(loggerContext);
-        // The loggerContext is null for the NullConfiguration class.
-        // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
-        if (loggerContext != null) {
-            instanceFactory = loggerContext.newChildInstanceFactory();
-            this.contextProperties = loggerContext.getProperties();
-        } else {
-            // for NullConfiguration
-            instanceFactory = DI.createInitializedFactory();
-            this.contextProperties = PropertiesUtil.getProperties();
-        }
+        // The scheduler is shared by all configurations
+        this.configurationScheduler = parentInstanceFactory.getInstance(ConfigurationScheduler.class);
+        this.environment = environment;
+        this.instanceFactory = parentInstanceFactory.newChildInstanceFactory();
+        this.watchManager = new WatchManager(configurationScheduler);
+
         configurationProcessor = new ConfigurationProcessor(instanceFactory);
-        final var ref = Lazy.weak(this);
-        instanceFactory.registerBinding(Configuration.KEY, ref);
-        instanceFactory.registerInstancePostProcessor(new ConfigurationAwarePostProcessor(ref));
+        instanceFactory.registerBinding(Configuration.KEY, Lazy.weak(this));
+        ServiceLoaderUtil.safeStream(ServiceLoader.load(
+                        ConfigurableInstanceFactoryPostProcessor.class, AbstractConfiguration.class.getClassLoader()))
+                .sorted(Comparator.comparing(
+                        ConfigurableInstanceFactoryPostProcessor::getClass, OrderedComparator.INSTANCE))
+                .forEachOrdered(processor -> processor.postProcessFactory(instanceFactory));
+
+        instanceFactory.registerInstancePostProcessor(new ConfigurationAwarePostProcessor(Lazy.weak(this)));
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         interpolatorFactory = instanceFactory.getInstance(InterpolatorFactory.class);
         tempLookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));
         instanceFactory.injectMembers(tempLookup);
         runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
         configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
-        configurationScheduler = instanceFactory.getInstance(ConfigurationScheduler.class);
-        watchManager = instanceFactory.getInstance(WatchManager.class);
+        // Root logger
+        root = new LoggerConfig(Strings.EMPTY, Level.ERROR, true, this);
         setState(State.INITIALIZING);
     }
 
@@ -202,9 +220,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return properties;
     }
 
+    protected ConfigurableInstanceFactory getInstanceFactory() {
+        return instanceFactory;
+    }
+
     @Override
-    public PropertyEnvironment getContextProperties() {
-        return contextProperties;
+    public PropertyEnvironment getEnvironment() {
+        return environment;
     }
 
     @Override
@@ -528,6 +550,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     @Override
+    public <T> void setComponent(final Key<T> key, final Supplier<? extends T> supplier) {
+        instanceFactory.registerBinding(key, supplier);
+    }
+
+    @Override
     public void addComponent(final String componentName, final Object obj) {
         componentMap.putIfAbsent(componentName, obj);
     }
@@ -755,7 +782,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         addAppender(appender);
         final LoggerConfig rootLoggerConfig = getRootLogger();
         rootLoggerConfig.addAppender(appender, null, null);
-        final String defaultLevelName = contextProperties.getStringProperty(Log4jPropertyKey.CONFIG_DEFAULT_LEVEL);
+        final String defaultLevelName = environment.getStringProperty(Log4jPropertyKey.CONFIG_DEFAULT_LEVEL);
         final Level defaultLevel = Level.toLevel(defaultLevelName, Level.ERROR);
         rootLoggerConfig.setLevel(defaultLevel);
     }
@@ -860,7 +887,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
-        return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig);
+        final String strategy =
+                getEnvironment().getStringProperty(Log4jPropertyKey.CONFIG_RELIABILITY_STRATEGY, "AwaitCompletion");
+        return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig, strategy);
     }
 
     /**
@@ -885,7 +914,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (lc.getName().equals(loggerName)) {
                 lc.addAppender(appender, null, null);
             } else {
-                final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
+                final Level level = lc.getLevel();
+                final boolean additivity = lc.isAdditive();
+                final LoggerConfig nlc = new LoggerConfig(loggerName, level, additivity, this);
                 nlc.addAppender(appender, null, null);
                 nlc.setParent(lc);
                 loggerConfigs.putIfAbsent(loggerName, nlc);
@@ -915,7 +946,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (lc.getName().equals(loggerName)) {
                 lc.addFilter(filter);
             } else {
-                final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
+                final Level level = lc.getLevel();
+                final boolean additivity = lc.isAdditive();
+                final LoggerConfig nlc = new LoggerConfig(loggerName, level, additivity, this);
                 nlc.addFilter(filter);
                 nlc.setParent(lc);
                 loggerConfigs.putIfAbsent(loggerName, nlc);
@@ -945,7 +978,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (lc.getName().equals(loggerName)) {
                 lc.setAdditive(additive);
             } else {
-                final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), additive);
+                final Level level = lc.getLevel();
+                final LoggerConfig nlc = new LoggerConfig(loggerName, level, additive, this);
                 nlc.setParent(lc);
                 loggerConfigs.putIfAbsent(loggerName, nlc);
                 setParents();

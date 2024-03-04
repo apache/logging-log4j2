@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -53,6 +54,9 @@ import org.junit.jupiter.api.Test;
 @UsingAnyThreadContext
 @ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class HtmlLayoutTest {
+
+    private final Configuration CONFIGURATION = new DefaultConfiguration();
+
     private static class MyLogEvent extends AbstractLogEvent {
 
         @Override
@@ -91,14 +95,15 @@ public class HtmlLayoutTest {
 
     @Test
     public void testDefaultContentType() {
-        final HtmlLayout layout = HtmlLayout.createDefaultLayout();
+        final HtmlLayout layout =
+                HtmlLayout.newBuilder().setConfiguration(CONFIGURATION).build();
         assertEquals("text/html; charset=UTF-8", layout.getContentType());
     }
 
     @Test
     public void testContentType() {
         final HtmlLayout layout = HtmlLayout.newBuilder()
-                .setConfiguration(new DefaultConfiguration())
+                .setConfiguration(CONFIGURATION)
                 .setContentType("text/html; charset=UTF-16")
                 .build();
         assertEquals("text/html; charset=UTF-16", layout.getContentType());
@@ -108,7 +113,8 @@ public class HtmlLayoutTest {
 
     @Test
     public void testDefaultCharset() {
-        final HtmlLayout layout = HtmlLayout.createDefaultLayout();
+        final HtmlLayout layout =
+                HtmlLayout.newBuilder().setConfiguration(CONFIGURATION).build();
         assertEquals(StandardCharsets.UTF_8, layout.getCharset());
     }
 

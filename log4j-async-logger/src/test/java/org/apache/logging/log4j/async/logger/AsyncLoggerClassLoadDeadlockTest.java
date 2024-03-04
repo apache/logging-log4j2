@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Timeout;
 @Tag("async")
 @SetTestProperty(
         key = "LoggerContext.selector",
-        value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+        value = "org.apache.logging.log4j.async.logger.AsyncLoggerContextSelector")
 @SetTestProperty(key = "AsyncLogger.ringBufferSize", value = "128")
 @SetTestProperty(
         key = "Configuration.file",

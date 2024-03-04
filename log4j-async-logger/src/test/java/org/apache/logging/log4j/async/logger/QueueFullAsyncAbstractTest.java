@@ -57,23 +57,21 @@ public abstract class QueueFullAsyncAbstractTest extends QueueFullAbstractTest {
         assertThat(config).isNotNull();
         assertThat(config.getRootLogger()).isInstanceOf(AsyncLoggerConfig.class);
         final DisruptorConfiguration disruptorConfig = config.getExtension(DisruptorConfiguration.class);
-        final AsyncLoggerConfigDisruptor disruptor =
-                (AsyncLoggerConfigDisruptor) disruptorConfig.getAsyncLoggerConfigDelegate();
+        final AsyncLoggerConfigDisruptor disruptor = disruptorConfig.getLoggerConfigDisruptor();
         assertThat(disruptor.getRingBuffer().getBufferSize()).isEqualTo(expectedBufferSize);
     }
 
     @Override
     protected long asyncRemainingCapacity(final Logger logger) {
         if (logger instanceof final AsyncLogger asyncLogger) {
-            return Optional.ofNullable(asyncLogger.getAsyncLoggerDisruptor())
+            return Optional.of(asyncLogger.getAsyncLoggerDisruptor())
                     .map(AsyncLoggerDisruptor::getRingBuffer)
                     .map(RingBuffer::remainingCapacity)
                     .orElse(0L);
         } else {
             final LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
             if (loggerConfig instanceof final AsyncLoggerConfig asyncLoggerConfig) {
-                return Optional.ofNullable(
-                                (AsyncLoggerConfigDisruptor) asyncLoggerConfig.getAsyncLoggerConfigDelegate())
+                return Optional.ofNullable(asyncLoggerConfig.getAsyncLoggerConfigDisruptor())
                         .map(AsyncLoggerConfigDisruptor::getRingBuffer)
                         .map(RingBuffer::remainingCapacity)
                         .orElse(0L);

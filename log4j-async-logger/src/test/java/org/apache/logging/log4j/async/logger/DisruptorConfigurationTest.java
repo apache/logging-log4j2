@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
+import org.apache.logging.log4j.async.logger.internal.DefaultAsyncWaitStrategyFactory;
+import org.apache.logging.log4j.async.logger.internal.TimeoutBlockingWaitStrategy;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -57,8 +59,7 @@ public class DisruptorConfigurationTest {
 
         final AsyncLoggerConfig loggerConfig =
                 (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
-        final AsyncLoggerConfigDisruptor delegate =
-                (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
+        final AsyncLoggerConfigDisruptor delegate = loggerConfig.getAsyncLoggerConfigDisruptor();
         assertThat(delegate.getWaitStrategy().getClass()).isEqualTo(YieldingWaitStrategy.class);
         assertThat(delegate.getWaitStrategy()).isInstanceOf(com.lmax.disruptor.YieldingWaitStrategy.class);
     }
@@ -81,7 +82,7 @@ public class DisruptorConfigurationTest {
         final AsyncLoggerConfig loggerConfig =
                 (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
         final AsyncLoggerConfigDisruptor delegate =
-                (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
+                (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDisruptor();
         assertThat(delegate.getWaitStrategy().getClass()).isEqualTo(TimeoutBlockingWaitStrategy.class);
         assertThat(delegate.getWaitStrategy()).isInstanceOf(TimeoutBlockingWaitStrategy.class);
     }

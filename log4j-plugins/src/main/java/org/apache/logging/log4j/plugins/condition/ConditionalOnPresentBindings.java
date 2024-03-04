@@ -14,29 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger;
+package org.apache.logging.log4j.plugins.condition;
 
-import com.lmax.disruptor.WaitStrategy;
-import java.util.function.Supplier;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * This interface allows users to configure a custom Disruptor WaitStrategy used for
- * Async Loggers and Async LoggerConfigs.
- *
- * @since 2.17.3
+ * Only creates a binding if all the requested dependencies exist.
  */
-@FunctionalInterface
-public interface AsyncWaitStrategyFactory extends Supplier<WaitStrategy> {
-    /**
-     * Creates and returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
-     * This WaitStrategy will be used by Log4j Async Loggers and Async LoggerConfigs.
-     *
-     * @return the WaitStrategy instance to be used by Async Loggers and Async LoggerConfigs
-     */
-    WaitStrategy createWaitStrategy();
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Documented
+@Conditional(OnPresentBindingsCondition.class)
+public @interface ConditionalOnPresentBindings {
 
-    @Override
-    default WaitStrategy get() {
-        return createWaitStrategy();
-    }
+    /**
+     * @return The set of classes that must have a binding.
+     */
+    Class<?>[] bindings();
 }

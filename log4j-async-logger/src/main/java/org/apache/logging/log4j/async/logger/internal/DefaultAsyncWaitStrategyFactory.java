@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger;
+package org.apache.logging.log4j.async.logger.internal;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.BusySpinWaitStrategy;
@@ -23,13 +23,14 @@ import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.async.logger.AsyncWaitStrategyFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyKey;
 import org.apache.logging.log4j.util.Strings;
 
-class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
+public class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
     static final String DEFAULT_WAIT_STRATEGY_CLASSNAME = TimeoutBlockingWaitStrategy.class.getName();
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final PropertyKey propertyKey;

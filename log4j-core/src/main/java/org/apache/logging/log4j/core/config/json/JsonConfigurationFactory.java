@@ -17,17 +17,17 @@
 package org.apache.logging.log4j.core.config.json;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 
-@Namespace(ConfigurationFactory.NAMESPACE)
+@Namespace(AbstractConfigurationFactory.NAMESPACE)
 @Plugin("JsonConfigurationFactory")
 @Order(6)
-public class JsonConfigurationFactory extends ConfigurationFactory {
+public class JsonConfigurationFactory extends AbstractConfigurationFactory {
 
     /**
      * The file extensions supported by this factory.
@@ -35,7 +35,7 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
     private static final String[] SUFFIXES = new String[] {".json", ".jsn"};
 
     @Override
-    protected String[] getSupportedTypes() {
+    public String[] getSupportedTypes() {
         return SUFFIXES;
     }
 

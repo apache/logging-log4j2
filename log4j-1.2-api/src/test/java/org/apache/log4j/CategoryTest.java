@@ -16,6 +16,7 @@
  */
 package org.apache.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -334,7 +335,7 @@ public class CategoryTest {
     public void testAddAppender() {
         try {
             final Logger rootLogger = LogManager.getRootLogger();
-            int count = version1Appender.getEvents().size();
+            version1Appender.clear();
             rootLogger.addAppender(version1Appender);
             final Logger logger = LogManager.getLogger(CategoryTest.class);
             final org.apache.log4j.ListAppender appender = new org.apache.log4j.ListAppender();
@@ -342,17 +343,35 @@ public class CategoryTest {
             logger.addAppender(appender);
             // Root logger
             rootLogger.info("testAddLogger");
-            assertEquals(++count, version1Appender.getEvents().size(), "adding at root works");
-            assertEquals(0, appender.getEvents().size(), "adding at child works");
+            assertThat(version1Appender.getEvents())
+                    .as("check root logger events")
+                    .extracting(LoggingEvent::getRenderedMessage)
+                    .containsExactly("testAddLogger");
+            assertThat(appender.getEvents())
+                    .as("check logger '%s' events", logger.getName())
+                    .isEmpty();
             // Another logger
             logger.info("testAddLogger2");
-            assertEquals(++count, version1Appender.getEvents().size(), "adding at root works");
-            assertEquals(1, appender.getEvents().size(), "adding at child works");
+            assertThat(version1Appender.getEvents())
+                    .as("check root logger events")
+                    .extracting(LoggingEvent::getRenderedMessage)
+                    .containsExactly("testAddLogger", "testAddLogger2");
+            assertThat(appender.getEvents())
+                    .as("check logger '%s' events", logger.getName())
+                    .extracting(LoggingEvent::getRenderedMessage)
+                    .containsExactly("testAddLogger2");
             // Call appenders
-            final LoggingEvent event = new LoggingEvent();
+            version1Appender.clear();
+            appender.clear();
+            class MyCustomEvent extends LoggingEvent {}
+            final LoggingEvent event = new MyCustomEvent();
             logger.callAppenders(event);
-            assertEquals(++count, version1Appender.getEvents().size(), "callAppenders");
-            assertEquals(2, appender.getEvents().size(), "callAppenders");
+            assertThat(version1Appender.getEvents())
+                    .as("check root logger events")
+                    .containsExactly(event);
+            assertThat(appender.getEvents())
+                    .as("check logger '%s' events", logger.getName())
+                    .containsExactly(event);
         } finally {
             LogManager.resetConfiguration();
         }

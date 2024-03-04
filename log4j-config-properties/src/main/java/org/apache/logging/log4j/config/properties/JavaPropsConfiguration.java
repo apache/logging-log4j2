@@ -29,12 +29,13 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
  */
 public class JavaPropsConfiguration extends AbstractJacksonConfiguration {
 
-    public JavaPropsConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
-        super(loggerContext, configSource);
+    public JavaPropsConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
+        super(loggerContext, configurationSource);
     }
 
     @Override
-    protected Configuration createConfiguration(LoggerContext loggerContext, ConfigurationSource configurationSource) {
+    protected Configuration createConfiguration(
+            final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
         return new JavaPropsConfiguration(loggerContext, configurationSource);
     }
 

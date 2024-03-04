@@ -168,7 +168,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             final Configuration configuration = getConfiguration();
             final PropertyEnvironment propertyEnvironment =
                     configuration != null && configuration.getLoggerContext() != null
-                            ? configuration.getLoggerContext().getProperties()
+                            ? configuration.getLoggerContext().getEnvironment()
                             : PropertiesUtil.getProperties();
             return new ConsoleAppender(
                     getName(),

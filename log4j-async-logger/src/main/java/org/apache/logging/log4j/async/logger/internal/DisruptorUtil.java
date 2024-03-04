@@ -14,16 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger;
+package org.apache.logging.log4j.async.logger.internal;
 
 import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME;
 import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME;
 
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.WaitStrategy;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.async.logger.AsyncLoggerConfigDefaultExceptionHandler;
+import org.apache.logging.log4j.async.logger.AsyncLoggerConfigDisruptor;
+import org.apache.logging.log4j.async.logger.AsyncLoggerDefaultExceptionHandler;
+import org.apache.logging.log4j.async.logger.AsyncWaitStrategyFactory;
+import org.apache.logging.log4j.async.logger.RingBufferLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -34,7 +37,7 @@ import org.apache.logging.log4j.util.PropertyKey;
 /**
  * Utility methods for getting Disruptor related configuration.
  */
-final class DisruptorUtil {
+public final class DisruptorUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 4 * 1024;
@@ -45,15 +48,15 @@ final class DisruptorUtil {
      * especially when the number of application threads vastly outnumbered the number of cores.
      * CPU utilization is significantly reduced by restricting access to the enqueue operation.
      */
-    static final boolean ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
+    public static final boolean ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
             .getBooleanProperty(Log4jPropertyKey.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
 
-    static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
+    public static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
             .getBooleanProperty(Log4jPropertyKey.ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
 
     private DisruptorUtil() {}
 
-    static WaitStrategy createWaitStrategy(
+    public static WaitStrategy createWaitStrategy(
             final PropertyKey key, final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
 
         if (asyncWaitStrategyFactory == null) {
@@ -66,7 +69,7 @@ final class DisruptorUtil {
         return asyncWaitStrategyFactory.createWaitStrategy();
     }
 
-    static int calculateRingBufferSize(final PropertyKey key) {
+    public static int calculateRingBufferSize(final PropertyKey key) {
         int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
         final String userPreferredRBSize =
                 PropertiesUtil.getProperties().getStringProperty(key, String.valueOf(ringBufferSize));
@@ -84,7 +87,7 @@ final class DisruptorUtil {
         return Integers.ceilingNextPowerOfTwo(ringBufferSize);
     }
 
-    static ExceptionHandler<RingBufferLogEvent> getAsyncLoggerExceptionHandler() {
+    public static ExceptionHandler<RingBufferLogEvent> getAsyncLoggerExceptionHandler() {
         try {
             return LoaderUtil.newCheckedInstanceOfProperty(
                     ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME,
@@ -96,7 +99,8 @@ final class DisruptorUtil {
         }
     }
 
-    static ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> getAsyncLoggerConfigExceptionHandler() {
+    public static ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>
+            getAsyncLoggerConfigExceptionHandler() {
         try {
             return LoaderUtil.newCheckedInstanceOfProperty(
                     ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME,
@@ -105,24 +109,6 @@ final class DisruptorUtil {
         } catch (final ReflectiveOperationException e) {
             LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: {}", e.getMessage(), e);
             return new AsyncLoggerConfigDefaultExceptionHandler();
-        }
-    }
-
-    /**
-     * Returns the thread ID of the background appender thread. This allows us to detect Logger.log() calls initiated
-     * from the appender thread, which may cause deadlock when the RingBuffer is full. (LOG4J2-471)
-     *
-     * @param executor runs the appender thread
-     * @return the thread ID of the background appender thread
-     */
-    public static long getExecutorThreadId(final ExecutorService executor) {
-        final Future<Long> result = executor.submit(() -> Thread.currentThread().getId());
-        try {
-            return result.get();
-        } catch (final Exception ex) {
-            final String msg =
-                    "Could not obtain executor thread Id. " + "Giving up to avoid the risk of application deadlock.";
-            throw new IllegalStateException(msg, ex);
         }
     }
 }

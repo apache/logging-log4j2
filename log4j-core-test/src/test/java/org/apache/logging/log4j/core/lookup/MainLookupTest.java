@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.apache.logging.log4j.core.lookup.StrSubstitutorTest.LOOKUP_PLUGINS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class MainLookupTest {
         final Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");
         properties.put("bar", "default_bar_value");
-        final Interpolator lookup = new Interpolator(properties);
+        final Interpolator lookup = new Interpolator(new PropertiesLookup(properties), LOOKUP_PLUGINS);
         final StrSubstitutor substitutor = new StrSubstitutor(lookup);
         final String replacedValue = substitutor.replace(null, str);
         final String[] values = replacedValue.split(" ");

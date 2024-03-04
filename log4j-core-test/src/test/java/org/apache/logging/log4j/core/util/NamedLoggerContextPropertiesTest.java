@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.net.URI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -38,7 +37,7 @@ public class NamedLoggerContextPropertiesTest {
     public void testProperties() {
         final LoggerContext context = LoggerContext.getContext();
         assertEquals(LifeCycle.State.STARTED, context.getState());
-        final PropertyEnvironment props = context.getProperties();
+        final PropertyEnvironment props = context.getEnvironment();
         assertNotNull(props, "Logger Context Properties were not loaded");
         final String scriptLanguages = props.getStringProperty("Script.enableLanguages");
         assertEquals("Groovy,JavaScript", scriptLanguages);
@@ -56,8 +55,9 @@ public class NamedLoggerContextPropertiesTest {
             super(injector);
         }
 
+        @Override
         protected LoggerContext createContext() {
-            return new LoggerContext("my-app", null, (URI) null, instanceFactory);
+            return createContext("my-app", null, getClass().getClassLoader());
         }
     }
 }

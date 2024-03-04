@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.TestProperties;
@@ -97,6 +98,7 @@ public class AsyncThreadContextTest {
             System.setProperty(
                     LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS, PACKAGE + implClassSimpleName());
             PropertiesUtil.getProperties().reload();
+            LoggingSystem.reset();
             ThreadContextTestAccess.init();
         }
 
@@ -169,7 +171,7 @@ public class AsyncThreadContextTest {
                     ((AsyncLoggerContext) context).getAsyncLoggerDisruptor().getRingBuffer()::remainingCapacity;
         } else {
             remainingCapacity =
-                    ((AsyncLoggerConfigDisruptor) ((AsyncLoggerConfig) log.get()).getAsyncLoggerConfigDelegate())
+                    ((AsyncLoggerConfigDisruptor) ((AsyncLoggerConfig) log.get()).getAsyncLoggerConfigDisruptor())
                             .getRingBuffer()::remainingCapacity;
         }
 

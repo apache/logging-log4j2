@@ -41,6 +41,10 @@ public class LogEventAdapter extends LoggingEvent {
 
     private final LogEvent event;
 
+    public static LoggingEvent adapt(final LogEvent event) {
+        return event instanceof final LogEventWrapper wrapper ? wrapper.getLoggingEvent() : new LogEventAdapter(event);
+    }
+
     public LogEventAdapter(final LogEvent event) {
         this.event = event;
     }
@@ -212,5 +216,14 @@ public class LogEventAdapter extends LoggingEvent {
     @Override
     public Map getProperties() {
         return event.getContextData().toMap();
+    }
+
+    public LoggingEvent toImmutable() {
+        final LogEvent immutable = event.toImmutable();
+        return event == immutable ? this : adapt(immutable);
+    }
+
+    LogEvent getLogEvent() {
+        return event;
     }
 }

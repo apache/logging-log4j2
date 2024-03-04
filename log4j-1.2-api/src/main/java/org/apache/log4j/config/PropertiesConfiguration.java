@@ -81,12 +81,14 @@ public class PropertiesConfiguration extends Log4j1Configuration {
      * Constructs a new instance.
      *
      * @param loggerContext The LoggerContext.
-     * @param source The ConfigurationSource.
+     * @param configurationSource The ConfigurationSource.
      * @param monitorIntervalSeconds The monitoring interval in seconds.
      */
     public PropertiesConfiguration(
-            final LoggerContext loggerContext, final ConfigurationSource source, final int monitorIntervalSeconds) {
-        super(loggerContext, source, monitorIntervalSeconds);
+            final LoggerContext loggerContext,
+            final ConfigurationSource configurationSource,
+            final int monitorIntervalSeconds) {
+        this(loggerContext, configurationSource, monitorIntervalSeconds, null);
     }
 
     /**
@@ -96,18 +98,16 @@ public class PropertiesConfiguration extends Log4j1Configuration {
      * @param properties The ConfigurationSource, may be null.
      */
     public PropertiesConfiguration(final LoggerContext loggerContext, final Properties properties) {
-        super(loggerContext, ConfigurationSource.NULL_SOURCE, 0);
-        this.properties = properties;
+        this(loggerContext, ConfigurationSource.NULL_SOURCE, 0, properties);
     }
 
-    /**
-     * Constructs a new instance.
-     *
-     * @param loggerContext The LoggerContext.
-     * @param properties The ConfigurationSource.
-     */
-    public PropertiesConfiguration(org.apache.logging.log4j.spi.LoggerContext loggerContext, Properties properties) {
-        this((LoggerContext) loggerContext, properties);
+    private PropertiesConfiguration(
+            final LoggerContext loggerContext,
+            final ConfigurationSource configurationSource,
+            final int monitorIntervalSeconds,
+            final Properties properties) {
+        super(loggerContext, configurationSource, monitorIntervalSeconds);
+        this.properties = properties;
     }
 
     @Override
@@ -149,7 +149,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
 
     /**
      * Reads a configuration from a file. <b>The existing configuration is not cleared nor reset.</b> If you require a
-     * different behavior, then call {@link LogManager#resetConfiguration resetConfiguration} method before calling
+     * different behavior, then call {@link LogManager#resetConfiguration()}  resetConfiguration} method before calling
      * <code>doConfigure</code>.
      * <p>
      * The configuration file consists of statements in the format <code>key=value</code>. The syntax of different
@@ -373,7 +373,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
                 LoggerConfig loggerConfig = getLogger(loggerName);
                 if (loggerConfig == null) {
                     final boolean additivity = getAdditivityForLogger(props, loggerName);
-                    loggerConfig = new LoggerConfig(loggerName, org.apache.logging.log4j.Level.ERROR, additivity);
+                    loggerConfig = new LoggerConfig(loggerName, Level.ERROR, additivity, this);
                     addLogger(loggerName, loggerConfig);
                 }
                 parseLogger(props, loggerConfig, key, loggerName, value);

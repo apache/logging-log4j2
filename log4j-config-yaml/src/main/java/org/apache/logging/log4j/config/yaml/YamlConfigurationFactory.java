@@ -17,17 +17,17 @@
 package org.apache.logging.log4j.config.yaml;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 
-@Namespace(ConfigurationFactory.NAMESPACE)
+@Namespace(AbstractConfigurationFactory.NAMESPACE)
 @Plugin("YamlConfigurationFactory")
 @Order(7)
-public class YamlConfigurationFactory extends ConfigurationFactory {
+public class YamlConfigurationFactory extends AbstractConfigurationFactory {
 
     /**
      * The file extensions supported by this factory.

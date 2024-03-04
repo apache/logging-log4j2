@@ -22,13 +22,12 @@ import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.async.logger.internal.DisruptorUtil;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
@@ -46,7 +45,7 @@ import org.apache.logging.log4j.message.Message;
  * life cycle of the context. The AsyncLoggerDisruptor of the context is shared by all AsyncLogger objects created by
  * that AsyncLoggerContext.
  */
-class AsyncLoggerDisruptor extends AbstractLifeCycle {
+public class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
 
@@ -55,17 +54,14 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
 
     private volatile Disruptor<RingBufferLogEvent> disruptor;
     private String contextName;
-    private final Supplier<AsyncWaitStrategyFactory> waitStrategyFactorySupplier;
 
     private long backgroundThreadId;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
     private WaitStrategy waitStrategy;
 
-    AsyncLoggerDisruptor(
-            final String contextName, final Supplier<AsyncWaitStrategyFactory> waitStrategyFactorySupplier) {
+    public AsyncLoggerDisruptor(final String contextName, final WaitStrategy waitStrategy) {
         this.contextName = contextName;
-        this.waitStrategyFactorySupplier =
-                Objects.requireNonNull(waitStrategyFactorySupplier, "waitStrategyFactorySupplier");
+        this.waitStrategy = waitStrategy;
     }
 
     // package-protected for testing
@@ -104,9 +100,6 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
             final int ringBufferSize =
                     DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE);
-            final AsyncWaitStrategyFactory factory =
-                    waitStrategyFactorySupplier.get(); // get factory from configuration
-            waitStrategy = DisruptorUtil.createWaitStrategy(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY, factory);
 
             final ThreadFactory threadFactory =
                     new Log4jThreadFactory("AsyncLogger[" + contextName + "]", true, Thread.NORM_PRIORITY) {
@@ -287,5 +280,10 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     // package-protected for tests
     RingBuffer<RingBufferLogEvent> getRingBuffer() {
         return disruptor.getRingBuffer();
+    }
+
+    @FunctionalInterface
+    public interface Factory {
+        AsyncLoggerDisruptor createAsyncLoggerDisruptor(String contextName);
     }
 }

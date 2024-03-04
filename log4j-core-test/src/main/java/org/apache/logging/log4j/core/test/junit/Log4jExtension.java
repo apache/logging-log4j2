@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.Provider;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -104,14 +105,15 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
             final AnnotatedElement element,
             final Class<?> testClass) {
         final ConfigurableInstanceFactory instanceFactory = configureInstanceFactory(builder, element);
-        final Log4jContextFactory factory = instanceFactory.getInstance(Log4jContextFactory.class);
+        final Provider provider = instanceFactory.getInstance(Provider.class);
+        final Log4jContextFactory factory = (Log4jContextFactory) provider.getLoggerContextFactory();
         store.put(LoggerContextFactoryHolder.class, new LoggerContextFactoryHolder(factory));
         if (AnnotationSupport.isAnnotated(element, LoggingResolvers.class)) {
             AnnotationSupport.findAnnotation(element, LoggerContextSource.class)
                     .map(source -> configureLoggerContextSource(source, testClass, factory))
                     .or(() -> AnnotationSupport.findAnnotation(element, LegacyLoggerContextSource.class)
                             .map(source -> configureLegacyLoggerContextSource(source, testClass, factory)))
-                    .ifPresent(provider -> store.put(LoggerContextProvider.class, provider));
+                    .ifPresent(p -> store.put(LoggerContextProvider.class, p));
         }
     }
 
@@ -125,7 +127,7 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
                         .toFunction(instanceFactory -> instanceFactory.getFactory(clazz)));
         AnnotationSupport.findAnnotation(element, ConfigurationFactoryType.class)
                 .map(ConfigurationFactoryType::value)
-                .ifPresent(clazz -> builder.addBindingFrom(ConfigurationFactory.KEY)
+                .ifPresent(clazz -> builder.addBindingFrom(AbstractConfigurationFactory.KEY)
                         .toFunction(instanceFactory -> instanceFactory.getFactory(clazz)));
         return builder.build();
     }

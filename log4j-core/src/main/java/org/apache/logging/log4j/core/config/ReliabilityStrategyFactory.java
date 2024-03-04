@@ -44,9 +44,13 @@ public final class ReliabilityStrategyFactory {
      *         configuration change
      */
     public static ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
+        return getReliabilityStrategy(
+                loggerConfig,
+                PropertiesUtil.getProperties()
+                        .getStringProperty(Log4jPropertyKey.CONFIG_RELIABILITY_STRATEGY, "AwaitCompletion"));
+    }
 
-        final String strategy = PropertiesUtil.getProperties()
-                .getStringProperty(Log4jPropertyKey.CONFIG_RELIABILITY_STRATEGY, "AwaitCompletion");
+    static ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig, final String strategy) {
         if ("AwaitCompletion".equals(strategy)) {
             return new AwaitCompletionReliabilityStrategy(loggerConfig);
         }

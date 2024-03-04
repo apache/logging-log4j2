@@ -33,10 +33,11 @@ import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidationException;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Configuration manager for the state of an instance factory. Configurable instance factories can form a
- * hierarchy by {@linkplain #newChildInstanceFactory() creating children factories} to enable inheritance
+ * hierarchy by {@linkplain #newChildInstanceFactory}  creating children factories} to enable inheritance
  * of bindings, scopes, factory resolvers, instance post-processors, and reflection agents.
  */
 public interface ConfigurableInstanceFactory extends InstanceFactory {
@@ -130,6 +131,15 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
      * @return new child instance factory
      */
     ConfigurableInstanceFactory newChildInstanceFactory();
+
+    /**
+     * Creates a new child instance factory from this factory which uses bindings from this factory as fallback
+     * bindings.
+     *
+     * @return new child instance factory
+     */
+    ConfigurableInstanceFactory newChildInstanceFactory(
+            Supplier<PropertyEnvironment> environment, Supplier<ClassLoader> loader);
 
     /**
      * Sets the {@link ReflectionAgent} used for invoking {@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}

@@ -52,6 +52,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.LoggingSystem;
+import org.awaitility.Awaitility;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -125,7 +126,7 @@ public class LoggerTest {
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
         assertEquals(
-                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:121)",
+                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:122)",
                 events.get(0).getSource().toString(),
                 "Incorrect location");
         assertEquals(Level.DEBUG, events.get(0).getLevel(), "Incorrect Level");
@@ -505,13 +506,7 @@ public class LoggerTest {
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }
-        Thread.sleep(100);
-        for (int i = 0; i < 20; i++) {
-            if (context.getConfiguration() != oldConfig) {
-                break;
-            }
-            Thread.sleep(50);
-        }
+        Awaitility.await().atMost(10, TimeUnit.MINUTES).until(() -> context.getConfiguration() != oldConfig);
         final Configuration newConfig = context.getConfiguration();
         assertNotNull(newConfig, "No configuration");
         assertNotSame(newConfig, oldConfig, "Reconfiguration failed");

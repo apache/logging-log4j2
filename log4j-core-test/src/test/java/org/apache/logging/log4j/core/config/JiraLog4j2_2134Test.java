@@ -55,7 +55,7 @@ public class JiraLog4j2_2134Test {
                 .setAdditivity(false)
                 .setLevel(Level.INFO)
                 .setLoggerName("testlog4j2refresh")
-                .setIncludeLocation("true")
+                .setIncludeLocation(true)
                 .setRefs(refs)
                 .setConfig(config)
                 .build();
@@ -98,7 +98,6 @@ public class JiraLog4j2_2134Test {
         assertDoesNotThrow(() -> log.error("Info message"));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testRefreshDeprecatedApis() {
         final Logger log = LogManager.getLogger(this.getClass());
@@ -138,7 +137,7 @@ public class JiraLog4j2_2134Test {
                 .setAdditivity(false)
                 .setLevel(Level.INFO)
                 .setLoggerName("testlog4j2refresh")
-                .setIncludeLocation("true")
+                .setIncludeLocation(true)
                 .setRefs(refs)
                 .setConfig(config)
                 .build();

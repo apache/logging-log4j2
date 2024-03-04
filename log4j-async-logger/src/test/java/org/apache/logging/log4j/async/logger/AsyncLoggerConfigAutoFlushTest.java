@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.async.logger;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -37,14 +38,14 @@ public class AsyncLoggerConfigAutoFlushTest {
     @Test
     @LoggerContextSource
     public void testFlushAtEndOfBatch(final LoggerContext ctx) throws Exception {
-        final File file =
-                loggingPath.resolve("AsyncLoggerConfigAutoFlushTest.log").toFile();
+        final Path file = loggingPath.resolve("AsyncLoggerConfigAutoFlushTest.log");
 
         final Logger log = ctx.getLogger("com.foo.Bar");
         final String msg = "Message flushed with immediate flush=false";
         log.info(msg);
         ctx.stop(); // stop async thread
-        final String contents = Files.readString(file.toPath());
-        assertTrue(contents.contains(msg), "line1 correct");
+        final List<String> contents = Files.readAllLines(file, UTF_8);
+        assertThat(contents).hasSize(1);
+        assertThat(contents.get(0)).contains(msg);
     }
 }

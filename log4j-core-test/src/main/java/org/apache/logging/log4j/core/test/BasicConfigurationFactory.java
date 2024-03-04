@@ -20,20 +20,23 @@ import java.net.URI;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  *
  */
-public class BasicConfigurationFactory extends ConfigurationFactory {
+public class BasicConfigurationFactory extends AbstractConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(
             final LoggerContext loggerContext, final String name, final URI configLocation) {
-        return new BasicConfiguration();
+        return new BasicConfiguration(loggerContext);
     }
 
     @Override
@@ -51,7 +54,17 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
         private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 
         public BasicConfiguration() {
-            super(null, ConfigurationSource.NULL_SOURCE);
+            this(null);
+        }
+
+        public BasicConfiguration(final LoggerContext loggerContext) {
+            super(
+                    loggerContext,
+                    ConfigurationSource.NULL_SOURCE,
+                    loggerContext != null ? loggerContext.getEnvironment() : PropertiesUtil.getProperties(),
+                    loggerContext != null
+                            ? (ConfigurableInstanceFactory) loggerContext.getInstanceFactory()
+                            : DI.createInitializedFactory());
 
             final LoggerConfig root = getRootLogger();
             final String name = System.getProperty(DEFAULT_LEVEL);

@@ -122,8 +122,8 @@ public class ThreadContextDataInjectorTest {
     }
 
     private void prepareThreadContext(final boolean isThreadContextMapInheritable) {
-        LoggingSystem.getInstance()
-                .setThreadContextMapFactory(() -> threadContextMapConstructor.apply(isThreadContextMapInheritable));
+        LoggingSystem.getProvider()
+                .setThreadContextMapFactory(threadContextMapConstructor.apply(isThreadContextMapInheritable));
         ThreadContext.init();
         ThreadContext.remove("baz");
         ThreadContext.put("foo", "bar");

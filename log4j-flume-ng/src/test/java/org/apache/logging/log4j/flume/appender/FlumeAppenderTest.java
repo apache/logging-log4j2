@@ -44,10 +44,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
-import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.Assert;
@@ -64,7 +64,7 @@ public class FlumeAppenderTest {
     private Channel channel;
     private Logger avroLogger;
     private String testPort;
-    private ConfigurableInstanceFactory instanceFactory;
+    private Configuration configuration;
 
     @BeforeClass
     public static void setupClass() {
@@ -73,7 +73,7 @@ public class FlumeAppenderTest {
 
     @Before
     public void setUp() throws Exception {
-        instanceFactory = DI.createInitializedFactory();
+        configuration = new DefaultConfiguration();
         eventSource = new AvroSource();
         channel = new MemoryChannel();
 
@@ -142,7 +142,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -192,7 +192,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -242,7 +242,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         final Logger eventLogger = (Logger) LogManager.getLogger("EventLogger");
         Assert.assertNotNull(eventLogger);
@@ -302,7 +302,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -357,7 +357,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -418,7 +418,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -473,7 +473,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -527,7 +527,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -577,7 +577,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         Assert.assertTrue("Appender Not started", avroAppender.isStarted());
         avroLogger.addAppender(avroAppender);
@@ -645,7 +645,7 @@ public class FlumeAppenderTest {
                 null,
                 null,
                 null,
-                instanceFactory);
+                configuration);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);

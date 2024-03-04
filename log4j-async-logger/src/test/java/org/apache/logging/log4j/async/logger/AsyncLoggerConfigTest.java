@@ -107,8 +107,7 @@ public class AsyncLoggerConfigTest {
         when(appender.getName()).thenReturn("test");
         config.addAppender(appender, null, null);
         final DisruptorConfiguration disruptorConfig = configuration.getExtension(DisruptorConfiguration.class);
-        final AsyncLoggerConfigDisruptor disruptor =
-                (AsyncLoggerConfigDisruptor) disruptorConfig.getAsyncLoggerConfigDelegate();
+        final AsyncLoggerConfigDisruptor disruptor = disruptorConfig.getLoggerConfigDisruptor();
         disruptor.start();
         try {
             config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);

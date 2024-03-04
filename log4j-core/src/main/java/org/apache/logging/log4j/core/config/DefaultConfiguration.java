@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.util.PropertiesUtil;
+
 /**
  * The default configuration writes all output to the Console using the default logging level. You configure default
  * logging level by setting the system property "org.apache.logging.log4j.level" to a level name. If you do not
@@ -35,10 +39,19 @@ public class DefaultConfiguration extends AbstractConfiguration {
     public static final String DEFAULT_PATTERN = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
 
     /**
+     * Only for tests.
+     */
+    @Deprecated
+    public DefaultConfiguration() {
+        super(null, ConfigurationSource.NULL_SOURCE, PropertiesUtil.getProperties(), DI.createInitializedFactory());
+        setToDefault();
+    }
+
+    /**
      * Constructor to create the default configuration.
      */
-    public DefaultConfiguration() {
-        super(null, ConfigurationSource.NULL_SOURCE);
+    public DefaultConfiguration(final LoggerContext loggerContext) {
+        super(loggerContext, ConfigurationSource.NULL_SOURCE);
         setToDefault();
     }
 

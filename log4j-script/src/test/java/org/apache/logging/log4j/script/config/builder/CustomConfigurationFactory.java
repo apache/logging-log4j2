@@ -21,8 +21,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 // @Category(ConfigurationFactory.CATEGORY)
 // @Plugin("CustomConfigurationFactory")
 // @Order(50)
-public class CustomConfigurationFactory extends ConfigurationFactory {
+public class CustomConfigurationFactory extends AbstractConfigurationFactory {
 
     public static Configuration addTestFixtures(
             final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
@@ -77,7 +77,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    protected String[] getSupportedTypes() {
+    public String[] getSupportedTypes() {
         return new String[] {"*"};
     }
 }

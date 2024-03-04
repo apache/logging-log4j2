@@ -21,10 +21,11 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 
 /**
- * Specifies a particular {@link ConfigurationFactory} class to use for a test class or method instead of the default.
+ * Specifies a particular {@link AbstractConfigurationFactory} class to use for a test class or method instead of the default.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})

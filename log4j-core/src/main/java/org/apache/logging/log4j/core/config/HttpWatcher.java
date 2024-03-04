@@ -62,7 +62,7 @@ public class HttpWatcher extends AbstractWatcher {
             final List<Consumer<Reconfigurable>> configurationListeners,
             final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
-        properties = configuration.getContextProperties();
+        properties = configuration.getEnvironment();
         sslConfiguration = SslConfigurationFactory.getSslConfiguration(properties);
         authorizationProvider = AuthorizationProvider.getAuthorizationProvider(properties);
         this.lastModifiedMillis = lastModifiedMillis;

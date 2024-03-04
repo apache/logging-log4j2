@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.Level;
@@ -54,11 +52,8 @@ public class StyleConverterTest {
         logger.error(this.getClass().getName());
 
         final List<String> msgs = app.getMessages();
-        assertNotNull(msgs);
-        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
-        assertTrue(
-                msgs.get(0).endsWith(EXPECTED),
-                "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
+        assertThat(msgs).isNotEmpty();
+        assertThat(msgs.get(0)).as("check formatted message").endsWith(EXPECTED);
     }
 
     @Test

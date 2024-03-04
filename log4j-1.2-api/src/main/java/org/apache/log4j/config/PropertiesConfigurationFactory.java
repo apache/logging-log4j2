@@ -17,8 +17,8 @@
 package org.apache.log4j.config;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -28,10 +28,10 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  * Configures Log4j from a log4j 1 format properties file.
  */
-@Namespace(ConfigurationFactory.NAMESPACE)
+@Namespace(AbstractConfigurationFactory.NAMESPACE)
 @Plugin("Log4j1PropertiesConfigurationFactory")
 @Order(2)
-public class PropertiesConfigurationFactory extends ConfigurationFactory {
+public class PropertiesConfigurationFactory extends AbstractConfigurationFactory {
 
     static final String FILE_EXTENSION = ".properties";
 
@@ -46,9 +46,9 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     protected static final String DEFAULT_PREFIX = "log4j";
 
     @Override
-    protected String[] getSupportedTypes() {
+    public String[] getSupportedTypes() {
         if (!PropertiesUtil.getProperties()
-                .getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
+                .getBooleanProperty(AbstractConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
             return null;
         }
         return new String[] {FILE_EXTENSION};
@@ -61,17 +61,17 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    protected String getTestPrefix() {
+    public String getTestPrefix() {
         return TEST_PREFIX;
     }
 
     @Override
-    protected String getDefaultPrefix() {
+    public String getDefaultPrefix() {
         return DEFAULT_PREFIX;
     }
 
     @Override
-    protected String getVersion() {
+    public String getVersion() {
         return LOG4J1_VERSION;
     }
 }

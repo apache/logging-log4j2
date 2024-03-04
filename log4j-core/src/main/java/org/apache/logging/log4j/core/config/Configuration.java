@@ -111,12 +111,12 @@ public interface Configuration extends Filterable {
     Map<String, String> getProperties();
 
     /**
-     * Returns the {@linkplain org.apache.logging.log4j.spi.LoggerContext#getProperties() context properties}
+     * Returns the {@linkplain org.apache.logging.log4j.spi.LoggerContext#getEnvironment() context properties}
      * associated with the logger context for this configuration.
      *
      * @return the context properties
      */
-    PropertyEnvironment getContextProperties();
+    PropertyEnvironment getEnvironment();
 
     /**
      * Returns the root Logger.
@@ -148,6 +148,8 @@ public interface Configuration extends Filterable {
     default <T> T getComponent(Key<T> key) {
         return getFactory(key).get();
     }
+
+    <T> void setComponent(Key<T> key, Supplier<? extends T> supplier);
 
     void addComponent(String name, Object object);
 

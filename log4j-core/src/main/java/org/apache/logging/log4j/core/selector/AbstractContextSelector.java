@@ -14,34 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger;
+package org.apache.logging.log4j.core.selector;
 
+import java.net.URI;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.selector.BasicContextSelector;
-import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.jspecify.annotations.Nullable;
 
-/**
- * Returns either this Thread's context or the default {@link AsyncLoggerContext}.
- * Single-application instances should prefer this implementation over the {@link AsyncLoggerContextSelector}
- * due to the reduced overhead avoiding classloader lookups.
- */
-@Singleton
-public class BasicAsyncLoggerContextSelector extends BasicContextSelector {
+public abstract class AbstractContextSelector implements ContextSelector {
 
-    @Inject
-    public BasicAsyncLoggerContextSelector(final ConfigurableInstanceFactory instanceFactory) {
-        super(instanceFactory);
+    protected final ConfigurableInstanceFactory instanceFactory;
+
+    public AbstractContextSelector(final ConfigurableInstanceFactory instanceFactory) {
+        this.instanceFactory = instanceFactory;
     }
 
-    @Override
     protected LoggerContext.Builder newBuilder() {
-        return instanceFactory.getInstance(AsyncLoggerContext.Builder.class);
+        return instanceFactory.getInstance(LoggerContext.Builder.class);
     }
 
-    @Override
-    protected LoggerContext createContext() {
-        return createContext("AsyncDefault", null, getClass().getClassLoader());
+    protected final LoggerContext createContext(
+            final String contextName, final @Nullable URI configLocation, final ClassLoader loader) {
+        return newBuilder()
+                .setContextName(contextName)
+                .setConfigLocation(configLocation)
+                .setLoader(loader)
+                .build();
     }
 }

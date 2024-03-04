@@ -85,7 +85,7 @@ public final class AppenderAdapter {
 
         @Override
         public void append(final LogEvent event) {
-            appender.doAppend(new LogEventAdapter(event));
+            appender.doAppend(LogEventAdapter.adapt(event));
         }
 
         @Override

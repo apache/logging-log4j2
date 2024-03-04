@@ -331,7 +331,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                 return new MutableThreadContextMapFilter(
                         new NoOpFilter(), null, 0, null, getOnMatch(), getOnMismatch(), configuration);
             }
-            final PropertyEnvironment props = configuration.getContextProperties();
+            final PropertyEnvironment props = configuration.getEnvironment();
             final AuthorizationProvider authorizationProvider = AuthorizationProvider.getAuthorizationProvider(props);
             final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
             Filter filter;
@@ -371,7 +371,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
 
         @Override
         public void run() {
-            final PropertyEnvironment properties = configuration.getContextProperties();
+            final PropertyEnvironment properties = configuration.getEnvironment();
             final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(properties);
             final ConfigResult result = getConfig(source, authorizationProvider, properties, sslConfiguration);
             if (result.status == Status.SUCCESS) {

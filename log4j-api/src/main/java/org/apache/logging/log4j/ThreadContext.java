@@ -42,7 +42,7 @@ import org.apache.logging.log4j.util.Strings;
  * </p>
  * @see <a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">Thread Context Manual</a>
  */
-public final class ThreadContext {
+public class ThreadContext {
 
     /**
      * An empty read-only ThreadContextStack.
@@ -165,17 +165,15 @@ public final class ThreadContext {
         init();
     }
 
-    private ThreadContext() {
-        // empty
-    }
+    protected ThreadContext() {}
 
     /**
      * <em>Consider private, used for testing.</em>
      */
     @InternalApi
     public static void init() {
-        contextMap = LoggingSystem.createContextMap();
-        contextStack = LoggingSystem.createContextStack();
+        contextMap = LoggingSystem.getProvider().getThreadContextMapFactory();
+        contextStack = LoggingSystem.getProvider().getThreadContextStack();
         if (contextMap instanceof ReadOnlyThreadContextMap) {
             readOnlyContextMap = (ReadOnlyThreadContextMap) contextMap;
         } else {
@@ -494,6 +492,13 @@ public final class ThreadContext {
      */
     public static void trim(final int depth) {
         contextStack.trim(depth);
+    }
+
+    /**
+     * @return The underlying context map implementation.
+     */
+    protected static ThreadContextMap getContextMap() {
+        return contextMap;
     }
 
     /**
