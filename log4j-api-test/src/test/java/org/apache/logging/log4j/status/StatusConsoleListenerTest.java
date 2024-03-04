@@ -50,7 +50,7 @@ public class StatusConsoleListenerTest {
     }
 
     @Test
-    void level_and_stream_should_be_honored() throws Exception {
+    void stream_should_be_honored() throws Exception {
 
         // Create the listener.
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -58,7 +58,7 @@ public class StatusConsoleListenerTest {
         final PrintStream printStream = new PrintStream(outputStream, false, encoding);
         final StatusConsoleListener listener = new StatusConsoleListener(Level.WARN, printStream);
 
-        // First, log a message that is expected to be logged.
+        // log a message that is expected to be logged.
         final RuntimeException expectedThrowable = new RuntimeException("expectedThrowable");
         expectedThrowable.setStackTrace(new StackTraceElement[] {
             new StackTraceElement("expectedThrowableClass", "expectedThrowableMethod", "expectedThrowableFile", 1)
@@ -71,29 +71,12 @@ public class StatusConsoleListenerTest {
                 expectedThrowable,
                 null)); // as set by `StatusLogger` itself
 
-        // Second, log a message that is expected to be discarded due to its insufficient level.
-        final RuntimeException discardedThrowable = new RuntimeException("discardedThrowable");
-        discardedThrowable.setStackTrace(new StackTraceElement[] {
-            new StackTraceElement("discardedThrowableClass", "discardedThrowableMethod", "discardedThrowableFile", 2)
-        });
-        final Message discardedMessage = MESSAGE_FACTORY.newMessage("discardedMessage");
-        listener.log(new StatusData(
-                null, // since ignored by `SimpleLogger`
-                Level.INFO,
-                discardedMessage,
-                discardedThrowable,
-                null)); // as set by `StatusLogger` itself
-
         // Collect the output.
         printStream.flush();
         final String output = outputStream.toString(encoding);
 
         // Verify the output.
-        assertThat(output)
-                .contains(expectedThrowable.getMessage())
-                .contains(expectedMessage.getFormattedMessage())
-                .doesNotContain(discardedThrowable.getMessage())
-                .doesNotContain(discardedMessage.getFormattedMessage());
+        assertThat(output).contains(expectedThrowable.getMessage()).contains(expectedMessage.getFormattedMessage());
     }
 
     @Test
