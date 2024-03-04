@@ -26,13 +26,15 @@ This releases contains ...
 [#release-notes-2-x-x-changed]
 === Changed
 
+* Fix handling of `LoggerContextAware` lookups. (https://github.com/apache/logging-log4j2/pull/2309[2309])
 * Improve performance of `CloseableThreadContext#closeMap()` (https://github.com/apache/logging-log4j2/pull/2296[2296])
 
 [#release-notes-2-x-x-fixed]
 === Fixed
 
-* Add `log4j2.StatusLogger.DateFormatZone` system property to set the time-zone `StatusLogger` uses to format `java.time.Instant`. Without this formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures.
-* Fix stack overflow in `StatusLogger`
+* Fix `StatusLogger` log level filtering when debug mode is enabled (https://github.com/apache/logging-log4j2/issues/2337[2337])
+* Add `log4j2.StatusLogger.DateFormatZone` system property to set the time-zone `StatusLogger` uses to format `java.time.Instant`. Without this formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures. (https://github.com/apache/logging-log4j2/pull/2322[2322])
+* Fix stack overflow in `StatusLogger` (https://github.com/apache/logging-log4j2/pull/2322[2322])
 
 [#release-notes-2-x-x-updated]
 === Updated
@@ -44,4 +46,5 @@ This releases contains ...
 * Update `io.fabric8:docker-maven-plugin` to version `0.44.0` (https://github.com/apache/logging-log4j2/pull/2299[2299])
 * Update `jakarta.activation:jakarta.activation-api` to version `2.1.3` (https://github.com/apache/logging-log4j2/pull/2335[2335])
 * Update `org.apache.commons:commons-compress` to version `1.26.0` (https://github.com/apache/logging-log4j2/pull/2304[2304])
+* Update `org.apache.commons:commons-dbcp2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2344[2344])
 * Update `org.apache.kafka:kafka-clients` to version `3.7.0` (https://github.com/apache/logging-log4j2/pull/2326[2326])
