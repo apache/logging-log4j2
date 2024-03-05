@@ -17,23 +17,30 @@
 package org.apache.logging.log4j.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.test.junit.SerialUtil;
-import org.apache.logging.log4j.test.junit.UsingStatusLoggerMock;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.ArgumentCaptor;
 
-@UsingStatusLoggerMock
+@UsingStatusListener
 class ParameterizedMessageTest {
+
+    final ListStatusListener statusListener;
+
+    ParameterizedMessageTest(ListStatusListener statusListener) {
+        this.statusListener = statusListener;
+    }
 
     @Test
     void testNoArgs() {
@@ -202,7 +209,7 @@ class ParameterizedMessageTest {
                 placeholderCount, pattern, argCount, () -> ParameterizedMessage.format(pattern, new Object[argCount]));
     }
 
-    private static void verifyFormattingFailureOnInsufficientArgs(
+    private void verifyFormattingFailureOnInsufficientArgs(
             final int placeholderCount,
             final String pattern,
             final int argCount,
@@ -213,10 +220,12 @@ class ParameterizedMessageTest {
         assertThat(formattedMessage).isEqualTo(pattern);
 
         // Verify the logged failure
-        final ArgumentCaptor<Throwable> errorCaptor = ArgumentCaptor.forClass(Throwable.class);
-        verify(StatusLogger.getLogger()).error(eq("message formatting failure"), errorCaptor.capture());
-        final Throwable error = errorCaptor.getValue();
-        assertThat(error)
+        final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
+        assertThat(statusDataList).hasSize(1);
+        final StatusData statusData = statusDataList.get(0);
+        assertThat(statusData.getLevel()).isEqualTo(Level.ERROR);
+        assertThat(statusData.getMessage().getFormattedMessage()).isEqualTo("message formatting failure");
+        assertThat(statusData.getThrowable())
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(
                         "found %d argument placeholders, but provided %d for pattern `%s`",
