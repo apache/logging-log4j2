@@ -404,7 +404,7 @@ public class StatusLogger extends AbstractLogger {
         static Map<String, Object> readAllAvailableProperties() {
             final Properties systemProperties = System.getProperties();
             final Properties environmentProperties = readEnvironmentProperties();
-            final Properties fileProvidedProperties = readPropertiesFile();
+            final Properties fileProvidedProperties = readPropertiesFile(PROPERTIES_FILE_NAME);
             return normalizeProperties(systemProperties, environmentProperties, fileProvidedProperties);
         }
 
@@ -419,12 +419,12 @@ public class StatusLogger extends AbstractLogger {
         // Consequently, they would delegate to `LoaderUtil`, etc.
         // All these mechanisms expect a working `StatusLogger`.
         // Hence, in order to be self-sufficient, we cannot rely on them.
-        private static Properties readPropertiesFile() {
+        static Properties readPropertiesFile(final String propertiesFileName) {
             final Properties properties = new Properties();
             // Unlike `ClassLoader#getResource()`, which takes absolute resource paths, `Class#getResource()` supports
             // relative resource paths. Without a `/` prefix, the resource must be placed into JAR resources as
             // `org/apache/logging/log4j/status/log4j2.StatusLogger.properties`. Hence, the `/` prefix.
-            final String resourceName = '/' + PROPERTIES_FILE_NAME;
+            final String resourceName = '/' + propertiesFileName;
             final URL url = StatusLogger.class.getResource(resourceName);
             if (url == null) {
                 return properties;
@@ -432,7 +432,7 @@ public class StatusLogger extends AbstractLogger {
             try (final InputStream stream = url.openStream()) {
                 properties.load(stream);
             } catch (final IOException error) {
-                final String message = String.format("failed reading properties from `%s`", PROPERTIES_FILE_NAME);
+                final String message = String.format("failed reading properties from `%s`", propertiesFileName);
                 final RuntimeException extendedError = new RuntimeException(message, error);
                 // There is no logging system at this stage.
                 // There is nothing we can do but simply dumping the failure.

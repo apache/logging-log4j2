@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.status;
 
+import static java.util.Collections.singletonMap;
 import static org.apache.logging.log4j.status.StatusLogger.PropertiesUtilsDouble.readAllAvailableProperties;
 import static org.apache.logging.log4j.status.StatusLogger.PropertiesUtilsDouble.readProperty;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +25,9 @@ import static uk.org.webcompere.systemstubs.SystemStubs.withEnvironmentVariable;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
@@ -108,5 +111,12 @@ class StatusLoggerPropertiesUtilDoubleTest {
         } else {
             assertThat(actualValue).describedAs("" + testCase).isNull();
         }
+    }
+
+    @Test
+    void properties_file_in_class_path_should_be_read() {
+        final String propertiesFileName = StatusLoggerPropertiesUtilDoubleTest.class.getSimpleName() + ".properties";
+        final Properties actualProperties = StatusLogger.PropertiesUtilsDouble.readPropertiesFile(propertiesFileName);
+        assertThat(actualProperties).containsExactlyEntriesOf(singletonMap("foo", "bar"));
     }
 }
