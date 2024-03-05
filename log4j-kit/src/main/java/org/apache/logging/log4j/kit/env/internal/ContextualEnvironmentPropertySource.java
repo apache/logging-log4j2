@@ -17,8 +17,10 @@
 package org.apache.logging.log4j.kit.env.internal;
 
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.logging.log4j.kit.env.PropertySource;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertySource;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -29,6 +31,7 @@ import org.jspecify.annotations.Nullable;
  */
 public class ContextualEnvironmentPropertySource implements PropertySource {
 
+    private static final Pattern PROPERTY_TOKENIZER = Pattern.compile("([A-Z]?[a-z0-9]+|[A-Z0-9]+)\\.?");
     private static final int DEFAULT_PRIORITY = 0;
 
     private final String prefix;
@@ -39,7 +42,7 @@ public class ContextualEnvironmentPropertySource implements PropertySource {
     }
 
     public ContextualEnvironmentPropertySource(final String contextName, final int priority) {
-        this.prefix = "log4j2." + contextName + ".";
+        this.prefix = "LOG4J_CONTEXTS_" + contextName.toUpperCase(Locale.ROOT);
         this.priority = priority;
     }
 
@@ -50,9 +53,9 @@ public class ContextualEnvironmentPropertySource implements PropertySource {
 
     @Override
     public @Nullable String getProperty(final String key) {
-        final String actualKey = key.replace('.', '_').toUpperCase(Locale.ROOT);
+        final String actualKey = getNormalForm(key);
         try {
-            return System.getenv(prefix + actualKey);
+            return System.getenv(actualKey);
         } catch (final SecurityException e) {
             StatusLogger.getLogger()
                     .warn(
@@ -64,8 +67,14 @@ public class ContextualEnvironmentPropertySource implements PropertySource {
         return null;
     }
 
-    @Override
-    public boolean containsProperty(final String key) {
-        return getProperty(key) != null;
+    private String getNormalForm(final CharSequence key) {
+        final StringBuilder sb = new StringBuilder(prefix);
+        final Matcher matcher = PROPERTY_TOKENIZER.matcher(key);
+        int start = 0;
+        while (matcher.find(start)) {
+            start = matcher.end();
+            sb.append('_').append(matcher.group(1).toUpperCase(Locale.ROOT));
+        }
+        return sb.toString();
     }
 }
