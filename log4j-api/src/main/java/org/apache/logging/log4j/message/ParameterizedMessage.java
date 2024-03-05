@@ -281,7 +281,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
             try {
                 ParameterFormatter.formatMessage(buffer, pattern, args, argCount, patternAnalysis);
             } catch (final Exception error) {
-                STATUS_LOGGER.error("message formatting failure", error);
+                STATUS_LOGGER.error("Unable to format msg: {}", pattern, error);
                 buffer.append(pattern);
             }
         }
@@ -297,7 +297,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         try {
             return ParameterFormatter.format(pattern, args, argCount);
         } catch (final Exception error) {
-            STATUS_LOGGER.error("message formatting failure", error);
+            STATUS_LOGGER.error("Unable to format msg: {}", pattern, error);
             return pattern;
         }
     }

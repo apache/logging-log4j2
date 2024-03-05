@@ -224,7 +224,7 @@ class ParameterizedMessageTest {
         assertThat(statusDataList).hasSize(1);
         final StatusData statusData = statusDataList.get(0);
         assertThat(statusData.getLevel()).isEqualTo(Level.ERROR);
-        assertThat(statusData.getMessage().getFormattedMessage()).isEqualTo("message formatting failure");
+        assertThat(statusData.getMessage().getFormattedMessage()).isEqualTo("Unable to format msg: %s", pattern);
         assertThat(statusData.getThrowable())
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(
