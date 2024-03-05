@@ -191,24 +191,24 @@
     </div><%
   end %>
 
-<script src="/js/gsap-3.12.5.min.js"></script>
-<script src="/js/ScrollTrigger-3.12.5.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        let tween = gsap.to(".table-of-content", {
-            delay:0.1,
-            duration: 0.5,
-            backgroundColor: '#ededed',
-            ease: "power3.out"
-        });
+      const header = document.querySelector('#header');
+      const toc = document.querySelector('.table-of-content');
 
-        ScrollTrigger.create({
-            trigger: '.table-of-content',
-            start: 'top top',
-            pin: '.table-of-content',
-            animation: tween,
-            toggleActions: 'play none none reverse'
-        });
+      window.addEventListener('scroll', function() {
+          const headerRect = header.getBoundingClientRect();
+          const rect = toc.getBoundingClientRect();
+
+          if (headerRect.bottom >= 0) {
+              toc.classList.remove('sticky-effect');
+              toc.classList.remove('sticky');
+          } else if (rect.top <= 0) {
+              toc.classList.add('sticky');
+              toc.classList.add('sticky-effect');
+          }
+
+      });
     });
 </script>
 <script>
@@ -220,21 +220,15 @@
         var duration = 0.7;
         menuIcon.addEventListener('click', function () {
             if (menu.classList.contains('menu-open')) {
-                gsap.to(menu, {duration: duration, ease: "power3.out", right: "-100%", onComplete: function() {
-                    menu.classList.remove('menu-open');
-                }});
+              menu.classList.remove('menu-open');
             } else {
-                gsap.to(menu, {duration: duration, ease: "power3.out", right: "0%", onStart: function() {
-                    menu.classList.add('menu-open');
-                }});
+              menu.classList.add('menu-open');
             }
         });
 
         menuIconClose.addEventListener('click', function () {
             if (menu.classList.contains('menu-open')) {
-                gsap.to(menu, {duration: duration, ease: "power3.out", right: "-100%", onComplete: function() {
-                    menu.classList.remove('menu-open');
-                }});
+                menu.classList.remove('menu-open');
             }
         });
     });
