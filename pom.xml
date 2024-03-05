@@ -785,28 +785,32 @@
         </executions>
       </plugin>
 
-
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
-        <configuration>
-          <resources>
-            <resource>
-              <directory>src/site/resources</directory>
-            </resource>
-          </resources>
-          <enableVerbose>true</enableVerbose>
-          <sourceDirectory>src/site/asciidoc</sourceDirectory>
-          <outputDirectory>target/site</outputDirectory>
-          <preserveDirectories>true</preserveDirectories>
-          <templateDirs>
-            <dir>src/asciidoc/templates</dir>
-          </templateDirs>
-          <attributes>
-            <source-highlighter>rouge</source-highlighter>
-            <toc>left</toc>
-          </attributes>
-        </configuration>
+        <executions>
+          <execution>
+            <id>export-asciidoc-to-html</id>
+            <configuration combine.self="override">
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/generated-sources/site/resources</directory>
+                </resource>
+              </resources>
+              <enableVerbose>true</enableVerbose>
+              <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
+              <outputDirectory>target/site</outputDirectory>
+              <preserveDirectories>true</preserveDirectories>
+              <templateDirs>
+                <dir>src/asciidoc/templates</dir>
+              </templateDirs>
+              <attributes>
+                <source-highlighter>rouge</source-highlighter>
+                <toc>left</toc>
+              </attributes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
 
