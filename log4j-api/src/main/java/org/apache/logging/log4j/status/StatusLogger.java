@@ -421,7 +421,11 @@ public class StatusLogger extends AbstractLogger {
         // Hence, in order to be self-sufficient, we cannot rely on them.
         private static Properties readPropertiesFile() {
             final Properties properties = new Properties();
-            final URL url = StatusLogger.class.getResource(PROPERTIES_FILE_NAME);
+            // Unlike `ClassLoader#getResource()`, which takes absolute resource paths, `Class#getResource()` supports
+            // relative resource paths. Without a `/` prefix, the resource must be placed into JAR resources as
+            // `org/apache/logging/log4j/status/log4j2.StatusLogger.properties`. Hence, the `/` prefix.
+            final String resourceName = '/' + PROPERTIES_FILE_NAME;
+            final URL url = StatusLogger.class.getResource(resourceName);
             if (url == null) {
                 return properties;
             }
