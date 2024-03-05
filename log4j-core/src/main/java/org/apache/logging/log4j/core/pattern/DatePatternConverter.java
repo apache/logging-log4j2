@@ -359,7 +359,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     /**
      * Gets the pattern string describing this date format.
      *
-     * @return the pattern string describing this date format.
+     * @return the pattern string describing this date format or {@code  null} if the format does not have a pattern.
      */
     public String getPattern() {
         return formatter.toPattern();

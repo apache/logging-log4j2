@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Instant;
@@ -29,6 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests the PatternProcessor class.
@@ -393,5 +396,11 @@ public class PatternProcessorTest {
         } finally {
             TimeZone.setDefault(old);
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"%d{UNIX}", "%d{UNIX_MILLIS}"})
+    void does_not_throw_with_unix_pattern(final String pattern) {
+        assertDoesNotThrow(() -> new PatternProcessor(pattern));
     }
 }

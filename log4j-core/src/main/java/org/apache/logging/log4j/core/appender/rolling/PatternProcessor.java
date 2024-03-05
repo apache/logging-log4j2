@@ -325,6 +325,10 @@ public class PatternProcessor {
     }
 
     private RolloverFrequency calculateFrequency(final String pattern) {
+        // The UNIX and UNIX_MILLIS converters do not have a pattern
+        if (pattern == null) {
+            return null;
+        }
         if (patternContains(pattern, MILLIS_CHAR)) {
             return RolloverFrequency.EVERY_MILLISECOND;
         }
