@@ -34,15 +34,15 @@
   </skin>
   <body>
     <links>
-      <item name="Logging Wiki" href="https://cwiki.apache.org/confluence/display/LOGGING/Log4j"/>
+<!--      <item name="Logging Wiki" href="https://cwiki.apache.org/confluence/display/LOGGING/Log4j"/>-->
       <item name="Apache" href="https://www.apache.org/"/>
       <item name="Logging Services" href="https://logging.apache.org/"/>
-      <item name="Sonar" href="https://analysis.apache.org/dashboard/index/org.apache.logging.log4j:log4j"/>
-      <item name="GitHub" href="https://github.com/apache/logging-log4j2"/>
+<!--      <item name="Sonar" href="https://analysis.apache.org/dashboard/index/org.apache.logging.log4j:log4j"/>-->
+<!--      <item name="GitHub" href="https://github.com/apache/logging-log4j2"/>-->
     </links>
 
     <menu name="Apache Log4j™ 3.x" inherit="top" img="img/glyphicons/home.png">
-      <item name="About" href="/index.html"/>
+<!--      <item name="About" href="/index.html"/>-->
       <item name="Download" href="/download.html"/>
       <item name="Javadoc" href="/javadoc.html"/>
       <item name="Maven, Ivy, Gradle Artifacts" href="/maven-artifacts.html" collapse="true">
@@ -55,7 +55,7 @@
         <item name="Snapshot builds" href="/maven-artifacts.html#Snapshot_builds" />
       </item>
       <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
-      <item name="Release Notes" href="/release-notes.html"/>
+<!--      <item name="Release Notes" href="/release-notes.html"/>-->
       <item name="FAQ" href="/faq.html"/>
       <item name="Performance" href="/performance.html" collapse="true">
         <item name="Benchmarks" href="/performance.html#benchmarks" />
@@ -69,15 +69,15 @@
         <item name="Trade-offs" href="/performance.html#tradeoffs" />
       </item>
       <item name="Articles and Tutorials" href="/articles.html"/>
-      <item name="Security" href="/security.html"/>
-      <item name="Support" href="/support.html"/>
+<!--      <item name="Security" href="/security.html"/>-->
+<!--      <item name="Support" href="/support.html"/>-->
       <item name="Thanks" href="/thanks.html"/>
     </menu>
 
-    <menu name="For Contributors" inherit="top" img="img/glyphicons/pencil.png">
-      <item name="Guidelines" href="/guidelines.html"/>
-      <item name="Style Guide" href="/javastyle.html"/>
-    </menu>
+<!--    <menu name="For Contributors" inherit="top" img="img/glyphicons/pencil.png">-->
+<!--      <item name="Guidelines" href="/guidelines.html"/>-->
+<!--      <item name="Style Guide" href="/javastyle.html"/>-->
+<!--    </menu>-->
 
     <menu name="Manual" inherit="top" img="img/glyphicons/book.png">
       <item name="Introduction" href="/manual/index.html"/>
