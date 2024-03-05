@@ -719,7 +719,6 @@
                   <excludes>
                     <exclude>/_release-notes/*</exclude>
                     <exclude>/_release-notes.adoc</exclude>
-                    <exclude>/resources/glyphicons-halflings-2-1.zip</exclude>
                     <exclude>/resources/logo/**/*</exclude>
                   </excludes>
                 </resource>
