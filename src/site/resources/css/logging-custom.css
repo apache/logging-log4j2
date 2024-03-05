@@ -157,8 +157,17 @@
     padding: 2em;
     height: 100vh;
     max-height: 100vh;
-    overflow: scroll;
-    background-color: #fff;
+    overflow: auto;
+}
+
+.table-of-content.sticky {
+    position: sticky;
+    top: 0;
+}
+
+.table-of-content.sticky-effect {
+    background-color: #ededed;
+    transition: background-color 1s linear;
 }
 
 /** Small screens < 1400px */
