@@ -151,6 +151,9 @@
 .table-of-content {
     width: 20vw;
     padding: 2em;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: scroll;
     background-color: #fff;
 }
 
