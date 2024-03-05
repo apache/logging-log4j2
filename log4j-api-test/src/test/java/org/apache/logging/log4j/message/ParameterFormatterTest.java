@@ -17,21 +17,18 @@
 package org.apache.logging.log4j.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.UsingStatusLoggerMock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.ArgumentCaptor;
 
 /**
  * Tests {@link ParameterFormatter}.
@@ -73,14 +70,10 @@ class ParameterFormatterTest {
 
     @ParameterizedTest
     @CsvSource({"1,foo {}", "2,bar {}{}"})
-    void insufficient_args_should_not_throw_an_exception(final int placeholderCount, final String pattern) {
+    void format_should_fail_on_insufficient_args(final int placeholderCount, final String pattern) {
         final int argCount = placeholderCount - 1;
-        final String formattedPattern = ParameterFormatter.format(pattern, new Object[argCount], argCount);
-        assertThat(formattedPattern).isEqualTo(pattern);
-        final ArgumentCaptor<Throwable> errorCaptor = ArgumentCaptor.forClass(Throwable.class);
-        verify(StatusLogger.getLogger()).error(eq("parameter formatting failure"), errorCaptor.capture());
-        final Throwable error = errorCaptor.getValue();
-        assertThat(error)
+        assertThatThrownBy(() -> ParameterFormatter.format(pattern, new Object[argCount], argCount))
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(
                         "found %d argument placeholders, but provided %d for pattern `%s`",
                         placeholderCount, argCount, pattern);
@@ -88,12 +81,9 @@ class ParameterFormatterTest {
 
     @ParameterizedTest
     @MethodSource("messageFormattingTestCases")
-    void test_message_formatting(
+    void format_should_work(
             final String pattern, final Object[] args, final int argCount, final String expectedFormattedMessage) {
-        MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern, -1);
-        final StringBuilder buffer = new StringBuilder();
-        ParameterFormatter.formatMessage(buffer, pattern, args, argCount, analysis);
-        String actualFormattedMessage = buffer.toString();
+        final String actualFormattedMessage = ParameterFormatter.format(pattern, args, argCount);
         assertThat(actualFormattedMessage).isEqualTo(expectedFormattedMessage);
     }
 

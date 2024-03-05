@@ -17,19 +17,26 @@
 package org.apache.logging.log4j.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.test.junit.SerialUtil;
+import org.apache.logging.log4j.test.junit.UsingStatusLoggerMock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
 
-public class ParameterizedMessageTest {
+@UsingStatusLoggerMock
+class ParameterizedMessageTest {
 
     @Test
-    public void testNoArgs() {
+    void testNoArgs() {
         final String testMsg = "Test message {}";
         ParameterizedMessage msg = new ParameterizedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
@@ -41,7 +48,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testZeroLength() {
+    void testZeroLength() {
         final String testMsg = "";
         ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[] {"arg"});
         String result = msg.getFormattedMessage();
@@ -53,7 +60,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testOneCharLength() {
+    void testOneCharLength() {
         final String testMsg = "d";
         ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[] {"arg"});
         String result = msg.getFormattedMessage();
@@ -65,7 +72,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testFormat3StringArgs() {
+    void testFormat3StringArgs() {
         final String testMsg = "Test message {}{} {}";
         final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
@@ -73,7 +80,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatNullArgs() {
+    void testFormatNullArgs() {
         final String testMsg = "Test message {} {} {} {} {} {}";
         final String[] args = {"a", null, "c", null, null, null};
         final String result = ParameterizedMessage.format(testMsg, args);
@@ -81,7 +88,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsIgnoresSuperfluousArgs() {
+    void testFormatStringArgsIgnoresSuperfluousArgs() {
         final String testMsg = "Test message {}{} {}";
         final String[] args = {"a", "b", "c", "unnecessary", "superfluous"};
         final String result = ParameterizedMessage.format(testMsg, args);
@@ -89,7 +96,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithEscape() {
+    void testFormatStringArgsWithEscape() {
         final String testMsg = "Test message \\{}{} {}";
         final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
@@ -97,7 +104,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithTrailingEscape() {
+    void testFormatStringArgsWithTrailingEscape() {
         final String testMsg = "Test message {}{} {}\\";
         final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
@@ -105,7 +112,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithTrailingText() {
+    void testFormatStringArgsWithTrailingText() {
         final String testMsg = "Test message {}{} {}Text";
         final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
@@ -113,7 +120,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithTrailingEscapedEscape() {
+    void testFormatStringArgsWithTrailingEscapedEscape() {
         final String testMsg = "Test message {}{} {}\\\\";
         final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
@@ -121,7 +128,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithEscapedEscape() {
+    void testFormatStringArgsWithEscapedEscape() {
         final String testMsg = "Test message \\\\{}{} {}";
         final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
@@ -129,7 +136,7 @@ public class ParameterizedMessageTest {
     }
 
     @Test
-    public void testSafeWithMutableParams() { // LOG4J2-763
+    void testSafeWithMutableParams() { // LOG4J2-763
         final String testMsg = "Test message {}";
         final Mutable param = new Mutable().set("abc");
         final ParameterizedMessage msg = new ParameterizedMessage(testMsg, param);
@@ -169,5 +176,50 @@ public class ParameterizedMessageTest {
         final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
         assertThat(actual).isInstanceOf(ParameterizedMessage.class);
         assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
+    }
+
+    static Stream<Object[]> testCasesForInsufficientFormatArgs() {
+        return Stream.of(new Object[] {1, "foo {}"}, new Object[] {2, "bar {}{}"});
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCasesForInsufficientFormatArgs")
+    void formatTo_should_fail_on_insufficient_args(final int placeholderCount, final String pattern) {
+        final int argCount = placeholderCount - 1;
+        verifyFormattingFailureOnInsufficientArgs(placeholderCount, pattern, argCount, () -> {
+            final ParameterizedMessage message = new ParameterizedMessage(pattern, new Object[argCount]);
+            final StringBuilder buffer = new StringBuilder();
+            message.formatTo(buffer);
+            return buffer.toString();
+        });
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCasesForInsufficientFormatArgs")
+    void format_should_fail_on_insufficient_args(final int placeholderCount, final String pattern) {
+        final int argCount = placeholderCount - 1;
+        verifyFormattingFailureOnInsufficientArgs(
+                placeholderCount, pattern, argCount, () -> ParameterizedMessage.format(pattern, new Object[argCount]));
+    }
+
+    private static void verifyFormattingFailureOnInsufficientArgs(
+            final int placeholderCount,
+            final String pattern,
+            final int argCount,
+            final Supplier<String> formattedMessageSupplier) {
+
+        // Verify the formatted message
+        final String formattedMessage = formattedMessageSupplier.get();
+        assertThat(formattedMessage).isEqualTo(pattern);
+
+        // Verify the logged failure
+        final ArgumentCaptor<Throwable> errorCaptor = ArgumentCaptor.forClass(Throwable.class);
+        verify(StatusLogger.getLogger()).error(eq("message formatting failure"), errorCaptor.capture());
+        final Throwable error = errorCaptor.getValue();
+        assertThat(error)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(
+                        "found %d argument placeholders, but provided %d for pattern `%s`",
+                        placeholderCount, argCount, pattern);
     }
 }
