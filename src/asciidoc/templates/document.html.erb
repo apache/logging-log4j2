@@ -245,6 +245,11 @@
 
         for (var i = 0; i < menuItems.length; i++) {
             menuItems[i].addEventListener('click', function(event) {
+                // check if the sub menu was clicked
+                if (event.target.closest('.menu-drop-down')) {
+                    return;
+                }
+
                 var subMenu = this.getElementsByClassName('menu-drop-down')[0];
                 if (subMenu.style.display === 'flex') {
                     subMenu.style.display = 'none';
