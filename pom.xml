@@ -812,49 +812,6 @@
         </executions>
       </plugin>
 
-
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-site-plugin</artifactId>-->
-<!--        <inherited>false</inherited>-->
-<!--        <configuration combine.self="override">-->
-<!--          <skip>false</skip>-->
-<!--          <generateProjectInfo>false</generateProjectInfo>-->
-<!--          <generateReports>false</generateReports>-->
-<!--          <siteDirectory>${project.build.directory}/generated-sources/site</siteDirectory>-->
-<!--          <locales>en</locales>-->
-<!--          &lt;!&ndash; Exclude the navigation file for Maven 1 sites as it interferes with the site generation. &ndash;&gt;-->
-<!--          <moduleExcludes>-->
-<!--            <xdoc>navigation.xml</xdoc>-->
-<!--          </moduleExcludes>-->
-<!--          <attributes>-->
-<!--            <Log4jReleaseVersion>${revision}</Log4jReleaseVersion>-->
-<!--          </attributes>-->
-<!--        </configuration>-->
-<!--        <dependencies>-->
-<!--          <dependency>-->
-<!--            <groupId>org.asciidoctor</groupId>-->
-<!--            <artifactId>asciidoctor-maven-plugin</artifactId>-->
-<!--            <version>${asciidoctor-maven-plugin.version}</version>-->
-<!--          </dependency>-->
-<!--        </dependencies>-->
-<!--      </plugin>-->
-
-      <!-- We (sadly) use `maven-site-plugin`, which handles AsciiDoc files.
-           Hence, skip the `asciidoctor-maven-plugin` redundant execution inherited from the parent. -->
-<!--      <plugin>-->
-<!--        <groupId>org.asciidoctor</groupId>-->
-<!--        <artifactId>asciidoctor-maven-plugin</artifactId>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>export-asciidoc-to-html</id>-->
-<!--            <configuration>-->
-<!--              <skip>true</skip>-->
-<!--            </configuration>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
-
       <!-- ███████ ███    ██ ██████         ███████ ██ ████████ ███████
            ██      ████   ██ ██   ██ ██     ██      ██    ██    ██
            █████   ██ ██  ██ ██   ██        ███████ ██    ██    █████
