@@ -41,7 +41,7 @@
 <!--      <item name="GitHub" href="https://github.com/apache/logging-log4j2"/>-->
     </links>
 
-    <menu name="Apache Log4j™ 3.x" inherit="top" img="img/glyphicons/home.png">
+    <menu name="Apache Log4j™ 3.x" inherit="top">
 <!--      <item name="About" href="/index.html"/>-->
       <item name="Download" href="/download.html"/>
       <item name="Javadoc" href="/javadoc.html"/>
@@ -74,12 +74,12 @@
       <item name="Thanks" href="/thanks.html"/>
     </menu>
 
-<!--    <menu name="For Contributors" inherit="top" img="img/glyphicons/pencil.png">-->
+<!--    <menu name="For Contributors" inherit="top">-->
 <!--      <item name="Guidelines" href="/guidelines.html"/>-->
 <!--      <item name="Style Guide" href="/javastyle.html"/>-->
 <!--    </menu>-->
 
-    <menu name="Manual" inherit="top" img="img/glyphicons/book.png">
+    <menu name="Manual" inherit="top">
       <item name="Introduction" href="/manual/index.html"/>
       <item name="Architecture" href="/manual/architecture.html"/>
       <item name="Log4j 1.x Compatibility" href="manual/compatibility.html"/>
@@ -266,18 +266,18 @@
 
     </menu>
 
-    <menu name="Related Projects" inherit="top" img="img/glyphicons/tag.png">
+    <menu name="Related Projects" inherit="top">
       <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
     </menu>
 
-    <menu name="Older Releases" inherit="top" img="img/glyphicons/link.png">
+    <menu name="Older Releases" inherit="top">
       <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
       <item name="Log4j 2.3 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3/"/>
       <item name="Log4j 2.12.1 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.1/"/>
       <item name="Log4j 2.x - Latest release for Java 8" href="http://logging.apache.org/log4j/2.x/"/>
     </menu>
 
-    <menu name="Internal Components" inherit="top" img="img/glyphicons/layers.png">
+    <menu name="Internal Components" inherit="top">
       <item name="API" href="log4j-api.html"/>
       <item name="Implementation" href="log4j-core.html"/>
       <item name="Log4j 1.2 API" href="log4j-1.2-api.html"/>
@@ -295,20 +295,20 @@
       <item name="Log4j Transformation Tools" href="log4j-transform"/>
     </menu>
 
-    <menu name="External Components" img="img/glyphicons/link.png">
+    <menu name="External Components">
       <item name="Log4j Jakarta EE" href="/log4j/jakarta"/>
       <item name="Log4j JMX GUI" href="/log4j/jmx-gui"/>
       <item name="Log4j Tools" href="/log4j/tools"/>
       <item name="Log4j Transformation Tools" href="/log4j/transform"/>
     </menu>
 
-    <menu name="Project Information" img="img/glyphicons/info.png">
+    <menu name="Project Information">
       <item name="Project Team" href="/team.html" />
       <item name="Project License" href="https://www.apache.org/licenses/LICENSE-2.0" />
       <item name="Source Repository" href="https://github.com/apache/logging-log4j2/tree/main" />
     </menu>
 
-    <menu name="Project Reports" img="img/glyphicons/layers.png">
+    <menu name="Project Reports">
       <item name="RAT Report" href="/rat-report.html" />
     </menu>
     <footer><![CDATA[<p align="center">Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="http://www.apache.org">The Apache Software Foundation</a>. All Rights Reserved.<br>
