@@ -17,10 +17,6 @@
 = Appenders
 Ralph Goers; Gary Gregory; Nick Williams; Matt Sicker
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 Appenders are responsible for delivering LogEvents to their destination.
 Every Appender must implement the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html[`Appender`]

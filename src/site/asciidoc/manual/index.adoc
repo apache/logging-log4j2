@@ -17,10 +17,6 @@
 = Overview
 Ralph Goers <rgoers@apache.org>
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 == Welcome to Log4j!
 
 Almost every large application includes its own logging or tracing API.

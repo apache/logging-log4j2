@@ -16,10 +16,6 @@
 ////
 = Javadoc API Documentation
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 The table below contains links to the Javadoc API Documentation for the components you are most likely to use
 directly in code. You can also use the menu links on the left.
 

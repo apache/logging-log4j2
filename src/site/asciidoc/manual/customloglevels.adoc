@@ -17,10 +17,6 @@
 = Custom Log Levels
 Remko Popma <rpopma@apache.org>
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 [[top]]
 
 [#DefiningLevelsInCode]

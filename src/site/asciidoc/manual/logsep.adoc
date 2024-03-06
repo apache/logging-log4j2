@@ -17,10 +17,6 @@
 = Logging Separation
 Ralph Goers <rgoers@apache.org>
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 There are many well known use cases where applications may share an
 environment with other applications and each has a need to have its own,
 separate logging environment. This purpose of this section is to discuss

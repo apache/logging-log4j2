@@ -17,10 +17,6 @@
 = Performance
 Remko Popma <rpopma@apache.org>; Ralph Goers <rgoers@apache.org>
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 ////
 One of the often-cited arguments against logging is its
 computational cost. This is a legitimate concern as even moderately
