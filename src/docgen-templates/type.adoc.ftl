@@ -17,52 +17,58 @@
 -->
 <#-- @ftlvariable name="sourcedType" type="org.apache.logging.log4j.docgen.model.ArtifactSourcedType" -->
 <#assign type = sourcedType.type/>
-<#-- @ftlvariable name="type" type="org.apache.logging.log4j.docgen.PluginType" -->
+<#-- @ftlvariable name="type" type="org.apache.logging.log4j.docgen.Type" -->
 <#-- @ftlvariable name="lookup" type="org.apache.logging.log4j.docgen.generator.TypeLookup" -->
 <#include "license.adoc.ftl">
+
 [#${type.className?replace('.', '_')}]
-= ${type.name}
+= ${type.name!('`' + type.className + '`')}
 
 Class:: `${type.className}`
 <#if sourcedType.groupId?has_content && sourcedType.artifactId?has_content>
 Provider:: `${sourcedType.groupId}:${sourcedType.artifactId}`
 
-</#if>${(type.description.text)!}
+</#if>
 
+${(type.description.text)!}
+
+<#assign hasElements = ((type.elements?size)!0) != 0/>
+<#if type.class.simpleName == 'PluginType'>
+    <#-- @ftlvariable name="type" type="org.apache.logging.log4j.docgen.PluginType" -->
 [#${type.className?replace('.', '_')}-XML-snippet]
 == XML snippet
 [source, xml]
 ----
-<#assign tag><${type.name} </#assign>
-<#assign indent = tag?replace('.', ' ', 'r')/>
-<#assign has_elements = type.elements?size != 0/>
-<#if !type.attributes?has_content>
+    <#assign tag><${type.name} </#assign>
+    <#assign indent = tag?replace('.', ' ', 'r')/>
+    <#if !type.attributes?has_content>
 <${type.name}/>
-    <#else>
-        <#list type.attributes?sort_by('name') as attr>
-            <#if attr?is_first>
-${tag}${attr.name}="${attr.defaultValue!}"${attr?is_last?then(has_elements?then('>', '/>'), '')}
-            <#else>
-${indent}${attr.name}="${attr.defaultValue!}"${attr?is_last?then(has_elements?then('>', '/>'), '')}
-            </#if>
-        </#list>
-        <#if has_elements>
-            <#list type.elements as element>
-                <#assign multiplicitySuffix = (element.multiplicity == '*')?then('<!-- multiple occurrences allowed -->','')/>
-                <#assign elementName = 'a-' + element.type?keep_after_last('.') + '-implementation'/>
-                <#if lookup[element.type]??>
-                    <#assign element_type = lookup[element.type].type/>
-                    <#-- @ftlvariable name="element_type" type="org.apache.logging.log4j.docgen.model.AbstractType" -->
-                    <#if element_type.name?? && !element_type.implementations?has_content>
-                        <#assign elementName = element_type.name/>
-                    </#if>
+        <#else>
+            <#list type.attributes?sort_by('name') as attr>
+                <#if attr?is_first>
+${tag}${attr.name}="${attr.defaultValue!}"${attr?is_last?then(hasElements?then('>', '/>'), '')}
+                <#else>
+${indent}${attr.name}="${attr.defaultValue!}"${attr?is_last?then(hasElements?then('>', '/>'), '')}
                 </#if>
-    <${elementName}/>${multiplicitySuffix}
             </#list>
+            <#if hasElements>
+                <#list type.elements as element>
+                    <#assign multiplicitySuffix = (element.multiplicity == '*')?then('<!-- multiple occurrences allowed -->','')/>
+                    <#assign elementName = 'a-' + element.type?keep_after_last('.') + '-implementation'/>
+                    <#if lookup[element.type]??>
+                        <#assign element_type = lookup[element.type].type/>
+                        <#-- @ftlvariable name="element_type" type="org.apache.logging.log4j.docgen.model.AbstractType" -->
+                        <#if element_type.name?? && !element_type.implementations?has_content>
+                            <#assign elementName = element_type.name/>
+                        </#if>
+                    </#if>
+    <${elementName}/>${multiplicitySuffix}
+                </#list>
 </${type.name}>
-        </#if>
-</#if>
+            </#if>
+    </#if>
 ----
+</#if>
 <#if type.attributes?has_content>
 
 [#${type.className?replace('.', '_')}-attributes]
@@ -77,14 +83,20 @@ Optional attributes are denoted by `?`-suffixed types.
     <#list type.attributes?sort_by('name') as attr>
         <#assign requirementSuffix = attr.required?then('', '?')/>
 |${attr.name}
-|xref:../../scalars.adoc#${attr.type?replace('.', '_')}[${attr.type?contains('.')?then(attr.type?keep_after_last('.'), attr.type)}]${requirementSuffix}
+        <#assign attrTypeName = attr.type?contains('.')?then(attr.type?keep_after_last('.'), attr.type)/>
+        <#if lookup[attr.type]??>
+            <#assign attrSourcedType = lookup[attr.type]/>
+|xref:../../${attrSourcedType.groupId}/${attrSourcedType.artifactId}/${attr.type}.adoc[${attrTypeName}]${requirementSuffix}
+        <#else>
+|${attrTypeName}${requirementSuffix}
+        </#if>
 |${attr.defaultValue!}
 a|${(attr.description.text)!}
 
     </#list>
 |===
 </#if>
-<#if has_elements>
+<#if hasElements>
 
 [#${type.className?replace('.', '_')}-components]
 == Nested components
@@ -101,28 +113,14 @@ Optional components are denoted by `?`-suffixed types.
         <#assign elementName = element.type?contains('.')?then(element.type?keep_after_last('.'), element.type)/>
         <#if lookup[element.type]??>
             <#assign elementSourcedType = lookup[element.type]/>
-            <#assign elementType = elementSourcedType.type/>
-            <#assign tagCell = elementType.name!/>
-            <#switch elementType.class.simpleName>
-                <#case 'PluginType'>
-                <#case 'AbstractType'>
+            <#assign tagCell = elementSourcedType.type.name!/>
 |${tagCell}
 |xref:../../${elementSourcedType.groupId}/${elementSourcedType.artifactId}/${element.type}.adoc[${elementName}]${requirementSuffix}
-a|${descriptionCell}
-                    <#break>
-                <#case 'ScalarType'>
-|${tagCell}
-|xref:../../scalars.adoc#${element.type?replace('.', '_')}[${elementName}]${requirementSuffix}
-a|${descriptionCell}
-                    <#break>
-                <#default>
-                    <#stop 'Unknown type `' + element.type + '` modelled in class `' + elementType.class.name + '`'/>
-            </#switch>
         <#else>
 |
 |${elementName}${requirementSuffix}
-a|${descriptionCell}
         </#if>
+a|${descriptionCell}
 
     </#list>
 |===

@@ -900,18 +900,14 @@
             <phase>pre-site</phase>
             <configuration>
               <templateDirectory>${project.basedir}/src/docgen-templates</templateDirectory>
-              <scalarsTemplate>
-                <source>scalars.adoc.ftl</source>
-                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/scalars.adoc</target>
-              </scalarsTemplate>
-              <interfaceTemplate>
-                <source>interface.adoc.ftl</source>
+              <indexTemplate>
+                <source>index.adoc.ftl</source>
+                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference.adoc</target>
+              </indexTemplate>
+              <typeTemplate>
+                <source>type.adoc.ftl</source>
                 <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/%g/%a/%c.adoc</target>
-              </interfaceTemplate>
-              <pluginTemplate>
-                <source>plugin.adoc.ftl</source>
-                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/%g/%a/%c.adoc</target>
-              </pluginTemplate>
+              </typeTemplate>
             </configuration>
           </execution>
 
