@@ -56,7 +56,7 @@
       </item>
       <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
 <!--      <item name="Release Notes" href="/release-notes.html"/>-->
-      <item name="FAQ" href="/faq.html"/>
+<!--      <item name="FAQ" href="/faq.html"/>-->
       <item name="Performance" href="/performance.html" collapse="true">
         <item name="Benchmarks" href="/performance.html#benchmarks" />
         <item name="Logging Library Comparison" href="/performance.html#loglibComparison" />

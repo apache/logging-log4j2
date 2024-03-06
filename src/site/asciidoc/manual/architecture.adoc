@@ -17,10 +17,6 @@
 = Architecture
 Ralph Goers <rgoers@apache.org>
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 == Main Components
 
 Log4j uses the classes shown in the diagram below.
