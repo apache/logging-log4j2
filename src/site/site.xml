@@ -80,19 +80,19 @@
 <!--    </menu>-->
 
     <menu name="Manual" inherit="top">
-      <item name="Introduction" href="/manual/index.html"/>
-      <item name="Architecture" href="/manual/architecture.html"/>
-      <item name="Log4j 1.x Compatibility" href="manual/compatibility.html"/>
-      <item name="Log4j 1.x Migration" href="manual/migration.html"/>
+<!--      <item name="Introduction" href="/manual/index.html"/>-->
+<!--      <item name="Architecture" href="/manual/architecture.html"/>-->
+<!--      <item name="Log4j 1.x Compatibility" href="manual/compatibility.html"/>-->
+<!--      <item name="Log4j 1.x Migration" href="manual/migration.html"/>-->
 
-      <item name="Java API" href="/manual/api.html" collapse="true">
-        <item name="Log Builder" href="manual/logbuilder.html"/>
-        <item name="Flow Tracing" href="manual/flowtracing.html"/>
-        <item name="Markers" href="manual/markers.html"/>
-        <item name="Event Logging" href="/manual/eventlogging.html"/>
-        <item name="Messages" href="/manual/messages.html"/>
-        <item name="ThreadContext" href="/manual/thread-context.html"/>
-      </item>
+<!--      <item name="Java API" href="/manual/api.html" collapse="true">-->
+<!--        <item name="Log Builder" href="manual/logbuilder.html"/>-->
+<!--        <item name="Flow Tracing" href="manual/flowtracing.html"/>-->
+<!--        <item name="Markers" href="manual/markers.html"/>-->
+<!--        <item name="Event Logging" href="/manual/eventlogging.html"/>-->
+<!--        <item name="Messages" href="/manual/messages.html"/>-->
+<!--        <item name="ThreadContext" href="/manual/thread-context.html"/>-->
+<!--      </item>-->
 
       <item name="Scala API" href="/manual/scala-api.html"/>
 
