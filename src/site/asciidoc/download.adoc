@@ -17,10 +17,6 @@
 
 include::../_constants.adoc[]
 
-
-++++
-<link rel="stylesheet" type="text/css" href="css/tables.css">
-++++
 = Install Apache Log4j 2
 
 Apache Log4j 3 is distributed under the
