@@ -17,15 +17,15 @@
 
 include::../_constants.adoc[]
 
-= Install Apache Log4j 2
+= Install Apache Log4j
 
-Apache Log4j 3 is distributed under the
+Apache Log4j is distributed under the
 https://www.apache.org/licenses/LICENSE-2.0.html[Apache License, version 2.0].
 
 == Using a build system
 
 The preferred way to use Log4j in your project is to use a build system as Maven.
-Please add the following to your build systems configuration file `pom.xml` to use Log4j 3.x.
+Please add the following to your build systems configuration file `pom.xml` to use Log4j.
 
 
 [source,xml,indent=0,role="primary"]
@@ -73,22 +73,22 @@ signature are links to the originals on the main distribution server.
 |===
 |Distribution |Mirrors |Checksum |Signature
 
-|Apache Log4j 3.x binary (tar.gz)
+|Apache Log4j binary (tar.gz)
 |https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.tar.gz[apache-log4j-{project-version}-bin.tar.gz]
 |https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.tar.gz.sha512[apache-log4j-{project-version}-bin.tar.gz.sha512]
 |https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.tar.gz.asc[apache-log4j-{project-version}-bin.tar.gz.asc]
 
-|Apache Log4j 3.x binary (zip)
+|Apache Log4j binary (zip)
 |https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.zip[apache-log4j-{project-version}-bin.zip]
 |https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.zip.sha512[apache-log4j-{project-version}-bin.zip.sha512]
 |https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.zip.asc[apache-log4j-{project-version}-bin.zip.asc]
 
-|Apache Log4j 3.x source (tar.gz)
+|Apache Log4j source (tar.gz)
 |https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-src.tar.gz[apache-log4j-{project-version}-src.tar.gz]
 |https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.tar.gz.sha512[apache-log4j-{project-version}-src.tar.gz.sha512]
 |https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.tar.gz.asc[apache-log4j-{project-version}-src.tar.gz.asc]
 
-|Apache Log4j 3.x source (zip)
+|Apache Log4j source (zip)
 |https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-src.zip[apache-log4j-{project-version}-src.zip]
 |https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.zip.sha512[apache-log4j-{project-version}-src.zip.sha512]
 |https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.zip.asc[apache-log4j-{project-version}-src.zip.asc]
@@ -118,7 +118,7 @@ program called sha512sum is included in many unix distributions.
 [#requirements]
 == Requirements
 
-Log4j 3 runtime requires a minimum of Java 17.
+The Apache Log4j runtime requires a minimum of Java 17.
 See the link:http://logging.apache.org/2.x[Log4j 2 website] for the latest releases supporting Java 6, 7, and 8.
 
 == Previous Releases
@@ -127,9 +127,9 @@ All previous releases of Apache log4j can be found in the
 https://archive.apache.org/dist/logging/log4j/[ASF archive repository]. Of course, all releases are availble for
 use as dependencies from the https://search.maven.org/search?q=org.apache.logging.log4j[Maven Central Repository]
 
-== Using Log4j on your classpath
+== Using Apache Log4j on your classpath
 
-To use Log4j 3.x in your application make sure that the API, Plugins, and Core
+To use Log4j in your application make sure that the API, Plugins, and Core
 jars are in the application’s classpath. Add the dependencies listed
 below to your classpath.
 
