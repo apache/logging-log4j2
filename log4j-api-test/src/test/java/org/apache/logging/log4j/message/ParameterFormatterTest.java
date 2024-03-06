@@ -17,12 +17,14 @@
 package org.apache.logging.log4j.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
+import org.apache.logging.log4j.test.junit.UsingStatusLoggerMock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -31,7 +33,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests {@link ParameterFormatter}.
  */
-public class ParameterFormatterTest {
+@UsingStatusLoggerMock
+class ParameterFormatterTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -49,7 +52,7 @@ public class ParameterFormatterTest {
         "4,0:2:4:10,false,{}{}{}a{]b{}",
         "5,0:2:4:7:10,false,{}{}{}a{}b{}"
     })
-    public void test_pattern_analysis(
+    void test_pattern_analysis(
             final int placeholderCount,
             final String placeholderCharIndicesString,
             final boolean escapedPlaceholderFound,
@@ -66,13 +69,21 @@ public class ParameterFormatterTest {
     }
 
     @ParameterizedTest
+    @CsvSource({"1,foo {}", "2,bar {}{}"})
+    void format_should_fail_on_insufficient_args(final int placeholderCount, final String pattern) {
+        final int argCount = placeholderCount - 1;
+        assertThatThrownBy(() -> ParameterFormatter.format(pattern, new Object[argCount], argCount))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(
+                        "found %d argument placeholders, but provided %d for pattern `%s`",
+                        placeholderCount, argCount, pattern);
+    }
+
+    @ParameterizedTest
     @MethodSource("messageFormattingTestCases")
-    void assertMessageFormatting(
+    void format_should_work(
             final String pattern, final Object[] args, final int argCount, final String expectedFormattedMessage) {
-        MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern, -1);
-        final StringBuilder buffer = new StringBuilder();
-        ParameterFormatter.formatMessage(buffer, pattern, args, argCount, analysis);
-        String actualFormattedMessage = buffer.toString();
+        final String actualFormattedMessage = ParameterFormatter.format(pattern, args, argCount);
         assertThat(actualFormattedMessage).isEqualTo(expectedFormattedMessage);
     }
 

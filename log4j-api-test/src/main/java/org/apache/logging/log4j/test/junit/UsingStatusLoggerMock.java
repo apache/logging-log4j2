@@ -24,6 +24,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * Shortcut to {@link StatusLoggerMockExtension}.
@@ -32,4 +33,5 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Target({TYPE, METHOD})
 @Documented
 @ExtendWith({ExtensionContextAnchor.class, StatusLoggerMockExtension.class})
+@ResourceLock("log4j2.StatusLogger")
 public @interface UsingStatusLoggerMock {}
