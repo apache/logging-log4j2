@@ -14,6 +14,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+
+include::../_constants.adoc[]
+
 = Download Apache Log4j 2
 
 ++++
@@ -28,28 +31,29 @@ mirrors with a default selection based on your inferred location. If you
 do not see that page, try a different browser. The checksum and
 signature are links to the originals on the main distribution server.
 
+
 |===
 |Distribution |Mirrors |Checksum |Signature
 
 |Apache Log4j 3.x binary (tar.gz)
-|https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz[apache-log4j-${Log4jReleaseVersion}-bin.tar.gz]
-|https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.sha512[apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.sha512]
-|https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc[apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc]
+|https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.tar.gz[apache-log4j-{project-version}-bin.tar.gz]
+|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.tar.gz.sha512[apache-log4j-{project-version}-bin.tar.gz.sha512]
+|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.tar.gz.asc[apache-log4j-{project-version}-bin.tar.gz.asc]
 
 |Apache Log4j 3.x binary (zip)
-|https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip[apache-log4j-${Log4jReleaseVersion}-bin.zip]
-|https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.sha512[apache-log4j-${Log4jReleaseVersion}-bin.zip.sha512]
-|https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.asc[apache-log4j-${Log4jReleaseVersion}-bin.zip.asc]
+|https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.zip[apache-log4j-{project-version}-bin.zip]
+|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.zip.sha512[apache-log4j-{project-version}-bin.zip.sha512]
+|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.zip.asc[apache-log4j-{project-version}-bin.zip.asc]
 
 |Apache Log4j 3.x source (tar.gz)
-|https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz[apache-log4j-${Log4jReleaseVersion}-src.tar.gz]
-|https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.sha512[apache-log4j-${Log4jReleaseVersion}-src.tar.gz.sha512]
-|https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc[apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc]
+|https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-src.tar.gz[apache-log4j-{project-version}-src.tar.gz]
+|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.tar.gz.sha512[apache-log4j-{project-version}-src.tar.gz.sha512]
+|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.tar.gz.asc[apache-log4j-{project-version}-src.tar.gz.asc]
 
 |Apache Log4j 3.x source (zip)
-|https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip[apache-log4j-${Log4jReleaseVersion}-src.zip]
-|https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.sha512[apache-log4j-${Log4jReleaseVersion}-src.zip.sha512]
-|https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.asc[apache-log4j-${Log4jReleaseVersion}-src.zip.asc]
+|https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-src.zip[apache-log4j-{project-version}-src.zip]
+|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.zip.sha512[apache-log4j-{project-version}-src.zip.sha512]
+|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.zip.asc[apache-log4j-{project-version}-src.zip.asc]
 |===
 
 It is essential that you verify the integrity of the downloaded files
@@ -67,7 +71,7 @@ directory], rather than from a mirror. Then verify the signatures using
 [source,sh,subs=attributes]
 ----
 gpg --import KEYS
-gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.zip.asc
+gpg --verify apache-log4j-{project-version}-bin.zip.asc
 ----
 
 Alternatively, you can verify the SHA512 signature on the files. A unix
@@ -91,8 +95,8 @@ To use Log4j 3.x in your application make sure that the API, Plugins, and Core
 jars are in the application’s classpath. Add the dependencies listed
 below to your classpath.
 
-* log4j-api-${Log4jReleaseVersion}.jar
-* log4j-plugins-${Log4jReleaseVersion}.jar
-* log4j-core-${Log4jReleaseVersion}.jar
+* log4j-api-{project-version}.jar
+* log4j-plugins-{project-version}.jar
+* log4j-core-{project-version}.jar
 
 You can do this from the command line or a manifest file.
