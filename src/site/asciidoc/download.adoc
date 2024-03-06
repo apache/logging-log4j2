@@ -27,6 +27,7 @@ https://www.apache.org/licenses/LICENSE-2.0.html[Apache License, version 2.0].
 The preferred way to use Log4j in your project is to use a build system as Maven.
 Please add the following to your build systems configuration file `pom.xml` to use Log4j.
 
+Log4j needs two dependencies, since it is separated between the API and the Core.
 
 [source,xml,indent=0,role="primary"]
 .Maven (pom.xml)
@@ -62,6 +63,54 @@ compile 'org.apache.logging.log4j:log4j-core:{project-version}'
 <dependency org="org.apache.logging.log4j" name="log4j-core" rev="{project-version}" />
 </dependencies>
 ----
+
+== Bill of materials
+
+
+To keep your Log4j module versions in sync with each other, a  <abbr id="Bill of Material">BOM</abbr>
+pom.xml file is provided for your convenience. To use this with [Maven](https://maven.apache.org/),
+add the dependency listed below to your `pom.xml` file.
+When you specify the version identifier in this section, you don't have to specify the version in your `<dependencies/>` section.
+
+[source,xml,indent=0,role="primary"]
+.Maven (pom.xml)
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-bom</artifactId>
+      <version>{project-version}</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+----
+
+[source,indent=0,role="secondary"]
+.Gradle (build.gradle)
+----
+plugins {
+  id 'io.spring.dependency-management' version '1.0.1.RELEASE'
+}
+
+dependencyManagement {
+  imports {
+    mavenBom 'org.apache.logging.log4j:log4j-bom:{project-version}'
+  }
+}
+
+dependencies {
+  implementation 'org.apache.logging.log4j:log4j-api'
+  implementation 'org.apache.logging.log4j:log4j-core'
+  // etc.
+}
+----
+
+To use this with Gradle, an additional [Gradle plugin](https://github.com/spring-gradle-plugins/dependency-management-plugin)
+is required for dependency management functionality.
+
 
 == Manual Download
 
