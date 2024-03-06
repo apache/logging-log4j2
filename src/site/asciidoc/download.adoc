@@ -17,20 +17,62 @@
 
 include::../_constants.adoc[]
 
-= Download Apache Log4j 2
 
 ++++
 <link rel="stylesheet" type="text/css" href="css/tables.css">
 ++++
+= Install Apache Log4j 2
 
 Apache Log4j 3 is distributed under the
 https://www.apache.org/licenses/LICENSE-2.0.html[Apache License, version 2.0].
+
+== Using a build system
+
+The preferred way to use Log4j in your project is to use a build system as Maven.
+Please add the following to your build systems configuration file `pom.xml` to use Log4j 3.x.
+
+
+[source,xml,indent=0,role="primary"]
+.Maven (pom.xml)
+----
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>{project-version}</version>
+  </dependency>
+</dependencies>
+<dependencies>
+    <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>{project-version}</version>
+    </dependency>
+</dependencies>
+----
+
+[source,indent=0,role="secondary"]
+.Gradle (build.gradle)
+----
+compile 'org.apache.logging.log4j:log4j-api:{project-version}'
+compile 'org.apache.logging.log4j:log4j-core:{project-version}'
+----
+
+[source,xml,indent=0,role="secondary"]
+.Ivy (ivy.xml)
+----
+<dependencies>
+<dependency org="org.apache.logging.log4j" name="log4j-api" rev="{project-version}" />
+<dependency org="org.apache.logging.log4j" name="log4j-core" rev="{project-version}" />
+</dependencies>
+----
+
+== Manual Download
 
 The link in the Mirrors column should display a list of available
 mirrors with a default selection based on your inferred location. If you
 do not see that page, try a different browser. The checksum and
 signature are links to the originals on the main distribution server.
-
 
 |===
 |Distribution |Mirrors |Checksum |Signature
