@@ -4,5 +4,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
        type="changed">
   <issue id="2309" link="https://github.com/apache/logging-log4j2/pull/2309"/>
-  <description format="asciidoc">Fix handling of `LoggerContextAware` lookups.</description>
+  <description format="asciidoc">Fix handling of `LoggerContextAware` lookups</description>
 </entry>
