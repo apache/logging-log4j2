@@ -810,6 +810,13 @@
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>io.spring.asciidoctor</groupId>
+            <artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
+            <version>0.6.3</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <!-- ███████ ███    ██ ██████         ███████ ██ ████████ ███████
