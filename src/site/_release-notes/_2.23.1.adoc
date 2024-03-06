@@ -20,7 +20,7 @@
 
 Release date:: 2024-03-06
 
-This releases contains ...
+This release contains several small fixes and some dependency updates.
 
 
 [#release-notes-2-23-1-changed]

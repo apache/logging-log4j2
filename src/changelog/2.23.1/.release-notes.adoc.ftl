@@ -20,6 +20,6 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This releases contains ...
+This release contains several small fixes and some dependency updates.
 
 <#include "../.changelog.adoc.ftl">
