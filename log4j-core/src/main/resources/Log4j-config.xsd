@@ -128,7 +128,7 @@
             </annotation>
             <simpleType>
                <restriction base="string">
-                  <pattern value="(|disable|\$\{[^{}]+\})" />
+                  <pattern value="(|disable|\\$\{[^{}]+\})" />
                </restriction>
             </simpleType>
          </attribute>
@@ -148,7 +148,7 @@
             <simpleType>
                <restriction base="string">
                   <pattern
-                     value="([Tt][Rr][Aa][Cc][Ee]|[Dd][Ee][Bb][Uu][Gg]|[Ii][Nn][Ff][Oo]|[Ww][Aa][Rr][Nn]|[Ee][Rr][Rr][Oo][Rr]|[Ff][Aa][Tt][Aa][Ll]|[Oo][Ff][Ff]|\$\{[^{}]+\})" />
+                     value="([Tt][Rr][Aa][Cc][Ee]|[Dd][Ee][Bb][Uu][Gg]|[Ii][Nn][Ff][Oo]|[Ww][Aa][Rr][Nn]|[Ee][Rr][Rr][Oo][Rr]|[Ff][Aa][Tt][Aa][Ll]|[Oo][Ff][Ff]|\\$\{[^{}]+\})" />
                </restriction>
             </simpleType>
          </attribute>
@@ -1389,7 +1389,7 @@
          <documentation>Allow boolean values or variable place holders in the form of ${variablename}</documentation>
       </annotation>
       <restriction base="string">
-         <pattern value="(true|false|\$\{[^{}]+\})" />
+         <pattern value="(true|false|\\$\{[^{}]+\})" />
       </restriction>
    </simpleType>
 
@@ -1398,7 +1398,7 @@
          <documentation>Allow long values or variable place holders in the form of ${variablename}</documentation>
       </annotation>
       <restriction base="string">
-         <pattern value="-?([0-9]+|\$\{[^{}]+\})" />
+         <pattern value="-?([0-9]+|\\$\{[^{}]+\})" />
       </restriction>
    </simpleType>
 
