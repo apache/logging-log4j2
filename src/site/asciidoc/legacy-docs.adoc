@@ -31,3 +31,131 @@ This is the legacy documentation migrated from the older versions of Log4j. Thes
 * link:/manual/eventlogging.html[Event Logging]
 * link:/manual/messages.html[Messages]
 * link:/manual/thread-context.html[ThreadContext]
+
+== Configuration
+
+* link:/manual/configuration.html[Configuration]
+* link:/manual/configuration.html#Architecture[Configuration Architecture]
+* link:/manual/configuration.html#Arbiters[Arbiters]
+* link:/manual/configuration.html#AutomaticConfiguration[Automatic Configuration]
+* link:/manual/configuration.html#Additivity[Additivity]
+* link:/manual/configuration.html#AutomaticReconfiguration[Automatic Reconfiguration]
+* link:/manual/configuration.html#ChainsawSupport[Chainsaw Support]
+* link:/manual/configuration.html#ConfigurationSyntax"[Configuration Syntax]
+* link:/manual/configuration.html#XML[XML Syntax]
+* link:/manual/configuration.html#JSON[JSON Syntax]
+* link:/manual/configuration.html#YAML[YAML Syntax]
+* link:/manual/configuration.html#Properties[Properties Syntax]
+* link:/manual/configuration.html#Loggers[Configuring Loggers]
+* link:/manual/configuration.html#Appenders[Configuring Appenders]
+* link:/manual/configuration.html#Filters[Configuring Filters]
+* link:/manual/configuration.html#PropertySubstitution[Property Substitution]
+* link:/manual/configuration.html#RuntimeLookup[Lookup Variables]
+* link:/manual/configuration.html#Scripts[Scripts]
+* link:/manual/configuration.html#XInclude[XInclude]
+* link:/manual/configuration.html#CompositeConfiguration[Composite Configurations]
+* link:/manual/configuration.html#StatusMessages[Status Messages]
+* link:/manual/configuration.html#UnitTestingInMaven[Unit Testing]
+* link:/manual/systemProperties.html[System Properties]
+
+== Usage
+
+* link:/manual/usage.html[Usage]
+* link:/manual/usage.html?#StaticVsNonStatic[Static vs non-Static Loggers]
+* link:/manual/usage.html?#LoggerVsClass[Logger Name vs Class Name]
+* link:/manual/cloud.html[Logging in the Cloud]
+
+== Lookups
+
+* link:/manual/lookups.html[Lookups]
+* link:/manual/lookups.html#ContextMapLookup[Context Map]
+* link:/manual/lookups.html#DateLookup[Date]
+* link:/manual/lookups.html#DockerLookup[Docker]
+* link:/manual/lookups.html#EnvironmentLookup[Environment]
+* link:/manual/lookups.html#EventLookup[Event]
+* link:/manual/lookups.html#JavaLookup[Java]
+* link:/manual/lookups.html#JndiLookup[JNDI]
+* link:/manual/lookups.html#JmxRuntimeInputArgumentsLookup[JVM Arguments]
+* link:/manual/lookups.html#KubernetesLookup[Kubernetes]
+* link:/manual/lookups.html#Log4jConfigLookup[Log4j Config]
+* link:/manual/lookups.html#LowerLookup[Lower]
+* link:/manual/lookups.html#AppMainArgsLookup[Main Arguments]
+* link:/manual/lookups.html#MapLookup[Map]
+* link:/manual/lookups.html#StructuredDataLookup[Structured Data]
+* link:/manual/lookups.html#SystemPropertiesLookup[System Properties]
+* link:/manual/lookups.html#UpperLookup[Upper]
+
+== Appender
+
+* link:/manual/appenders.html[Appenders]
+* link:/manual/appenders.html#AsyncAppender[Async]
+* link:/manual/appenders.html#ConsoleAppender[Console]
+* link:/manual/appenders.html#FailoverAppender[Failover]
+* link:/manual/appenders.html#FileAppender[File]
+* link:/manual/appenders.html#FlumeAppender[Flume]
+* link:/manual/appenders.html#JDBCAppender[JDBC]
+* link:/manual/appenders.html#HttpAppender[HTTP]
+* link:/manual/appenders.html#MemoryMappedFileAppender[Memory Mapped File]
+* link:/manual/appenders.html#NoSQLAppender[NoSQL]
+* link:/manual/appenders.html#NoSQLAppenderMongoDB[NoSQL for MongoDB]
+* link:/manual/appenders.html#OutputStreamAppender[Output Stream]
+* link:/manual/appenders.html#RandomAccessFileAppender[Random Access File]
+* link:/manual/appenders.html#RewriteAppender[Rewrite]
+* link:/manual/appenders.html#RollingFileAppender[Rolling File]
+* link:/manual/appenders.html#RollingRandomAccessFileAppender[Rolling Random Access File]
+* link:/manual/appenders.html#RoutingAppender[Routing]
+* link:/manual/appenders.html#ScriptAppenderSelector[ScriptAppenderSelector]
+* link:/manual/appenders.html#SocketAppender[Socket]
+* link:/manual/appenders.html#SSL[SSL]
+* link:/manual/appenders.html#SyslogAppender[Syslog]
+
+== Layouts
+
+* link:/manual/layouts.html[Layouts]
+* link:/manual/layouts.html#CSVLayouts[CSV]
+* link:/manual/layouts.html#HTMLLayout[HTML]
+* link:/manual/json-template-layout.html[JSON Template]
+* link:/manual/layouts.html#PatternLayout[Pattern]
+* link:/manual/layouts.html#RFC5424Layout[RFC-5424]
+* link:/manual/layouts.html#SerializedLayout[Serialized]
+* link:/manual/layouts.html#SyslogLayout[Syslog]
+* link:/manual/layouts.html#LocationInformation[Location Information]
+
+== Filters
+
+* link:/manual/filters.html[Filters]
+* link:/manual/filters.html#BurstFilter[Burst]
+* link:/manual/filters.html#CompositeFilter[Composite Filter]
+* link:/manual/filters.html#DynamicThresholdFilter[Dynamic Threshold]
+* link:/manual/filters.html#MapFilter[Map]
+* link:/manual/filters.html#MarkerFilter[Marker]
+* link:/manual/filters.html#MutableThreadContextMapFilter[Mutable Thread Context Map]
+* link:/manual/filters.html#RegexFilter[Regex]
+* link:/manual/filters.html#Script[Script]
+* link:/manual/filters.html#StructuredDataFilter[Structured Data]
+* link:/manual/filters.html#ThreadContextMapFilter[Thread Context Map]
+* link:/manual/filters.html#ThresholdFilter[Threshold]
+* link:/manual/filters.html#TimeFilter[Time]
+
+== Async Loggers
+
+* link:/manual/async.html[Async Loggers]
+* link:/manual/async.html#Trade-offs[Trade-offs]
+* link:/manual/async.html#AllAsync[All Loggers Async]
+* link:/manual/async.html#MixedSync-Async[Mixed Sync &amp; Async]
+* link:/manual/async.html#WaitStrategy[WaitStrategy]
+* link:/manual/async.html#Location[Location]
+* link:/manual/async.html#Performance[Performance]
+* link:/manual/async.html#UnderTheHood[Under The Hood]
+
+== Garbage-free Logging
+
+* link:/manual/garbagefree.html[Garbage-free Logging]
+* link:/manual/garbagefree.html#Config[Configuration]
+* link:/manual/garbagefree.html#Appenders[Supported Appenders]
+* link:/manual/garbagefree.html#Layouts[Supported Layouts]
+* link:/manual/garbagefree.html#Filters[Supported Filters]
+* link:/manual/garbagefree.html#api[API Changes]
+* link:/manual/garbagefree.html#codeImpact[Impact on Application Code]
+* link:/garbagefree.html#Performance[Performance] /manual
+* link:/manual/garbagefree.html#UnderTheHood[Under the Hood]

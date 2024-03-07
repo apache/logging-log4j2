@@ -94,127 +94,127 @@
 <!--        <item name="ThreadContext" href="/manual/thread-context.html"/>-->
 <!--      </item>-->
 
-      <item name="Scala API" href="/manual/scala-api.html"/>
+<!--      <item name="Scala API" href="/manual/scala-api.html"/>-->
 
-      <item name="Configuration" href="/manual/configuration.html" collapse="true">
-        <item name="Configuration Architecture" href="/manual/configuration.html#Architecture"/>
-        <item name="Arbiters" href="/manual/configuration.html#Arbiters"/>
-        <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>
-        <item name="Additivity" href="/manual/configuration.html#Additivity"/>
-        <item name="Automatic Reconfiguration" href="/manual/configuration.html#AutomaticReconfiguration"/>
-        <item name="Chainsaw Support" href="/manual/configuration.html#ChainsawSupport"/>
-        <item name="Configuration Syntax" href="/manual/configuration.html#ConfigurationSyntax" />
-        <item name="XML Syntax" href="/manual/configuration.html#XML"/>
-        <item name="JSON Syntax" href="/manual/configuration.html#JSON"/>
-        <item name="YAML Syntax" href="/manual/configuration.html#YAML"/>
-        <item name="Properties Syntax" href="/manual/configuration.html#Properties"/>
-        <item name="Configuring Loggers" href="/manual/configuration.html#Loggers"/>
-        <item name="Configuring Appenders" href="/manual/configuration.html#Appenders"/>
-        <item name="Configuring Filters" href="/manual/configuration.html#Filters"/>
-        <item name="Property Substitution" href="/manual/configuration.html#PropertySubstitution"/>
-        <item name="Lookup Variables" href="/manual/configuration.html#RuntimeLookup"/>
-        <item name="Scripts" href="/manual/configuration.html#Scripts"/>
-        <item name="XInclude" href="/manual/configuration.html#XInclude"/>
-        <item name="Composite Configurations" href="/manual/configuration.html#CompositeConfiguration"/>
-        <item name="Status Messages" href="/manual/configuration.html#StatusMessages"/>
-        <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>
-        <item name="System Properties" href="/manual/systemProperties.html"/>
-      </item>
+<!--      <item name="Configuration" href="/manual/configuration.html" collapse="true">-->
+<!--        <item name="Configuration Architecture" href="/manual/configuration.html#Architecture"/>-->
+<!--        <item name="Arbiters" href="/manual/configuration.html#Arbiters"/>-->
+<!--        <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>-->
+<!--        <item name="Additivity" href="/manual/configuration.html#Additivity"/>-->
+<!--        <item name="Automatic Reconfiguration" href="/manual/configuration.html#AutomaticReconfiguration"/>-->
+<!--        <item name="Chainsaw Support" href="/manual/configuration.html#ChainsawSupport"/>-->
+<!--        <item name="Configuration Syntax" href="/manual/configuration.html#ConfigurationSyntax" />-->
+<!--        <item name="XML Syntax" href="/manual/configuration.html#XML"/>-->
+<!--        <item name="JSON Syntax" href="/manual/configuration.html#JSON"/>-->
+<!--        <item name="YAML Syntax" href="/manual/configuration.html#YAML"/>-->
+<!--        <item name="Properties Syntax" href="/manual/configuration.html#Properties"/>-->
+<!--        <item name="Configuring Loggers" href="/manual/configuration.html#Loggers"/>-->
+<!--        <item name="Configuring Appenders" href="/manual/configuration.html#Appenders"/>-->
+<!--        <item name="Configuring Filters" href="/manual/configuration.html#Filters"/>-->
+<!--        <item name="Property Substitution" href="/manual/configuration.html#PropertySubstitution"/>-->
+<!--        <item name="Lookup Variables" href="/manual/configuration.html#RuntimeLookup"/>-->
+<!--        <item name="Scripts" href="/manual/configuration.html#Scripts"/>-->
+<!--        <item name="XInclude" href="/manual/configuration.html#XInclude"/>-->
+<!--        <item name="Composite Configurations" href="/manual/configuration.html#CompositeConfiguration"/>-->
+<!--        <item name="Status Messages" href="/manual/configuration.html#StatusMessages"/>-->
+<!--        <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>-->
+<!--        <item name="System Properties" href="/manual/systemProperties.html"/>-->
+<!--      </item>-->
 
-      <item name="Usage" href="/manual/usage.html" collapse="true">
-        <item name="Static vs non-Static Loggers"/>
-        <item name="Logger Name vs Class Name"/>
-        <item name="Logging in the Cloud" href="/manual/cloud.html"/>
-      </item>
+<!--      <item name="Usage" href="/manual/usage.html" collapse="true">-->
+<!--        <item name="Static vs non-Static Loggers" href="/manual/usage.html?#StaticVsNonStatic"/>-->
+<!--        <item name="Logger Name vs Class Name" href="/manual/usage.html?#LoggerVsClass"/>-->
+<!--        <item name="Logging in the Cloud" href="/manual/cloud.html"/>-->
+<!--      </item>-->
 
-      <item name="Lookups" href="/manual/lookups.html" collapse="true">
-        <item name="Context Map" href="/manual/lookups.html#ContextMapLookup"/>
-        <item name="Date" href="/manual/lookups.html#DateLookup"/>
-        <item name="Docker" href="manual/lookups.html#DockerLookup"/>
-        <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
-        <item name="Event" href="/manual/lookups.html#EventLookup"/>
-        <item name="Java" href="/manual/lookups.html#JavaLookup"/>
-        <item name="JNDI" href="/manual/lookups.html#JndiLookup"/>
-        <item name="JVM Arguments" href="/manual/lookups.html#JmxRuntimeInputArgumentsLookup"/>
-        <item name="Kubernetes" href="/manual/lookups.html#KubernetesLookup"/>
-        <item name="Log4j Config" href="/manual/lookups.html#Log4jConfigLookup"/>
-        <item name="Lower" href="/manual/lookups.html#LowerLookup"/>
-        <item name="Main Arguments" href="/manual/lookups.html#AppMainArgsLookup"/>
-        <item name="Map" href="/manual/lookups.html#MapLookup"/>
-        <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>
-        <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>
-        <item name="Upper" href="/manual/lookups.html#UpperLookup"/>
-      </item>
+<!--      <item name="Lookups" href="/manual/lookups.html" collapse="true">-->
+<!--        <item name="Context Map" href="/manual/lookups.html#ContextMapLookup"/>-->
+<!--        <item name="Date" href="/manual/lookups.html#DateLookup"/>-->
+<!--        <item name="Docker" href="manual/lookups.html#DockerLookup"/>-->
+<!--        <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>-->
+<!--        <item name="Event" href="/manual/lookups.html#EventLookup"/>-->
+<!--        <item name="Java" href="/manual/lookups.html#JavaLookup"/>-->
+<!--        <item name="JNDI" href="/manual/lookups.html#JndiLookup"/>-->
+<!--        <item name="JVM Arguments" href="/manual/lookups.html#JmxRuntimeInputArgumentsLookup"/>-->
+<!--        <item name="Kubernetes" href="/manual/lookups.html#KubernetesLookup"/>-->
+<!--        <item name="Log4j Config" href="/manual/lookups.html#Log4jConfigLookup"/>-->
+<!--        <item name="Lower" href="/manual/lookups.html#LowerLookup"/>-->
+<!--        <item name="Main Arguments" href="/manual/lookups.html#AppMainArgsLookup"/>-->
+<!--        <item name="Map" href="/manual/lookups.html#MapLookup"/>-->
+<!--        <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>-->
+<!--        <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>-->
+<!--        <item name="Upper" href="/manual/lookups.html#UpperLookup"/>-->
+<!--      </item>-->
 
-      <item name="Appenders" href="/manual/appenders.html" collapse="true">
-        <item name="Async" href="/manual/appenders.html#AsyncAppender"/>
-        <item name="Console" href="/manual/appenders.html#ConsoleAppender"/>
-        <item name="Failover" href="/manual/appenders.html#FailoverAppender"/>
-        <item name="File" href="/manual/appenders.html#FileAppender"/>
-        <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
-        <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
-        <item name="HTTP" href="/manual/appenders.html#HttpAppender"/>
-        <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
-        <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
-        <item name="NoSQL for MongoDB" href="/manual/appenders.html#NoSQLAppenderMongoDB"/>
-        <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
-        <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>
-        <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
-        <item name="Rolling File" href="/manual/appenders.html#RollingFileAppender"/>
-        <item name="Rolling Random Access File" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
-        <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
-        <item name="ScriptAppenderSelector" href="/manual/appenders.html#ScriptAppenderSelector"/>
-        <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
-        <item name="SSL" href="/manual/appenders.html#SSL"/>
-        <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
-      </item>
+<!--      <item name="Appenders" href="/manual/appenders.html" collapse="true">-->
+<!--        <item name="Async" href="/manual/appenders.html#AsyncAppender"/>-->
+<!--        <item name="Console" href="/manual/appenders.html#ConsoleAppender"/>-->
+<!--        <item name="Failover" href="/manual/appenders.html#FailoverAppender"/>-->
+<!--        <item name="File" href="/manual/appenders.html#FileAppender"/>-->
+<!--        <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>-->
+<!--        <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>-->
+<!--        <item name="HTTP" href="/manual/appenders.html#HttpAppender"/>-->
+<!--        <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>-->
+<!--        <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>-->
+<!--        <item name="NoSQL for MongoDB" href="/manual/appenders.html#NoSQLAppenderMongoDB"/>-->
+<!--        <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>-->
+<!--        <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>-->
+<!--        <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>-->
+<!--        <item name="Rolling File" href="/manual/appenders.html#RollingFileAppender"/>-->
+<!--        <item name="Rolling Random Access File" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>-->
+<!--        <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>-->
+<!--        <item name="ScriptAppenderSelector" href="/manual/appenders.html#ScriptAppenderSelector"/>-->
+<!--        <item name="Socket" href="/manual/appenders.html#SocketAppender"/>-->
+<!--        <item name="SSL" href="/manual/appenders.html#SSL"/>-->
+<!--        <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>-->
+<!--      </item>-->
 
-      <item name="Layouts" href="/manual/layouts.html" collapse="true">
-        <item name="CSV" href="/manual/layouts.html#CSVLayouts"/>
-        <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>
-        <item name="JSON Template" href="/manual/json-template-layout.html"/>
-        <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>
-        <item name="RFC-5424" href="/manual/layouts.html#RFC5424Layout"/>
-        <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
-        <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>
-        <item name="Location Information" href="/manual/layouts.html#LocationInformation"/>
-      </item>
+<!--      <item name="Layouts" href="/manual/layouts.html" collapse="true">-->
+<!--        <item name="CSV" href="/manual/layouts.html#CSVLayouts"/>-->
+<!--        <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>-->
+<!--        <item name="JSON Template" href="/manual/json-template-layout.html"/>-->
+<!--        <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>-->
+<!--        <item name="RFC-5424" href="/manual/layouts.html#RFC5424Layout"/>-->
+<!--        <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>-->
+<!--        <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>-->
+<!--        <item name="Location Information" href="/manual/layouts.html#LocationInformation"/>-->
+<!--      </item>-->
 
-      <item name="Filters" href="/manual/filters.html" collapse="true">
-        <item name="Burst" href="/manual/filters.html#BurstFilter"/>
-        <item name="Composite Filter" href="/manual/filters.html#CompositeFilter"/>
-        <item name="Dynamic Threshold" href="/manual/filters.html#DynamicThresholdFilter"/>
-        <item name="Map" href="/manual/filters.html#MapFilter"/>
-        <item name="Marker" href="/manual/filters.html#MarkerFilter"/>
-        <item name="Mutable Thread Context Map" href="/manual/filters.html#MutableThreadContextMapFilter"/>
-        <item name="Regex" href="/manual/filters.html#RegexFilter"/>
-        <item name="Script" href="/manual/filters.html#Script"/>
-        <item name="Structured Data" href="/manual/filters.html#StructuredDataFilter"/>
-        <item name="Thread Context Map" href="/manual/filters.html#ThreadContextMapFilter"/>
-        <item name="Threshold" href="/manual/filters.html#ThresholdFilter"/>
-        <item name="Time" href="/manual/filters.html#TimeFilter"/>
-      </item>
+<!--      <item name="Filters" href="/manual/filters.html" collapse="true">-->
+<!--        <item name="Burst" href="/manual/filters.html#BurstFilter"/>-->
+<!--        <item name="Composite Filter" href="/manual/filters.html#CompositeFilter"/>-->
+<!--        <item name="Dynamic Threshold" href="/manual/filters.html#DynamicThresholdFilter"/>-->
+<!--        <item name="Map" href="/manual/filters.html#MapFilter"/>-->
+<!--        <item name="Marker" href="/manual/filters.html#MarkerFilter"/>-->
+<!--        <item name="Mutable Thread Context Map" href="/manual/filters.html#MutableThreadContextMapFilter"/>-->
+<!--        <item name="Regex" href="/manual/filters.html#RegexFilter"/>-->
+<!--        <item name="Script" href="/manual/filters.html#Script"/>-->
+<!--        <item name="Structured Data" href="/manual/filters.html#StructuredDataFilter"/>-->
+<!--        <item name="Thread Context Map" href="/manual/filters.html#ThreadContextMapFilter"/>-->
+<!--        <item name="Threshold" href="/manual/filters.html#ThresholdFilter"/>-->
+<!--        <item name="Time" href="/manual/filters.html#TimeFilter"/>-->
+<!--      </item>-->
 
-      <item name="Async Loggers" href="/manual/async.html" collapse="true">
-        <item name="Trade-offs" href="/manual/async.html#Trade-offs"/>
-        <item name="All Loggers Async" href="/manual/async.html#AllAsync"/>
-        <item name="Mixed Sync &amp; Async" href="/manual/async.html#MixedSync-Async"/>
-        <item name="WaitStrategy" href="/manual/async.html#WaitStrategy"/>
-        <item name="Location" href="/manual/async.html#Location"/>
-        <item name="Performance" href="/manual/async.html#Performance"/>
-        <item name="Under The Hood" href="/manual/async.html#UnderTheHood"/>
-      </item>
+<!--      <item name="Async Loggers" href="/manual/async.html" collapse="true">-->
+<!--        <item name="Trade-offs" href="/manual/async.html#Trade-offs"/>-->
+<!--        <item name="All Loggers Async" href="/manual/async.html#AllAsync"/>-->
+<!--        <item name="Mixed Sync &amp; Async" href="/manual/async.html#MixedSync-Async"/>-->
+<!--        <item name="WaitStrategy" href="/manual/async.html#WaitStrategy"/>-->
+<!--        <item name="Location" href="/manual/async.html#Location"/>-->
+<!--        <item name="Performance" href="/manual/async.html#Performance"/>-->
+<!--        <item name="Under The Hood" href="/manual/async.html#UnderTheHood"/>-->
+<!--      </item>-->
 
-      <item name="Garbage-free Logging" href="/manual/garbagefree.html" collapse="true">
-        <item name="Configuration" href="/manual/garbagefree.html#Config"/>
-        <item name="Supported Appenders" href="/manual/garbagefree.html#Appenders"/>
-        <item name="Supported Layouts" href="/manual/garbagefree.html#Layouts"/>
-        <item name="Supported Filters" href="/manual/garbagefree.html#Filters"/>
-        <item name="API Changes" href="/manual/garbagefree.html#api"/>
-        <item name="Impact on Application Code" href="/manual/garbagefree.html#codeImpact"/>
-        <item name="Performance" href="/manual/garbagefree.html#Performance"/>
-        <item name="Under the Hood" href="/manual/garbagefree.html#UnderTheHood"/>
-      </item>
+<!--      <item name="Garbage-free Logging" href="/manual/garbagefree.html" collapse="true">-->
+<!--        <item name="Configuration" href="/manual/garbagefree.html#Config"/>-->
+<!--        <item name="Supported Appenders" href="/manual/garbagefree.html#Appenders"/>-->
+<!--        <item name="Supported Layouts" href="/manual/garbagefree.html#Layouts"/>-->
+<!--        <item name="Supported Filters" href="/manual/garbagefree.html#Filters"/>-->
+<!--        <item name="API Changes" href="/manual/garbagefree.html#api"/>-->
+<!--        <item name="Impact on Application Code" href="/manual/garbagefree.html#codeImpact"/>-->
+<!--        <item name="Performance" href="/manual/garbagefree.html#Performance"/>-->
+<!--        <item name="Under the Hood" href="/manual/garbagefree.html#UnderTheHood"/>-->
+<!--      </item>-->
 
       <item name="JMX" href="/manual/jmx.html"/>
       <item name="Logging Separation" href="/manual/logsep.html"/>
