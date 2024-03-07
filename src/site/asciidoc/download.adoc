@@ -111,6 +111,46 @@ dependencies {
 To use this with Gradle, an additional [Gradle plugin](https://github.com/spring-gradle-plugins/dependency-management-plugin)
 is required for dependency management functionality.
 
+== Snapshot builds
+
+You can access the latest development snapshot by using the Maven repository
+`https://repository.apache.org/snapshots` and the current SNAPSHOT version.
+Generally, the master branch will use the next patch version as its snapshot
+version regardless of what the next actual version of Log4j will be. For example,
+if the latest release were `3.0`, then master would be using the version
+`3.0.1-SNAPSHOT`.
+
+To enable snapshots you'll need to enable Snapshots repositories in your build system.
+
+[source,xml,indent=0,role="primary"]
+.Maven (pom.xml)
+----
+<repositories>
+  <repository>
+    <id>apache.snapshots</id>
+    <name>Apache Snapshot Repository</name>
+    <url>https://repository.apache.org/snapshots</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+  </repository>
+</repositories>
+----
+
+[source,indent=0,role="secondary"]
+.Gradle (build.gradle)
+----
+repositories {
+  mavenCentral()
+  maven { url 'https://repository.apache.org/snapshots' }
+}
+----
+
+[source,indent=0,role="secondary"]
+.SBT (build.sbt)
+----
+resolvers += "Apache Snapshot Repository" at "https://repository.apache.org/snapshots"
+----
 
 == Manual Download
 
