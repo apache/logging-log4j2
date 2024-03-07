@@ -141,6 +141,10 @@
     padding: 1em;
 }
 
+#footer .footer-text div a {
+      color: lightgray;
+}
+
 .content-container {
     display: flex;
 }
