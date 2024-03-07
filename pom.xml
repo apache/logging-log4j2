@@ -781,7 +781,6 @@
                   <directory>${project.build.directory}/generated-sources/site/resources</directory>
                 </resource>
               </resources>
-              <enableVerbose>true</enableVerbose>
               <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
               <outputDirectory>target/site</outputDirectory>
               <preserveDirectories>true</preserveDirectories>
