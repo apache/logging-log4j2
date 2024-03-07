@@ -270,12 +270,12 @@
 <!--      <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>-->
 <!--    </menu>-->
 
-    <menu name="Older Releases" inherit="top">
-      <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
-      <item name="Log4j 2.3 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3/"/>
-      <item name="Log4j 2.12.1 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.1/"/>
-      <item name="Log4j 2.x - Latest release for Java 8" href="http://logging.apache.org/log4j/2.x/"/>
-    </menu>
+<!--    <menu name="Older Releases" inherit="top">-->
+<!--      <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>-->
+<!--      <item name="Log4j 2.3 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3/"/>-->
+<!--      <item name="Log4j 2.12.1 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.1/"/>-->
+<!--      <item name="Log4j 2.x - Latest release for Java 8" href="http://logging.apache.org/log4j/2.x/"/>-->
+<!--    </menu>-->
 
     <menu name="Internal Components" inherit="top">
       <item name="API" href="log4j-api.html"/>
