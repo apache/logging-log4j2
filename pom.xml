@@ -770,21 +770,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>team-list</id>
-            <goals>
-              <goal>team</goal>
-            </goals>
-            <phase>site</phase>
-            <inherited>false</inherited>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
         <executions>
