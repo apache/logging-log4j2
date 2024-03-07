@@ -216,59 +216,59 @@
 <!--        <item name="Under the Hood" href="/manual/garbagefree.html#UnderTheHood"/>-->
 <!--      </item>-->
 
-      <item name="JMX" href="/manual/jmx.html"/>
-      <item name="Logging Separation" href="/manual/logsep.html"/>
+<!--      <item name="JMX" href="/manual/jmx.html"/>-->
+<!--      <item name="Logging Separation" href="/manual/logsep.html"/>-->
 
-      <item name="Extending Log4j" href="/manual/extending.html" collapse="true">
-        <item name="LoggerContextFactory" href="/manual/extending.html#LoggerContextFactory"/>
-        <item name="ContextSelector" href="/manual/extending.html#ContextSelector"/>
-        <item name="ConfigurationFactory" href="/manual/extending.html#ConfigurationFactory"/>
-        <item name="LoggerConfig" href="/manual/extending.html#LoggerConfig"/>
-        <item name="LogEventFactory" href="/manual/extending.html#LogEventFactory"/>
-        <item name="MessageFactory" href="/manual/extending.html#MessageFactory"/>
-        <item name="Lookups" href="/manual/extending.html#Lookups"/>
-        <item name="Filters" href="/manual/extending.html#Filters"/>
-        <item name="Appenders" href="/manual/extending.html#Appenders"/>
-        <item name="Layouts" href="/manual/extending.html#Layouts"/>
-        <item name="PatternConverters" href="/manual/extending.html#PatternConverters"/>
-        <item name="Plugin Builders" href="/manual/extending.html#Plugin_Builders"/>
-        <item name="Custom ContextDataInjector" href="/manual/extending.html#Custom_ContextDataInjector"/>
-        <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
-      </item>
+<!--      <item name="Extending Log4j" href="/manual/extending.html" collapse="true">-->
+<!--        <item name="LoggerContextFactory" href="/manual/extending.html#LoggerContextFactory"/>-->
+<!--        <item name="ContextSelector" href="/manual/extending.html#ContextSelector"/>-->
+<!--        <item name="ConfigurationFactory" href="/manual/extending.html#ConfigurationFactory"/>-->
+<!--        <item name="LoggerConfig" href="/manual/extending.html#LoggerConfig"/>-->
+<!--        <item name="LogEventFactory" href="/manual/extending.html#LogEventFactory"/>-->
+<!--        <item name="MessageFactory" href="/manual/extending.html#MessageFactory"/>-->
+<!--        <item name="Lookups" href="/manual/extending.html#Lookups"/>-->
+<!--        <item name="Filters" href="/manual/extending.html#Filters"/>-->
+<!--        <item name="Appenders" href="/manual/extending.html#Appenders"/>-->
+<!--        <item name="Layouts" href="/manual/extending.html#Layouts"/>-->
+<!--        <item name="PatternConverters" href="/manual/extending.html#PatternConverters"/>-->
+<!--        <item name="Plugin Builders" href="/manual/extending.html#Plugin_Builders"/>-->
+<!--        <item name="Custom ContextDataInjector" href="/manual/extending.html#Custom_ContextDataInjector"/>-->
+<!--        <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>-->
+<!--      </item>-->
 
-      <item name="Plugins" href="/manual/plugins.html" collapse="true">
-        <item name="Core" href="/manual/plugins.html#Core"/>
-        <item name="Converters" href="/manual/plugins.html#Converters"/>
-        <item name="Key Providers" href="/manual/plugins.html#KeyProviders"/>
-        <item name="Lookups" href="/manual/plugins.html#Lookups"/>
-        <item name="Type Converters" href="/manual/plugins.html#TypeConverters"/>
-        <item name="Developer Notes" href="/manual/plugins.html#DeveloperNotes"/>
-      </item>
+<!--      <item name="Plugins" href="/manual/plugins.html" collapse="true">-->
+<!--        <item name="Core" href="/manual/plugins.html#Core"/>-->
+<!--        <item name="Converters" href="/manual/plugins.html#Converters"/>-->
+<!--        <item name="Key Providers" href="/manual/plugins.html#KeyProviders"/>-->
+<!--        <item name="Lookups" href="/manual/plugins.html#Lookups"/>-->
+<!--        <item name="Type Converters" href="/manual/plugins.html#TypeConverters"/>-->
+<!--        <item name="Developer Notes" href="/manual/plugins.html#DeveloperNotes"/>-->
+<!--      </item>-->
 
-      <item name="Programmatic Log4j Configuration" href="/manual/customconfig.html" collapse="true">
-        <item name="ConfigurationBuilder API" href="/manual/customconfig.html#ConfigurationBuilder"/>
-        <item name="Understanding ConfigurationFactory" href="/manual/customconfig.html#ConfigurationFactory"/>
-        <item name="Example" href="/manual/customconfig.html#Example"/>
-        <item name="Using Configurator" href="/manual/customconfig.html#Configurator"/>
-        <item name="Config File and Code" href="/manual/customconfig.html#Hybrid"/>
-        <item name="After Initialization" href="/manual/customconfig.html#AddingToCurrent"/>
-        <item name="Appending to Writers &amp; OutputStreams" href="/manual/customconfig.html#AppendingToWritersAndOutputStreams"/>
-      </item>
+<!--      <item name="Programmatic Log4j Configuration" href="/manual/customconfig.html" collapse="true">-->
+<!--        <item name="ConfigurationBuilder API" href="/manual/customconfig.html#ConfigurationBuilder"/>-->
+<!--        <item name="Understanding ConfigurationFactory" href="/manual/customconfig.html#ConfigurationFactory"/>-->
+<!--        <item name="Example" href="/manual/customconfig.html#Example"/>-->
+<!--        <item name="Using Configurator" href="/manual/customconfig.html#Configurator"/>-->
+<!--        <item name="Config File and Code" href="/manual/customconfig.html#Hybrid"/>-->
+<!--        <item name="After Initialization" href="/manual/customconfig.html#AddingToCurrent"/>-->
+<!--        <item name="Appending to Writers &amp; OutputStreams" href="/manual/customconfig.html#AppendingToWritersAndOutputStreams"/>-->
+<!--      </item>-->
 
-      <item name="Custom Log Levels" href="/manual/customloglevels.html" collapse="true">
-        <item name="In Code" href="/manual/customloglevels.html#DefiningLevelsInCode"/>
-        <item name="In Configuration" href="/manual/customloglevels.html#DefiningLevelsInConfiguration"/>
-        <item name="Adding or Replacing Levels" href="/manual/customloglevels.html#AddingOrReplacingLevels"/>
-        <item name="Custom Loggers" href="/manual/customloglevels.html#CustomLoggers"/>
-        <item name="Custom Logger Example" href="/manual/customloglevels.html#ExampleUsage"/>
-        <item name="Code Generation Tool" href="/manual/customloglevels.html#CodeGen"/>
-      </item>
+<!--      <item name="Custom Log Levels" href="/manual/customloglevels.html" collapse="true">-->
+<!--        <item name="In Code" href="/manual/customloglevels.html#DefiningLevelsInCode"/>-->
+<!--        <item name="In Configuration" href="/manual/customloglevels.html#DefiningLevelsInConfiguration"/>-->
+<!--        <item name="Adding or Replacing Levels" href="/manual/customloglevels.html#AddingOrReplacingLevels"/>-->
+<!--        <item name="Custom Loggers" href="/manual/customloglevels.html#CustomLoggers"/>-->
+<!--        <item name="Custom Logger Example" href="/manual/customloglevels.html#ExampleUsage"/>-->
+<!--        <item name="Code Generation Tool" href="/manual/customloglevels.html#CodeGen"/>-->
+<!--      </item>-->
 
-    </menu>
+<!--    </menu>-->
 
-    <menu name="Related Projects" inherit="top">
-      <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
-    </menu>
+<!--    <menu name="Related Projects" inherit="top">-->
+<!--      <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>-->
+<!--    </menu>-->
 
     <menu name="Older Releases" inherit="top">
       <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
