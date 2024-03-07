@@ -34,11 +34,16 @@ The project is actively maintained by a link:team.html[team] of several voluntee
 
 We share below some highlights from Log4j features.
 
-[source, java]
+[source,java]
 ----
-class Test {
-    public void some() {
-        System.out.println("Hello");
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
+class Application {
+    private static final Logger logger = LogManager.getLogger(Application.class);
+
+    public void action() {
+        logger.info("Hello, World!");
     }
 }
 ----
@@ -75,6 +80,17 @@ Check out the link:manual/extending.html[Extending Log4j] page.
 
 Log4j 3 runtime requires a minimum of Java 17.
 For support for older versions of Java see the link:http://logging.apache.org/2.x[Log4j 2 site].
+
+[#older-releases]
+== Older releases
+
+Are looking for old versions of Log4j? While we recommend ot always use the latest versions, you can find the older versions here:
+
+* link:https://logging.apache.org/log4j/1.2/[Log4j 1.2 - End of Life]
+* link:https://logging.apache.org/log4j/log4j-2.3/[Log4j 2.3 - Java 6]
+* link:https://logging.apache.org/log4j/log4j-2.12.1/[Log4j 2.12.1 - Java 7]
+* link:https://logging.apache.org/log4j/2.x/[Log4j 2.x - Latest release for Java 8]
+
 
 [#compat]
 == Compatibility
