@@ -1,0 +1,43 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Components of Apache Log4j
+
+== Internal Components
+
+* link:/log4j-api.html[API]
+* link:/log4j-core.html[Implementation]
+* link:/log4j-1.2-api.html[Log4j 1.2 API]
+* link:/log4j-slf4j-impl.html[SLF4J Binding]
+* link:/log4j-jul.html[JUL Adapter]
+* link:/log4j-jpl.html[JDK Platform Logger]
+* link:/log4j-to-slf4j.html[Log4j 2 to SLF4J Adapter]
+* link:/log4j-jdbc-dbcp2.html[JDBC Appender]
+* link:/log4j-flume-ng.html[Apache Flume Appender]
+* link:/log4j-mongodb4.html[MongoDB 4 appender]
+* link:/log4j-iostreams.html[IO Streams]
+* link:/log4j-docker.html[Docker Support]
+* link:/log4j-kubernetes.html[Kubernetes Support]
+* link:/log4j-spring-cloud-config-client.html[Spring Cloud Config Client]
+* link:/log4j-transform[Log4j Transformation Tools]
+
+== External Components
+
+* link:/log4j/jakarta[Log4j Jakarta EE]
+* link:/log4j/jmx-gui[Log4j JMX GUI]
+* link:/log4j/tools[Log4j Tools]
+* link:/log4j/transform[Log4j Transformation Tools]
+

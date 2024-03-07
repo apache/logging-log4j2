@@ -277,30 +277,30 @@
 <!--      <item name="Log4j 2.x - Latest release for Java 8" href="http://logging.apache.org/log4j/2.x/"/>-->
 <!--    </menu>-->
 
-    <menu name="Internal Components" inherit="top">
-      <item name="API" href="log4j-api.html"/>
-      <item name="Implementation" href="log4j-core.html"/>
-      <item name="Log4j 1.2 API" href="log4j-1.2-api.html"/>
-      <item name="SLF4J Binding" href="log4j-slf4j-impl.html"/>
-      <item name="JUL Adapter" href="log4j-jul.html"/>
-      <item name="JDK Platform Logger" href="log4j-jpl.html"/>
-      <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j.html"/>
-      <item name="JDBC Appender" href="log4j-jdbc-dbcp2.html"/>
-      <item name="Apache Flume Appender" href="log4j-flume-ng.html"/>
-      <item name="MongoDB 4 appender" href="log4j-mongodb4.html"/>
-      <item name="IO Streams" href="log4j-iostreams.html"/>
-      <item name="Docker Support" href="log4j-docker.html"/>
-      <item name="Kubernetes Support" href="log4j-kubernetes.html"/>
-      <item name="Spring Cloud Config Client" href="log4j-spring-cloud-config-client.html"/>
-      <item name="Log4j Transformation Tools" href="log4j-transform"/>
-    </menu>
+<!--    <menu name="Internal Components" inherit="top">-->
+<!--      <item name="API" href="log4j-api.html"/>-->
+<!--      <item name="Implementation" href="log4j-core.html"/>-->
+<!--      <item name="Log4j 1.2 API" href="log4j-1.2-api.html"/>-->
+<!--      <item name="SLF4J Binding" href="log4j-slf4j-impl.html"/>-->
+<!--      <item name="JUL Adapter" href="log4j-jul.html"/>-->
+<!--      <item name="JDK Platform Logger" href="log4j-jpl.html"/>-->
+<!--      <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j.html"/>-->
+<!--      <item name="JDBC Appender" href="log4j-jdbc-dbcp2.html"/>-->
+<!--      <item name="Apache Flume Appender" href="log4j-flume-ng.html"/>-->
+<!--      <item name="MongoDB 4 appender" href="log4j-mongodb4.html"/>-->
+<!--      <item name="IO Streams" href="log4j-iostreams.html"/>-->
+<!--      <item name="Docker Support" href="log4j-docker.html"/>-->
+<!--      <item name="Kubernetes Support" href="log4j-kubernetes.html"/>-->
+<!--      <item name="Spring Cloud Config Client" href="log4j-spring-cloud-config-client.html"/>-->
+<!--      <item name="Log4j Transformation Tools" href="log4j-transform"/>-->
+<!--    </menu>-->
 
-    <menu name="External Components">
-      <item name="Log4j Jakarta EE" href="/log4j/jakarta"/>
-      <item name="Log4j JMX GUI" href="/log4j/jmx-gui"/>
-      <item name="Log4j Tools" href="/log4j/tools"/>
-      <item name="Log4j Transformation Tools" href="/log4j/transform"/>
-    </menu>
+<!--    <menu name="External Components">-->
+<!--      <item name="Log4j Jakarta EE" href="/log4j/jakarta"/>-->
+<!--      <item name="Log4j JMX GUI" href="/log4j/jmx-gui"/>-->
+<!--      <item name="Log4j Tools" href="/log4j/tools"/>-->
+<!--      <item name="Log4j Transformation Tools" href="/log4j/transform"/>-->
+<!--    </menu>-->
 
     <menu name="Project Information">
       <item name="Project Team" href="/team.html" />
@@ -308,9 +308,9 @@
       <item name="Source Repository" href="https://github.com/apache/logging-log4j2/tree/main" />
     </menu>
 
-    <menu name="Project Reports">
-      <item name="RAT Report" href="/rat-report.html" />
-    </menu>
+<!--    <menu name="Project Reports">-->
+<!--      <item name="RAT Report" href="/rat-report.html" />-->
+<!--    </menu>-->
     <footer><![CDATA[<p align="center">Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="http://www.apache.org">The Apache Software Foundation</a>. All Rights Reserved.<br>
       Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the Apache Logging project logo are trademarks of The Apache Software Foundation.</p>]]>
     </footer>
