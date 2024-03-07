@@ -65,6 +65,19 @@ This is the legacy documentation migrated from the older versions of Log4j. Thes
 * link:/manual/usage.html?#LoggerVsClass[Logger Name vs Class Name]
 * link:/manual/cloud.html[Logging in the Cloud]
 
+== Performance
+
+* link:/performance.html[Performance]
+* link:/performance.html#benchmarks[Benchmarks]
+* link:/performance.html#loglibComparison[Logging Library Comparison]
+* link:/performance.html#asyncLogging[Async Logging Comparison]
+* link:/performance.html#asyncLoggingResponseTime[Async Logging Latency]
+* link:/performance.html#asyncLoggingWithParams[Parameters]
+* link:/performance.html#asyncLoggingWithLocation[Location]
+* link:/performance.html#fileLoggingComparison[File Logging Comparison]
+* link:/performance.html#filtering[Filtering Comparison]
+* link:/performance.html#tradeoffs[Trade-offs]
+
 == Lookups
 
 * link:/manual/lookups.html[Lookups]
