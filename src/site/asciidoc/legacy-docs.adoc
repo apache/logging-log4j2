@@ -159,3 +159,59 @@ This is the legacy documentation migrated from the older versions of Log4j. Thes
 * link:/manual/garbagefree.html#codeImpact[Impact on Application Code]
 * link:/garbagefree.html#Performance[Performance] /manual
 * link:/manual/garbagefree.html#UnderTheHood[Under the Hood]
+
+== Extending Log4j
+
+* link:/manual/extending.html[Extending Log4j]
+* link:/manual/extending.html#LoggerContextFactory[LoggerContextFactory ]
+* link:/manual/extending.html#ContextSelector[ContextSelector ]
+* link:/manual/extending.html#ConfigurationFactory[ConfigurationFactory ]
+* link:/manual/extending.html#LoggerConfig[LoggerConfig ]
+* link:/manual/extending.html#LogEventFactory[LogEventFactory ]
+* link:/manual/extending.html#MessageFactory[MessageFactory ]
+* link:/manual/extending.html#Lookups[Lookups ]
+* link:/manual/extending.html#Filters[Filters ]
+* link:/manual/extending.html#Appenders[Appenders ]
+* link:/manual/extending.html#Layouts[Layouts ]
+* link:/manual/extending.html#PatternConverters[PatternConverters ]
+* link:/manual/extending.html#Plugin_Builders[Plugin Builders]
+* link:/manual/extending.html#Custom_ContextDataInjector[Custom ContextDataInjector]
+* link:/manual/extending.html#Custom_Plugins[Custom Plugins]
+
+== Plugins
+
+* link:/manual/plugins.html[Plugins]
+* link:/manual/plugins.html#Core[Core ]
+* link:/manual/plugins.html#Converters[Converters]
+* link:/manual/plugins.html#KeyProviders[Key Providers]
+* link:/manual/plugins.html#Lookups[Lookups ]
+* link:/manual/plugins.html#TypeConverters[Type Converters]
+* link:/manual/plugins.html#DeveloperNotes[Developer Notes]
+
+
+== Programmatic Log4j Configuration
+
+* link:/manual/customconfig.html[Programmatic Log4j Configuration]
+* link:/manual/customconfig.html#ConfigurationBuilder[ConfigurationBuilder API]
+* link:/manual/customconfig.html#ConfigurationFactory[Understanding ConfigurationFactory]
+* link:/manual/customconfig.html#Example[Example]
+* link:/manual/customconfig.html#Configurator[Using Configurator]
+* link:/manual/customconfig.html#Hybrid[Config File and Code]
+* link:/manual/customconfig.html#AddingToCurrent[After Initialization]
+* link:/manual/customconfig.html#AppendingToWritersAndOutputStreams[Appending to Writers &amp; OutputStreams]
+
+== Custom Log Levels
+
+* link:/manual/customloglevels.html[Custom Log Levels]
+* link:/manual/customloglevels.html#DefiningLevelsInCode[In Code]
+* link:/manual/customloglevels.html#DefiningLevelsInConfiguration[In Configuration]
+* link:/manual/customloglevels.html#AddingOrReplacingLevels[Adding or Replacing Levels]
+* link:/manual/customloglevels.html#CustomLoggers[Custom Loggers]
+* link:/manual/customloglevels.html#ExampleUsage[Custom Logger Example]
+* link:/manual/customloglevels.html#CodeGen[Code Generation Tool]
+
+== Others
+
+* link:/manual/jmx.html[JMX]
+* link:/manual/logsep.html[Logging Separation]
+
