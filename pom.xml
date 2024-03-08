@@ -681,9 +681,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
         <executions>
           <!-- Copy `src/site/_release-notes` to `src/site/asciidoc/_release-notes`.
                This is necessary since `logging-parent` version `<=10.1.1` exports changelogs to `src/site/_release-notes`.
@@ -775,6 +772,7 @@
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>3.0.0</version>
         <dependencies>
           <dependency>
             <groupId>io.spring.asciidoctor</groupId>
