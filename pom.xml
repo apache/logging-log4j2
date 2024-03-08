@@ -586,6 +586,10 @@
             <exclude>src/test/resources/**/*</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
+            <!-- Font Awesome License (Font: SIL OFL 1.1, CSS: MIT License)-->
+            <exclude>src/site/resources/font-awesome-4.7.0/css/font-awesome.css</exclude>
+            <exclude>src/site/resources/font-awesome-4.7.0/css/font-awesome.min.css</exclude>
+            <exclude>src/site/resources/font-awesome-4.7.0/fonts/fontawesome-webfont.svg</exclude>
             <!-- Generated files -->
             <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
