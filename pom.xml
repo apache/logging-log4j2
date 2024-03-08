@@ -344,7 +344,6 @@
          See https://github.com/apache/logging-log4j-tools/issues/89 -->
     <log4j.changelog.versionPattern><![CDATA[^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>(0|[1-9]\d*)(-[a-zA-Z][0-9a-zA-Z-]*)?)$]]></log4j.changelog.versionPattern>
 
-
   </properties>
 
   <dependencyManagement>
@@ -773,6 +772,13 @@
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>io.spring.asciidoctor</groupId>
+            <artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
+            <version>0.6.3</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <id>export-asciidoc-to-html</id>
@@ -795,13 +801,6 @@
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>io.spring.asciidoctor</groupId>
-            <artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
-            <version>0.6.3</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <!-- ███████ ███    ██ ██████         ███████ ██ ████████ ███████
