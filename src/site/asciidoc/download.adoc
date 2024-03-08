@@ -67,8 +67,8 @@ compile 'org.apache.logging.log4j:log4j-core:{project-version}'
 == Bill of materials
 
 
-To keep your Log4j module versions in sync with each other, a  <abbr id="Bill of Material">BOM</abbr>
-pom.xml file is provided for your convenience. To use this with [Maven](https://maven.apache.org/),
+To keep your Log4j module versions in sync with each other, a BOM (Bill of Material)
+pom.xml file is provided for your convenience. To use this with link:https://maven.apache.org/[Maven],
 add the dependency listed below to your `pom.xml` file.
 When you specify the version identifier in this section, you don't have to specify the version in your `<dependencies/>` section.
 
@@ -108,7 +108,7 @@ dependencies {
 }
 ----
 
-To use this with Gradle, an additional [Gradle plugin](https://github.com/spring-gradle-plugins/dependency-management-plugin)
+To use this with Gradle, an additional link:https://github.com/spring-gradle-plugins/dependency-management-plugin[Gradle plugin]
 is required for dependency management functionality.
 
 == Snapshot builds
