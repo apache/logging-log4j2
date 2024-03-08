@@ -788,6 +788,7 @@
                   <directory>${project.build.directory}/generated-sources/site/resources</directory>
                 </resource>
               </resources>
+              <encoding>UTF-8</encoding>
               <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
               <outputDirectory>target/site</outputDirectory>
               <preserveDirectories>true</preserveDirectories>
