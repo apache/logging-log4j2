@@ -681,6 +681,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
         <executions>
           <!-- Copy `src/site/_release-notes` to `src/site/asciidoc/_release-notes`.
                This is necessary since `logging-parent` version `<=10.1.1` exports changelogs to `src/site/_release-notes`.
@@ -788,7 +791,7 @@
                   <directory>${project.build.directory}/generated-sources/site/resources</directory>
                 </resource>
               </resources>
-              <encoding>UTF-8</encoding>
+              <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
               <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
               <outputDirectory>target/site</outputDirectory>
               <preserveDirectories>true</preserveDirectories>
