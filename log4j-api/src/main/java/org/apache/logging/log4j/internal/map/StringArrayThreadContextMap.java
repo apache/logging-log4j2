@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.internal.map;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -43,48 +43,14 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
      */
     public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
-    private final boolean useMap;
-    private final ThreadLocal<Object[]> threadLocalMapState;
-
-    private static boolean inheritableMap;
-
-    static {
-        init();
-    }
-
-    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
-    // (This method is package protected for JUnit tests.)
-    static ThreadLocal<Object[]> createThreadLocalMap(final boolean isMapEnabled) {
-        if (inheritableMap) {
-            return new InheritableThreadLocal<Object[]>() {
-                @Override
-                protected Object[] childValue(final Object[] parentValue) {
-                    return parentValue;
-                }
-            };
-        }
-        // if not inheritable, return plain ThreadLocal with null as initial value
-        return new ThreadLocal<>();
-    }
-
-    static void init() {
-        inheritableMap = PropertiesUtil.getProperties().getBooleanProperty(INHERITABLE_MAP);
-    }
+    private ThreadLocal<Object[]> threadLocalMapState;
 
     public StringArrayThreadContextMap() {
-        this(true);
-    }
-
-    public StringArrayThreadContextMap(final boolean useMap) {
-        this.useMap = useMap;
-        this.threadLocalMapState = createThreadLocalMap(useMap);
+        threadLocalMapState = new ThreadLocal<>();
     }
 
     @Override
     public void put(final String key, final String value) {
-        if (!useMap) {
-            return;
-        }
         final Object[] state = threadLocalMapState.get();
         final UnmodifiableArrayBackedMap modifiedMap =
                 UnmodifiableArrayBackedMap.getInstance(state).copyAndPut(key, value);
@@ -92,9 +58,6 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
     }
 
     public void putAll(final Map<String, String> m) {
-        if (!useMap) {
-            return;
-        }
         final Object[] state = threadLocalMapState.get();
         final UnmodifiableArrayBackedMap modifiedMap =
                 UnmodifiableArrayBackedMap.getInstance(state).copyAndPutAll(m);
@@ -152,27 +115,17 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
             return;
         }
         final UnmodifiableArrayBackedMap map = UnmodifiableArrayBackedMap.getInstance(state);
-        for (final Map.Entry<String, String> entry : map.entrySet()) {
-            // BiConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked")
-            final V value = (V) entry.getValue();
-            action.accept(entry.getKey(), value);
-        }
+        map.forEach(action);
     }
 
     @Override
     public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
-        Object[] localState = threadLocalMapState.get();
+        final Object[] localState = threadLocalMapState.get();
         if (localState == null) {
             return;
         }
-        UnmodifiableArrayBackedMap map = UnmodifiableArrayBackedMap.getInstance(localState);
-        for (final Map.Entry<String, String> entry : map.entrySet()) {
-            // TriConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked")
-            final V value = (V) entry.getValue();
-            action.accept(entry.getKey(), value, state);
-        }
+        final UnmodifiableArrayBackedMap map = UnmodifiableArrayBackedMap.getInstance(localState);
+        map.forEach(action, state);
     }
 
     @SuppressWarnings("unchecked")
@@ -224,7 +177,6 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
                 + ((state == null)
                         ? 0
                         : UnmodifiableArrayBackedMap.getInstance(state).hashCode());
-        result = prime * result + Boolean.valueOf(this.useMap).hashCode();
         return result;
     }
 
@@ -235,12 +187,6 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
         }
         if (obj == null) {
             return false;
-        }
-        if (obj instanceof StringArrayThreadContextMap) {
-            final StringArrayThreadContextMap other = (StringArrayThreadContextMap) obj;
-            if (this.useMap != other.useMap) {
-                return false;
-            }
         }
         if (!(obj instanceof ThreadContextMap)) {
             return false;

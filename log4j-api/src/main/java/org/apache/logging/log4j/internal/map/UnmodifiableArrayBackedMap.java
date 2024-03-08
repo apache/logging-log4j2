@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.internal.map;
 
 import java.io.Serializable;
 import java.util.AbstractMap;
@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * This class represents an immutable map, which stores its state inside a single Object[]:
@@ -55,14 +57,19 @@ import java.util.Set;
  * </ul>
  *
  */
-class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements Serializable {
+class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements Serializable, ReadOnlyStringMap {
     /**
      * Implementation of Map.Entry. The implementation is simple since each instance
      * contains an index in the array, then getKey() and getValue() retrieve from
      * the array. Blocks modifications.
      */
     private class UnmodifiableEntry implements Map.Entry<String, String> {
-        private final int index;
+        /**
+         * This field is functionally final, but marking it as such can cause
+         * performance problems. Consider marking it final after
+         * https://bugs.openjdk.org/browse/JDK-8324186 is solved.
+         */
+        private int index;
 
         public UnmodifiableEntry(int index) {
             this.index = index;
@@ -143,9 +150,6 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
 
     public static final UnmodifiableArrayBackedMap EMPTY_MAP = new UnmodifiableArrayBackedMap(0);
 
-    private final Object[] backingArray;
-    private int numEntries;
-
     private static final int NUM_FIXED_ARRAY_ENTRIES = 1;
 
     private static int getArrayIndexForKey(int entryIndex) {
@@ -156,17 +160,26 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         return 2 * entryIndex + 1 + NUM_FIXED_ARRAY_ENTRIES;
     }
 
-    private UnmodifiableArrayBackedMap(int capacity) {
-        this.backingArray = new Object[capacity * 2 + 1];
-        this.backingArray[0] = 0;
-    }
-
     static UnmodifiableArrayBackedMap getInstance(Object[] backingArray) {
         if (backingArray == null || backingArray.length == 1) {
             return EMPTY_MAP;
         } else {
             return new UnmodifiableArrayBackedMap(backingArray);
         }
+    }
+
+    /**
+     * backingArray is functionally final, but marking it as such can cause
+     * performance problems. Consider marking it final after
+     * https://bugs.openjdk.org/browse/JDK-8324186 is solved.
+     */
+    private Object[] backingArray;
+
+    private int numEntries;
+
+    private UnmodifiableArrayBackedMap(int capacity) {
+        this.backingArray = new Object[capacity * 2 + 1];
+        this.backingArray[0] = 0;
     }
 
     private UnmodifiableArrayBackedMap(Object[] backingArray) {
@@ -195,6 +208,11 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      */
     @Override
     public boolean containsKey(Object key) {
+        return containsKey((String) key);
+    }
+
+    @Override
+    public boolean containsKey(String key) {
         int hashCode = key.hashCode();
         for (int i = 0; i < numEntries; i++) {
             if (backingArray[getArrayIndexForKey(i)].hashCode() == hashCode
@@ -292,7 +310,6 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * @return
      */
     UnmodifiableArrayBackedMap copyAndRemove(String key) {
-        UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries);
         int indexToRemove = -1;
         for (int oldIndex = 0; oldIndex < numEntries; oldIndex++) {
             if (backingArray[getArrayIndexForKey(oldIndex)].hashCode() == key.hashCode()
@@ -309,6 +326,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
             // we have 1 item and we're about to remove it
             return EMPTY_MAP;
         }
+        UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries);
         if (indexToRemove > 0) {
             // copy entries before the removed one
             System.arraycopy(backingArray, 1, newMap.backingArray, 1, indexToRemove * 2);
@@ -419,6 +437,43 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         backingArray[0] = numEntries;
     }
 
+    /**
+     * This version of forEach is defined on the Map interface.
+     */
+    @Override
+    public void forEach(java.util.function.BiConsumer<? super String, ? super String> action) {
+        for (int i = 0; i < numEntries; i++) {
+            // BiConsumer should be able to handle values of any type V. In our case the values are of type String.
+            final String key = (String) backingArray[getArrayIndexForKey(i)];
+            final String value = (String) backingArray[getArrayIndexForValue(i)];
+            action.accept(key, value);
+        }
+    }
+
+    /**
+     * This version of forEach is defined on the ReadOnlyStringMap interface.
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <V> void forEach(final org.apache.logging.log4j.util.BiConsumer<String, ? super V> action) {
+        for (int i = 0; i < numEntries; i++) {
+            // BiConsumer should be able to handle values of any type V. In our case the values are of type String.
+            final String key = (String) backingArray[getArrayIndexForKey(i)];
+            final V value = (V) backingArray[getArrayIndexForValue(i)];
+            action.accept(key, value);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
+        for (int i = 0; i < numEntries; i++) {
+            // TriConsumer should be able to handle values of any type V. In our case the values are of type String.
+            final String key = (String) backingArray[getArrayIndexForKey(i)];
+            final V value = (V) backingArray[getArrayIndexForValue(i)];
+            action.accept(key, value, state);
+        }
+    }
+
     @Override
     public Set<Entry<String, String>> entrySet() {
         return new UnmodifiableEntrySet();
@@ -429,6 +484,12 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      */
     @Override
     public String get(Object key) {
+        return getValue((String) key);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <V> V getValue(String key) {
         if (numEntries == 0) {
             return null;
         }
@@ -436,7 +497,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         for (int i = 0; i < numEntries; i++) {
             if (backingArray[getArrayIndexForKey(i)].hashCode() == hashCode
                     && backingArray[getArrayIndexForKey(i)].equals(key)) {
-                return (String) backingArray[getArrayIndexForValue(i)];
+                return (V) backingArray[getArrayIndexForValue(i)];
             }
         }
         return null;
@@ -482,5 +543,10 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
     @Override
     public int size() {
         return numEntries;
+    }
+
+    @Override
+    public Map<String, String> toMap() {
+        return this;
     }
 }

@@ -14,21 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.internal.map;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import org.apache.logging.log4j.test.junit.InitializesThreadContext;
-import org.apache.logging.log4j.test.junit.SetTestProperty;
+import java.util.Set;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ClearSystemProperty;
 
 /**
  * Tests the {@code StringArrayThreadContextMap} class.
@@ -56,27 +56,20 @@ public class StringArrayThreadContextMapTest {
     @Test
     public void testGet() {
         final StringArrayThreadContextMap map1 = createMap();
-        assertEquals(null, map1.get("test"));
+        assertNull(map1.get("test"));
         map1.put("test", "test");
         assertEquals("test", map1.get("test"));
-        assertEquals(null, map1.get("not_present"));
-    }
+        assertNull(map1.get("not_present"));
+        assertEquals("test", map1.getValue("test"));
+        assertNull(map1.getValue("not_present"));
 
-    @Test
-    public void testDoesNothingIfConstructedWithUseMapIsFalse() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(false);
-        assertTrue(map.isEmpty());
-        assertFalse(map.containsKey("key"));
-        map.put("key", "value");
-
-        assertTrue(map.isEmpty());
-        assertFalse(map.containsKey("key"));
-        assertNull(map.get("key"));
+        map1.clear();
+        assertNull(map1.get("not_present"));
     }
 
     @Test
     public void testPut() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(true);
+        final StringArrayThreadContextMap map = new StringArrayThreadContextMap();
         assertTrue(map.isEmpty());
         assertFalse(map.containsKey("key"));
         map.put("key", "value");
@@ -88,7 +81,7 @@ public class StringArrayThreadContextMapTest {
 
     @Test
     public void testPutAll() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(true);
+        final StringArrayThreadContextMap map = new StringArrayThreadContextMap();
         assertTrue(map.isEmpty());
         assertFalse(map.containsKey("key"));
         final int mapSize = 10;
@@ -106,7 +99,7 @@ public class StringArrayThreadContextMapTest {
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.spi.StringArrayThreadContextMap#remove(java.lang.String)}
+     * {@link org.apache.logging.log4j.internal.map.StringArrayThreadContextMap#remove(java.lang.String)}
      * .
      */
     @Test
@@ -118,6 +111,9 @@ public class StringArrayThreadContextMapTest {
         map.remove("key");
         assertFalse(map.containsKey("key"));
         assertEquals("value2", map.get("key2"));
+
+        map.clear();
+        map.remove("test");
     }
 
     @Test
@@ -132,6 +128,9 @@ public class StringArrayThreadContextMapTest {
         map.removeAll(newValues.keySet());
 
         map.put("3", "value3");
+
+        map.clear();
+        map.removeAll(newValues.keySet());
     }
 
     @Test
@@ -148,7 +147,7 @@ public class StringArrayThreadContextMapTest {
      * @return
      */
     private StringArrayThreadContextMap createMap() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(true);
+        final StringArrayThreadContextMap map = new StringArrayThreadContextMap();
         assertTrue(map.isEmpty());
         map.put("key", "value");
         map.put("key2", "value2");
@@ -159,7 +158,7 @@ public class StringArrayThreadContextMapTest {
 
     @Test
     public void testGetCopyReturnsMutableMap() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(true);
+        final StringArrayThreadContextMap map = new StringArrayThreadContextMap();
         assertTrue(map.isEmpty());
         final Map<String, String> copy = map.getCopy();
         assertTrue(copy.isEmpty());
@@ -173,7 +172,7 @@ public class StringArrayThreadContextMapTest {
 
     @Test
     public void testGetCopyReturnsMutableCopy() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(true);
+        final StringArrayThreadContextMap map = new StringArrayThreadContextMap();
         map.put("key1", "value1");
         assertFalse(map.isEmpty());
         final Map<String, String> copy = map.getCopy();
@@ -194,14 +193,14 @@ public class StringArrayThreadContextMapTest {
 
     @Test
     public void testGetImmutableMapReturnsNullIfEmpty() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(true);
+        final StringArrayThreadContextMap map = new StringArrayThreadContextMap();
         assertTrue(map.isEmpty());
         assertNull(map.getImmutableMapOrNull());
     }
 
     @Test
     public void testGetImmutableMapReturnsImmutableMapIfNonEmpty() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(true);
+        final StringArrayThreadContextMap map = new StringArrayThreadContextMap();
         map.put("key1", "value1");
         assertFalse(map.isEmpty());
 
@@ -214,7 +213,7 @@ public class StringArrayThreadContextMapTest {
 
     @Test
     public void testGetImmutableMapCopyNotAffectdByContextMapChanges() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(true);
+        final StringArrayThreadContextMap map = new StringArrayThreadContextMap();
         map.put("key1", "value1");
         assertFalse(map.isEmpty());
 
@@ -230,7 +229,7 @@ public class StringArrayThreadContextMapTest {
 
     @Test
     public void testToStringShowsMapContext() {
-        final StringArrayThreadContextMap map = new StringArrayThreadContextMap(true);
+        final StringArrayThreadContextMap map = new StringArrayThreadContextMap();
         assertEquals("{}", map.toString());
 
         map.put("key1", "value1");
@@ -242,24 +241,47 @@ public class StringArrayThreadContextMapTest {
     }
 
     @Test
-    @ClearSystemProperty(key = StringArrayThreadContextMap.INHERITABLE_MAP)
-    @InitializesThreadContext
-    public void testThreadLocalNotInheritableByDefault() {
-        ThreadContextMapFactory.init();
-        final ThreadLocal<Object[]> threadLocal = StringArrayThreadContextMap.createThreadLocalMap(true);
-        assertFalse(threadLocal instanceof InheritableThreadLocal<?>);
+    public void testEmptyMap() {
+        assertNull(UnmodifiableArrayBackedMap.EMPTY_MAP.get("test"));
     }
 
     @Test
-    @SetTestProperty(key = StringArrayThreadContextMap.INHERITABLE_MAP, value = "true")
-    @InitializesThreadContext
-    public void testThreadLocalInheritableIfConfigured() {
-        ThreadContextMapFactory.init();
-        try {
-            final ThreadLocal<Object[]> threadLocal = StringArrayThreadContextMap.createThreadLocalMap(true);
-            assertTrue(threadLocal instanceof InheritableThreadLocal<?>);
-        } finally {
-            System.clearProperty(StringArrayThreadContextMap.INHERITABLE_MAP);
-        }
+    public void testForEachBiConsumer_Log4jUtil() {
+        StringArrayThreadContextMap map = createMap();
+        Set<String> keys = new HashSet<>();
+        org.apache.logging.log4j.util.BiConsumer<String, String> log4j_util_action =
+                new org.apache.logging.log4j.util.BiConsumer<String, String>() {
+                    @Override
+                    public void accept(String key, String value) {
+                        keys.add(key);
+                    }
+                };
+        map.forEach(log4j_util_action);
+        assertEquals(map.toMap().keySet(), keys);
+
+        map.clear();
+        keys.clear();
+        map.forEach(log4j_util_action);
+        assertTrue(keys.isEmpty());
+    }
+
+    @Test
+    public void testForEachTriConsumer() {
+        StringArrayThreadContextMap map = createMap();
+        HashMap<String, String> iterationResultMap = new HashMap<>();
+        TriConsumer<String, String, Map<String, String>> triConsumer =
+                new TriConsumer<String, String, Map<String, String>>() {
+                    @Override
+                    public void accept(String k, String v, Map<String, String> s) {
+                        s.put(k, v);
+                    }
+                };
+        map.forEach(triConsumer, iterationResultMap);
+        assertEquals(map.toMap(), iterationResultMap);
+
+        map.clear();
+        iterationResultMap.clear();
+        map.forEach(triConsumer, iterationResultMap);
+        assertTrue(iterationResultMap.isEmpty());
     }
 }
