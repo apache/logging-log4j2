@@ -117,36 +117,6 @@
     background-color: #333333;
 }
 
-#footer .footer-blocks {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    background-color: #333333;
-}
-
-#footer .footer-blocks div {
-    padding: 2em;
-    min-width: 30%;
-    color: white;
-}
-
-#footer .footer-blocks div h3 {
-    color: lightgray;
-}
-
-#footer .footer-blocks div ul {
-    list-style: none;
-    margin-left: 0;
-}
-
-#footer .footer-blocks div ul li a {
-    color: white;
-    font-family: 'Open Sans', serif;
-    font-size: 1em;
-    font-weight: bold;
-    text-decoration: none;
-}
-
 #footer .footer-text {
     width: 100%;
 }
