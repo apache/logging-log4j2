@@ -542,7 +542,7 @@ the performance numbers show, so long as the volume of logging is not high enoug
 circular buffer the overhead of logging will almost be unnoticeable to the application.
 1. If overall performance is a consideration or you require multiline events such as stack traces
 be processed properly then log via TCP to a companion container that acts as a log forwarder or directly
-to a log aggregator as shown above in [Logging with ELK](#ELK). Use the
+to a log aggregator as shown above in xref:/#ELK[Logging with ELK]. Use the
 Log4j Docker Lookup to add the container information to each log event.
 1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such
 as the Kafka Appender with syncSend set to true that only return control after the downstream agent
