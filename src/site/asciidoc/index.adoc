@@ -16,6 +16,7 @@
 ////
 
 = Apache Log4j
+:icons: font
 
 Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
 Log4j is https://security.googleblog.com/2021/12/apache-log4j-vulnerability.html[used by 8% of the Maven ecosystem] and listed as one of https://docs.google.com/spreadsheets/d/1ONZ4qeMq8xmeCHX03lIgIYE4MEXVfVL6oj05lbuXTDM/edit#gid=1024997528[the top 100 critical open source software projects].
@@ -31,10 +32,12 @@ As all software maintained at the Apache Software Foundation, Apache Log4j is re
 - link:release-notes.html[Where are the release notes?]
 - link:support.html[**I need help!**]
 
-[#features]
-== Features
+[#simple-to-use]
+== Simple to use
 
-We share below some highlights from Log4j features.
+Apache Log4j is easy to use. The example below shows you how to create a Logger instance, that
+you can use to log messages to the console. As soon as you can understand this little bit of code, you can start using
+Log4j in your applications.
 
 [source,java]
 ----
@@ -42,13 +45,20 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 class Application {
-    private static final Logger logger = LogManager.getLogger(Application.class);
+    private static final Logger LOGGER = LogManager.getLogger(); <1>
 
     public void action() {
-        logger.info("Hello, World!");
+        LOGGER.info("Hello, World!"); <2>
     }
 }
 ----
+<1> Get a Logger instance
+<2> Log a message on info level
+
+[#features]
+== Features
+
+We share below some highlights from Log4j features.
 
 Batteries included::
 Log4j bundles a rich set of components to assist various use cases.
