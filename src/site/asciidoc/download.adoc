@@ -29,7 +29,7 @@ Please add the following to your build systems configuration file `pom.xml` to u
 
 Log4j needs two dependencies, since it is separated between the API and the Core.
 
-[source,xml,indent=0,role="primary"]
+[source,xml,indent=0,role="primary",subs="+attributes"]
 .Maven (pom.xml)
 ----
 <dependencies>
@@ -48,14 +48,14 @@ Log4j needs two dependencies, since it is separated between the API and the Core
 </dependencies>
 ----
 
-[source,indent=0,role="secondary"]
+[source,indent=0,role="secondary",subs="+attributes"]
 .Gradle (build.gradle)
 ----
 compile 'org.apache.logging.log4j:log4j-api:{project-version}'
 compile 'org.apache.logging.log4j:log4j-core:{project-version}'
 ----
 
-[source,xml,indent=0,role="secondary"]
+[source,xml,indent=0,role="secondary",subs="+attributes"]
 .Ivy (ivy.xml)
 ----
 <dependencies>
@@ -72,7 +72,7 @@ pom.xml file is provided for your convenience. To use this with [Maven](https://
 add the dependency listed below to your `pom.xml` file.
 When you specify the version identifier in this section, you don't have to specify the version in your `<dependencies/>` section.
 
-[source,xml,indent=0,role="primary"]
+[source,xml,indent=0,role="primary",subs="+attributes"]
 .Maven (pom.xml)
 ----
 <dependencyManagement>
@@ -88,7 +88,7 @@ When you specify the version identifier in this section, you don't have to speci
 </dependencyManagement>
 ----
 
-[source,indent=0,role="secondary"]
+[source,indent=0,role="secondary",subs="+attributes"]
 .Gradle (build.gradle)
 ----
 plugins {
@@ -122,7 +122,7 @@ if the latest release were `3.0`, then master would be using the version
 
 To enable snapshots you'll need to enable Snapshots repositories in your build system.
 
-[source,xml,indent=0,role="primary"]
+[source,xml,indent=0,role="primary",subs="+attributes"]
 .Maven (pom.xml)
 ----
 <repositories>
@@ -137,7 +137,7 @@ To enable snapshots you'll need to enable Snapshots repositories in your build s
 </repositories>
 ----
 
-[source,indent=0,role="secondary"]
+[source,indent=0,role="secondary",subs="+attributes"]
 .Gradle (build.gradle)
 ----
 repositories {
@@ -146,7 +146,7 @@ repositories {
 }
 ----
 
-[source,indent=0,role="secondary"]
+[source,indent=0,role="secondary",subs="+attributes"]
 .SBT (build.sbt)
 ----
 resolvers += "Apache Snapshot Repository" at "https://repository.apache.org/snapshots"
@@ -195,7 +195,7 @@ signature file for the relevant distribution. Make sure you get these
 files from the https://www.apache.org/dist/logging/[main distribution
 directory], rather than from a mirror. Then verify the signatures using
 
-[source,sh,subs=attributes]
+[source,sh,subs=attributes,subs="+attributes"]
 ----
 gpg --import KEYS
 gpg --verify apache-log4j-{project-version}-bin.zip.asc
