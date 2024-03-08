@@ -344,8 +344,6 @@
          See https://github.com/apache/logging-log4j-tools/issues/89 -->
     <log4j.changelog.versionPattern><![CDATA[^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>(0|[1-9]\d*)(-[a-zA-Z][0-9a-zA-Z-]*)?)$]]></log4j.changelog.versionPattern>
 
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
   <dependencyManagement>
@@ -790,7 +788,6 @@
                   <directory>${project.build.directory}/generated-sources/site/resources</directory>
                 </resource>
               </resources>
-              <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
               <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
               <outputDirectory>target/site</outputDirectory>
               <preserveDirectories>true</preserveDirectories>
