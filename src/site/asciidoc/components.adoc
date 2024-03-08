@@ -38,6 +38,8 @@
 
 * link:/log4j/jakarta[Log4j Jakarta EE]
 * link:/log4j/jmx-gui[Log4j JMX GUI]
+* link:/log4j/kotlin[Log4j Kotlin]
+* link:/log4j/scala[Log4j Scala]
 * link:/log4j/tools[Log4j Tools]
 * link:/log4j/transform[Log4j Transformation Tools]
 
