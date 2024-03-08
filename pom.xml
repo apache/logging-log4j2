@@ -586,9 +586,6 @@
             <exclude>src/test/resources/**/*</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
-            <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
-            <exclude>src/site/resources/js/jquery.js</exclude>
-            <exclude>src/site/resources/js/jquery.min.js</exclude>
             <!-- Generated files -->
             <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
