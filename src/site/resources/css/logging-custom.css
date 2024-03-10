@@ -1,0 +1,238 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+#header {
+    display: flex;
+    height: 10vh;
+    max-width: 100%;
+    align-items: center;
+    z-index: 10000;
+    background-color: #f9f8f8;
+    border-bottom: 1px solid lightgrey;
+
+}
+
+#header .logo {
+    margin-right: 1.5em;
+}
+
+#header .logo img {
+    max-height: 6vh;
+}
+
+#header .main-menu {
+    flex-grow: 1;
+}
+
+#header .main-menu > ul,
+#header .secondary-menu > ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+}
+
+#header .main-menu > ul li a,
+#header .secondary-menu > ul li a {
+    font-family: 'Open Sans', serif;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#header .main-menu ul li,
+#header .secondary-menu ul li {
+    margin-right: 1.3em;
+}
+
+#header .navs {
+    display: flex;
+    width: 100%;
+}
+
+#header .navs nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#header .navs nav ul li {
+    float: left;
+}
+
+#header .navs nav ul li a {
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+#header .menu-drop-down {
+    display: none;
+    position: absolute;
+    flex-direction: column;
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    background-color: white;
+}
+
+#header .menu-drop-down li {
+    width: 100%;
+}
+
+#header .menu-drop-down a {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+#header .navs nav ul li:hover .menu-drop-down {
+    display: flex;
+}
+
+#header .menu-drop-down a:hover {
+    background-color: #f1f1f1;
+}
+
+/** Footer */
+#footer {
+    z-index: 1000;
+    background-color: #333333;
+}
+
+#footer .footer-text {
+    width: 100%;
+}
+
+#footer .footer-text div {
+    line-height: 1.4em;
+    font-family: 'Open Sans', serif;
+    font-size: 1em;
+    color: white;
+    padding: 1em;
+}
+
+#footer .footer-text div a {
+      color: lightgray;
+}
+
+.content-container {
+    display: flex;
+}
+
+
+#content {
+    width: 80vw;
+    overflow: auto;
+    height: 100%;
+}
+
+.table-of-content {
+    width: 20vw;
+    padding: 2em;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: auto;
+}
+
+.table-of-content.sticky {
+    position: sticky;
+    top: 0;
+}
+
+.table-of-content.sticky-effect {
+    background-color: #ededed;
+    transition: background-color 1s linear;
+}
+
+/** Small screens < 1400px */
+@media (max-width: 1400px) {
+    #content {
+        max-width: 56em;
+    }
+
+    .table-of-content {
+        width: 25vw;
+    }
+
+    .content-container .content {
+        width: 75vw;
+    }
+
+    .menu-mobile {
+        display: block;
+        flex-grow: 1;
+        cursor: pointer;
+        text-align: right;
+        font-size: 2em;
+    }
+
+    .menu-mobile-close {
+        display: block;
+        text-align: right;
+        cursor: pointer;
+        padding: 1em;
+        font-size: 2em;
+    }
+
+    #header .navs {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 300px;
+        height: 100%;
+        background: white;
+        z-index: 1000;
+        display: block;
+    }
+
+    .main-menu ul, .secondary-menu ul {
+        flex-direction: column;
+    }
+}
+
+/* Ensure the menu icon is visible on larger screens */
+@media screen and (min-width: 1400px) {
+    .menu-mobile {
+        display: none;
+    }
+
+    .menu-mobile-close {
+        display: none;
+    }
+}
+
+
+@media screen and (max-width: 1100px) {
+    .table-of-content {
+        display: none;
+    }
+
+    #content {
+        width: 95vw;
+        max-width: 100%;
+    }
+}
+
+
+
+
+
+
