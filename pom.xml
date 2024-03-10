@@ -551,9 +551,10 @@
             <exclude>src/test/resources/**/*</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
-            <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
-            <exclude>src/site/resources/js/jquery.js</exclude>
-            <exclude>src/site/resources/js/jquery.min.js</exclude>
+            <!-- Font Awesome License (Font: SIL OFL 1.1, CSS: MIT License)-->
+            <exclude>src/site/resources/font-awesome-4.7.0/css/font-awesome.css</exclude>
+            <exclude>src/site/resources/font-awesome-4.7.0/css/font-awesome.min.css</exclude>
+            <exclude>src/site/resources/font-awesome-4.7.0/fonts/fontawesome-webfont.svg</exclude>
             <!-- Generated files -->
             <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
@@ -684,7 +685,6 @@
                   <excludes>
                     <exclude>/_release-notes/*</exclude>
                     <exclude>/_release-notes.adoc</exclude>
-                    <exclude>/resources/glyphicons-halflings-2-1.zip</exclude>
                     <exclude>/resources/logo/**/*</exclude>
                   </excludes>
                 </resource>
@@ -736,42 +736,34 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <inherited>false</inherited>
-        <configuration combine.self="override">
-          <skip>false</skip>
-          <generateProjectInfo>false</generateProjectInfo>
-          <generateReports>false</generateReports>
-          <siteDirectory>${project.build.directory}/generated-sources/site</siteDirectory>
-          <locales>en</locales>
-          <!-- Exclude the navigation file for Maven 1 sites as it interferes with the site generation. -->
-          <moduleExcludes>
-            <xdoc>navigation.xml</xdoc>
-          </moduleExcludes>
-          <attributes>
-            <Log4jReleaseVersion>${revision}</Log4jReleaseVersion>
-          </attributes>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctor-maven-plugin</artifactId>
-            <version>${asciidoctor-maven-plugin.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <!-- We (sadly) use `maven-site-plugin`, which handles AsciiDoc files.
-           Hence, skip the `asciidoctor-maven-plugin` redundant execution inherited from the parent. -->
-      <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>io.spring.asciidoctor</groupId>
+            <artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
+            <version>0.6.3</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <id>export-asciidoc-to-html</id>
-            <configuration>
-              <skip>true</skip>
+            <configuration combine.self="override">
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/generated-sources/site/resources</directory>
+                </resource>
+              </resources>
+              <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
+              <outputDirectory>target/site</outputDirectory>
+              <preserveDirectories>true</preserveDirectories>
+              <templateDirs>
+                <dir>src/asciidoc/templates</dir>
+              </templateDirs>
+              <attributes>
+                <source-highlighter>rouge</source-highlighter>
+                <toc>left</toc>
+              </attributes>
             </configuration>
           </execution>
         </executions>
