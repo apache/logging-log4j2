@@ -1,0 +1,323 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Custom Log Levels
+Remko Popma <rpopma@apache.org>
+
+[[top]]
+
+[#DefiningLevelsInCode]
+== Defining Custom Log Levels in Code
+
+Log4j 2 supports custom log levels. Custom log levels can be defined in
+code or in configuration. To define a custom log level in code, use the
+`Level.forName()` method. This method creates a new level for the
+specified name. After a log level is defined you can log messages at
+this level by calling the `Logger.log()` method and passing the custom log
+level:
+
+[source,java]
+----
+// This creates the "VERBOSE" level if it does not exist yet.
+final Level VERBOSE = Level.forName("VERBOSE", 550);
+
+final Logger logger = LogManager.getLogger();
+logger.log(VERBOSE, "a verbose message"); // use the custom VERBOSE level
+
+// Create and use a new custom level "DIAG".
+logger.log(Level.forName("DIAG", 350), "a diagnostic message");
+
+// Use (don't create) the "DIAG" custom level.
+// Only do this *after* the custom level is created!
+logger.log(Level.getLevel("DIAG"), "another diagnostic message");
+
+// Using an undefined level results in an error: Level.getLevel() returns null,
+// and logger.log(null, "message") throws an exception.
+logger.log(Level.getLevel("FORGOT_TO_DEFINE"), "some message"); // throws exception!
+----
+
+When defining a custom log level, the `intLevel` parameter (550 and 350
+in the example above) determines where the custom level exists in
+relation to the standard levels built-in to Log4j 2. For reference, the
+table below shows the `intLevel` of the built-in log levels.
+
+.Standard log levels built-in to Log4j
+[cols=",>",options="header"]
+|========================
+|Standard Level |intLevel
+|OFF |0
+|FATAL |100
+|ERROR |200
+|WARN |300
+|INFO |400
+|DEBUG |500
+|TRACE |600
+|ALL |`Integer.MAX_VALUE`
+|========================
+
+[#DefiningLevelsInConfiguration]
+== Defining Custom Log Levels in Configuration
+
+Custom log levels can also be defined in configuration. This is
+convenient for using a custom level in a logger filter or an appender
+filter. Similar to defining log levels in code, a custom level must be
+defined first, before it can be used. If a logger or appender is
+configured with an undefined level, that logger or appender will be
+invalid and will not process any log events.
+
+The *CustomLevel* configuration element creates a custom level.
+Internally it calls the same `Level.forName()` method discussed above.
+
+.CustomLevel Parameters
+[cols="m,,4",options="header"]
+|===
+|Parameter Name |Type |Description
+
+|name
+|String
+|The name of the custom level. Note that level names are
+case sensitive. The convention is to use all upper-case names.
+
+|intLevel
+|integer
+|Determines where the custom level exists in relation
+to the standard levels built-in to Log4j 2 (see the table above).
+|===
+
+The following example shows a configuration that defines some custom log
+levels and uses a custom log level to filter log events sent to the
+console.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <!-- Define custom levels before using them for filtering below. -->
+  <CustomLevels>
+    <CustomLevel name="DIAG" intLevel="350" />
+    <CustomLevel name="NOTICE" intLevel="450" />
+    <CustomLevel name="VERBOSE" intLevel="550" />
+  </CustomLevels>
+
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d %-7level %logger{36} - %msg%n"/>
+    </Console>
+    <File name="MyFile" fileName="logs/app.log">
+      <PatternLayout pattern="%d %-7level %logger{36} - %msg%n"/>
+    </File>
+  </Appenders>
+  <Loggers>
+    <Root level="trace">
+      <!-- Only events at DIAG level or more specific are sent to the console. -->
+      <AppenderRef ref="Console" level="diag" />
+      <AppenderRef ref="MyFile" level="trace" />
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#StandardLoggerInterface]
+== Convenience Methods for the Built-in Log Levels
+
+The built-in log levels have a set of convenience methods on the Logger
+interface that makes them easier to use. For example, the Logger
+interface has 24 `debug()` methods that support the DEBUG level:
+
+[source,java]
+----
+// convenience methods for the built-in DEBUG level
+debug(Marker, Message)
+debug(Marker, Message, Throwable)
+debug(Marker, Object)
+debug(Marker, Object, Throwable)
+debug(Marker, String)
+debug(Marker, String, Object...)
+debug(Marker, String, Throwable)
+debug(Message)
+debug(Message, Throwable)
+debug(Object)
+debug(Object, Throwable)
+debug(String)
+debug(String, Object...)
+debug(String, Throwable)
+// lambda support methods added in 2.4
+debug(Marker, MessageSupplier)
+debug(Marker, MessageSupplier, Throwable)
+debug(Marker, String, Supplier<?>...)
+debug(Marker, Supplier<?>)
+debug(Marker, Supplier<?>, Throwable)
+debug(MessageSupplier)
+debug(MessageSupplier, Throwable)
+debug(String, Supplier<?>...)
+debug(Supplier<?>)
+debug(Supplier<?>, Throwable)
+----
+
+Similar methods exist for the other built-in levels. Custom levels, in
+contrast, need to pass in the log level as an extra parameter.
+
+[source,java]
+----
+// need to pass the custom level as a parameter
+logger.log(VERBOSE, "a verbose message");
+logger.log(Level.forName("DIAG", 350), "another message");
+----
+
+It would be nice to have the same ease of use with custom levels, so
+that after declaring the custom VERBOSE/DIAG levels, we could use code
+like this:
+
+[source,java]
+----
+// nice to have: descriptive methods and no need to pass the level as a parameter
+logger.verbose("a verbose message");
+logger.diag("another message");
+logger.diag("java 8 lambda expression: {}", () -> someMethod());
+----
+
+The standard Logger interface cannot provide convenience methods for
+custom levels, but the next few sections introduce a code generation
+tool to create loggers that aim to make custom levels as easy to use as
+built-in levels.
+
+[#AddingOrReplacingLevels]
+== Adding or Replacing Log Levels
+
+We assume that most users want to _add_ custom level methods to the
+Logger interface, in addition to the existing `trace()`, `debug()`, `info()`,
+... methods for the built-in log levels.
+
+There is another use case, Domain Specific Language loggers, where we
+want to _replace_ the existing `trace()`, `debug()`, `info()`, ... methods
+with all-custom methods.
+
+For example, for medical devices we could have only `critical()`,
+`warning()`, and `advisory()` methods. Another example could be a game
+that has only `defcon1()`, `defcon2()`, and `defcon3()` levels.
+
+If it were possible to hide existing log levels, users could customize
+the Logger interface to match their requirements. Some people may not
+want to have a FATAL or a TRACE level, for example. They would like to
+be able to create a custom Logger that only has `debug()`, `info()`, `warn()`
+and `error()` methods.
+
+[#CustomLoggers]
+== Generating Source Code for a Custom Logger Wrapper
+
+Common Log4j usage is to get an instance of the `Logger` interface from
+the `LogManager` and call the methods on this interface. However, the
+custom log Levels are not known in advance, so Log4j cannot provide an
+interface with convenience methods for these custom log Levels.
+
+To solve this, Log4j ships with a tool that generates source code for a
+Logger wrapper. The generated wrapper class has convenience methods for
+each custom log level, making custom levels just as easy to use as the
+built-in levels.
+
+There are two flavors of wrappers: ones that _*extend*_ the Logger API
+(adding methods to the built-in levels) and ones that _*customize*_ the
+Logger API (replacing the built-in methods).
+
+When generating the source code for a wrapper class, you need to
+specify:
+
+* the fully qualified name of the class to generate
+* the list of custom levels to support and their `intLevel` relative
+strength
+* whether to extend `Logger` (and keep the existing built-in methods) or
+have only methods for the custom log levels
+
+You would then include the generated source code in the project where
+you want to use custom log levels.
+
+[#ExampleUsage]
+== Example Usage of a Generated Logger Wrapper
+
+Here is an example of how one would use a generated logger wrapper with
+custom levels DIAG, NOTICE and VERBOSE:
+
+[source,java]
+----
+// ExtLogger is a generated logger wrapper
+import com.mycompany.myproject.ExtLogger;
+
+public class MyService {
+    // instead of Logger logger = LogManager.getLogger(MyService.class):
+    private static final ExtLogger logger = ExtLogger.create(MyService.class);
+
+    public void demoExtendedLogger() {
+        // ...
+        logger.trace("the built-in TRACE level");
+        logger.verbose("a custom level: a VERBOSE message");
+        logger.debug("the built-in DEBUG level");
+        logger.notice("a custom level: a NOTICE message");
+        logger.info("the built-in INFO level");
+        logger.diag("a custom level: a DIAG message");
+        logger.warn("the built-in WARN level");
+        logger.error("the built-in ERROR level");
+        logger.fatal("the built-in FATAL level");
+        logger.notice("java 8 lambda expression only executed if NOTICE is enabled: {}", () -> someMethod());
+        // ...
+    }
+    ...
+}
+----
+
+[#CodeGen]
+== Generating Extended Loggers
+
+Use the following command to generate a logger wrapper that adds methods
+to the built-in ones:
+
+[source,sh,subs="attributes"]
+----
+java -cp log4j-core-{Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.ExtendedLoggerGenerator \
+        com.mycomp.ExtLogger DIAG=350 NOTICE=450 VERBOSE=550 > com/mycomp/ExtLogger.java
+----
+
+This will generate source code for a logger wrapper that has the
+convenience methods for the built-in levels _as well as_ the specified
+custom levels. The tool prints the generated source code to the console.
+By appending " > _filename_" the output can be redirected to a file.
+
+NOTE: Prior to log4j-2.9, this tool was an inner class
+`Generate$ExtendedLogger`. +
+Under the bash shell on Unix/Mac/Linux the dollar character $ needs to
+be escaped, so the class name should be between single quotes
+'org.apache.logging.log4j.core.tools.Generate$ExtendedLogger’.
+
+== Generating Custom Loggers
+
+Use the following command to generate a logger wrapper that hides the
+built-in levels and has only custom levels:
+
+[source,sh,subs="attributes"]
+----
+java -cp log4j-core-{Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.CustomLoggerGenerator \
+        com.mycomp.MyLogger DEFCON1=350 DEFCON2=450 DEFCON3=550 > com/mycomp/MyLogger.java
+----
+
+This will generate source code for a logger wrapper that _only_ has
+convenience methods for the specified custom levels, _not_ for the
+built-in levels. The tool prints the generated source code to the
+console. By appending " > _filename_" the output can be redirected to a
+file.
+
+NOTE: Prior to log4j-2.9, this tool was an inner class `Generate$ExtendedLogger`.
+Under the bash shell on Unix/Mac/Linux the dollar character $ needs to
+be escaped, so the class name should be between single quotes
+'org.apache.logging.log4j.core.tools.Generate$CustomLogger’.
