@@ -22,3 +22,8 @@
 
 This releases contains ...
 
+
+[#release-notes-2-x-x-updated]
+=== Updated
+
+* Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2361[2361])
