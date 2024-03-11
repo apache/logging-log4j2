@@ -1,46 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one or more
-  ~ contributor license agreements.  See the NOTICE file distributed with
-  ~ this work for additional information regarding copyright ownership.
-  ~ The ASF licenses this file to you under the Apache License, Version 2.0
-  ~ (the "License"); you may not use this file except in compliance with
-  ~ the License.  You may obtain a copy of the License at
-  ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-<document xmlns="http://maven.apache.org/XDOC/2.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
-    <properties>
-        <title>Log4j 2 API</title>
-        <author email="rgoers@apache.org">Ralph Goers</author>
-    </properties>
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
 
-    <body>
-        <section name="Log4j 2 API">
-          <a name="EventLogging"/>
-          <subsection name="Event Logging">
-            <p>
-              The EventLogger class provides a simple mechanism for logging events that occur in an application.
-              While the EventLogger is useful as a way of initiating events that should be processed by an audit
-              Logging system, by itself it does not implement any of the features an audit logging system would require
-              such as guaranteed delivery.
-            </p>
-            <p>The recommended way of using the EventLogger in a typical web application is to populate
-              the ThreadContext Map with data that is related to the entire lifespan of the request such as the user's
-              id, the user's IP address, the product name, etc. This can easily be done in a servlet filter where
-              the ThreadContext Map can also be cleared at the end of the request. When an event that needs to be
-              recorded occurs a StructuredDataMessage should be created and populated.
-              Then call EventLogger.logEvent(msg) where msg is a reference to the StructuredDataMessage.</p>
+         http://www.apache.org/licenses/LICENSE-2.0
 
-            <pre class="prettyprint linenums">
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Log4j 2 API
+Ralph Goers <rgoers@apache.org>
+
+[#EventLogging]
+== Event Logging
+
+The `EventLogger` class provides a simple mechanism for logging events
+that occur in an application. While the `EventLogger` is useful as a way
+of initiating events that should be processed by an audit Logging
+system, by itself it does not implement any of the features an audit
+logging system would require such as guaranteed delivery.
+
+The recommended way of using the `EventLogger` in a typical web
+application is to populate the `ThreadContext` Map with data that is
+related to the entire lifespan of the request such as the user's id, the
+user's IP address, the product name, etc. This can easily be done in a
+servlet filter where the `ThreadContext` Map can also be cleared at the
+end of the request. When an event that needs to be recorded occurs a
+`StructuredDataMessage` should be created and populated. Then call
+`EventLogger.logEvent(msg)` where msg is a reference to the
+`StructuredDataMessage`.
+
+[source,java]
+----
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.commons.lang.time.DateUtils;
 
@@ -110,9 +107,13 @@ public class RequestFilter implements Filter {
 
     public void destroy() {
     }
-}</pre>
-            <p>Sample class that uses EventLogger.</p>
-            <pre class="prettyprint linenums">
+}
+----
+
+Sample class that uses `EventLogger`.
+
+[source,java]
+----
 import org.apache.logging.log4j.StructuredDataMessage;
 import org.apache.logging.log4j.EventLogger;
 
@@ -132,13 +133,10 @@ public class MyApp {
         EventLogger.logEvent(msg);
         return confirm;
     }
-}</pre>
-            <p>The EventLogger class uses a Logger named "EventLogger". EventLogger uses a logging level
-              of OFF as the default to indicate that it cannot be filtered. These events can be
-              formatted for printing using the
-              <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/StructuredDataLayout.html">StructuredDataLayout</a>.
-            </p>
-          </subsection>
-        </section>
-    </body>
-</document>
+}
+----
+
+The `EventLogger` class uses a `Logger` named "EventLogger". `EventLogger`
+uses a logging level of OFF as the default to indicate that it cannot be
+filtered. These events can be formatted for printing using the
+link:../log4j-core/apidocs/org/apache/logging/log4j/core/layout/StructuredDataLayout.html[`StructuredDataLayout`].

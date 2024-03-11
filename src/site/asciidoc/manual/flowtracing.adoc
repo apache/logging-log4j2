@@ -1,82 +1,84 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one or more
-  ~ contributor license agreements.  See the NOTICE file distributed with
-  ~ this work for additional information regarding copyright ownership.
-  ~ The ASF licenses this file to you under the Apache License, Version 2.0
-  ~ (the "License"); you may not use this file except in compliance with
-  ~ the License.  You may obtain a copy of the License at
-  ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-<document xmlns="http://maven.apache.org/XDOC/2.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
-    <properties>
-        <title>Log4j 2 API</title>
-        <author email="rgoers@apache.org">Ralph Goers</author>
-    </properties>
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
 
-    <body>
-        <section name="Log4j 2 API">
-          <a name="FlowTracing"/>
-          <subsection name="Flow Tracing">
-            <p>
-              The Logger class provides logging methods that are quite useful for following the
-              execution path of applications. These methods generate logging events that can be filtered
-              separately from other debug logging. Liberal use of these methods is encouraged as the output has
-              been found to
-            </p>
-            <ul>
-              <li>aid in problem diagnosis in development without requiring a debug session</li>
-              <li>aid in problem diagnosis in production where no debugging is possible</li>
-              <li>help educate new developers in learning the application.</li>
-            </ul>
-            <p>
-              The most used methods are the entry() or traceEntry() and exit() or traceExit() methods. entry()
-              or traceEntry() should be placed at the beginning of methods, except perhaps for simple
-              getters and setters. entry() can be called passing from 0 to 4 parameters. Typically these will be
-              parameters passed to the method. traceEntry() can be passed a format String and a variable list of
-              parameters, or a Message. The entry() and traceEntry() methods log with a level of TRACE and uses
-              a Marker with a name of "ENTER" which is also a "FLOW" Marker and all message strings will begin
-              with "event", even if a format String or Message is used.
-            </p>
-            <p>The main difference between the entry and traceEntry methods is that the entry method accepts a
-              variable list of objects where presumably each is a method parameter. The traceEntry method
-              accepts a format string followed by a variable list of objects, presumably included in the
-              format String. It is not possible to have a single method that includes both of these as it would
-              be ambiguous whether the first String is a parameter or a format String.</p>
-            <p>
-              An exit() or traceExit() method should be placed before any return statement or as the last statement of
-              methods without a return. exit() and traceExit() can be called with or without a parameter. Typically,
-              methods that return void will use exit() or traceExit() while methods that return an Object will use
-              exit(Object obj) or traceExit(object, new SomeMessage(object)). The exit() and traceExit() methods log
-              with a level of TRACE and uses a Marker with a name of "EXIT" which is also a "FLOW" Marker and all
-              message strings will begin with "exit", even if a format String or Message is used.
-            </p>
-            <p>
-              The throwing() method can be used by an application when it is throwing an exception that is
-              unlikely to be handled, such as a RuntimeException. This will ensure that proper diagnostics
-              are available if needed. The logging event generated will have a level of ERROR and will have
-              an associated Marker with a name of "THROWING" which is also an "EXCEPTION" Marker.
-            </p>
-            <p>
-              The catching() method can be used by an application when it catches an Exception that it is not
-              going to rethrow, either explicitly or attached to another Exception. The logging event generated
-              will have a level of ERROR and will have an associated Marker with a name of "CATCHING" which is
-              also an "EXCEPTION" Marker.
-            </p>
-            <p>
-              The following example shows a simple application using these methods in a fairly typical manner. The
-              throwing() is not present since no Exceptions are explicitly thrown and not handled.
-            </p>
-<pre class="prettyprint linenums">
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Log4j 2 API
+Ralph Goers <rgoers@apache.org>
+
+[#FlowTracing]
+== Flow Tracing
+
+The `Logger` class provides logging methods that are quite useful for
+following the execution path of applications. These methods generate
+logging events that can be filtered separately from other debug logging.
+Liberal use of these methods is encouraged as the output has been found
+to
+
+* aid in problem diagnosis in development without requiring a debug
+session
+* aid in problem diagnosis in production where no debugging is possible
+* help educate new developers in learning the application.
+
+The most used methods are the entry() or traceEntry() and exit() or
+traceExit() methods. entry() or traceEntry() should be placed at the
+beginning of methods, except perhaps for simple getters and setters.
+entry() can be called passing from 0 to 4 parameters. Typically these
+will be parameters passed to the method. traceEntry() can be passed a
+format String and a variable list of parameters, or a Message. The
+entry() and traceEntry() methods log with a level of TRACE and uses a
+Marker with a name of "ENTER" which is also a "FLOW" Marker and all
+message strings will begin with "event", even if a format String or
+Message is used.
+
+The main difference between the entry and traceEntry methods is that the
+entry method accepts a variable list of objects where presumably each is
+a method parameter. The traceEntry method accepts a format string
+followed by a variable list of objects, presumably included in the
+format String. It is not possible to have a single method that includes
+both of these as it would be ambiguous whether the first String is a
+parameter or a format String.
+
+An exit() or traceExit() method should be placed before any return
+statement or as the last statement of methods without a return. exit()
+and traceExit() can be called with or without a parameter. Typically,
+methods that return void will use exit() or traceExit() while methods
+that return an Object will use exit(Object obj) or traceExit(object, new
+SomeMessage(object)). The exit() and traceExit() methods log with a
+level of TRACE and uses a Marker with a name of "EXIT" which is also a
+"FLOW" Marker and all message strings will begin with "exit", even if a
+format String or Message is used.
+
+The throwing() method can be used by an application when it is throwing
+an exception that is unlikely to be handled, such as a RuntimeException.
+This will insure that proper diagnostics are available if needed. The
+logging event generated will have a level of ERROR and will have an
+associated Marker with a name of "THROWING" which is also an "EXCEPTION"
+Marker.
+
+The catching() method can be used by an application when it catches an
+Exception that it is not going to rethrow, either explicitly or attached
+to another Exception. The logging event generated will have a level of
+ERROR and will have an associated Marker with a name of "CATCHING" which
+is also an "EXCEPTION" Marker.
+
+The following example shows a simple application using these methods in
+a fairly typical manner. The throwing() is not present since no
+Exceptions are explicitly thrown and not handled.
+
+[source,java]
+----
 package com.test;
 
 import org.apache.logging.log4j.Logger;
@@ -137,11 +139,14 @@ public class TestService {
         int key = rand.nextInt(messages.length);
         return logger.exit(key);
     }
-}</pre>
-            <p>
-              This test application uses the preceding service to generate logging events.
-            </p>
-<pre class="prettyprint linenums">
+}
+----
+
+This test application uses the preceding service to generate logging
+events.
+
+[source,java]
+----
 package com.test;
 
 public class App {
@@ -152,13 +157,16 @@ public class App {
         service.retrieveMessage();
         service.exampleException();
     }
-}</pre>
-            <p>
-              The configuration below will cause all output to be routed to target/test.log. The pattern for
-              the FileAppender includes the class name, line number and method name. Including these
-              in the pattern are critical for the log to be of value.
-            </p>
-<pre class="prettyprint linenums"><![CDATA[
+}
+----
+
+The configuration below will cause all output to be routed to
+target/test.log. The pattern for the FileAppender includes the class
+name, line number and method name. Including these in the pattern are
+critical for the log to be of value.
+
+[source,xml]
+----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
   <Appenders>
@@ -177,11 +185,13 @@ public class App {
       <AppenderRef ref="log"/>
     </Root>
   </Loggers>
-</Configuration>]]></pre>
-            <p>
-              Here is the output that results from the Java classes and configuration above.
-            </p>
-            <pre>
+</Configuration>
+----
+
+Here is the output that results from the Java classes and configuration
+above.
+
+....
 19:08:07.056 TRACE com.test.TestService 19 retrieveMessage -  entry
 19:08:07.060 TRACE com.test.TestService 46 getKey -  entry
 19:08:07.060 TRACE com.test.TestService 48 getKey -  exit with (0)
@@ -225,12 +235,13 @@ public class App {
         at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:150) [surefire-booter-2.7.2.jar:2.7.2]
         at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcess(SurefireStarter.java:91) [surefire-booter-2.7.2.jar:2.7.2]
         at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:69) [surefire-booter-2.7.2.jar:2.7.2]
-19:08:07.087 TRACE com.test.TestService 34 exampleException -  exit</pre>
-            <p>
-              Simply changing the root logger level to DEBUG in the example above will reduce the output
-              considerably.
-            </p>
-            <pre>
+19:08:07.087 TRACE com.test.TestService 34 exampleException -  exit
+....
+
+Simply changing the root logger level to DEBUG in the example above will
+reduce the output considerably.
+
+....
 19:13:24.963 DEBUG com.test.TestService 32 exampleException - catching java.lang.ArrayIndexOutOfBoundsException: 3
         at com.test.TestService.exampleException(TestService.java:29) [classes/:?]
         at com.test.App.main(App.java:9) [classes/:?]
@@ -260,8 +271,5 @@ public class App {
         at $Proxy0.invoke(Unknown Source) [?:?]
         at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:150) [surefire-booter-2.7.2.jar:2.7.2]
         at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcess(SurefireStarter.java:91) [surefire-booter-2.7.2.jar:2.7.2]
-        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:69) [surefire-booter-2.7.2.jar:2.7.2]</pre>
-          </subsection>
-        </section>
-    </body>
-</document>
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:69) [surefire-booter-2.7.2.jar:2.7.2]
+....

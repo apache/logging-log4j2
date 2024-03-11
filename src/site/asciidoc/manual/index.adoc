@@ -1,0 +1,138 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Overview
+Ralph Goers <rgoers@apache.org>
+
+== Welcome to Log4j!
+
+Almost every large application includes its own logging or tracing API.
+In conformance with this rule, the E.U. http://www.semper.org[SEMPER]
+project decided to write its own tracing API. This was in early 1996.
+After countless enhancements, several incarnations and much work that
+API has evolved to become log4j, a popular logging package for Java. The
+package is distributed under the link:../LICENSE[Apache Software
+License], a fully-fledged open source license certified by the
+http://www.opensource.org[open source] initiative. The latest log4j
+version, including full-source code, class files and documentation can
+be found at
+https://logging.apache.org/log4j/2.x/index.html[*https://logging.apache.org/log4j/2.x/index.html*].
+
+Inserting log statements into code is a low-tech method for debugging
+it. It may also be the only way because debuggers are not always
+available or applicable. This is usually the case for multithreaded
+applications and distributed applications at large.
+
+Experience indicates that logging was an important component of the
+development cycle. It offers several advantages. It provides precise
+_context_ about a run of the application. Once inserted into the code,
+the generation of logging output requires no human intervention.
+Moreover, log output can be saved in persistent medium to be studied at
+a later time. In addition to its use in the development cycle, a
+sufficiently rich logging package can also be viewed as an auditing
+tool.
+
+As Brian W. Kernighan and Rob Pike put it in their truly excellent book
+_"The Practice of Programming":_
+
+____
+As personal choice, we tend not to use debuggers beyond getting a stack
+trace or the value of a variable or two. One reason is that it is easy
+to get lost in details of complicated data structures and control flow;
+we find stepping through a program less productive than thinking harder
+and adding output statements and self-checking code at critical places.
+Clicking over statements takes longer than scanning the output of
+judiciously-placed displays. It takes less time to decide where to put
+print statements than to single-step to the critical section of code,
+even assuming we know where that is. More important, debugging
+statements stay with the program; debugging sessions are transient.
+____
+
+Logging does have its drawbacks. It can slow down an application. If too
+verbose, it can cause scrolling blindness. To alleviate these concerns,
+log4j is designed to be reliable, fast and extensible. Since logging is
+rarely the main focus of an application, the log4j API strives to be
+simple to understand and to use.
+
+== Log4j 2
+
+Log4j 1.x has been widely adopted and used in many applications.
+However, through the years development on it has slowed down. It has
+become more difficult to maintain due to its need to be compliant with
+very old versions of Java and became
+https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces[End
+of Life] in August 2015. Its alternative, SLF4J/Logback made many needed
+improvements to the framework. So why bother with Log4j 2? Here are a
+few of the reasons.
+
+1.  Log4j 2 is designed to be usable as an audit logging framework. Both
+Log4j 1.x and Logback will lose events while reconfiguring. Log4j 2 will
+not. In Logback, exceptions in Appenders are never visible to the
+application. In Log4j 2 Appenders can be configured to allow the
+exception to percolate to the application.
+2.  Log4j 2 contains next-generation link:async.html[Asynchronous
+Loggers] based on the https://lmax-exchange.github.io/disruptor/[LMAX
+Disruptor library]. In multi-threaded scenarios Asynchronous Loggers
+have 10 times higher throughput and orders of magnitude lower latency
+than Log4j 1.x and Logback.
+3.  Log4j 2 is link:garbagefree.html[garbage free] for stand-alone
+applications, and low garbage for web applications during steady state
+logging. This reduces pressure on the garbage collector and can give
+better response time performance.
+4.  Log4j 2 uses a link:plugins.html[Plugin system] that makes it
+extremely easy to link:extending.html[extend the framework] by adding
+new link:appenders.html[Appenders], link:filters.html[Filters],
+link:layouts.html[Layouts], link:lookups.html[Lookups], and Pattern
+Converters without requiring any changes to Log4j.
+5.  Due to the Plugin system configuration is simpler. Entries in the
+configuration do not require a class name to be specified.
+6.  Support for link:customloglevels.html[custom log levels]. Custom log
+levels can be defined in code or in configuration.
+7.  Support for link:api.html#LambdaSupport[lambda expressions]. Client
+code running on Java 8 can use lambda expressions to lazily construct a
+log message only if the requested log level is enabled. Explicit level
+checks are not needed, resulting in cleaner code.
+8.  Support for link:messages.html[Message objects]. Messages allow
+support for interesting and complex constructs to be passed through the
+logging system and be efficiently manipulated. Users are free to create
+their own `Message` types and write custom link:layouts.html[Layouts],
+link:filters.html[Filters] and link:lookups.html[Lookups] to manipulate
+them.
+9.  Log4j 1.x supports Filters on Appenders. Logback added TurboFilters
+to allow filtering of events before they are processed by a Logger.
+Log4j 2 supports Filters that can be configured to process events before
+they are handled by a Logger, as they are processed by a Logger or on an
+Appender.
+10. Many Logback Appenders do not accept a Layout and will only send
+data in a fixed format. Most Log4j 2 Appenders accept a Layout, allowing
+the data to be transported in any format desired.
+11. Layouts in Log4j 1.x and Logback return a String. This resulted in
+the problems discussed at
+http://logback.qos.ch/manual/encoders.html[Logback Encoders]. Log4j 2
+takes the simpler approach that link:layouts.html[Layouts] always return
+a byte array. This has the advantage that it means they can be used in
+virtually any Appender, not just the ones that write to an OutputStream.
+12. The link:appenders.html#SyslogAppender[Syslog Appender] supports
+both TCP and UDP as well as support for the BSD syslog and the
+http://tools.ietf.org/html/rfc5424[RFC 5424] formats.
+13. Log4j 2 takes advantage of Java 5 concurrency support and performs
+locking at the lowest level possible. Log4j 1.x has known deadlock
+issues. Many of these are fixed in Logback but many Logback classes
+still require synchronization at a fairly high level.
+14. It is an Apache Software Foundation project following the community
+and support model used by all ASF projects. If you want to contribute or
+gain the right to commit changes just follow the path outlined at
+http://jakarta.apache.org/site/contributing.html[Contributing].

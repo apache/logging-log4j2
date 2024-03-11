@@ -1,0 +1,386 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Programmatic Configuration
+Ralph Goers <rgoers@apache.org>
+
+Log4j 2 provides a few ways for applications to create their own
+programmatic configuration:
+
+* Specify a custom `ConfigurationFactory` to start Log4j with a
+programmatic configuration
+* Use the `Configurator` to replace the configuration after Log4j started
+* Initialize Log4j with a combination of a configuration file and
+programmatic configuration
+* Modify the current `Configuration` after initialization
+
+[#ConfigurationBuilder]
+== The ConfigurationBuilder API
+
+Starting with release 2.4, Log4j provides a `ConfigurationBuilder` and a
+set of component builders that allow a `Configuration` to be created
+fairly easily. Actual configuration objects like `LoggerConfig` or
+`Appender` can be unwieldy; they require a lot of knowledge about Log4j
+internals which makes them difficult to work with if all you want is to
+create a `Configuration`.
+
+The new `ConfigurationBuilder` API (in the
+`org.apache.logging.log4j.core.config.builder.api` package) allows users
+to create Configurations in code by constructing component
+_definitions_. There is no need to work directly with actual
+configuration objects. Component definitions are added to the
+`ConfigurationBuilder`, and once all the definitions have been collected
+all the actual configuration objects (like Loggers and Appenders) are
+constructed.
+
+`ConfigurationBuilder` has convenience methods for the base components
+that can be configured such as Loggers, Appenders, Filter, Properties,
+etc. However, Log4j 2's plugin mechanism means that users can create any
+number of custom components. As a trade-off, the `ConfigurationBuilder`
+API provides only a limited number of "strongly typed" convenience
+methods like `newLogger()`, `newLayout()` etc. The generic
+`builder.newComponent()` method can be used if no convenience method
+exists for the component you want to configure.
+
+For example, the builder does not know what sub-components can be
+configured on specific components such as the RollingFileAppender vs.
+the RoutingAppender. To specify a triggering policy on a
+RollingFileAppender you would use builder.newComponent().
+
+Examples of using the `ConfigurationBuilder` API are in the sections that
+follow.
+
+[#ConfigurationFactory]
+== Understanding ConfigurationFactory
+
+During initialization, Log4j 2 will search for available
+link:extending.html#ConfigurationFactory[ConfigurationFactories] and
+then select the one to use. The selected `ConfigurationFactory` creates
+the `Configuration` that Log4j will use. Here is how Log4j finds the
+available ConfigurationFactories:
+
+1.  A system property named `log4j2.configurationFactory` can be set
+with the name of the ConfigurationFactory to be used.
+2.  `ConfigurationFactory.setConfigurationFactory(ConfigurationFactory)`
+can be called with the instance of the `ConfigurationFactory` to be used.
+This must be called before any other calls to Log4j.
+3.  A `ConfigurationFactory` implementation can be added to the classpath
+and configured as a plugin in the "ConfigurationFactory" category. The
+`@Order` annotation can be used to specify the relative priority when
+multiple applicable ConfigurationFactories are found.
+
+ConfigurationFactories have the concept of "supported types", which
+basically maps to the file extension of the configuration file that the
+ConfigurationFactory can handle. If a configuration file location is
+specified, ConfigurationFactories whose supported type does not include
+"*" or the matching file extension will not be used.
+
+[#Example]
+== Initialize Log4j Using ConfigurationBuilder with a Custom ConfigurationFactory
+
+One way to programmatically configure Log4j 2 is to create a custom
+`ConfigurationFactory` that uses the
+link:#ConfigurationBuilder[`ConfigurationBuilder`] to create a
+Configuration. The below example overrides the `getConfiguration()`
+method to return a `Configuration` created by the `ConfigurationBuilder`.
+This will cause the `Configuration` to automatically be hooked into Log4j
+when the `LoggerContext` is created. In the example below, because it
+specifies a supported type of "*" it will override any configuration
+files provided.
+
+[source,java]
+----
+@Namespace(ConfigurationFactory.NAMESPACE)
+@Plugin
+@Order(50)
+public class CustomConfigurationFactory extends ConfigurationFactory {
+
+    static Configuration createConfiguration(final String name, ConfigurationBuilder<BuiltConfiguration> builder) {
+        builder.setConfigurationName(name);
+        builder.setStatusLevel(Level.ERROR);
+        builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL).
+            addAttribute("level", Level.DEBUG));
+        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").
+            addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+        appenderBuilder.add(builder.newLayout("PatternLayout").
+            addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+        appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
+            Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
+        builder.add(appenderBuilder);
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
+            add(builder.newAppenderRef("Stdout")).
+            addAttribute("additivity", false));
+        builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+        return builder.build();
+    }
+
+    @Override
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return getConfiguration(loggerContext, source.toString(), null);
+    }
+
+    @Override
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+        ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
+        return createConfiguration(name, builder);
+    }
+
+    @Override
+    protected String[] getSupportedTypes() {
+        return new String[] {"*"};
+    }
+}
+----
+
+As of version 2.7, the `ConfigurationFactory.getConfiguration()` methods
+take an additional `LoggerContext` parameter.
+
+[#Configurator]
+== Reconfigure Log4j Using ConfigurationBuilder with the Configurator
+
+An alternative to a custom `ConfigurationFactory` is to configure with the
+`Configurator`. Once a `Configuration` object has been constructed, it can
+be passed to one of the `Configurator.initialize` methods to set up the
+Log4j configuration.
+
+Using the `Configurator` in this manner allows the application control
+over when Log4j is initialized. However, should any logging be attempted
+before `Configurator.initialize()` is called then the default
+configuration will be used for those log events.
+
+[source,java]
+----
+ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+builder.setStatusLevel(Level.ERROR);
+builder.setConfigurationName("BuilderTest");
+builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
+    .addAttribute("level", Level.DEBUG));
+AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+    ConsoleAppender.Target.SYSTEM_OUT);
+appenderBuilder.add(builder.newLayout("PatternLayout")
+    .addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
+    .addAttribute("marker", "FLOW"));
+builder.add(appenderBuilder);
+builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG)
+    .add(builder.newAppenderRef("Stdout")).addAttribute("additivity", false));
+builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+ctx = Configurator.initialize(builder.build());
+----
+
+This example shows how to create a configuration that includes a
+RollingFileAppender.
+
+[source,java]
+----
+ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+
+builder.setStatusLevel(Level.ERROR);
+builder.setConfigurationName("RollingBuilder");
+// create a console appender
+AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+    ConsoleAppender.Target.SYSTEM_OUT);
+appenderBuilder.add(builder.newLayout("PatternLayout")
+    .addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+builder.add(appenderBuilder);
+// create a rolling file appender
+LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+    .addAttribute("pattern", "%d [%t] %-5level: %msg%n");
+ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
+    .addComponent(builder.newComponent("CronTriggeringPolicy").addAttribute("schedule", "0 0 0 * * ?"))
+    .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "100M"));
+appenderBuilder = builder.newAppender("rolling", "RollingFile")
+    .addAttribute("fileName", "target/rolling.log")
+    .addAttribute("filePattern", "target/archive/rolling-%d{MM-dd-yy}.log.gz")
+    .add(layoutBuilder)
+    .addComponent(triggeringPolicy);
+builder.add(appenderBuilder);
+
+// create the new logger
+builder.add(builder.newLogger("TestLogger", Level.DEBUG)
+    .add(builder.newAppenderRef("rolling"))
+    .addAttribute("additivity", false));
+
+builder.add(builder.newRootLogger(Level.DEBUG)
+    .add(builder.newAppenderRef("rolling")));
+LoggerContext ctx = Configurator.initialize(builder.build());
+----
+
+[#Hybrid]
+== Initialize Log4j by Combining Configuration File with Programmatic Configuration
+
+Sometimes you want to configure with a configuration file but do some
+additional programmatic configuration. A possible use case might be that
+you want to allow for a flexible configuration using XML but at the same
+time make sure there are a few configuration elements that are always
+present that can't be removed.
+
+The easiest way to achieve this is to extend one of the standard
+`Configuration` classes (`XMLConfiguration`, `JSONConfiguration`) and then
+create a new `ConfigurationFactory` for the extended class. After the
+standard configuration completes the custom configuration can be added
+to it.
+
+The example below shows how to extend `XMLConfiguration` to manually add
+an `Appender` and a `LoggerConfig` to the configuration.
+
+[source,java]
+----
+@Namespace("ConfigurationFactory")
+@Plugin("MyXMLConfigurationFactory")
+@Order(10)
+public class MyXMLConfigurationFactory extends ConfigurationFactory {
+
+    /**
+     * Valid file extensions for XML files.
+     */
+    public static final String[] SUFFIXES = new String[] {".xml", "*"};
+
+    /**
+     * Return the Configuration.
+     * @param source The InputSource.
+     * @return The Configuration.
+     */
+    public Configuration getConfiguration(InputSource source) {
+        return new MyXMLConfiguration(source, configFile);
+    }
+
+    /**
+     * Returns the file suffixes for XML files.
+     * @return An array of File extensions.
+     */
+    public String[] getSupportedTypes() {
+        return SUFFIXES;
+    }
+}
+
+public class MyXMLConfiguration extends XMLConfiguration {
+    public MyXMLConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
+      super(configSource);
+    }
+
+    @Override
+    protected void doConfigure() {
+        super.doConfigure();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Layout layout = PatternLayout.createDefaultLayout(config);
+        final Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
+              "false", "false", "4000", layout, null, "false", null, config);
+        appender.start();
+        addAppender(appender);
+        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", "info", "org.apache.logging.log4j",
+              "true", refs, null, config, null );
+        loggerConfig.addAppender(appender, null, null);
+        addLogger("org.apache.logging.log4j", loggerConfig);
+    }
+}
+----
+
+[#AddingToCurrent]
+== Programmatically Modifying the Current Configuration after Initialization
+
+Applications sometimes have the need to customize logging separate from
+the actual configuration. Log4j allows this although it suffers from a
+few limitations:
+
+1.  If the configuration file is changed the configuration will be
+reloaded and the manual changes will be lost.
+2.  Modification to the running configuration requires that all the
+methods being called (addAppender and addLogger) be synchronized.
+
+As such, the recommended approach for customizing a configuration is to
+extend one of the standard Configuration classes, override the setup
+method to first do super.setup() and then add the custom Appenders,
+Filters and LoggerConfigs to the configuration before it is registered
+for use.
+
+The following example adds an Appender and a new LoggerConfig using that
+Appender to the current configuration.
+
+//TODO: update code example below with new plugin API
+[source,java]
+----
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        Layout layout = PatternLayout.createDefaultLayout(config);
+        Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
+            "false", "false", "4000", layout, null, "false", null, config);
+        appender.start();
+        config.addAppender(appender);
+        AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
+        AppenderRef[] refs = new AppenderRef[] {ref};
+        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", "info", "org.apache.logging.log4j",
+            "true", refs, null, config, null );
+        loggerConfig.addAppender(appender, null, null);
+        config.addLogger("org.apache.logging.log4j", loggerConfig);
+        ctx.updateLoggers();
+}
+----
+
+[#AppendingToWritersAndOutputStreams]
+== Appending Log Events to Writers and OutputStreams Programmatically
+
+Log4j 2.5 provides facilities to append log events to Writers and
+OutputStreams. For example, this provides simple integration for JDBC
+Driver implementors that use Log4j internally and still want to support
+the JDBC APIs `CommonDataSource.setLogWriter(PrintWriter)`,
+`java.sql.DriverManager.setLogWriter(PrintWriter)`, and
+`java.sql.DriverManager.setLogStream(PrintStream)`.
+
+Given any `Writer`, like a `PrintWriter`, you tell Log4j to append
+events to that writer by creating a `WriterAppender` and updating the
+Log4j configuration:
+
+[source,java]
+----
+void addAppender(final Writer writer, final String writerName) {
+    final LoggerContext context = LoggerContext.getContext(false);
+    final Configuration config = context.getConfiguration();
+    final PatternLayout layout = PatternLayout.createDefaultLayout(config);
+    final Appender appender = WriterAppender.createAppender(layout, null, writer, writerName, false, true);
+    appender.start();
+    config.addAppender(appender);
+    updateLoggers(appender, config);
+}
+
+private void updateLoggers(final Appender appender, final Configuration config) {
+    final Level level = null;
+    final Filter filter = null;
+    for (final LoggerConfig loggerConfig : config.getLoggers().values()) {
+        loggerConfig.addAppender(appender, level, filter);
+    }
+    config.getRootLogger().addAppender(appender, level, filter);
+}
+----
+
+You can achieve the same effect with an `OutputStream`, like a
+`PrintStream`:
+
+[source,java]
+----
+void addAppender(final OutputStream outputStream, final String outputStreamName) {
+    final LoggerContext context = LoggerContext.getContext(false);
+    final Configuration config = context.getConfiguration();
+    final PatternLayout layout = PatternLayout.createDefaultLayout(config);
+    final Appender appender = OutputStreamAppender.createAppender(layout, null, outputStream, outputStreamName, false, true);
+    appender.start();
+    config.addAppender(appender);
+    updateLoggers(appender, config);
+}
+----
+
+The difference is the use of `OutputStreamAppender` instead of
+`WriterAppender`.
