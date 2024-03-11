@@ -26,4 +26,5 @@ This releases contains ...
 [#release-notes-2-x-x-updated]
 === Updated
 
+* Update `com.fasterxml.jackson:jackson-bom` to version `2.16.2` (https://github.com/apache/logging-log4j2/pull/2360[2360])
 * Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2361[2361])
