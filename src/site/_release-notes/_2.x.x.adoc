@@ -31,8 +31,9 @@ This releases contains ...
 [#release-notes-2-x-x-fixed]
 === Fixed
 
-* Add `log4j2.StatusLogger.DateFormatZone` system property to set the time-zone `StatusLogger` uses to format `java.time.Instant`. Without this formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures.
-* Fix stack overflow in `StatusLogger`
+* Fix `StatusLogger` log level filtering when debug mode is enabled (https://github.com/apache/logging-log4j2/issues/2337[2337])
+* Add `log4j2.StatusLogger.DateFormatZone` system property to set the time-zone `StatusLogger` uses to format `java.time.Instant`. Without this formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures. (https://github.com/apache/logging-log4j2/pull/2322[2322])
+* Fix stack overflow in `StatusLogger` (https://github.com/apache/logging-log4j2/pull/2322[2322])
 
 [#release-notes-2-x-x-updated]
 === Updated

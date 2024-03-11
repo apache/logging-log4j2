@@ -16,19 +16,27 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-core</artifactId>
-  <packaging>jar</packaging>
+
   <name>Apache Log4j Core</name>
   <description>The Apache Log4j Implementation</description>
+
   <properties>
+
     <javadoc.skip>false</javadoc.skip>
+
+    <!-- Tests are located elsewhere, no need to do any processing for the `src/test` directory: -->
+    <maven.test.skip>true</maven.test.skip>
 
     <!--
       ~ OSGi and JPMS options
@@ -82,6 +90,7 @@
       javax.mail.api;substitute="javax.mail-api";transitive=false;static=true
     </bnd-extra-module-options>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -200,6 +209,7 @@
       <optional>true</optional>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
 
@@ -207,6 +217,8 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
+
+          <!-- Add Java 9+ code for the MRJ -->
           <execution>
             <id>add-source</id>
             <goals>
@@ -219,36 +231,74 @@
               </sources>
             </configuration>
           </execution>
+
+          <!-- Attach the generated `log4j-plugins.xml` -->
+          <execution>
+            <id>attach-plugin-descriptor</id>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/log4j-plugins.xml</file>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+
         </executions>
       </plugin>
 
+      <!-- We can't use `plugin-processing` Maven profile activated by `.log4j-plugin-processing-activator` file, because...
+           `log4j-core` contains `PluginProcessor`, that is responsible for generating `META-INF/org/apache/.../Log4j2Plugins.dat` from `@Plugin`-annotated members.
+           `log4j-core` also contains `@Plugin`-annotated members too.
+           That is, we need `log4j-core` to build `log4j-core`.
+           To work around this chicken-and-egg problem, we build as follows:
+
+           1. Compile sources using the `default-compile` default compilation execution.
+              This will generate the `PluginProcessor` class.
+
+           2. Make a second compilation pass using the generated `PluginProcessor`. -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <annotationProcessorPaths combine.self="override" />
-        </configuration>
         <executions>
+
+          <!-- Compile sources as usual -->
           <execution>
-            <!-- disable annotation processing for first pass -->
             <id>default-compile</id>
             <configuration>
-              <annotationProcessorPaths>
+              <annotationProcessorPaths combine.children="append">
+                <!-- `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` for generating `log4j-plugins.xml`: -->
                 <path>
-                  <groupId>com.google.errorprone</groupId>
-                  <artifactId>error_prone_core</artifactId>
-                  <version>${error-prone.version}</version>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-docgen</artifactId>
+                  <version>${log4j-docgen.version}</version>
                 </path>
               </annotationProcessorPaths>
+              <compilerArgs combine.children="append">
+                <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
+                <arg>-Alog4j.docgen.descriptorFilePath=${project.build.directory}/log4j-plugins.xml</arg>
+                <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
+                <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
+                <arg>-Alog4j.docgen.version=${project.version}</arg>
+                <arg>-Alog4j.docgen.description=${project.description}</arg>
+              </compilerArgs>
             </configuration>
           </execution>
+
+          <!-- Process sources using `PluginProcessor` to generate `META-INF/org/apache/.../Log4j2Plugins.dat` -->
           <execution>
-            <!-- then do a processing-only pass to generate plugins .dat file -->
             <id>process-plugins</id>
             <goals>
               <goal>compile</goal>
             </goals>
             <phase>process-classes</phase>
             <configuration>
+              <annotationProcessorPaths combine.self="override" />
               <annotationProcessors>
                 <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
               </annotationProcessors>
@@ -256,6 +306,7 @@
               <proc>only</proc>
             </configuration>
           </execution>
+
         </executions>
       </plugin>
 
@@ -291,4 +342,5 @@
 
     </plugins>
   </build>
+
 </project>

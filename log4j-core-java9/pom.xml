@@ -30,6 +30,8 @@
   <properties>
     <maven.compiler.release>9</maven.compiler.release>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>true</maven.install.skip>
+    <sign.skip>true</sign.skip>
   </properties>
   <dependencies>
     <!-- Naturally, all implementations require the log4j-api JAR -->
