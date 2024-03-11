@@ -1,1 +1,2528 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Configuration
 Ralph Goers <rgoers@apache.org>
+
+Inserting log requests into the application code requires a fair amount
+of planning and effort. Observation shows that approximately 4 percent
+of code is dedicated to logging. Consequently, even moderately sized
+applications will have thousands of logging statements embedded within
+their code. Given their number, it becomes imperative to manage these
+log statements without the need to modify them manually.
+
+Configuration of Log4j 2 can be accomplished in 1 of 4 ways:
+
+1.  Through a configuration file written in XML, JSON, YAML, or
+properties format.
+2.  Programmatically, by creating a ConfigurationFactory and
+Configuration implementation.
+3.  Programmatically, by calling the APIs exposed in the Configuration
+interface to add components to the default configuration.
+4.  Programmatically, by calling methods on the internal Logger class.
+
+This page focuses primarily on configuring Log4j through a configuration
+file. Information on programmatically configuring Log4j can be found at
+link:extending.html[Extending Log4j 2] and
+link:customconfig.html[Programmatic Log4j Configuration].
+
+All available formats are functionally equivalent. For example, a
+configuration file in XML can be rewritten using the properties format
+(and the opposite) without any loss of functionality. However, the
+hierarchical nature of a Log4j configuration can be captured better in
+formats which naturally support nesting so XML, JSON, and YAML files,
+are usually easier to use.
+
+Note that unlike Log4j 1.x, the public Log4j 2 API does not expose
+methods to add, modify or remove appenders and filters or manipulate the
+configuration in any way.
+
+[#Architecture]
+== Architecture
+
+In part because support for XML was added first, Log4j's configuration is reflected as a tree structure.
+In fact every configuration dialect, including the ConfigurationBuilder, generates a Node for every
+configuration element. A node is a fairly simple structure that contains a set of attributes, a set of
+child nodes and a PluginType. It is important to note that every Node must have a corresponding plugn,
+as the plugin is the component that actually performs the work represented by the node.
+
+Every document type supported by Log4j has a ConfigurationFactory. The factory itself is a Log4j plugin
+that declares what file extensions it supports and what its priority is. Properties have the highest
+precedence with a value of 8, followed by yaml, json and xml. When autoconfiguration is performed Log4j
+will call each of these factories in order to determine which, if any, support the specified configuration
+file format. If one is found that factory will create the corresponding Configuratoin object and pass the
+reference to the configuration data to it.
+
+Every configuration implementation, such as XMLConfiguration, YamlConfiguration, JsonConfiguration, etc.
+has the primary task of converting the configuration text into the Node tree, typically by parsing the
+text with whatever tool is available for that document type. It should be noted that while most of the
+supported document types are inherintly tree structured, the Java properties syntax is not. Because of the
+need to convert the syntax into a Node tree the Java properties syntax used by Log4j required all properties
+follow a naming pattern that made the tree structure clear. As a consequence, the Java Properties format
+tends to be more verbose than using a different document type.
+
+Once the Node tree is created control is delegated to AbstractConfiguration, which convertes the Nodes into
+their respective Java objects using Log4j's Plugin system and provides all the common functionality.
+
+[#Arbiters]
+== Arbiters
+
+In some situations it is desirable to have a single logging configuration that can be used in any
+deployment environment. For example, it may be necessary to have a different default logging level in
+production then in development. Another case might be where one type of appender is used when running
+natively but another is used when deployed to a docker container. One way to handle that is to use
+a tool such as Spring Cloud Config Server that can be environment aware and serve a different file for
+each environment. Another option is to include Arbiters in the configuration.
+
+An Arbiter is a Log4j plugin that has the job of determining whether other configured elements should be
+included in the generated configuration. While all other "Core" plugins are designed to execute as part of
+Log4j's runtime logic Arbiters execute after the Node tree has been constructed but before the tree is
+converted to a configuration. An Arbiter is a Node itself which is always removed from the Node tree
+before it the tree is processed. All an arbiter really does is provide a method that returns a boolean
+result that determines whether the child nodes of the arbiter should remain in the configuration or be
+pruned.
+
+Arbiters may occur anywhere an element is allowed in the configuration. So an Aribiter could encapsulate
+something as simple as a single property declaration or a whole set of Appenders or Loggers. Arbiters
+may also be nested although Arbiters that are the descendant of another arbiter will only be evalued if the
+ancestor returned true. The child elements of an Arbiter must be valid elements for whatever element is
+the parent of the Arbiter.
+
+This example shows two Arbiters configured that will include either a Console Appender or a List Appender
+depending on whether the value of the env System Property is "dev" or "prod".
+
+[source,xml]
+----
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+
+    <SystemPropertyArbiter propertyName="env" propertyValue="dev">
+      <Console name="Out">
+        <PatternLayout pattern="%m%n"/>
+      </Console>
+    </SystemPropertyArbiter>
+    <SystemPropertyArbiter propertyName="env" propertyValue="prod">
+      <List name="Out">
+      </List>
+    </SystemPropertyArbiter>
+
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+Normally Arbiters act in isolation from other Arbiters. That is, the outcome of one Arbiter will not
+impact any other Arbiters. This can be cumbersome when you simply want to use one of a set of choices. A
+special plugin named "Select" can be used in this case. Each element under the Select is required to be
+an Arbiter. The first Arbiter that returns a true value will be the one used while others are ignored.
+If no Arbiter returns true a DefaultAtrbiter may be configured with the default configuration elements.
+The DefaultArbiter is an Arbiter that always returns true, so using it outside of a Select would result in
+its configured elements always being included just as if it hadn't been present.
+
+This example shows an Arbiter that uses Javascript residing in a separate file to determine whether to
+include the Console Appender. If the result is false then a List Appender will be included.
+
+[source,xml]
+----
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+    <Select>
+      <ScriptArbiter>
+        <ScriptFile language="JavaScript" path="src/test/resources/scripts/prodtest.js" charset="UTF-8" />
+        <Console name="Out">
+          <PatternLayout pattern="%m%n"/>
+        </Console>
+      </ScriptArbiter>
+      <DefaultArbiter>
+        <List name="Out">
+        </List>
+      </DefaultArbiter>
+    </Select>
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+Natively Log4j contains the SystemProperty Arbiter that can evaluate whether to include elements based on
+whether a SystemProperty is non-null or has a specific value, a ClassArbiter that makes its decision
+based on whether the specified class is present, and a ScriptArbiter that makes its decision based
+on the result of the script configured with it.
+
+For Spring Boot users an Arbiter named <code>SpringProfile</code> has been provided. The specified profiles
+are evaluated by Spring's <code>Environment.acceptsProfiles()</code> method, so any expressions it supports
+may be used as the name attribute.
+
+This example will use a Console Appender when the Spring profile is "dev" or "staging" and a List
+Appender when the active profile is "prod".
+
+[source,xml]
+----
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+
+    <SpringProfile name="dev | staging">
+      <Console name="Out">
+        <PatternLayout pattern="%m%n"/>
+      </Console>
+    </SpringProfile>
+    <SpringProfile name="prod">
+      <List name="Out">
+      </List>
+    </SpringProfile>
+
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#AutomaticConfiguration]
+== Automatic Configuration
+
+Log4j has the ability to automatically configure itself during
+initialization. When Log4j starts it will locate all the
+ConfigurationFactory plugins and arrange them in weighted order from
+highest to lowest. As delivered, Log4j contains four
+ConfigurationFactory implementations: one for JSON, one for YAML, one
+for properties, and one for XML.
+
+1.  Log4j will inspect the `"log4j2.configurationFile"` system property
+and, if set, will attempt to load the configuration using the
+`ConfigurationFactory` that matches the file extension. Note that this
+is not restricted to a location on the local file system and may contain
+a URL.
+2.  If no system property is set the properties ConfigurationFactory
+will look for `log4j2-test.properties` in the classpath.
+3.  If no such file is found the YAML ConfigurationFactory will look for
+`log4j2-test.yaml` or `log4j2-test.yml` in the classpath.
+4.  If no such file is found the JSON ConfigurationFactory will look for
+`log4j2-test.json` or `log4j2-test.jsn` in the classpath.
+5.  If no such file is found the XML ConfigurationFactory will look for
+`log4j2-test.xml` in the classpath.
+6.  If a test file cannot be located the properties ConfigurationFactory
+will look for `log4j2.properties` on the classpath.
+7.  If a properties file cannot be located the YAML ConfigurationFactory
+will look for `log4j2.yaml` or `log4j2.yml` on the classpath.
+8.  If a YAML file cannot be located the JSON ConfigurationFactory will
+look for `log4j2.json` or `log4j2.jsn` on the classpath.
+9.  If a JSON file cannot be located the XML ConfigurationFactory will
+try to locate `log4j2.xml` on the classpath.
+10. If no configuration file could be located the `DefaultConfiguration`
+will be used. This will cause logging output to go to the console.
+
+An example application named `MyApp` that uses log4j can be used to
+illustrate how this is done.
+
+[source,java]
+----
+import com.foo.Bar;
+
+// Import log4j classes.
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class MyApp {
+
+    // Define a static logger variable so that it references the
+    // Logger instance named "MyApp".
+    private static final Logger logger = LogManager.getLogger(MyApp.class);
+
+    public static void main(final String... args) {
+
+        // Set up a simple configuration that logs on the console.
+
+        logger.trace("Entering application.");
+        Bar bar = new Bar();
+        if (!bar.doIt()) {
+            logger.error("Didn't do it.");
+        }
+        logger.trace("Exiting application.");
+    }
+}
+----
+
+`MyApp` begins by importing log4j related classes. It then defines a
+static logger variable with the name `MyApp` which happens to be the
+fully qualified name of the class.
+
+`MyApp` uses the `Bar` class defined in the package`com.foo`.
+
+[source,java]
+----
+package com.foo;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class Bar {
+  static final Logger logger = LogManager.getLogger(Bar.class.getName());
+
+  public boolean doIt() {
+    logger.entry();
+    logger.error("Did it again!");
+    return logger.exit(false);
+  }
+}
+----
+
+Log4j will provide a default configuration if it cannot locate a
+configuration file. The default configuration, provided in the
+DefaultConfiguration class, will set up:
+
+* A
+link:../log4j-core/apidocs/org/apache/logging/log4j/core/appender/ConsoleAppender.html[`ConsoleAppender`]
+attached to the root logger.
+* A
+link:../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html[`PatternLayout`]
+set to the pattern "%d\{HH:mm:ss.SSS} [%t] %-5level %logger\{36} -
+%msg%n" attached to the ConsoleAppender
+
+Note that by default Log4j assigns the root logger to `Level.ERROR`.
+
+The output of MyApp would be similar to:
+
+....
+17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+17:13:01.540 [main] ERROR MyApp - Didn't do it.
+....
+
+As was described previously, Log4j will first attempt to configure
+itself from configuration files. A configuration equivalent to the
+default would look like:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+Once the file above is placed into the classpath as log4j2.xml you will
+get results identical to those listed above. Changing the root level to
+trace will result in results similar to:
+
+....
+17:13:01.540 [main] TRACE MyApp - Entering application.
+17:13:01.540 [main] TRACE com.foo.Bar - entry
+17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+17:13:01.540 [main] TRACE com.foo.Bar - exit with (false)
+17:13:01.540 [main] ERROR MyApp - Didn't do it.
+17:13:01.540 [main] TRACE MyApp - Exiting application.
+....
+
+Note that status logging is disabled when the default configuration is
+used.
+
+[#Configuration_From_a_URI]
+== Configuration From a URI
+
+When `log4j2.configurationFile` references a URL, Log4j will first determine if the URL reference
+a file using the file protocol. If it does Log4j will validate that the file URL is valid and continue
+processing as previously described. If it contains a protocol other than file then Log4j will inspect
+the value of the `log4j2.Configuration.allowedProtocols` system property. If the provided list
+contains the protocol specified then Log4j will use the URI to locate the specified configuration file. If
+not an exception will be thrown and an error message will be logged. If no value is provided for the
+system property it will default to "https". Use of any protocol other than "file" can be prevented by
+setting the system property value to "_none". This value would be an invalid protocol so cannot conflict
+with any custom protocols that may be present.
+
+Log4j supports access to remote URLs that require authentication. Log4j supports basic authentication
+out of the box. If the `log4j2.Configuration.username` and `log4j2.Configuration.password`
+are specified those values will be used to perform the authentication. If the password is encrypted a custom
+password decryptor may be supplied by specifying the fully qualified class name in the
+`log4j2.Configuration.passwordDecryptor` system property. A custom
+`AuthenticationProvider` may be used by setting the
+`log4j2.Configuration.authenticationProvider` system property to the fully qualified class name
+of the provider.
+
+[#Additivity]
+== Additivity
+
+Perhaps it is desired to eliminate all the TRACE output from everything
+except `com.foo.Bar`. Simply changing the log level would not accomplish
+the task. Instead, the solution is to add a new logger definition to the
+configuration:
+
+[source,xml]
+----
+<Logger name="com.foo.Bar" level="TRACE"/>
+<Root level="ERROR">
+  <AppenderRef ref="STDOUT">
+</Root>
+----
+
+With this configuration all log events from `com.foo.Bar` will be
+recorded while only error events will be recorded from all other
+components.
+
+In the previous example all the events from `com.foo.Bar` were still
+written to the Console. This is because the logger for `com.foo.Bar` did
+not have any appenders configured while its parent did. In fact, the
+following configuration
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.foo.Bar" level="trace">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+would result in
+
+....
+17:13:01.540 [main] TRACE com.foo.Bar - entry
+17:13:01.540 [main] TRACE com.foo.Bar - entry
+17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
+17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
+17:13:01.540 [main] ERROR MyApp - Didn't do it.
+....
+
+Notice that the trace messages from `com.foo.Bar` appear twice. This is
+because the appender associated with logger `com.foo.Bar` is first used,
+which writes the first instance to the Console. Next, the parent of
+`com.foo.Bar`, which in this case is the root logger, is referenced. The
+event is then passed to its appender, which is also writes to the
+Console, resulting in the second instance. This is known as additivity.
+While additivity can be quite a convenient feature (as in the first
+previous example where no appender reference needed to be configured),
+in many cases this behavior is considered undesirable and so it is
+possible to disable it by setting the additivity attribute on the logger
+to false:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.foo.Bar" level="trace" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+Once an event reaches a logger with its additivity set to false the
+event will not be passed to any of its parent loggers, regardless of
+their additivity setting.
+
+[#AutomaticReconfiguration]
+== Automatic Reconfiguration
+
+When configured from a File, Log4j has the ability to automatically
+detect changes to the configuration file and reconfigure itself. If the
+`monitorInterval` attribute is specified on the configuration element
+and is set to a non-zero value then the file will be checked the next
+time a log event is evaluated and/or logged and the monitorInterval has
+elapsed since the last check. The example below shows how to configure
+the attribute so that the configuration file will be checked for changes
+only after at least 30 seconds have elapsed. The minimum interval is 5
+seconds.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="30">
+...
+</Configuration>
+----
+
+[#ChainsawSupport]
+== Chainsaw can automatically process your log files (Advertising appender configurations)
+
+Log4j provides the ability to 'advertise' appender configuration details
+for all file-based appenders as well as socket-based appenders. For
+example, for file-based appenders, the file location and the pattern
+layout in the file are included in the advertisement. Chainsaw and other
+external systems can discover these advertisements and use that
+information to intelligently process the log file.
+
+The mechanism by which an advertisement is exposed, as well as the
+advertisement format, is specific to each Advertiser implementation. An
+external system which would like to work with a specific Advertiser
+implementation must understand how to locate the advertised
+configuration as well as the format of the advertisement. For example, a
+'database' Advertiser may store configuration details in a database
+table. An external system can read that database table in order to
+discover the file location and the file format.
+
+Log4j provides one Advertiser implementation, a 'multicastdns'
+Advertiser, which advertises appender configuration details via IP
+multicast using the http://jmdns.sourceforge.net library.
+
+Chainsaw automatically discovers log4j's multicastdns-generated
+advertisements and displays those discovered advertisements in
+Chainsaw's Zeroconf tab (if the jmdns library is in Chainsaw's
+classpath). To begin parsing and tailing a log file provided in an
+advertisement, just double-click the advertised entry in Chainsaw's
+Zeroconf tab. Currently, Chainsaw only supports FileAppender
+advertisements.
+
+To advertise an appender configuration:
+
+* Add the JmDns library from http://jmdns.sourceforge.net to the
+application classpath
+* Set the 'advertiser' attribute of the configuration element to
+'multicastdns'
+* Set the 'advertise' attribute on the appender element to 'true'
+* If advertising a FileAppender-based configuration, set the
+'advertiseURI' attribute on the appender element to an appropriate URI
+
+FileAppender-based configurations require an additional 'advertiseURI'
+attribute to be specified on the appender. The 'advertiseURI' attribute
+provides Chainsaw with information on how the file can be accessed. For
+example, the file may be remotely accessible to Chainsaw via ssh/sftp by
+specifying a Commons VFS (http://commons.apache.org/proper/commons-vfs/)
+sftp:// URI, an http:// URI may be used if the file is accessible
+through a web server, or a file:// URI can be specified if accessing the
+file from a locally-running instance of Chainsaw.
+
+Here is an example advertisement-enabled appender configuration which
+can be used by a locally-running Chainsaw to automatically tail the log
+file (notice the file:// advertiseURI):
+
+*Please note, you must add the JmDNS library mentioned above.*
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration advertiser="multicastdns">
+  ...
+  <Appenders>
+    <File name="File1" fileName="output.log" bufferedIO="false" advertiseURI="file://path/to/output.log" advertise="true">
+    ...
+    </File>
+  </Appenders>
+</Configuration>
+----
+
+[#ConfigurationSyntax]
+== Configuration Syntax
+
+As of version 2.9, for security reasons, Log4j does not process DTD in
+XML files. If you want to split the configuration in multiple files, use
+link:#XInclude[XInclude] or link:#CompositeConfiguration[Composite
+Configuration].
+
+As the previous examples have shown as well as those to follow, Log4j
+allows you to easily redefine logging behavior without needing to modify
+your application. It is possible to disable logging for certain parts of
+the application, log only when specific criteria are met such as the
+action being performed for a specific user, route output to Flume or a
+log reporting system, etc. Being able to do this requires understanding
+the syntax of the configuration files.
+
+The configuration element in the XML file accepts several attributes:
+
+[cols="1m,5a"]
+|===
+|Attribute Name |Description
+
+|advertiser
+|(Optional) The Advertiser plugin name which will be used to
+advertise individual FileAppender or SocketAppender configurations. The
+only Advertiser plugin provided is "multicastdns".
+
+|dest
+|Either "err" for stderr, "out" for stdout, a file path, or a URL.
+
+|monitorInterval
+|The minimum amount of time, in seconds, that must
+elapse before the file configuration is checked for changes.
+
+|name
+|The name of the configuration.
+
+|schema
+|Identifies the location for the classloader to located the XML
+Schema to use to validate the configuration. Only valid when strict is
+set to true. If not set no schema validation will take place.
+
+|shutdownHook
+|Specifies whether or not Log4j should automatically
+shutdown when the JVM shuts down. The shutdown hook is enabled by
+default but may be disabled by setting this attribute to "disable"
+
+|shutdownTimeout
+|Specifies how many milliseconds appenders and
+background tasks will get to shutdown when the JVM shuts down. Default
+is zero which mean that each appender uses its default timeout, and
+don't wait for background tasks. Not all appenders will honor this, it
+is a hint and not an absolute guarantee that the shutdown procedure will
+not take longer. Setting this too low increase the risk of losing
+outstanding log events not yet written to the final destination. See
+link:../log4j-core/target/site/apidocs/org/apache/logging/log4j/core/LoggerContext.html$%7Besc.hash%7Dstop(long,%20java.util.concurrent.TimeUnit)[LoggerContext.stop(long,
+java.util.concurrent.TimeUnit)]. (Not used if `shutdownHook` is set to
+"disable".)
+
+|status
+|The level of internal Log4j events that should be logged to the console.
+Valid values for this attribute are "off", "trace", "debug", "info", "warn",
+"error", "fatal", and "all". Log4j will log details about initialization,
+rollover and other internal actions to the status logger. Setting
+`status="trace"` is one of the first tools available to you if you need
+to troubleshoot log4j.
+
+(Alternatively, setting system property `log4j2.debug` will also print
+internal Log4j2 logging to the console, including internal logging that
+took place before the configuration file was found.)
+
+|strict
+|Enables the use of the strict XML format. Not supported in JSON
+configurations.
+
+|verbose
+|Enables diagnostic information while loading plugins.
+|===
+
+[[XML]]
+=== Configuration with XML
+
+Log4j can be configured using two XML flavors; concise and strict.
+
+=== Concise Syntax
+
+The concise format makes configuration very easy as the element names match
+the components they represent however it cannot be validated with an XML
+schema. For example, the ConsoleAppender is configured by declaring an
+XML element named Console under its parent appenders element. However,
+element and attribute names are not case sensitive. In addition,
+attributes can either be specified as an XML attribute or as an XML
+element that has no attributes and has a text value. So
+
+[source,xml]
+----
+<PatternLayout pattern="%m%n"/>
+----
+
+and
+
+[source,xml]
+----
+<PatternLayout>
+  <Pattern>%m%n</Pattern>
+</PatternLayout>
+----
+
+are equivalent.
+
+The file below represents the structure of an XML configuration, but
+note that the elements in italics below represent the concise element
+names that would appear in their place.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>;
+<Configuration>
+  <Properties>
+    <Property name="name1">value</property>
+    <Property name="name2" value="value2"/>
+  </Properties>
+  <filter  ... />
+  <Appenders>
+    <appender ... >
+      <filter  ... />
+    </appender>
+    ...
+  </Appenders>
+  <Loggers>
+    <Logger name="name1">
+      <filter  ... />
+    </Logger>
+    ...
+    <Root level="level">
+      <AppenderRef ref="name"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+See the many examples on this page for sample appender, filter and
+logger declarations.
+
+=== Strict XML
+
+In addition to the concise XML format above, Log4j allows configurations
+to be specified in a more "normal" XML manner that can be validated
+using an XML Schema. This is accomplished by replacing the friendly
+element names above with their object type as shown below. For example,
+instead of the ConsoleAppender being configured using an element named
+Console it is instead configured as an appender element with a type
+attribute containing "Console".
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Properties>
+    <Property name="name1">value</property>
+    <Property name="name2" value="value2"/>
+  </Properties>
+  <Filter type="type" ... />
+  <Appenders>
+    <Appender type="type" name="name">
+      <Filter type="type" ... />
+    </Appender>
+    ...
+  </Appenders>
+  <Loggers>
+    <Logger name="name1">
+      <Filter type="type" ... />
+    </Logger>
+    ...
+    <Root level="level">
+      <AppenderRef ref="name"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+Below is a sample configuration using the strict format.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" strict="true" name="XMLConfigTest"
+               packages="org.apache.logging.log4j.test">
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
+  <Filter type="ThresholdFilter" level="trace"/>
+
+  <Appenders>
+    <Appender type="Console" name="STDOUT">
+      <Layout type="PatternLayout" pattern="%m MDC%X%n"/>
+      <Filters>
+        <Filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
+      </Filters>
+    </Appender>
+    <Appender type="Console" name="FLOW">
+      <Layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/><!-- class and line number -->
+      <Filters>
+        <Filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+        <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
+      </Filters>
+    </Appender>
+    <Appender type="File" name="File" fileName="${filename}">
+      <Layout type="PatternLayout">
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+      </Layout>
+    </Appender>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+      <Filter type="ThreadContextMapFilter">
+        <KeyValuePair key="test" value="123"/>
+      </Filter>
+      <AppenderRef ref="STDOUT"/>
+    </Logger>
+
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <AppenderRef ref="File"/>
+    </Logger>
+
+    <Root level="trace">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>
+----
+
+[#JSON]
+=== Configuration with JSON
+
+In addition to XML, Log4j can be configured using JSON. The JSON format
+is very similar to the concise XML format. Each key represents the name
+of a plugin and the key/value pairs associated with it are its
+attributes. Where a key contains more than a simple value it itself will
+be a subordinate plugin. In the example below, ThresholdFilter, Console,
+and PatternLayout are all plugins while the Console plugin will be
+assigned a value of STDOUT for its name attribute and the
+ThresholdFilter will be assigned a level of debug.
+
+[source,json]
+----
+{ "configuration": { "status": "error", "name": "RoutingTest",
+                     "packages": "org.apache.logging.log4j.test",
+      "properties": {
+        "property": { "name": "filename",
+                      "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
+      },
+    "ThresholdFilter": { "level": "debug" },
+    "appenders": {
+      "Console": { "name": "STDOUT",
+        "PatternLayout": { "pattern": "%m%n" },
+        "ThresholdFilter": { "level": "debug" }
+      },
+      "Routing": { "name": "Routing",
+        "Routes": { "pattern": "$${sd:type}",
+          "Route": [
+            {
+              "RollingFile": {
+                "name": "Rolling-${sd:type}", "fileName": "${filename}",
+                "filePattern": "target/rolling1/test1-${sd:type}.%i.log.gz",
+                "PatternLayout": {"pattern": "%d %p %c{1.} [%t] %m%n"},
+                "SizeBasedTriggeringPolicy": { "size": "500" }
+              }
+            },
+            { "AppenderRef": "STDOUT", "key": "Audit"}
+          ]
+        }
+      }
+    },
+    "loggers": {
+      "logger": { "name": "EventLogger", "level": "info", "additivity": "false",
+                  "AppenderRef": { "ref": "Routing" }},
+      "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
+    }
+  }
+}
+----
+
+Note that in the RoutingAppender the Route element has been declared as
+an array. This is valid because each array element will be a Route
+component. This won't work for elements such as appenders and filters,
+where each element has a different name in the concise format. Appenders
+and filters can be defined as array elements if each appender or filter
+declares an attribute named "type" that contains the type of the
+appender. The following example illustrates this as well as how to
+declare multiple loggers as an array.
+
+[source,json]
+----
+{ "configuration": { "status": "debug", "name": "RoutingTest",
+                      "packages": "org.apache.logging.log4j.test",
+      "properties": {
+        "property": { "name": "filename",
+                      "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
+      },
+    "ThresholdFilter": { "level": "debug" },
+    "appenders": {
+      "appender": [
+         { "type": "Console", "name": "STDOUT", "PatternLayout": { "pattern": "%m%n" }, "ThresholdFilter": { "level": "debug" }},
+         { "type": "Routing",  "name": "Routing",
+          "Routes": { "pattern": "$${sd:type}",
+            "Route": [
+              {
+                "RollingFile": {
+                  "name": "Rolling-${sd:type}", "fileName": "${filename}",
+                  "filePattern": "target/rolling1/test1-${sd:type}.%i.log.gz",
+                  "PatternLayout": {"pattern": "%d %p %c{1.} [%t] %m%n"},
+                  "SizeBasedTriggeringPolicy": { "size": "500" }
+                }
+              },
+              { "AppenderRef": "STDOUT", "key": "Audit"}
+            ]
+          }
+        }
+      ]
+    },
+    "loggers": {
+      "logger": [
+        { "name": "EventLogger", "level": "info", "additivity": "false",
+          "AppenderRef": { "ref": "Routing" }},
+        { "name": "com.foo.bar", "level": "error", "additivity": "false",
+          "AppenderRef": { "ref": "STDOUT" }}
+      ],
+      "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
+    }
+  }
+}
+----
+
+Additional link:../runtime-dependencies.html[runtime dependencies] are
+required for using JSON configuration files.
+
+[#YAML]
+=== Configuration with YAML
+
+Log4j also supports using YAML for configuration files. The structure
+follows the same pattern as both the XML and YAML configuration formats.
+For example:
+
+[source,yaml]
+----
+Configuration:
+  status: warn
+  name: YAMLConfigTest
+  properties:
+    property:
+      name: filename
+      value: target/test-yaml.log
+  thresholdFilter:
+    level: debug
+  appenders:
+    Console:
+      name: STDOUT
+      target: SYSTEM_OUT
+      PatternLayout:
+        Pattern: "%m%n"
+    File:
+      name: File
+      fileName: ${filename}
+      PatternLayout:
+        Pattern: "%d %p %C{1.} [%t] %m%n"
+      Filters:
+        ThresholdFilter:
+          level: error
+
+  Loggers:
+    logger:
+      -
+        name: org.apache.logging.log4j.test1
+        level: debug
+        additivity: false
+        ThreadContextMapFilter:
+          KeyValuePair:
+            key: test
+            value: 123
+        AppenderRef:
+          ref: STDOUT
+      -
+        name: org.apache.logging.log4j.test2
+        level: debug
+        additivity: false
+        AppenderRef:
+          ref: File
+    Root:
+      level: error
+      AppenderRef:
+        ref: STDOUT
+          
+----
+
+Additional link:../runtime-dependencies.html[runtime dependencies] are
+required for using YAML configuration files.
+
+[#Properties]
+=== Configuration with Properties
+
+As of version 2.4, Log4j now supports configuration via properties
+files. Note that the property syntax is NOT the same as the syntax used
+in Log4j 1. Like the XML and JSON configurations, properties
+configurations define the configuration in terms of plugins and
+attributes to the plugins.
+
+Prior to version 2.6, the properties configuration requires that you
+list the identifiers of the appenders, filters and loggers, in a comma
+separated list in properties with those names. Each of those components
+will then be expected to be defined in sets of properties that begin
+with _component.<.identifier>._. The identifier does not have to match
+the name of the component being defined but must uniquely identify all
+the attributes and subcomponents that are part of the component. If the
+list of identifiers is not present the identifier must not contain a '.'.
+Each individual component MUST have a "type" attribute specified that
+identifies the component's Plugin type.
+
+As of version 2.6, this list of identifiers is no longer required as
+names are inferred upon first usage, however if you wish to use more
+complex identifies you must still use the list. If the list is present
+it will be used.
+
+Unlike the base components, when creating subcomponents you cannot
+specify an element containing a list of identifiers. Instead, you must
+define the wrapper element with its type as is shown in the policies
+definition in the rolling file appender below. You then define each of
+the subcomponents below that wrapper element, as the
+TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined
+below.
+
+As of version 2.17.2, `rootLogger` and `logger._key_` properties can be specified to set the
+level and zero or more appender refs to create for that logger. The level and appender refs are
+separated by comma `,` characters with optional whitespace surrounding the comma. The
+following example demonstrates how the shorthand is expanded when reading properties configurations.
+
+[source,properties]
+----
+appender.stdout.type = Console
+# ... other appender properties
+appender.file.type = File
+# ... other appender properties
+logger.app = INFO, stdout, file
+logger.app.name = com.example.app
+
+# is equivalent to:
+# appender.stdout.type = Console
+# appender.stdout.name = stdout
+# ...
+appender.file.type = File
+appender.file.name = file
+# ...
+logger.app.name = com.example.app
+logger.app.level = INFO
+logger.app.appenderRef.$1.ref = stdout
+logger.app.appenderRef.$2.ref = file
+----
+
+Properties configuration files support the advertiser, monitorInterval,
+name, packages, shutdownHook, shutdownTimeout, status, verbose, and dest
+attributes. See link:#ConfigurationSyntax[Configuration Syntax] for the
+definitions of these attributes.
+
+[source,properties]
+----
+status = error
+dest = err
+name = PropertiesConfig
+
+property.filename = target/rolling/rollingtest.log
+
+filter.threshold.type = ThresholdFilter
+filter.threshold.level = debug
+
+appender.console.type = Console
+appender.console.name = STDOUT
+appender.console.layout.type = PatternLayout
+appender.console.layout.pattern = %m%n
+appender.console.filter.threshold.type = ThresholdFilter
+appender.console.filter.threshold.level = error
+
+appender.rolling.type = RollingFile
+appender.rolling.name = RollingFile
+appender.rolling.fileName = ${filename}
+appender.rolling.filePattern = target/rolling2/test1-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz
+appender.rolling.layout.type = PatternLayout
+appender.rolling.layout.pattern = %d %p %C{1.} [%t] %m%n
+appender.rolling.policies.type = Policies
+appender.rolling.policies.time.type = TimeBasedTriggeringPolicy
+appender.rolling.policies.time.interval = 2
+appender.rolling.policies.time.modulate = true
+appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
+appender.rolling.policies.size.size=100MB
+appender.rolling.strategy.type = DefaultRolloverStrategy
+appender.rolling.strategy.max = 5
+
+logger.rolling.name = com.example.my.app
+logger.rolling.level = debug
+logger.rolling.additivity = false
+logger.rolling.appenderRef.rolling.ref = RollingFile
+
+rootLogger.level = info
+rootLogger.appenderRef.stdout.ref = STDOUT
+          
+----
+
+
+[#Loggers]
+=== Configuring Loggers
+
+An understanding of how loggers work in Log4j is critical before trying
+to configure them. Please reference the Log4j
+link:architecture.html[architecture] if more information is required.
+Trying to configure Log4j without understanding those concepts will lead
+to frustration.
+
+A LoggerConfig is configured using the `logger` element. The `logger`
+element must have a name attribute specified, will usually have a level
+attribute specified and may also have an additivity attribute specified.
+The level may be configured with one of TRACE, DEBUG, INFO, WARN, ERROR,
+ALL or OFF. If no level is specified it will default to ERROR. The
+additivity attribute may be assigned a value of true or false. If the
+attribute is omitted the default value of true will be used.
+
+Capturing location information (the class name, file name, method name, and line number of the caller)
+can be slow. Log4j tries to optimize this by reducing the size of the stack that must be traversed
+to find the caller of the logging method. It does this by determining if any component that might
+be accessed requires location information. This can cause performance issues if a logger is configured
+at a level like trace or debug with the expectation that most logs will be filtered on an Appender
+reference or Appender as Log4j will calculate the location information even though the log event
+is going to be discarded. To disable this behavior the `includeLocation` attribute
+can be set to false on the LoggerConfig. This will cause Log4j to defer calculating the location
+information until absolutely necessary.
+
+A LoggerConfig (including the root LoggerConfig) can be configured with
+properties that will be added to the properties copied from the
+ThreadContextMap. These properties can be referenced from Appenders,
+Filters, Layouts, etc just as if they were part of the ThreadContext
+Map. The properties can contain variables that will be resolved either
+when the configuration is parsed or dynamically when each event is
+logged. See link:#PropertySubstitution[Property Substitution] for more
+information on using variables.
+
+The LoggerConfig may also be configured with one or more AppenderRef
+elements. Each appender referenced will become associated with the
+specified LoggerConfig. If multiple appenders are configured on the
+LoggerConfig each of them be called when processing logging events.
+
+*_Every configuration must have a root logger_*. If one is not
+configured the default root LoggerConfig, which has a level of ERROR and
+has a Console appender attached, will be used. The main differences
+between the root logger and other loggers are
+
+1.  The root logger does not have a name attribute.
+2.  The root logger does not support the additivity attribute since it
+has no parent.
+
+[#Appenders]
+=== Configuring Appenders
+
+An appender is configured either using the specific appender plugin's
+name or with an appender element and the type attribute containing the
+appender plugin's name. In addition each appender must have a name
+attribute specified with a value that is unique within the set of
+appenders. The name will be used by loggers to reference the appender as
+described in the previous section.
+
+Most appenders also support a layout to be configured (which again may
+be specified either using the specific Layout plugin's name as the
+element or with "layout" as the element name along with a type attribute
+that contains the layout plugin's name. The various appenders will
+contain other attributes or elements that are required for them to
+function properly.
+
+[#Filters]
+=== Configuring Filters
+
+Log4j allows a filter to be specified in any of 4 places:
+
+1.  At the same level as the appenders, loggers and properties elements.
+These filters can accept or reject events before they have been passed
+to a LoggerConfig.
+2.  In a logger element. These filters can accept or reject events for
+specific loggers.
+3.  In an appender element. These filters can prevent or cause events to
+be processed by the appender.
+4.  In an appender reference element. These filters are used to
+determine if a Logger should route the event to an appender.
+
+Although only a single `filter` element can be configured, that element
+may be the `filters` element which represents the CompositeFilter. The
+`filters` element allows any number of `filter` elements to be
+configured within it. The following example shows how multiple filters
+can be configured on the ConsoleAppender.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
+  <ThresholdFilter level="trace"/>
+
+  <Appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m MDC%X%n"/>
+    </Console>
+    <Console name="FLOW">
+      <!-- this pattern outputs class name and line number -->
+      <PatternLayout pattern="%C{1}.%M %m %ex%n"/>
+      <filters>
+        <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
+      </filters>
+    </Console>
+    <File name="File" fileName="${filename}">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+      <ThreadContextMapFilter>
+        <KeyValuePair key="test" value="123"/>
+      </ThreadContextMapFilter>
+      <AppenderRef ref="STDOUT"/>
+    </Logger>
+
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <Property name="user">${sys:user.name}</Property>
+      <AppenderRef ref="File">
+        <ThreadContextMapFilter>
+          <KeyValuePair key="test" value="123"/>
+        </ThreadContextMapFilter>
+      </AppenderRef>
+      <AppenderRef ref="STDOUT" level="error"/>
+    </Logger>
+
+    <Root level="trace">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>
+----
+
+[#PropertySubstitution]
+== Property Substitution
+
+Log4j 2 supports the ability to specify tokens in the configuration as
+references to properties defined elsewhere. Some of these properties
+will be resolved when the configuration file is interpreted while others
+may be passed to components where they will be evaluated at runtime. To
+accomplish this, Log4j uses variations of
+https://commons.apache.org/proper/commons-lang/[Apache Commons Lang]'s
+link:../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
+and
+link:../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`]
+classes. In a manner similar to Ant or Maven, this allows variables
+declared as `${name}` to be resolved using properties declared in the
+configuration itself. For example, the following example shows the
+filename for the rolling file appender being declared as a property.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+  <Properties>
+    <Property name="filename">target/rolling1/rollingtest-$${sd:type}.log</Property>
+  </Properties>
+  <ThresholdFilter level="debug"/>
+
+  <Appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+      <ThresholdFilter level="debug"/>
+    </Console>
+    <Routing name="Routing">
+      <Routes pattern="$${sd:type}">
+        <Route>
+          <RollingFile name="Rolling-${sd:type}" fileName="${filename}"
+                       filePattern="target/rolling1/test1-${sd:type}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route ref="STDOUT" key="Audit"/>
+      </Routes>
+    </Routing>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
+      <AppenderRef ref="Routing"/>
+    </Logger>
+
+    <Root level="error">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>
+----
+
+While this is useful, there are many more places properties can
+originate from. To accommodate this, Log4j also supports the syntax
+`${prefix:name}` where the prefix identifies tells Log4j that variable
+name should be evaluated in a specific context. See the
+link:lookups.html[Lookups] manual page for more details. The contexts
+that are built in to Log4j are:
+
+[cols="1m,5"]
+|===
+|Prefix |Context
+
+              <tr>
+                <td>base64</td>
+                <td>
+                  Base64 encoded data. The format is <code>${dollar}{base64:Base64_encoded_data}</code>.
+                  For example:
+                  <code>${dollar}{base64:SGVsbG8gV29ybGQhCg==}</code> yields <code>Hello World!</code>.
+                </td>
+              </tr>
+
+|base64
+|Base64 encoded data. The format is `${base64:Base64_encoded_data}`.
+For example: `${base64:SGVsbG8gV29ybGQhCg==}` yields `Hello World!`.
+
+|bundle
+|Resource bundle. The format is `${bundle:BundleName:BundleKey}`.
+The bundle name follows package naming conventions, for example:
+`${bundle:com.domain.Messages:MyKey}`.
+
+|ctx
+|Thread Context Map (MDC)
+
+|date
+|Inserts the current date and/or time using the specified format
+
+|docker
+| Returns attributes from the Docker container the application is running in. The format is ${docker:some.attribute}. See xref:/log4j-docker.html[Docker documentation] for requirements and a list of available attributes.
+
+|env
+|System environment variables. The formats are `${env:ENV_NAME}` and `${env:ENV_NAME:-default_value}`.
+
+| event
+| Retrieves values from fields within the log event. The format is ${event:some.field}. See the Lookups manual page for a list of available fields.
+| java
+| Retrieves information about the Java environment the application is running in. The format is ${java:some.property}. See the Lookups manual page for a list of available properties.
+
+|jndi
+|A value set in the default JNDI Context.
+
+|jvmrunargs
+|A JVM input argument accessed through JMX, but not a main argument; see
+https://docs.oracle.com/javase/6/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--[RuntimeMXBean.getInputArguments()].
+Not available on Android.
+
+| k8s
+| Returns attributes from the Kubernetes environment the application is running in. The format is ${k8s:some.attribute}. See the Lookups manual page for a list of available attributes.
+
+|log4j
+|Log4j configuration properties. The expressions
+`${log4j:configLocation}` and `${log4j:configParentLocation}`
+respectively provide the absolute path to the log4j configuration file
+and its parent folder.
+
+| lower
+| Converts the passed in argument to lower case (usually used with nested lookups). The format is ${lower:argument}.
+
+|main
+|A value set with
+../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments-java.lang.String:A-[MapLookup.setMainArguments(String[])]
+
+|map
+|A value from a MapMessage
+
+| marker
+| Allows use of markers in configurations. The formats are ${marker:} and ${marker:some.name}. See the Lookups manual page for further details.
+
+|sd
+|A value from a StructuredDataMessage. The key "id" will return the
+name of the StructuredDataId without the enterprise number. The key
+"type" will return the message type. Other keys will retrieve individual
+elements from the Map.
+
+| spring
+| Returns values of Spring properties from the Spring configuration. The format is ${spring:some.property}. See the Lookups manual page for requirements and details.
+
+|sys
+|System properties. The formats are `${sys:some.property}` and
+`${sys:some.property:-default_value}`.
+
+| upper
+| Converts the passed in argument to upper case (usually used with nested lookups). The format is ${upper:argument}.
+| web
+| Returns values of variables associated with the Servlet Context. The format is ${spring:some.key}. See the Lookups manual page for a list of available keys.
+|===
+
+[#DefaultProperties]
+== Default Properties
+A default property map can be declared in the configuration file by placing a Properties
+element directly after the Configuration element and before any Loggers, Filters,
+Appenders, etc. are declared. If the value cannot be located in the specified lookup the
+value in the default property map will be used. The default map is pre-populated with a value
+for "hostName" that is the current system's host name or IP address and
+the "contextName" with is the value of the current logging context. See many places
+a Properties element is used in this section for examples.
+
+Default properties may also be specified in the Lookup by using the syntax `${lookupName:key:-defaultValue}`.
+In some cases the key might contain a leading '-'. When this is the case an escape character must be
+included, such as ``${main:\--file:-app.properties}`. This would use the
+`MainMapLookup` for a key named `--file`. If the key is not found then
+<code>app.properties</code> would be used as the default value.
+
+[#EnablingMessagePatternLookups]
+== Enabling Message Pattern Lookups
+A message is processed (by default) without using lookups, for example if you defined
+`<Property name="foo.bar">FOO_BAR</Property>`, then `logger.info("${foo.bar}")` will output `${foo.bar}` instead of `FOO_BAR`.
+You could enable message pattern lookups by defining the message pattern using %m{lookups}.
+
+[#RuntimeLookup]
+== Lookup Variables with Multiple Leading '$' Characters
+
+An interesting feature of StrLookup processing is that when a variable
+reference is declared with multiple leading '$' characters each time the
+variable is resolved the leading '$' is simply removed. In the previous
+example the "Routes" element is capable of resolving the variable at
+runtime. To allow this the prefix value is specified as a variable with
+two leading '$' characters. When the configuration file is first
+processed the first '$' character is simply removed. Thus, when the
+Routes element is evaluated at runtime it is the variable declaration
+"$\{sd:type}" which causes the event to be inspected for a
+StructuredDataMessage and if one is present the value of its type
+attribute to be used as the routing key. Not all elements support
+resolving variables at runtime. Components that do will specifically
+call that out in their documentation.
+
+If no value is found for the key in the Lookup associated with the
+prefix then the value associated with the key in the properties
+declaration in the configuration file will be used. If no value is found
+the variable declaration will be returned as the value. Default values
+may be declared in the configuration by doing:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Properties>
+    <Property name="type">Audit</property>
+  </Properties>
+  ...
+</Configuration>
+----
+
+_As a footnote, it is worth pointing out that the variables in the
+RollingFile appender declaration will also not be evaluated when the
+configuration is processed. This is simply because the resolution of the
+whole RollingFile element is deferred until a match occurs. See
+link:appenders.html#RoutingAppender[RoutingAppender] for more
+information._
+
+[#Scripts]
+== Scripts
+
+Log4j provides support for
+https://docs.oracle.com/javase/6/docs/technotes/guides/scripting/[JSR
+223] scripting languages to be used in some of its components. Any
+language that provides support for the JSR 223 scripting engine may be
+used. A list of the languages and bindings for them can be found at the
+https://java.net/projects/scripting/sources/svn/show/trunk/engines[Scripting
+Engine] web site. However, some of the languages listed there, such as
+JavaScript, Groovy and Beanshell, directly support the JSR 223 scripting
+framework and only require that the jars for that language be installed.
+
+As of Log4j 2.17.2 the languages to be supported must be specified as a comma separated list in the
+`log4j2.Script.enableLanguages` system property.
+
+The components that support using scripts do so by allowing a `<script>`,
+`<scriptFile>`, or `<scriptRef>` element to be configured on them. The
+script element contains a name for the script, the language of the
+script, and the script text. The scriptFile element contains the name of
+the script, its location, its language, its charset, and whether the
+file should be watched for changes. The scriptRef element contains the
+name of the script that is defined in the `<scripts>` configuration
+element. The name of the script is used to store the script, along with
+its ScriptEngine, so it can quickly be located each time the script
+needs to be run. While the name is not required, providing it will help
+in debugging problems when the script is running. The language must be
+provided on the script element and must specify one of the language
+names that appear in the Configuration status log as described in the
+next section. If the language is not specified on the scriptFile element
+the language will be determined by the file extension of the script
+path. If file monitoring is requested it will only be enabled if a
+non-zero monitorInterval is specified on the configuration element. That
+interval will be used to check for changes in the file.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="RoutingTest">
+  <Scripts>
+    <Script name="selector" language="javascript"><![CDATA[
+            var result;
+            if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+                result = "NoLocation";
+            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                result = "Flow";
+            }
+            result;
+            ]]></Script>
+    <ScriptFile name="groovy.filter" path="scripts/filter.groovy"/>
+  </Scripts>
+
+  <Appenders>
+    <Console name="STDOUT">
+      <ScriptPatternSelector defaultPattern="%d %p %m%n">
+        <ScriptRef ref="selector"/>
+          <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
+          <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+      </ScriptPatternSelector>
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <Script name="GroovyFilter" language="groovy"><![CDATA[
+            if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                return true;
+            } else if (logEvent.getContextMap().containsKey("UserId")) {
+                return true;
+            }
+            return false;
+            ]]>
+          </Script>
+        </ScriptFilter>
+      <AppenderRef ref="STDOUT"/>
+    </Logger>
+
+    <Root level="error">
+      <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+        <ScriptRef ref="groovy.filter"/>
+      </ScriptFilter>
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>
+----
+
+If the status attribute on the Configuration element is set to DEBUG the
+list of script engines currently installed and their attributes will be
+listed. Although some engines may say they are not thread safe, Log4j
+takes steps to insure that the scripts will run in a thread-safe manner
+if the engine advertises that it is not thread safe.
+
+....
+2015-09-27 16:13:22,925 main DEBUG Installed script engines
+2015-09-27 16:13:22,963 main DEBUG AppleScriptEngine Version: 1.1, Language: AppleScript, Threading: Not Thread Safe,
+            Compile: false, Names: {AppleScriptEngine, AppleScript, OSA}
+2015-09-27 16:13:22,983 main DEBUG Groovy Scripting Engine Version: 2.0, Language: Groovy, Threading: MULTITHREADED,
+            Compile: true, Names: {groovy, Groovy}
+2015-09-27 16:13:23,030 main DEBUG BeanShell Engine Version: 1.0, Language: BeanShell, Threading: MULTITHREADED,
+            Compile: true, Names: {beanshell, bsh, java}
+2015-09-27 16:13:23,039 main DEBUG Mozilla Rhino Version: 1.7 release 3 PRERELEASE, Language: ECMAScript, Threading: MULTITHREADED,
+            Compile: true, Names: {js, rhino, JavaScript, javascript, ECMAScript, ecmascript}
+....
+
+When the scripts are executed they will be provided with a set of
+variables that should allow them to accomplish whatever task they are
+expected to perform. See the documentation for the individual components
+for the list of variables that are available to the script.
+
+The components that support scripting expect a return value to be passed
+back to the calling Java code. This is not a problem for several of the
+scripting languages, but Javascript does not allow a return statement
+unless it is within a function. However, Javascript will return the
+value of the last statement executed in the script. As a consequence,
+code such as that shown below will result in the desired behavior.
+
+[source,javascript]
+----
+var result;
+if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+    result = "NoLocation";
+} else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+    result = "Flow";
+}
+result;
+----
+
+=== A special note on Beanshell
+
+JSR 223 scripting engines are supposed to identify that they support the
+Compilable interface if they support compiling their scripts. Beanshell
+does this. However, whenever the compile method is called it throws an
+Error (not an Exception). Log4j catches this but will log the warning
+shown below for each Beanshell script when it tries to compile them. All
+Beanshell scripts will then be interpreted on each execution.
+
+....
+2015-09-27 16:13:23,095 main DEBUG Script BeanShellSelector is compilable
+2015-09-27 16:13:23,096 main WARN Error compiling script java.lang.Error: unimplemented
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:175)
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:154)
+            at org.apache.logging.log4j.core.script.ScriptManager$MainScriptRunner.<init>(ScriptManager.java:125)
+            at org.apache.logging.log4j.core.script.ScriptManager.addScript(ScriptManager.java:94)
+          
+....
+
+[#XInclude]
+== XInclude
+
+XML configuration files can include other files with
+http://www.xml.com/lpt/a/1009[XInclude]. Here is an example log4j2.xml
+file that includes two other files:
+
+.log4j2.xml
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xi="http://www.w3.org/2001/XInclude"
+               status="warn" name="XIncludeDemo">
+  <properties>
+    <property name="filename">xinclude-demo.log</property>
+  </properties>
+  <ThresholdFilter level="debug"/>
+  <xi:include href="log4j-xinclude-appenders.xml" />
+  <xi:include href="log4j-xinclude-loggers.xml" />
+</configuration>
+----
+
+.log4j-xinclude-appenders.xml
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<appenders>
+  <Console name="STDOUT">
+    <PatternLayout pattern="%m%n" />
+  </Console>
+  <File name="File" fileName="${filename}" bufferedIO="true" immediateFlush="true">
+    <PatternLayout>
+      <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+    </PatternLayout>
+  </File>
+</appenders>
+----
+
+.log4j-xinclude-loggers.xml
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<loggers>
+  <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+    <ThreadContextMapFilter>
+      <KeyValuePair key="test" value="123" />
+    </ThreadContextMapFilter>
+    <AppenderRef ref="STDOUT" />
+  </logger>
+
+  <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+    <AppenderRef ref="File" />
+  </logger>
+
+  <root level="error">
+    <AppenderRef ref="STDOUT" />
+  </root>
+</loggers>
+----
+
+[#CompositeConfiguration]
+== Composite Configuration
+
+Log4j allows multiple configuration files to be used by specifying them
+as a list of comma separated file paths on log4j2.configurationFile or,
+when using URLs, by adding secondary configuration locations as query
+parameters named "override". The merge logic can be controlled by specifying
+a class that implements the MergeStrategy interface on the log4j.mergeStrategy
+property. The default merge strategy will merge the files using the following rules:
+
+1.  The global configuration attributes are aggregated with those in
+later configurations replacing those in previous configurations, with
+the exception that the highest status level and the lowest
+monitorInterval greater than 0 will be used.
+2.  Properties from all configurations are aggregated. Duplicate
+properties replace those in previous configurations.
+3.  Filters are aggregated under a CompositeFilter if more than one
+Filter is defined. Since Filters are not named duplicates may be
+present.
+4.  Scripts and ScriptFile references are aggregated. Duplicate
+definitions replace those in previous configurations.
+5.  Appenders are aggregated. Appenders with the same name are replaced
+by those in later configurations, including all of the Appender's
+subcomponents.
+6.  Loggers are all aggregated. Logger attributes are individually
+merged with duplicates being replaced by those in later configurations.
+Appender references on a Logger are aggregated with duplicates being
+replaced by those in later configurations. Filters on a Logger are
+aggregated under a CompositeFilter if more than one Filter is defined.
+Since Filters are not named duplicates may be present. Filters under
+Appender references included or discarded depending on whether their
+parent Appender reference is kept or discarded.
+
+[#StatusMessages]
+== Status Messages
+
+****
+*Troubleshooting tip for the impatient:*
+
+From log4j-2.9 onward, log4j2 will print all internal logging to the
+console if system property `log4j2.debug` is either defined empty or its value
+equals to `true` (ignoring case).
+
+Prior to log4j-2.9, there are two places where internal logging can be
+controlled:
+
+* Before a configuration is found, status logger level can be controlled
+with system property
+`org.apache.logging.log4j.simplelog.StatusLogger.level`.
+* After a configuration is found, status logger level can be controlled
+in the configuration file with the "status" attribute, for example:
+`<Configuration status="trace">`.
+****
+
+Just as it is desirable to be able to diagnose problems in applications,
+it is frequently necessary to be able to diagnose problems in the
+logging configuration or in the configured components. Since logging has
+not been configured, "normal" logging cannot be used during
+initialization. In addition, normal logging within appenders could
+create infinite recursion which Log4j will detect and cause the
+recursive events to be ignored. To accomodate this need, the Log4j 2 API
+includes a
+link:../log4j-api/apidocs/org/apache/logging/log4j/status/StatusLogger.html[`StatusLogger`].
+Components declare an instance of the StatusLogger similar to:
+
+[source,java]
+----
+protected final static Logger logger = StatusLogger.getLogger();
+----
+
+Since StatusLogger implements the Log4j 2 API's Logger interface, all
+the normal Logger methods may be used.
+
+When configuring Log4j it is sometimes necessary to view the generated
+status events. This can be accomplished by adding the status attribute
+to the configuration element or a default value can be provided by
+setting the "Log4jDefaultStatusLevel" system property. Valid values of
+the status attribute are "trace", "debug", "info", "warn", "error" and
+"fatal". The following configuration has the status attribute set to
+debug.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="RoutingTest">
+  <Properties>
+    <Property name="filename">target/rolling1/rollingtest-$${sd:type}.log</Property>
+  </Properties>
+  <ThresholdFilter level="debug"/>
+
+  <Appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+      <ThresholdFilter level="debug"/>
+    </Console>
+    <Routing name="Routing">
+      <Routes pattern="$${sd:type}">
+        <Route>
+          <RollingFile name="Rolling-${sd:type}" fileName="${filename}"
+                       filePattern="target/rolling1/test1-${sd:type}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route ref="STDOUT" key="Audit"/>
+      </Routes>
+    </Routing>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
+      <AppenderRef ref="Routing"/>
+    </Logger>
+
+    <Root level="error">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>
+----
+
+During startup this configuration produces:
+
+....
+2011-11-23 17:08:00,769 DEBUG Generated plugins in 0.003374000 seconds
+2011-11-23 17:08:00,789 DEBUG Calling createProperty on class org.apache.logging.log4j.core.config.Property for element property with params(name="filename", value="target/rolling1/rollingtest-${sd:type}.log")
+2011-11-23 17:08:00,792 DEBUG Calling configureSubstitutor on class org.apache.logging.log4j.core.config.PropertiesPlugin for element properties with params(properties={filename=target/rolling1/rollingtest-${sd:type}.log})
+2011-11-23 17:08:00,794 DEBUG Generated plugins in 0.001362000 seconds
+2011-11-23 17:08:00,797 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
+2011-11-23 17:08:00,800 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%m%n", Configuration(RoutingTest), null, charset="null")
+2011-11-23 17:08:00,802 DEBUG Generated plugins in 0.001349000 seconds
+2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null, target="null", name="STDOUT", ignoreExceptions="null")
+2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
+2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="null", key="null", Node=Route)
+2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="STDOUT", key="Audit", Node=Route)
+2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit')})
+2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit')}), Configuration(RoutingTest), null, null)
+2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.AppendersPlugin for element appenders with params(appenders={STDOUT, Routing})
+2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="Routing")
+2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", AppenderRef={Routing}, null)
+2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="STDOUT")
+2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig$RootLogger for element root with params(additivity="null", level="error", AppenderRef={STDOUT}, null)
+2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.config.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
+2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
+2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%d %p %c{1.} [%t] %m%n", Configuration(RoutingTest), null, charset="null")
+2011-11-23 17:08:00,849 DEBUG Calling createPolicy on class org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy for element SizeBasedTriggeringPolicy with params(size="500")
+2011-11-23 17:08:00,851 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.RollingFileAppender for element RollingFile with params(fileName="target/rolling1/rollingtest-Unknown.log", filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown", bufferedIO="null", immediateFlush="null", SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null, PatternLayout(%d %p %c{1.} [%t] %m%n), null, ignoreExceptions="null")
+2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
+2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.Launcher$AppClassLoader@37b90b39
+2011-11-23 17:08:00,890 DEBUG Generated plugins in 0.001355000 seconds
+2011-11-23 17:08:00,959 DEBUG Generated plugins in 0.001239000 seconds
+2011-11-23 17:08:00,961 DEBUG Generated plugins in 0.001197000 seconds
+2011-11-23 17:08:00,965 WARN No Loggers were configured, using default
+2011-11-23 17:08:00,976 DEBUG Reconfiguration completed
+....
+
+If the status attribute is set to error then only error messages will be
+written to the console. This makes troubleshooting configuration errors
+possible. As an example, if the configuration above is changed to have
+the status set to error and the logger declaration is:
+
+[source,xml]
+----
+<logger name="EventLogger" level="info" additivity="false">
+  <AppenderRef ref="Routng"/>
+</logger>
+----
+
+the following error message will be produced.
+
+....
+2011-11-24 23:21:25,517 ERROR Unable to locate appender Routng for logger EventLogger
+....
+
+Applications may wish to direct the status output to some other
+destination. This can be accomplished by setting the dest attribute to
+either "err" to send the output to stderr or to a file location or URL.
+This can also be done by insuring the configured status is set to OFF
+and then configuring the application programmatically such as:
+
+[source,java]
+----
+StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
+StatusLogger.getLogger().registerListener(listener);
+----
+
+[#UnitTestingInMaven]
+== Testing in Maven
+
+Maven can run unit and functional tests during the build cycle. By
+default, any files placed in `src/test/resources` are automatically
+copied to target/test-classes and are included in the classpath during
+execution of any tests. As such, placing a log4j2-test.xml into this
+directory will cause it to be used instead of a log4j2.xml or
+log4j2.json that might be present. Thus a different log configuration
+can be used during testing than what is used in production.
+
+A second approach, which is extensively used by Log4j 2, is to set the
+log4j2.configurationFile property in the method annotated with
+@BeforeClass in the junit test class. This will allow an arbitrarily
+named file to be used during the test.
+
+A third approach, also used extensively by Log4j 2, is to use the
+`LoggerContextRule` JUnit test rule which provides additional
+convenience methods for testing. This requires adding the `log4j-core`
+`test-jar` dependency to your test scope dependencies. For example:
+
+[source,java]
+----
+public class AwesomeTest {
+    @Rule
+    public LoggerContextRule init = new LoggerContextRule("MyTestConfig.xml");
+
+    @Test
+    public void testSomeAwesomeFeature() {
+        final LoggerContext ctx = init.getLoggerContext();
+        final Logger logger = init.getLogger("org.apache.logging.log4j.my.awesome.test.logger");
+        final Configuration cfg = init.getConfiguration();
+        final ListAppender app = init.getListAppender("List");
+        logger.warn("Test message");
+        final List<LogEvent> events = app.getEvents();
+        // etc.
+    }
+}
+----
+
+
+
+== System Properties
+
+The Log4j documentation references a number of System Properties that can be used to control various aspects of Log4j 2 behavior. The table below lists these properties along with their default value and a description of what they control. Any spaces present in the property name are for visual flow and should be removed.
+
+Note that beginning in Log4j 2.10, all system property names have been normalized to follow a consistent naming scheme. While the old property names are still supported for backwards compatibility, it is recommended to update configurations to use the new style. This system is extensible and is enabled through the PropertySource interface. Additional property source classes can be added through the standard ServiceLoader mechanism in Java SE.
+
+Properties can be overridden by sources with a lower number priority (e.g.., -100 comes before 100). The following sources are all available by default:
+
+.PropertySource priorities and descriptions
+|===
+| Source | Priority | Description
+| Spring Boot Properties
+| -100
+| This property source is enabled only if the Java application uses Spring Boot and the log4j-spring module is present. It resolves properties using a Spring Environment.
+
+| System Properties
+| 0
+| All properties can be set using normal system property patterns. These have the lowest numerical priority among commonly available property sources and can override properties files or environment variables. If a log4j2.system.properties file is available on the classpath its contents are sourced into Java system properties at Log4j startup.
+
+| Environment Variables
+| 100
+| Environment variables are all prefixed with LOG4J_, are in all caps, and words are all separated by underscores. Only this naming scheme is support for environment variables as there were no old naming schemes to maintain compatibility with.
+
+| log4j2.component.properties file
+| 200
+| Including this file on the classpath can be used as an alternative to providing properties as system properties. This is the property source with highest numerical priority and can be used to provide default values that can be overridden by the system administrator.
+|===
+
+The following is a list of available global configuration properties. Note that these can only be set once per JVM process unlike configuration settings available in configuration files. The Property Name column contains the name used in properties files and system properties; Environment Variable for the equivalent environment variable; and Legacy Property Name for the pre-2.10 name.
+
+.Log4j 2 global configuration properties
+|===
+|Property Name (Legacy Property Name) |Environment Variable |Default Value |Description
+
+| log4j2.configurationFile, log4j.configurationFile)
+| LOG4J_CONFIGURATION_FILE
+|
+| Path to an Log4j 2 configuration file. May also contain a comma separated list of configuration file names.
+  May contain a URL. When specified as a URL the "override" query parameter may be used to specify additional
+  configuration file locations.
+
+| log4j.debug, log4j2.debug
+| LOG4J_DEBUG
+|
+| Log4j2 will print all internal logging to the console if system property
+<code>log4j2.debug</code> is either defined empty or its value equals to <code>true</code> (ignoring case).
+
+| log4j2.mergeStrategy, log4j.mergeStrategy
+| LOG4J_MERGE_STRATEGY
+|
+|
+    The name of the class that implements the MergeStrategy interface. If not specified
+    <code>DefaultMergeStrategy</code> will be used when creating a CompositeConfiguration..
+
+| log4j.debug, log4j2.debug
+| LOG4J_DEBUG
+|
+| Log4j2 will print all internal logging to the console if system property
+  `log4j2.debug` is either defined empty or its value equals to `true` (ignoring case).
+
+| log4j2.mergeStrategy, log4j.mergeStrategy
+| LOG4J_MERGE_STRATEGY
+|
+| The name of the class that implements the MergeStrategy interface. If not specified
+  `DefaultMergeStrategy` will be used when creating a CompositeConfiguration..
+
+| [[contextSelector]]log4j2.contextSelector
+  ([[Log4jContextSelector]]Log4jContextSelector)
+| LOG4J_CONTEXT_SELECTOR
+| ClassLoaderContextSelector
+|
+    Creates the `LoggerContext`s. An application can have one or more active LoggerContexts depending
+    on the circumstances.
+    See xref:/logsep.html[Log Separation] for more details.
+    Available context selector implementation classes:<br>
+    `org.apache.logging.log4j.core.async .AsyncLoggerContextSelector` - makes xref:/async.html[all loggers asynchronous].<br>
+    `org.apache.logging.log4j.core.async .BasicAsyncLoggerContextSelector` - makes xref:/async.html[all loggers asynchronous] using a single shared AsyncLoggerContext.<br>
+    `org.apache.logging.log4j.core.selector .BasicContextSelector` - creates a single shared LoggerContext.<br>
+    `org.apache.logging.log4j.core.selector .ClassLoaderContextSelector` - separate LoggerContexts for each web application.<br>
+    `org.apache.logging.log4j.core.selector .JndiContextSelector` - use JNDI to locate each web application's LoggerContext.<br>
+    `org.apache.logging.log4j.core.osgi .BundleContextSelector` - separate LoggerContexts for each OSGi bundle.
+
+| [[logEventFactory]]log4j2.logEventFactory
+  ([[Log4jLogEventFactory]]Log4jLogEventFactory)
+| LOG4J_LOG_EVENT_FACTORY
+| org.apache.logging.log4j.core.impl .DefaultLogEventFactory
+|
+    Factory class used by LoggerConfig to create `LogEvent` instances.
+    (Ignored when the `AsyncLoggerContextSelector` is used.)
+
+| [[loggerContextFactory]]log4j2.loggerContextFactory
+  ([[log4j2.loggerContextFactory]]log4j2.loggerContextFactory)
+| LOG4J_LOGGER_CONTEXT_FACTORY
+| org.apache.logging.log4j.simple .SimpleLoggerContextFactory
+|
+    Factory class used by LogManager to bootstrap the logging implementation.
+    The core jar provides `org.apache.logging.log4j.core
+    .impl.Log4jContextFactory`.
+
+| [[configurationFactory]]log4j2.configurationFactory
+  ([[log4j.configurationFactory]]log4j.configurationFactory)
+| LOG4J_CONFIGURATION_FACTORY
+|
+|
+    Fully specified class name of a class extending `org.apache.logging.log4j.core
+    .config.ConfigurationFactory`.
+    If specified, an instance of this class is added to the list of configuration factories.
+
+| [[configurationAllowedProtocols]]log4j2.Configuration.allowedProtocols
+  ([[log4j.configurationAllowedProtocols]]log4j.configurationAllowedProtocols)
+| LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS
+|
+|
+    A comma separated list of the protocols that may be used to load a configuration file. The default is
+    "https, file, jar". To completely prevent accessing the configuration via a URL specify a value of "_none".
+
+| [[log4j2.configurationAuthorizationEncoding]]log4j2.configurationAuthorizationEncoding
+| LOG4J_CONFIGURATION_AUTHORIZATION_ENCODING
+| UTF-8
+| The encoding used in Basic Authentication (cf. <a class="externalLink" href="https://datatracker.ietf.org/doc/html/rfc7617[RFC 7617]).
+
+| [[configurationAuthorizationProvider]]log4j2.Configuration.authorizationProvider
+  ([[log4j.configurationAuthorizationProvider]]log4j.configurationAuthorizationProvider
+| LOG4J_CONFIGURATION_AUTHORIZATION_PROVIDER
+| org.apache.logging.log4j.core.util.BasicAuthorizationProvider
+| The fully qualified class name of the AuthorizationProvider.
+
+| [[configurationPassword]]log4j2.Configuration.password
+  ([[log4j.configurationPassword]]log4j.configurationPassword
+| LOG4J_CONFIGURATION_PASSWORD
+|
+| The password required to access the remote logging configuration file.
+
+| [[configurationPasswordDecryptor]]log4j2.Configuration.passwordDecryptor
+  ([[log4j.configurationPasswordDecryptor]]log4j.configurationPasswordDecryptor
+| LOG4J_CONFIGURATION_PASSWORD_DECRYPTOR
+|
+| If the password is encrypted this class will be used to decrypt it.
+
+| [[configurationUsername]]log4j2.Configuration.username
+  ([[log4j.configurationUsername]]log4j.configurationUsername
+| LOG4J_CONFIGURATION_USERNAME
+|
+| The user name required to access the remote logging configuration file.
+
+| [[shutdownHookEnabled]]log4j2.shutdownHookEnabled
+  ([[log4j.shutdownHookEnabled]]log4j.shutdownHookEnabled)
+| LOG4J_SHUTDOWN_HOOK_ENABLED
+| true
+|
+    Overrides the global flag for whether or not a shutdown hook should be used to stop a `LoggerContext`.
+    By default, this is enabled and can be disabled on a per-configuration basis. When running with the
+    `log4j-web` module, this is automatically disabled.
+
+| [[shutdownCallbackRegistry]]log4j2.shutdownCallbackRegistry
+  ([[log4j.shutdownCallbackRegistry]]log4j.shutdownCallbackRegistry)
+| LOG4J_SHUTDOWN_CALLBACK_REGISTRY
+| org.apache.logging.log4j.core.util .DefaultShutdownCallbackRegistry
+|
+    Fully specified class name of a class implementing
+    xref:/../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html" class="javadoc[ShutdownCallbackRegistry].
+    If specified, an instance of this class is used instead of `DefaultShutdownCallbackRegistry`.
+    The specified class must have a default constructor.
+
+| [[clock]]log4j2.clock
+  ([[log4j.Clock]]log4j.Clock)
+| LOG4J_CLOCK
+| SystemClock
+|
+    Implementation of the `org.apache.logging.log4j .core.util.Clock`
+    interface that is used for timestamping the log events.
+    By default, `System.currentTimeMillis` is called on every log event.
+    You can also specify a fully qualified class name of a custom class that implements the
+    `Clock` interface.
+
+| [[level]]log4j2.level
+  ([[org.apache.logging.log4j.level]]org.apache.logging.log4j.level)
+| LOG4J_LEVEL
+| ERROR
+| Log level of the default configuration. The default configuration is used if the ConfigurationFactory
+  could not successfully create a configuration (e.g. no log4j2.xml file was found).
+
+| [[disableThreadContext]]log4j2.disableThreadContext
+  (disableThreadContext)
+| LOG4J_DISABLE_THREAD_CONTEXT
+| false
+| If `true`, the ThreadContext stack and map are disabled. (May be ignored if a custom ThreadContext map is specified.)
+
+| [[disableThreadContextStack]]log4j2.disableThreadContextStack
+  (disableThreadContextStack)
+| LOG4J_DISABLE_THREAD_CONTEXT_STACK
+| false
+| If `true`, the ThreadContext stack is disabled.
+
+| [[disableThreadContextMap]]log4j2.disableThreadContextMap
+  (disableThreadContextMap)
+| LOG4J_DISABLE_THREAD_CONTEXT_MAP
+| false
+| If `true`, the ThreadContext map is disabled.
+  (May be ignored if a custom ThreadContext map is specified.)
+
+| [[log4j2.threadContextMap]]log4j2.threadContextMap
+  (log4j2.threadContextMap)
+| LOG4J_THREAD_CONTEXT_MAP
+|
+| Fully specified class name of a custom `ThreadContextMap` implementation class.
+
+| [[isThreadContextMapInheritable]]log4j2.isThreadContextMapInheritable
+  (isThreadContextMapInheritable)
+| LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE
+| false
+|
+    If `true` use a `InheritableThreadLocal` to implement the ThreadContext map.
+    Otherwise, use a plain `ThreadLocal`.
+    (May be ignored if a custom ThreadContext map is specified.)
+
+| [[contextDataInjector]]log4j2.contextDataInjector
+  ([[log4j2.ContextDataInjector]]log4j2.ContextDataInjector)
+| LOG4J_CONTEXT_DATA_INJECTOR
+|
+| Fully specified class name of a custom `ContextDataInjector` implementation class.
+
+
+| [[garbagefreeThreadContextMap]]log4j2.garbagefreeThreadContextMap
+  ([[log4j2.garbagefree.threadContextMap]]log4j2.garbagefree.threadContextMap)
+| LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP
+| false
+| Specify "true" to make the ThreadContext map garbage-free.
+
+| [[disableJmx]]log4j2.disableJmx
+  ([[log4j2.disable.jmx]]log4j2.disable.jmx)
+| LOG4J_DISABLE_JMX
+| false
+|
+    If `true`, Log4j configuration objects like LoggerContexts, Appenders, Loggers, etc.
+    will not be instrumented with MBeans and cannot be remotely monitored and managed.
+
+| [[jmxNotifyAsync]]log4j2.jmxNotifyAsync
+  ([[log4j2.jmx.notify.async]]log4j2.jmx.notify.async)
+| LOG4J_JMX_NOTIFY_ASYNC
+| false for web apps, true otherwise
+|
+    If `true`, log4j's JMX notifications are sent from a separate background thread,
+    otherwise they are sent from the caller thread.
+    If system property `log4j2.is.webapp` is `true` or the `javax.servlet.Servlet`
+    class is on the classpath, the default behaviour
+    is to use the caller thread to send JMX notifications.
+
+| [[skipJansi]]log4j2.skipJansi
+  ([[log4j.skipJansi]]log4j.skipJansi)
+| LOG4J_SKIP_JANSI
+| true
+| If `true`, the ConsoleAppender will not try to use the Jansi output stream on Windows.
+
+| [[ignoreTCL]]log4j2.ignoreTCL
+  ([[log4j.ignoreTCL]]log4j.ignoreTCL)
+| LOG4J_IGNORE_TCL
+| false
+|
+    If `true`, classes are only loaded with the default class loader.
+    Otherwise, an attempt is made to load classes with the current thread's context class loader
+    before falling back to the default class loader.
+
+| [[enableJndiContextSelector]]log4j2.enableJndiContextSelector
+| LOG4J_ENABLE_JNDI_CONTEXT_SELECTOR
+| false
+| When true, the Log4j context selector that uses the JNDI java protocol is enabled. When false, the default, they are disabled.
+
+| [[enableJndiJdbc]]log4j2.enableJndiJdbc
+| LOG4J_ENABLE_JNDI_JDBC
+| false
+| When true, a Log4j JDBC Appender configured with a `DataSource` which uses JNDI's java protocol is enabled. When false, the default, they are disabled.
+
+| [[enableJndiJms]]log4j2.enableJndiJms
+| LOG4J_ENABLE_JNDI_JMS
+| false
+| When true, a Log4j JMS Appender that uses JNDI's java protocol is enabled. When false, the default, they are disabled.
+
+| [[enableJndiLookup]]log4j2.enableJndiLookup
+| LOG4J_ENABLE_JNDI_LOOKUP
+| false
+| When true, a Log4j lookup that uses JNDI's java protocol is enabled. When false, the default, they are disabled.
+
+| [[uuidSequence]]log4j2.uuidSequence
+  ([[org.apache.logging.log4j.uuidSequence]]org.apache.logging.log4j.uuidSequence)
+| LOG4J_UUID_SEQUENCE
+| 0
+| System property that may be used to seed the UUID generation with an integer value.
+
+| [[simplelogShowContextMap]]log4j2.simplelogShowContextMap
+  ([[org.apache.logging.log4j.simplelog.showContextMap]]org.apache.logging.log4j .simplelog.showContextMap)
+| LOG4J_SIMPLELOG_SHOW_CONTEXT_MAP
+| false
+| If `true`, the full ThreadContext map is included in each SimpleLogger log message.
+
+| [[simplelogShowlogname]]log4j2.simplelogShowlogname
+  ([[org.apache.logging.log4j.simplelog.showlogname]]org.apache.logging.log4j .simplelog.showlogname)
+| LOG4J_SIMPLELOG_SHOWLOGNAME
+| false
+| If `true`, the logger name is included in each SimpleLogger log message.
+
+| [[simplelogShowShortLogname]]log4j2.simplelogShowShortLogname
+  ([[org.apache.logging.log4j.simplelog.showShortLogname]]org.apache.logging.log4j  .simplelog.showShortLogname)
+| LOG4J_SIMPLELOG_SHOW_SHORT_LOGNAME
+| true
+| If `true`, only the last component of a logger name is included in SimpleLogger log messages. (E.g., if the logger name is "mycompany.myproject.mycomponent", only "mycomponent" is logged.
+
+| [[simplelogShowdatetime]]log4j2.simplelogShowdatetime
+  ([[org.apache.logging.log4j.simplelog.showdatetime]]org.apache.logging.log4j .simplelog.showdatetime)
+| LOG4J_SIMPLELOG_SHOWDATETIME
+| false
+| If `true`, SimpleLogger log messages contain timestamp information.
+
+| [[simplelogDateTimeFormat]]log4j2.simplelogDateTimeFormat
+  ([[org.apache.logging.log4j.simplelog.dateTimeFormat]]org.apache.logging.log4j .simplelog.dateTimeFormat)
+| LOG4J_SIMPLELOG_DATE_TIME_FORMAT
+| "yyyy/MM/dd HH:mm:ss:SSS zzz"
+| Date-time format to use. Ignored if `org.apache.logging.log4j .simplelog.showdatetime` is `false`.
+
+| [[simplelogLogFile]]log4j2.simplelogLogFile
+  ([[org.apache.logging.log4j.simplelog.logFile]]org.apache.logging.log4j .simplelog.logFile)
+| LOG4J_SIMPLELOG_LOG_FILE
+| system.err
+| "system.err" (case-insensitive) logs to System.err, "system.out" (case-insensitive) logs to System.out, any other value is interpreted as a file name to save SimpleLogger messages to.
+
+| [[simplelogLevel]]log4j2.simplelogLevel
+  ([[org.apache.logging.log4j.simplelog.level]]org.apache.logging.log4j .simplelog.level)
+| LOG4J_SIMPLELOG_LEVEL
+| ERROR
+| Default level for new SimpleLogger instances.
+
+| log4j2.simplelog.&lt;loggerName&gt;.level
+  ([[org.apache.logging.log4j.simplelog.loggerNamelevel]]org.apache.logging.log4j .simplelog.&lt;loggerName&gt;.level)
+| LOG4J_SIMPLELOG_&lt;LOGGER_NAME&gt;_LEVEL
+| SimpleLogger default log level
+| Log level for a the SimpleLogger instance with the specified name.
+
+| [[simplelogStatusLoggerLevel]]log4j2.simplelogStatusLoggerLevel
+  ([[org.apache.logging.log4j.simplelog.StatusLogger.level]]org.apache.logging.log4j.simplelog .StatusLogger.level)
+| LOG4J_SIMPLELOG_STATUS_LOGGER_LEVEL
+| ERROR
+| This property is used to control the initial StatusLogger level, and can be overridden in code by calling
+  `StatusLogger.getLogger() .setLevel(someLevel)`.
+  Note that the StatusLogger level is only used to determine the status log output level
+  until a listener is registered. In practice, a listener is registered when a configuration is found,
+  and from that point onwards, status messages are only sent to the listeners (depending on their statusLevel).
+
+| [[defaultStatusLevel]]log4j2.defaultStatusLevel
+  ([[Log4jDefaultStatusLevel]]Log4jDefaultStatusLevel)
+| LOG4J_DEFAULT_STATUS_LEVEL
+| ERROR
+|
+  The StatusLogger logs events that occur in the logging system to the console.
+  During configuration, AbstractConfiguration registers a StatusConsoleListener with the StatusLogger that may
+  redirect status log events from the default console output to a file.
+  The listener also supports fine-grained filtering.
+  This system property specifies the default status log level for the listener to use if the configuration does not specify a status level.
+  Note: this property is used by the log4j-core implementation only after a configuration file has been found.
+
+| [[statusLoggerLevel]]log4j2.statusLoggerLevel
+  ([[log4j2.StatusLogger.level]]log4j2.StatusLogger.level)
+| LOG4J_STATUS_LOGGER_LEVEL
+| WARN
+|
+  The initial "listenersLevel" of the StatusLogger. If StatusLogger listeners are added, the "listenerLevel"
+  is changed to that of the most verbose listener. If any listeners are registered, the listenerLevel is
+  used to quickly determine if an interested listener exists.
+
+  By default, StatusLogger listeners are added when a configuration is found and by the JMX
+  StatusLoggerAdmin MBean. For example, if a configuration contains
+  `&lt;Configuration status="trace"&gt;`, a listener with statusLevel TRACE is registered
+  and the StatusLogger listenerLevel is set to TRACE, resulting in verbose status messages displayed on the console.
+
+  If no listeners are registered, the listenersLevel is not used, and the StatusLogger output level
+  is determined by `StatusLogger.getLogger().getLevel()`
+  (see property `org.apache.logging.log4j.simplelog .StatusLogger.level`).</p>
+
+| [[statusEntries]]log4j2.statusEntries
+  ([[log4j2.status.entries]]log4j2.status.entries)
+| LOG4J_STATUS_ENTRIES
+| 200
+| Number of StatusLogger events that are kept in a buffer and can be retrieved with `StatusLogger.getStatusData()`.
+
+| [[statusLoggerDateformat]]log4j2.statusLoggerDateformat
+  ([[log4j2.StatusLogger.DateFormat]]log4j2.StatusLogger.DateFormat)
+| LOG4J_STATUS_LOGGER_DATEFORMAT
+|
+| Date-time format string to use as the format for timestamps
+  in the status logger output. See `java.text.SimpleDateFormat` for supported formats.
+
+| [[asyncLoggerExceptionHandler]]log4j2.asyncLoggerExceptionHandler
+  ([[AsyncLogger.ExceptionHandler]]AsyncLogger.ExceptionHandler)
+| LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER
+| default handler
+| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+
+| [[asyncLoggerRingBufferSize]]log4j2.asyncLoggerRingBufferSize
+  ([[AsyncLogger.RingBufferSize]]AsyncLogger.RingBufferSize)
+| LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE
+| 256*1024 or 4*1024 in garbage-free mode
+| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+
+| [[asyncLoggerWaitStrategy]]log4j2.asyncLoggerWaitStrategy
+  ([[AsyncLogger.WaitStrategy]]AsyncLogger.WaitStrategy)
+| LOG4J_ASYNC_LOGGER_WAIT_STRATEGY
+| Timeout
+| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+
+| [[asyncLoggerTimeout]]log4j2.asyncLoggerTimeout
+  ([[AsyncLogger.Timeout]]AsyncLogger.Timeout)
+| LOG4J_ASYNC_LOGGER_TIMEOUT
+| 10
+| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+
+| [[asyncLoggerSleepTimeNs]]log4j2.asyncLoggerSleepTimeNs
+  ([[AsyncLogger.SleepTimeNs]]AsyncLogger.SleepTimeNs)
+| LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
+| 100
+| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+
+| [[asyncLoggerRetries]]log4j2.asyncLoggerRetries
+  ([[AsyncLogger.Retries]]AsyncLogger.Retries)
+| LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
+| 200
+| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+
+| [[AsyncLogger.SynchronizeEnqueueWhenQueueFull]]AsyncLogger.SynchronizeEnqueueWhenQueueFull
+| ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+| true
+| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+
+| [[asyncLoggerThreadNameStrategy]]log4j2.asyncLoggerThreadNameStrategy
+  ([[AsyncLogger.ThreadNameStrategy]]AsyncLogger.ThreadNameStrategy)
+| LOG4J_ASYNC_LOGGER_THREAD_NAME_STRATEGY
+| CACHED
+| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+
+| [[asyncLoggerConfigExceptionHandler]]log4j2.asyncLoggerConfigExceptionHandler
+  ([[AsyncLoggerConfig.ExceptionHandler]]AsyncLoggerConfig.ExceptionHandler)
+| LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER
+| default handler
+| See xref:/async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+
+| [[asyncLoggerConfigRingBufferSize]]log4j2.asyncLoggerConfigRingBufferSize
+  ([[AsyncLoggerConfig.RingBufferSize]]AsyncLoggerConfig.RingBufferSize)
+| LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE
+| 256*1024 or 4*1024 in garbage-free mode
+| See xref:/async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+
+| [[asyncLoggerConfigWaitStrategy]]log4j2.asyncLoggerConfigWaitStrategy
+  ([[AsyncLoggerConfig.WaitStrategy]]AsyncLoggerConfig.WaitStrategy)
+| LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY
+| Timeout
+| See xref:/async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+
+| [[AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull]]AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
+| ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+| true
+| See xref:/async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+
+| [[julLoggerAdapter]]log4j2.julLoggerAdapter
+  ([[log4j.jul.LoggerAdapter]]log4j.jul.LoggerAdapter)
+| LOG4J_JUL_LOGGER_ADAPTER
+| org.apache.logging.log4j .jul.ApiLoggerAdapter
+|
+    Default LoggerAdapter to use in the JUL adapter. By default, if log4j-core is available, then the class
+    `org.apache.logging.log4j.jul .CoreLoggerAdapter` will be used. Otherwise, the
+    `ApiLoggerAdapter` will be used. Custom implementations must provide a public default constructor.
+
+| [[formatMsgAsync]]log4j2.formatMsgAsync
+  ([[log4j.format.msg.async]]log4j.format.msg.async)
+
+| LOG4J_FORMAT_MSG_ASYNC
+| false
+|
+    If `false` (the default), Log4j will make sure the message is formatted in the caller thread, to ensure
+    the value at the time of the call to the logger is the value that is logged.
+
+| [[asyncQueueFullPolicy]]log4j2.asyncQueueFullPolicy
+  ([[log4j2.AsyncQueueFullPolicy]]log4j2.AsyncQueueFullPolicy)
+| LOG4J_ASYNC_QUEUE_FULL_POLICY
+|
+| Used by Async Loggers and the AsyncAppender to maintain application throughput even when
+  the underlying appender cannot keep up with the logging rate and the queue is filling up.
+
+  If no value is specified (the default) events are never discarded. If the queue is full, the
+  logger call blocks until the event can be added to the queue.
+
+  Specify `Discard` to drop events whose level is equal or less than the threshold level
+  (INFO by default) when the queue is full.
+
+| [[discardThreshold]]log4j2.discardThreshold
+  ([[log4j2.DiscardThreshold]]log4j2.DiscardThreshold)
+| LOG4J_DISCARD_THRESHOLD
+| INFO
+| Used by the DiscardingAsyncQueueFullPolicy to determine which events to drop when the queue
+  becomes full. By default, `INFO`, `DEBUG` and `TRACE` level
+  events are discarded when the queue is full.
+  This property only has effect if `Discard` is specified as the `log4j2.AsyncQueueFullPolicy`.
+
+| [[messageFactory]]log4j2.messageFactory
+  ([[log4j2.messageFactory]]log4j2.messageFactory)
+| LOG4J_MESSAGE_FACTORY
+| org.apache.logging.log4j.message. ParameterizedMessageFactory or
+  org.apache.logging.log4j.message. ReusableMessageFactory in garbage-free mode
+| Default message factory used by Loggers if no factory was specified.
+
+| [[flowMessageFactory]]log4j2.flowMessageFactory
+  ([[log4j2.flowMessageFactory]]log4j2.flowMessageFactory)
+| LOG4J_FLOW_MESSAGE_FACTORY
+| org.apache.logging.log4j.message. DefaultFlowMessageFactory
+| Default flow message factory used by Loggers.
+
+| [[isWebapp]]log4j2.isWebapp
+  ([[log4j2.is.webapp]]log4j2.is.webapp)
+| LOG4J_IS_WEBAPP
+| true if `Servlet` class on class path
+| This system property can be used to force Log4j 2 to behave as if it is part of a web application (when true)
+or as if it is not part of a web application (when false).
+
+| [[enableThreadlocals]]log4j2.enableThreadlocals
+  ([[log4j2.enable.threadlocals]]log4j2.enable.threadlocals)
+| LOG4J_ENABLE_THREADLOCALS
+| true
+| This system property can be used to switch off the use of threadlocals, which will partly disable
+  Log4j's garbage-free behaviour: to be fully garbage-free, Log4j stores
+  objects in ThreadLocal fields to reuse them, otherwise new objects are created for each log event.
+  Note that this property is not effective when Log4j detects it is running in a web application.
+
+| [[enableDirectEncoders]]log4j2.enableDirectEncoders
+  ([[log4j2.enable.direct.encoders]]log4j2.enable.direct.encoders)
+| LOG4J_ENABLE_DIRECT_ENCODERS
+| true
+| This property can be used to force garbage-aware Layouts and Appenders to revert to the
+  pre-2.6 behaviour where converting log events to text generates temporary objects like
+  Strings and char[] arrays, and converting this text to bytes generates temporary byte[] arrays.
+  By default, this property is `true` and garbage-aware Layouts and Appenders that convert log events
+  to text will convert this text to bytes without creating temporary objects.
+
+| [[initialReusableMsgSize]]log4j2.initialReusableMsgSize
+  ([[log4j.initialReusableMsgSize]]log4j.initialReusableMsgSize)
+| LOG4J_INITIAL_REUSABLE_MSG_SIZE
+| 128
+| In GC-free mode, this property determines the initial size of the reusable StringBuilders where the message
+  text is formatted and potentially passed to background threads.
+
+| [[maxReusableMsgSize]]log4j2.maxReusableMsgSize
+  ([[log4j.maxReusableMsgSize]]log4j.maxReusableMsgSize)
+| LOG4J_MAX_REUSABLE_MSG_SIZE
+| 518
+| In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
+  text is formatted and potentially passed to background threads.
+
+| [[layoutStringBuilderMaxSize]]log4j2.layoutStringBuilderMaxSize
+  ([[log4j.layoutStringBuilder.maxSize]]log4j.layoutStringBuilder.maxSize)
+| LOG4J_LAYOUT_STRING_BUILDER_MAX_SIZE
+| 2048
+| This property determines the maximum size of the thread-local reusable StringBuilders
+  used to format the log event to text by Layouts that extend AbstractStringLayout.
+
+| [[unboxRingbufferSize]]log4j2.unboxRingbufferSize
+  ([[log4j.unbox.ringbuffer.size]]log4j.unbox.ringbuffer.size)
+| LOG4J_UNBOX_RINGBUFFER_SIZE
+| 32
+| The `org.apache.logging.log4j.util.Unbox` utility manages a small thread-local ring buffer of StringBuilders.
+  Each time one of the `box()` methods is called, the next slot in the ring buffer is used, until the ring
+  buffer is full and the first slot is reused. By default the Unbox ring buffer has 32 slots, so user code can
+  have up to 32 boxed primitives in a single logger call.
+
+  If more slots are required, set system property `log4j.unbox.ringbuffer.size` to the desired ring buffer size.
+  Note that the specified number will be rounded up to the nearest power of 2.
+
+| [[loggerContextStacktraceOnStart]]log4j2.loggerContextStacktraceOnStart
+  ([[log4j.LoggerContext.stacktrace.on.start]]log4j.LoggerContext.stacktrace.on.start)
+| LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START
+| false
+| Prints a stacktrace to the xref:/#StatusMessages[status logger] at DEBUG level when the LoggerContext is started. For debug purposes.
+
+| [[log4j2.trustStoreLocation]]log4j2.trustStoreLocation
+| LOG4J_TRUST_STORE_LOCATION
+|
+| The location of the trust store. If not provided the default trust store will be used.
+
+| [[log4j2.trustStorePassword]]log4j2.trustStorePassword
+| LOG4J_TRUST_STORE_PASSWORD
+|
+| Password needed to access the trust store.
+
+| [[log4j2.trustStorePasswordFile]]log4j2.trustStorePasswordFile
+| LOG4J_TRUST_STORE_PASSWORD_FILE
+|
+| The location of a file that contains the password for the trust store.
+
+| [[log4j2.trustStorePasswordEnvironmentVariable]]log4j2.trustStorePasswordEnvironmentVariable
+| LOG4J_TRUST_STORE_PASSWORD_ENVIRONMENT_VARIABLE
+|
+| The name of the environment variable that contains the trust store password.
+
+| [[log4j2.trustStoreType]]log4j2.trustStoreType
+| LOG4J_TRUST_STORE_TYPE
+|
+| The type of key store used for the trust store.
+
+| [[log4j2.trustStoreKeyManagerFactoryAlgorithm]]log4j2.trustStoreKeyManagerFactoryAlgorithm
+| LOG4J_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM
+|
+| Java cryptographic algorithm.
+
+| [[log4j2.keyStoreLocation]]log4j2.keyStoreLocation
+| LOG4J_KEY_STORE_LOCATION
+|
+| The location of the key store. If not provided the default key store will be used.
+
+| [[log4j2.keyStorePassword]]log4j2.keyStorePassword
+| LOG4J_KEY_STORE_PASSWORD
+|
+| Password needed to access the key store.
+
+| [[log4j2.keyStorePasswordFile]]log4j2.keyStorePasswordFile
+| LOG4J_KEY_STORE_PASSWORD_FILE
+|
+| The location of a file that contains the password for the key store.
+
+| [[log4j2.keyStorePasswordEnvironmentVariable]]log4j2.keyStorePasswordEnvironmentVariable
+| LOG4J_KEY_STORE_PASSWORD_ENVIRONMENT_VARIABLE
+|
+| The name of the environment variable that contains the key store password.
+
+| [[log4j2.keyStoreType]]log4j2.keyStoreType
+| LOG4J_KEY_STORE_TYPE
+| | The type of key store.
+
+| [[log4j2.keyStoreKeyManagerFactoryAlgorithm]]log4j2.keyStoreKeyManagerFactoryAlgorithm
+| LOG4J_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM
+|
+| Java cryptographic algorithm.
+
+| [[log4j2.sslVerifyHostName]]log4j2.sslVerifyHostName
+|
+| false
+| true or false if the host name should be verified
+
+| [[log4j2.Script.enableLanguages]]log4j2.Script.enableLanguages
+|
+|
+| The list of script languages that are allowed to execute. The names specified must have a ScriptEngine installed
+  that advertises the same language(s) in order for scripting to be enabled. If no languages are specified, which is
+  the default, the ScriptManager will not be installed.
+
+| [[log4j2.disableCloudConfigLoggingSystem]]log4j2.disableCloudConfigLoggingSystem
+|
+|
+| Disables the usage of the Spring Boot `Log4j2CloudConfigLoggingSystem`. Defaults to `false`.
+
+|===
+
