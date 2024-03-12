@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -157,6 +159,17 @@ class ParameterizedMessageTest {
         param.set("000");
         final String after = msg.getFormattedMessage();
         assertThat(after).isEqualTo("Test message XYZ").as("Should not change after rendered once");
+    }
+
+    @Test
+    public void testException() {
+        final String testMsg = "Test message {}, exception is {}";
+        final ParameterizedMessage msg = new ParameterizedMessage(testMsg, "Apache", new NullPointerException());
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message Apache, exception is ";
+        assertThat(result).contains(expected);
+        final Throwable t = msg.getThrowable();
+        assertNotNull(t, "No Throwable");
     }
 
     static Stream<Object> testSerializable() {

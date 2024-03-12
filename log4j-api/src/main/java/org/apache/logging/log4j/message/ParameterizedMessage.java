@@ -144,11 +144,10 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         this.args = args;
         this.pattern = pattern;
         this.patternAnalysis = analyzePattern(pattern, args != null ? args.length : 0);
-        this.throwable = determineThrowable(throwable, this.args, patternAnalysis);
+        this.throwable = determineThrowable(throwable, this.args);
     }
 
-    private static Throwable determineThrowable(
-            final Throwable throwable, final Object[] args, final MessagePatternAnalysis analysis) {
+    private static Throwable determineThrowable(final Throwable throwable, final Object[] args) {
 
         // Short-circuit if an explicit `Throwable` is provided
         if (throwable != null) {
@@ -156,7 +155,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         }
 
         // If the last `Throwable` argument is not consumed in the pattern, use that
-        if (args != null && args.length > analysis.placeholderCount) {
+        // Fix issue #2363: Extract Throwable should be irrelevant to the count of patternAnalysis
+        if (args != null && args.length > 0) {
             Object lastArg = args[args.length - 1];
             if (lastArg instanceof Throwable) {
                 return (Throwable) lastArg;
