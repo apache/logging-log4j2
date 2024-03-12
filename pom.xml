@@ -337,7 +337,7 @@
     <log4j-docgen.version>1.0.0-SNAPSHOT</log4j-docgen.version>
 
     <!-- Versions of libraries whose plugin descriptors will be documented: -->
-    <docgen.log4j.version>2.23.0-SNAPSHOT</docgen.log4j.version>
+    <docgen.log4j.version>${revision}</docgen.log4j.version>
 
   </properties>
 
