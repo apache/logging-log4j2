@@ -772,6 +772,7 @@
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
+        <inherited>false</inherited>
         <dependencies>
           <dependency>
             <groupId>io.spring.asciidoctor</groupId>
