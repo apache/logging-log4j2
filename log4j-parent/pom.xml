@@ -95,7 +95,7 @@
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
     <commons-codec.version>1.16.1</commons-codec.version>
-    <commons-compress.version>1.26.0</commons-compress.version>
+    <commons-compress.version>1.26.1</commons-compress.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
     <commons-io.version>2.15.1</commons-io.version>
@@ -117,7 +117,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.7.2</hsqldb.version>
-    <jackson-bom.version>2.16.1</jackson-bom.version>
+    <jackson-bom.version>2.16.2</jackson-bom.version>
     <jansi.version>2.4.0</jansi.version>
     <javax-jms.version>2.0.1</javax-jms.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
