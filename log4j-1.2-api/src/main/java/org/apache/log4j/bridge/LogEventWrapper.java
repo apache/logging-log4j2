@@ -49,10 +49,6 @@ public class LogEventWrapper implements LogEvent {
     private final MutableThreadContextStack contextStack;
     private Thread thread;
 
-    public static LogEvent adapt(final LoggingEvent event) {
-        return event instanceof final LogEventAdapter adapter ? adapter.getLogEvent() : new LogEventWrapper(event);
-    }
-
     public LogEventWrapper(final LoggingEvent event) {
         this.event = event;
         this.contextData = new ContextDataMap(event.getProperties());
@@ -184,10 +180,6 @@ public class LogEventWrapper implements LogEvent {
     @Override
     public long getNanoTime() {
         return 0;
-    }
-
-    LoggingEvent getLoggingEvent() {
-        return event;
     }
 
     private static class ContextDataMap extends HashMap<String, String> implements ReadOnlyStringMap {

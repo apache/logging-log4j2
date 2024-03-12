@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.apache.log4j.bridge.LogEventAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
@@ -46,16 +45,12 @@ public class ListAppender extends AppenderSkeleton {
                 messages.add(result);
             }
         } else {
-            events.add(event instanceof final LogEventAdapter adapter ? adapter.toImmutable() : event);
+            events.add(event);
         }
     }
 
     @Override
     public void close() {}
-
-    public void clear() {
-        events.clear();
-    }
 
     @Override
     public boolean requiresLayout() {

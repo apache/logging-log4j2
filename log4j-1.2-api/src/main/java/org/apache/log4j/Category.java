@@ -237,7 +237,7 @@ public class Category implements AppenderAttachable {
      */
     public void callAppenders(final LoggingEvent event) {
         if (LogManager.isLog4jCorePresent()) {
-            CategoryUtil.log(logger, LogEventWrapper.adapt(event));
+            CategoryUtil.log(logger, new LogEventWrapper(event));
             return;
         }
         int writes = 0;
