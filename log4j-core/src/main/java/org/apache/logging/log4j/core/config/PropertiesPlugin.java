@@ -52,8 +52,11 @@ public final class PropertiesPlugin {
         for (int i = 0; i < unescapedProperties.length; i++) {
             unescapedProperties[i] = unescape(properties[i]);
         }
-        return new Interpolator(
+        final Interpolator interpolator = new Interpolator(
                 new PropertiesLookup(unescapedProperties, config.getProperties()), config.getPluginPackages());
+        interpolator.setConfiguration(config);
+        interpolator.setLoggerContext(config.getLoggerContext());
+        return interpolator;
     }
 
     private static Property unescape(final Property input) {

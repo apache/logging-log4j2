@@ -26,7 +26,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.internal.SerializationUtil;
@@ -78,6 +80,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     public static final String ERROR_SUFFIX = ParameterFormatter.ERROR_SUFFIX;
 
     private static final long serialVersionUID = -665975803997290697L;
+
+    private static final Logger STATUS_LOGGER = StatusLogger.getLogger();
 
     private static final ThreadLocal<FormatBufferHolder> FORMAT_BUFFER_HOLDER_REF =
             Constants.ENABLE_THREADLOCALS ? ThreadLocal.withInitial(FormatBufferHolder::new) : null;
@@ -274,7 +278,12 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
             buffer.append(formattedMessage);
         } else {
             final int argCount = args != null ? args.length : 0;
-            ParameterFormatter.formatMessage(buffer, pattern, args, argCount, patternAnalysis);
+            try {
+                ParameterFormatter.formatMessage(buffer, pattern, args, argCount, patternAnalysis);
+            } catch (final Exception error) {
+                STATUS_LOGGER.error("Unable to format msg: {}", pattern, error);
+                buffer.append(pattern);
+            }
         }
     }
 
@@ -285,7 +294,12 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      */
     public static String format(final String pattern, final Object[] args) {
         final int argCount = args != null ? args.length : 0;
-        return ParameterFormatter.format(pattern, args, argCount);
+        try {
+            return ParameterFormatter.format(pattern, args, argCount);
+        } catch (final Exception error) {
+            STATUS_LOGGER.error("Unable to format msg: {}", pattern, error);
+            return pattern;
+        }
     }
 
     @Override

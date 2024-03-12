@@ -26,6 +26,7 @@ This releases contains ...
 [#release-notes-2-x-x-changed]
 === Changed
 
+* Fix handling of `LoggerContextAware` lookups. (https://github.com/apache/logging-log4j2/pull/2309[2309])
 * Improve performance of `CloseableThreadContext#closeMap()` (https://github.com/apache/logging-log4j2/pull/2296[2296])
 
 [#release-notes-2-x-x-fixed]
@@ -44,5 +45,10 @@ This releases contains ...
 * Update `github/codeql-action` to version `3.24.6` (https://github.com/apache/logging-log4j2/pull/2332[2332])
 * Update `io.fabric8:docker-maven-plugin` to version `0.44.0` (https://github.com/apache/logging-log4j2/pull/2299[2299])
 * Update `jakarta.activation:jakarta.activation-api` to version `2.1.3` (https://github.com/apache/logging-log4j2/pull/2335[2335])
+* Update `jakarta.mail:jakarta.mail-api` to version `2.1.3` (https://github.com/apache/logging-log4j2/pull/2348[2348])
 * Update `org.apache.commons:commons-compress` to version `1.26.0` (https://github.com/apache/logging-log4j2/pull/2304[2304])
+* Update `org.apache.commons:commons-dbcp2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2344[2344])
 * Update `org.apache.kafka:kafka-clients` to version `3.7.0` (https://github.com/apache/logging-log4j2/pull/2326[2326])
+* Update `org.codehaus.groovy:groovy-bom` to version `3.0.21` (https://github.com/apache/logging-log4j2/pull/2345[2345])
+* Update `org.eclipse.angus:angus-activation` to version `2.0.2` (https://github.com/apache/logging-log4j2/pull/2336[2336])
+* Update `org.eclipse.angus:jakarta.mail` to version `2.0.3` (https://github.com/apache/logging-log4j2/pull/2349[2349])

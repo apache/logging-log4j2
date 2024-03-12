@@ -665,6 +665,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
             final Interpolator interpolator = new Interpolator(lookup, pluginPackages);
+            interpolator.setConfiguration(this);
             interpolator.setLoggerContext(loggerContext.get());
             runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);

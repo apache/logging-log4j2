@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.config.LoggerContextAware;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
@@ -60,7 +61,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
 
     private final StrLookup defaultLookup;
 
-    protected WeakReference<LoggerContext> loggerContext;
+    protected WeakReference<LoggerContext> loggerContext = new WeakReference<>(null);
 
     public Interpolator(final StrLookup defaultLookup) {
         this(defaultLookup, null);
@@ -191,12 +192,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
             final String prefix = toRootLowerCase(var.substring(0, prefixPos));
             final String name = var.substring(prefixPos + 1);
             final StrLookup lookup = strLookupMap.get(prefix);
-            if (lookup instanceof ConfigurationAware) {
-                ((ConfigurationAware) lookup).setConfiguration(configuration);
-            }
-            if (lookup instanceof LoggerContextAware) {
-                ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
-            }
             LookupResult value = null;
             if (lookup != null) {
                 value = event == null ? lookup.evaluate(name) : lookup.evaluate(event, name);
@@ -214,11 +209,25 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
     }
 
     @Override
-    public void setLoggerContext(final LoggerContext loggerContext) {
-        if (loggerContext == null) {
-            return;
+    public void setConfiguration(final Configuration configuration) {
+        super.setConfiguration(configuration);
+        // Propagate
+        for (final StrLookup lookup : strLookupMap.values()) {
+            if (lookup instanceof ConfigurationAware) {
+                ((ConfigurationAware) lookup).setConfiguration(configuration);
+            }
         }
+    }
+
+    @Override
+    public void setLoggerContext(final LoggerContext loggerContext) {
         this.loggerContext = new WeakReference<>(loggerContext);
+        // Propagate
+        for (final StrLookup lookup : strLookupMap.values()) {
+            if (lookup instanceof LoggerContextAware) {
+                ((LoggerContextAware) lookup).setLoggerContext(loggerContext);
+            }
+        }
     }
 
     @Override

@@ -205,11 +205,12 @@ final class ParameterFormatter {
     }
 
     /**
-     * Format the following pattern using provided arguments.
+     * Format the given pattern using provided arguments.
      *
      * @param pattern a formatting pattern
      * @param args arguments to be formatted
      * @return the formatted message
+     * @throws IllegalArgumentException on invalid input
      */
     static String format(final String pattern, final Object[] args, int argCount) {
         final StringBuilder result = new StringBuilder();
@@ -218,6 +219,14 @@ final class ParameterFormatter {
         return result.toString();
     }
 
+    /**
+     * Format the given pattern using provided arguments into the buffer pointed.
+     *
+     * @param buffer a buffer the formatted output will be written to
+     * @param pattern a formatting pattern
+     * @param args arguments to be formatted
+     * @throws IllegalArgumentException on invalid input
+     */
     static void formatMessage(
             final StringBuilder buffer,
             final String pattern,
@@ -250,7 +259,7 @@ final class ParameterFormatter {
         }
     }
 
-    static void formatMessageContainingNoEscapes(
+    private static void formatMessageContainingNoEscapes(
             final StringBuilder buffer,
             final String pattern,
             final Object[] args,
@@ -271,7 +280,7 @@ final class ParameterFormatter {
         buffer.append(pattern, precedingTextStartIndex, pattern.length());
     }
 
-    static void formatMessageContainingEscapes(
+    private static void formatMessageContainingEscapes(
             final StringBuilder buffer,
             final String pattern,
             final Object[] args,
