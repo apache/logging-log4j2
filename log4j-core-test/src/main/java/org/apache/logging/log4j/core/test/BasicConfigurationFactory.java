@@ -20,8 +20,8 @@ import java.net.URI;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  *
  */
-public class BasicConfigurationFactory extends AbstractConfigurationFactory {
+public class BasicConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(

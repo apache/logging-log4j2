@@ -18,8 +18,8 @@ package org.apache.log4j.xml;
 
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -29,10 +29,10 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  * Constructs a Configuration usable in Log4j 2 from a Log4j 1 configuration file.
  */
-@Namespace(AbstractConfigurationFactory.NAMESPACE)
+@Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("Log4j1XmlConfigurationFactory")
 @Order(2)
-public class XmlConfigurationFactory extends AbstractConfigurationFactory {
+public class XmlConfigurationFactory extends ConfigurationFactory {
 
     public static final String FILE_EXTENSION = ".xml";
 
@@ -49,7 +49,7 @@ public class XmlConfigurationFactory extends AbstractConfigurationFactory {
     @Override
     public String[] getSupportedTypes() {
         if (!PropertiesUtil.getProperties()
-                .getBooleanProperty(AbstractConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
+                .getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
             return null;
         }
         return new String[] {FILE_EXTENSION};

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.annotation.ConditionalOnPropertyKey;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
@@ -40,7 +40,7 @@ import org.apache.logging.log4j.util.PropertyKey;
  * @see Log4jPropertyKey
  * @see ContextSelector
  * @see ShutdownCallbackRegistry
- * @see AbstractConfigurationFactory
+ * @see ConfigurationFactory
  * @see MergeStrategy
  * @see ContextDataInjector
  * @see LogEventFactory

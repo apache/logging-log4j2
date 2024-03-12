@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.config.xml;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -27,10 +27,10 @@ import org.apache.logging.log4j.plugins.Plugin;
 /**
  * Factory to construct an XmlConfiguration.
  */
-@Namespace(AbstractConfigurationFactory.NAMESPACE)
+@Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("XmlConfigurationFactory")
 @Order(5)
-public class XmlConfigurationFactory extends AbstractConfigurationFactory {
+public class XmlConfigurationFactory extends ConfigurationFactory {
 
     /**
      * Valid file extensions for XML files.

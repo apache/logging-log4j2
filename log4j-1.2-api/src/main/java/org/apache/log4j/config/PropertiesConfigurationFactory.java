@@ -17,8 +17,8 @@
 package org.apache.log4j.config;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -28,10 +28,10 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  * Configures Log4j from a log4j 1 format properties file.
  */
-@Namespace(AbstractConfigurationFactory.NAMESPACE)
+@Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("Log4j1PropertiesConfigurationFactory")
 @Order(2)
-public class PropertiesConfigurationFactory extends AbstractConfigurationFactory {
+public class PropertiesConfigurationFactory extends ConfigurationFactory {
 
     static final String FILE_EXTENSION = ".properties";
 
@@ -48,7 +48,7 @@ public class PropertiesConfigurationFactory extends AbstractConfigurationFactory
     @Override
     public String[] getSupportedTypes() {
         if (!PropertiesUtil.getProperties()
-                .getBooleanProperty(AbstractConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
+                .getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
             return null;
         }
         return new String[] {FILE_EXTENSION};

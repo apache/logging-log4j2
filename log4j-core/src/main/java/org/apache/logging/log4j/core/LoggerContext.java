@@ -35,15 +35,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerContextAwarePostProcessor;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.core.config.URIConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
@@ -659,8 +658,8 @@ public class LoggerContext extends AbstractLifeCycle
         return getConfigurationFactory().getConfiguration(this, name, configLocation, loader);
     }
 
-    private ConfigurationFactory getConfigurationFactory() {
-        return instanceFactory.getInstance(AbstractConfigurationFactory.KEY);
+    private URIConfigurationFactory getConfigurationFactory() {
+        return instanceFactory.getInstance(URIConfigurationFactory.KEY);
     }
 
     /**

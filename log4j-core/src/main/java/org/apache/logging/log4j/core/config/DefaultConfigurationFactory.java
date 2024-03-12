@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Default factory for using a plugin selected based on the configuration source.
  */
-public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
+public class DefaultConfigurationFactory extends ConfigurationFactory {
 
     private static final String ALL_TYPES = "*";
     private static final String OVERRIDE_PARAM = "override";
@@ -57,7 +57,7 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
     public Configuration getConfiguration(
             final LoggerContext loggerContext, final String name, final URI configLocation) {
         final InstanceFactory instanceFactory = loggerContext.getInstanceFactory();
-        final List<ConfigurationFactory> configurationFactories = loadConfigurationFactories(instanceFactory);
+        final List<URIConfigurationFactory> configurationFactories = loadConfigurationFactories(instanceFactory);
         final StrSubstitutor substitutor = instanceFactory.getInstance(ConfigurationStrSubstitutor.class);
         if (configLocation == null) {
             PropertyEnvironment properties = loggerContext.getEnvironment();
@@ -99,7 +99,7 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr, configurationFactories);
                 }
             }
-            for (final ConfigurationFactory factory : configurationFactories) {
+            for (final URIConfigurationFactory factory : configurationFactories) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -130,7 +130,7 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
                 return new CompositeConfiguration(loggerContext, configs);
             }
             final String configLocationStr = configLocation.toString();
-            for (final ConfigurationFactory factory : configurationFactories) {
+            for (final URIConfigurationFactory factory : configurationFactories) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -173,7 +173,7 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
             final String requiredVersion,
             final LoggerContext loggerContext,
             final String configLocation,
-            final Iterable<? extends ConfigurationFactory> configurationFactories) {
+            final Iterable<? extends URIConfigurationFactory> configurationFactories) {
         ConfigurationSource source = null;
         try {
             source = ConfigurationSource.fromUri(NetUtils.toURI(configLocation));
@@ -182,7 +182,7 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
             LOGGER.catching(Level.DEBUG, ex);
         }
         if (source != null) {
-            for (final ConfigurationFactory factory : configurationFactories) {
+            for (final URIConfigurationFactory factory : configurationFactories) {
                 if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
                     continue;
                 }
@@ -206,10 +206,10 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
             final LoggerContext loggerContext,
             final boolean isTest,
             final CharSequence name,
-            final Iterable<? extends ConfigurationFactory> configurationFactories) {
+            final Iterable<? extends URIConfigurationFactory> configurationFactories) {
         final boolean named = Strings.isNotEmpty(name);
         final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
-        for (final ConfigurationFactory factory : configurationFactories) {
+        for (final URIConfigurationFactory factory : configurationFactories) {
             String configName;
             final String prefix = isTest ? factory.getTestPrefix() : factory.getDefaultPrefix();
             final String[] types = factory.getSupportedTypes();
@@ -248,10 +248,10 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         if (source != null) {
-            final List<ConfigurationFactory> configurationFactories =
+            final List<URIConfigurationFactory> configurationFactories =
                     loadConfigurationFactories(loggerContext.getInstanceFactory());
             final String config = source.getLocation();
-            for (final ConfigurationFactory factory : configurationFactories) {
+            for (final URIConfigurationFactory factory : configurationFactories) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -303,8 +303,8 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
         return new String[] {configLocations};
     }
 
-    private static List<ConfigurationFactory> loadConfigurationFactories(final InstanceFactory instanceFactory) {
-        final List<ConfigurationFactory> factories = new ArrayList<>();
+    private static List<URIConfigurationFactory> loadConfigurationFactories(final InstanceFactory instanceFactory) {
+        final List<URIConfigurationFactory> factories = new ArrayList<>();
 
         Optional.ofNullable(instanceFactory
                         .getInstance(PropertyEnvironment.class)
@@ -320,10 +320,10 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
                 })
                 .ifPresent(factories::add);
 
-        final List<Class<? extends ConfigurationFactory>> configurationFactoryPluginClasses = new ArrayList<>();
+        final List<Class<? extends URIConfigurationFactory>> configurationFactoryPluginClasses = new ArrayList<>();
         instanceFactory.getInstance(PLUGIN_NAMESPACE_KEY).forEach(type -> {
             try {
-                configurationFactoryPluginClasses.add(type.getPluginClass().asSubclass(ConfigurationFactory.class));
+                configurationFactoryPluginClasses.add(type.getPluginClass().asSubclass(URIConfigurationFactory.class));
             } catch (final Exception ex) {
                 LOGGER.warn("Unable to add class {}", type.getPluginClass(), ex);
             }
@@ -340,9 +340,9 @@ public class DefaultConfigurationFactory extends AbstractConfigurationFactory {
         return factories;
     }
 
-    private static Optional<Class<? extends ConfigurationFactory>> tryLoadFactoryClass(final String factoryClass) {
+    private static Optional<Class<? extends URIConfigurationFactory>> tryLoadFactoryClass(final String factoryClass) {
         try {
-            return Optional.of(Loader.loadClass(factoryClass).asSubclass(AbstractConfigurationFactory.class));
+            return Optional.of(Loader.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
         } catch (final Exception ex) {
             LOGGER.error("Unable to load ConfigurationFactory class {}", factoryClass, ex);
             return Optional.empty();

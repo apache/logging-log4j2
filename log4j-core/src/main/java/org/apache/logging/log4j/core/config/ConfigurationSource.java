@@ -290,23 +290,23 @@ public class ConfigurationSource {
             try {
                 return new ConfigurationSource(new FileInputStream(configFile), configFile);
             } catch (final FileNotFoundException ex) {
-                AbstractConfigurationFactory.LOGGER.error("Cannot locate file {}", configLocation.getPath(), ex);
+                ConfigurationFactory.LOGGER.error("Cannot locate file {}", configLocation.getPath(), ex);
             }
         }
-        if (AbstractConfigurationFactory.isClassLoaderUri(configLocation)) {
+        if (ConfigurationFactory.isClassLoaderUri(configLocation)) {
             final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
-            final String path = AbstractConfigurationFactory.extractClassLoaderUriPath(configLocation);
+            final String path = ConfigurationFactory.extractClassLoaderUriPath(configLocation);
             return fromResource(path, loader);
         }
         if (!configLocation.isAbsolute()) { // LOG4J2-704 avoid confusing error message thrown by uri.toURL()
-            AbstractConfigurationFactory.LOGGER.error(
+            ConfigurationFactory.LOGGER.error(
                     "File not found in file system or classpath: {}", configLocation.toString());
             return null;
         }
         try {
             return getConfigurationSource(configLocation.toURL());
         } catch (final MalformedURLException ex) {
-            AbstractConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
+            ConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
         }
         return null;
     }
@@ -360,11 +360,11 @@ public class ConfigurationSource {
                             urlConnection.getInputStream(), url, urlConnection.getLastModified());
                 }
             } catch (final FileNotFoundException ex) {
-                AbstractConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
+                ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
                 return null;
             }
         } catch (final IOException | URISyntaxException ex) {
-            AbstractConfigurationFactory.LOGGER.warn(
+            ConfigurationFactory.LOGGER.warn(
                     "Error accessing {} due to {}, ignoring.", url.toString(), ex.getMessage());
             return null;
         }

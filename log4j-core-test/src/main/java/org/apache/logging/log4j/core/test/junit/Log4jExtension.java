@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
+import org.apache.logging.log4j.core.config.URIConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -127,7 +127,7 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
                         .toFunction(instanceFactory -> instanceFactory.getFactory(clazz)));
         AnnotationSupport.findAnnotation(element, ConfigurationFactoryType.class)
                 .map(ConfigurationFactoryType::value)
-                .ifPresent(clazz -> builder.addBindingFrom(AbstractConfigurationFactory.KEY)
+                .ifPresent(clazz -> builder.addBindingFrom(URIConfigurationFactory.KEY)
                         .toFunction(instanceFactory -> instanceFactory.getFactory(clazz)));
         return builder.build();
     }

@@ -22,9 +22,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfigurationFactory;
+import org.apache.logging.log4j.core.config.URIConfigurationFactory;
 import org.apache.logging.log4j.core.config.composite.DefaultMergeStrategy;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
@@ -61,7 +61,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @see ContextSelector
  * @see ShutdownCallbackRegistry
  * @see NanoClock
- * @see AbstractConfigurationFactory
+ * @see ConfigurationFactory
  * @see MergeStrategy
  * @see InterpolatorFactory
  * @see ContextDataInjector
@@ -162,7 +162,7 @@ public class DefaultBundle {
 
     @SingletonFactory
     @ConditionalOnMissingBinding
-    public ConfigurationFactory configurationFactory() {
+    public URIConfigurationFactory configurationFactory() {
         return new DefaultConfigurationFactory();
     }
 

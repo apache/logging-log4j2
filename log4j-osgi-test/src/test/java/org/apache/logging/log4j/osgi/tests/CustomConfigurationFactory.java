@@ -18,8 +18,8 @@ package org.apache.logging.log4j.osgi.tests;
 
 import java.net.URI;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.AbstractConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -28,10 +28,10 @@ import org.apache.logging.log4j.plugins.Plugin;
 /**
  * Factory to construct a  CustomConfiguration.
  */
-@Namespace(AbstractConfigurationFactory.NAMESPACE)
+@Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("CustomConfigurationFactory")
 @Order(50)
-public final class CustomConfigurationFactory extends AbstractConfigurationFactory {
+public final class CustomConfigurationFactory extends ConfigurationFactory {
 
     /**
      * Valid file extensions for XML files.
