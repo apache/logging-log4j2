@@ -35,7 +35,7 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
     private static final String[] SUFFIXES = new String[] {".json", ".jsn"};
 
     @Override
-    public String[] getSupportedTypes() {
+    protected String[] getSupportedTypes() {
         return SUFFIXES;
     }
 

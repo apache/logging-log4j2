@@ -29,7 +29,6 @@ import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.PropertyKey;
 
 /**
@@ -66,6 +65,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory i
      */
     public static final String NAMESPACE = "ConfigurationFactory";
 
+    public static final Key<ConfigurationFactory> KEY = new Key<>() {};
+
     public static final Key<PluginNamespace> PLUGIN_NAMESPACE_KEY = new @Namespace(NAMESPACE) Key<>() {};
 
     /**
@@ -95,8 +96,15 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory i
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
 
+    protected abstract String[] getSupportedTypes();
+
+    @Override
+    public String[] getSupportedExtensions() {
+        return getSupportedTypes();
+    }
+
     @Deprecated(since = "3.0.0", forRemoval = true)
-    public static URIConfigurationFactory getInstance() {
+    public static ConfigurationFactory getInstance() {
         return LoggerContext.getContext(false).getInstanceFactory().getInstance(KEY);
     }
 
@@ -106,7 +114,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory i
      * @return the AuthorizationProvider, if any.
      */
     public static AuthorizationProvider authorizationProvider(final PropertiesUtil props) {
-        return AuthorizationProvider.getAuthorizationProvider((PropertyEnvironment) props);
+        return AuthorizationProvider.getAuthorizationProvider(props);
     }
 
     @Override

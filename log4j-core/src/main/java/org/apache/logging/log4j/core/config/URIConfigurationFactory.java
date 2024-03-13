@@ -46,7 +46,7 @@ public interface URIConfigurationFactory {
      *     Can contain {@code *}, if an attempt should be made to parse files with any file extension.
      * </p>
      */
-    String[] getSupportedTypes();
+    String[] getSupportedExtensions();
 
     /**
      * The version of the configuration format.

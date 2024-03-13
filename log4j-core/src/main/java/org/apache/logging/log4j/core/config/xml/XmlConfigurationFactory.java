@@ -53,7 +53,7 @@ public class XmlConfigurationFactory extends ConfigurationFactory {
      * @return An array of File extensions.
      */
     @Override
-    public String[] getSupportedTypes() {
+    protected String[] getSupportedTypes() {
         return SUFFIXES;
     }
 }

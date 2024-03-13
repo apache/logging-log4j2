@@ -51,7 +51,7 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public String[] getSupportedTypes() {
+    protected String[] getSupportedTypes() {
         return SUFFIXES;
     }
 }

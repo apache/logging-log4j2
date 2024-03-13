@@ -100,7 +100,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 }
             }
             for (final URIConfigurationFactory factory : configurationFactories) {
-                final String[] types = factory.getSupportedTypes();
+                final String[] types = factory.getSupportedExtensions();
                 if (types != null) {
                     for (final String type : types) {
                         if (type.equals(ALL_TYPES)) {
@@ -131,7 +131,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
             }
             final String configLocationStr = configLocation.toString();
             for (final URIConfigurationFactory factory : configurationFactories) {
-                final String[] types = factory.getSupportedTypes();
+                final String[] types = factory.getSupportedExtensions();
                 if (types != null) {
                     for (final String type : types) {
                         if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
@@ -186,7 +186,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
                     continue;
                 }
-                final String[] types = factory.getSupportedTypes();
+                final String[] types = factory.getSupportedExtensions();
                 if (types != null) {
                     for (final String type : types) {
                         if (type.equals(ALL_TYPES) || configLocation.endsWith(type)) {
@@ -212,7 +212,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         for (final URIConfigurationFactory factory : configurationFactories) {
             String configName;
             final String prefix = isTest ? factory.getTestPrefix() : factory.getDefaultPrefix();
-            final String[] types = factory.getSupportedTypes();
+            final String[] types = factory.getSupportedExtensions();
             if (types == null) {
                 continue;
             }
@@ -241,7 +241,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public String[] getSupportedTypes() {
+    protected String[] getSupportedTypes() {
         return null;
     }
 
@@ -252,7 +252,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                     loadConfigurationFactories(loggerContext.getInstanceFactory());
             final String config = source.getLocation();
             for (final URIConfigurationFactory factory : configurationFactories) {
-                final String[] types = factory.getSupportedTypes();
+                final String[] types = factory.getSupportedExtensions();
                 if (types != null) {
                     for (final String type : types) {
                         if (type.equals(ALL_TYPES) || config != null && config.endsWith(type)) {

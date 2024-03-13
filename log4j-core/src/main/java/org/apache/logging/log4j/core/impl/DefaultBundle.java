@@ -160,10 +160,19 @@ public class DefaultBundle {
         return new RuntimeStrSubstitutor(factory.newInterpolator(null));
     }
 
+    /**
+     * Spring Boot needs a ConfigurationFactory for compatibility.
+     */
     @SingletonFactory
     @ConditionalOnMissingBinding
-    public URIConfigurationFactory configurationFactory() {
+    public ConfigurationFactory configurationFactory() {
         return new DefaultConfigurationFactory();
+    }
+
+    @SingletonFactory
+    @ConditionalOnMissingBinding
+    public URIConfigurationFactory configurationFactory(final ConfigurationFactory factory) {
+        return factory;
     }
 
     @SingletonFactory

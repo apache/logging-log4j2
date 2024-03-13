@@ -46,7 +46,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     protected static final String DEFAULT_PREFIX = "log4j";
 
     @Override
-    public String[] getSupportedTypes() {
+    protected String[] getSupportedTypes() {
         if (!PropertiesUtil.getProperties()
                 .getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
             return null;
