@@ -374,7 +374,9 @@ public class Provider {
 
     /**
      * Extension point for providers to create a {@link ThreadContextMap}
-     * @implNote The default implementation:
+     * <p>
+     *     The default implementation:
+     * </p>
      * <ol>
      *     <li>calls {@link #loadThreadContextMap},</li>
      *     <li>if the previous call returns {@code null}, it calls {@link #getThreadContextMap} to instantiate one of
