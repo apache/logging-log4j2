@@ -24,7 +24,7 @@ This release contains...
 === Updated
 
 * Update `co.elastic.logging:log4j2-ecs-layout` to version `1.6.0` (https://github.com/apache/logging-log4j2/pull/2303[2303])
-* Update `com.fasterxml.jackson:jackson-bom` to version `2.16.2` (https://github.com/apache/logging-log4j2/pull/2359[2359])
+* Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2371[2371])
 * Update `com.github.tomakehurst:wiremock-jre8` to version `2.35.2` (https://github.com/apache/logging-log4j2/pull/2305[2305])
 * Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2358[2358])
 * Update `org.apache.commons:commons-dbcp2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2342[2342])
