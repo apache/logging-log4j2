@@ -15,17 +15,11 @@
     limitations under the License.
 ////
 
-[#release-notes-2-x-x]
-== 2.x.x
+[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
+== ${release.version}
 
+<#if release.date?has_content>Release date:: ${release.date}</#if>
 
+This release contains several small fixes and some dependency updates.
 
-This releases contains ...
-
-
-[#release-notes-2-x-x-updated]
-=== Updated
-
-* Update `actions/checkout` to version `4.1.2` (https://github.com/apache/logging-log4j2/pull/2370[2370])
-* Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2372[2372])
-* Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2361[2361])
+<#include "../.changelog.adoc.ftl">

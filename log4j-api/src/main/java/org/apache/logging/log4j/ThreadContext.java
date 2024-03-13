@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import org.apache.logging.log4j.internal.map.StringArrayThreadContextMap;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.CleanableThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
@@ -275,6 +276,8 @@ public final class ThreadContext {
             ((ThreadContextMap2) contextMap).putAll(m);
         } else if (contextMap instanceof DefaultThreadContextMap) {
             ((DefaultThreadContextMap) contextMap).putAll(m);
+        } else if (contextMap instanceof StringArrayThreadContextMap) {
+            ((StringArrayThreadContextMap) contextMap).putAll(m);
         } else {
             for (final Map.Entry<String, String> entry : m.entrySet()) {
                 contextMap.put(entry.getKey(), entry.getValue());
@@ -317,6 +320,8 @@ public final class ThreadContext {
             ((CleanableThreadContextMap) contextMap).removeAll(keys);
         } else if (contextMap instanceof DefaultThreadContextMap) {
             ((DefaultThreadContextMap) contextMap).removeAll(keys);
+        } else if (contextMap instanceof StringArrayThreadContextMap) {
+            ((StringArrayThreadContextMap) contextMap).removeAll(keys);
         } else {
             for (final String key : keys) {
                 contextMap.remove(key);
