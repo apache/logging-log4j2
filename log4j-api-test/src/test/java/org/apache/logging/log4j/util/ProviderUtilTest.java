@@ -16,36 +16,61 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.test.TestLoggerContext;
+import java.util.Properties;
+import org.apache.logging.log4j.TestProvider;
+import org.apache.logging.log4j.test.TestLoggerContextFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
-public class ProviderUtilTest {
+@Execution(ExecutionMode.CONCURRENT)
+class ProviderUtilTest {
 
-    @Test
-    public void complexTest() throws Exception {
-        final File file = new File("target/classes");
-        final ClassLoader classLoader =
-                new URLClassLoader(new URL[] {file.toURI().toURL()});
-        final Worker worker = new Worker();
-        worker.setContextClassLoader(classLoader);
-        worker.start();
-        worker.join();
-        assertTrue(worker.context instanceof TestLoggerContext, "Incorrect LoggerContext");
+    /*
+     * Force initialization of ProviderUtil#PROVIDERS
+     */
+    static {
+        ProviderUtil.lazyInit();
     }
 
-    private static class Worker extends Thread {
-        LoggerContext context = null;
+    @Test
+    void should_select_provider_with_highest_priority() {
+        final PropertiesUtil properties = new PropertiesUtil(new Properties());
+        assertThat(ProviderUtil.selectProvider(properties))
+                .as("check selected provider")
+                .isInstanceOf(TestProvider.class);
+    }
 
-        @Override
-        public void run() {
-            context = LogManager.getContext(false);
+    @Test
+    void should_recognize_log4j_provider_property() {
+        final Properties map = new Properties();
+        map.setProperty("log4j.provider", LocalProvider.class.getName());
+        final PropertiesUtil properties = new PropertiesUtil(map);
+        assertThat(ProviderUtil.selectProvider(properties))
+                .as("check selected provider")
+                .isInstanceOf(LocalProvider.class);
+    }
+
+    @Test
+    void should_recognize_log4j_factory_property() {
+        final Properties map = new Properties();
+        map.setProperty("log4j2.loggerContextFactory", LocalLoggerContextFactory.class.getName());
+        final PropertiesUtil properties = new PropertiesUtil(map);
+        assertThat(ProviderUtil.selectProvider(properties).getLoggerContextFactory())
+                .as("check selected logger context factory")
+                .isInstanceOf(LocalLoggerContextFactory.class);
+    }
+
+    public static class LocalLoggerContextFactory extends TestLoggerContextFactory {}
+
+    /**
+     * A provider with a smaller priority than {@link org.apache.logging.log4j.TestProvider}.
+     */
+    public static class LocalProvider extends org.apache.logging.log4j.spi.Provider {
+        public LocalProvider() {
+            super(0, CURRENT_VERSION, LocalLoggerContextFactory.class);
         }
     }
 }
