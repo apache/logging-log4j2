@@ -142,6 +142,7 @@
     width: 80vw;
     overflow: auto;
     height: 100%;
+    margin: 0;
 }
 
 .table-of-content {
