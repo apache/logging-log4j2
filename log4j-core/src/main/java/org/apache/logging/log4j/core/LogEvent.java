@@ -139,17 +139,19 @@ public interface LogEvent {
 
     /**
      * Gets the source of the logging call or computes it.
-     *
+     * <p>
+     *     The implementation must be idempotent: multiple calls to this method must always return the same value.
+     * </p>
      * @return source of logging request, may be {@code null} if {@link #isIncludeLocation()} is {@code false}.
-     * @implNote The implementation must be idempotent: multiple calls to this method must always return the same value.
      */
     StackTraceElement getSource();
 
     /**
      * Gets the source of the logging call.
-     *
+     * <p>
+     *     This method must be side effect free.
+     * </p>
      * @return source of logging request or {@code  null} if currently unknown.
-     * @implNote This method must be side effect free.
      */
     @Nullable
     StackTraceElement peekSource();

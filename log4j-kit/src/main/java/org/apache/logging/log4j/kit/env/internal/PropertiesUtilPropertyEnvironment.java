@@ -24,9 +24,10 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * An adapter of the {@link PropertiesUtil} from Log4j API 2.x.
- *
- * @implNote Since {@link PropertiesUtil} requires all properties to start with {@code log4j2.}, we must add the prefix
- * before querying for the property.
+ * <p>
+ *     Since {@link PropertiesUtil} requires all properties to start with {@code log4j2.}, we must add the prefix
+ *     before querying for the property.
+ * </p>
  */
 public class PropertiesUtilPropertyEnvironment extends BasicPropertyEnvironment {
 

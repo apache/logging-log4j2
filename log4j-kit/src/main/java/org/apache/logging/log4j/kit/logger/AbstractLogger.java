@@ -143,7 +143,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     /**
-     * @implNote This method is used by all the other filtering methods.
+     * This method is used by all the other filtering methods and is the only that needs an implementation.
      */
     @Override
     public abstract boolean isEnabled(Level level, @Nullable Marker marker);
