@@ -1237,37 +1237,13 @@
               </annotationProcessorPaths>
               <compilerArgs combine.children="append">
                 <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
-                <arg>-Alog4j.docgen.descriptorFilePath=${project.build.directory}/log4j-plugins.xml</arg>
+                <arg>-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir.phase2}/${project.artifactId}-plugins.xml</arg>
                 <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
                 <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
                 <arg>-Alog4j.docgen.version=${project.version}</arg>
                 <arg>-Alog4j.docgen.description=${project.description}</arg>
               </compilerArgs>
             </configuration>
-          </plugin>
-
-          <!-- Attach the generated `log4j-plugins.xml` -->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-plugin-descriptor</id>
-                <goals>
-                  <goal>attach-artifact</goal>
-                </goals>
-                <phase>package</phase>
-                <configuration>
-                  <artifacts>
-                    <artifact>
-                      <file>${project.build.directory}/log4j-plugins.xml</file>
-                      <type>xml</type>
-                      <classifier>log4j-plugins</classifier>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
 
         </plugins>

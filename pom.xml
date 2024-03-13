@@ -336,8 +336,9 @@
     <!-- Dependency versions -->
     <log4j-docgen.version>1.0.0-SNAPSHOT</log4j-docgen.version>
 
-    <!-- Versions of libraries whose plugin descriptors will be documented: -->
-    <docgen.log4j.version>${revision}</docgen.log4j.version>
+    <!-- Directories where `log4j-docgen` annotation processor will emit files to -->
+    <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
+    <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
 
   </properties>
 
@@ -655,6 +656,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
+
           <!-- Copy `src/site/_release-notes` to `src/site/asciidoc/_release-notes`.
                This is necessary since `logging-parent` version `<=10.1.1` exports changelogs to `src/site/_release-notes`.
                Though `maven-site-plugin` expects them to be at `src/site/asciidoc/_release-notes`.
@@ -676,6 +678,7 @@
               </resources>
             </configuration>
           </execution>
+
           <!-- Copy `src/site` to `target/generated-sources/site` -->
           <execution>
             <id>copy-site</id>
@@ -698,6 +701,7 @@
               </resources>
             </configuration>
           </execution>
+
           <!-- Copy `target/site/apidocs` to the parent module's `target/site/javadoc/<artifactId>` folder -->
           <execution>
             <id>copy-javadoc</id>
@@ -739,165 +743,6 @@
               </target>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-
-      <!-- Descriptor documenting order matters!
-
-           Imagine we download all descriptors to the same folder.
-           Assume that the filesystem walks folder contents in alphanumeric order.
-           Sourcing `log4j-docgen:generate-*` from that folder will consume descriptors in the following order:
-
-           1. `log4j-1.2.api`
-           2. `log4j-cassandra`
-           3. `log4j-core`
-           4. ...
-
-           For instance, `AbstractFilterable` is defined by the descriptors of both `log4j-cassandra` and `log4j-core`.
-           Due to alphanumeric scanning order, it will appear as it is provided by `log4j-cassandra`.
-           Though, it is actually provided by `log4j-core`.
-           To avoid this problem, we download descriptors to folders associated with phases.
-           We will pass the folder of each phase in a certain order to `log4j-docgen:generate-*`. -->
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <inherited>false</inherited>
-        <executions>
-
-          <!-- Download plugin descriptors (phase 1) -->
-          <execution>
-            <id>download-plugin-descriptors-phase1</id>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <phase>pre-site</phase>
-            <configuration>
-              <outputDirectory>${project.build.directory}/plugin-descriptors/phase1</outputDirectory>
-              <artifactItems>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-core</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-              </artifactItems>
-            </configuration>
-          </execution>
-
-          <!-- Download plugin descriptors (phase 2) -->
-          <execution>
-            <id>download-plugin-descriptors-phase2</id>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <phase>pre-site</phase>
-            <configuration>
-              <outputDirectory>${project.build.directory}/plugin-descriptors/phase2</outputDirectory>
-              <artifactItems>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-1.2-api</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-cassandra</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-couchdb</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-docker</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-flume-ng</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-jakarta-web</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-jdbc-dbcp2</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-jpa</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-layout-template-json</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-mongodb3</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-mongodb4</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-spring-boot</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-              </artifactItems>
-            </configuration>
-          </execution>
 
         </executions>
       </plugin>
@@ -910,20 +755,39 @@
 
         <!-- Common docgen configuration -->
         <configuration>
+
+          <!-- Descriptor processing order matters!
+
+               Imagine we place all descriptors to the same folder.
+               Assume that the filesystem walks folder contents in alphanumeric order.
+               Sourcing `log4j-docgen:generate-*` from that folder will consume descriptors in the following order:
+
+               1. `log4j-1.2.api`
+               2. `log4j-cassandra`
+               3. `log4j-core`
+               4. ...
+
+               For instance, `AbstractFilterable` is defined by the descriptors of both `log4j-cassandra` and `log4j-core`.
+               Due to alphanumeric scanning order, it will appear as it is provided by `log4j-cassandra`.
+               Though, it is actually provided by `log4j-core`.
+               To avoid this problem, we place descriptors to folders associated with phases.
+               We pass the folder of each phase in a certain order to `log4j-docgen:generate-*`. -->
           <descriptorFileMatchers>
             <descriptorFileMatcher>
-              <baseDirectory>${project.build.directory}/plugin-descriptors/phase1</baseDirectory>
+              <baseDirectory>${log4j.docgen.pluginDescriptorsDir.phase1}</baseDirectory>
             </descriptorFileMatcher>
             <descriptorFileMatcher>
-              <baseDirectory>${project.build.directory}/plugin-descriptors/phase2</baseDirectory>
+              <baseDirectory>${log4j.docgen.pluginDescriptorsDir.phase2}</baseDirectory>
             </descriptorFileMatcher>
           </descriptorFileMatchers>
+
           <typeFilter>
             <!-- `excludes` must be in sync. with the `log4j-docgen-type-filter-exclude-pattern` configuration of `log4j-docgen-asciidoctor-extension`! -->
             <excludes>
               <exclude>java\..+</exclude>
             </excludes>
           </typeFilter>
+
         </configuration>
 
         <executions>
