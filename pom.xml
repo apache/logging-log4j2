@@ -742,20 +742,61 @@
         </executions>
       </plugin>
 
-      <!-- Download plugin descriptors -->
+      <!-- Descriptor documenting order matters!
+
+           Imagine we download all descriptors to the same folder.
+           Assume that the filesystem walks folder contents in alphanumeric order.
+           Sourcing `log4j-docgen:generate-*` from that folder will consume descriptors in the following order:
+
+           1. `log4j-1.2.api`
+           2. `log4j-cassandra`
+           3. `log4j-core`
+           4. ...
+
+           For instance, `AbstractFilterable` is defined by the descriptors of both `log4j-cassandra` and `log4j-core`.
+           Due to alphanumeric scanning order, it will appear as it is provided by `log4j-cassandra`.
+           Though, it is actually provided by `log4j-core`.
+           To avoid this problem, we download descriptors to folders associated with phases.
+           We will pass the folder of each phase in a certain order to `log4j-docgen:generate-*`. -->
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
+        <inherited>false</inherited>
         <executions>
+
+          <!-- Download plugin descriptors (phase 1) -->
           <execution>
-            <id>download-plugin-descriptors</id>
+            <id>download-plugin-descriptors-phase1</id>
             <goals>
               <goal>copy</goal>
             </goals>
             <phase>pre-site</phase>
-            <inherited>false</inherited>
             <configuration>
-              <outputDirectory>${project.build.directory}/plugin-descriptors</outputDirectory>
+              <outputDirectory>${project.build.directory}/plugin-descriptors/phase1</outputDirectory>
+              <artifactItems>
+
+                <artifactItem>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-core</artifactId>
+                  <version>${docgen.log4j.version}</version>
+                  <type>xml</type>
+                  <classifier>log4j-plugins</classifier>
+                </artifactItem>
+
+              </artifactItems>
+            </configuration>
+          </execution>
+
+          <!-- Download plugin descriptors (phase 2) -->
+          <execution>
+            <id>download-plugin-descriptors-phase2</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <outputDirectory>${project.build.directory}/plugin-descriptors/phase2</outputDirectory>
               <artifactItems>
 
                 <artifactItem>
@@ -769,14 +810,6 @@
                 <artifactItem>
                   <groupId>org.apache.logging.log4j</groupId>
                   <artifactId>log4j-cassandra</artifactId>
-                  <version>${docgen.log4j.version}</version>
-                  <type>xml</type>
-                  <classifier>log4j-plugins</classifier>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-core</artifactId>
                   <version>${docgen.log4j.version}</version>
                   <type>xml</type>
                   <classifier>log4j-plugins</classifier>
@@ -865,6 +898,7 @@
               </artifactItems>
             </configuration>
           </execution>
+
         </executions>
       </plugin>
 
@@ -878,11 +912,14 @@
         <configuration>
           <descriptorFileMatchers>
             <descriptorFileMatcher>
-              <baseDirectory>${project.build.directory}/plugin-descriptors</baseDirectory>
-              <pathPatterns>glob:**/*.xml</pathPatterns>
+              <baseDirectory>${project.build.directory}/plugin-descriptors/phase1</baseDirectory>
+            </descriptorFileMatcher>
+            <descriptorFileMatcher>
+              <baseDirectory>${project.build.directory}/plugin-descriptors/phase2</baseDirectory>
             </descriptorFileMatcher>
           </descriptorFileMatchers>
           <typeFilter>
+            <!-- `excludes` must be in sync. with the `log4j-docgen-type-filter-exclude-pattern` configuration of `log4j-docgen-asciidoctor-extension`! -->
             <excludes>
               <exclude>java\..+</exclude>
             </excludes>
@@ -891,7 +928,7 @@
 
         <executions>
 
-          <!-- Generate AsciiDoc from download plugin descriptors -->
+          <!-- Generate AsciiDoc from downloaded plugin descriptors -->
           <execution>
             <id>generate-plugin-docs</id>
             <goals>
@@ -906,12 +943,13 @@
               </indexTemplate>
               <typeTemplate>
                 <source>type.adoc.ftl</source>
+                <!-- `target` must be in sync. with the `log4j-docgen-type-template-target` configuration of `log4j-docgen-asciidoctor-extension`! -->
                 <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/%g/%a/%c.adoc</target>
               </typeTemplate>
             </configuration>
           </execution>
 
-          <!-- Generate XSD from download plugin descriptors -->
+          <!-- Generate XSD from downloaded plugin descriptors -->
           <execution>
             <id>generate-plugin-schema</id>
             <goals>
@@ -930,11 +968,28 @@
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
+        <!-- `log4j-docgen` uses `asciidoctorj` version `3.x`.
+             Though `asciidoctor-maven-plugin` version `<3.0.0` doesn't work against `asciidoctorj` version `3.x`.
+             Hence, override the `asciidoctor-maven-plugin` version to `3.x`. -->
+        <version>3.0.0</version>
         <dependencies>
           <dependency>
             <groupId>io.spring.asciidoctor</groupId>
             <artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
             <version>0.6.3</version>
+          </dependency>
+          <!-- `log4j-docgen` uses `asciidoctorj` version `3.x`.
+               Though `asciidoctor-maven-plugin` version `3.x` still uses `asciidoctorj` version `2.x`.
+               Hence, upgrade the `asciidoctorj` used to version `3.x`. -->
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj</artifactId>
+            <version>3.0.0-alpha.2</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-docgen-asciidoctor-extension</artifactId>
+            <version>${log4j-docgen.version}</version>
           </dependency>
         </dependencies>
         <executions>
@@ -955,6 +1010,11 @@
               <attributes>
                 <source-highlighter>rouge</source-highlighter>
                 <toc>left</toc>
+                <log4j-docgen-descriptor-directory>${project.build.directory}/plugin-descriptors</log4j-docgen-descriptor-directory>
+                <!-- `log4j-docgen-type-filter-exclude-pattern` must be in sync. with the `typeFilter` configuration of `log4j-docgen-maven-plugin`! -->
+                <log4j-docgen-type-filter-exclude-pattern>java\..+</log4j-docgen-type-filter-exclude-pattern>
+                <!-- `log4j-docgen-type-template-target` must be in sync. with the `typeTemplate` configuration of `log4j-docgen-maven-plugin`! -->
+                <log4j-docgen-type-template-target>../../%g/%a/%c.html</log4j-docgen-type-template-target>
               </attributes>
             </configuration>
           </execution>
