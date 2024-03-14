@@ -111,7 +111,7 @@
     <flume.version>1.11.0</flume.version>
     <graalvm.version>23.1.2</graalvm.version>
     <groovy.version>4.0.20</groovy.version>
-    <guava.version>33.0.0-jre</guava.version>
+    <guava.version>33.1.0-jre</guava.version>
     <h2.version>2.2.222</h2.version>
     <hadoop.version>1.2.1</hadoop.version>
     <hamcrest.version>2.2</hamcrest.version>
