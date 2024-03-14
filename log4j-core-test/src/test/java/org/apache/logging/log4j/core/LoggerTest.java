@@ -51,7 +51,6 @@ import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.spi.LoggingSystem;
 import org.awaitility.Awaitility;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Tag;
@@ -65,7 +64,8 @@ public class LoggerTest {
 
     private static void checkMessageFactory(final MessageFactory messageFactory, final Logger testLogger) {
         if (messageFactory == null) {
-            assertSame(LoggingSystem.getMessageFactory(), testLogger.getMessageFactory());
+            final org.apache.logging.log4j.Logger newLogger = LogManager.getLogger("checkMessageFactory");
+            assertSame(newLogger.getMessageFactory(), testLogger.getMessageFactory());
         } else {
             final MessageFactory actual = testLogger.getMessageFactory();
             assertEquals(messageFactory, actual);

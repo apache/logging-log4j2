@@ -152,7 +152,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return null;
     }
 
-    protected ReusableParameterizedMessage set(final String messagePattern, final Object... arguments) {
+    public ReusableParameterizedMessage set(final String messagePattern, final Object... arguments) {
         init(messagePattern, arguments == null ? 0 : arguments.length, arguments);
         varargs = arguments;
         return this;

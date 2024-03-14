@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.Consumer;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.kit.recycler.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.spi.recycler.Recycler;
 
 /**
  * Resolves a number from an internal counter.

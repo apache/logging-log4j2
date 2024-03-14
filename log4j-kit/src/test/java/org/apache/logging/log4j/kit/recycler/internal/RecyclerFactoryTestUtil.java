@@ -14,30 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jctools;
+package org.apache.logging.log4j.kit.recycler.internal;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Comparator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ServiceLoader;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.kit.env.TestPropertyEnvironment;
+import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
 import org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
-import org.junit.jupiter.api.Test;
+import org.jspecify.annotations.Nullable;
 
-class JCToolsRecyclerFactoryProviderTest {
+final class RecyclerFactoryTestUtil {
 
-    @Test
-    void verify_is_the_first() {
-        final List<Class<?>> providerClasses = ServiceLoaderUtil.safeStream(
+    private RecyclerFactoryTestUtil() {}
+
+    static @Nullable RecyclerFactory createForEnvironment(final String factory, final @Nullable Integer capacity) {
+        final Map<String, String> properties = new HashMap<>();
+        properties.put("recycler.factory", factory);
+        if (capacity != null) {
+            properties.put("recycler.capacity", capacity.toString());
+        }
+        final PropertyEnvironment env = new TestPropertyEnvironment(properties);
+        return ServiceLoaderUtil.safeStream(
                         RecyclerFactoryProvider.class,
                         ServiceLoader.load(
-                                RecyclerFactoryProvider.class, getClass().getClassLoader()),
+                                RecyclerFactoryProvider.class, RecyclerFactoryTestUtil.class.getClassLoader()),
                         StatusLogger.getLogger())
-                .sorted(Comparator.comparing(RecyclerFactoryProvider::getOrder))
-                .<Class<?>>map(RecyclerFactoryProvider::getClass)
-                .toList();
-        assertThat(providerClasses).startsWith(JCToolsRecyclerFactoryProvider.class);
+                .filter(p -> factory.equals(p.getName()))
+                .findFirst()
+                .map(p -> p.createForEnvironment(env))
+                .orElse(null);
     }
 }

@@ -28,6 +28,7 @@ import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Handles {@link ServiceLoader} lookups with better error handling.
@@ -52,6 +53,12 @@ public final class ServiceLoaderUtil {
         return StreamSupport.stream(new ServiceLoaderSpliterator<>(serviceLoader), false)
                 // only the first occurrence of a class
                 .filter(service -> classes.add(service.getClass()));
+    }
+
+    // Available in Log4j API 2.x
+    public static <S> Stream<S> safeStream(
+            final Class<S> ignoredServiceType, final ServiceLoader<S> serviceLoader, final Logger ignoredStatusLogger) {
+        return safeStream(serviceLoader);
     }
 
     private static class ServiceLoaderSpliterator<S> extends Spliterators.AbstractSpliterator<S> {

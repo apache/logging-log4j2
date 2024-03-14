@@ -14,87 +14,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jctools;
+package org.apache.logging.log4j.kit.recycler.internal;
 
 import static java.util.Objects.requireNonNull;
 
 import aQute.bnd.annotation.spi.ServiceProvider;
-import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.kit.recycler.Recycler;
 import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
 import org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider;
-import org.apache.logging.log4j.kit.recycler.RecyclerProperties;
 import org.apache.logging.log4j.kit.recycler.support.AbstractRecycler;
-import org.jctools.queues.MpmcArrayQueue;
 
 /**
- * A {@link Recycler} factory provider implementation based on <a href="https://jctools.github.io/JCTools/">JCTools</a>.
+ * A {@link Recycler} factory provider such that the recycler does not recycle anything; all instances are freshly created.
  *
  * @since 3.0.0
  */
 @ServiceProvider(RecyclerFactoryProvider.class)
-public final class JCToolsRecyclerFactoryProvider implements RecyclerFactoryProvider {
+public final class DummyRecyclerFactoryProvider implements RecyclerFactoryProvider {
+
+    public static final RecyclerFactoryProvider INSTANCE = new DummyRecyclerFactoryProvider();
 
     @Override
     public int getOrder() {
-        return 600;
+        return 900;
     }
 
     @Override
     public String getName() {
-        return "jctools-mpmc";
+        return "dummy";
     }
 
     @Override
     public RecyclerFactory createForEnvironment(final PropertyEnvironment environment) {
-        requireNonNull(environment, "environment");
-        final int capacity = environment.getProperty(RecyclerProperties.class).capacity();
-        return new JCToolsMpmcRecyclerFactory(capacity);
+        return DummyRecyclerFactory.INSTANCE;
     }
 
-    private static final class JCToolsMpmcRecyclerFactory implements RecyclerFactory {
+    // Visible for testing
+    static final class DummyRecyclerFactory implements RecyclerFactory {
 
-        private final int capacity;
+        private static final DummyRecyclerFactory INSTANCE = new DummyRecyclerFactory();
 
-        private JCToolsMpmcRecyclerFactory(final int capacity) {
-            this.capacity = capacity;
-        }
+        private DummyRecyclerFactory() {}
 
         @Override
-        public <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> cleaner) {
+        public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
             requireNonNull(supplier, "supplier");
-            requireNonNull(cleaner, "cleaner");
-            final MpmcArrayQueue<V> queue = new MpmcArrayQueue<>(capacity);
-            return new JCToolsMpmcRecycler<>(supplier, cleaner, queue);
+            return new DummyRecycler<>(supplier);
         }
 
-        private static final class JCToolsMpmcRecycler<V> extends AbstractRecycler<V> {
+        private static final class DummyRecycler<V> extends AbstractRecycler<V> {
 
-            private final Consumer<V> cleaner;
-
-            private final Queue<V> queue;
-
-            private JCToolsMpmcRecycler(final Supplier<V> supplier, final Consumer<V> cleaner, final Queue<V> queue) {
+            private DummyRecycler(final Supplier<V> supplier) {
                 super(supplier);
-                this.cleaner = cleaner;
-                this.queue = queue;
             }
 
             @Override
             public V acquire() {
-                final V value = queue.poll();
-                return value != null ? value : createInstance();
+                return createInstance();
             }
 
             @Override
-            public void release(final V value) {
-                requireNonNull(value, "value");
-                cleaner.accept(value);
-                queue.offer(value);
-            }
+            public void release(final V value) {}
         }
     }
 }

@@ -16,8 +16,12 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.Comparator;
 import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -29,6 +33,7 @@ import org.apache.logging.log4j.core.config.DefaultConfigurationFactory;
 import org.apache.logging.log4j.core.config.URIConfigurationFactory;
 import org.apache.logging.log4j.core.config.composite.DefaultMergeStrategy;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
+import org.apache.logging.log4j.core.impl.internal.ReusableMessageFactory;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
@@ -43,6 +48,10 @@ import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
+import org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider;
+import org.apache.logging.log4j.kit.recycler.RecyclerProperties;
+import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.Factory;
@@ -53,11 +62,10 @@ import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
-import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
  * Provides instance binding defaults.
@@ -88,20 +96,36 @@ public final class CoreDefaultBundle {
 
     @SingletonFactory
     @ConditionalOnMissingBinding
-    public MessageFactory defaultMessageFactory() {
-        return LoggingSystem.getMessageFactory();
+    public MessageFactory defaultMessageFactory(final RecyclerFactory recyclerFactory) {
+        return new ReusableMessageFactory(recyclerFactory);
     }
 
     @SingletonFactory
     @ConditionalOnMissingBinding
     public FlowMessageFactory defaultFlowMessageFactory() {
-        return LoggingSystem.getFlowMessageFactory();
+        return new DefaultFlowMessageFactory();
     }
 
     @SingletonFactory
     @ConditionalOnMissingBinding
-    public RecyclerFactory defaultRecyclerFactory() {
-        return LoggingSystem.getRecyclerFactory();
+    public RecyclerFactoryProvider defaultRecyclerFactoryProvider(
+            final PropertyEnvironment environment,
+            final ClassLoader loader,
+            final @Named("StatusLogger") org.apache.logging.log4j.Logger statusLogger) {
+        final String factory = environment.getProperty(RecyclerProperties.class).factory();
+        final Stream<RecyclerFactoryProvider> providerStream = ServiceLoaderUtil.safeStream(
+                RecyclerFactoryProvider.class, ServiceLoader.load(RecyclerFactoryProvider.class, loader), statusLogger);
+        final Optional<RecyclerFactoryProvider> provider = factory != null
+                ? providerStream.filter(p -> factory.equals(p.getName())).findAny()
+                : providerStream.min(Comparator.comparing(RecyclerFactoryProvider::getOrder));
+        return provider.orElseGet(RecyclerFactoryProvider::getInstance);
+    }
+
+    @SingletonFactory
+    @ConditionalOnMissingBinding
+    public RecyclerFactory defaultRecyclerFactory(
+            final PropertyEnvironment environment, final RecyclerFactoryProvider provider) {
+        return provider.createForEnvironment(environment);
     }
 
     @SingletonFactory

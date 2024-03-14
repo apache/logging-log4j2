@@ -23,7 +23,7 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
+import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
 
 /**
  * {@link Encoder} for {@link StringBuilder}s.

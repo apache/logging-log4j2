@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
+import org.apache.logging.log4j.kit.recycler.Recycler;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptor;
@@ -48,7 +49,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.util.Strings;
 
 @Configurable(elementType = Layout.ELEMENT_TYPE)

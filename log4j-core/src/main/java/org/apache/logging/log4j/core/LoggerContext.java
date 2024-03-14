@@ -87,6 +87,8 @@ public class LoggerContext extends AbstractLifeCycle
     public static final Key<LoggerContext> KEY = Key.forClass(LoggerContext.class);
 
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
+    private final MessageFactory defaultMessageFactory;
+
     private final Collection<Consumer<Configuration>> configurationStartedListeners = new ArrayList<>();
     private final Collection<Consumer<Configuration>> configurationStoppedListeners = new ArrayList<>();
     private final Lazy<List<LoggerContextShutdownAware>> listeners = Lazy.relaxed(CopyOnWriteArrayList::new);
@@ -139,6 +141,7 @@ public class LoggerContext extends AbstractLifeCycle
         this.configLocation = configLocation;
         this.environment = instanceFactory.getInstance(PropertyEnvironment.class);
         this.configurationScheduler = instanceFactory.getInstance(ConfigurationScheduler.class);
+        this.defaultMessageFactory = instanceFactory.getInstance(MessageFactory.class);
 
         this.configuration = new DefaultConfiguration(this);
         this.nullConfiguration = new NullConfiguration(this);
@@ -180,10 +183,10 @@ public class LoggerContext extends AbstractLifeCycle
      * @param logger The logger to check
      * @param messageFactory The message factory to check.
      */
-    public static void checkMessageFactory(final ExtendedLogger logger, final MessageFactory messageFactory) {
+    private void checkMessageFactory(final ExtendedLogger logger, final MessageFactory messageFactory) {
         final String name = logger.getName();
         final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-        final MessageFactory currentMessageFactory = LoggingSystem.getMessageFactory();
+        final MessageFactory currentMessageFactory = defaultMessageFactory;
         if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
             StatusLogger.getLogger()
                     .warn(
@@ -536,7 +539,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public Logger getLogger(final String name) {
-        return getLogger(name, null);
+        return getLogger(name, defaultMessageFactory);
     }
 
     /**
@@ -562,13 +565,14 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
+        final MessageFactory actualMessageFactory = messageFactory != null ? messageFactory : defaultMessageFactory;
         // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
-        Logger logger = loggerRegistry.getLogger(name, messageFactory);
+        Logger logger = loggerRegistry.getLogger(name, actualMessageFactory);
         if (logger != null) {
-            checkMessageFactory(logger, messageFactory);
+            checkMessageFactory(logger, actualMessageFactory);
             return logger;
         }
-        logger = newLogger(name, messageFactory);
+        logger = newLogger(name, actualMessageFactory);
         loggerRegistry.putIfAbsent(name, logger.getMessageFactory(), logger);
         return loggerRegistry.getLogger(name, logger.getMessageFactory());
     }
@@ -602,7 +606,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public boolean hasLogger(final String name) {
-        return loggerRegistry.hasLogger(name);
+        return loggerRegistry.hasLogger(name, defaultMessageFactory);
     }
 
     /**
@@ -906,13 +910,12 @@ public class LoggerContext extends AbstractLifeCycle
         return Logger.Builder.class;
     }
 
-    private Logger newLogger(final String name, final @Nullable MessageFactory messageFactory) {
-        final Logger.Builder builder =
-                instanceFactory.getInstance(getLoggerBuilderClass()).setName(name);
-        if (messageFactory != null) {
-            builder.setMessageFactory(messageFactory);
-        }
-        return builder.build();
+    private Logger newLogger(final String name, final MessageFactory messageFactory) {
+        return instanceFactory
+                .getInstance(getLoggerBuilderClass())
+                .setName(name)
+                .setMessageFactory(messageFactory)
+                .build();
     }
 
     /**

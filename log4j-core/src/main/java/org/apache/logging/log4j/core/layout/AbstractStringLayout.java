@@ -24,9 +24,9 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.CoreProperties.GarbageCollectionProperties;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.kit.recycler.Recycler;
+import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
 import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.spi.recycler.Recycler;
-import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**

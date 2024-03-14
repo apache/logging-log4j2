@@ -31,12 +31,11 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.kit.env.Log4jProperty;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.kit.env.TestPropertyEnvironment;
 import org.apache.logging.log4j.kit.logger.TestListLogger;
 import org.apache.logging.log4j.spi.StandardLevel;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.assertj.core.api.Assertions;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
@@ -260,24 +259,5 @@ class BasicPropertyEnvironmentTest {
         final Object actual = env.getProperty(expected.getClass());
         assertThat(actual).isEqualTo(expected);
         assertThat(logger.getMessages()).isEmpty();
-    }
-
-    private static class TestPropertyEnvironment extends BasicPropertyEnvironment {
-
-        private final Map<String, String> props;
-
-        public TestPropertyEnvironment(final Map<String, String> props) {
-            this(props, StatusLogger.getLogger());
-        }
-
-        public TestPropertyEnvironment(final Map<String, String> props, final Logger logger) {
-            super(logger);
-            this.props = props;
-        }
-
-        @Override
-        public String getStringProperty(final String name) {
-            return props.get(name);
-        }
     }
 }

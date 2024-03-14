@@ -17,16 +17,32 @@
 package org.apache.logging.log4j.kit.recycler;
 
 import org.apache.logging.log4j.kit.env.Log4jProperty;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-public class RecyclerKeys {
-
+/**
+ * A set of common configuration options for recyclers
+ *
+ * @param factory  The name of the recycler factory to use (cf. {@link RecyclerFactoryProvider#getName()}),
+ * @param capacity The capacity of the recycler.
+ */
+@NullMarked
+@Log4jProperty(name = "recycler")
+public record RecyclerProperties(@Nullable String factory, @Nullable Integer capacity) {
     /**
-     * A set of common configuration options for recyclers
-     *
-     * @param factory The name of the recycler factory to use (cf. {@link RecyclerFactoryProvider#getName()}),
-     * @param capacity The capacity of the recycler.
+     * The default recycler capacity: {@code max(2C+1, 8)}, {@code C} denoting the number of available processors
      */
-    @Log4jProperty
-    public record Recycler(@Nullable String factory, @Nullable Integer capacity) {}
+    private static final int DEFAULT_CAPACITY =
+            Math.max(2 * Runtime.getRuntime().availableProcessors() + 1, 8);
+
+    @Override
+    public Integer capacity() {
+        if (capacity == null) {
+            return DEFAULT_CAPACITY;
+        }
+        if (capacity < 1) {
+            throw new IllegalArgumentException("was expecting a `capacity` greater than 1, found: " + capacity);
+        }
+        return capacity;
+    }
 }

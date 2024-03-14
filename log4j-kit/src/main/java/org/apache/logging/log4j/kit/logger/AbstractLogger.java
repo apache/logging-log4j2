@@ -23,14 +23,17 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.kit.logger.internal.DefaultLogBuilder;
+import org.apache.logging.log4j.kit.message.RecyclingMessageFactory;
+import org.apache.logging.log4j.kit.recycler.Recycler;
+import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.spi.recycler.Recycler;
-import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
+import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -107,7 +110,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
     private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
 
     private final String name;
-    private final MessageFactory messageFactory;
+    private final MessageFactory2 messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private final Recycler<DefaultLogBuilder> recycler;
     private final Logger statusLogger;
@@ -125,7 +128,9 @@ public abstract class AbstractLogger implements ExtendedLogger {
             final RecyclerFactory recyclerFactory,
             final Logger statusLogger) {
         this.name = name;
-        this.messageFactory = messageFactory;
+        this.messageFactory = messageFactory instanceof final MessageFactory2 messageFactory2
+                ? messageFactory2
+                : new MessageFactory2Adapter(messageFactory);
         this.flowMessageFactory = flowMessageFactory;
         this.recycler = recyclerFactory.create(DefaultLogBuilder::new);
         this.statusLogger = statusLogger;
@@ -242,7 +247,9 @@ public abstract class AbstractLogger implements ExtendedLogger {
     // NOTE: This is a hot method. Current implementation compiles to 33 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private void recycle(final @Nullable Message message) {
-        messageFactory.recycle(message);
+        if (messageFactory instanceof final RecyclingMessageFactory recyclingMessageFactory) {
+            recyclingMessageFactory.recycle(message);
+        }
     }
 
     @PerformanceSensitive

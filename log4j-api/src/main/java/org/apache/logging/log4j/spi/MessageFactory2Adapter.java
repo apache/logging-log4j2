@@ -14,97 +14,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.message;
+package org.apache.logging.log4j.spi;
+
+import java.util.Objects;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.MessageFactory2;
+import org.apache.logging.log4j.message.SimpleMessage;
 
 /**
- * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
- * <p>
- * Enables the use of {@link java.util.Formatter} strings in message strings.
- * </p>
- * <p>
- * Creates {@link StringFormattedMessage} instances for {@link #newMessage(String, Object...)}.
- * </p>
- * <p>
- * This class is immutable.
- * </p>
- * <p>
- * <strong>Note to implementors:</strong>
- * </p>
- * <p>
- * This class implements all {@link MessageFactory} methods.
- * </p>
+ * Adapts a legacy MessageFactory to the new MessageFactory2 interface.
+ *
+ * @since 2.6
  */
-public final class StringFormatterMessageFactory implements MessageFactory2 {
+public class MessageFactory2Adapter implements MessageFactory2 {
+    private final MessageFactory wrapped;
 
-    /**
-     * Instance of StringFormatterMessageFactory.
-     */
-    public static final StringFormatterMessageFactory INSTANCE = new StringFormatterMessageFactory();
-
-    /**
-     * Constructs a message factory with default flow strings.
-     */
-    public StringFormatterMessageFactory() {}
-
-    /**
-     * Creates {@link StringFormattedMessage} instances.
-     *
-     * @param message The message pattern.
-     * @param params The parameters to the message.
-     * @return The Message.
-     *
-     * @see MessageFactory#newMessage(String, Object...)
-     */
-    @Override
-    public Message newMessage(final String message, final Object... params) {
-        return new StringFormattedMessage(message, params);
+    public MessageFactory2Adapter(final MessageFactory wrapped) {
+        this.wrapped = Objects.requireNonNull(wrapped);
     }
 
-    /**
-     * @since 2.6.1
-     */
+    public MessageFactory getOriginal() {
+        return wrapped;
+    }
+
+    @Override
+    public Message newMessage(final CharSequence charSequence) {
+        return new SimpleMessage(charSequence);
+    }
+
     @Override
     public Message newMessage(final String message, final Object p0) {
-        return new StringFormattedMessage(message, p0);
+        return wrapped.newMessage(message, p0);
     }
 
-    /**
-     * @since 2.6.1
-     */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1) {
-        return new StringFormattedMessage(message, p0, p1);
+        return wrapped.newMessage(message, p0, p1);
     }
 
-    /**
-     * @since 2.6.1
-     */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
-        return new StringFormattedMessage(message, p0, p1, p2);
+        return wrapped.newMessage(message, p0, p1, p2);
     }
 
-    /**
-     * @since 2.6.1
-     */
     @Override
     public Message newMessage(
             final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-        return new StringFormattedMessage(message, p0, p1, p2, p3);
+        return wrapped.newMessage(message, p0, p1, p2, p3);
     }
 
-    /**
-     * @since 2.6.1
-     */
     @Override
     public Message newMessage(
             final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-        return new StringFormattedMessage(message, p0, p1, p2, p3, p4);
+        return wrapped.newMessage(message, p0, p1, p2, p3, p4);
     }
 
-    /**
-     * @since 2.6.1
-     */
     @Override
     public Message newMessage(
             final String message,
@@ -114,12 +79,9 @@ public final class StringFormatterMessageFactory implements MessageFactory2 {
             final Object p3,
             final Object p4,
             final Object p5) {
-        return new StringFormattedMessage(message, p0, p1, p2, p3, p4, p5);
+        return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5);
     }
 
-    /**
-     * @since 2.6.1
-     */
     @Override
     public Message newMessage(
             final String message,
@@ -130,12 +92,9 @@ public final class StringFormatterMessageFactory implements MessageFactory2 {
             final Object p4,
             final Object p5,
             final Object p6) {
-        return new StringFormattedMessage(message, p0, p1, p2, p3, p4, p5, p6);
+        return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5, p6);
     }
 
-    /**
-     * @since 2.6.1
-     */
     @Override
     public Message newMessage(
             final String message,
@@ -147,12 +106,9 @@ public final class StringFormatterMessageFactory implements MessageFactory2 {
             final Object p5,
             final Object p6,
             final Object p7) {
-        return new StringFormattedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+        return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
-    /**
-     * @since 2.6.1
-     */
     @Override
     public Message newMessage(
             final String message,
@@ -165,12 +121,9 @@ public final class StringFormatterMessageFactory implements MessageFactory2 {
             final Object p6,
             final Object p7,
             final Object p8) {
-        return new StringFormattedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+        return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
-    /**
-     * @since 2.6.1
-     */
     @Override
     public Message newMessage(
             final String message,
@@ -184,6 +137,21 @@ public final class StringFormatterMessageFactory implements MessageFactory2 {
             final Object p7,
             final Object p8,
             final Object p9) {
-        return new StringFormattedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+        return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    }
+
+    @Override
+    public Message newMessage(final Object message) {
+        return wrapped.newMessage(message);
+    }
+
+    @Override
+    public Message newMessage(final String message) {
+        return wrapped.newMessage(message);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object... params) {
+        return wrapped.newMessage(message, params);
     }
 }

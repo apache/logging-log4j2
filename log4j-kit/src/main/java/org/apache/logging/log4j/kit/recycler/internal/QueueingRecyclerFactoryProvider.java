@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jctools;
+package org.apache.logging.log4j.kit.recycler.internal;
 
 import static java.util.Objects.requireNonNull;
 
 import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
@@ -28,56 +29,58 @@ import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
 import org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider;
 import org.apache.logging.log4j.kit.recycler.RecyclerProperties;
 import org.apache.logging.log4j.kit.recycler.support.AbstractRecycler;
-import org.jctools.queues.MpmcArrayQueue;
 
 /**
- * A {@link Recycler} factory provider implementation based on <a href="https://jctools.github.io/JCTools/">JCTools</a>.
- *
- * @since 3.0.0
+ * A {@link Recycler} factory provider such that the recycler pools objects in a fixed-size queue.
  */
 @ServiceProvider(RecyclerFactoryProvider.class)
-public final class JCToolsRecyclerFactoryProvider implements RecyclerFactoryProvider {
+public final class QueueingRecyclerFactoryProvider implements RecyclerFactoryProvider {
 
     @Override
     public int getOrder() {
-        return 600;
+        return 800;
     }
 
     @Override
     public String getName() {
-        return "jctools-mpmc";
+        return "queue";
     }
 
     @Override
     public RecyclerFactory createForEnvironment(final PropertyEnvironment environment) {
         requireNonNull(environment, "environment");
+
         final int capacity = environment.getProperty(RecyclerProperties.class).capacity();
-        return new JCToolsMpmcRecyclerFactory(capacity);
+        return new QueueingRecyclerFactory(capacity);
     }
 
-    private static final class JCToolsMpmcRecyclerFactory implements RecyclerFactory {
+    // Visible for testing
+    static final class QueueingRecyclerFactory implements RecyclerFactory {
 
-        private final int capacity;
+        // Visible for testing
+        final int capacity;
 
-        private JCToolsMpmcRecyclerFactory(final int capacity) {
+        private QueueingRecyclerFactory(int capacity) {
             this.capacity = capacity;
         }
 
         @Override
-        public <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> cleaner) {
+        public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
             requireNonNull(supplier, "supplier");
             requireNonNull(cleaner, "cleaner");
-            final MpmcArrayQueue<V> queue = new MpmcArrayQueue<>(capacity);
-            return new JCToolsMpmcRecycler<>(supplier, cleaner, queue);
+            final Queue<V> queue = new ArrayBlockingQueue<>(capacity);
+            return new QueueingRecycler<>(supplier, cleaner, queue);
         }
 
-        private static final class JCToolsMpmcRecycler<V> extends AbstractRecycler<V> {
+        // Visible for testing
+        static final class QueueingRecycler<V> extends AbstractRecycler<V> {
 
             private final Consumer<V> cleaner;
 
-            private final Queue<V> queue;
+            // Visible for testing
+            final Queue<V> queue;
 
-            private JCToolsMpmcRecycler(final Supplier<V> supplier, final Consumer<V> cleaner, final Queue<V> queue) {
+            private QueueingRecycler(final Supplier<V> supplier, final Consumer<V> cleaner, final Queue<V> queue) {
                 super(supplier);
                 this.cleaner = cleaner;
                 this.queue = queue;
