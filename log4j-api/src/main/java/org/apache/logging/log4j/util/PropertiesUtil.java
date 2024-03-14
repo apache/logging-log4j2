@@ -21,7 +21,6 @@ import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -486,7 +485,10 @@ public final class PropertiesUtil {
             }
             sources.add(propertySource);
             // We don't log anything on the status logger.
-            ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup(), false, false)
+            ServiceLoaderUtil.safeStream(
+                            PropertySource.class,
+                            ServiceLoader.load(PropertySource.class, PropertiesUtil.class.getClassLoader()),
+                            LOGGER)
                     .forEach(sources::add);
 
             reload();

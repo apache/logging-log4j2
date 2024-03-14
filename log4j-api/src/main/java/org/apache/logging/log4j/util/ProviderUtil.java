@@ -24,13 +24,13 @@ import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -152,7 +152,10 @@ public final class ProviderUtil {
                 STARTUP_LOCK.lockInterruptibly();
                 try {
                     if (PROVIDER == null) {
-                        ServiceLoaderUtil.loadServices(Provider.class, MethodHandles.lookup(), false)
+                        ServiceLoaderUtil.safeStream(
+                                        Provider.class,
+                                        ServiceLoader.load(Provider.class, ProviderUtil.class.getClassLoader()),
+                                        LOGGER)
                                 .filter(provider -> validVersion(provider.getVersions()))
                                 .forEach(ProviderUtil::addProvider);
 

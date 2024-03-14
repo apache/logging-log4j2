@@ -69,7 +69,10 @@ public final class StackLocator {
         Method getCallerClassMethod;
         int java7u25CompensationOffset = 0;
         try {
-            final Class<?> sunReflectionClass = LoaderUtil.loadClass("sun.reflect.Reflection");
+            // Do not use `LoaderUtil` here, since it causes a cycle of dependencies:
+            // LoaderUtil -> PropertiesUtil -> ServiceLoaderUtil -> StackLocator
+            final Class<?> sunReflectionClass =
+                    Class.forName("sun.reflect.Reflection", true, ClassLoader.getSystemClassLoader());
             getCallerClassMethod = sunReflectionClass.getDeclaredMethod("getCallerClass", int.class);
             Object o = getCallerClassMethod.invoke(null, 0);
             getCallerClassMethod.invoke(null, 0);
