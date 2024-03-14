@@ -19,7 +19,7 @@
 <#assign type = sourcedType.type/>
 <#-- @ftlvariable name="type" type="org.apache.logging.log4j.docgen.Type" -->
 <#-- @ftlvariable name="lookup" type="org.apache.logging.log4j.docgen.generator.TypeLookup" -->
-<#include "license.adoc.ftl">
+<#include "license.adoc">
 
 [#${type.className?replace('.', '_')}]
 = ${type.name!('`' + type.className + '`')}
@@ -135,3 +135,12 @@ a|${descriptionCell}
 * xref:../../${implSourcedType.groupId}/${implSourcedType.artifactId}/${impl}.adoc[${impl?contains('.')?then(impl?keep_after_last('.'), impl)}]
     </#list>
 </#if>
+
+[#shortcuts]
+== Shortcuts
+
+* xref:../../index.adoc[The plugin reference]
+* xref:../../org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.config.Configuration.adoc[The `<Configuration>` element assembly in a `log4j2.xml`]
+* xref:../../org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Appender.adoc[The type hierarchy of *appenders*]
+* xref:../../org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Layout.adoc[The type hierarchy of *layouts*]
+* xref:../../org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Filter.adoc[The type hierarchy of *filters*]

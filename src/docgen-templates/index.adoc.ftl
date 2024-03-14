@@ -16,9 +16,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <#-- @ftlvariable name="lookup" type="org.apache.logging.log4j.docgen.generator.TypeLookup" -->
-<#include "license.adoc.ftl">
+<#include "license.adoc">
+
+= Plugin reference
+
+This page is a Javadoc-on-steroids specialized for Log4j plugins.
+This reference manual is derived from the source code of all Log4j plugins and types associated with them.
+You can use this reference manual to precisely customize your `log4j2.xml`.
+
+[INFO]
+====
+Every running Log4j system is a constellation of xref:manual/plugins.adoc[plugins], which is analogous to beans in Java EE and Spring.
+This not only allows Log4j itself to be developed in individual components, but also enables extensibility users can leverage.
+====
+
+[#shortcuts]
+== Shortcuts
+
+* xref:org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.config.Configuration.adoc[The `<Configuration>` element assembly in a `log4j2.xml`]
+* xref:org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Appender.adoc[The type hierarchy of *appenders*]
+* xref:org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Layout.adoc[The type hierarchy of *layouts*]
+* xref:org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Filter.adoc[The type hierarchy of *filters*]
+
 [#index]
-= Index
+== Index
+
+Below is a list of all types reachable by plugins grouped by the Maven coordinate of the artifact bundling them.
+
 <#assign sourcedTypes = lookup?values/>
 <#-- @ftlvariable name="sourcedTypes" type="org.apache.logging.log4j.docgen.generator.ArtifactSourcedType[]" -->
 <#assign lastGroupId = ''/>
@@ -29,8 +53,8 @@ limitations under the License.
         <#assign lastArtifactId = sourcedType.artifactId/>
 
 [#${sourcedType.groupId?replace('.', '_')}-${sourcedType.artifactId?replace('.', '_')}]
-== `${sourcedType.groupId}:${sourcedType.artifactId}`
+=== `${sourcedType.groupId}:${sourcedType.artifactId}`
 
     </#if>
-* xref:plugin-reference/${sourcedType.groupId}/${sourcedType.artifactId}/${sourcedType.type.className}.adoc[`${sourcedType.type.className}`]
+* xref:${sourcedType.groupId}/${sourcedType.artifactId}/${sourcedType.type.className}.adoc[`${sourcedType.type.className}`]
 </#list>
