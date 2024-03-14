@@ -23,9 +23,15 @@
 This releases contains ...
 
 
+[#release-notes-2-x-x-added]
+=== Added
+
+* Add a faster `ThreadContextMap` for web app users: `org.apache.logging.log4j.internal.map.StringArrayThreadContextMap`. (https://github.com/apache/logging-log4j2/pull/2330[2330])
+
 [#release-notes-2-x-x-updated]
 === Updated
 
 * Update `actions/checkout` to version `4.1.2` (https://github.com/apache/logging-log4j2/pull/2370[2370])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2372[2372])
 * Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2361[2361])
+* Update `org.springframework:spring-framework-bom` to version `5.3.33` (https://github.com/apache/logging-log4j2/pull/2378[2378])
