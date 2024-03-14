@@ -117,7 +117,7 @@ public class LogEventWrapper implements LogEvent {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public @Nullable StackTraceElement getSource() {
         return peekSource();
     }
 
