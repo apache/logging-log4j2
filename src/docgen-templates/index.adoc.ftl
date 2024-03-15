@@ -26,7 +26,7 @@ You can use this reference manual to precisely customize your `log4j2.xml`.
 
 [INFO]
 ====
-Every running Log4j system is a constellation of xref:manual/plugins.adoc[plugins], which is analogous to beans in Java EE and Spring.
+Every running Log4j system is a constellation of xref:../manual/plugins.adoc[plugins], which is analogous to beans in Java EE and Spring.
 This not only allows Log4j itself to be developed in individual components, but also enables extensibility users can leverage.
 ====
 
