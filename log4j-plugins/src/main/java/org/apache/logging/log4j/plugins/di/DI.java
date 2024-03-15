@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.Scope;
 import org.apache.logging.log4j.plugins.util.OrderedComparator;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
@@ -75,8 +76,11 @@ public final class DI {
          */
         public FactoryBuilder() {
             provider = DefaultInstanceFactory::new;
-            initializer = factory -> ServiceLoaderUtil.safeStream(ServiceLoader.load(
-                            ConfigurableInstanceFactoryPostProcessor.class, DI.class.getClassLoader()))
+            initializer = factory -> ServiceLoaderUtil.safeStream(
+                            ConfigurableInstanceFactoryPostProcessor.class,
+                            ServiceLoader.load(
+                                    ConfigurableInstanceFactoryPostProcessor.class, DI.class.getClassLoader()),
+                            StatusLogger.getLogger())
                     .sorted(Comparator.comparing(
                             ConfigurableInstanceFactoryPostProcessor::getClass, OrderedComparator.INSTANCE))
                     .forEachOrdered(processor -> processor.postProcessFactory(factory));

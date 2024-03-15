@@ -22,12 +22,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedElement;
+import org.apache.logging.log4j.plugins.internal.util.AnnotationUtil;
 
 /**
  * Specifies the order in which the annotated element should be considered for dependency injection.
  *
  * @see org.apache.logging.log4j.plugins.util.OrderedComparator OrderedComparator
- * @see org.apache.logging.log4j.plugins.util.AnnotationUtil#getOrder(AnnotatedElement) getOrder
+ * @see AnnotationUtil#getOrder(AnnotatedElement) getOrder
  */
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
