@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,17 +63,16 @@ public class LoggerTest {
 
     static final String CONFIG = "log4j-test2.xml";
 
-    private static void checkMessageFactory(final MessageFactory messageFactory, final Logger testLogger) {
+    private void checkMessageFactory(final MessageFactory messageFactory, final Logger testLogger) {
         if (messageFactory == null) {
-            final org.apache.logging.log4j.Logger newLogger = LogManager.getLogger("checkMessageFactory");
-            assertSame(newLogger.getMessageFactory(), testLogger.getMessageFactory());
+            assertSame(defaultMessageFactory, testLogger.getMessageFactory());
         } else {
             final MessageFactory actual = testLogger.getMessageFactory();
             assertEquals(messageFactory, actual);
         }
     }
 
-    private static Logger testMessageFactoryMismatch(
+    private Logger testMessageFactoryMismatch(
             final String name, final MessageFactory messageFactory1, final MessageFactory messageFactory2) {
         final Logger testLogger1 = (Logger) LogManager.getLogger(name, messageFactory1);
         assertNotNull(testLogger1);
@@ -86,6 +86,7 @@ public class LoggerTest {
     org.apache.logging.log4j.Logger logger;
     org.apache.logging.log4j.Logger loggerChild;
     org.apache.logging.log4j.Logger loggerGrandchild;
+    MessageFactory defaultMessageFactory;
     private final ListAppender app;
 
     private final ListAppender host;
@@ -100,6 +101,7 @@ public class LoggerTest {
         logger = context.getLogger("LoggerTest");
         loggerChild = context.getLogger("LoggerTest.child");
         loggerGrandchild = context.getLogger("LoggerTest.child.grand");
+        defaultMessageFactory = context.getInstanceFactory().getInstance(MessageFactory.class);
         this.app = app.clear();
         this.host = host.clear();
         this.noThrown = noThrown.clear();
@@ -119,16 +121,20 @@ public class LoggerTest {
 
     @Test
     public void builder() {
+        final int currentLine = 124;
         logger.atDebug().withLocation().log("Hello");
         final Marker marker = MarkerManager.getMarker("test");
         logger.atError().withMarker(marker).log("Hello {}", "John");
         logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
-        assertEquals(
-                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:122)",
-                events.get(0).getSource().toString(),
-                "Incorrect location");
+        assertThat(events.get(0).getSource())
+                .extracting(
+                        StackTraceElement::getFileName,
+                        StackTraceElement::getClassName,
+                        StackTraceElement::getMethodName,
+                        StackTraceElement::getLineNumber)
+                .containsExactly("LoggerTest.java", LoggerTest.class.getName(), "builder", currentLine + 1);
         assertEquals(Level.DEBUG, events.get(0).getLevel(), "Incorrect Level");
         MatcherAssert.assertThat(
                 "Incorrect message", events.get(1).getMessage().getFormattedMessage(), equalTo("Hello John"));

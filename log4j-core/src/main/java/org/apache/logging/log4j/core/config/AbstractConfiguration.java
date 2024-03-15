@@ -82,7 +82,6 @@ import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.OrderedComparator;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.jspecify.annotations.NullMarked;
@@ -188,12 +187,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         this.configurationScheduler = parentInstanceFactory.getInstance(ConfigurationScheduler.class);
         this.environment = environment;
         this.instanceFactory = parentInstanceFactory.newChildInstanceFactory();
-        this.watchManager = new WatchManager(configurationScheduler);
+        this.watchManager = new WatchManager(configurationScheduler, LOGGER);
 
         configurationProcessor = new ConfigurationProcessor(instanceFactory);
         instanceFactory.registerBinding(Configuration.KEY, Lazy.weak(this));
-        ServiceLoaderUtil.safeStream(ServiceLoader.load(
-                        ConfigurableInstanceFactoryPostProcessor.class, AbstractConfiguration.class.getClassLoader()))
+        // Post-process the factory, after registering itself
+        ServiceLoaderUtil.safeStream(
+                        ConfigurableInstanceFactoryPostProcessor.class,
+                        ServiceLoader.load(
+                                ConfigurableInstanceFactoryPostProcessor.class, LoggerContext.class.getClassLoader()),
+                        LOGGER)
                 .sorted(Comparator.comparing(
                         ConfigurableInstanceFactoryPostProcessor::getClass, OrderedComparator.INSTANCE))
                 .forEachOrdered(processor -> processor.postProcessFactory(instanceFactory));
@@ -298,8 +301,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     private void initializeScriptManager() {
         try {
-            ServiceLoaderUtil.safeStream(ServiceLoader.load(
-                            ScriptManagerFactory.class, AbstractConfiguration.class.getClassLoader()))
+            ServiceLoaderUtil.safeStream(
+                            ScriptManagerFactory.class,
+                            ServiceLoader.load(
+                                    ScriptManagerFactory.class, AbstractConfiguration.class.getClassLoader()),
+                            LOGGER)
                     .findFirst()
                     .ifPresent(factory -> setScriptManager(factory.createScriptManager(this, getWatchManager())));
         } catch (final LinkageError | Exception e) {
@@ -1037,13 +1043,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             return loggerConfig;
         }
         String substr = loggerName;
-        while ((substr = NameUtil.getSubName(substr)) != null) {
+        while ((substr = getSubName(substr)) != null) {
             loggerConfig = loggerConfigs.get(substr);
             if (loggerConfig != null) {
                 return loggerConfig;
             }
         }
         return root;
+    }
+
+    private static @Nullable String getSubName(final String name) {
+        if (Strings.isEmpty(name)) {
+            return null;
+        }
+        final int i = name.lastIndexOf('.');
+        return i > 0 ? name.substring(0, i) : Strings.EMPTY;
     }
 
     @Override

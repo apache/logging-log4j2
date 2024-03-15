@@ -21,6 +21,8 @@ import static org.apache.logging.log4j.plugins.di.Key.forClass;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
 import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
@@ -54,27 +56,21 @@ public class CoreInstanceFactoryPostProcessor implements ConfigurableInstanceFac
     @Override
     public void postProcessFactory(final ConfigurableInstanceFactory factory) {
         final PropertyEnvironment env = factory.getInstance(PropertyEnvironment.class);
-        registerFromProperties(factory, env);
+        // TODO: replace with an appropriate scoping of the definitions
+        if (factory.hasBinding(Configuration.KEY)) {
+            registerConfigurationServices(factory, env);
+        } else if (factory.hasBinding(LoggerContext.KEY)) {
+            registerLoggerContextSevices(factory, env);
+        } else {
+            registerGlobalServices(factory, env);
+        }
         factory.registerBundles(ClockFactory.class, CoreDefaultBundle.class);
     }
 
-    private void registerFromProperties(final ConfigurableInstanceFactory factory, final PropertyEnvironment env) {
-        final AuthenticationProperties auth = env.getProperty(AuthenticationProperties.class);
-        registerIfPresent(factory, AuthorizationProvider.class, auth.type());
-
-        final ConfigurationProperties configuration = env.getProperty(ConfigurationProperties.class);
-        registerIfPresent(factory, ConfigurationFactory.class, configuration.configurationFactory());
-        registerIfPresent(factory, MergeStrategy.class, configuration.mergeStrategy());
-
+    private void registerConfigurationServices(
+            final ConfigurableInstanceFactory factory, final PropertyEnvironment env) {
         final LogEventProperties logEvent = env.getProperty(LogEventProperties.class);
         registerIfPresent(factory, LogEventFactory.class, logEvent.factory());
-
-        final MessageProperties message = env.getProperty(MessageProperties.class);
-        registerIfPresent(factory, MessageFactory.class, message.factory());
-
-        final LoggerContextProperties loggerContext = env.getProperty(LoggerContextProperties.class);
-        registerIfPresent(factory, ContextSelector.class, loggerContext.selector());
-        registerIfPresent(factory, ShutdownCallbackRegistry.class, loggerContext.shutdownCallbackRegistry());
 
         final StatusLoggerProperties statusLogger = env.getProperty(StatusLoggerProperties.class);
         if (statusLogger.defaultStatusLevel() != null) {
@@ -83,6 +79,25 @@ public class CoreInstanceFactoryPostProcessor implements ConfigurableInstanceFac
 
         final ThreadContextProperties threadContext = env.getProperty(ThreadContextProperties.class);
         registerIfPresent(factory, ContextDataInjector.class, threadContext.contextDataInjector());
+    }
+
+    private void registerGlobalServices(final ConfigurableInstanceFactory factory, final PropertyEnvironment env) {
+        final LoggerContextProperties loggerContext = env.getProperty(LoggerContextProperties.class);
+        registerIfPresent(factory, ContextSelector.class, loggerContext.selector());
+        registerIfPresent(factory, ShutdownCallbackRegistry.class, loggerContext.shutdownCallbackRegistry());
+    }
+
+    private void registerLoggerContextSevices(
+            final ConfigurableInstanceFactory factory, final PropertyEnvironment env) {
+        final AuthenticationProperties auth = env.getProperty(AuthenticationProperties.class);
+        registerIfPresent(factory, AuthorizationProvider.class, auth.type());
+
+        final ConfigurationProperties configuration = env.getProperty(ConfigurationProperties.class);
+        registerIfPresent(factory, ConfigurationFactory.class, configuration.configurationFactory());
+        registerIfPresent(factory, MergeStrategy.class, configuration.mergeStrategy());
+
+        final MessageProperties message = env.getProperty(MessageProperties.class);
+        registerIfPresent(factory, MessageFactory.class, message.factory());
     }
 
     private <T> void registerIfPresent(

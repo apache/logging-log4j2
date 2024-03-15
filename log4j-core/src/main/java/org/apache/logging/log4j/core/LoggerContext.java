@@ -65,7 +65,6 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
 import org.apache.logging.log4j.spi.LoggerRegistry;
-import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
@@ -91,7 +90,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     private final Collection<Consumer<Configuration>> configurationStartedListeners = new ArrayList<>();
     private final Collection<Consumer<Configuration>> configurationStoppedListeners = new ArrayList<>();
-    private final Lazy<List<LoggerContextShutdownAware>> listeners = Lazy.relaxed(CopyOnWriteArrayList::new);
+    private final Lazy<List<LoggerContextShutdownAware>> listeners = Lazy.lazy(CopyOnWriteArrayList::new);
     private final ConfigurableInstanceFactory instanceFactory;
     private final PropertyEnvironment environment;
     private final ConfigurationScheduler configurationScheduler;
@@ -128,8 +127,11 @@ public class LoggerContext extends AbstractLifeCycle
         this.instanceFactory = Objects.requireNonNull(instanceFactory);
         this.instanceFactory.registerBinding(KEY, Lazy.weak(this));
         // Post-process the factory, after registering itself
-        ServiceLoaderUtil.safeStream(ServiceLoader.load(
-                        ConfigurableInstanceFactoryPostProcessor.class, LoggerContext.class.getClassLoader()))
+        ServiceLoaderUtil.safeStream(
+                        ConfigurableInstanceFactoryPostProcessor.class,
+                        ServiceLoader.load(
+                                ConfigurableInstanceFactoryPostProcessor.class, LoggerContext.class.getClassLoader()),
+                        LOGGER)
                 .sorted(Comparator.comparing(
                         ConfigurableInstanceFactoryPostProcessor::getClass, OrderedComparator.INSTANCE))
                 .forEachOrdered(processor -> processor.postProcessFactory(instanceFactory));
@@ -178,7 +180,7 @@ public class LoggerContext extends AbstractLifeCycle
     /**
      * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
      * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
-     * MessageFactory {@link LoggingSystem#getMessageFactory()}.
+     * MessageFactory.
      *
      * @param logger The logger to check
      * @param messageFactory The message factory to check.
@@ -355,7 +357,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     private void setUpShutdownHook() {
         if (shutdownCallback == null) {
-            final LoggerContextFactory factory = LogManager.getFactory();
+            final LoggerContextFactory factory = instanceFactory.getInstance(LoggerContextFactory.class);
             if (factory instanceof ShutdownCallbackRegistry) {
                 LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Shutdown hook enabled. Registering a new one.");
                 // LOG4J2-1642 preload ExecutorServices as it is used in shutdown hook

@@ -26,6 +26,8 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.Constants;
 
 /**
  * Binding for the Log4j API.
@@ -33,7 +35,7 @@ import org.apache.logging.log4j.spi.Provider;
 @ServiceProvider(value = Provider.class, resolution = Resolution.OPTIONAL)
 public class Log4jProvider extends Provider {
 
-    private final ConfigurableInstanceFactory instanceFactory;
+    final ConfigurableInstanceFactory instanceFactory;
 
     public Log4jProvider() {
         this(DI.createInitializedFactory());
@@ -41,10 +43,11 @@ public class Log4jProvider extends Provider {
 
     @Inject
     public Log4jProvider(final ConfigurableInstanceFactory instanceFactory) {
-        super(10, "3.0.0", Log4jContextFactory.class);
+        super(10, CURRENT_VERSION, Log4jContextFactory.class);
         this.instanceFactory = instanceFactory;
         instanceFactory.registerBinding(Key.forClass(Provider.class), () -> this);
         instanceFactory.registerBinding(Key.forClass(Log4jProvider.class), () -> this);
+        instanceFactory.registerBinding(Key.forClass(ThreadContextMap.class), super::getThreadContextMapInstance);
     }
 
     @Override
@@ -57,15 +60,19 @@ public class Log4jProvider extends Provider {
         final PropertyEnvironment environment = instanceFactory.getInstance(PropertyEnvironment.class);
         final ThreadContextProperties threadContext = environment.getProperty(ThreadContextProperties.class);
         if (threadContext.enable() && threadContext.enableMap()) {
-
             if (threadContext.mapClass() != null) {
                 return threadContext.mapClass();
             }
-
-            return threadContext.garbageFree()
-                    ? "org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap"
-                    : "org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap";
+            if (Constants.ENABLE_THREADLOCALS) {
+                return threadContext.garbageFree() ? GARBAGE_FREE_CONTEXT_MAP : COPY_ON_WRITE_CONTEXT_MAP;
+            }
+            return WEB_APP_CONTEXT_MAP;
         }
-        return "org.apache.logging.log4j.spi.NoOpThreadContextMap";
+        return NO_OP_CONTEXT_MAP;
+    }
+
+    @Override
+    public ThreadContextMap getThreadContextMapInstance() {
+        return instanceFactory.getInstance(Key.forClass(ThreadContextMap.class));
     }
 }

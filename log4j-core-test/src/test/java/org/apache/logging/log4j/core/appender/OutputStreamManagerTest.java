@@ -29,10 +29,13 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * OutputStreamManager Tests.
  */
+@SetSystemProperty(key = "log4j2.status.entries", value = "10")
+@SetSystemProperty(key = "log4j2.StatusLogger.level", value = "WARN")
 public class OutputStreamManagerTest {
 
     @Test

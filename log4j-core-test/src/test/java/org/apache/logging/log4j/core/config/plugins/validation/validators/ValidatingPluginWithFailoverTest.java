@@ -18,13 +18,6 @@ package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Core;
@@ -39,14 +32,14 @@ import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.status.StatusData;
-import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-@StatusLoggerLevel("OFF")
+@UsingStatusListener
 public class ValidatingPluginWithFailoverTest {
 
     private final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
@@ -73,18 +66,13 @@ public class ValidatingPluginWithFailoverTest {
     }
 
     @Test
-    public void testDoesNotLog_NoParameterThatMatchesElement_message() {
-        final StatusListener listener = mock(StatusListener.class);
-        when(listener.getStatusLevel()).thenReturn(Level.WARN);
+    public void testDoesNotLog_NoParameterThatMatchesElement_message(final ListStatusListener listener) {
         instanceFactory.registerBinding(Configuration.KEY, NullConfiguration::new);
         final StatusLogger logger = StatusLogger.getLogger();
         logger.trace("Initializing");
-        logger.registerListener(listener);
         final FailoverAppender failoverAppender = processor.processNodeTree(node);
 
-        verify(listener, times(1)).getStatusLevel();
-        verify(listener, never()).log(any(StatusData.class));
-        verifyNoMoreInteractions(listener);
+        Assertions.assertThat(listener.findStatusData(Level.WARN)).isEmpty();
         assertNotNull(failoverAppender);
         assertEquals("Failover", failoverAppender.getName());
     }

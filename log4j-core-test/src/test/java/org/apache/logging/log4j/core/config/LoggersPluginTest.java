@@ -24,13 +24,14 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests LoggersPlugin.
  */
-@StatusLoggerLevel("ERROR")
+@SetSystemProperty(key = "log4j2.status.entries", value = "10")
+@SetSystemProperty(key = "log4j2.StatusLogger.level", value = "WARN")
 @LoggerContextSource("multipleRootLoggersTest.xml")
 public class LoggersPluginTest {
 

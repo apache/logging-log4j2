@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.apache.logging.log4j.util.Constants.isWebApp;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +38,7 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.jspecify.annotations.NullMarked;
 
@@ -431,15 +430,9 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     public boolean isShutdownHookEnabled() {
-        return !isWebApp()
+        return !Constants.IS_WEB_APP
                 && PropertyEnvironment.getGlobal()
                         .getProperty(CoreProperties.LoggerContextProperties.class)
                         .shutdownHookEnabled();
-    }
-
-    @Override
-    public org.apache.logging.log4j.spi.LoggerContext wrapLoggerContext(
-            org.apache.logging.log4j.spi.LoggerContext loggerContext) {
-        return loggerContext;
     }
 }

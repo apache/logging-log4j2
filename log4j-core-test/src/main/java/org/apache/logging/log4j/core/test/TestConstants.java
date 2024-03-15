@@ -75,15 +75,13 @@ public final class TestConstants {
 
     private static final String JNDI = "log4j.jndi.";
 
-    public static final String JNDI_CONTEXT_SELECTOR = JNDI + "enableContextSelector";
-
     public static final String JNDI_ENABLE_LOOKUP = JNDI + "enableLookup";
 
     public static final String JNDI_ENABLE_JDBC = JNDI + "enableJdbc";
 
-    public static final String JNDI_ENABLE_JMS = JNDI + "enableJms";
-
     private static final String LOGGER_CONTEXT = "log4j.loggerContext.";
+
+    public static final String LOGGER_CONTEXT_FACTORY = LOGGER_CONTEXT + "factory";
 
     public static final String LOGGER_CONTEXT_SELECTOR = LOGGER_CONTEXT + "selector";
 

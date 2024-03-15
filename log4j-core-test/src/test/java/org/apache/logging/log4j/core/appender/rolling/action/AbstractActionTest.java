@@ -26,11 +26,12 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-@StatusLoggerLevel("WARN")
-public class AbstractActionTest {
+@SetSystemProperty(key = "log4j2.status.entries", value = "10")
+@SetSystemProperty(key = "log4j2.StatusLogger.level", value = "WARN")
+class AbstractActionTest {
 
     // Test for LOG4J2-2658
     @Test

@@ -31,13 +31,17 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Constructor;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.core.ThreadContextTestAccess;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.After;
@@ -122,9 +126,11 @@ public class ThreadContextDataInjectorTest {
     }
 
     private void prepareThreadContext(final boolean isThreadContextMapInheritable) {
-        LoggingSystem.getProvider()
-                .setThreadContextMapFactory(threadContextMapConstructor.apply(isThreadContextMapInheritable));
-        ThreadContext.init();
+        ((Log4jProvider) ProviderUtil.getProvider())
+                .instanceFactory.registerBinding(
+                        Key.forClass(ThreadContextMap.class),
+                        () -> threadContextMapConstructor.apply(isThreadContextMapInheritable));
+        ThreadContextTestAccess.init();
         ThreadContext.remove("baz");
         ThreadContext.put("foo", "bar");
     }
@@ -149,22 +155,24 @@ public class ThreadContextDataInjectorTest {
         final Try<Class<?>> loadedClass = ReflectionSupport.tryToLoadClass(THREAD_LOCAL_MAP_CLASS_NAME);
         final Class<? extends ThreadContextMap> mapClass =
                 assertDoesNotThrow(loadedClass::get).asSubclass(ThreadContextMap.class);
-        return newInstanceWithCapacityArg(mapClass, inheritable);
+        return newInstanceWithPropertiesUtilArg(mapClass, inheritable);
     }
 
     private static ThreadContextMap createGarbageFreeMap(final boolean inheritable) {
         final Try<Class<?>> loadedClass = ReflectionSupport.tryToLoadClass(GARBAGE_FREE_MAP_CLASS_NAME);
         final Class<? extends ThreadContextMap> mapClass =
                 assertDoesNotThrow(loadedClass::get).asSubclass(ThreadContextMap.class);
-        return newInstanceWithCapacityArg(mapClass, inheritable);
+        return newInstanceWithPropertiesUtilArg(mapClass, inheritable);
     }
 
-    private static ThreadContextMap newInstanceWithCapacityArg(
+    private static ThreadContextMap newInstanceWithPropertiesUtilArg(
             final Class<? extends ThreadContextMap> mapClass, final boolean inheritable) {
         final Constructor<? extends ThreadContextMap> constructor =
-                assertDoesNotThrow(() -> mapClass.getDeclaredConstructor(Boolean.TYPE, Integer.TYPE));
+                assertDoesNotThrow(() -> mapClass.getDeclaredConstructor(PropertiesUtil.class));
         assertTrue(constructor.trySetAccessible(), () -> "Unable to access constructor for " + mapClass);
-        return assertDoesNotThrow(
-                () -> constructor.newInstance(inheritable, LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY));
+        final Properties properties = new Properties();
+        properties.setProperty("log4j2.isThreadContextMapInheritable", Boolean.toString(inheritable));
+        final PropertiesUtil propertiesUtil = new PropertiesUtil(properties);
+        return assertDoesNotThrow(() -> constructor.newInstance(propertiesUtil));
     }
 }
