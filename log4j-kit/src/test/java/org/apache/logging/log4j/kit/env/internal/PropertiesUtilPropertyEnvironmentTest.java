@@ -35,7 +35,7 @@ class PropertiesUtilPropertyEnvironmentTest extends AbstractPropertyNamesTest {
 
     @Test
     @SetSystemProperty(key = "log4j2.messageFactory", value = "2.x")
-    @SetSystemProperty(key = "log4j2.transportSecurityKeystorePath", value = "2.x")
+    @SetSystemProperty(key = "log4j2.transportSecurityKeyStorePath", value = "2.x")
     void properties_2_x_are_recognized() {
         final PropertyEnvironment environment = new PropertiesUtilPropertyEnvironment(PROPERTIES_UTIL, LOGGER);
         assertPropertiesAreSet("2.x", environment);

@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class PropertiesUtilPropertyEnvironment extends BasicPropertyEnvironment {
 
-    private static final String PREFIX = "log4j2.";
+    private static final String PREFIX = "log4j.";
     public static final PropertyEnvironment INSTANCE =
             new PropertiesUtilPropertyEnvironment(PropertiesUtil.getProperties(), StatusLogger.getLogger());
 
