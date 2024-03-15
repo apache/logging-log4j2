@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.Test;
 
@@ -238,32 +240,18 @@ public class UnmodifiableArrayBackedMapTest {
 
     @Test
     public void testForEachBiConsumer_JavaUtil() {
-        UnmodifiableArrayBackedMap map = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
-        Set<String> keys = new HashSet<>();
-        java.util.function.BiConsumer<String, String> java_util_action =
-                new java.util.function.BiConsumer<String, String>() {
-                    @Override
-                    public void accept(String key, String value) {
-                        keys.add(key);
-                    }
-                };
-        map.forEach(java_util_action);
+        final Map<String, String> map = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
+        final Collection<String> keys = new HashSet<>();
+        map.forEach((key, value) -> keys.add(key));
         assertEquals(map.keySet(), keys);
     }
 
     @Test
     public void testForEachBiConsumer_Log4jUtil() {
-        UnmodifiableArrayBackedMap map = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
-        Set<String> keys = new HashSet<>();
-        org.apache.logging.log4j.util.BiConsumer<String, String> log4j_util_action =
-                new org.apache.logging.log4j.util.BiConsumer<String, String>() {
-                    @Override
-                    public void accept(String key, String value) {
-                        keys.add(key);
-                    }
-                };
-        map.forEach(log4j_util_action);
-        assertEquals(map.keySet(), keys);
+        final ReadOnlyStringMap map = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
+        final Collection<String> keys = new HashSet<>();
+        map.forEach((key, value) -> keys.add(key));
+        assertEquals(map.toMap().keySet(), keys);
     }
 
     @Test
