@@ -1242,6 +1242,7 @@
                 <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
                 <arg>-Alog4j.docgen.version=${project.version}</arg>
                 <arg>-Alog4j.docgen.description=${project.description}</arg>
+                <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
               </compilerArgs>
             </configuration>
           </plugin>

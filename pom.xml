@@ -336,6 +336,11 @@
     <!-- Dependency versions -->
     <log4j-docgen.version>1.0.0-SNAPSHOT</log4j-docgen.version>
 
+    <!-- ==================================
+         `log4j-docgen`-specific properties
+         ================================== -->
+    <!-- `log4j-docgen` qualified class name exclude pattern -->
+    <log4j.docgen.typeFilter.excludePattern>^java\..+</log4j.docgen.typeFilter.excludePattern>
     <!-- Directories where `log4j-docgen` annotation processor will emit files to -->
     <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
     <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
@@ -521,6 +526,14 @@
 
     </dependencies>
   </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-docgen</artifactId>
+      <version>${log4j-docgen.version}</version>
+    </dependency>
+  </dependencies>
 
   <build>
 
@@ -782,9 +795,8 @@
           </descriptorFileMatchers>
 
           <typeFilter>
-            <!-- `excludes` must be in sync. with the `log4j-docgen-type-filter-exclude-pattern` configuration of `log4j-docgen-asciidoctor-extension`! -->
             <excludes>
-              <exclude>java\..+</exclude>
+              <exclude>${log4j.docgen.typeFilter.excludePattern}</exclude>
             </excludes>
           </typeFilter>
 
@@ -875,8 +887,7 @@
                 <source-highlighter>rouge</source-highlighter>
                 <toc>left</toc>
                 <log4j-docgen-descriptor-directory>${project.build.directory}/plugin-descriptors</log4j-docgen-descriptor-directory>
-                <!-- `log4j-docgen-type-filter-exclude-pattern` must be in sync. with the `typeFilter` configuration of `log4j-docgen-maven-plugin`! -->
-                <log4j-docgen-type-filter-exclude-pattern>java\..+</log4j-docgen-type-filter-exclude-pattern>
+                <log4j-docgen-type-filter-exclude-pattern>${log4j.docgen.typeFilter.excludePattern}</log4j-docgen-type-filter-exclude-pattern>
                 <!-- `log4j-docgen-type-template-target` must be in sync. with the `typeTemplate` configuration of `log4j-docgen-maven-plugin`! -->
                 <log4j-docgen-type-template-target>../../%g/%a/%c.html</log4j-docgen-type-template-target>
               </attributes>
