@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.plugins.util;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;

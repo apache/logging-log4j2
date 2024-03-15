@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.plugins.util;
 
 /**
  * Exception thrown when an error occurs while accessing internal resources. This is generally used to
