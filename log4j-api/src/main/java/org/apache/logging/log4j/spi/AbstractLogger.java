@@ -35,7 +35,6 @@ import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LambdaUtil;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -198,12 +197,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     private static MessageFactory2 createDefaultMessageFactory() {
-        try {
-            final MessageFactory result = LoaderUtil.newInstanceOf(DEFAULT_MESSAGE_FACTORY_CLASS);
-            return narrow(result);
-        } catch (final ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
+        return ParameterizedMessageFactory.INSTANCE;
     }
 
     private static MessageFactory2 narrow(final MessageFactory result) {
@@ -214,11 +208,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     private static FlowMessageFactory createDefaultFlowMessageFactory() {
-        try {
-            return LoaderUtil.newInstanceOf(DEFAULT_FLOW_MESSAGE_FACTORY_CLASS);
-        } catch (final ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
+        return DefaultFlowMessageFactory.INSTANCE;
     }
 
     @Override

@@ -17,8 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
+import java.util.Objects;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
@@ -33,6 +32,8 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     private static final String EXIT_DEFAULT_PREFIX = "Exit";
     private static final String ENTRY_DEFAULT_PREFIX = "Enter";
     private static final long serialVersionUID = 8578655591131397576L;
+
+    public static final FlowMessageFactory INSTANCE = new DefaultFlowMessageFactory();
 
     private final String entryText;
     private final String exitText;
@@ -51,17 +52,22 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @param exitText the text to use for trace exit, like {@code "Exit"}.
      */
     public DefaultFlowMessageFactory(final String entryText, final String exitText) {
+        this(entryText, exitText, createDefaultMessageFactory());
+    }
+
+    public DefaultFlowMessageFactory(final MessageFactory messageFactory) {
+        this(ENTRY_DEFAULT_PREFIX, EXIT_DEFAULT_PREFIX, Objects.requireNonNull(messageFactory));
+    }
+
+    private DefaultFlowMessageFactory(
+            final String entryText, final String exitText, final MessageFactory messageFactory) {
         this.entryText = entryText;
         this.exitText = exitText;
-        this.messageFactory = createDefaultMessageFactory();
+        this.messageFactory = messageFactory;
     }
 
     private static MessageFactory createDefaultMessageFactory() {
-        try {
-            return LoaderUtil.newInstanceOf(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS);
-        } catch (final ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
+        return ParameterizedMessageFactory.INSTANCE;
     }
 
     private static class AbstractFlowMessage implements FlowMessage, StringBuilderFormattable {
