@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.plugins.internal.util;
 
 import java.util.function.Supplier;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.jspecify.annotations.Nullable;
 
 public sealed interface BindingMap permits DefaultBindingMap {
     <T> @Nullable Supplier<T> get(final Key<T> key, final Iterable<String> aliases);

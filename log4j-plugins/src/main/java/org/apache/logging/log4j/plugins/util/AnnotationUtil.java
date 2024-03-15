@@ -76,7 +76,7 @@ public final class AnnotationUtil {
         for (final Annotation annotation : element.getAnnotations()) {
             final Class<? extends Annotation> annotationType = annotation.annotationType();
             final String packageName = annotationType.getPackageName();
-            if (packageName.startsWith("java.lang.") || packageName.startsWith("org.apache.logging.log4j.lang.")) {
+            if (packageName.startsWith("java.lang.") || packageName.startsWith("org.jspecify.annotations.")) {
                 continue;
             }
             if (visitedAnnotations.add(annotationType)) {
@@ -126,7 +126,7 @@ public final class AnnotationUtil {
         for (final Annotation annotation : element.getAnnotations()) {
             final Class<? extends Annotation> annotationType = annotation.annotationType();
             final String packageName = annotationType.getPackageName();
-            if (packageName.startsWith("java.lang.") || packageName.startsWith("org.apache.logging.log4j.lang.")) {
+            if (packageName.startsWith("java.lang.") || packageName.startsWith("org.jspecify.annotations.")) {
                 continue;
             }
             if (annotationType == logicalAnnotation) {

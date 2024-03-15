@@ -33,7 +33,6 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
-import org.apache.logging.log4j.lang.NullMarked;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
@@ -42,6 +41,7 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Factory to locate a ContextSelector and then load a LoggerContext.

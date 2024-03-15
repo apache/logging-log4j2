@@ -17,10 +17,10 @@
 package org.apache.logging.log4j.plugins.di.resolver;
 
 import java.lang.reflect.Type;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory resolver for {@link PluginBuilderAttribute}-annotated keys. This injects a plugin configuration option.

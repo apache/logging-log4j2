@@ -19,10 +19,10 @@ package org.apache.logging.log4j.plugins.internal.util;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.InternalApi;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public final class DefaultBindingMap implements BindingMap {

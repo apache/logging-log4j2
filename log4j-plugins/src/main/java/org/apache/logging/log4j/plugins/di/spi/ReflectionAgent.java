@@ -25,8 +25,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-import org.apache.logging.log4j.lang.NonNull;
-import org.apache.logging.log4j.lang.NullUnmarked;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Provides reflection operations using the calling context of another class. This is useful for centralizing

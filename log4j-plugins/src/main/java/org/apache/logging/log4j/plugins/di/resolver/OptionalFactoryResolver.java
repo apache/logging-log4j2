@@ -21,7 +21,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
@@ -30,6 +29,7 @@ import org.apache.logging.log4j.plugins.di.spi.DependencyChain;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.jspecify.annotations.Nullable;
 
 public class OptionalFactoryResolver<T> implements FactoryResolver<Optional<T>> {
     @Override

@@ -35,8 +35,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
-import org.apache.logging.log4j.lang.NullMarked;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.condition.Condition;
@@ -57,6 +55,8 @@ import org.apache.logging.log4j.plugins.util.OrderedComparator;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
 
