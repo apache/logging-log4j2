@@ -21,6 +21,7 @@ import static org.apache.logging.log4j.util.StringBuilders.trimToMaxSize;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <em>Consider this class private.</em>
@@ -286,6 +287,19 @@ public final class Strings {
     public static String trimToNull(final String str) {
         final String ts = str == null ? null : str.trim();
         return isEmpty(ts) ? null : ts;
+    }
+
+    /**
+     * Removes control characters from both ends of this String returning {@code Optional.empty()} if the String is
+     * empty ("") after the trim or if it is {@code null}.
+     * @param str The String to trim.
+     * @return An Optional containing the String.
+     *
+     * @see #trimToNull(String)
+     * @since 2.24.0
+     */
+    public static Optional<String> trimToOptional(final String str) {
+        return Optional.ofNullable(str).map(String::trim).filter(s -> !s.isEmpty());
     }
 
     private Strings() {
