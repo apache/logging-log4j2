@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
- * ContextDataProvider for Map<String, String> data.
+ * ContextDataProvider for {@code Map<String, String>} data.
  */
 @ServiceProvider(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL)
 public class ScopedContextDataProvider implements ContextDataProvider {
