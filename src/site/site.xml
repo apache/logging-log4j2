@@ -100,6 +100,7 @@
         <item name="Event Logging" href="/manual/eventlogging.html"/>
         <item name="Messages" href="/manual/messages.html"/>
         <item name="ThreadContext" href="/manual/thread-context.html"/>
+        <item name="ScopedContext" href="/manual/scoped-context.html"/>
       </item>
 
       <item name="Kotlin API" href="https://logging.apache.org/log4j/kotlin"/>
