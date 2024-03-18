@@ -60,11 +60,11 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>6.0.1</activemq.version>
+    <activemq.version>6.1.0</activemq.version>
     <angus-activation.version>2.0.2</angus-activation.version>
     <angus-mail.version>2.0.3</angus-mail.version>
     <assertj.version>3.25.3</assertj.version>
-    <awaitility.version>4.2.0</awaitility.version>
+    <awaitility.version>4.2.1</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
     <cassandra.version>4.0.10</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
@@ -139,7 +139,7 @@
     <plexus-utils.version>3.5.1</plexus-utils.version>
     <slf4j.version>2.0.9</slf4j.version>
     <spring-boot.version>2.7.18</spring-boot.version>
-    <spring-framework.version>5.3.32</spring-framework.version>
+    <spring-framework.version>5.3.33</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
