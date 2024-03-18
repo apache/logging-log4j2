@@ -39,18 +39,19 @@ public class ScopedContextTest {
     @Test
     public void testScope(final LoggerContext context) {
         final org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.logging.log4j.scoped");
-        ScopedContext.newInstance().where("key1", "Log4j2").run(() -> logger.debug("Hello, {}", "World"));
+        ScopedContext.INITIAL_CONTEXT.where("key1", "Log4j2").run(() -> logger.debug("Hello, {}", "World"));
         List<String> msgs = app.getMessages();
         assertThat(msgs, hasSize(1));
         String expected = "{key1=Log4j2}";
         assertThat(msgs.get(0), containsString(expected));
         app.clear();
-        ScopedContext.newInstance().where("key1", "value1").run(() -> {
+        ScopedContext.INITIAL_CONTEXT.where("key1", "value1").run(() -> {
             logger.debug("Log message 1 will include key1");
-            ScopedContext.newInstance(true)
+            ScopedContext.current()
+                    .get()
                     .where("key2", "value2")
                     .run(() -> logger.debug("Log message 2 will include key1 and key2"));
-            ScopedContext.newInstance()
+            ScopedContext.INITIAL_CONTEXT
                     .where("key2", "value2")
                     .run(() -> logger.debug("Log message 2 will include key2"));
         });

@@ -297,7 +297,7 @@ public class SimpleLogger extends AbstractLogger {
         sb.append(msg.getFormattedMessage());
         if (showContextMap) {
             final Map<String, String> mdc = new HashMap<>(ThreadContext.getImmutableContext());
-            ScopedContext.getContext().forEach((key, value) -> mdc.put(key, value.render()));
+            ScopedContext.getContextMap().forEach((key, value) -> mdc.put(key, value.render()));
             if (!mdc.isEmpty()) {
                 sb.append(SPACE);
                 sb.append(mdc.toString());

@@ -33,7 +33,7 @@ public class ScopedContextDataProvider implements ContextDataProvider {
 
     @Override
     public Map<String, String> supplyContextData() {
-        Map<String, ScopedContext.Renderable> contextMap = ScopedContext.getContext();
+        Map<String, ScopedContext.Renderable> contextMap = ScopedContext.getContextMap();
         if (!contextMap.isEmpty()) {
             Map<String, String> map = new HashMap<>();
             contextMap.forEach((key, value) -> map.put(key, value.render()));

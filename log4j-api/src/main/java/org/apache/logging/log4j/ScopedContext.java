@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j;
 
-import java.util.ArrayDeque;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
+import org.apache.logging.log4j.internal.ScopedContextAnchor;
 
 /**
  * Context that can be used for data to be logged in a block of code.
@@ -41,56 +41,18 @@ import java.util.function.Supplier;
  */
 public class ScopedContext {
 
-    private static final ThreadLocal<Deque<Map<String, Renderable>>> scopedContext = new ThreadLocal<>();
+    public static final ScopedContext INITIAL_CONTEXT = new ScopedContext();
 
     /**
-     * Returns an immutable Map containing all the key/value pairs as Renderable objects.
-     * @return An immutable copy of the Map at the current scope.
+     * @hidden
+     * Returns an unmodifiable copy of the current ScopedContext Map. This method should
+     * only be used by implementations of Log4j API.
+     * @return the Map of Renderable objects.
      */
-    public static Map<String, Renderable> getContext() {
-        Deque<Map<String, Renderable>> stack = scopedContext.get();
-        if (stack != null && !stack.isEmpty()) {
-            return Collections.unmodifiableMap(stack.getFirst());
-        }
-        return Collections.emptyMap();
-    }
-
-    private static void addScopedContext(Map<String, Renderable> contextMap) {
-        Deque<Map<String, Renderable>> stack = scopedContext.get();
-        if (stack == null) {
-            stack = new ArrayDeque<>();
-            scopedContext.set(stack);
-        }
-        stack.addFirst(contextMap);
-    }
-
-    private static void removeScopedContext() {
-        Deque<Map<String, Renderable>> stack = scopedContext.get();
-        if (stack != null) {
-            if (!stack.isEmpty()) {
-                stack.removeFirst();
-            }
-            if (stack.isEmpty()) {
-                scopedContext.remove();
-            }
-        }
-    }
-
-    /**
-     * Return a new ScopedContext.
-     * @return the ScopedContext.
-     */
-    public static ScopedContext newInstance() {
-        return newInstance(false);
-    }
-
-    /**
-     * Return a new ScopedContext.
-     * @param inherit true if this context should inherit the values of its parent.
-     * @return the ScopedContext.
-     */
-    public static ScopedContext newInstance(boolean inherit) {
-        return new ScopedContext(inherit);
+    public static Map<String, Renderable> getContextMap() {
+        Optional<ScopedContext> context = ScopedContextAnchor.getContext();
+        return context.map(scopedContext -> Collections.unmodifiableMap(scopedContext.contextMap))
+                .orElse(Collections.emptyMap());
     }
 
     /**
@@ -100,33 +62,27 @@ public class ScopedContext {
      */
     @SuppressWarnings("unchecked")
     public static <T> T get(String key) {
-        Renderable renderable = getContext().get(key);
-        if (renderable != null) {
-            return (T) renderable.getObject();
-        } else {
-            return null;
+        Optional<ScopedContext> context = ScopedContextAnchor.getContext();
+        if (context.isPresent()) {
+            Renderable renderable = context.get().contextMap.get(key);
+            if (renderable != null) {
+                return (T) renderable.getObject();
+            }
         }
+        return null;
+    }
+
+    /**
+     * Returns an Optional holding the active ScopedContext.
+     * @return an Optional containing the active ScopedContext, if there is one.
+     */
+    public static Optional<ScopedContext> current() {
+        return ScopedContextAnchor.getContext();
     }
 
     private final Map<String, Renderable> contextMap = new HashMap<>();
 
-    private ScopedContext(boolean inherit) {
-        Map<String, Renderable> parent = ScopedContext.getContext();
-        if (inherit && !parent.isEmpty()) {
-            contextMap.putAll(parent);
-        }
-    }
-
-    /**
-     * Add all the values in the specified Map to the ScopedContext being constructed.
-     *
-     * @param map The Map to add to the ScopedContext being constructed.
-     * @return the ScopedContext being constructed.
-     */
-    public ScopedContext where(Map<String, Object> map) {
-        map.forEach(this::addObject);
-        return this;
-    }
+    private ScopedContext() {}
 
     /**
      * Adds a key/value pair to the ScopedContext being constructed.
@@ -135,8 +91,7 @@ public class ScopedContext {
      * @return the ScopedContext being constructed.
      */
     public ScopedContext where(String key, Object value) {
-        addObject(key, value);
-        return this;
+        return addObject(key, value);
     }
 
     /**
@@ -146,18 +101,21 @@ public class ScopedContext {
      * @return the ScopedContext being constructed.
      */
     public ScopedContext where(String key, Supplier<Object> supplier) {
-        addObject(key, supplier.get());
-        return this;
+        return addObject(key, supplier.get());
     }
 
-    private void addObject(String key, Object obj) {
+    private ScopedContext addObject(String key, Object obj) {
         if (obj != null) {
+            ScopedContext context = new ScopedContext();
+            context.contextMap.putAll(this.contextMap);
             if (obj instanceof Renderable) {
-                contextMap.put(key, (Renderable) obj);
+                context.contextMap.put(key, (Renderable) obj);
             } else {
-                contextMap.put(key, new ObjectRenderable(obj));
+                context.contextMap.put(key, new ObjectRenderable(obj));
             }
+            return context;
         }
+        return this;
     }
 
     /**
@@ -165,11 +123,11 @@ public class ScopedContext {
      * @param op the code block to execute.
      */
     public void run(Runnable op) {
-        addScopedContext(contextMap);
+        ScopedContextAnchor.addScopedContext(this);
         try {
             op.run();
         } finally {
-            removeScopedContext();
+            ScopedContextAnchor.removeScopedContext();
         }
     }
 
@@ -179,11 +137,11 @@ public class ScopedContext {
      * @return the return value from the code block.
      */
     public <R> R call(Callable<? extends R> op) throws Exception {
-        addScopedContext(contextMap);
+        ScopedContextAnchor.addScopedContext(this);
         try {
             return op.call();
         } finally {
-            removeScopedContext();
+            ScopedContextAnchor.removeScopedContext();
         }
     }
 

@@ -29,9 +29,12 @@ The `ScopeContext` is essentially a builder that allows key/value pairs to be ad
 prior to invoking a method. The key/value pairs are available to any code running within
 that method and will be included in all logging events as if they were part of the `ThreadContextMap`.
 
+ScopedContext is immutable. Each invocation of the `where` method returns a new ScopedContext
+with the specified key/value pair added to those defined in previous ScopedContexts.
+
 [source,java]
 ----
-ScopedContext.newInstance()
+ScopedContext.INITIAL_CONTEXT
     .where("id", UUID.randomUUID())
     .where("ipAddress", request.getRemoteAddr())
     .where("loginId", session.getAttribute("loginId"))
@@ -60,20 +63,20 @@ included in LogEvents its toString() method will be used.
 
 === Nested ScopedContexts
 
-ScopedContexts may be nested. When creating a nested context the default behavior is to
-hide the key/value pairs of the parent context. The may be included by passing `true` to
-the newInstance method when creating the child context.
+ScopedContexts may be nested. Becuase ScopedContexts are immutable the `where` method may
+be called on the current ScopedContext from within the run or call methods to append new
+key/value pairs.
 
 
 [source,java]
 ----
-        ScopedContext.newInstance().where("key1", "value1").run(() -> {
+        ScopedContext.INITIAL_CONTEXT.where("key1", "value1").run(() -> {
             assertThat(ScopedContext.get("key1"), equalTo("value1"));
-            ScopedContext.newInstance(true).where("key2", "value2").run(() -> {
+            ScopedContext.current().get().where("key2", "value2").run(() -> {
                 assertThat(ScopedContext.get("key1"), equalTo("value1"));
                 assertThat(ScopedContext.get("key2"), equalTo("value2"));
             });
-            ScopedContext.newInstance().where("key2", "value2").run(() -> {
+            ScopedContext.INITIAL_CONTEXT.where("key2", "value2").run(() -> {
                 assertThat(ScopedContext.get("key1"), nullValue());
                 assertThat(ScopedContext.get("key2"), equalTo("value2"));
             });

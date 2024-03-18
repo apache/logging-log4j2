@@ -26,16 +26,16 @@ public class ScopedContextTest {
 
     @Test
     public void testScope() {
-        ScopedContext.newInstance()
+        ScopedContext.INITIAL_CONTEXT
                 .where("key1", "Log4j2")
                 .run(() -> assertThat(ScopedContext.get("key1"), equalTo("Log4j2")));
-        ScopedContext.newInstance().where("key1", "value1").run(() -> {
+        ScopedContext.INITIAL_CONTEXT.where("key1", "value1").run(() -> {
             assertThat(ScopedContext.get("key1"), equalTo("value1"));
-            ScopedContext.newInstance(true).where("key2", "value2").run(() -> {
+            ScopedContext.current().get().where("key2", "value2").run(() -> {
                 assertThat(ScopedContext.get("key1"), equalTo("value1"));
                 assertThat(ScopedContext.get("key2"), equalTo("value2"));
             });
-            ScopedContext.newInstance().where("key2", "value2").run(() -> {
+            ScopedContext.INITIAL_CONTEXT.where("key2", "value2").run(() -> {
                 assertThat(ScopedContext.get("key1"), nullValue());
                 assertThat(ScopedContext.get("key2"), equalTo("value2"));
             });
