@@ -51,8 +51,12 @@ public class ScopedContext {
      */
     public static Map<String, Renderable> getContextMap() {
         Optional<ScopedContext> context = ScopedContextAnchor.getContext();
-        return context.map(scopedContext -> Collections.unmodifiableMap(scopedContext.contextMap))
-                .orElse(Collections.emptyMap());
+        if (context.isPresent()
+                && context.get().contextMap != null
+                && !context.get().contextMap.isEmpty()) {
+            return Collections.unmodifiableMap(context.get().contextMap);
+        }
+        return Collections.emptyMap();
     }
 
     /**
@@ -80,9 +84,31 @@ public class ScopedContext {
         return ScopedContextAnchor.getContext();
     }
 
-    private final Map<String, Renderable> contextMap = new HashMap<>();
+    private final ScopedContext parent;
+    private final String key;
+    private final Renderable value;
+    private final Map<String, Renderable> contextMap;
 
-    private ScopedContext() {}
+    private ScopedContext() {
+        this.parent = null;
+        this.key = null;
+        this.value = null;
+        this.contextMap = null;
+    }
+
+    private ScopedContext(Map<String, Renderable> map) {
+        this.parent = null;
+        this.key = null;
+        this.value = null;
+        this.contextMap = map;
+    }
+
+    private ScopedContext(ScopedContext parent, String key, Renderable value) {
+        this.parent = parent;
+        this.key = key;
+        this.value = value;
+        this.contextMap = null;
+    }
 
     /**
      * Adds a key/value pair to the ScopedContext being constructed.
@@ -106,14 +132,8 @@ public class ScopedContext {
 
     private ScopedContext addObject(String key, Object obj) {
         if (obj != null) {
-            ScopedContext context = new ScopedContext();
-            context.contextMap.putAll(this.contextMap);
-            if (obj instanceof Renderable) {
-                context.contextMap.put(key, (Renderable) obj);
-            } else {
-                context.contextMap.put(key, new ObjectRenderable(obj));
-            }
-            return context;
+            Renderable renderable = obj instanceof Renderable ? (Renderable) obj : new ObjectRenderable(obj);
+            return new ScopedContext(this, key, renderable);
         }
         return this;
     }
@@ -123,12 +143,7 @@ public class ScopedContext {
      * @param op the code block to execute.
      */
     public void run(Runnable op) {
-        ScopedContextAnchor.addScopedContext(this);
-        try {
-            op.run();
-        } finally {
-            ScopedContextAnchor.removeScopedContext();
-        }
+        new ScopedContextRunner(this, op).run();
     }
 
     /**
@@ -136,12 +151,79 @@ public class ScopedContext {
      * @param op the code block to execute.
      * @return the return value from the code block.
      */
-    public <R> R call(Callable<? extends R> op) throws Exception {
-        ScopedContextAnchor.addScopedContext(this);
-        try {
-            return op.call();
-        } finally {
-            ScopedContextAnchor.removeScopedContext();
+    public <R> R call(Callable<R> op) throws Exception {
+        return new ScopedContextCaller<R>(this, op).call();
+    }
+
+    private static class ScopedContextRunner implements Runnable {
+        private final Map<String, Renderable> contextMap = new HashMap<>();
+        private final ScopedContext context;
+        private final Runnable op;
+
+        public ScopedContextRunner(ScopedContext context, Runnable op) {
+            this.context = context;
+            this.op = op;
+        }
+
+        @Override
+        public void run() {
+            ScopedContext scopedContext = context;
+            // If the current context has a Map then we can just use it.
+            if (context.contextMap == null) {
+                do {
+                    if (scopedContext.contextMap != null) {
+                        // Once we hit a scope with an already populated Map we won't need to go any further.
+                        contextMap.putAll(scopedContext.contextMap);
+                        break;
+                    } else if (scopedContext.key != null) {
+                        contextMap.putIfAbsent(scopedContext.key, scopedContext.value);
+                    }
+                    scopedContext = scopedContext.parent;
+                } while (scopedContext != null);
+                scopedContext = new ScopedContext(contextMap);
+            }
+            ScopedContextAnchor.addScopedContext(scopedContext);
+            try {
+                op.run();
+            } finally {
+                ScopedContextAnchor.removeScopedContext();
+            }
+        }
+    }
+
+    private static class ScopedContextCaller<R> implements Callable<R> {
+        private final Map<String, Renderable> contextMap = new HashMap<>();
+        private final ScopedContext context;
+        private final Callable<R> op;
+
+        public ScopedContextCaller(ScopedContext context, Callable<R> op) {
+            this.context = context;
+            this.op = op;
+        }
+
+        @Override
+        public R call() throws Exception {
+            ScopedContext scopedContext = context;
+            // If the current context has a Map then we can just use it.
+            if (context.contextMap == null) {
+                do {
+                    if (scopedContext.contextMap != null) {
+                        // Once we hit a scope with an already populated Map we won't need to go any further.
+                        contextMap.putAll(scopedContext.contextMap);
+                        break;
+                    } else if (scopedContext.key != null) {
+                        contextMap.putIfAbsent(scopedContext.key, scopedContext.value);
+                    }
+                    scopedContext = scopedContext.parent;
+                } while (scopedContext != null);
+                scopedContext = new ScopedContext(contextMap);
+            }
+            ScopedContextAnchor.addScopedContext(scopedContext);
+            try {
+                return op.call();
+            } finally {
+                ScopedContextAnchor.removeScopedContext();
+            }
         }
     }
 
