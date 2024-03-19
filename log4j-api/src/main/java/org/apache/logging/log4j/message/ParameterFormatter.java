@@ -240,14 +240,6 @@ final class ParameterFormatter {
             return;
         }
 
-        // Fail if there are insufficient arguments
-        if (analysis.placeholderCount > args.length) {
-            final String message = String.format(
-                    "found %d argument placeholders, but provided %d for pattern `%s`",
-                    analysis.placeholderCount, args.length, pattern);
-            throw new IllegalArgumentException(message);
-        }
-
         // Fast-path for patterns containing no escapes
         if (analysis.escapedCharFound) {
             formatMessageContainingEscapes(buffer, pattern, args, argCount, analysis);
