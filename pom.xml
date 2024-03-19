@@ -334,7 +334,7 @@
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
     <!-- Dependency versions -->
-    <log4j-docgen.version>1.0.0-SNAPSHOT</log4j-docgen.version>
+    <log4j-docgen.version>0.8.0-SNAPSHOT</log4j-docgen.version>
 
     <!-- ==================================
          `log4j-docgen`-specific properties
@@ -825,6 +825,7 @@
             </goals>
             <phase>pre-site</phase>
             <configuration>
+              <schemaVersion>${project.version}</schemaVersion>
               <schemaFile>${project.build.directory}/log4j-config.xsd</schemaFile>
             </configuration>
           </execution>
