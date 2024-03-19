@@ -29,6 +29,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class ThreadContextMapTest {
 
+    private static final String KEY = "key";
+
     static Stream<ThreadContextMap> defaultMaps() {
         return Stream.of(
                 new DefaultThreadContextMap(),
@@ -49,26 +51,24 @@ class ThreadContextMapTest {
     @ParameterizedTest
     @MethodSource("defaultMaps")
     void threadLocalNotInheritableByDefault(final ThreadContextMap contextMap) {
-        contextMap.put("key", "threadLocalNotInheritableByDefault");
-        final ExecutorService executorService = Executors.newSingleThreadExecutor();
-        try {
-            assertThat(executorService.submit(() -> contextMap.get("key")))
-                    .succeedsWithin(Duration.ofSeconds(1))
-                    .isEqualTo(null);
-        } finally {
-            executorService.shutdown();
-        }
+        contextMap.put(KEY, "threadLocalNotInheritableByDefault");
+        verifyThreadContextValueFromANewThread(contextMap, null);
     }
 
     @ParameterizedTest
     @MethodSource("inheritableMaps")
     void threadLocalInheritableIfConfigured(final ThreadContextMap contextMap) {
-        contextMap.put("key", "threadLocalInheritableIfConfigured");
+        contextMap.put(KEY, "threadLocalInheritableIfConfigured");
+        verifyThreadContextValueFromANewThread(contextMap, "threadLocalInheritableIfConfigured");
+    }
+
+    private static void verifyThreadContextValueFromANewThread(
+            final ThreadContextMap contextMap, final String expected) {
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
-            assertThat(executorService.submit(() -> contextMap.get("key")))
+            assertThat(executorService.submit(() -> contextMap.get(KEY)))
                     .succeedsWithin(Duration.ofSeconds(1))
-                    .isEqualTo("threadLocalInheritableIfConfigured");
+                    .isEqualTo(expected);
         } finally {
             executorService.shutdown();
         }

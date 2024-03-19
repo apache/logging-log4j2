@@ -24,6 +24,6 @@ import org.apache.logging.log4j.test.TestLoggerContextFactory;
  */
 public class TestProvider extends Provider {
     public TestProvider() {
-        super(10, "2.6.0", TestLoggerContextFactory.class);
+        super(5, CURRENT_VERSION, TestLoggerContextFactory.class);
     }
 }

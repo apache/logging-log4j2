@@ -82,8 +82,12 @@ public final class ProviderUtil {
     private ProviderUtil() {}
 
     static void addProvider(final Provider provider) {
-        PROVIDERS.add(provider);
-        LOGGER.debug("Loaded Provider {}", provider);
+        if (validVersion(provider.getVersions())) {
+            PROVIDERS.add(provider);
+            LOGGER.debug("Loaded Provider {}", provider);
+        } else {
+            LOGGER.warn("Ignoring provider for incompatible version {}:\n{}", provider.getVersions(), provider);
+        }
     }
 
     /**
@@ -99,11 +103,7 @@ public final class ProviderUtil {
     static void loadProvider(final URL url, final ClassLoader cl) {
         try {
             final Properties props = PropertiesUtil.loadClose(url.openStream(), url);
-            if (validVersion(props.getProperty(API_VERSION))) {
-                final Provider provider = new Provider(props, url, cl);
-                PROVIDERS.add(provider);
-                LOGGER.debug("Loaded Provider {}", provider);
-            }
+            addProvider(new Provider(props, url, cl));
         } catch (final IOException e) {
             LOGGER.error("Unable to open {}", url, e);
         }
@@ -154,13 +154,13 @@ public final class ProviderUtil {
                     if (PROVIDER == null) {
                         ServiceLoaderUtil.loadServices(Provider.class, MethodHandles.lookup(), false)
                                 .filter(provider -> validVersion(provider.getVersions()))
-                                .forEach(PROVIDERS::add);
+                                .forEach(ProviderUtil::addProvider);
 
                         for (final LoaderUtil.UrlResource resource :
                                 LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)) {
                             loadProvider(resource.getUrl(), resource.getClassLoader());
                         }
-                        PROVIDER = selectProvider(PropertiesUtil.getProperties());
+                        PROVIDER = selectProvider(PropertiesUtil.getProperties(), PROVIDERS, LOGGER);
                     }
                 } finally {
                     STARTUP_LOCK.unlock();
@@ -175,7 +175,8 @@ public final class ProviderUtil {
     /**
      * Used to test the public {@link #getProvider()} method.
      */
-    static Provider selectProvider(final PropertiesUtil properties) {
+    static Provider selectProvider(
+            final PropertiesUtil properties, final Collection<Provider> providers, final Logger statusLogger) {
         Provider selected = null;
         // 1. Select provider using "log4j.provider" property
         final String providerClass = properties.getStringProperty(PROVIDER_PROPERTY_NAME);
@@ -183,24 +184,25 @@ public final class ProviderUtil {
             try {
                 selected = LoaderUtil.newInstanceOf(providerClass);
             } catch (final Exception e) {
-                LOGGER.error("Unable to create provider {}.\nFalling back to default selection process.", PROVIDER, e);
+                statusLogger.error(
+                        "Unable to create provider {}.\nFalling back to default selection process.", PROVIDER, e);
             }
         }
         // 2. Use deprecated "log4j2.loggerContextFactory" property to choose the provider
         final String factoryClassName = properties.getStringProperty(FACTORY_PROPERTY_NAME);
         if (factoryClassName != null) {
             if (selected != null) {
-                LOGGER.warn(
+                statusLogger.warn(
                         "Ignoring {} system property, since {} was set.",
                         FACTORY_PROPERTY_NAME,
                         PROVIDER_PROPERTY_NAME);
                 // 2a. Scan the known providers for one matching the logger context factory class name.
             } else {
-                LOGGER.warn(
+                statusLogger.warn(
                         "Usage of the {} property is deprecated. Use the {} property instead.",
                         FACTORY_PROPERTY_NAME,
                         PROVIDER_PROPERTY_NAME);
-                for (final Provider provider : PROVIDERS) {
+                for (final Provider provider : providers) {
                     if (factoryClassName.equals(provider.getClassName())) {
                         selected = provider;
                         break;
@@ -209,7 +211,7 @@ public final class ProviderUtil {
             }
             // 2b. Instantiate
             if (selected == null) {
-                LOGGER.warn(
+                statusLogger.warn(
                         "No provider found using {} as logger context factory. The factory will be instantiated directly.",
                         factoryClassName);
                 try {
@@ -217,14 +219,14 @@ public final class ProviderUtil {
                     if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
                         selected = new Provider(null, Strings.EMPTY, clazz.asSubclass(LoggerContextFactory.class));
                     } else {
-                        LOGGER.error(
+                        statusLogger.error(
                                 "Class {} specified in the {} system property does not extend {}",
                                 factoryClassName,
                                 FACTORY_PROPERTY_NAME,
                                 LoggerContextFactory.class.getName());
                     }
                 } catch (final Exception e) {
-                    LOGGER.error(
+                    statusLogger.error(
                             "Unable to create class {} specified in the {} system property",
                             factoryClassName,
                             FACTORY_PROPERTY_NAME,
@@ -235,22 +237,22 @@ public final class ProviderUtil {
         // 3. Select a provider automatically.
         if (selected == null) {
             final Comparator<Provider> comparator = Comparator.comparing(Provider::getPriority);
-            switch (PROVIDERS.size()) {
+            switch (providers.size()) {
                 case 0:
-                    LOGGER.error("Log4j API could not find a logging provider.");
+                    statusLogger.error("Log4j API could not find a logging provider.");
                     break;
                 case 1:
                     break;
                 default:
-                    LOGGER.warn(PROVIDERS.stream()
+                    statusLogger.warn(providers.stream()
                             .sorted(comparator)
                             .map(Provider::toString)
                             .collect(Collectors.joining("\n", "Log4j API found multiple logging providers:\n", "")));
                     break;
             }
-            selected = PROVIDERS.stream().max(comparator).orElse(FALLBACK_PROVIDER);
+            selected = providers.stream().max(comparator).orElse(FALLBACK_PROVIDER);
         }
-        LOGGER.info("Using provider:\n{}", selected);
+        statusLogger.info("Using provider:\n{}", selected);
         return selected;
     }
 

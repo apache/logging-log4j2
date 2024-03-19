@@ -48,7 +48,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     }
 
     /**
-     * @deprecated Since 2.24.0 use the default constructor or {@link NoOpThreadContextMap} instead.
+     * @deprecated Since 2.24.0. See {@link Provider#getThreadContextMap()} on how to obtain a no-op map.
      */
     @Deprecated
     public DefaultThreadContextMap(final boolean useMap) {
