@@ -33,7 +33,7 @@
 
   <properties>
 
-    <javadoc.skip>false</javadoc.skip>
+    <maven.javadoc.skip>false</maven.javadoc.skip>
 
     <!-- Tests are located elsewhere, no need to do any processing for the `src/test` directory: -->
     <maven.test.skip>true</maven.test.skip>
