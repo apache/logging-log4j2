@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
+import org.apache.logging.log4j.core.LogEvent;
+
 import java.io.Closeable;
 
 /**
@@ -49,8 +51,21 @@ public interface NoSqlConnection<W, T extends NoSqlObject<W>> extends Closeable 
      * Inserts the given object into the underlying NoSQL database.
      *
      * @param object The object to insert.
+     * @deprecated see {@link #insertObject(LogEvent, NoSqlObject)}
      */
-    void insertObject(NoSqlObject<W> object);
+    @Deprecated
+    default void insertObject(NoSqlObject<W> object){
+    }
+    
+    /**
+     * Inserts the given object into the underlying NoSQL database.
+     *
+     * @param event The {@link LogEvent} object.
+     * @param object The object to insert.
+     */
+    default void insertObject(LogEvent event, NoSqlObject<W> object){
+        insertObject(object);
+    }
 
     /**
      * Closes the underlying connection. This method call should be idempotent. Only the first call should have any

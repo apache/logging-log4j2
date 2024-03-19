@@ -283,6 +283,6 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
             setFields(event, entity);
         }
         setAdditionalFields(entity);
-        this.connection.insertObject(entity);
+        this.connection.insertObject(event, entity);
     }
 }
