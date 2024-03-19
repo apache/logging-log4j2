@@ -20,11 +20,36 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * Constants to use the {@link ResourceLock} annotation.
- *
  */
-public class Resources {
+public final class Resources {
 
-    public static final String THREAD_CONTEXT = "log4j2.ThreadContext";
+    /**
+     * Marks tests that require access to {@link org.apache.logging.log4j.LogManager} methods or change its
+     * underlying {@link org.apache.logging.log4j.spi.LoggerContextFactory} implementation.
+     */
+    public static final String LOG_MANAGER = "log4j.LogManager";
 
-    public static final String MARKER_MANAGER = "log4j2.MarkerManager";
+    /**
+     * Marks tests that require access to {@link org.apache.logging.log4j.ThreadContext} methods or change its
+     * underlying {@link org.apache.logging.log4j.spi.ThreadContextMap} implementation.
+     */
+    public static final String THREAD_CONTEXT = "log4j.ThreadContext";
+
+    /**
+     * Marks tests that require access to {@link org.apache.logging.log4j.MarkerManager} methods.
+     */
+    public static final String MARKER_MANAGER = "log4j.MarkerManager";
+
+    /**
+     * Marks tests that requires access to {@link org.apache.logging.log4j.Level} static methods to create new levels.
+     */
+    public static final String LEVEL = "log4j.Level";
+
+    /**
+     * Marks tests that require access to {@link org.apache.logging.log4j.status.StatusLogger} static methods or
+     * change its underlying implementation.
+     */
+    public static final String STATUS_LOGGER = "log4j.StatusLogger";
+
+    private Resources() {}
 }
