@@ -328,8 +328,7 @@
          We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`. -->
     <doclint>all,-missing,-html</doclint>
     <maven.javadoc.skip>true</maven.javadoc.skip>
-    <!-- Skipping `maven-site-plugin` globally.
-         It is manually enabled only for this root module below. -->
+    <!-- Skipping `maven-site-plugin` globally. -->
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
