@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,15 +67,12 @@ class ParameterFormatterTest {
         }
     }
 
-    @ParameterizedTest
-    @CsvSource({"1,foo {}", "2,bar {}{}"})
-    void format_should_fail_on_insufficient_args(final int placeholderCount, final String pattern) {
-        final int argCount = placeholderCount - 1;
-        assertThatThrownBy(() -> ParameterFormatter.format(pattern, new Object[argCount], argCount))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(
-                        "found %d argument placeholders, but provided %d for pattern `%s`",
-                        placeholderCount, argCount, pattern);
+    @Test
+    void formatWithInsufficientArgs() {
+        final String pattern = "Test message {}-{} {}";
+        final Object[] args = {"a", "b"};
+        final String message = ParameterFormatter.format(pattern, args, args.length);
+        assertThat(message).isEqualTo("Test message a-b {}");
     }
 
     @ParameterizedTest
