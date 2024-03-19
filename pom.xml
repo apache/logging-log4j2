@@ -325,9 +325,10 @@
          ======================== -->
     <!-- `maven-javadoc-plugin` is only used to generate Javadoc HTML used in the website.
          We don't deploy any Javadoc JARs.
-         We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`. -->
-    <doclint>all,-missing,-html</doclint>
+         We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`.
+         Hence, we disable it by default: -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
+    <doclint>all,-missing,-html</doclint>
     <!-- Skipping `maven-site-plugin` globally. -->
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
@@ -840,6 +841,7 @@
              Though `asciidoctor-maven-plugin` version `<3.0.0` doesn't work against `asciidoctorj` version `3.x`.
              Hence, override the `asciidoctor-maven-plugin` version to `3.x`. -->
         <version>3.0.0</version>
+        <inherited>false</inherited>
         <dependencies>
           <dependency>
             <groupId>io.spring.asciidoctor</groupId>
@@ -899,16 +901,6 @@
   </build>
 
   <profiles>
-
-    <profile>
-      <id>java8-doclint-disabled</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <properties>
-        <doclint>${doclint}</doclint>
-      </properties>
-    </profile>
 
     <profile>
       <id>java8-tests</id>
