@@ -143,6 +143,7 @@ public class NoSqlDatabaseManagerTest {
 
             manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
+            then(connection).should().insertObject(event, captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
             assertNotNull("The inserted value should not be null.", inserted);
@@ -214,6 +215,7 @@ public class NoSqlDatabaseManagerTest {
 
             manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
+            then(connection).should().insertObject(event, captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
             assertNotNull("The inserted value should not be null.", inserted);
@@ -319,6 +321,7 @@ public class NoSqlDatabaseManagerTest {
 
             manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
+            then(connection).should().insertObject(event, captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
             assertNotNull("The inserted value should not be null.", inserted);
