@@ -825,7 +825,7 @@
             </goals>
             <phase>pre-site</phase>
             <configuration>
-              <schemaFile>${project.build.directory}/generated-sources/site/resources/config.xsd</schemaFile>
+              <schemaFile>${project.build.directory}/log4j-config.xsd</schemaFile>
             </configuration>
           </execution>
 
