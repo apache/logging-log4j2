@@ -331,18 +331,25 @@
          ======================== -->
     <!-- `maven-javadoc-plugin` is only used to generate Javadoc HTML used in the website.
          We don't deploy any Javadoc JARs.
-         We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`. -->
-    <doclint>all,-missing,-html</doclint>
+         We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`.
+         Hence, we disable it by default: -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
-    <!-- Skipping `maven-site-plugin` globally.
-         It is manually enabled only for this root module below. -->
+    <doclint>all,-missing,-html</doclint>
+    <!-- Skipping `maven-site-plugin` globally. -->
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
-    <!-- Temporary override for the `changelog-release` profile introduced by `logging-parent`.
-         This override can be removed once `logging-parent` updates `log4j-tools` to version `0.7.0`.
-         See https://github.com/apache/logging-log4j-tools/issues/89 -->
-    <log4j.changelog.versionPattern><![CDATA[^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>(0|[1-9]\d*)(-[a-zA-Z][0-9a-zA-Z-]*)?)$]]></log4j.changelog.versionPattern>
+    <!-- Dependency versions -->
+    <log4j-docgen.version>0.8.0-SNAPSHOT</log4j-docgen.version>
+
+    <!-- ==================================
+         `log4j-docgen`-specific properties
+         ================================== -->
+    <!-- `log4j-docgen` qualified class name exclude pattern -->
+    <log4j.docgen.typeFilter.excludePattern>^java\..+</log4j.docgen.typeFilter.excludePattern>
+    <!-- Directories where `log4j-docgen` annotation processor will emit files to -->
+    <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
+    <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
 
   </properties>
 
@@ -603,6 +610,7 @@
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
             <exclude>.surefire-*</exclude>
+            <exclude>**/.log4j-*</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -682,6 +690,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
+
           <!-- Copy `src/site/_release-notes` to `src/site/asciidoc/_release-notes`.
                This is necessary since `logging-parent` version `<=10.1.1` exports changelogs to `src/site/_release-notes`.
                Though `maven-site-plugin` expects them to be at `src/site/asciidoc/_release-notes`.
@@ -703,6 +712,7 @@
               </resources>
             </configuration>
           </execution>
+
           <!-- Copy `src/site` to `target/generated-sources/site` -->
           <execution>
             <id>copy-site</id>
@@ -725,6 +735,7 @@
               </resources>
             </configuration>
           </execution>
+
           <!-- Copy `target/site/apidocs` to the parent module's `target/site/javadoc/<artifactId>` folder -->
           <execution>
             <id>copy-javadoc</id>
@@ -733,10 +744,10 @@
             </goals>
             <phase>site</phase>
             <!-- This execution must be inherited and enabled by modules publishing javadocs: `-api` and `-core`.
-                 Such modules enable this execution via `javadoc.skip` property.
+                 Such modules enable this execution via `maven.javadoc.skip` property.
                  Hence, don't insert a `<inherited>false</inherited>`, please! -->
             <configuration>
-              <skip>${javadoc.skip}</skip>
+              <skip>${maven.javadoc.skip}</skip>
               <outputDirectory>${maven.multiModuleProjectDirectory}/target/site/javadoc/${project.artifactId}</outputDirectory>
               <resources>
                 <resource>
@@ -744,6 +755,7 @@
                 </resource>
               </resources>
             </configuration>
+
           </execution>
         </executions>
       </plugin>
@@ -770,14 +782,113 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-docgen-maven-plugin</artifactId>
+        <version>${log4j-docgen.version}</version>
+        <inherited>false</inherited>
+
+        <!-- Common docgen configuration -->
+        <configuration>
+
+          <!-- Descriptor processing order matters!
+
+               Imagine we place all descriptors to the same folder.
+               Assume that the filesystem walks folder contents in alphanumeric order.
+               Sourcing `log4j-docgen:generate-*` from that folder will consume descriptors in the following order:
+
+               1. `log4j-1.2.api`
+               2. `log4j-cassandra`
+               3. `log4j-core`
+               4. ...
+
+               For instance, `AbstractFilterable` is defined by the descriptors of both `log4j-cassandra` and `log4j-core`.
+               Due to alphanumeric scanning order, it will appear as it is provided by `log4j-cassandra`.
+               Though, it is actually provided by `log4j-core`.
+               To avoid this problem, we place descriptors to folders associated with phases.
+               We pass the folder of each phase in a certain order to `log4j-docgen:generate-*`. -->
+          <descriptorFileMatchers>
+            <descriptorFileMatcher>
+              <baseDirectory>${log4j.docgen.pluginDescriptorsDir.phase1}</baseDirectory>
+            </descriptorFileMatcher>
+            <descriptorFileMatcher>
+              <baseDirectory>${log4j.docgen.pluginDescriptorsDir.phase2}</baseDirectory>
+            </descriptorFileMatcher>
+          </descriptorFileMatchers>
+
+          <typeFilter>
+            <excludes>
+              <exclude>${log4j.docgen.typeFilter.excludePattern}</exclude>
+            </excludes>
+          </typeFilter>
+
+        </configuration>
+
+        <executions>
+
+          <!-- Generate AsciiDoc from downloaded plugin descriptors -->
+          <execution>
+            <id>generate-plugin-docs</id>
+            <goals>
+              <goal>generate-documentation</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <templateDirectory>${project.basedir}/src/docgen-templates</templateDirectory>
+              <indexTemplate>
+                <source>index.adoc.ftl</source>
+                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/index.adoc</target>
+              </indexTemplate>
+              <typeTemplate>
+                <source>type.adoc.ftl</source>
+                <!-- `target` must be in sync. with the `log4j-docgen-type-template-target` configuration of `log4j-docgen-asciidoctor-extension`! -->
+                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/%g/%a/%c.adoc</target>
+              </typeTemplate>
+            </configuration>
+          </execution>
+
+          <!-- Generate XSD from downloaded plugin descriptors -->
+          <execution>
+            <id>generate-plugin-schema</id>
+            <goals>
+              <goal>generate-schema</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <schemaVersion>${project.version}</schemaVersion>
+              <schemaFile>${project.build.directory}/log4j-config.xsd</schemaFile>
+            </configuration>
+          </execution>
+
+        </executions>
+
+      </plugin>
+
+      <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
+        <!-- `log4j-docgen` uses `asciidoctorj` version `3.x`.
+             Though `asciidoctor-maven-plugin` version `<3.0.0` doesn't work against `asciidoctorj` version `3.x`.
+             Hence, override the `asciidoctor-maven-plugin` version to `3.x`. -->
+        <version>3.0.0</version>
         <inherited>false</inherited>
         <dependencies>
           <dependency>
             <groupId>io.spring.asciidoctor</groupId>
             <artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
             <version>0.6.3</version>
+          </dependency>
+          <!-- `log4j-docgen` uses `asciidoctorj` version `3.x`.
+               Though `asciidoctor-maven-plugin` version `3.x` still uses `asciidoctorj` version `2.x`.
+               Hence, upgrade the `asciidoctorj` used to version `3.x`. -->
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj</artifactId>
+            <version>3.0.0-alpha.2</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-docgen-asciidoctor-extension</artifactId>
+            <version>${log4j-docgen.version}</version>
           </dependency>
         </dependencies>
         <executions>
@@ -798,6 +909,10 @@
               <attributes>
                 <source-highlighter>rouge</source-highlighter>
                 <toc>left</toc>
+                <log4j-docgen-descriptor-directory>${project.build.directory}/plugin-descriptors</log4j-docgen-descriptor-directory>
+                <log4j-docgen-type-filter-exclude-pattern>${log4j.docgen.typeFilter.excludePattern}</log4j-docgen-type-filter-exclude-pattern>
+                <!-- `log4j-docgen-type-template-target` must be in sync. with the `typeTemplate` configuration of `log4j-docgen-maven-plugin`! -->
+                <log4j-docgen-type-template-target>../../%g/%a/%c.html</log4j-docgen-type-template-target>
               </attributes>
             </configuration>
           </execution>
