@@ -53,7 +53,6 @@ public interface NoSqlConnection<W, T extends NoSqlObject<W>> extends Closeable 
      * @param object The object to insert.
      * @deprecated see {@link #insertObject(LogEvent, NoSqlObject)}
      */
-    @Deprecated
     default void insertObject(NoSqlObject<W> object){
     }
     
