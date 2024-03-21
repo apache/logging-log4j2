@@ -22,20 +22,19 @@
     ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
      ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
 
-    IF THIS FILE DOESN'T HAVE A `.tmpl.adoc` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+    THIS FILE IS USED AS A TEMPLATE TO AUTO-GENERATE `_constants.adoc`!
 
-    `_constants.adoc` is auto-generated from `_constants.tmpl.adoc`.
-    Auto-generation happens during `process-sources` phase of Maven.
+    The actual `_constants.adoc` that is used in `target/generated-site/asciidoc` is auto-generated from `_constants.tmpl.adoc`.
+    Auto-generation happens during `pre-site` phase of Maven.
     Hence, you must always
 
     1. Edit `_constants.tmpl.adoc`
-    2. Run `./mvnw process-sources`
-    3. Commit both `_constants.tmpl.adoc` and the generated `_constants.adoc`
+    2. Fill `_constants.adoc` with dummy values to match the variables in `_constants.tmpl.adoc`
 ////
 
-:project-github-url: https://github.com/apache/logging-log4j2
-:project-version: 2.24.0-SNAPSHOT
+:project-github-url: ${scm.url}
+:project-version: ${project.version}
 :project-name: Log4j
 :project-id: log4j
-:java-target-version: 8
-:java-compiler-version: [17,18)
+:java-target-version: ${maven.compiler.target}
+:java-compiler-version: ${minimalJavaBuildVersion}

@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-include::../_constants.adoc[]
+include::_constants.adoc[]
 
 = Install Apache Log4j
 

@@ -657,34 +657,85 @@
         </executions>
       </plugin>
 
+      <!-- Export release notes -->
+      <plugin>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-changelog-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Execution ID must match the one inherited from `logging-parent` (i.e., `export-changelog`) to override it! -->
+            <id>export-changelog</id>
+            <goals>
+              <goal>export</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <outputDirectory>${project.build.directory}/generated-site/asciidoc</outputDirectory>
+              <indexTemplates>
+                <template>
+                  <source>.index.adoc.ftl</source>
+                  <target>release-notes.adoc</target>
+                </template>
+              </indexTemplates>
+              <changelogTemplates>
+                <template>
+                  <source>.release-notes.adoc.ftl</source>
+                  <target>_release-notes/_%v.adoc</target>
+                </template>
+              </changelogTemplates>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+
+          <!-- Copy `src/site/asciidoc/_constants.tmpl.adoc` to `target/constants-adoc/_constants.adoc` -->
+          <execution>
+            <id>copy-constants-adoc</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <target>
+                <copy file="${project.basedir}/src/site/asciidoc/_constants.tmpl.adoc" tofile="${project.build.directory}/constants-adoc/_constants.adoc" overwrite="true"/>
+              </target>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
 
-          <!-- Copy `src/site/_release-notes` to `src/site/asciidoc/_release-notes`.
-               This is necessary since `logging-parent` version `<=10.1.1` exports changelogs to `src/site/_release-notes`.
-               Though `maven-site-plugin` expects them to be at `src/site/asciidoc/_release-notes`.
-               We could have simply solved the problem using symbolic links.
-               Though they are not supported by Java's `ZipEntry`, and hence, breaking the `distribution` profile while creating `src.zip`. -->
+          <!-- Process `target/constants-adoc` and output to `target/generated-site/asciidoc` -->
           <execution>
-            <id>copy-exported-release-notes</id>
+            <id>filter-constants-adoc</id>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <phase>pre-site</phase>
             <inherited>false</inherited>
             <configuration>
-              <outputDirectory>${project.build.directory}/generated-sources/site/asciidoc/_release-notes</outputDirectory>
+              <outputDirectory>${project.build.directory}/generated-site/asciidoc</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/src/site/_release-notes</directory>
+                  <directory>${project.build.directory}/constants-adoc</directory>
+                  <filtering>true</filtering>
                 </resource>
               </resources>
             </configuration>
           </execution>
 
-          <!-- Copy `src/site` to `target/generated-sources/site` -->
+          <!-- Copy `src/site` to `target/generated-site` -->
           <execution>
             <id>copy-site</id>
             <goals>
@@ -693,13 +744,14 @@
             <phase>pre-site</phase>
             <inherited>false</inherited>
             <configuration>
-              <outputDirectory>${project.build.directory}/generated-sources/site</outputDirectory>
+              <outputDirectory>${project.build.directory}/generated-site</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.basedir}/src/site</directory>
                   <excludes>
                     <exclude>/_release-notes/*</exclude>
                     <exclude>/_release-notes.adoc</exclude>
+                    <exclude>/_constants.*</exclude>
                     <exclude>/resources/logo/**/*</exclude>
                   </excludes>
                 </resource>
@@ -707,7 +759,7 @@
             </configuration>
           </execution>
 
-          <!-- Copy `target/site/apidocs` to the parent module's `target/site/javadoc/<artifactId>` folder -->
+          <!-- Copy `target/site/apidocs` to the root module's `target/site/javadoc/<artifactId>` folder -->
           <execution>
             <id>copy-javadoc</id>
             <goals>
@@ -727,32 +779,12 @@
               </resources>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-
-      <!-- copy `src/site/_release-notes.adoc` to `target/site/asciidoc/release-notes.adoc` -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-release-notes-adoc</id>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <inherited>false</inherited>
-            <configuration>
-              <target>
-                <copy file="${project.basedir}/src/site/_release-notes.adoc" overwrite="true" tofile="${project.build.directory}/generated-sources/site/asciidoc/release-notes.adoc" />
-              </target>
-            </configuration>
-          </execution>
 
         </executions>
       </plugin>
 
       <plugin>
+
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-docgen-maven-plugin</artifactId>
         <version>${log4j-docgen.version}</version>
@@ -807,12 +839,12 @@
               <templateDirectory>${project.basedir}/src/docgen-templates</templateDirectory>
               <indexTemplate>
                 <source>index.adoc.ftl</source>
-                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/index.adoc</target>
+                <target>${project.build.directory}/generated-site/asciidoc/plugin-reference/index.adoc</target>
               </indexTemplate>
               <typeTemplate>
                 <source>type.adoc.ftl</source>
                 <!-- `target` must be in sync. with the `log4j-docgen-type-template-target` configuration of `log4j-docgen-asciidoctor-extension`! -->
-                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/%g/%a/%c.adoc</target>
+                <target>${project.build.directory}/generated-site/asciidoc/plugin-reference/%g/%a/%c.adoc</target>
               </typeTemplate>
             </configuration>
           </execution>
@@ -823,7 +855,7 @@
             <goals>
               <goal>generate-schema</goal>
             </goals>
-            <phase>pre-site</phase>
+            <phase>site</phase>
             <configuration>
               <schemaVersion>${project.version}</schemaVersion>
               <schemaFile>${project.build.directory}/log4j-config.xsd</schemaFile>
@@ -835,6 +867,7 @@
       </plugin>
 
       <plugin>
+
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
         <!-- `log4j-docgen` uses `asciidoctorj` version `3.x`.
@@ -842,6 +875,7 @@
              Hence, override the `asciidoctor-maven-plugin` version to `3.x`. -->
         <version>3.0.0</version>
         <inherited>false</inherited>
+
         <dependencies>
           <dependency>
             <groupId>io.spring.asciidoctor</groupId>
@@ -862,20 +896,26 @@
             <version>${log4j-docgen.version}</version>
           </dependency>
         </dependencies>
+
         <executions>
           <execution>
+            <!-- Execution ID must match the one inherited from `logging-parent` (i.e., `export-asciidoc-to-html`) to override it! -->
             <id>export-asciidoc-to-html</id>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <phase>site</phase>
             <configuration combine.self="override">
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/generated-sources/site/resources</directory>
+                  <directory>${project.build.directory}/generated-site/resources</directory>
                 </resource>
               </resources>
-              <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
-              <outputDirectory>target/site</outputDirectory>
+              <sourceDirectory>${project.build.directory}/generated-site/asciidoc</sourceDirectory>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
               <preserveDirectories>true</preserveDirectories>
               <templateDirs>
-                <dir>src/asciidoc/templates</dir>
+                <dir>${project.basedir}/src/asciidoc-templates</dir>
               </templateDirs>
               <attributes>
                 <source-highlighter>rouge</source-highlighter>
@@ -888,6 +928,7 @@
             </configuration>
           </execution>
         </executions>
+
       </plugin>
 
       <!-- ███████ ███    ██ ██████         ███████ ██ ████████ ███████
