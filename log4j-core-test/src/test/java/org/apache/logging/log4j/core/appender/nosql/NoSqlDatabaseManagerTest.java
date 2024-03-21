@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -49,6 +50,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.Same;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -143,7 +145,7 @@ public class NoSqlDatabaseManagerTest {
 
             manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
-            then(connection).should().insertObject(event, captor.capture());
+            then(connection).should().insertObject(same(event), captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
             assertNotNull("The inserted value should not be null.", inserted);
@@ -215,7 +217,7 @@ public class NoSqlDatabaseManagerTest {
 
             manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
-            then(connection).should().insertObject(event, captor.capture());
+            then(connection).should().insertObject(same(event), captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
             assertNotNull("The inserted value should not be null.", inserted);
@@ -321,7 +323,7 @@ public class NoSqlDatabaseManagerTest {
 
             manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
-            then(connection).should().insertObject(event, captor.capture());
+            then(connection).should().insertObject(same(event), captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
             assertNotNull("The inserted value should not be null.", inserted);
