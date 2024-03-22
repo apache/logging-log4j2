@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -64,6 +66,8 @@ final class ParameterFormatter {
 
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
+
+    private static final Logger STATUS_LOGGER = StatusLogger.getLogger();
 
     private ParameterFormatter() {}
 
@@ -235,9 +239,18 @@ final class ParameterFormatter {
             final MessagePatternAnalysis analysis) {
 
         // Short-circuit if there is nothing interesting
-        if (pattern == null || args == null || analysis.placeholderCount == 0) {
+        if (pattern == null || args == null || args.length == 0 || analysis.placeholderCount == 0) {
             buffer.append(pattern);
             return;
+        }
+
+        // check if there are insufficient arguments that do not include Throwable arg
+        final int noThrowableArgCount = argCount - ((args[argCount - 1] instanceof Throwable) ? 1 : 0);
+        if (analysis.placeholderCount != noThrowableArgCount) {
+            final String message = String.format(
+                    "found %d argument placeholders, but provided %d for pattern `%s`",
+                    analysis.placeholderCount, args.length, pattern);
+            STATUS_LOGGER.warn(message);
         }
 
         // Fast-path for patterns containing no escapes

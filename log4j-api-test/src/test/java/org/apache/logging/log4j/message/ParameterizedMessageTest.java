@@ -19,7 +19,12 @@ package org.apache.logging.log4j.message;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.test.junit.SerialUtil;
@@ -181,20 +186,107 @@ class ParameterizedMessageTest {
     }
 
     @Test
-    void formatToWithInsufficientArgs() {
-        final String pattern = "Test message {}-{} {}";
-        final Object[] args = {"a", "b"};
+    void formatToWithMoreArgsButNoWarn() {
+        final String pattern = "no warn {} {}";
+        final String expectedMessage = "no warn a b";
+        final Object[] args = {"a", "b", new RuntimeException()};
         final ParameterizedMessage message = new ParameterizedMessage(pattern, args);
         final StringBuilder buffer = new StringBuilder();
         message.formatTo(buffer);
-        assertThat(buffer.toString()).isEqualTo("Test message a-b {}");
+        assertThat(buffer.toString()).isEqualTo(expectedMessage);
+        assertThat(message.getThrowable()).isInstanceOf(RuntimeException.class);
+        final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
+        assertThat(statusDataList).hasSize(0);
     }
 
     @Test
-    void formatWithInsufficientArgs() {
-        final String pattern = "Test message {}-{} {}";
-        final Object[] args = {"a", "b"};
+    void formatWithMoreArgsButNoWarn() {
+        final String pattern = "no warn {} {}";
+        final String expectedMessage = "no warn a b";
+        final Object[] args = {"a", "b", new RuntimeException()};
         final String message = ParameterizedMessage.format(pattern, args);
-        assertThat(message).isEqualTo("Test message a-b {}");
+        assertThat(message).isEqualTo(expectedMessage);
+        final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
+        assertThat(statusDataList).hasSize(0);
+    }
+
+    /**
+     * In this test cases, constructed the following scenarios: <br>
+     * <p>
+     * 1. The placeholders are greater than the count of arguments. <br>
+     * 2. The placeholders are less than the count of arguments. <br>
+     * 3. The arguments contains an exception, and the placeholder is greater than normal arguments. <br>
+     * 4. The arguments contains an exception, and the placeholder is less than the arguments.<br>
+     * All of these should logged in status logger with WARN level.
+     * </p>
+     *
+     * @return streams
+     */
+    static Stream<Object[]> testCasesForInsufficientFormatArgs() {
+        return Stream.of(
+                new Object[] {"more {} {}", 2, new Object[] {"a"}, "more a {}"},
+                new Object[] {"more {} {} {}", 3, new Object[] {"a"}, "more a {} {}"},
+                new Object[] {"less {}", 1, new Object[] {"a", "b"}, "less a"},
+                new Object[] {"less {} {}", 2, new Object[] {"a", "b", "c"}, "less a b"},
+                new Object[] {
+                    "more throwable {} {}",
+                    2,
+                    new Object[] {"a", new RuntimeException()},
+                    "more throwable a java.lang.RuntimeException"
+                },
+                new Object[] {
+                    "more throwable {} {} {}",
+                    3,
+                    new Object[] {"a", new RuntimeException()},
+                    "more throwable a java.lang.RuntimeException {}"
+                },
+                new Object[] {
+                    "less throwable {}", 1, new Object[] {"a", "b", new RuntimeException()}, "less throwable a"
+                });
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCasesForInsufficientFormatArgs")
+    void formatTo_should_warn_on_insufficient_args(
+            final String pattern, final int placeholderCount, Object[] args, final String expected) {
+        final int argCount = args == null ? 0 : args.length;
+        verifyFormattingFailureOnInsufficientArgs(pattern, placeholderCount, argCount, expected, () -> {
+            final ParameterizedMessage message = new ParameterizedMessage(pattern, args);
+            final StringBuilder buffer = new StringBuilder();
+            message.formatTo(buffer);
+            return buffer.toString();
+        });
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCasesForInsufficientFormatArgs")
+    void format_should_warn_on_insufficient_args(
+            final String pattern, final int placeholderCount, Object[] args, final String expected) {
+        final int argCount = args == null ? 0 : args.length;
+        verifyFormattingFailureOnInsufficientArgs(
+                pattern, placeholderCount, argCount, expected, () -> ParameterizedMessage.format(pattern, args));
+    }
+
+    private void verifyFormattingFailureOnInsufficientArgs(
+            final String pattern,
+            final int placeholderCount,
+            final int argCount,
+            final String expected,
+            final Supplier<String> formattedMessageSupplier) {
+
+        // Verify the formatted message
+        final String formattedMessage = formattedMessageSupplier.get();
+        assertThat(formattedMessage).isEqualTo(expected);
+
+        // Verify the status logger warn
+        final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
+        assertThat(statusDataList).hasSize(1);
+        final StatusData statusData = statusDataList.get(0);
+        assertThat(statusData.getLevel()).isEqualTo(Level.WARN);
+        assertThat(statusData.getMessage().getFormattedMessage())
+                .isEqualTo(
+                        "found %d argument placeholders, but provided %d for pattern `%s`",
+                        placeholderCount, argCount, pattern);
+        assertThat(statusData.getThrowable()).isNull();
     }
 }
