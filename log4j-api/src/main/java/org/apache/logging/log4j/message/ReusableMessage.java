@@ -18,7 +18,6 @@ package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Messages implementing this interface are reused between logging calls.
@@ -30,7 +29,6 @@ import org.osgi.annotation.versioning.ProviderType;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-@ProviderType
 public interface ReusableMessage extends Message, StringBuilderFormattable {
 
     /**
@@ -71,10 +69,4 @@ public interface ReusableMessage extends Message, StringBuilderFormattable {
      * @return an immutable snapshot of this message
      */
     Message memento();
-
-    /**
-     * Resets the object to a clean state.
-     * @since 2.24.0
-     */
-    void clear();
 }
