@@ -338,7 +338,7 @@
          ===================================================== -->
     <!-- Antora `>=3.2.x` is required for linked Git worktree integration: -->
     <antora.version>3.2.0-alpha.4</antora.version>
-    <log4j-docgen.version>0.8.0-SNAPSHOT</log4j-docgen.version>
+    <log4j-docgen.version>0.8.0</log4j-docgen.version>
     <node.version>21.7.1</node.version>
     <npm.version>10.5.0</npm.version>
 
