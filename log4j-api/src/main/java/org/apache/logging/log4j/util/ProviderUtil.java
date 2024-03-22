@@ -16,31 +16,40 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.apache.logging.log4j.LogManager.FACTORY_PROPERTY_NAME;
+import static org.apache.logging.log4j.spi.Provider.PROVIDER_PROPERTY_NAME;
+
 import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.baseline.BaselineIgnore;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.NoOpThreadContextMap;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * <em>Consider this class private.</em> Utility class for Log4j {@link Provider}s. When integrating with an application
- * container framework, any Log4j Providers not accessible through standard classpath scanning should
- * {@link #loadProvider(java.net.URL, ClassLoader)} a classpath accordingly.
+ * <em>Consider this class private.</em>
+ * <p>
+ *     Utility class for Log4j {@link Provider}s. When integrating with an application container framework, any Log4j
+ *     Providers not accessible through standard classpath scanning should
+ *     {@link #loadProvider(java.net.URL, ClassLoader)} a classpath accordingly.
+ * </p>
  */
 @InternalApi
-@BaselineIgnore("2.22.0")
 @ServiceConsumer(value = Provider.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public final class ProviderUtil {
 
@@ -55,9 +64,11 @@ public final class ProviderUtil {
     static final Collection<Provider> PROVIDERS = new HashSet<>();
 
     /**
-     * Guards the ProviderUtil singleton instance from lazy initialization. This is primarily used for OSGi support.
-     *
-     * @since 2.1
+     * Guards the ProviderUtil singleton instance from lazy initialization.
+     * <p>
+     *     This is primarily used for OSGi support. It allows the OSGi Activator to pause the startup and wait for a
+     *     Provider to be installed. See <a href="https://issues.apache.org/jira/browse/LOG4J2-373">LOG4J2-373</a>.
+     * </p>
      */
     static final Lock STARTUP_LOCK = new ReentrantLock();
 
@@ -65,23 +76,18 @@ public final class ProviderUtil {
     private static final String[] COMPATIBLE_API_VERSIONS = {"2.6.0"};
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    // STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause the startup and
-    // wait for a Provider to be installed. See LOG4J2-373
-    private static volatile ProviderUtil instance;
+    private static volatile Provider PROVIDER;
+    private static final Provider FALLBACK_PROVIDER = new SimpleProvider();
 
-    private ProviderUtil() {
-        ServiceLoaderUtil.loadServices(Provider.class, MethodHandles.lookup(), false)
-                .filter(provider -> validVersion(provider.getVersions()))
-                .forEach(PROVIDERS::add);
-
-        for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)) {
-            loadProvider(resource.getUrl(), resource.getClassLoader());
-        }
-    }
+    private ProviderUtil() {}
 
     static void addProvider(final Provider provider) {
-        PROVIDERS.add(provider);
-        LOGGER.debug("Loaded Provider {}", provider);
+        if (validVersion(provider.getVersions())) {
+            PROVIDERS.add(provider);
+            LOGGER.debug("Loaded Provider {}", provider);
+        } else {
+            LOGGER.warn("Ignoring provider for incompatible version {}:\n{}", provider.getVersions(), provider);
+        }
     }
 
     /**
@@ -97,24 +103,10 @@ public final class ProviderUtil {
     static void loadProvider(final URL url, final ClassLoader cl) {
         try {
             final Properties props = PropertiesUtil.loadClose(url.openStream(), url);
-            if (validVersion(props.getProperty(API_VERSION))) {
-                final Provider provider = new Provider(props, url, cl);
-                PROVIDERS.add(provider);
-                LOGGER.debug("Loaded Provider {}", provider);
-            }
+            addProvider(new Provider(props, url, cl));
         } catch (final IOException e) {
             LOGGER.error("Unable to open {}", url, e);
         }
-    }
-
-    /**
-     *
-     * @param classLoader null can be used to mark the bootstrap class loader.
-     */
-    static void loadProviders(final ClassLoader classLoader) {
-        ServiceLoaderUtil.loadClassloaderServices(Provider.class, MethodHandles.lookup(), classLoader, true)
-                .filter(provider -> validVersion(provider.getVersions()))
-                .forEach(PROVIDERS::add);
     }
 
     /**
@@ -129,6 +121,14 @@ public final class ProviderUtil {
         }
     }
 
+    /**
+     * @since 2.24.0
+     */
+    public static Provider getProvider() {
+        lazyInit();
+        return PROVIDER;
+    }
+
     public static Iterable<Provider> getProviders() {
         lazyInit();
         return PROVIDERS;
@@ -141,17 +141,26 @@ public final class ProviderUtil {
 
     /**
      * Lazily initializes the ProviderUtil singleton.
-     *
-     * @since 2.1
+     * <p>
+     *     Note that the following initial call to ProviderUtil may block until a Provider has been installed when
+     *     running in an OSGi environment.
+     * </p>
      */
     static void lazyInit() {
-        // noinspection DoubleCheckedLocking
-        if (instance == null) {
+        if (PROVIDER == null) {
             try {
                 STARTUP_LOCK.lockInterruptibly();
                 try {
-                    if (instance == null) {
-                        instance = new ProviderUtil();
+                    if (PROVIDER == null) {
+                        ServiceLoaderUtil.loadServices(Provider.class, MethodHandles.lookup(), false)
+                                .filter(provider -> validVersion(provider.getVersions()))
+                                .forEach(ProviderUtil::addProvider);
+
+                        for (final LoaderUtil.UrlResource resource :
+                                LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)) {
+                            loadProvider(resource.getUrl(), resource.getClassLoader());
+                        }
+                        PROVIDER = selectProvider(PropertiesUtil.getProperties(), PROVIDERS, LOGGER);
                     }
                 } finally {
                     STARTUP_LOCK.unlock();
@@ -161,6 +170,90 @@ public final class ProviderUtil {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    /**
+     * Used to test the public {@link #getProvider()} method.
+     */
+    static Provider selectProvider(
+            final PropertiesUtil properties, final Collection<Provider> providers, final Logger statusLogger) {
+        Provider selected = null;
+        // 1. Select provider using "log4j.provider" property
+        final String providerClass = properties.getStringProperty(PROVIDER_PROPERTY_NAME);
+        if (providerClass != null) {
+            try {
+                selected = LoaderUtil.newInstanceOf(providerClass);
+            } catch (final Exception e) {
+                statusLogger.error(
+                        "Unable to create provider {}.\nFalling back to default selection process.", PROVIDER, e);
+            }
+        }
+        // 2. Use deprecated "log4j2.loggerContextFactory" property to choose the provider
+        final String factoryClassName = properties.getStringProperty(FACTORY_PROPERTY_NAME);
+        if (factoryClassName != null) {
+            if (selected != null) {
+                statusLogger.warn(
+                        "Ignoring {} system property, since {} was set.",
+                        FACTORY_PROPERTY_NAME,
+                        PROVIDER_PROPERTY_NAME);
+                // 2a. Scan the known providers for one matching the logger context factory class name.
+            } else {
+                statusLogger.warn(
+                        "Usage of the {} property is deprecated. Use the {} property instead.",
+                        FACTORY_PROPERTY_NAME,
+                        PROVIDER_PROPERTY_NAME);
+                for (final Provider provider : providers) {
+                    if (factoryClassName.equals(provider.getClassName())) {
+                        selected = provider;
+                        break;
+                    }
+                }
+            }
+            // 2b. Instantiate
+            if (selected == null) {
+                statusLogger.warn(
+                        "No provider found using {} as logger context factory. The factory will be instantiated directly.",
+                        factoryClassName);
+                try {
+                    final Class<?> clazz = LoaderUtil.loadClass(factoryClassName);
+                    if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
+                        selected = new Provider(null, Strings.EMPTY, clazz.asSubclass(LoggerContextFactory.class));
+                    } else {
+                        statusLogger.error(
+                                "Class {} specified in the {} system property does not extend {}",
+                                factoryClassName,
+                                FACTORY_PROPERTY_NAME,
+                                LoggerContextFactory.class.getName());
+                    }
+                } catch (final Exception e) {
+                    statusLogger.error(
+                            "Unable to create class {} specified in the {} system property",
+                            factoryClassName,
+                            FACTORY_PROPERTY_NAME,
+                            e);
+                }
+            }
+        }
+        // 3. Select a provider automatically.
+        if (selected == null) {
+            final Comparator<Provider> comparator = Comparator.comparing(Provider::getPriority);
+            switch (providers.size()) {
+                case 0:
+                    statusLogger.error("Log4j API could not find a logging provider.");
+                    break;
+                case 1:
+                    break;
+                default:
+                    statusLogger.warn(providers.stream()
+                            .sorted(comparator)
+                            .map(Provider::toString)
+                            .collect(Collectors.joining("\n", "Log4j API found multiple logging providers:\n", "")));
+                    break;
+            }
+            selected = providers.stream().max(comparator).orElse(FALLBACK_PROVIDER);
+        }
+        statusLogger.info("Using provider:\n{}", selected);
+        return selected;
     }
 
     public static ClassLoader findClassLoader() {
@@ -174,5 +267,11 @@ public final class ProviderUtil {
             }
         }
         return false;
+    }
+
+    private static final class SimpleProvider extends Provider {
+        private SimpleProvider() {
+            super(null, CURRENT_VERSION, SimpleLoggerContextFactory.class, NoOpThreadContextMap.class);
+        }
     }
 }

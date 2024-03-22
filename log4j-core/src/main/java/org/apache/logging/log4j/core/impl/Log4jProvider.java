@@ -26,6 +26,6 @@ import org.apache.logging.log4j.spi.Provider;
 @ServiceProvider(value = Provider.class, resolution = Resolution.OPTIONAL)
 public class Log4jProvider extends Provider {
     public Log4jProvider() {
-        super(10, "2.6.0", Log4jContextFactory.class);
+        super(10, CURRENT_VERSION, Log4jContextFactory.class);
     }
 }

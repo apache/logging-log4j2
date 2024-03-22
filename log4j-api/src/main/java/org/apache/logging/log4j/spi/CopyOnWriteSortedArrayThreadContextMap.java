@@ -54,48 +54,32 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
 
-    private static volatile int initialCapacity;
-    private static volatile boolean inheritableMap;
-
-    /**
-     * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
-     * and when Log4j is reconfigured.
-     */
-    static void init() {
-        final PropertiesUtil properties = PropertiesUtil.getProperties();
-        initialCapacity = properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
-        inheritableMap = properties.getBooleanProperty(INHERITABLE_MAP);
-    }
-
     static {
         EMPTY_CONTEXT_DATA.freeze();
-        init();
     }
 
+    private final int initialCapacity;
     private final ThreadLocal<StringMap> localMap;
 
     public CopyOnWriteSortedArrayThreadContextMap() {
-        this.localMap = createThreadLocalMap();
+        this(PropertiesUtil.getProperties());
     }
 
-    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
-    // (This method is package protected for JUnit tests.)
-    private ThreadLocal<StringMap> createThreadLocalMap() {
-        if (inheritableMap) {
-            return new InheritableThreadLocal<StringMap>() {
-                @Override
-                protected StringMap childValue(final StringMap parentValue) {
-                    if (parentValue == null) {
-                        return null;
+    CopyOnWriteSortedArrayThreadContextMap(final PropertiesUtil properties) {
+        initialCapacity = properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
+        localMap = properties.getBooleanProperty(INHERITABLE_MAP)
+                ? new InheritableThreadLocal<StringMap>() {
+                    @Override
+                    protected StringMap childValue(final StringMap parentValue) {
+                        if (parentValue == null) {
+                            return null;
+                        }
+                        final StringMap stringMap = createStringMap(parentValue);
+                        stringMap.freeze();
+                        return stringMap;
                     }
-                    final StringMap stringMap = createStringMap(parentValue);
-                    stringMap.freeze();
-                    return stringMap;
                 }
-            };
-        }
-        // if not inheritable, return plain ThreadLocal with null as initial value
-        return new ThreadLocal<>();
+                : new ThreadLocal<StringMap>();
     }
 
     /**
