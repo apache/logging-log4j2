@@ -19,23 +19,19 @@
 <#assign type = sourcedType.type/>
 <#-- @ftlvariable name="type" type="org.apache.logging.log4j.docgen.Type" -->
 <#-- @ftlvariable name="lookup" type="org.apache.logging.log4j.docgen.generator.TypeLookup" -->
-<#include "license.adoc">
 
-[#${type.className?replace('.', '_')}]
+[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${type.className?replace('.', '-')}]
 = ${type.name!('`' + type.className + '`')}
 
 Class:: `${type.className}`
-<#if sourcedType.groupId?has_content && sourcedType.artifactId?has_content>
 Provider:: `${sourcedType.groupId}:${sourcedType.artifactId}`
-
-</#if>
 
 ${(type.description.text)!}
 
 <#assign hasElements = ((type.elements?size)!0) != 0/>
 <#if type.class.simpleName == 'PluginType'>
     <#-- @ftlvariable name="type" type="org.apache.logging.log4j.docgen.PluginType" -->
-[#${type.className?replace('.', '_')}-XML-snippet]
+[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${type.className?replace('.', '-')}_XML-snippet]
 == XML snippet
 [source, xml]
 ----
@@ -71,7 +67,7 @@ ${indent}${attr.name}="${attr.defaultValue!}"${attr?is_last?then(hasElements?the
 </#if>
 <#if type.attributes?has_content>
 
-[#${type.className?replace('.', '_')}-attributes]
+[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${type.className?replace('.', '-')}-attributes]
 == Attributes
 
 Optional attributes are denoted by `?`-suffixed types.
@@ -86,7 +82,7 @@ Optional attributes are denoted by `?`-suffixed types.
         <#assign attrTypeName = attr.type?contains('.')?then(attr.type?keep_after_last('.'), attr.type)/>
         <#if lookup[attr.type]??>
             <#assign attrSourcedType = lookup[attr.type]/>
-|xref:../../${attrSourcedType.groupId}/${attrSourcedType.artifactId}/${attr.type}.adoc[${attrTypeName}]${requirementSuffix}
+|xref:#${attrSourcedType.groupId?replace('.', '-')}_${attrSourcedType.artifactId?replace('.', '-')}_${attr.type?replace('.', '-')}[${attrTypeName}]${requirementSuffix}
         <#else>
 |${attrTypeName}${requirementSuffix}
         </#if>
@@ -98,7 +94,7 @@ a|${(attr.description.text)!}
 </#if>
 <#if hasElements>
 
-[#${type.className?replace('.', '_')}-components]
+[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${type.className?replace('.', '-')}_components]
 == Nested components
 
 Optional components are denoted by `?`-suffixed types.
@@ -115,7 +111,7 @@ Optional components are denoted by `?`-suffixed types.
             <#assign elementSourcedType = lookup[element.type]/>
             <#assign tagCell = elementSourcedType.type.name!/>
 |${tagCell}
-|xref:../../${elementSourcedType.groupId}/${elementSourcedType.artifactId}/${element.type}.adoc[${elementName}]${requirementSuffix}
+|xref:#${elementSourcedType.groupId?replace('.', '-')}_${elementSourcedType.artifactId?replace('.', '-')}_${element.type?replace('.', '-')}[${elementName}]${requirementSuffix}
         <#else>
 |
 |${elementName}${requirementSuffix}
@@ -127,20 +123,11 @@ a|${descriptionCell}
 </#if>
 <#if type.implementations?has_content>
 
-[#${type.className?replace('.', '_')}-implementations]
+[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${type.className?replace('.', '-')}_implementations]
 == Known implementations
 
     <#list type.implementations as impl>
         <#assign implSourcedType = lookup[impl]/>
-* xref:../../${implSourcedType.groupId}/${implSourcedType.artifactId}/${impl}.adoc[${impl?contains('.')?then(impl?keep_after_last('.'), impl)}]
+* xref:#${implSourcedType.groupId?replace('.', '-')}_${implSourcedType.artifactId?replace('.', '-')}_${impl?replace('.', '-')}[${impl?contains('.')?then(impl?keep_after_last('.'), impl)}]
     </#list>
 </#if>
-
-[#shortcuts]
-== Shortcuts
-
-* xref:../../index.adoc[The plugin reference]
-* xref:../../org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.config.Configuration.adoc[The `<Configuration>` element assembly in a `log4j2.xml`]
-* xref:../../org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Appender.adoc[The type hierarchy of *appenders*]
-* xref:../../org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Layout.adoc[The type hierarchy of *layouts*]
-* xref:../../org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Filter.adoc[The type hierarchy of *filters*]

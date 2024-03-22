@@ -333,8 +333,20 @@
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
-    <!-- Dependency versions -->
+    <!-- =====================================================
+         Direct dependency version properties (in alphabetical order)
+         ===================================================== -->
+    <!-- Antora `>=3.2.x` is required for linked Git worktree integration: -->
+    <antora.version>3.2.0-alpha.4</antora.version>
     <log4j-docgen.version>0.8.0-SNAPSHOT</log4j-docgen.version>
+    <node.version>21.7.1</node.version>
+    <npm.version>10.5.0</npm.version>
+
+    <!-- =================================================
+         Plugin version properties (in alphabetical order)
+         ================================================= -->
+    <exec-maven-plugin.version>3.2.0</exec-maven-plugin.version>
+    <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
 
     <!-- ==================================
          `log4j-docgen`-specific properties
@@ -669,8 +681,9 @@
               <goal>export</goal>
             </goals>
             <phase>pre-site</phase>
+            <inherited>false</inherited>
             <configuration>
-              <outputDirectory>${project.build.directory}/generated-site/asciidoc</outputDirectory>
+              <outputDirectory>${project.build.directory}/generated-site/antora/modules/ROOT/pages</outputDirectory>
               <indexTemplates>
                 <template>
                   <source>.index.adoc.ftl</source>
@@ -694,16 +707,16 @@
         <inherited>false</inherited>
         <executions>
 
-          <!-- Copy `src/site/asciidoc/_constants.tmpl.adoc` to `target/constants-adoc/_constants.adoc` -->
+          <!-- Copy `src/site/antora/antora.tmpl.yml` to `target/antora-yml/antora.yml` -->
           <execution>
-            <id>copy-constants-adoc</id>
+            <id>copy-antora-yml</id>
             <goals>
               <goal>run</goal>
             </goals>
             <phase>pre-site</phase>
             <configuration>
               <target>
-                <copy file="${project.basedir}/src/site/asciidoc/_constants.tmpl.adoc" tofile="${project.build.directory}/constants-adoc/_constants.adoc" overwrite="true"/>
+                <copy file="${project.basedir}/src/site/antora/antora.tmpl.yml" tofile="${project.build.directory}/antora-yml/antora.yml" overwrite="true"/>
               </target>
             </configuration>
           </execution>
@@ -716,19 +729,19 @@
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
 
-          <!-- Process `target/constants-adoc` and output to `target/generated-site/asciidoc` -->
+          <!-- Process `target/antora-yml` and output to `target/generated-site/antora` -->
           <execution>
-            <id>filter-constants-adoc</id>
+            <id>filter-antora-yml</id>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <phase>pre-site</phase>
             <inherited>false</inherited>
             <configuration>
-              <outputDirectory>${project.build.directory}/generated-site/asciidoc</outputDirectory>
+              <outputDirectory>${project.build.directory}/generated-site/antora</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/constants-adoc</directory>
+                  <directory>${project.build.directory}/antora-yml</directory>
                   <filtering>true</filtering>
                 </resource>
               </resources>
@@ -749,9 +762,6 @@
                 <resource>
                   <directory>${project.basedir}/src/site</directory>
                   <excludes>
-                    <exclude>/_release-notes/*</exclude>
-                    <exclude>/_release-notes.adoc</exclude>
-                    <exclude>/_constants.*</exclude>
                     <exclude>/resources/logo/**/*</exclude>
                   </excludes>
                 </resource>
@@ -839,12 +849,11 @@
               <templateDirectory>${project.basedir}/src/docgen-templates</templateDirectory>
               <indexTemplate>
                 <source>index.adoc.ftl</source>
-                <target>${project.build.directory}/generated-site/asciidoc/plugin-reference/index.adoc</target>
+                <target>${project.build.directory}/generated-site/asciidoc/plugin-reference.adoc</target>
               </indexTemplate>
               <typeTemplate>
                 <source>type.adoc.ftl</source>
-                <!-- `target` must be in sync. with the `log4j-docgen-type-template-target` configuration of `log4j-docgen-asciidoctor-extension`! -->
-                <target>${project.build.directory}/generated-site/asciidoc/plugin-reference/%g/%a/%c.adoc</target>
+                <target>${project.build.directory}/generated-site/asciidoc/_plugin-reference/%g-%a-%c.adoc</target>
               </typeTemplate>
             </configuration>
           </execution>
@@ -864,6 +873,66 @@
 
         </executions>
 
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend-maven-plugin.version}</version>
+        <inherited>false</inherited>
+        <executions>
+
+          <!-- Install Node & NPM -->
+          <execution>
+            <id>install-node-and-npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <nodeVersion>v${node.version}</nodeVersion>
+              <npmVersion>${npm.version}</npmVersion>
+            </configuration>
+          </execution>
+
+          <!-- Install Antora -->
+          <execution>
+            <id>install-antora</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <arguments>install @antora/cli@${antora.version} @antora/site-generator-default@${antora.version}</arguments>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
+
+      <!-- Run Antora -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>run-antora</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>site</phase>
+            <inherited>false</inherited>
+            <configuration>
+              <executable>${project.basedir}/node/node</executable>
+              <arguments>
+                <argument>${project.basedir}/node_modules/.bin/antora</argument>
+                <argument>${project.basedir}/antora-playbook.yml</argument>
+                <argument>--to-dir=${project.build.directory}/site</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -898,9 +967,26 @@
         </dependencies>
 
         <executions>
+
+          <!-- Skip the `export-asciidoc-to-html` execution inherited from `logging-parent` -->
           <execution>
             <!-- Execution ID must match the one inherited from `logging-parent` (i.e., `export-asciidoc-to-html`) to override it! -->
             <id>export-asciidoc-to-html</id>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <phase>site</phase>
+            <configuration combine.self="override">
+              <skip>true</skip>
+            </configuration>
+          </execution>
+
+          <!-- Docgen AsciiDoc files cannot be compiled using Antora.
+               Docgen-generated AsciiDoc contains `apiref` macro and `log4j-docgen-antra-extension` resolving it is a Java library.
+               Antora is written in JavaScript and cannot run Java extensions.
+               Hence, we use `asciidoctor-maven-plugin` to compile Docgen AsciiDoc files. -->
+          <execution>
+            <id>export-docgen-asciidoc-to-html</id>
             <goals>
               <goal>process-asciidoc</goal>
             </goals>
@@ -913,7 +999,7 @@
               </resources>
               <sourceDirectory>${project.build.directory}/generated-site/asciidoc</sourceDirectory>
               <outputDirectory>${project.build.directory}/site</outputDirectory>
-              <preserveDirectories>true</preserveDirectories>
+              <preserveDirectories>false</preserveDirectories>
               <templateDirs>
                 <dir>${project.basedir}/src/asciidoc-templates</dir>
               </templateDirs>
@@ -922,11 +1008,11 @@
                 <toc>left</toc>
                 <log4j-docgen-descriptor-directory>${project.build.directory}/plugin-descriptors</log4j-docgen-descriptor-directory>
                 <log4j-docgen-type-filter-exclude-pattern>${log4j.docgen.typeFilter.excludePattern}</log4j-docgen-type-filter-exclude-pattern>
-                <!-- `log4j-docgen-type-template-target` must be in sync. with the `typeTemplate` configuration of `log4j-docgen-maven-plugin`! -->
-                <log4j-docgen-type-template-target>../../%g/%a/%c.html</log4j-docgen-type-template-target>
+                <log4j-docgen-type-target-template><![CDATA[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${sourcedType.type.className?replace('.', '-')}]]></log4j-docgen-type-target-template>
               </attributes>
             </configuration>
           </execution>
+
         </executions>
 
       </plugin>

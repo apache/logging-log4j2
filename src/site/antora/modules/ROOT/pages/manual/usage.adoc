@@ -16,7 +16,7 @@
 ////
 = Usage
 
-[#Static_vs_Non_Static]
+[#static-vs-non-static]
 == Static vs Non-Static Loggers
 As with any variable in Java, Loggers may be declared as static variables or class member variables. However,
 there are a few factors to consider when choosing to declare a logger as static vs non-static. Generally, it
@@ -34,6 +34,7 @@ difference between a static or non-static Logger.
 assigned when they are created, which usually will be the name of the class they are associated with. See
 the discussion below on logger names vs class names and the example for more information.
 
+[#logger-name-vs-class-name]
 == Logging the Logger name vs the Class name
 The logger name of a Logger is specified when the Logger is created. When a log method is called the
 class name value in the log event will reflect the name of the class the log method was called from, which is

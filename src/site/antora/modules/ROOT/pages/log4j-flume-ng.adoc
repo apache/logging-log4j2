@@ -17,17 +17,15 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     limitations under the License.
 ////
 
-#set($dollar = '$') #set($h1='#') #set($h2='##')
-
-$h1 Flume Appender
+= Flume Appender
 
 The Flume Appender allows applications to send events to Flume Agents.
 
-$h2 Remote Agent
+== Remote Agent
 
 Including the Log4j flume-ng jar in your Maven-based project as a dependency should cause all the transitive dependencies necessary for the remote Agent to function to be included.
 
-$h2 Persistent Agent
+== Persistent Agent
 
 The persistent agent uses Berkeley DB.
 The following dependency should be added to your pom.xml in addition to the log4j-flume-ng dependency.
@@ -60,7 +58,7 @@ The following dependency should be added to your pom.xml in addition to the log4
   </repositories>
 ----
 
-$h2 Embedded Agent
+== Embedded Agent
 
 The following is a sample pom file for Maven that can be used as a template for integrating the Flume Embedded Appender into an application.
 
@@ -227,5 +225,5 @@ The following is a sample pom file for Maven that can be used as a template for 
 </project>
 ----
 
-$h2 Requirements The Flume Appender requires the Log4J 2 API.
+== Requirements The Flume Appender requires the Log4J 2 API.
 For more information, see link:runtime-dependencies.html[Runtime Dependencies].

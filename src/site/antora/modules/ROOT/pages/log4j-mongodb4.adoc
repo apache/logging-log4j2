@@ -17,11 +17,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     limitations under the License.
 ////
 
-#set($h1='#') #set($h2='##')
-
-== TODO: use properties for dynamic dependency versions
-
-$h1 MongoDB appender
+= MongoDB appender
 
 http://www.mongodb.org/[MongoDB] is supported through the http://docs.mongodb.org/ecosystem/drivers/java/[Java MongoDB Driver].
 
@@ -43,7 +39,7 @@ http://www.mongodb.org/[MongoDB] is supported through the http://docs.mongodb.or
   </dependencies>
 ----
 
-$h2 Requirements
+== Requirements
 
 The MongoDB Appender is dependent on the Log4j 2 API and implementation.
 For more information, see link:runtime-dependencies.html[Runtime Dependencies].

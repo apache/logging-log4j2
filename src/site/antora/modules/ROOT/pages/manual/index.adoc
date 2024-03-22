@@ -1,0 +1,209 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Documentation
+
+* xref:manual/architecture.adoc[Architecture]
+* xref:manual/migration.adoc[Log4j 1.x Migration]
+
+== Java API
+
+* xref:manual/api.adoc[Java API]
+* xref:manual/logbuilder.adoc[Log Builder]
+* xref:manual/flowtracing.adoc[Flow Tracing]
+* xref:manual/markers.adoc[Markers]
+* xref:manual/eventlogging.adoc[Event Logging]
+* xref:manual/messages.adoc[Messages]
+* xref:manual/thread-context.adoc[ThreadContext]
+
+== xref:manual/configuration.adoc[Configuration]
+
+* xref:manual/configuration.adoc#Architecture[Configuration Architecture]
+* xref:manual/configuration.adoc#Arbiters[Arbiters]
+* xref:manual/configuration.adoc#AutomaticConfiguration[Automatic Configuration]
+* xref:manual/configuration.adoc#Additivity[Additivity]
+* xref:manual/configuration.adoc#AutomaticReconfiguration[Automatic Reconfiguration]
+* xref:manual/configuration.adoc#ChainsawSupport[Chainsaw Support]
+* xref:manual/configuration.adoc#ConfigurationSyntax[Configuration Syntax]
+* xref:manual/configuration.adoc#XML[XML Syntax]
+* xref:manual/configuration.adoc#JSON[JSON Syntax]
+* xref:manual/configuration.adoc#YAML[YAML Syntax]
+* xref:manual/configuration.adoc#Properties[Properties Syntax]
+* xref:manual/configuration.adoc#Loggers[Configuring Loggers]
+* xref:manual/configuration.adoc#Appenders[Configuring Appenders]
+* xref:manual/configuration.adoc#Filters[Configuring Filters]
+* xref:manual/configuration.adoc#PropertySubstitution[Property Substitution]
+* xref:manual/configuration.adoc#RuntimeLookup[Lookup Variables]
+* xref:manual/configuration.adoc#Scripts[Scripts]
+* xref:manual/configuration.adoc#XInclude[XInclude]
+* xref:manual/configuration.adoc#CompositeConfiguration[Composite Configurations]
+* xref:manual/configuration.adoc#StatusMessages[Status Messages]
+* xref:manual/configuration.adoc#UnitTestingInMaven[Unit Testing]
+
+== xref:manual/usage.adoc[Usage]
+
+* xref:manual/usage.adoc#static-vs-non-static[Static vs non-Static Loggers]
+* xref:manual/usage.adoc#logger-name-vs-class-name[Logger Name vs Class Name]
+* xref:manual/cloud.adoc[Logging in the Cloud]
+
+== xref:manual/performance.adoc[Performance]
+
+* xref:manual/performance.adoc#benchmarks[Benchmarks]
+* xref:manual/performance.adoc#loglibComparison[Logging Library Comparison]
+* xref:manual/performance.adoc#asyncLogging[Async Logging Comparison]
+* xref:manual/performance.adoc#asyncLoggingResponseTime[Async Logging Latency]
+* xref:manual/performance.adoc#asyncLoggingWithParams[Parameters]
+* xref:manual/performance.adoc#asyncLoggingWithLocation[Location]
+* xref:manual/performance.adoc#fileLoggingComparison[File Logging Comparison]
+* xref:manual/performance.adoc#filtering[Filtering Comparison]
+* xref:manual/performance.adoc#tradeoffs[Trade-offs]
+
+== xref:manual/lookups.adoc[Lookups]
+
+* xref:manual/lookups.adoc#ContextMapLookup[Context Map]
+* xref:manual/lookups.adoc#DateLookup[Date]
+* xref:manual/lookups.adoc#DockerLookup[Docker]
+* xref:manual/lookups.adoc#EnvironmentLookup[Environment]
+* xref:manual/lookups.adoc#EventLookup[Event]
+* xref:manual/lookups.adoc#JavaLookup[Java]
+* xref:manual/lookups.adoc#JndiLookup[JNDI]
+* xref:manual/lookups.adoc#JmxRuntimeInputArgumentsLookup[JVM Arguments]
+* xref:manual/lookups.adoc#KubernetesLookup[Kubernetes]
+* xref:manual/lookups.adoc#Log4jConfigLookup[Log4j Config]
+* xref:manual/lookups.adoc#LowerLookup[Lower]
+* xref:manual/lookups.adoc#AppMainArgsLookup[Main Arguments]
+* xref:manual/lookups.adoc#MapLookup[Map]
+* xref:manual/lookups.adoc#StructuredDataLookup[Structured Data]
+* xref:manual/lookups.adoc#SystemPropertiesLookup[System Properties]
+* xref:manual/lookups.adoc#UpperLookup[Upper]
+
+== xref:manual/appenders.adoc[Appenders]
+
+* xref:manual/appenders.adoc#AsyncAppender[Async]
+* xref:manual/appenders.adoc#ConsoleAppender[Console]
+* xref:manual/appenders.adoc#FailoverAppender[Failover]
+* xref:manual/appenders.adoc#FileAppender[File]
+* xref:manual/appenders.adoc#FlumeAppender[Flume]
+* xref:manual/appenders.adoc#JDBCAppender[JDBC]
+* xref:manual/appenders.adoc#HttpAppender[HTTP]
+* xref:manual/appenders.adoc#MemoryMappedFileAppender[Memory Mapped File]
+* xref:manual/appenders.adoc#NoSQLAppender[NoSQL]
+* xref:manual/appenders.adoc#NoSQLAppenderMongoDB[NoSQL for MongoDB]
+* xref:manual/appenders.adoc#OutputStreamAppender[Output Stream]
+* xref:manual/appenders.adoc#RandomAccessFileAppender[Random Access File]
+* xref:manual/appenders.adoc#RewriteAppender[Rewrite]
+* xref:manual/appenders.adoc#RollingFileAppender[Rolling File]
+* xref:manual/appenders.adoc#RollingRandomAccessFileAppender[Rolling Random Access File]
+* xref:manual/appenders.adoc#RoutingAppender[Routing]
+* xref:manual/appenders.adoc#ScriptAppenderSelector[ScriptAppenderSelector]
+* xref:manual/appenders.adoc#SocketAppender[Socket]
+* xref:manual/appenders.adoc#SSL[SSL]
+* xref:manual/appenders.adoc#SyslogAppender[Syslog]
+
+== xref:manual/layouts.adoc[Layouts]
+
+* xref:manual/layouts.adoc#CSVLayouts[CSV]
+* xref:manual/layouts.adoc#HTMLLayout[HTML]
+* xref:manual/json-template-layout.adoc[JSON Template]
+* xref:manual/layouts.adoc#PatternLayout[Pattern]
+* xref:manual/layouts.adoc#RFC5424Layout[RFC-5424]
+* xref:manual/layouts.adoc#SerializedLayout[Serialized]
+* xref:manual/layouts.adoc#SyslogLayout[Syslog]
+* xref:manual/layouts.adoc#LocationInformation[Location Information]
+
+== xref:manual/filters.adoc[Filters]
+
+* xref:manual/filters.adoc#BurstFilter[Burst]
+* xref:manual/filters.adoc#CompositeFilter[Composite Filter]
+* xref:manual/filters.adoc#DynamicThresholdFilter[Dynamic Threshold]
+* xref:manual/filters.adoc#MapFilter[Map]
+* xref:manual/filters.adoc#MarkerFilter[Marker]
+* xref:manual/filters.adoc#MutableThreadContextMapFilter[Mutable Thread Context Map]
+* xref:manual/filters.adoc#RegexFilter[Regex]
+* xref:manual/filters.adoc#Script[Script]
+* xref:manual/filters.adoc#StructuredDataFilter[Structured Data]
+* xref:manual/filters.adoc#ThreadContextMapFilter[Thread Context Map]
+* xref:manual/filters.adoc#ThresholdFilter[Threshold]
+* xref:manual/filters.adoc#TimeFilter[Time]
+
+== xref:manual/async.adoc[Async Loggers]
+
+* xref:manual/async.adoc#Trade-offs[Trade-offs]
+* xref:manual/async.adoc#AllAsync[All Loggers Async]
+* xref:manual/async.adoc#MixedSync-Async[Mixed Sync & Async]
+* xref:manual/async.adoc#WaitStrategy[WaitStrategy]
+* xref:manual/async.adoc#Location[Location]
+* xref:manual/async.adoc#Performance[Performance]
+* xref:manual/async.adoc#UnderTheHood[Under The Hood]
+
+== xref:manual/garbagefree.adoc[Garbage-free Logging]
+
+* xref:manual/garbagefree.adoc#Config[Configuration]
+* xref:manual/garbagefree.adoc#Appenders[Supported Appenders]
+* xref:manual/garbagefree.adoc#Layouts[Supported Layouts]
+* xref:manual/garbagefree.adoc#Filters[Supported Filters]
+* xref:manual/garbagefree.adoc#api[API Changes]
+* xref:manual/garbagefree.adoc#codeImpact[Impact on Application Code]
+* xref:manual/garbagefree.adoc#UnderTheHood[Under the Hood]
+
+== xref:manual/extending.adoc[Extending Log4j]
+
+* xref:manual/extending.adoc#LoggerContextFactory[`LoggerContextFactory`]
+* xref:manual/extending.adoc#ContextSelector[`ContextSelector`]
+* xref:manual/extending.adoc#ConfigurationFactory[`ConfigurationFactory`]
+* xref:manual/extending.adoc#LoggerConfig[`LoggerConfig`]
+* xref:manual/extending.adoc#LogEventFactory[`LogEventFactory`]
+* xref:manual/extending.adoc#MessageFactory[`MessageFactory`]
+* xref:manual/extending.adoc#Lookups[Lookups]
+* xref:manual/extending.adoc#Filters[Filters]
+* xref:manual/extending.adoc#Appenders[Appenders]
+* xref:manual/extending.adoc#Layouts[Layouts]
+* xref:manual/extending.adoc#PatternConverters[Pattern converters]
+* xref:manual/extending.adoc#Plugin_Builders[Plugin builders]
+* xref:manual/extending.adoc#Custom_ContextDataProvider[Custom `ContextDataProvider`]
+* xref:manual/extending.adoc#Custom_Plugins[Custom plugins]
+
+== xref:manual/plugins.adoc[Plugins]
+
+* xref:manual/plugins.adoc#core[Core]
+* xref:manual/plugins.adoc#converters[Converters]
+* xref:manual/plugins.adoc#key-providers[Key Providers]
+* xref:manual/plugins.adoc#lookups[Lookups]
+* xref:manual/plugins.adoc#type-converters[Type Converters]
+* xref:manual/plugins.adoc#developer-notes[Developer Notes]
+
+== xref:manual/customconfig.adoc[Programmatic Log4j Configuration]
+
+* xref:manual/customconfig.adoc#ConfigurationBuilder[ConfigurationBuilder API]
+* xref:manual/customconfig.adoc#ConfigurationFactory[Understanding ConfigurationFactory]
+* xref:manual/customconfig.adoc#Example[Example]
+* xref:manual/customconfig.adoc#Configurator[Using Configurator]
+* xref:manual/customconfig.adoc#Hybrid[Config File and Code]
+* xref:manual/customconfig.adoc#AddingToCurrent[After Initialization]
+* xref:manual/customconfig.adoc#AppendingToWritersAndOutputStreams[Appending to Writers &amp; OutputStreams]
+
+== xref:manual/customloglevels.adoc#DefiningLevelsInCode[In Code]
+
+* xref:manual/customloglevels.adoc#DefiningLevelsInConfiguration[In Configuration]
+* xref:manual/customloglevels.adoc#AddingOrReplacingLevels[Adding or Replacing Levels]
+* xref:manual/customloglevels.adoc#CustomLoggers[Custom Loggers]
+* xref:manual/customloglevels.adoc#ExampleUsage[Custom Logger Example]
+* xref:manual/customloglevels.adoc#CodeGen[Code Generation Tool]
+
+== Others
+
+* xref:manual/jmx.adoc[JMX]
+* xref:manual/logsep.adoc[Logging Separation]

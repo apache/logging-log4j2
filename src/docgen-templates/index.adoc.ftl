@@ -16,7 +16,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <#-- @ftlvariable name="lookup" type="org.apache.logging.log4j.docgen.generator.TypeLookup" -->
-<#include "license.adoc">
 
 = Plugin reference
 
@@ -33,10 +32,10 @@ This not only allows Log4j itself to be developed in individual components, but 
 [#shortcuts]
 == Shortcuts
 
-* xref:org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.config.Configuration.adoc[The `<Configuration>` element assembly in a `log4j2.xml`]
-* xref:org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Appender.adoc[The type hierarchy of *appenders*]
-* xref:org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Layout.adoc[The type hierarchy of *layouts*]
-* xref:org.apache.logging.log4j/log4j-core/org.apache.logging.log4j.core.Filter.adoc[The type hierarchy of *filters*]
+* xref:#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Configuration[The `<Configuration>` element assembly in a `log4j2.xml`]
+* xref:#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Appender[The type hierarchy of *appenders*]
+* xref:#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout[The type hierarchy of *layouts*]
+* xref:#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter[The type hierarchy of *filters*]
 
 [#index]
 == Index
@@ -52,9 +51,9 @@ Below is a list of all types reachable by plugins grouped by the Maven coordinat
         <#assign lastGroupId = sourcedType.groupId/>
         <#assign lastArtifactId = sourcedType.artifactId/>
 
-[#${sourcedType.groupId?replace('.', '_')}-${sourcedType.artifactId?replace('.', '_')}]
+[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}]
 === `${sourcedType.groupId}:${sourcedType.artifactId}`
 
     </#if>
-* xref:${sourcedType.groupId}/${sourcedType.artifactId}/${sourcedType.type.className}.adoc[`${sourcedType.type.className}`]
+include::_plugin-reference/${sourcedType.groupId}-${sourcedType.artifactId}-${sourcedType.type.className}.adoc[leveloffset=+4]
 </#list>
