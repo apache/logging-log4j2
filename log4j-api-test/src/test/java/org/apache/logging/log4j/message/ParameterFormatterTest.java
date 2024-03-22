@@ -78,10 +78,10 @@ class ParameterFormatterTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"2,pan {} {},a,pan a {}", "3,pan {}{}{},a-b,pan ab{}", "1,pan {},a-b-c,pan a"})
-    void format_should_fail_on_insufficient_args(
+    @CsvSource({"2,pan {} {},a,pan a {}", "3,pan {}{}{},a b,pan ab{}", "1,pan {},a b c,pan a"})
+    void format_should_warn_on_insufficient_args(
             final int placeholderCount, final String pattern, final String argsStr, final String expectedMessage) {
-        final String[] args = argsStr.split("-");
+        final String[] args = argsStr.split(" ");
         final int argCount = args.length;
 
         String actualMessage = ParameterFormatter.format(pattern, args, argCount);
