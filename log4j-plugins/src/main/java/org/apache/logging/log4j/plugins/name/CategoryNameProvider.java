@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.plugins.name;
 
+import static java.util.Optional.ofNullable;
+import static org.apache.logging.log4j.util.Strings.trimToNull;
+
 import java.util.Optional;
 import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.util.Strings;
 
 public class CategoryNameProvider implements AnnotatedElementNameProvider<Namespace> {
     @Override
     public Optional<String> getSpecifiedName(final Namespace annotation) {
-        return Strings.trimToOptional(annotation.value());
+        return ofNullable(trimToNull(annotation.value()));
     }
 }

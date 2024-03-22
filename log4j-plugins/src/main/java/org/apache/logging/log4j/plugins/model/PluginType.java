@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.plugins.model;
 
 import java.lang.ref.WeakReference;
+import java.util.Optional;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Strings;
@@ -109,7 +110,7 @@ public class PluginType<T> {
     }
 
     public String getElementName() {
-        return Strings.trimToOptional(getElementType()).orElseGet(this::getName);
+        return Optional.ofNullable(Strings.trimToNull(getElementType())).orElseGet(this::getName);
     }
 
     @Override

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
+import static java.util.Optional.ofNullable;
+import static org.apache.logging.log4j.util.Strings.trimToNull;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,7 +27,6 @@ import java.lang.annotation.Target;
 import java.util.Optional;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Specifies the name of an {@link org.apache.logging.log4j.core.Appender} to inject into JUnit 5 tests from the specified
@@ -46,7 +48,7 @@ public @interface Named {
     class Provider implements AnnotatedElementNameProvider<Named> {
         @Override
         public Optional<String> getSpecifiedName(final Named annotation) {
-            return Strings.trimToOptional(annotation.value());
+            return ofNullable(trimToNull(annotation.value()));
         }
     }
 }

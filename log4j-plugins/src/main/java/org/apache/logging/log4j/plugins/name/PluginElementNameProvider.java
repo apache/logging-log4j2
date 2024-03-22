@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.plugins.name;
 
+import static java.util.Optional.ofNullable;
+import static org.apache.logging.log4j.util.Strings.trimToNull;
+
 import java.util.Optional;
 import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.util.Strings;
 
 public class PluginElementNameProvider implements AnnotatedElementNameProvider<PluginElement> {
     @Override
     public Optional<String> getSpecifiedName(final PluginElement annotation) {
-        return Strings.trimToOptional(annotation.value());
+        return ofNullable(trimToNull(annotation.value()));
     }
 }
