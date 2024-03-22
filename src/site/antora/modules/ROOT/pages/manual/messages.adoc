@@ -14,11 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 API
-Ralph Goers <rgoers@apache.org>
-
-[#Messages]
-== Messages
+= Messages
 
 Although Log4j 2 provides Logger methods that accept Strings and
 Objects, all of these are ultimately captured in Message objects that

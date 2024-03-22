@@ -14,10 +14,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 API
-Ralph Goers <rgoers@apache.org>; Gary Gregory <ggregory@apache.org>
 
-== Thread Context
+= Thread Context
 
 Log4j introduced the concept of the Mapped Diagnostic Context or MDC. It
 has been documented and discussed in numerous places including
@@ -39,7 +37,7 @@ Although these are frequently used for purposes other than diagnosing
 problems, they are still frequently referred to as the MDC and NDC in
 Log4j 2 since they are already well known by those acronyms.
 
-=== Fish Tagging
+== Fish Tagging
 
 Most real-world systems have to deal with multiple clients
 simultaneously. In a typical multithreaded implementation of such a
@@ -110,7 +108,7 @@ logger.debug("Message 2");
 ThreadContext.clear();
 ----
 
-=== CloseableThreadContext
+== CloseableThreadContext
 
 When placing items on the stack or map, it's necessary to remove then
 again when appropriate. To assist with this, the
@@ -182,7 +180,7 @@ for( final Session session : sessions ) {
 }
 ----
 
-=== Implementation details
+== Implementation details
 
 The Stack and the Map are managed per thread and are based on
 http://docs.oracle.com/javase/6/docs/api/java/lang/ThreadLocal.html[`ThreadLocal`]
@@ -201,7 +199,7 @@ Note that all methods of the
 link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`]
 class are static.
 
-==== Configuration
+=== Configuration
 
 * Set the system property `log4j2.disableThreadContextMap` to `true` to disable the Thread Context Map.
 * Set the system property `log4j2.disableThreadContextStack` to `true` to disable the Thread Context Stack.
@@ -209,7 +207,7 @@ class are static.
 * Set the system property `log4j2.isThreadContextMapInheritable` to `true` to enable child threads to inherit the Thread
 Context Map.
 
-=== Including the ThreadContext when writing logs
+== Including the ThreadContext when writing logs
 
 The
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html[`PatternLayout`]
@@ -222,7 +220,7 @@ Map and Stack.
 * Use `%x` to include the full contents of the
 http://docs.oracle.com/javase/6/docs/api/java/util/Stack.html[Stack].
 
-=== Custom context data injectors for non thread-local context data
+== Custom context data injectors for non thread-local context data
 
 With the ThreadContext logging statements can be tagged so log entries
 that were related in some way can be linked via these tags. The

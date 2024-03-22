@@ -14,11 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 API
-Ralph Goers <rgoers@apache.org>
-
-[#FlowTracing]
-== Flow Tracing
+= Flow Tracing
 
 The `Logger` class provides logging methods that are quite useful for
 following the execution path of applications. These methods generate

@@ -22,17 +22,17 @@ generating layout. It encodes ``LogEvent``s according to the structure described
 by the JSON template provided. In a nutshell, it shines with its
 
 * Customizable JSON structure (see `eventTemplate[Uri]` and
-  `stackTraceElementTemplate[Uri]` xref:layout-config[layout configuration] parameters)
+  `stackTraceElementTemplate[Uri]` xref:manual/manual/manual/layout-config[layout configuration] parameters)
 
-* Customizable timestamp formatting (see xref:event-template-resolver-timestamp[]
+* Customizable timestamp formatting (see xref:manual/manual/manual/event-template-resolver-timestamp[]
   event template resolver)
 
-* Feature rich exception formatting (see xref:event-template-resolver-exception[]
-  and xref:event-template-resolver-exceptionRootCause[] event template resolvers)
+* Feature rich exception formatting (see xref:manual/manual/manual/event-template-resolver-exception[]
+  and xref:manual/manual/manual/event-template-resolver-exceptionRootCause[] event template resolvers)
 
-* xref:extending[Extensible plugin support]
+* xref:manual/manual/manual/extending[Extensible plugin support]
 
-* Customizable object xref:recycling-strategy[recycling strategy]
+* Customizable object xref:manual/manual/manual/recycling-strategy[recycling strategy]
 
 [#usage]
 == Usage
@@ -406,7 +406,7 @@ artifact, which contains the following predefined event templates:
   Graylog Extended Log Format (GELF) payload specification] with additional
   `_thread` and `_logger` fields. (Here it is advised to override the obligatory
   `host` field with a user provided constant via
-  xref:additional-event-template-fields[additional event template fields]
+  xref:manual/manual/manual/additional-event-template-fields[additional event template fields]
   to avoid `hostName` property lookup at runtime, which incurs an extra cost.)
 
 - https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/GcpLayout.json[`GcpLayout.json`]
@@ -835,7 +835,7 @@ for ``StackTraceElement`` templates.
 
 Resolves the fields of the innermost `Throwable` returned by
 `logEvent.getThrown()`. Its syntax and garbage-footprint are identical to the
-xref:event-template-resolver-exception[] resolver.
+xref:manual/manual/manual/event-template-resolver-exception[] resolver.
 
 [#event-template-resolver-level]
 ===== `level`
@@ -1535,8 +1535,8 @@ parent such that keys are prefixed with `_`:
 [#stack-trace-element-templates]
 === Stack Trace Element Templates
 
-xref:event-template-resolver-exception[] and
-xref:event-template-resolver-exceptionRootCause[] event template resolvers can
+xref:manual/manual/manual/event-template-resolver-exception[] and
+xref:manual/manual/manual/event-template-resolver-exceptionRootCause[] event template resolvers can
 serialize an exception stack trace (i.e., `StackTraceElement[]` returned by
 `Throwable#getStackTrace()`) into a JSON array. While doing so, JSON templating
 infrastructure is used again.
@@ -1615,7 +1615,7 @@ link:plugins.html[plugin system documentation].
 [#extending-event-resolvers]
 === Extending Event Resolvers
 
-All available xref:event-template-resolvers[event template resolvers] are simple
+All available xref:manual/manual/manual/event-template-resolvers[event template resolvers] are simple
 plugins employed by `JsonTemplateLayout`. To add new ones, one just needs to
 create their own `EventResolver` and instruct its injection via a
 `@Plugin`-annotated `EventResolverFactory` class.
@@ -2006,5 +2006,5 @@ enabled. Take into account the following caveats:
 
 * link:lookups.html[Lookups] (that is, `${...}` variables) are not garbage-free.
 
-Don't forget to check out xref:event-template-resolvers[the notes on garbage footprint of resolvers]
+Don't forget to check out xref:manual/manual/manual/event-template-resolvers[the notes on garbage footprint of resolvers]
 you employ in templates.

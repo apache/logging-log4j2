@@ -17,7 +17,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
  limitations under the License.
 ////
 
-== Migrating from Log4j 1.x to 2.x
+= Migrating from Log4j 1.x to 2.x
 
 http://logging.apache.org/log4j/1.2/[Log4j 1.x] has https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces[reached End of Life] in 2015 and is no longer supported.
 

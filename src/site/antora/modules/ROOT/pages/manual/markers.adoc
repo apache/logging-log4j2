@@ -14,11 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 API
-Ralph Goers <rgoers@apache.org>
-
-[#Markers]
-== Markers
+= Markers
 
 One of the primary purpose of a logging framework is to provide the
 means to generate debugging and diagnostic information only when it is

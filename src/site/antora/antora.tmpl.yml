@@ -32,7 +32,7 @@
 #  2. Edit `antora.yml` to match the `antora.tmpl.yml` and fill Maven-injected attributes with dummy values
 #
 
-name: home
+name: ROOT
 title: Home
 version: ~
 start_page: index.adoc
@@ -46,3 +46,4 @@ asciidoc:
     java-compiler-version: "${minimalJavaBuildVersion}"
 nav:
   - modules/ROOT/nav.adoc
+  - modules/manual/nav.adoc

@@ -38,10 +38,10 @@ This must be done either through the command line (i.e., using the `-Djava.util.
 == Compatibility
 
 The use of a http://docs.oracle.com/javase/6/docs/api/java/util/logging/Filter.html[`java.util.logging.Filter`] is supported on a per-http://docs.oracle.com/javase/6/docs/api/java/util/logging/Logger.html[`Logger`] basis.
-However, it is recommended to use the standard link:manual/filters.html[Filters] feature in Log4j instead.
+However, it is recommended to use the standard xref:manual/filters.adoc[Filters] feature in Log4j instead.
 
 The use of http://docs.oracle.com/javase/6/docs/api/java/util/logging/Handler.html[`java.util.logging.Handler`] classes is _NOT_ supported.
-Custom Handlers should instead use an appropriate link:manual/appenders.html[Appender] or code their own link:javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html[`Appender`] plugin.
+Custom Handlers should instead use an appropriate xref:manual/appenders.adoc[Appender] or code their own link:javadoc/log4j-core/org/apache/logging/log4j/core/Appender.adoc[`Appender`] plugin.
 
 Java logging levels are translated into Log4j logging levels dynamically.
 The following table lists the conversions between a Java logging level and its equivalent Log4j level.

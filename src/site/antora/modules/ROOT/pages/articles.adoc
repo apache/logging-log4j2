@@ -19,7 +19,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 = Articles and Tutorials
 
 A collection of external articles and tutorials about Log4j 2.
-The link:manual/index.html[Log4j 2 manual] is the ultimate guide for up-to-date and detailed information on how to configure and use Log4j 2.
+The xref:manual/index.adoc[Log4j 2 manual] is the ultimate guide for up-to-date and detailed information on how to configure and use Log4j 2.
 
 == Chinese
 

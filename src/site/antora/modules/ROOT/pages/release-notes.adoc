@@ -16,15 +16,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+= Release notes
 
-// TODO: turn this into a velocity template for all the version numbers
-= Web Servlet Containers
-
-The Web module provides support for automatically enabling Log4j in Servlet containers.
-
-See the user manual page on xref:manual/webapp.adoc[Web Applications and JSPs] for details on using Log4j 2 in Web Applications.
-
-== Requirements
-
-The Web module requires Servlet 5.0 at minimum and is dependent on the Log4j 2 API and implementation.
-For more information, see link:runtime-dependencies.html[Runtime Dependencies].
+This file is a stub.
+Its content will be auto-generated during build.

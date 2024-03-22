@@ -14,11 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 API
-Ralph Goers <rgoers@apache.org>
-
-[#EventLogging]
-== Event Logging
+= Event Logging
 
 The `EventLogger` class provides a simple mechanism for logging events
 that occur in an application. While the `EventLogger` is useful as a way

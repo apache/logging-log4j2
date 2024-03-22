@@ -1307,7 +1307,7 @@ The bundle name follows package naming conventions, for example:
 |Inserts the current date and/or time using the specified format
 
 |docker
-| Returns attributes from the Docker container the application is running in. The format is ${docker:some.attribute}. See xref:/log4j-docker.html[Docker documentation] for requirements and a list of available attributes.
+| Returns attributes from the Docker container the application is running in. The format is ${docker:some.attribute}. See xref:manual/manual/manual//log4j-docker.html[Docker documentation] for requirements and a list of available attributes.
 
 |env
 |System environment variables. The formats are `${env:ENV_NAME}` and `${env:ENV_NAME:-default_value}`.
@@ -1943,10 +1943,10 @@ The following is a list of available global configuration properties. Note that 
 |
     Creates the `LoggerContext`s. An application can have one or more active LoggerContexts depending
     on the circumstances.
-    See xref:/logsep.html[Log Separation] for more details.
+    See xref:manual/manual/manual//logsep.html[Log Separation] for more details.
     Available context selector implementation classes:<br>
-    `org.apache.logging.log4j.core.async .AsyncLoggerContextSelector` - makes xref:/async.html[all loggers asynchronous].<br>
-    `org.apache.logging.log4j.core.async .BasicAsyncLoggerContextSelector` - makes xref:/async.html[all loggers asynchronous] using a single shared AsyncLoggerContext.<br>
+    `org.apache.logging.log4j.core.async .AsyncLoggerContextSelector` - makes xref:manual/manual/manual//async.html[all loggers asynchronous].<br>
+    `org.apache.logging.log4j.core.async .BasicAsyncLoggerContextSelector` - makes xref:manual/manual/manual//async.html[all loggers asynchronous] using a single shared AsyncLoggerContext.<br>
     `org.apache.logging.log4j.core.selector .BasicContextSelector` - creates a single shared LoggerContext.<br>
     `org.apache.logging.log4j.core.selector .ClassLoaderContextSelector` - separate LoggerContexts for each web application.<br>
     `org.apache.logging.log4j.core.selector .JndiContextSelector` - use JNDI to locate each web application's LoggerContext.<br>
@@ -2030,7 +2030,7 @@ The following is a list of available global configuration properties. Note that 
 | org.apache.logging.log4j.core.util .DefaultShutdownCallbackRegistry
 |
     Fully specified class name of a class implementing
-    xref:/../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html" class="javadoc[ShutdownCallbackRegistry].
+    xref:manual/manual/manual//../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html" class="javadoc[ShutdownCallbackRegistry].
     If specified, an instance of this class is used instead of `DefaultShutdownCallbackRegistry`.
     The specified class must have a default constructor.
 
@@ -2264,71 +2264,71 @@ The following is a list of available global configuration properties. Note that 
   ([[AsyncLogger.ExceptionHandler]]AsyncLogger.ExceptionHandler)
 | LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER
 | default handler
-| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerRingBufferSize]]log4j2.asyncLoggerRingBufferSize
   ([[AsyncLogger.RingBufferSize]]AsyncLogger.RingBufferSize)
 | LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE
 | 256*1024 or 4*1024 in garbage-free mode
-| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerWaitStrategy]]log4j2.asyncLoggerWaitStrategy
   ([[AsyncLogger.WaitStrategy]]AsyncLogger.WaitStrategy)
 | LOG4J_ASYNC_LOGGER_WAIT_STRATEGY
 | Timeout
-| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerTimeout]]log4j2.asyncLoggerTimeout
   ([[AsyncLogger.Timeout]]AsyncLogger.Timeout)
 | LOG4J_ASYNC_LOGGER_TIMEOUT
 | 10
-| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerSleepTimeNs]]log4j2.asyncLoggerSleepTimeNs
   ([[AsyncLogger.SleepTimeNs]]AsyncLogger.SleepTimeNs)
 | LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
 | 100
-| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerRetries]]log4j2.asyncLoggerRetries
   ([[AsyncLogger.Retries]]AsyncLogger.Retries)
 | LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
 | 200
-| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[AsyncLogger.SynchronizeEnqueueWhenQueueFull]]AsyncLogger.SynchronizeEnqueueWhenQueueFull
 | ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
 | true
-| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerThreadNameStrategy]]log4j2.asyncLoggerThreadNameStrategy
   ([[AsyncLogger.ThreadNameStrategy]]AsyncLogger.ThreadNameStrategy)
 | LOG4J_ASYNC_LOGGER_THREAD_NAME_STRATEGY
 | CACHED
-| See xref:/async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerConfigExceptionHandler]]log4j2.asyncLoggerConfigExceptionHandler
   ([[AsyncLoggerConfig.ExceptionHandler]]AsyncLoggerConfig.ExceptionHandler)
 | LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER
 | default handler
-| See xref:/async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
 
 | [[asyncLoggerConfigRingBufferSize]]log4j2.asyncLoggerConfigRingBufferSize
   ([[AsyncLoggerConfig.RingBufferSize]]AsyncLoggerConfig.RingBufferSize)
 | LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE
 | 256*1024 or 4*1024 in garbage-free mode
-| See xref:/async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
 
 | [[asyncLoggerConfigWaitStrategy]]log4j2.asyncLoggerConfigWaitStrategy
   ([[AsyncLoggerConfig.WaitStrategy]]AsyncLoggerConfig.WaitStrategy)
 | LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY
 | Timeout
-| See xref:/async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
 
 | [[AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull]]AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
 | ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
 | true
-| See xref:/async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+| See xref:manual/manual/manual//async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
 
 | [[julLoggerAdapter]]log4j2.julLoggerAdapter
   ([[log4j.jul.LoggerAdapter]]log4j.jul.LoggerAdapter)
@@ -2446,7 +2446,7 @@ or as if it is not part of a web application (when false).
   ([[log4j.LoggerContext.stacktrace.on.start]]log4j.LoggerContext.stacktrace.on.start)
 | LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START
 | false
-| Prints a stacktrace to the xref:/#StatusMessages[status logger] at DEBUG level when the LoggerContext is started. For debug purposes.
+| Prints a stacktrace to the xref:manual/manual/manual//#StatusMessages[status logger] at DEBUG level when the LoggerContext is started. For debug purposes.
 
 | [[log4j2.trustStoreLocation]]log4j2.trustStoreLocation
 | LOG4J_TRUST_STORE_LOCATION

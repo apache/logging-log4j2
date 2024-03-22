@@ -858,7 +858,7 @@ As of Log4j 2.11.0, JDBC support has moved from the existing module
 
 The JDBC Appender configured with a `DataSource` requires JNDI support so as of release 2.17.1
 this appender will not function unless `log4j2.enableJndiJdbc=true` is configured as a system property
-or environment variable. See the xref:/configuration.html#enableJndiJdbc[enableJndiJdbc] system property.
+or environment variable. See the xref:manual/manual/manual//configuration.html#enableJndiJdbc[enableJndiJdbc] system property.
 
 The JDBCAppender writes log events to a relational database table using
 standard JDBC. It can be configured to obtain JDBC connections using a
