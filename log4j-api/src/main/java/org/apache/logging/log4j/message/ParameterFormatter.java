@@ -239,17 +239,18 @@ final class ParameterFormatter {
             final MessagePatternAnalysis analysis) {
 
         // Short-circuit if there is nothing interesting
-        if (pattern == null || args == null || args.length == 0 || analysis.placeholderCount == 0) {
+        if (pattern == null || args == null || analysis.placeholderCount == 0) {
             buffer.append(pattern);
             return;
         }
 
         // check if there are insufficient arguments that do not include Throwable arg
-        final int noThrowableArgCount = argCount - ((args[argCount - 1] instanceof Throwable) ? 1 : 0);
+        final int realArgCount = args.length;
+        final int noThrowableArgCount = realArgCount - ((args[realArgCount - 1] instanceof Throwable) ? 1 : 0);
         if (analysis.placeholderCount != noThrowableArgCount) {
             final String message = String.format(
                     "found %d argument placeholders, but provided %d for pattern `%s`",
-                    analysis.placeholderCount, args.length, pattern);
+                    analysis.placeholderCount, realArgCount, pattern);
             STATUS_LOGGER.warn(message);
         }
 
