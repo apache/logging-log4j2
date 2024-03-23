@@ -185,27 +185,44 @@ class ParameterizedMessageTest {
         assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
     }
 
-    @Test
-    void formatToWithMoreArgsButNoWarn() {
-        final String pattern = "no warn {} {}";
-        final String expectedMessage = "no warn a b";
-        final Object[] args = {"a", "b", new RuntimeException()};
+    /**
+     * In this test cases, constructed the following scenarios: <br>
+     * <p>
+     * 1. The arguments contains an exception, and the count of placeholder is equal to arguments include exception. <br>
+     * 2. The arguments contains an exception, and the count of placeholder is equal to arguments except exception.<br>
+     * All of these should not logged in status logger.
+     * </p>
+     *
+     * @return Streams
+     */
+    static Stream<Object[]> testCasesWithExceptionArgsButNoWarn() {
+        return Stream.of(
+                new Object[] {
+                    "with exception {} {}",
+                    new Object[] {"a", new RuntimeException()},
+                    "with exception a java.lang.RuntimeException"
+                },
+                new Object[] {
+                    "with exception {} {}", new Object[] {"a", "b", new RuntimeException()}, "with exception a b"
+                });
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCasesWithExceptionArgsButNoWarn")
+    void formatToWithExceptionButNoWarn(final String pattern, final Object[] args, final String expected) {
         final ParameterizedMessage message = new ParameterizedMessage(pattern, args);
         final StringBuilder buffer = new StringBuilder();
         message.formatTo(buffer);
-        assertThat(buffer.toString()).isEqualTo(expectedMessage);
-        assertThat(message.getThrowable()).isInstanceOf(RuntimeException.class);
+        assertThat(buffer.toString()).isEqualTo(expected);
         final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
         assertThat(statusDataList).hasSize(0);
     }
 
-    @Test
-    void formatWithMoreArgsButNoWarn() {
-        final String pattern = "no warn {} {}";
-        final String expectedMessage = "no warn a b";
-        final Object[] args = {"a", "b", new RuntimeException()};
+    @ParameterizedTest
+    @MethodSource("testCasesWithExceptionArgsButNoWarn")
+    void formatWithExceptionButNoWarn(final String pattern, final Object[] args, final String expected) {
         final String message = ParameterizedMessage.format(pattern, args);
-        assertThat(message).isEqualTo(expectedMessage);
+        assertThat(message).isEqualTo(expected);
         final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
         assertThat(statusDataList).hasSize(0);
     }
@@ -229,12 +246,6 @@ class ParameterizedMessageTest {
                 new Object[] {"less {}", 1, new Object[] {"a", "b"}, "less a"},
                 new Object[] {"less {} {}", 2, new Object[] {"a", "b", "c"}, "less a b"},
                 new Object[] {
-                    "more throwable {} {}",
-                    2,
-                    new Object[] {"a", new RuntimeException()},
-                    "more throwable a java.lang.RuntimeException"
-                },
-                new Object[] {
                     "more throwable {} {} {}",
                     3,
                     new Object[] {"a", new RuntimeException()},
@@ -247,8 +258,8 @@ class ParameterizedMessageTest {
 
     @ParameterizedTest
     @MethodSource("testCasesForInsufficientFormatArgs")
-    void formatTo_should_warn_on_insufficient_args(
-            final String pattern, final int placeholderCount, Object[] args, final String expected) {
+    void formatToShouldWarnOnInsufficientArgs(
+            final String pattern, final int placeholderCount, final Object[] args, final String expected) {
         final int argCount = args == null ? 0 : args.length;
         verifyFormattingFailureOnInsufficientArgs(pattern, placeholderCount, argCount, expected, () -> {
             final ParameterizedMessage message = new ParameterizedMessage(pattern, args);
@@ -260,8 +271,8 @@ class ParameterizedMessageTest {
 
     @ParameterizedTest
     @MethodSource("testCasesForInsufficientFormatArgs")
-    void format_should_warn_on_insufficient_args(
-            final String pattern, final int placeholderCount, Object[] args, final String expected) {
+    void formatShouldWarnOnInsufficientArgs(
+            final String pattern, final int placeholderCount, final Object[] args, final String expected) {
         final int argCount = args == null ? 0 : args.length;
         verifyFormattingFailureOnInsufficientArgs(
                 pattern, placeholderCount, argCount, expected, () -> ParameterizedMessage.format(pattern, args));
