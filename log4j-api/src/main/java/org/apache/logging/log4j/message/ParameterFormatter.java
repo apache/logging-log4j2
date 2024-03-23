@@ -244,14 +244,17 @@ final class ParameterFormatter {
             return;
         }
 
-        // check if there are insufficient arguments that do not include Throwable arg
-        final int realArgCount = args.length;
-        final int noThrowableArgCount = realArgCount - ((args[realArgCount - 1] instanceof Throwable) ? 1 : 0);
-        if (analysis.placeholderCount != noThrowableArgCount) {
-            final String message = String.format(
-                    "found %d argument placeholders, but provided %d for pattern `%s`",
-                    analysis.placeholderCount, realArgCount, pattern);
-            STATUS_LOGGER.warn(message);
+        // #2380: check if the count of placeholder is not equal to the count of arguments
+        if (analysis.placeholderCount != argCount) {
+            final int realArgCount = args.length;
+            final int noThrowableArgCount = realArgCount - ((args[realArgCount - 1] instanceof Throwable) ? 1 : 0);
+            if (analysis.placeholderCount != noThrowableArgCount) {
+                STATUS_LOGGER.warn(
+                        "found {} argument placeholders, but provided {} for pattern `{}`",
+                        analysis.placeholderCount,
+                        Math.min(realArgCount, argCount),
+                        pattern);
+            }
         }
 
         // Fast-path for patterns containing no escapes
