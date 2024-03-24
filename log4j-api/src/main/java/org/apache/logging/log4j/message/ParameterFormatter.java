@@ -246,13 +246,13 @@ final class ParameterFormatter {
 
         // #2380: check if the count of placeholder is not equal to the count of arguments
         if (analysis.placeholderCount != argCount) {
-            final int realArgCount = args.length;
-            final int noThrowableArgCount = realArgCount - ((args[realArgCount - 1] instanceof Throwable) ? 1 : 0);
+            final int noThrowableArgCount =
+                    argCount < 1 ? 0 : argCount - ((args[argCount - 1] instanceof Throwable) ? 1 : 0);
             if (analysis.placeholderCount != noThrowableArgCount) {
                 STATUS_LOGGER.warn(
                         "found {} argument placeholders, but provided {} for pattern `{}`",
                         analysis.placeholderCount,
-                        Math.min(realArgCount, argCount),
+                        argCount,
                         pattern);
             }
         }
