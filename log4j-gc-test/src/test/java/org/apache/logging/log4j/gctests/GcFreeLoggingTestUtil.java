@@ -21,7 +21,8 @@ import static org.apache.logging.log4j.core.test.TestConstants.CONFIGURATION_FIL
 import static org.apache.logging.log4j.core.test.TestConstants.GC_ENABLE_DIRECT_ENCODERS;
 import static org.apache.logging.log4j.core.test.TestConstants.WEB_IS_WEB_APP;
 import static org.apache.logging.log4j.core.test.TestConstants.setSystemProperty;
-import static org.apache.logging.log4j.util.Constants.isWebApp;
+import static org.apache.logging.log4j.core.util.Constants.ENABLE_DIRECT_ENCODERS;
+import static org.apache.logging.log4j.util.Constants.IS_WEB_APP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,7 +46,6 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.core.test.TestConstants;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.message.StringMapMessage;
 
@@ -61,8 +61,8 @@ enum GcFreeLoggingTestUtil {
         setSystemProperty(WEB_IS_WEB_APP, "false");
         setSystemProperty(CONFIGURATION_FILE, configurationFile);
 
-        assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
-        assertFalse(isWebApp(), "Constants.isWebApp()");
+        assertTrue(ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
+        assertFalse(IS_WEB_APP, "Constants.isWebApp()");
 
         final MyCharSeq myCharSeq = new MyCharSeq();
         final Marker testGrandParent = MarkerManager.getMarker("testGrandParent");
