@@ -247,19 +247,42 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
 
-          <!-- Compile sources as usual -->
+          <!-- 1st pass: compile sources as usual -->
           <execution>
             <id>default-compile</id>
+          </execution>
+
+          <!-- 2nd pass: employ annotation processors -->
+          <execution>
+            <id>process-plugins</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>process-classes</phase>
             <configuration>
               <annotationProcessorPaths combine.children="append">
-                <!-- `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` for generating `log4j-plugins.xml`: -->
+                <!-- Include `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` that generates `log4j-plugins.xml`.
+                     `DescriptorGenerator` must precede `PluginProcessor`, since the latter *claims* the `@Plugin`.
+                     Once claimed, `javac` doesn't pass those sources to other processors. -->
                 <path>
                   <groupId>org.apache.logging.log4j</groupId>
                   <artifactId>log4j-docgen</artifactId>
                   <version>${log4j-docgen.version}</version>
                 </path>
+                <!-- `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` for generating `META-INF/org/apache/.../Log4j2Plugins.dat`: -->
+                <path>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-core</artifactId>
+                  <version>${project.version}</version>
+                </path>
               </annotationProcessorPaths>
-              <compilerArgs combine.children="append">
+              <annotationProcessors>
+                <!-- Process sources using `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` to generate `log4j-plugins.xml` -->
+                <processor>org.apache.logging.log4j.docgen.processor.DescriptorGenerator</processor>
+                <!-- Process sources using `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` to generate `META-INF/org/apache/.../Log4j2Plugins.dat` -->
+                <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
+              </annotationProcessors>
+              <compilerArgs combine.self="override">
                 <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
                 <arg>-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir.phase1}/${project.artifactId}-plugins.xml</arg>
                 <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
@@ -268,22 +291,6 @@
                 <arg>-Alog4j.docgen.description=${project.description}</arg>
                 <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
               </compilerArgs>
-            </configuration>
-          </execution>
-
-          <!-- Process sources using `PluginProcessor` to generate `META-INF/org/apache/.../Log4j2Plugins.dat` -->
-          <execution>
-            <id>process-plugins</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>process-classes</phase>
-            <configuration>
-              <annotationProcessorPaths combine.self="override" />
-              <annotationProcessors>
-                <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
-              </annotationProcessors>
-              <compilerArgs combine.self="override" />
               <proc>only</proc>
             </configuration>
           </execution>
