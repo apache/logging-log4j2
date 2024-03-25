@@ -24,6 +24,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleRevision;
 
 public class OsgiServiceLocator {
 
@@ -57,29 +58,53 @@ public class OsgiServiceLocator {
 
     public static <T> Stream<T> loadServices(final Class<T> serviceType, final Lookup lookup, final boolean verbose) {
         final Class<?> lookupClass = Objects.requireNonNull(lookup, "lookup").lookupClass();
-        final Bundle bundle = FrameworkUtil.getBundle(Objects.requireNonNull(lookupClass, "lookupClass"));
-        if (bundle != null) {
+        return loadServices(serviceType, lookupClass, StatusLogger.getLogger());
+    }
+
+    static <T> Stream<T> loadServices(final Class<T> serviceType, final Class<?> callerClass, final Logger logger) {
+        final Bundle bundle = FrameworkUtil.getBundle(callerClass);
+        if (bundle != null && !isFragment(bundle)) {
             final BundleContext ctx = bundle.getBundleContext();
             if (ctx == null) {
-                if (verbose) {
-                    StatusLogger.getLogger()
-                            .error(
-                                    "Unable to load OSGI services: The bundle has no valid BundleContext for serviceType = {}, lookup = {}, lookupClass = {}, bundle = {}",
-                                    serviceType,
-                                    lookup,
-                                    lookupClass,
-                                    bundle);
-                }
+                logger.warn(
+                        "Unable to load OSGi services for service {}: bundle {} (state {}) does not have a valid BundleContext",
+                        serviceType::getName,
+                        bundle::getSymbolicName,
+                        () -> {
+                            switch (bundle.getState()) {
+                                case Bundle.UNINSTALLED:
+                                    return "UNINSTALLED";
+                                case Bundle.INSTALLED:
+                                    return "INSTALLED";
+                                case Bundle.RESOLVED:
+                                    return "RESOLVED";
+                                case Bundle.STARTING:
+                                    return "STARTING";
+                                case Bundle.STOPPING:
+                                    return "STOPPING";
+                                case Bundle.ACTIVE:
+                                    return "ACTIVE";
+                                default:
+                                    return "UNKNOWN";
+                            }
+                        });
+
             } else {
                 try {
                     return ctx.getServiceReferences(serviceType, null).stream().map(ctx::getService);
-                } catch (Throwable e) {
-                    if (verbose) {
-                        StatusLogger.getLogger().error("Unable to load OSGI services for service {}", serviceType, e);
-                    }
+                } catch (final Exception e) {
+                    logger.error("Unable to load OSGI services for service {}", serviceType, e);
                 }
             }
         }
         return Stream.empty();
+    }
+
+    private static boolean isFragment(final Bundle bundle) {
+        try {
+            return (bundle.adapt(BundleRevision.class).getTypes() & BundleRevision.TYPE_FRAGMENT) != 0;
+        } catch (final SecurityException ignored) {
+            return false;
+        }
     }
 }

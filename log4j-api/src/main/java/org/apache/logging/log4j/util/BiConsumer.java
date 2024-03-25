@@ -24,12 +24,14 @@ package org.apache.logging.log4j.util;
  * @see ReadOnlyStringMap
  * @since 2.7
  */
-public interface BiConsumer<K, V> {
+@FunctionalInterface
+public interface BiConsumer<K, V> extends java.util.function.BiConsumer<K, V> {
 
     /**
      * Performs the operation given the specified arguments.
      * @param k the first input argument
      * @param v the second input argument
      */
+    @Override
     void accept(K k, V v);
 }

@@ -31,14 +31,15 @@ package org.apache.logging.log4j.util;
  *
  * @since 2.4
  */
+@FunctionalInterface
 @InternalApi
-@Deprecated
-public interface Supplier<T> {
+public interface Supplier<T> extends java.util.function.Supplier<T> {
 
     /**
      * Gets a value.
      *
      * @return a value
      */
+    @Override
     T get();
 }

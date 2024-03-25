@@ -1,1 +1,2 @@
 org.apache.logging.log4j.TestProvider
+org.apache.logging.log4j.util.ProviderUtilTest.LocalProvider

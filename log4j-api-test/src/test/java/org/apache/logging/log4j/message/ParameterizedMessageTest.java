@@ -185,16 +185,84 @@ class ParameterizedMessageTest {
         assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
     }
 
+    /**
+     * In this test cases, constructed the following scenarios: <br>
+     * <p>
+     * 1. The arguments contains an exception, and the count of placeholder is equal to arguments include exception. <br>
+     * 2. The arguments contains an exception, and the count of placeholder is equal to arguments except exception.<br>
+     * All of these should not logged in status logger.
+     * </p>
+     *
+     * @return Streams
+     */
+    static Stream<Object[]> testCasesWithExceptionArgsButNoWarn() {
+        return Stream.of(
+                new Object[] {
+                    "with exception {} {}",
+                    new Object[] {"a", new RuntimeException()},
+                    "with exception a java.lang.RuntimeException"
+                },
+                new Object[] {
+                    "with exception {} {}", new Object[] {"a", "b", new RuntimeException()}, "with exception a b"
+                });
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCasesWithExceptionArgsButNoWarn")
+    void formatToWithExceptionButNoWarn(final String pattern, final Object[] args, final String expected) {
+        final ParameterizedMessage message = new ParameterizedMessage(pattern, args);
+        final StringBuilder buffer = new StringBuilder();
+        message.formatTo(buffer);
+        assertThat(buffer.toString()).isEqualTo(expected);
+        final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
+        assertThat(statusDataList).hasSize(0);
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCasesWithExceptionArgsButNoWarn")
+    void formatWithExceptionButNoWarn(final String pattern, final Object[] args, final String expected) {
+        final String message = ParameterizedMessage.format(pattern, args);
+        assertThat(message).isEqualTo(expected);
+        final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
+        assertThat(statusDataList).hasSize(0);
+    }
+
+    /**
+     * In this test cases, constructed the following scenarios: <br>
+     * <p>
+     * 1. The placeholders are greater than the count of arguments. <br>
+     * 2. The placeholders are less than the count of arguments. <br>
+     * 3. The arguments contains an exception, and the placeholder is greater than normal arguments. <br>
+     * 4. The arguments contains an exception, and the placeholder is less than the arguments.<br>
+     * All of these should logged in status logger with WARN level.
+     * </p>
+     *
+     * @return streams
+     */
     static Stream<Object[]> testCasesForInsufficientFormatArgs() {
-        return Stream.of(new Object[] {1, "foo {}"}, new Object[] {2, "bar {}{}"});
+        return Stream.of(
+                new Object[] {"more {} {}", 2, new Object[] {"a"}, "more a {}"},
+                new Object[] {"more {} {} {}", 3, new Object[] {"a"}, "more a {} {}"},
+                new Object[] {"less {}", 1, new Object[] {"a", "b"}, "less a"},
+                new Object[] {"less {} {}", 2, new Object[] {"a", "b", "c"}, "less a b"},
+                new Object[] {
+                    "more throwable {} {} {}",
+                    3,
+                    new Object[] {"a", new RuntimeException()},
+                    "more throwable a java.lang.RuntimeException {}"
+                },
+                new Object[] {
+                    "less throwable {}", 1, new Object[] {"a", "b", new RuntimeException()}, "less throwable a"
+                });
     }
 
     @ParameterizedTest
     @MethodSource("testCasesForInsufficientFormatArgs")
-    void formatTo_should_fail_on_insufficient_args(final int placeholderCount, final String pattern) {
-        final int argCount = placeholderCount - 1;
-        verifyFormattingFailureOnInsufficientArgs(placeholderCount, pattern, argCount, () -> {
-            final ParameterizedMessage message = new ParameterizedMessage(pattern, new Object[argCount]);
+    void formatToShouldWarnOnInsufficientArgs(
+            final String pattern, final int placeholderCount, final Object[] args, final String expected) {
+        final int argCount = args == null ? 0 : args.length;
+        verifyFormattingFailureOnInsufficientArgs(pattern, placeholderCount, argCount, expected, () -> {
+            final ParameterizedMessage message = new ParameterizedMessage(pattern, args);
             final StringBuilder buffer = new StringBuilder();
             message.formatTo(buffer);
             return buffer.toString();
@@ -203,32 +271,33 @@ class ParameterizedMessageTest {
 
     @ParameterizedTest
     @MethodSource("testCasesForInsufficientFormatArgs")
-    void format_should_fail_on_insufficient_args(final int placeholderCount, final String pattern) {
-        final int argCount = placeholderCount - 1;
+    void formatShouldWarnOnInsufficientArgs(
+            final String pattern, final int placeholderCount, final Object[] args, final String expected) {
+        final int argCount = args == null ? 0 : args.length;
         verifyFormattingFailureOnInsufficientArgs(
-                placeholderCount, pattern, argCount, () -> ParameterizedMessage.format(pattern, new Object[argCount]));
+                pattern, placeholderCount, argCount, expected, () -> ParameterizedMessage.format(pattern, args));
     }
 
     private void verifyFormattingFailureOnInsufficientArgs(
-            final int placeholderCount,
             final String pattern,
+            final int placeholderCount,
             final int argCount,
+            final String expected,
             final Supplier<String> formattedMessageSupplier) {
 
         // Verify the formatted message
         final String formattedMessage = formattedMessageSupplier.get();
-        assertThat(formattedMessage).isEqualTo(pattern);
+        assertThat(formattedMessage).isEqualTo(expected);
 
-        // Verify the logged failure
+        // Verify the status logger warn
         final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
         assertThat(statusDataList).hasSize(1);
         final StatusData statusData = statusDataList.get(0);
-        assertThat(statusData.getLevel()).isEqualTo(Level.ERROR);
-        assertThat(statusData.getMessage().getFormattedMessage()).isEqualTo("Unable to format msg: %s", pattern);
-        assertThat(statusData.getThrowable())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(
+        assertThat(statusData.getLevel()).isEqualTo(Level.WARN);
+        assertThat(statusData.getMessage().getFormattedMessage())
+                .isEqualTo(
                         "found %d argument placeholders, but provided %d for pattern `%s`",
                         placeholderCount, argCount, pattern);
+        assertThat(statusData.getThrowable()).isNull();
     }
 }

@@ -20,13 +20,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.BetterService;
 import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.Service;
@@ -35,14 +37,26 @@ import org.junit.jupiter.api.Test;
 
 public class ServiceLoaderUtilTest {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     @Test
     public void testServiceResolution() {
         final List<Object> services = new ArrayList<>();
-        assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(BetterService.class, MethodHandles.lookup(), false)
+        ServiceLoaderUtil.safeStream(
+                BetterService.class,
+                ServiceLoader.load(BetterService.class, getClass().getClassLoader()),
+                LOGGER);
+        assertDoesNotThrow(() -> ServiceLoaderUtil.safeStream(
+                        BetterService.class,
+                        ServiceLoader.load(BetterService.class, getClass().getClassLoader()),
+                        LOGGER)
                 .forEach(services::add));
         assertThat(services).hasSize(1);
         services.clear();
-        assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup(), false)
+        assertDoesNotThrow(() -> ServiceLoaderUtil.safeStream(
+                        PropertySource.class,
+                        ServiceLoader.load(PropertySource.class, getClass().getClassLoader()),
+                        LOGGER)
                 .forEach(services::add));
         assertThat(services).hasSize(3);
     }
@@ -51,7 +65,10 @@ public class ServiceLoaderUtilTest {
     @UsingStatusListener
     public void testBrokenServiceFile(final ListStatusListener listener) {
         final List<Service> services = new ArrayList<>();
-        assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(Service.class, MethodHandles.lookup(), false)
+        assertDoesNotThrow(() -> ServiceLoaderUtil.safeStream(
+                        Service.class,
+                        ServiceLoader.load(Service.class, getClass().getClassLoader()),
+                        LOGGER)
                 .forEach(services::add));
         assertEquals(2, services.size());
         // A warning for each broken service
