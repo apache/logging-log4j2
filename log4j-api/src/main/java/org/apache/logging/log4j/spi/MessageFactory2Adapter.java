@@ -23,9 +23,9 @@ import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.message.SimpleMessage;
 
 /**
- * Adapts a legacy MessageFactory to the new MessageFactory2 interface.
+ * Adapts a legacy {@link MessageFactory} to the new {@link MessageFactory2} interface.
  *
- * @since 2.6
+ * @since 2.24.0
  */
 public class MessageFactory2Adapter implements MessageFactory2 {
     private final MessageFactory wrapped;
