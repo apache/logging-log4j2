@@ -30,12 +30,13 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.internal.ReusableMessageFactory;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
+import org.apache.logging.log4j.kit.recycler.internal.DummyRecyclerFactoryProvider;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
@@ -246,7 +247,8 @@ class RingBufferLogEventTest {
         final Marker marker = MarkerManager.getMarker("marked man");
         final String fqcn = "f.q.c.n";
         final Level level = Level.TRACE;
-        final ReusableMessageFactory factory = new ReusableMessageFactory();
+        final ReusableMessageFactory factory =
+                new ReusableMessageFactory(DummyRecyclerFactoryProvider.INSTANCE.createForEnvironment(null));
         final Message message = factory.newMessage("Hello {}!", "World");
         try {
             final Throwable t = new InternalError("not a real error");
@@ -276,7 +278,7 @@ class RingBufferLogEventTest {
             assertThat(actual.getParameters()).isEqualTo(new String[] {"World"});
             assertThat(actual.getFormattedMessage()).isEqualTo("Hello World!");
         } finally {
-            ReusableMessageFactory.release(message);
+            factory.recycle(message);
         }
     }
 
@@ -289,7 +291,8 @@ class RingBufferLogEventTest {
         final Marker marker = MarkerManager.getMarker("marked man");
         final String fqcn = "f.q.c.n";
         final Level level = Level.TRACE;
-        final ReusableMessageFactory factory = new ReusableMessageFactory();
+        final ReusableMessageFactory factory =
+                new ReusableMessageFactory(DummyRecyclerFactoryProvider.INSTANCE.createForEnvironment(null));
         final Message message = factory.newMessage("Hello {}!", "World");
         try {
             final Throwable t = new InternalError("not a real error");

@@ -46,6 +46,6 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
     @Override
     protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
         assertAsyncLoggerConfig(ctx, 128);
-        assertThat(Constants.isWebApp()).isFalse();
+        assertThat(Constants.IS_WEB_APP).isFalse();
     }
 }

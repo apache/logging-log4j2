@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.impl.CoreProperties.LoggerContextProperties;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
@@ -56,7 +57,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     private final ShutdownCallbackRegistry shutdownCallbackRegistry;
 
     /**
-     * Initializes the ContextSelector from system property {@link CoreProperties.LoggerContextProperties#selector()}.
+     * Initializes the ContextSelector from system property {@link LoggerContextProperties#selector()}.
      * <p>
      *     Only used if no {@link org.apache.logging.log4j.spi.Provider} is present.
      * </p>
@@ -78,7 +79,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     /**
-     * Constructs a Log4jContextFactory using the ContextSelector from {@link CoreProperties.LoggerContextProperties#selector()}
+     * Constructs a Log4jContextFactory using the ContextSelector from {@link LoggerContextProperties#selector()}
      * and the provided ShutdownRegistrationStrategy.
      *
      * @param shutdownCallbackRegistry the ShutdownRegistrationStrategy to use
@@ -430,9 +431,9 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     public boolean isShutdownHookEnabled() {
-        return !Constants.IS_WEB_APP
-                && PropertyEnvironment.getGlobal()
-                        .getProperty(CoreProperties.LoggerContextProperties.class)
-                        .shutdownHookEnabled();
+        final Boolean shutdownHookEnabled = PropertyEnvironment.getGlobal()
+                .getProperty(LoggerContextProperties.class)
+                .shutdownHookEnabled();
+        return shutdownHookEnabled != null ? shutdownHookEnabled : !Constants.IS_WEB_APP;
     }
 }

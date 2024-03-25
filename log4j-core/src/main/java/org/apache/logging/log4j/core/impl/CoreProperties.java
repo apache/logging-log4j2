@@ -156,7 +156,7 @@ public final class CoreProperties {
             @Nullable Class<? extends LoggerContextFactory> factory,
             @Nullable Class<? extends ContextSelector> selector,
             @Nullable Class<? extends ShutdownCallbackRegistry> shutdownCallbackRegistry,
-            @Log4jProperty(defaultValue = "true") boolean shutdownHookEnabled,
+            @Nullable Boolean shutdownHookEnabled,
             boolean stacktraceOnStart) {}
 
     @Log4jProperty(name = "message")
