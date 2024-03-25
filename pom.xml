@@ -784,6 +784,7 @@
       </plugin>
 
       <plugin>
+
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-docgen-maven-plugin</artifactId>
         <version>${log4j-docgen.version}</version>
@@ -838,12 +839,11 @@
               <templateDirectory>${project.basedir}/src/docgen-templates</templateDirectory>
               <indexTemplate>
                 <source>index.adoc.ftl</source>
-                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/index.adoc</target>
+                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference.adoc</target>
               </indexTemplate>
               <typeTemplate>
                 <source>type.adoc.ftl</source>
-                <!-- `target` must be in sync. with the `log4j-docgen-type-template-target` configuration of `log4j-docgen-asciidoctor-extension`! -->
-                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference/%g/%a/%c.adoc</target>
+                <target>${project.build.directory}/generated-sources/site/asciidoc/_plugin-reference/%g-%a-%c.adoc</target>
               </typeTemplate>
             </configuration>
           </execution>
@@ -913,8 +913,7 @@
                 <toc>left</toc>
                 <log4j-docgen-descriptor-directory>${project.build.directory}/plugin-descriptors</log4j-docgen-descriptor-directory>
                 <log4j-docgen-type-filter-exclude-pattern>${log4j.docgen.typeFilter.excludePattern}</log4j-docgen-type-filter-exclude-pattern>
-                <!-- `log4j-docgen-type-template-target` must be in sync. with the `typeTemplate` configuration of `log4j-docgen-maven-plugin`! -->
-                <log4j-docgen-type-template-target>../../%g/%a/%c.html</log4j-docgen-type-template-target>
+                <log4j-docgen-type-target-template><![CDATA[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${sourcedType.type.className?replace('.', '-')}]]></log4j-docgen-type-target-template>
               </attributes>
             </configuration>
           </execution>
