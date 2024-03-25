@@ -111,7 +111,7 @@
     <flapdoodle-embed.version>4.8.1</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.7.2</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
-    <graalvm.version>23.1.2</graalvm.version>
+    <graalvm.version>24.0.0</graalvm.version>
     <groovy.version>4.0.20</groovy.version>
     <guava.version>33.1.0-jre</guava.version>
     <h2.version>2.2.222</h2.version>
@@ -143,7 +143,7 @@
     <mockito.version>5.11.0</mockito.version>
     <mongodb.version>5.0.0</mongodb.version>
     <nashorn.version>15.4</nashorn.version>
-    <netty.version>4.1.107.Final</netty.version>
+    <netty.version>4.1.108.Final</netty.version>
     <opentest4j.version>1.3.0</opentest4j.version>
     <org.eclipse.osgi.version>3.19.0</org.eclipse.osgi.version>
     <oro.version>2.0.8</oro.version>
