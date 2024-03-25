@@ -1037,8 +1037,8 @@
 
       <id>plugin-processing</id>
 
-      <!-- Profile gets activated using a file instead of, say, a property.
-           Since a Maven property lookup requires model interpolation and that hasn't happened at this stage yet.
+      <!-- Profile gets activated using a file instead of, say, a property defined by the child `pom.xml`.
+           Since a Maven property lookup requires model interpolation and that happens after the profile activation phase.
            See: https://maven.apache.org/ref/3.9.6/maven-model-builder -->
       <activation>
         <file>
