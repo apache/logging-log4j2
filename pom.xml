@@ -836,7 +836,7 @@
             </goals>
             <phase>pre-site</phase>
             <configuration>
-              <templateDirectory>${project.basedir}/src/docgen-templates</templateDirectory>
+              <templateDirectory>${project.basedir}/src/template/docgen</templateDirectory>
               <indexTemplate>
                 <source>index.adoc.ftl</source>
                 <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference.adoc</target>
@@ -906,7 +906,7 @@
               <outputDirectory>target/site</outputDirectory>
               <preserveDirectories>true</preserveDirectories>
               <templateDirs>
-                <dir>src/asciidoc/templates</dir>
+                <dir>src/template/asciidoctor</dir>
               </templateDirs>
               <attributes>
                 <source-highlighter>rouge</source-highlighter>
