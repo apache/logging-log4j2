@@ -133,7 +133,6 @@
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.10.2</junit-jupiter.version>
     <junit-pioneer.version>2.2.0</junit-pioneer.version>
-    <kubernetes-client.version>5.12.4</kubernetes-client.version>
     <log4j.version>1.2.17</log4j.version>
     <log4j2-custom-layout.version>1.1.0</log4j2-custom-layout.version>
     <log4j2-ecs-layout.version>1.6.0</log4j2-ecs-layout.version>
@@ -238,14 +237,6 @@
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
         <version>${junit-jupiter.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>kubernetes-client-bom</artifactId>
-        <version>${kubernetes-client.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

@@ -479,7 +479,7 @@ Applications within a Docker container that log using a Docker logging driver ca
 
 === Integration with Kubernetes
 
-Applications managed by Kubernetes can bypass the Docker/Kubernetes logging infrastructure and log directly to either a sidecar forwarder or a logging aggragator cluster while still including all the kubernetes attributes by using the Log4j 2 Kubernetes Lookup. More information on Log4j's Kubernetes support may also be found at Log4j-Kubernetes.
+Applications managed by Kubernetes can bypass the Docker/Kubernetes logging infrastructure and log directly to either a sidecar forwarder or a logging aggragator cluster while still including all the Kubernetes attributes by using the https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[Kubernetes Log4j Lookup] maintained by the Fabric8 project.
 
 == Appender Performance
 
