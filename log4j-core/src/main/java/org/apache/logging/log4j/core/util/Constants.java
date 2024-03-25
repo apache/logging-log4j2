@@ -68,8 +68,6 @@ public final class Constants {
      * {@code Log4jContextSelector} is set to {@code org.apache.logging.log4j.core.async.AsyncLoggerContextSelector}.
      * Disable by setting system property "log4j2.enable.direct.encoders" to "false".
      *
-     * @implNote Enable GC-free text encoding by default. The alternative is to enable GC-free encoding only when using
-     * {@code AsyncLoggerContext}.
      * @since 2.6
      */
     public static final boolean ENABLE_DIRECT_ENCODERS = GC.enableDirectEncoders();

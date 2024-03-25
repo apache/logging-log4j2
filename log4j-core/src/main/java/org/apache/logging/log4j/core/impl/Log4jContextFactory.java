@@ -57,7 +57,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     private final ShutdownCallbackRegistry shutdownCallbackRegistry;
 
     /**
-     * Initializes the ContextSelector from system property {@link Log4jPropertyKey#CONTEXT_SELECTOR_CLASS_NAME}.
+     * Initializes the ContextSelector from system property {@link CoreKeys.LoggerContext#selector()}.
      * <p>
      *     Only used if no {@link org.apache.logging.log4j.spi.Provider} is present.
      * </p>

@@ -104,14 +104,14 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns the configuration properties. These will initially include entries for {@code contextName}
-     * with the {@linkplain org.apache.logging.log4j.spi.LoggerContext#getName() context name} and
+     * with the {@linkplain LoggerContext#getName() context name} and
      * {@code hostName} with the {@linkplain NetUtils#getLocalHostname() local host name}. Additional
      * properties may be defined by plugins.
      */
     Map<String, String> getProperties();
 
     /**
-     * Returns the {@linkplain org.apache.logging.log4j.spi.LoggerContext#getEnvironment() context properties}
+     * Returns the {@linkplain LoggerContext#getEnvironment() context properties}
      * associated with the logger context for this configuration.
      *
      * @return the context properties
