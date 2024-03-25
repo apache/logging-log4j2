@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.core.impl.CoreProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.ThreadContextProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -37,11 +37,13 @@ public class GarbageFreeOpenHashMapThreadContextMap extends GarbageFreeSortedArr
     /** Constant used in benchmark code */
     public static final Class<? extends ThreadContextMap> SUPER = GarbageFreeSortedArrayThreadContextMap.class;
 
+    private final int initialCapacity = PropertyEnvironment.getGlobal()
+            .getProperty(ThreadContextProperties.class)
+            .initialCapacity();
+
     @Override
-    protected StringMap createStringMap(final int initialCapacity) {
-        return new OpenHashStringMap<>(PropertyEnvironment.getGlobal()
-                .getProperty(CoreProperties.ThreadContextProperties.class)
-                .initialCapacity());
+    protected StringMap createStringMap() {
+        return new OpenHashStringMap<>(initialCapacity);
     }
 
     @Override
