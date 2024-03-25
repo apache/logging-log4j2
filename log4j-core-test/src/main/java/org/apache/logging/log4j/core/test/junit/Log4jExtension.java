@@ -17,13 +17,16 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.URIConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
@@ -32,8 +35,9 @@ import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.plugins.util.ReflectionUtil;
 import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.util.ProviderUtil;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -106,8 +110,8 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
             final Class<?> testClass) {
         final ConfigurableInstanceFactory instanceFactory = configureInstanceFactory(builder, element);
         final Provider provider = instanceFactory.getInstance(Provider.class);
+        store.put(ProviderHolder.class, new ProviderHolder(provider));
         final Log4jContextFactory factory = (Log4jContextFactory) provider.getLoggerContextFactory();
-        store.put(LoggerContextFactoryHolder.class, new LoggerContextFactoryHolder(factory));
         if (AnnotationSupport.isAnnotated(element, LoggingResolvers.class)) {
             AnnotationSupport.findAnnotation(element, LoggerContextSource.class)
                     .map(source -> configureLoggerContextSource(source, testClass, factory))
@@ -233,15 +237,49 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
         return provider.loggerContext();
     }
 
-    private record LoggerContextFactoryHolder(LoggerContextFactory factory)
-            implements ExtensionContext.Store.CloseableResource {
-        LoggerContextFactoryHolder {
-            LogManager.setFactory(factory);
+    /**
+     * TODO: remove this class by fixing tests that use both injection of parameters and static
+     *       LogManager/ThreadContext methods.
+     */
+    private static final class ProviderHolder implements ExtensionContext.Store.CloseableResource {
+
+        private static final Field startupLock;
+        private static final Field providerField;
+
+        private final Provider oldProvider;
+
+        static {
+            try {
+                providerField = ProviderUtil.class.getDeclaredField("PROVIDER");
+                startupLock = ProviderUtil.class.getDeclaredField("STARTUP_LOCK");
+            } catch (final NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private ProviderHolder(final Provider provider) {
+            oldProvider = setProvider(provider);
         }
 
         @Override
         public void close() {
-            LogManager.setFactory(null);
+            setProvider(oldProvider);
+        }
+
+        Provider setProvider(final Provider provider) {
+            final Lock lock = (Lock) ReflectionUtil.getStaticFieldValue(startupLock);
+            lock.lock();
+            try {
+                final Provider oldProvider = (Provider) ReflectionUtil.getStaticFieldValue(providerField);
+                ReflectionUtil.setStaticFieldValue(providerField, provider);
+                if (provider != null) {
+                    LogManager.setFactory(provider.getLoggerContextFactory());
+                    ThreadContext.init();
+                }
+                return oldProvider;
+            } finally {
+                lock.unlock();
+            }
         }
     }
 
