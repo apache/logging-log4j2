@@ -27,6 +27,18 @@ This releases contains ...
 === Added
 
 * Add a faster `ThreadContextMap` for web app users: `org.apache.logging.log4j.internal.map.StringArrayThreadContextMap`. (https://github.com/apache/logging-log4j2/pull/2330[2330])
+* Add _"Plugin Reference"_ to the website. It is a Javadoc-on-steroids focusing on Log4j plugins. (https://github.com/apache/logging-log4j2/issues/1954[1954])
+
+[#release-notes-2-x-x-changed]
+=== Changed
+
+* Fix usage of `log4j-api` in GraalVM without additional reachability data. (https://github.com/apache/logging-log4j2/pull/1539[1539])
+* Centralize initialization in the `Provider` class and deprecate `log4j2.loggerContextFactory` property. (https://github.com/apache/logging-log4j2/pull/2374[2374])
+
+[#release-notes-2-x-x-fixed]
+=== Fixed
+
+* Fix that parameterized message formatting throws an exception when there are insufficient number of parameters. It previously simply didn't replace the '{}' sequence. The behavior changed in 2.21.0 and should be restored for backward compatibility. (https://github.com/apache/logging-log4j2/pull/2380[2380])
 
 [#release-notes-2-x-x-updated]
 === Updated
