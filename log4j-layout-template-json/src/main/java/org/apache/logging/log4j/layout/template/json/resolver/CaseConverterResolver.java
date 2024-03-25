@@ -19,9 +19,9 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 import java.util.Locale;
 import java.util.function.Function;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.kit.json.JsonReader;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutProperties;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.util.JsonReader;
 
 /**
  * Converts the case of string values.
