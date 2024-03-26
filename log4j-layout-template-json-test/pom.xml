@@ -27,10 +27,12 @@
   </parent>
 
   <artifactId>log4j-layout-template-json-test</artifactId>
+
   <name>Apache Log4j JSON Template Layout tests</name>
 
   <properties>
 
+    <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <sign.skip>true</sign.skip>
 
@@ -125,21 +127,6 @@
 
   <build>
     <plugins>
-
-      <!-- Modules that contain `log4j-core` plugins, must be compiled with: `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <annotationProcessorPaths combine.children="append">
-            <path>
-              <groupId>org.apache.logging.log4j</groupId>
-              <artifactId>log4j-core</artifactId>
-              <version>${project.version}</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
-      </plugin>
 
       <!-- Disable ITs, which are Docker-dependent, by default. -->
       <plugin>
