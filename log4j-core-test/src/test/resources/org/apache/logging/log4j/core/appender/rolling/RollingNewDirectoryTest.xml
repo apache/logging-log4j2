@@ -15,22 +15,24 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off" monitorInterval="30">
+<Configuration status="off" name="XMLConfigTest">
   <Properties>
-    <Property name="baseDir">target/rolling-direct-1906</Property>
+    <Property name="logDir">${test:logging.path}</Property>
   </Properties>
+
   <Appenders>
-    <RollingFile name="RollingFile" filePattern="${baseDir}/rollingfile.%d{yyyy-MM-dd-HH-mm-ss}.log">
-      <PatternLayout pattern="%d{yyyy-MM-dd-HH-mm-ss} [%level] [%c] %msg%n" />
-      <Policies>
-        <TimeBasedTriggeringPolicy />
-      </Policies>
-      <DirectWriteRolloverStrategy />
+    <RollingFile name="RollingFile" filePattern="${logDir}/%d{yyyy_MM_dd-mm-ss}/messages-$${date:yyyy_MM_dd_HH_mm_ss_SSS}.log">
+      <PatternLayout>
+        <Pattern>%d{MM-dd-yy-HH-mm-ss} %p %C{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
     </RollingFile>
   </Appenders>
+
   <Loggers>
-    <Root level="trace">
-      <AppenderRef ref="RollingFile" />
+    <Root level="info">
+      <AppenderRef ref="RollingFile"/>
     </Root>
   </Loggers>
+
 </Configuration>

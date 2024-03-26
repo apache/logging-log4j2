@@ -15,9 +15,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="RoutingTest">
+<Configuration status="OFF" name="XMLConfigTest">
   <Properties>
-    <Property name="filename">target/routing1/routingtest.log</Property>
+    <Property name="filename">${test:logging.path}/rollingtest.log</Property>
   </Properties>
   <ThresholdFilter level="debug"/>
 
@@ -25,29 +25,29 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <List name="List">
-      <ThresholdFilter level="debug"/>
-    </List>
     <RollingFile name="RollingFile" fileName="${filename}"
-                 filePattern="target/routing1/test1-%i.log.gz">
+                 filePattern="${test:logging.path}/test1-$${date:MM-dd-yyyy}-%i.log">
       <PatternLayout>
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <SizeBasedTriggeringPolicy size="500" />
     </RollingFile>
-    <Routing name="Routing">
-      <Routes pattern="$${sd:type}">
-        <Route ref="STDOUT" key="Audit"/>
-        <Route ref="List" key="Service"/>
-        <Route ref="RollingFile"/>
-      </Routes>
-    </Routing>
+    <List name="List">
+      <ThresholdFilter level="error"/>
+    </List>
   </Appenders>
 
   <Loggers>
-    <Logger name="EventLogger" level="info" additivity="false">
-      <AppenderRef ref="Routing"/>
-    </Logger>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+      <ThreadContextMapFilter>
+        <KeyValuePair key="test" value="123"/>
+      </ThreadContextMapFilter>
+      <AppenderRef ref="STDOUT"/>
+    </Logger>>
+
+    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
+      <AppenderRef ref="RollingFile"/>
+    </Logger>>
 
     <Root level="error">
       <AppenderRef ref="STDOUT"/>

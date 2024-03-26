@@ -24,26 +24,21 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class RollingAppenderCronEvery2Test extends AbstractRollingListenerTest {
+class RollingAppenderCronEvery2Test extends AbstractRollingListenerTest {
 
-    private static final String CONFIG = "log4j-rolling-cron-every2.xml";
-    private static final String DIR = "target/rolling-cron-every2";
-    private static final String FILE = "target/rolling-cron-every2/rollingtest.log";
     private final CountDownLatch rollover = new CountDownLatch(3);
 
+    @TempLoggingDir
+    private static Path loggingPath;
+
     @Test
-    @CleanUpDirectories(DIR)
-    @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager)
-            throws Exception {
+    @LoggerContextSource(timeout = 10)
+    void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
         manager.addRolloverListener(this);
-        assertThat(Path.of(FILE)).exists();
+        assertThat(loggingPath.resolve("rollingtest.log")).exists();
         final long end = currentTimeMillis.get() + 5000;
         final Random rand = new Random(end);
         int count = 1;
@@ -53,11 +48,7 @@ public class RollingAppenderCronEvery2Test extends AbstractRollingListenerTest {
         } while (currentTimeMillis.get() < end);
 
         rollover.await();
-
-        final Path dir = Path.of(DIR);
-        assertThat(dir).exists();
-        assertThat(dir).isNotEmptyDirectory();
-        assertThat(dir).isDirectoryContaining("glob:**.gz");
+        assertThat(loggingPath).isNotEmptyDirectory().isDirectoryContaining("glob:**.gz");
     }
 
     @Override

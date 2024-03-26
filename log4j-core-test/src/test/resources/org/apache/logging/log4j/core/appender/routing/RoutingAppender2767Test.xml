@@ -15,23 +15,33 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off" name="XMLConfigTest">
-  <Properties>
-    <Property name="logDir">target/rolling-folder-direct</Property>
-  </Properties>
+<Configuration status="off" name="RoutingTest">
   <Appenders>
-    <RollingFile name="RollingFile" filePattern="${logDir}/%d{MM-dd-yy-HH-mm-ss}/processor.log">
-      <PatternLayout>
-        <Pattern>%d} %p %C{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <TimeBasedTriggeringPolicy />
-      <DirectWriteRolloverStrategy/>
-    </RollingFile>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <Routing name="Routing">
+      <Routes>
+        <Route>
+          <RollingFile name="Routing-${sd:type}" fileName="${test:logging.path}/routingtest-${sd:type}.log"
+                       filePattern="${test:logging.path}/test1-${sd:type}.%i.log.gz">
+            <PatternLayout>
+              <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+      </Routes>
+    </Routing>
   </Appenders>
 
   <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
+      <AppenderRef ref="Routing"/>
+    </Logger>
+
     <Root level="info">
-      <AppenderRef ref="RollingFile"/>
+      <AppenderRef ref="Routing"/>
     </Root>
   </Loggers>
 

@@ -15,34 +15,36 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off" name="RollingCronTest" monitorInterval="1">
-  <Properties>
-    <Property name="filename">target/rolling-cron-every2/rollingtest.log</Property>
-  </Properties>
-  <Filters>
-    <ThresholdFilter level="debug"/>
-  </Filters>
+<Configuration status="OFF" name="RoutingTest">
+  <ThresholdFilter level="debug"/>
 
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling-cron-every2/test1-%d{MM-dd-yy-HH-mm-ss}.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <CronTriggeringPolicy schedule="0/2 * * * * ?"/>
-    </RollingFile>
     <List name="List">
-      <Filters>
-        <ThresholdFilter level="error"/>
-      </Filters>
+      <ThresholdFilter level="debug"/>
     </List>
+    <Routing name="Routing">
+      <Routes pattern="$${sd:type}">
+        <Route>
+          <RollingFile name="Routing-${sd:type}" fileName="${test:logging.path}/routingtest-${sd:type}.log"
+                       filePattern="${test:logging.path}/test1-${sd:type}.%i.log.gz">
+            <PatternLayout>
+              <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route ref="STDOUT" key="Audit"/>
+        <Route ref="List" key="Service"/>
+      </Routes>
+    </Routing>
   </Appenders>
 
   <Loggers>
-    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
-      <AppenderRef ref="RollingFile"/>
+    <Logger name="EventLogger" level="info" additivity="false">
+      <AppenderRef ref="Routing"/>
     </Logger>
 
     <Root level="error">

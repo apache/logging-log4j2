@@ -15,22 +15,31 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off" name="RoutingTest">
+<Configuration status="OFF" name="RoutingTest">
+  <Properties>
+    <Property name="filename">${test:logging.path}/routingtest.log</Property>
+  </Properties>
+  <ThresholdFilter level="debug"/>
+
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
+    <List name="List">
+      <ThresholdFilter level="debug"/>
+    </List>
+    <RollingFile name="RollingFile" fileName="${filename}"
+                 filePattern="${test:logging.path}/test1-%i.log.gz">
+      <PatternLayout>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <SizeBasedTriggeringPolicy size="500" />
+    </RollingFile>
     <Routing name="Routing">
-      <Routes>
-        <Route>
-          <RollingFile name="Routing-${sd:type}" fileName="target/routing1/routingtest-${sd:type}.log"
-                       filePattern="target/routing1/test1-${sd:type}.%i.log.gz">
-            <PatternLayout>
-              <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-            </PatternLayout>
-            <SizeBasedTriggeringPolicy size="500" />
-          </RollingFile>
-        </Route>
+      <Routes pattern="$${sd:type}">
+        <Route ref="STDOUT" key="Audit"/>
+        <Route ref="List" key="Service"/>
+        <Route ref="RollingFile"/>
       </Routes>
     </Routing>
   </Appenders>
@@ -40,8 +49,8 @@
       <AppenderRef ref="Routing"/>
     </Logger>
 
-    <Root level="info">
-      <AppenderRef ref="Routing"/>
+    <Root level="error">
+      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
 

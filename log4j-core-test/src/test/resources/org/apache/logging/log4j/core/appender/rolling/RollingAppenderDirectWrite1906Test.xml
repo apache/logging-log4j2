@@ -15,33 +15,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off" name="XMLConfigTest">
+<Configuration status="off" monitorInterval="30">
   <Properties>
-    <Property name="LOG_DIR">target/rolling-direct-reconfigure</Property>
+    <Property name="baseDir">${test:logging.path}</Property>
   </Properties>
-  <Filters>
-    <ThresholdFilter level="debug" />
-  </Filters>
-
   <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n" />
-    </Console>
-    <RollingFile name="RollingFile" filePattern="${LOG_DIR}/test1-$${date:MM-dd-yy-HH-mm-ss-SSS}.log">
-      <PatternLayout>
-        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <SizeBasedTriggeringPolicy size="25" />
+    <RollingFile name="RollingFile" filePattern="${baseDir}/rollingfile.%d{yyyy-MM-dd-HH-mm-ss}.log">
+      <PatternLayout pattern="%d{yyyy-MM-dd-HH-mm-ss} [%level] [%c] %msg%n" />
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+      </Policies>
+      <DirectWriteRolloverStrategy />
     </RollingFile>
   </Appenders>
-
   <Loggers>
-    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
+    <Root level="trace">
       <AppenderRef ref="RollingFile" />
-    </Logger>
-    <Root level="error">
-      <AppenderRef ref="STDOUT" />
     </Root>
   </Loggers>
-
 </Configuration>

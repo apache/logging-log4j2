@@ -16,36 +16,32 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.nio.file.Path;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class RoutingAppender2767Test {
-    private static final String CONFIG = "log4j-routing-2767.xml";
-    private static final String ACTIVITY_LOG_FILE = "target/routing1/routingtest-Service.log";
+class RoutingAppender2767Test {
+    private static final String ACTIVITY_LOG_FILE = "routingtest-Service.log";
+
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    @CleanUpFiles(ACTIVITY_LOG_FILE)
-    @LoggerContextSource(CONFIG)
-    public void routingTest() throws Exception {
+    @LoggerContextSource
+    public void routingTest() {
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
-        final File file = new File(ACTIVITY_LOG_FILE);
-        assertTrue(file.exists(), "Activity file was not created");
-        final List<String> lines = Files.lines(file.toPath()).collect(Collectors.toList());
-        assertEquals(1, lines.size(), "Incorrect number of lines");
-        assertTrue(lines.get(0).contains("This is a test"), "Incorrect content");
+        assertThat(loggingPath.resolve(ACTIVITY_LOG_FILE))
+                .as("check 'Activity' log file")
+                .exists()
+                .content()
+                .as("check 'Activity' log file content")
+                .hasLineCount(1)
+                .contains("This is a test");
     }
 }

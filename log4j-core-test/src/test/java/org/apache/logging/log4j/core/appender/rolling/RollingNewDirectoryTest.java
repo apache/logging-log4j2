@@ -19,27 +19,26 @@ package org.apache.logging.log4j.core.appender.rolling;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests
- */
-public class RollingNewDirectoryTest implements RolloverListener {
-    private static final String CONFIG = "log4j-rolling-new-directory.xml";
+class RollingNewDirectoryTest implements RolloverListener {
 
-    private static final String DIR = "target/rolling-new-directory";
     private final CountDownLatch rollover = new CountDownLatch(3);
 
+    @TempLoggingDir
+    private Path loggingPath;
+
     @Test
-    @CleanUpDirectories(DIR)
-    @LoggerContextSource(value = CONFIG, timeout = 10)
+    @LoggerContextSource(timeout = 10)
     public void streamClosedError(final Logger logger, @Named("RollingFile") final RollingFileManager manager)
             throws Exception {
         manager.addRolloverListener(this);
@@ -54,9 +53,10 @@ public class RollingNewDirectoryTest implements RolloverListener {
         } catch (InterruptedException ie) {
             fail("Thread was interrupted");
         }
-        final File dir = new File(DIR);
-        assertThat(dir).isNotEmptyDirectory();
-        assertThat(dir.listFiles()).hasSizeGreaterThan(2);
+        assertThat(loggingPath).isNotEmptyDirectory();
+        try (final Stream<Path> files = Files.list(loggingPath)) {
+            assertThat(files).hasSizeGreaterThan(2);
+        }
     }
 
     @Override

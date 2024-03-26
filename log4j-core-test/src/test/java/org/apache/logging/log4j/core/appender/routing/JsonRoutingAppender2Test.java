@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -28,20 +28,18 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class JsonRoutingAppender2Test {
-    private static final String CONFIG = "log4j-routing2.json";
-    private static final String LOG_FILENAME = "target/rolling1/rollingtest-Unknown.log";
+class JsonRoutingAppender2Test {
+    private static final String CONFIG = "org/apache/logging/log4j/core/appender/routing/JsonRoutingAppender2Test.json";
+
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    @CleanUpFiles(LOG_FILENAME)
     @LoggerContextSource(CONFIG)
-    public void routingTest(@Named("List") final ListAppender appender) {
+    void routingTest(@Named("List") final ListAppender appender) {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
         final List<LogEvent> list = appender.getEvents();
@@ -49,7 +47,6 @@ public class JsonRoutingAppender2Test {
         assertEquals(1, list.size(), "Incorrect number of events. Expected 1, got " + list.size());
         msg = new StructuredDataMessage("Test", "This is a test", "Unknown");
         EventLogger.logEvent(msg);
-        final File file = new File(LOG_FILENAME);
-        assertTrue(file.exists(), "File was not created");
+        assertThat(loggingPath.resolve("rollingtest-Unknown.log")).exists();
     }
 }

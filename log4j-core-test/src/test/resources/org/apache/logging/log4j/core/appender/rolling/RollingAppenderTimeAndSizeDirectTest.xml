@@ -15,37 +15,35 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="RoutingTest">
+<Configuration status="off" name="XMLConfigTest">
+  <Properties>
+    <Property name="LOG_DIR">${test:logging.path}</Property>
+  </Properties>
   <ThresholdFilter level="debug"/>
 
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
+    <RollingFile name="RollingFile" filePattern="${LOG_DIR}/test1-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz">
+      <PatternLayout>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="500" />
+      </Policies>
+      <DirectWriteRolloverStrategy maxFiles="10"/>
+    </RollingFile>
     <List name="List">
-      <ThresholdFilter level="debug"/>
+      <ThresholdFilter level="error"/>
     </List>
-    <Routing name="Routing">
-      <Routes pattern="$${sd:type}">
-        <Route>
-          <RollingFile name="Routing-${sd:type}" fileName="target/routing1/routingtest-${sd:type}.log"
-                       filePattern="target/routing1/test1-${sd:type}.%i.log.gz">
-            <PatternLayout>
-              <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-            </PatternLayout>
-            <SizeBasedTriggeringPolicy size="500" />
-          </RollingFile>
-        </Route>
-        <Route ref="STDOUT" key="Audit"/>
-        <Route ref="List" key="Service"/>
-      </Routes>
-    </Routing>
   </Appenders>
 
   <Loggers>
-    <Logger name="EventLogger" level="info" additivity="false">
-      <AppenderRef ref="Routing"/>
-    </Logger>
+    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
+      <AppenderRef ref="RollingFile"/>
+    </Logger>>
 
     <Root level="error">
       <AppenderRef ref="STDOUT"/>

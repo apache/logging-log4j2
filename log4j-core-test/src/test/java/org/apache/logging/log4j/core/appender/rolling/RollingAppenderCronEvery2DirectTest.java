@@ -24,23 +24,19 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class RollingAppenderCronEvery2DirectTest extends AbstractRollingListenerTest {
+class RollingAppenderCronEvery2DirectTest extends AbstractRollingListenerTest {
 
-    private static final String CONFIG = "log4j-rolling-cron-every2-direct.xml";
-    private static final String DIR = "target/rolling-cron-every2Direct";
     private final CountDownLatch rollover = new CountDownLatch(2);
 
+    @TempLoggingDir
+    private static Path loggingPath;
+
     @Test
-    @CleanUpDirectories(DIR)
-    @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager)
-            throws Exception {
+    @LoggerContextSource(timeout = 10)
+    void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
         manager.addRolloverListener(this);
         final long end = currentTimeMillis.get() + 5000;
         final Random rand = new Random(end);
@@ -51,9 +47,7 @@ public class RollingAppenderCronEvery2DirectTest extends AbstractRollingListener
         } while (currentTimeMillis.get() < end);
 
         rollover.await();
-        final Path dir = Path.of(DIR);
-        assertThat(dir).isNotEmptyDirectory();
-        assertThat(dir).isDirectoryContaining("glob:**.gz");
+        assertThat(loggingPath).isNotEmptyDirectory().isDirectoryContaining("glob:**.gz");
     }
 
     @Override

@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -28,22 +28,19 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class RoutingAppenderTest {
-    private static final String CONFIG = "log4j-routing.xml";
-    private static final String UNKNOWN_LOG_FILE = "target/rolling1/rollingtest-Unknown.log";
-    private static final String ALERT_LOG_FILE = "target/routing1/routingtest-Alert.log";
-    private static final String ACTIVITY_LOG_FILE = "target/routing1/routingtest-Activity.log";
+class RoutingAppenderTest {
+    private static final String ALERT_LOG_FILE = "routingtest-Alert.log";
+    private static final String ACTIVITY_LOG_FILE = "routingtest-Activity.log";
+
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    @CleanUpFiles({UNKNOWN_LOG_FILE, ALERT_LOG_FILE, ACTIVITY_LOG_FILE})
-    @LoggerContextSource(CONFIG)
-    public void routingTest(@Named("List") final ListAppender app) {
+    @LoggerContextSource
+    void routingTest(@Named("List") final ListAppender app) {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
@@ -51,11 +48,14 @@ public class RoutingAppenderTest {
         assertEquals(1, list.size(), "Incorrect number of events. Expected 1, got " + list.size());
         msg = new StructuredDataMessage("Test", "This is a test", "Alert");
         EventLogger.logEvent(msg);
-        File file = new File(ALERT_LOG_FILE);
-        assertTrue(file.exists(), "Alert file was not created");
+        assertThat(loggingPath.resolve(ALERT_LOG_FILE))
+                .as("check 'Alert' log file")
+                .exists();
+
         msg = new StructuredDataMessage("Test", "This is a test", "Activity");
         EventLogger.logEvent(msg);
-        file = new File(ACTIVITY_LOG_FILE);
-        assertTrue(file.exists(), "Activity file was not created");
+        assertThat(loggingPath.resolve(ACTIVITY_LOG_FILE))
+                .as("check 'Activity' log file")
+                .exists();
     }
 }

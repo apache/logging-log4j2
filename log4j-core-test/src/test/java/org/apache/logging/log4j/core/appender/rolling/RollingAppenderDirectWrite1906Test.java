@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -27,36 +26,22 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.status.StatusData;
-import org.apache.logging.log4j.status.StatusListener;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class RollingAppenderDirectWrite1906Test implements RolloverListener {
+class RollingAppenderDirectWrite1906Test implements RolloverListener {
 
-    private static final String CONFIG = "log4j-rolling-direct-1906.xml";
-
-    private static final String DIR = "target/rolling-direct-1906";
     private final CountDownLatch rollover = new CountDownLatch(2);
 
-    @BeforeAll
-    static void beforeAll() {
-        StatusLogger.getLogger().registerListener(new NoopStatusListener());
-    }
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    @CleanUpDirectories(DIR)
-    @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager)
+    @LoggerContextSource(timeout = 10)
+    void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager)
             throws Exception {
         manager.addRolloverListener(this);
         final var logger = context.getLogger(getClass());
@@ -66,11 +51,10 @@ public class RollingAppenderDirectWrite1906Test implements RolloverListener {
             Thread.sleep(50);
         }
         rollover.await();
-        final Path dir = Path.of(DIR);
-        assertThat(dir).isNotEmptyDirectory();
-        assertThat(dir).isDirectoryContaining("glob:**.log");
+        assertThat(loggingPath).isNotEmptyDirectory();
+        assertThat(loggingPath).isDirectoryContaining("glob:**.log");
 
-        try (final Stream<Path> files = Files.list(dir)) {
+        try (final Stream<Path> files = Files.list(loggingPath)) {
             final AtomicInteger found = new AtomicInteger();
             assertThat(files).allSatisfy(file -> {
                 final String expected = file.getFileName().toString();
@@ -95,18 +79,5 @@ public class RollingAppenderDirectWrite1906Test implements RolloverListener {
     @Override
     public void rolloverComplete(final String fileName) {
         rollover.countDown();
-    }
-
-    private static class NoopStatusListener implements StatusListener {
-        @Override
-        public void log(final StatusData data) {}
-
-        @Override
-        public Level getStatusLevel() {
-            return Level.TRACE;
-        }
-
-        @Override
-        public void close() throws IOException {}
     }
 }

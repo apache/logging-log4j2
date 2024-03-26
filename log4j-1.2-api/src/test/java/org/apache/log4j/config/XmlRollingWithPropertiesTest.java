@@ -19,28 +19,31 @@ package org.apache.log4j.config;
 import static org.apache.logging.log4j.core.config.ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
+import org.junitpioneer.jupiter.RestoreSystemProperties;
 
 /**
- * Test configuration from Properties.
+ * Test configuration from XML.
  */
-public class XmlRollingWithPropertiesTest {
+class XmlRollingWithPropertiesTest {
 
-    private static final String TEST_DIR = "target/XmlRollingWithPropertiesTest";
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    @SetSystemProperty(key = "test.directory", value = TEST_DIR)
-    @SetSystemProperty(key = LOG4J1_CONFIGURATION_FILE_PROPERTY, value = "log4j1-rolling-properties.xml")
-    @CleanUpDirectories(TEST_DIR)
-    public void testProperties() {
-        // ${test.directory}/logs/etl.log
-        final Logger logger = LoggerContext.getContext(false).getLogger("test");
-        logger.debug("This is a test of the root logger");
-        assertThat(Paths.get(TEST_DIR, "logs/etl.log")).exists().isNotEmptyFile();
+    @RestoreSystemProperties
+    void testProperties() {
+        System.setProperty("test.directory", loggingPath.toString());
+        System.setProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY, "log4j1-rolling-properties.xml");
+
+        try (final LoggerContext context = LoggerContext.getContext(false)) {
+            final Logger logger = context.getLogger("test");
+            logger.debug("This is a test of the root logger");
+            assertThat(loggingPath.resolve("logs/etl.log")).exists().isNotEmptyFile();
+        }
     }
 }
