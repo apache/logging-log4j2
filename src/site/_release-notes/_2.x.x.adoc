@@ -46,7 +46,7 @@ This releases contains ...
 * Update `actions/checkout` to version `4.1.2` (https://github.com/apache/logging-log4j2/pull/2370[2370])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2372[2372])
 * Update `com.google.guava:guava` to version `33.1.0-jre` (https://github.com/apache/logging-log4j2/pull/2377[2377])
-* Update `github/codeql-action` to version `3.24.8` (https://github.com/apache/logging-log4j2/pull/2390[2390])
+* Update `github/codeql-action` to version `3.24.9` (https://github.com/apache/logging-log4j2/pull/2403[2403])
 * Update `org.apache.activemq:activemq-broker` to version `6.1.0` (https://github.com/apache/logging-log4j2/pull/2387[2387])
 * Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2361[2361])
 * Update `org.awaitility:awaitility` to version `4.2.1` (https://github.com/apache/logging-log4j2/pull/2386[2386])
