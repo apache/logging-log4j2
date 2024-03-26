@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
+       type="added">
+  <issue id="1954" link="https://github.com/apache/logging-log4j2/issues/1954"/>
+  <description format="asciidoc">Add _"Plugin Reference"_ to the website.
+It is a Javadoc-on-steroids focusing on Log4j plugins.</description>
+</entry>

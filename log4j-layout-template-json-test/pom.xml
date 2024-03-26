@@ -16,7 +16,9 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
@@ -38,99 +40,90 @@
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-layout-template-json</artifactId>
     </dependency>
+
     <!-- needed for `MessageResolverTest#log4j1_logger_calls_should_use_fallbackKey` -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-1.2-api</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-config-properties</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-config-yaml</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.elasticsearch.client</groupId>
       <artifactId>elasticsearch-rest-high-level-client</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.google.code.java-allocation-instrumenter</groupId>
       <artifactId>java-allocation-instrumenter</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>co.elastic.logging</groupId>
       <artifactId>log4j2-ecs-layout</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <annotationProcessorPaths combine.children="append">
-            <path>
-              <groupId>org.apache.logging.log4j</groupId>
-              <artifactId>log4j-plugin-processor</artifactId>
-              <version>${project.version}</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
-        <executions>
-          <execution>
-            <id>default-testCompile</id>
-            <configuration>
-              <compilerArgs combine.children="append">
-                <!-- Disable automatic package discovery, which overwrites `log4j-layout-template-json` plugins. -->
-                <arg>-ApluginPackage=org.apache.logging.log4j.layout.template.json.test</arg>
-              </compilerArgs>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+
       <!-- Disable ITs, which are Docker-dependent, by default. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -147,6 +140,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -162,17 +156,29 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 
   <profiles>
     <profile>
+
       <id>docker</id>
+
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
+
+      <properties>
+        <elastic.version>8.10.2</elastic.version>
+        <!-- `docker run elasticsearch:<TAG>` exists with code 137 due to insufficient memory.
+             We limit the used JVM memory to avoid this OOM failure. -->
+        <elastic.java-opts>-Xms750m -Xmx750m</elastic.java-opts>
+      </properties>
+
       <build>
         <plugins>
+
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
@@ -183,14 +189,13 @@
               <images>
                 <image>
                   <alias>elasticsearch</alias>
-                  <name>docker.elastic.co/elasticsearch/elasticsearch:8.2.2</name>
+                  <name>elasticsearch:${elastic.version}</name>
                   <run>
                     <env>
-                      <xpack.security.enabled>false</xpack.security.enabled>
                       <discovery.type>single-node</discovery.type>
+                      <xpack.security.enabled>false</xpack.security.enabled>
+                      <ES_JAVA_OPTS>${elastic.java-opts}</ES_JAVA_OPTS>
                     </env>
-                    <memory>1000000000</memory>
-                    <!-- 1g -->
                     <ports>
                       <port>9200:9200</port>
                     </ports>
@@ -211,7 +216,7 @@
                 </image>
                 <image>
                   <alias>logstash</alias>
-                  <name>docker.elastic.co/logstash/logstash:8.2.2</name>
+                  <name>logstash:${elastic.version}</name>
                   <run>
                     <dependsOn>
                       <container>elasticsearch</container>
@@ -221,6 +226,9 @@
                       <name>log4j-layout-template-json-network</name>
                       <alias>logstash</alias>
                     </network>
+                    <env>
+                      <LS_JAVA_OPTS>${elastic.java-opts}</LS_JAVA_OPTS>
+                    </env>
                     <ports>
                       <port>12222:12222</port>
                       <port>12345:12345</port>
@@ -306,11 +314,11 @@
               </execution>
             </executions>
           </plugin>
+
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
-              <skip>false</skip>
               <includes>
                 <include>**/*IT.java</include>
               </includes>
@@ -324,8 +332,10 @@
               </execution>
             </executions>
           </plugin>
+
         </plugins>
       </build>
+
     </profile>
   </profiles>
 

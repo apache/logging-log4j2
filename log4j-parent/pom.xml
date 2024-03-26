@@ -16,7 +16,9 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-bom</artifactId>
@@ -1014,6 +1016,7 @@
   </build>
 
   <profiles>
+
     <profile>
       <id>parallel-tests</id>
       <build>
@@ -1028,6 +1031,118 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+
+      <id>plugin-processing</id>
+
+      <!-- Profile gets activated using a file instead of, say, a property defined by the child `pom.xml`.
+           Since a Maven property lookup requires model interpolation and that happens after the profile activation phase.
+           See: https://maven.apache.org/ref/3.9.6/maven-model-builder -->
+      <activation>
+        <file>
+          <exists>.log4j-plugin-processing-activator</exists>
+        </file>
+      </activation>
+
+      <properties>
+        <log4j.docgen.pluginDescriptorsDir.effective>${log4j.docgen.pluginDescriptorsDir.phase2}</log4j.docgen.pluginDescriptorsDir.effective>
+      </properties>
+
+      <build>
+        <plugins>
+
+          <!-- Generate a random target package for `Log4jPlugins.java` -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-plugin-package-for-tests</id>
+                <goals>
+                  <goal>bsh-property</goal>
+                </goals>
+                <phase>process-test-resources</phase>
+                <configuration>
+                  <properties>
+                    <property>log4jPluginPackageForTests</property>
+                  </properties>
+                  <source><![CDATA[
+                    import java.util.Locale;
+                    import java.util.Random;
+
+                    String groupId = project.getGroupId();
+                    String sanitizedArtifactId = project
+                            .getArtifactId()
+                            .toLowerCase(Locale.US)
+                            .replaceFirst("^log4j-", "")
+                            .replaceAll("[^a-z]", "_");
+                    int salt = new Random(sanitizedArtifactId.hashCode()).nextInt(1000);
+                    String log4jPluginPackageForTests = String.format("%s.%s.internal%d", new Object[] {
+                        groupId, sanitizedArtifactId, salt
+                    });
+                  ]]></source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+
+            <configuration>
+              <annotationProcessorPaths combine.children="append">
+                <!-- Include `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` that generates `log4j-plugins.xml`.
+                     `DescriptorGenerator` must precede `PluginProcessor`, since the latter *claims* the `@Plugin`.
+                     Once claimed, `javac` doesn't pass those sources to other processors. -->
+                <path>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-docgen</artifactId>
+                  <version>${log4j-docgen.version}</version>
+                </path>
+                <!-- `org.apache.logging.log4j.plugin.processor.PluginProcessor` invocation: -->
+                <path>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-plugin-processor</artifactId>
+                  <version>${project.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <compilerArgs combine.children="append">
+                <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
+                <arg>-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir.effective}/${project.artifactId}-plugins.xml</arg>
+                <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
+                <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
+                <arg>-Alog4j.docgen.version=${project.version}</arg>
+                <arg>-Alog4j.docgen.description=${project.description}</arg>
+                <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
+              </compilerArgs>
+            </configuration>
+
+            <!-- `PluginProcessor` generates a `Log4jPlugins.java` and registers it with `ServiceLoader`.
+                 The package of this class is normally auto-computed as the common prefix of all plugin classes.
+                 Some modules contain plugins in both `src/main` and `src/test`.
+                 Without an additional annotation processor parameter, one class shadows the other one.
+                 Hence, we point the one in `src/test` to elsewhere. -->
+            <executions>
+              <execution>
+                <id>default-testCompile</id>
+                <configuration>
+                  <compilerArgs combine.children="append">
+                    <arg>-ApluginPackage=${log4jPluginPackageForTests}</arg>
+                  </compilerArgs>
+                </configuration>
+              </execution>
+            </executions>
+
+          </plugin>
+
+        </plugins>
+      </build>
+
+    </profile>
+
   </profiles>
 
 </project>
