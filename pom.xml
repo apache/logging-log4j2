@@ -618,7 +618,7 @@
            ███████    ██    ██   ██ ██   ██    ██           ███████ ██    ██    ███████
 
            This section consists of plugins responsible for generating the site.
-           Note that only this (i.e., the parent) module is supposed to have a `site` goal, it is skipped for all other modules! -->
+           Note that only this (i.e., the root) module is supposed to have a `site` goal, it is skipped for all other modules! -->
 
       <!-- Define `currentYear` property used while generating the site -->
       <plugin>
@@ -846,7 +846,7 @@
             </goals>
             <phase>pre-site</phase>
             <configuration>
-              <templateDirectory>${project.basedir}/src/docgen-templates</templateDirectory>
+              <templateDirectory>${project.basedir}/src/template/docgen</templateDirectory>
               <indexTemplate>
                 <source>index.adoc.ftl</source>
                 <target>${project.build.directory}/generated-site/asciidoc/plugin-reference.adoc</target>
@@ -935,6 +935,22 @@
         </executions>
       </plugin>
 
+      <!-- ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+           ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+           ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+           ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+            ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+           DON'T USE `asciidoctor-maven-plugin` FOR COMPILING CONTENT FOR THE WEBSITE!
+
+           This project uses Antora to generate its website, see `src/site/antora`.
+           `asciidoctor-maven-plugin` is *only* used to generate the plugin reference using Docgen.
+
+           Docgen AsciiDoc files cannot be compiled using Antora.
+           Docgen-generated AsciiDoc contains `apiref` macro and `log4j-docgen-asciidoctor-extension` resolving it is a Java library.
+           Antora is written in JavaScript and cannot run Java extensions.
+           Even if we rewrite `log4j-docgen-asciidoctor-extension` as an Antora extension in JavaScript or Ruby, there is still `log4j-docgen-type-target-template` argument that must be processed using FreeMarker, which is again a Java library.
+           Hence, we use `asciidoctor-maven-plugin` *only* to compile Docgen AsciiDoc files. -->
       <plugin>
 
         <groupId>org.asciidoctor</groupId>
@@ -981,10 +997,7 @@
             </configuration>
           </execution>
 
-          <!-- Docgen AsciiDoc files cannot be compiled using Antora.
-               Docgen-generated AsciiDoc contains `apiref` macro and `log4j-docgen-antra-extension` resolving it is a Java library.
-               Antora is written in JavaScript and cannot run Java extensions.
-               Hence, we use `asciidoctor-maven-plugin` to compile Docgen AsciiDoc files. -->
+          <!-- Compile Docgen AsciiDoc files -->
           <execution>
             <id>export-docgen-asciidoc-to-html</id>
             <goals>
@@ -1001,11 +1014,12 @@
               <outputDirectory>${project.build.directory}/site</outputDirectory>
               <preserveDirectories>false</preserveDirectories>
               <templateDirs>
-                <dir>${project.basedir}/src/asciidoc-templates</dir>
+                <dir>${project.basedir}/src/template/asciidoctor</dir>
               </templateDirs>
               <attributes>
                 <source-highlighter>rouge</source-highlighter>
                 <toc>left</toc>
+                <toc-title><![CDATA[]]></toc-title>
                 <log4j-docgen-descriptor-directory>${project.build.directory}/plugin-descriptors</log4j-docgen-descriptor-directory>
                 <log4j-docgen-type-filter-exclude-pattern>${log4j.docgen.typeFilter.excludePattern}</log4j-docgen-type-filter-exclude-pattern>
                 <log4j-docgen-type-target-template><![CDATA[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${sourcedType.type.className?replace('.', '-')}]]></log4j-docgen-type-target-template>

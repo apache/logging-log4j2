@@ -21,9 +21,9 @@ Apache Log4j is a versatile, industrial-grade Java logging framework composed of
 Log4j is https://security.googleblog.com/2021/12/apache-log4j-vulnerability.html[used by 8% of the Maven ecosystem] and listed as one of https://docs.google.com/spreadsheets/d/1ONZ4qeMq8xmeCHX03lIgIYE4MEXVfVL6oj05lbuXTDM/edit#gid=1024997528[the top 100 critical open source software projects].
 The project is actively maintained by a link:/team-list.html[team] of several volunteers and xref:support.adoc[support]ed by a big community.
 
-[#links]
-== Quick links
-- link:maven-artifacts.html[How can I add Log4j artifacts to my Maven/Ivy/Gradle project?]
+[#shortcuts]
+== Shortcuts
+- xref:download.adoc#using-a-build-system[How can I add Log4j artifacts to my Maven/Ivy/Gradle project?]
 - xref:manual/usage.adoc[How can I use the Log4j API?]
 - xref:manual/configuration.adoc[How can I configure my `log4j2.xml`?]
 - xref:release-notes.adoc[Where are the release notes?]

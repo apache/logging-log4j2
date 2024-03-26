@@ -20,6 +20,7 @@
 Apache Log4j is distributed under the
 https://www.apache.org/licenses/LICENSE-2.0.html[Apache License, version 2.0].
 
+[#using-a-build-system]
 == Using a build system
 
 The preferred way to use Log4j in your project is to use a build system as Maven.
