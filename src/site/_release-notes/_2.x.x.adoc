@@ -44,6 +44,7 @@ This releases contains ...
 === Updated
 
 * Update `actions/checkout` to version `4.1.2` (https://github.com/apache/logging-log4j2/pull/2370[2370])
+* Update `co.elastic.clients:elasticsearch-java` to version `8.13.0` (https://github.com/apache/logging-log4j2/pull/2413[2413])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2372[2372])
 * Update `com.google.guava:guava` to version `33.1.0-jre` (https://github.com/apache/logging-log4j2/pull/2377[2377])
 * Update `github/codeql-action` to version `3.24.9` (https://github.com/apache/logging-log4j2/pull/2403[2403])
