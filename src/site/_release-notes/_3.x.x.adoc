@@ -20,6 +20,11 @@
 This release contains...
 
 
+[#release-notes-3-x-x-added]
+=== Added
+
+* Add _"Plugin Reference"_ to the website. It is a Javadoc-on-steroids focusing on Log4j plugins. (https://github.com/apache/logging-log4j2/issues/1954[1954])
+
 [#release-notes-3-x-x-updated]
 === Updated
 
@@ -32,7 +37,7 @@ This release contains...
 * Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2358[2358])
 * Update `org.apache.commons:commons-dbcp2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2342[2342])
 * Update `org.apache.groovy:groovy-bom` to version `4.0.20` (https://github.com/apache/logging-log4j2/pull/2376[2376])
-* Update `org.apache.tomcat:tomcat-juli` to version `10.1.19` (https://github.com/apache/logging-log4j2/pull/2302[2302])
+* Update `org.apache.tomcat:tomcat-juli` to version `10.1.20` (https://github.com/apache/logging-log4j2/pull/2415[2415])
 * Update `org.awaitility:awaitility` to version `4.2.1` (https://github.com/apache/logging-log4j2/pull/2388[2388])
 * Update `org.eclipse.platform:org.eclipse.osgi` to version `3.19.0` (https://github.com/apache/logging-log4j2/pull/2367[2367])
 * Update `org.graalvm.truffle:truffle-api` to version `24.0.0` (https://github.com/apache/logging-log4j2/pull/2394[2394])
