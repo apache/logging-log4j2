@@ -567,7 +567,7 @@ whereas both synchronous loggers and asynchronous appenders have more or
 less constant throughput regardless of the number of threads that are
 doing the logging.
 
-image:../images/async-vs-sync-throughput.png[Async loggers have much
+image:async-vs-sync-throughput.png[Async loggers have much
 higher throughput than sync loggers.]
 
 === Asynchronous Throughput Comparison with Other Logging Packages
@@ -580,7 +580,7 @@ all threads together remains roughly constant when adding more threads.
 Asynchronous loggers make more effective use of the multiple cores
 available on the machine in multi-threaded scenarios.
 
-image:../images/async-throughput-comparison.png[Async loggers have the
+image:async-throughput-comparison.png[Async loggers have the
 highest throughput.]
 
 On Solaris 10 (64bit) with JDK1.7.0_06, 4-core Xeon X5570 dual CPU
@@ -698,7 +698,7 @@ threads (each logging at a rate of 8,000 messages per second), we see
 that Logback 1.1.7, Log4j 1.2.17 experience latency spikes that are
 orders of magnitude larger than Log4j 2.
 
-image:../images/ResponseTimeAsyncLogging16Threads@8kEach.png[When 16
+image:ResponseTimeAsyncLogging16Threads_8kEach.png[When 16
 threads generate a total workload of 128,000 msg/sec, Logback 1.1.7 and
 Log4j 1.2.17 experience latency spikes that are orders of magnitude
 larger than Log4j 2]
@@ -709,7 +709,7 @@ ArrayBlockingQueue-based Async Appender.
 link:garbagefree.html[Garbage-free] async loggers have the best response
 time behaviour.
 
-image:../images/ResponseTimeAsyncLogging16Threads@8kEachLog4j2Only-labeled.png[image]
+image:ResponseTimeAsyncLogging16Threads_8kEachLog4j2Only-labeled.png[image]
 
 [#UnderTheHood]
 == Under The Hood

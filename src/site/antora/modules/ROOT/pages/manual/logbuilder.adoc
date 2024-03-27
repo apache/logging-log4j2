@@ -62,7 +62,7 @@ it is still about 2.5 times slower than not including location information.
 
 The tests were run on a 2018 MacBook Pro with a 2.9 GHz Intel Core i9 processor with 6 cores, 32 GB of memory
 and 1 TB of SSD storage on Java 11 using Log4j 2.13.0 and Logback 1.2.3.
-image:../images/LocationPerf.png[Location Performance]
+image:LocationPerf.png[Location Performance]
 
 |===
 |Test|Print Location Info|No Location Info Printed

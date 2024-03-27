@@ -26,12 +26,12 @@ thanks to these communities/companies:
 |===
 |Who |What
 
-|image:images/YourKitLogo.png["YourKit", link="https://www.yourkit.com/features/"]
+|image:YourKitLogo.png["YourKit", link="https://www.yourkit.com/features/"]
 |YourKit supports the Log4j 2 project with its full-featured Java Profiler.
 YourKit, LLC is the creator of innovative and intelligent tools for profiling Java and .NET applications.
 See https://www.yourkit.com/features/[YourKit's leading software products].
 
-|image:images/IntelliJ-IDEA-logo.png["IntelliJ IDEA", link="https://www.jetbrains.com/idea/"]
+|image:IntelliJ-IDEA-logo.png["IntelliJ IDEA", link="https://www.jetbrains.com/idea/"]
 |JetBrains supports the Log4j 2 project with https://www.jetbrains.com/idea/[IntelliJ IDEA].
 
 |image:https://www.jclarity.com/wp-content/uploads/2015/02/JClarity_logo_tagline3.png["jClarity", link="https://www.jclarity.com/"]

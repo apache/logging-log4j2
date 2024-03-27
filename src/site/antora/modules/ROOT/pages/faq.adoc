@@ -33,11 +33,11 @@ You need at least the log4j-api-2.x and the log4j-core-2.x jar files.
 
 The other jars are necessary if your application calls the API of another logging framework and you want to route logging calls to the Log4j 2 implementation.
 
-image::images/whichjar-2.x.png[Diagram showing which JARs correspond to which systems]
+image:whichjar-2.x.png[Diagram showing which JARs correspond to which systems]
 
 [#which_jars_log4j-to-slf4j] You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2 API and you want to route logging calls to a SLF4J implementation.
 
-image::images/whichjar-slf4j-2.x.png[Diagram showing the dependency flow to use Log4j 2 API with SLF4J]
+image:whichjar-slf4j-2.x.png[Diagram showing the dependency flow to use Log4j 2 API with SLF4J]
 
 Some of the Log4j components have features with optional dependencies.
 The component page will have more detail.

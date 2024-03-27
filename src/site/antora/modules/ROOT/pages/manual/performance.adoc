@@ -106,7 +106,7 @@ http://www.infoq.com/presentations/latency-response-time[How NOT to
 measure latency].
 
 
-|link:images/ResponseTimeVsServiceTimeAsyncLoggers.png[image:images/ResponseTimeVsServiceTimeAsyncLoggers.png[image,width=480,height=288]]
+|link:images/ResponseTimeVsServiceTimeAsyncLoggers.png[image:ResponseTimeVsServiceTimeAsyncLoggers.png[image,width=480,height=288]]
 |===
 ****
 
@@ -145,7 +145,7 @@ appender thread needs to wait until a slot becomes available in the
 queue, and throughput will drop to the maximum sustained throughput of
 the underlying appenders at best.
 
-image:images/async-throughput-comparison.png[Peak throughput comparison]
+image:async-throughput-comparison.png[Peak throughput comparison]
 
 For details, see the link:manual/async.html[Async Loggers] manual page.
 
@@ -172,7 +172,7 @@ than the other.
 Generally, garbage-free async loggers had the best response time
 behaviour in all configurations we tested.
 
-image:images/ResponseTimeAsyncLogging4Threads@16kEach.png[Response time comparison]
+image:ResponseTimeAsyncLogging4Threads_16kEach.png[Response time comparison]
 
 The above result was obtained with the ResponseTimeTest class which can
 be found in the Log4j 2 unit test source directory, running on JDK
@@ -231,7 +231,7 @@ cost increases sharply with the number of parameters. In this area,
 Log4j 2 still has work to do to improve: we would like to keep this cost
 more constant._
 
-image:images/ParamMsgThrpt1-4T.png[image]
+image:ParamMsgThrpt1-4T.png[image]
 
 The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6,
 Log4j 1.2.17 and Logback 1.1.7, and were obtained with the
@@ -262,7 +262,7 @@ Our tests show that _capturing caller location has a similar impact
 across all logging libraries, and slows down asynchronous logging by
 about 30-100x_.
 
-image:images/AsyncWithLocationThrpt1T-labeled.png[image]
+image:AsyncWithLocationThrpt1T-labeled.png[image]
 
 The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6,
 Log4j 1.2.17 and Logback 1.1.7, and were obtained with the
@@ -298,7 +298,7 @@ has 1/4th of its single-threaded capacity, Logback has 1/10th of its
 single-threaded capacity, and JUL steadily drops from 1/4th to 1/10th of
 its single-threaded throughput as more threads are added._
 
-image:images/SyncThroughputLoggerComparisonLinux.png[image]
+image:SyncThroughputLoggerComparisonLinux.png[image]
 
 The synchronous logging throughput results above are obtained with the
 http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
@@ -312,7 +312,7 @@ workload and the number of threads. Below is a sample for a workload of
 32,000 events per second, with 2 threads logging 16,000 events per
 second each.
 
-image:images/SynchronousFileResponseTime2T32k-labeled.png[image]
+image:SynchronousFileResponseTime2T32k-labeled.png[image]
 
 The above result was obtained with the ResponseTimeTest class which can
 be found in the Log4j 2 unit test source directory, running on JDK
@@ -359,14 +359,14 @@ It appears that coarse-grained synchronization in SLF4J can impact
 performance in multi-threaded scenarios. See
 http://jira.qos.ch/browse/SLF4J-240[SLF4J-240].
 
-image:images/MarkerFilterCostComparison.png[image]
+image:MarkerFilterCostComparison.png[image]
 
 Log4j and Logback also support filtering on a value in the Log4j
 ThreadContext vs filtering in Logback on a value in the MDC. The graph
 below shows that the performance difference between Log4j 2 and Logback
 is small for the ThreadContext filter.
 
-image:images/ThreadContextFilterCostComparison.png[image]
+image:ThreadContextFilterCostComparison.png[image]
 
 The Filter comparison results above are obtained with the
 http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
@@ -420,7 +420,7 @@ Another takeaway is just how much of a performance drag logging to the
 console can be. Considering logging to a file and using a tool like
 `tail` to watch the file change in real time.
 
-image:images/Log4j2AppenderThroughputComparison-linux.png[image]
+image:Log4j2AppenderThroughputComparison-linux.png[image]
 
 On Windows, the results are similar but the RandomAccessFile and
 MemoryMappedFile appenders outperform the plain File appender in
@@ -428,7 +428,7 @@ multi-threaded scenarios. The absolute numbers are higher on Windows: we
 don't know why but it looks like Windows handles lock contention better
 than Linux.
 
-image:images/Log4j2AppenderThroughputComparison-windows.png[image]
+image:Log4j2AppenderThroughputComparison-windows.png[image]
 
 The Log4j 2 appender comparison results above are obtained with the
 http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark

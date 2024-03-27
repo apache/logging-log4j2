@@ -60,7 +60,7 @@ Note that any approach that bypasses Docker's logging drivers requires Log4j's  
 As discussed above, this is the recommended 12-Factor approach for applications running in a docker container.
 The Log4j team does not recommend this approach for performance reasons.
 
-image::../images/DockerStdout.png[Stdout]
+image:DockerStdout.png[Stdout]
 
 === Logging to the Standard Output Stream with the Docker Fluentd Logging Driver
 
@@ -69,13 +69,13 @@ Docker provides alternate https://docs.docker.com/config/containers/logging/conf
 When routing to a log forwarder it is expected that the forwarder will have the same lifetime as the  application.
 If the forwarder should fail the management tools would be expected to also terminate  other containers dependent on the forwarder.
 
-image::../images/DockerFluentd.png[Docker Fluentbit]
+image:DockerFluentd.png[Docker Fluentbit]
 
 As an alternative the logging drivers could be configured to route events directly to a logging aggregator.
 This is generally not a good idea as the logging drivers only allow a single host and port to be configured.
 The docker documentation isn't clear but infers that log events will be dropped when log events cannot be delivered so this method should not be used if a highly available solution is required.
 
-image::../images/DockerFluentdAggregator.png[Docker Fluentd]
+image:DockerFluentdAggregator.png[Docker Fluentd]
 
 === Logging to a File
 
@@ -83,13 +83,13 @@ While this is not the recommended 12-Factor approach, it performs very well.
 However, it requires that the  application declares a volume where the log files will reside and then configures the log forwarder to tail  those files.
 Care must also be taken to automatically manage the disk space used for the logs, which Log4j  can perform via the "Delete" action on the link:appenders.html#RollingFileAppender[RollingFileAppender].
 
-image::../images/DockerLogFile.png[File]
+image:DockerLogFile.png[File]
 
 === Sending Directly to a Log Forwarder via TCP
 
 Sending logs directly to a Log Forwarder is simple as it generally just requires that the forwarder's host and port be configured on a SocketAppender with an appropriate layout.
 
-image::../images/DockerTCP.png[TCP]
+image:DockerTCP.png[TCP]
 
 === Sending Directly to a Log Aggregator via TCP
 
@@ -101,7 +101,7 @@ Another option is to have the SocketAppender  point to a highly available proxy 
 
 If the log aggregator used is Apache Flume or Apache Kafka (or similar) the Appenders for these support  being configured with a list of hosts and ports so high availability is not an issue.
 
-image::../images/LoggerAggregator.png[Aggregator]
+image:LoggerAggregator.png[Aggregator]
 
 == +++<a name="ELK">++++++</a>+++Logging using Elasticsearch, Logstash, and Kibana
 
@@ -399,7 +399,6 @@ When using a JsonTemplateLayout that complies with ECS (or is similar to the cus
 Using the EnhancedGelf template, the GelfLayout or the custom template the above configurations the message  field will contain a fully formatted log event just as it would  appear in a file Appender.
 The ThreadContext  attributes, custome fields, thread name, etc.
 will all be available as attributes on each log event that can  be used for filtering.
-The result will resemble image:../images/kibana.png[]
 
 == Managing Logging Configuration
 

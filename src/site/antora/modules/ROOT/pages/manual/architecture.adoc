@@ -21,7 +21,7 @@ Ralph Goers <rgoers@apache.org>
 
 Log4j uses the classes shown in the diagram below.
 
-image:../images/Log4jClasses.jpg[Log4j 2 Class Relationships,title="Log4j 2 Class Relationships"]
+image:Log4jClasses.jpg[Log4j 2 Class Relationships,title="Log4j 2 Class Relationships"]
 
 Applications using the Log4j 2 API will request a Logger with a specific
 name from the LogManager. The LogManager will locate the appropriate

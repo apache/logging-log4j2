@@ -90,7 +90,7 @@ The best way to find out which methods and attributes of the various  Log4j comp
 
 The screenshot below shows the Log4j MBeans in JConsole.
 
-image:../images/jmx-jconsole-mbeans.png[JConsole screenshot of the
+image:jmx-jconsole-mbeans.png[JConsole screenshot of the
 MBeans tab]
 
 [#ClientGUI]

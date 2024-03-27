@@ -37,7 +37,7 @@ The Log4j 1.x bridge is useful when:
 
 To use this option, applications need to use the following three jar files: the Log4j 2 API jar (`log4j-api.jar`), the Log4j 2 implementation jar (`log4j-core.jar`) and the Log4j 1.x bridge jar (`log4j-1.2-api.jar`).
 
-image::../images/whichjar-log4j-1.2-api.png[Using log4j 2 via the log4j 1.x API]
+image:whichjar-log4j-1.2-api.png[Using log4j 2 via the log4j 1.x API]
 
 For most applications this is sufficient.
 This is a low-effort way to migrate, and may also allow for migration to proceed gradually over time.
@@ -137,7 +137,7 @@ For the most part, converting from the Log4j 1.x API to Log4j 2 should be fairly
 Many of the log statements will require no modification.
 However, where necessary the following changes must be made.
 
-image::../images/whichjar-log4j-api.png[Using log4j 2 via the log4j 2.x API]
+image:whichjar-log4j-api.png[Using log4j 2 via the log4j 2.x API]
 
 |===
 | Log4j 1.x | Log4j 2.x

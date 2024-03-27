@@ -65,10 +65,10 @@ garbage collections.
 
 [cols="2*"]
 |===
-|link:../images/log4j-2.5-FlightRecording.png[image:../images/log4j-2.5-FlightRecording-thumbnail40pct.png[image]] +
+|link:../images/log4j-2.5-FlightRecording.png[image:log4j-2.5-FlightRecording-thumbnail40pct.png[image]] +
 With Log4j 2.5: memory allocation rate 809 MB/sec, 141 minor
 collections.
-|link:../images/log4j-2.6-FlightRecording.png[image:../images/log4j-2.6-FlightRecording-thumbnail40pct.png[image]] +
+|link:../images/log4j-2.6-FlightRecording.png[image:log4j-2.6-FlightRecording-thumbnail40pct.png[image]] +
 Log4j 2.6 did not allocate temporary objects: 0 (zero) garbage
 collections.
 |===
@@ -473,7 +473,7 @@ response time behaviour for Log4j's Async Loggers. In the graph, "100k"
 means logging at a sustained load of 100,000 messages/second, "800k" is
 a sustained load of 800,000 messages/second.
 
-image:../images/ResponseTimeAsyncClassicVsGcFree-label.png[image]
+image:ResponseTimeAsyncClassicVsGcFree-label.png[image]
 
 In *classic* mode we see numerous minor garbage collections which pause
 the application threads for 3 milliseconds or more. This quickly adds up
@@ -518,7 +518,7 @@ milliseconds where the garbage-free response times were less than 3
 milliseconds. It may be possible to improve on this, we did not
 investigate further yet.
 
-image:../images/ResponseTimeSyncClassicVsGcFree.png[image]
+image:ResponseTimeSyncClassicVsGcFree.png[image]
 
 The above results are obtained with the ResponseTimeTest class which can
 be found in the Log4j 2 unit test source directory, running on JDK
@@ -535,7 +535,7 @@ logging. The graph below compares the sustained throughput of
 synchronous logging to a file with Log4j 2.6 in garbage-free mode,
 classic mode and Log4j 2.5.
 
-image:../images/garbage-free2.6-SyncThroughputLinux.png[Throughput of
+image:garbage-free2.6-SyncThroughputLinux.png[Throughput of
 Log4j 2.6 in garbage-free mode is slightly worse than in classic mode,
 but on par with 2.5 and much better than alternatives logging libraries]
 
