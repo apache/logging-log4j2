@@ -162,7 +162,7 @@ See http://logging.apache.org/log4j/2.x/manual/webapp.html#ContextParams[this se
 [#config_from_code]
 == How do I configure log4j2 in code without a configuration file?
 
-Starting with version 2.4, Log4j 2 provides an link:manual/customconfig.html[API for programmatic configuration] The new link:log4j-core/apidocs/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html[`ConfigurationBuilder` API] allows you to create Configurations in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.
+Starting with version 2.4, Log4j 2 provides an link:manual/customconfig.html[API for programmatic configuration] The new link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html[`ConfigurationBuilder` API] allows you to create Configurations in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.
 
 [#reconfig_from_code]
 == How do I reconfigure log4j2 in code with a specific configuration file?
@@ -313,7 +313,7 @@ You can use the `ThreadContext` map value to determine the log file name.
 [#reconfig_level_from_code]
 == How do I set a logger's level programmatically?
 
-You can set a logger's level with the class link:log4j-core/apidocs/org/apache/logging/log4j/core/config/Configurator.html[`Configurator`] from Log4j Core.
+You can set a logger's level with the class link:javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html[`Configurator`] from Log4j Core.
 Be aware that the `Configurator` class is not part of the public API.
 
 ----

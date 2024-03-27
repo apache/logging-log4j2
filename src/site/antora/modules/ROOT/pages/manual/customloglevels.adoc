@@ -285,7 +285,7 @@ to the built-in ones:
 
 [source,sh,subs="attributes"]
 ----
-java -cp log4j-core-{Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.ExtendedLoggerGenerator \
+java -cp log4j-core-{project-version}.jar org.apache.logging.log4j.core.tools.ExtendedLoggerGenerator \
         com.mycomp.ExtLogger DIAG=350 NOTICE=450 VERBOSE=550 > com/mycomp/ExtLogger.java
 ----
 
@@ -307,7 +307,7 @@ built-in levels and has only custom levels:
 
 [source,sh,subs="attributes"]
 ----
-java -cp log4j-core-{Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.CustomLoggerGenerator \
+java -cp log4j-core-{project-version}.jar org.apache.logging.log4j.core.tools.CustomLoggerGenerator \
         com.mycomp.MyLogger DEFCON1=350 DEFCON2=450 DEFCON3=550 > com/mycomp/MyLogger.java
 ----
 

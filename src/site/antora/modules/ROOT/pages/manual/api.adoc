@@ -31,7 +31,7 @@ application code.
 No introduction would be complete without the customary Hello, World
 example. Here is ours. First, a Logger with the name "HelloWorld" is
 obtained from the
-link:../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html[`LogManager`].
+link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`].
 Next, the logger is used to write the "Hello, World!" message, however
 the message will be written only if the Logger is configured to allow
 informational messages.
@@ -100,7 +100,7 @@ logger.debug("Long.MAX_VALUE = %,d", Long.MAX_VALUE);
 ----
 
 To use a formatter Logger, you must call one of the `LogManager`
-link:../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html#getFormatterLogger(java.lang.Class)[`getFormatterLogger`]
+link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getFormatterLogger(java.lang.Class)[`getFormatterLogger`]
 methods. The output for this example shows that `Calendar::toString` is
 verbose compared to custom formatting:
 

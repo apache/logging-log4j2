@@ -19,13 +19,13 @@ Ralph Goers; Gary Gregory; Nick Williams; Matt Sicker
 
 Appenders are responsible for delivering LogEvents to their destination.
 Every Appender must implement the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html[`Appender`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html[`Appender`]
 interface. Most Appenders will extend
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/appender/AbstractAppender.html[`AbstractAppender`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractAppender.html[`AbstractAppender`]
 which adds
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/LifeCycle.html[`Lifecycle`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/LifeCycle.html[`Lifecycle`]
 and
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/filter/Filterable.html[`Filterable`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/filter/Filterable.html[`Filterable`]
 support. `Lifecycle` allows components to finish initialization after
 configuration has completed and to perform cleanup during shutdown.
 `Filterable` allows the component to have `Filter`s attached to it which are
@@ -44,7 +44,7 @@ Loggers.
 
 In the tables below, the "Type" column corresponds to the Java type
 expected. For non-JDK classes, these should usually be in
-link:../log4j-core/apidocs/index.html[Log4j Core] unless otherwise
+link:../javadoc/log4j-core/index.html[Log4j Core] unless otherwise
 noted.
 
 [#AsyncAppender]
@@ -88,7 +88,7 @@ buffer size must be a power of 2.
 When the application is logging faster than the underlying appender can
 keep up with for a long enough time to fill up the queue, the behaviour
 is determined by the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`].
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`].
 
 |errorRef |String |The name of the Appender to invoke if none of the
 appenders can be called, either due to errors in the appenders or
@@ -149,7 +149,7 @@ A typical AsyncAppender configuration might look like:
 
 [[BlockingQueueFactory]] Starting in Log4j 2.7, a custom implementation
 of `BlockingQueue` or `TransferQueue` can be specified using a
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/BlockingQueueFactory.html[`BlockingQueueFactory`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html[`BlockingQueueFactory`]
 plugin. To override the default `BlockingQueueFactory`, specify the
 plugin inside an `<Async/>` element like so:
 
@@ -858,7 +858,7 @@ As of Log4j 2.11.0, JDBC support has moved from the existing module
 
 The JDBC Appender configured with a `DataSource` requires JNDI support so as of release 2.17.1
 this appender will not function unless `log4j2.enableJndiJdbc=true` is configured as a system property
-or environment variable. See the xref:manual/manual/manual//configuration.html#enableJndiJdbc[enableJndiJdbc] system property.
+or environment variable. See the xref:manual/configuration.adoc#enableJndiJdbc[enableJndiJdbc] system property.
 
 The JDBCAppender writes log events to a relational database table using
 standard JDBC. It can be configured to obtain JDBC connections using a
@@ -913,11 +913,11 @@ list of column mapping configurations. Each column must specify a column
 name. Each column can have a conversion type specified by its fully
 qualified class name. By default, the conversion type is `String`. If
 the configured type is assignment-compatible with
-link:../log4j-api/apidocs/org/apache/logging/log4j/util/ReadOnlyStringMap.html[`ReadOnlyStringMap`]
+link:../javadoc/log4j-api/org/apache/logging/log4j/util/ReadOnlyStringMap.html[`ReadOnlyStringMap`]
 /
-link:../log4j-api/apidocs/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
 or
-link:../log4j-api/apidocs/org/apache/logging/log4j/spi/ThreadContextStack.html[`ThreadContextStack`],
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextStack.html[`ThreadContextStack`],
 then that column will be populated with the MDC or NDC respectively
 (this is database-specific how they handle inserting a `Map` or `List`
 value). If the configured type is assignment-compatible with
@@ -1195,8 +1195,8 @@ import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
 
 public class ConnectionFactory {
-    private static interface Singleton {
-        final ConnectionFactory INSTANCE = new ConnectionFactory();
+    private interface Singleton {
+        ConnectionFactory INSTANCE = new ConnectionFactory();
     }
 
     private final DataSource dataSource;
@@ -1341,7 +1341,7 @@ Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JM
 | urlPkgPrefixes
 | String
 | null
-| A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by link:https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES[URL_PKG_PREFIXES].
+| A colon-separated list of package prefixes for the class name of the factory class that will create a URL context factory as defined by https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES[URL_PKG_PREFIXES].
 
 | userName
 | String
@@ -1666,7 +1666,7 @@ The KafkaAppender logs events to an https://kafka.apache.org/[Apache Kafka] topi
 
 |properties
 |Property[]
-|You can set properties in link:https://kafka.apache.org/documentation.html#producerconfigs[Kafka producer properties]. You need to set the `bootstrap.servers` property, there are sensible default values for the others. Do not set the `value.serializer` nor `key.serializer` properties.
+|You can set properties in https://kafka.apache.org/documentation.html#producerconfigs[Kafka producer properties]. You need to set the `bootstrap.servers` property, there are sensible default values for the others. Do not set the `value.serializer` nor `key.serializer` properties.
 |===
 
 Here is a sample KafkaAppender configuration snippet:
@@ -1683,7 +1683,7 @@ Here is a sample KafkaAppender configuration snippet:
 </Appenders>
 ----
 
-This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server, timeout for this can be set with the `timeout.ms` property (defaults to 30 seconds). Wrap with link:https://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender[Async appender] and/or set syncSend to `false` to log asynchronously.
+This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server, timeout for this can be set with the `timeout.ms` property (defaults to 30 seconds). Wrap with https://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender[Async appender] and/or set syncSend to `false` to log asynchronously.
 
 This appender requires the https://kafka.apache.org/[Kafka client library]. Note that you need to use a version of the Kafka client library matching the Kafka server used.
 
@@ -2334,7 +2334,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 |=======================================================================
 
 [#RewritePolicy]
-===== RewritePolicy
+=== RewritePolicy
 
 RewritePolicy is an interface that allows implementations to inspect and
 possibly modify LogEvents before they are passed to Appender.
@@ -2342,7 +2342,7 @@ RewritePolicy declares a single method named rewrite that must be
 implemented. The method is passed the LogEvent and can return the same
 event or create a new one.
 
-MapRewritePolicy
+==== MapRewritePolicy
 
 MapRewritePolicy will evaluate LogEvents that contain a MapMessage and
 will add or update elements of the Map.
@@ -2380,7 +2380,7 @@ product key and its value to the MapMessage.:
 </Configuration>
 ----
 
-PropertiesRewritePolicy
+==== PropertiesRewritePolicy
 
 PropertiesRewritePolicy will add properties configured on the policy to
 the ThreadContext Map being logged. The properties will not be added to
@@ -2422,7 +2422,7 @@ product key and its value to the MapMessage:
 </Configuration>
 ----
 
-LoggerNameLevelRewritePolicy
+==== LoggerNameLevelRewritePolicy
 
 You can use this policy to make loggers in third party code less chatty
 by changing event levels. The LoggerNameLevelRewritePolicy will rewrite
@@ -2614,10 +2614,7 @@ file attribute view.
 [#TriggeringPolicies]
 == TriggeringPolicies
 
-[#Triggering]
-===== Triggering Policies
-
-Composite Triggering Policy
+=== Composite Triggering Policy
 
 The `CompositeTriggeringPolicy` combines multiple triggering policies
 and returns true if any of the configured policies return true. The
@@ -2637,7 +2634,7 @@ and when the current date no longer matches the log’s start date.
 </Policies>
 ----
 
-Cron Triggering Policy
+=== Cron Triggering Policy
 
 The `CronTriggeringPolicy` triggers rollover based on a cron expression. This policy
 is controlled by a timer and is asynchronous to processing log events, so it is possible that log events
@@ -2651,7 +2648,7 @@ overwritten on each rollover.
 |Parameter Name |Type |Description
 |schedule |String |The cron expression. The expression is the same as
 what is allowed in the Quartz scheduler. See
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/util/CronExpression.html[CronExpression]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CronExpression.html[CronExpression]
 for a full description of the expression.
 
 |evaluateOnStartup |boolean |On startup the cron expression will be
@@ -2660,7 +2657,7 @@ expression indicates a rollover should have occurred between that time
 and the current time the file will be immediately rolled over.
 |=======================================================================
 
-OnStartup Triggering Policy
+=== OnStartup Triggering Policy
 
 The `OnStartupTriggeringPolicy` policy causes a rollover if the log file
 is older than the current JVM's start time and the minimum file size is
@@ -2683,7 +2680,7 @@ Log4J cannot determine JVM start time with
 `java.lang.management.ManagementFactory.getRuntimeMXBean().getStartTime()`
 and falls back to Log4J initialization time instead.)
 
-SizeBased Triggering Policy
+=== SizeBased Triggering Policy
 
 The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size. The size can be
 specified in bytes, with the suffix KB, MB, GB, or TB for example `20MB`.
@@ -2694,7 +2691,7 @@ otherwise the target file will be overwritten on every rollover as the SizeBased
 will not cause the timestamp value in the file name to change. When used without a time based
 triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.
 
-TimeBased Triggering Policy
+=== TimeBased Triggering Policy
 
 The `TimeBasedTriggeringPolicy` causes a rollover once the date/time
 pattern no longer applies to the active file. This policy accepts an
@@ -2726,11 +2723,8 @@ load of doing so across time.
 [#RolloverStrategies]
 == RolloverStrategies
 
-[#Rollover]
-===== Rollover Strategies
-
 [#DefaultRolloverStrategy]
-== DefaultRolloverStrategy
+=== DefaultRolloverStrategy
 
 Default Rollover Strategy
 
@@ -2835,7 +2829,7 @@ archived log file during compression.
 |=======================================================================
 
 [#DirectWriteRolloverStrategy]
-== DirectWriteRolloverStrategy
+=== DirectWriteRolloverStrategy
 
 DirectWrite Rollover Strategy
 
@@ -3013,7 +3007,7 @@ number of files saved each hour to 10:
 ----
 
 [#CustomDeleteOnRollover]
-== CustomDeleteOnRollover
+=== CustomDeleteOnRollover
 
 Log Archive Retention Policy: Delete on Rollover
 
@@ -3050,7 +3044,7 @@ at INFO level. Use this to do a dry run to test if the configuration
 works as expected. Default is false.
 
 |pathSorter |PathSorter |A plugin implementing the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html[PathSorter]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html[PathSorter]
 interface to sort the files before selecting the files to delete. The
 default is to sort most recently modified files first.
 
@@ -3075,7 +3069,7 @@ expression] or a
 https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)[glob].
 * link:#DeleteIfLastModified[IfLastModified] - accepts files that are as
 old as or older than the specified
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[duration].
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[duration].
 * link:#DeleteIfAccumulatedFileCount[IfAccumulatedFileCount] - accepts
 paths after some count threshold is exceeded during the file tree walk.
 * link:#DeleteIfAccumulatedFileSize[IfAccumulatedFileSize] - accepts
@@ -3138,7 +3132,7 @@ the path name matches).
 |=======================================================================
 |Parameter Name |Type |Description
 |age |String |_Required._ Specifies a
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[duration].
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)[duration].
 The condition accepts files that are as old or older than the specified
 duration.
 
@@ -3594,19 +3588,11 @@ file attribute view.
 
 |=======================================================================
 
-[#FRFA_TriggeringPolicies]
-== FRFA_TriggeringPolicies
+=== Triggering Policies
 
-[#Triggering]
-===== Triggering Policies
+See xref:#TriggeringPolicies[RollingFileAppender Triggering Policies].
 
-See link:#TriggeringPolicies[RollingFileAppender Triggering Policies].
-
-[#FRFA_RolloverStrategies]
-== FRFA_RolloverStrategies
-
-[#Rollover]
-===== Rollover Strategies
+=== Rollover Strategies
 
 See link:#RolloverStrategies[RollingFileAppender Rollover Strategies].
 
@@ -3785,7 +3771,7 @@ appender can be used, it is only used as a shorthand.
 ----
 
 [#Routes]
-===== Routes
+=== Routes
 
 The Routes element accepts a single attribute named "pattern". The
 pattern is evaluated against all the registered Lookups and the result
@@ -3873,7 +3859,7 @@ based on the presence of a Marker named "AUDIT".
 ----
 
 [#Purge]
-===== Purge Policy
+=== Purge Policy
 
 The RoutingAppender can be configured with a PurgePolicy whose purpose
 is to stop and remove dormant Appenders that have been dynamically
@@ -4206,7 +4192,7 @@ counterparty. Determines whether the remote authentication credentials
 |=======================================================================
 
 [#KeyStore]
-===== KeyStore
+=== KeyStore
 
 The keystore is meant to contain your private keys and certificates, and
 determines which authentication credentials to send to the remote host.
@@ -4240,7 +4226,7 @@ algorithms].
 |=======================================================================
 
 [#TrustStore]
-===== TrustStore
+=== TrustStore
 
 The trust store is meant to contain the CA certificates you are willing
 to trust when a remote party presents its certificate. Determines
@@ -4280,7 +4266,7 @@ algorithms].
 |=======================================================================
 
 [#Example]
-===== Example
+=== Example
 
 [source,prettyprint,linenums]
 ----

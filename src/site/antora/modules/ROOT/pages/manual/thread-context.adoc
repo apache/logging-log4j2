@@ -196,7 +196,7 @@ so. The `getContext()` and `cloneStack()` methods can be used to obtain
 copies of the Map and Stack respectively.
 
 Note that all methods of the
-link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`]
+link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`]
 class are static.
 
 === Configuration
@@ -210,13 +210,13 @@ Context Map.
 == Including the ThreadContext when writing logs
 
 The
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html[`PatternLayout`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternLayout.html[`PatternLayout`]
 provides mechanisms to print the contents of the
-link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`]
+link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`]
 Map and Stack.
 
 * Use `%X` by itself to include the full contents of the Map.
-* Use `%X{key}` to include the specified key.
+* Use `%X\{key}` to include the specified key.
 * Use `%x` to include the full contents of the
 http://docs.oracle.com/javase/6/docs/api/java/util/Stack.html[Stack].
 
@@ -234,5 +234,5 @@ logging done in the other threads will not show these attributes.
 
 Log4j 2.7 adds a flexible mechanism to tag logging statements with
 context data coming from other sources than the ThreadContext. See the
-manual page on link:extending.html#Custom_ContextDataInjector[extending
+manual page on xref:manual/extending.adoc#Custom_ContextDataProvider[extending
 Log4j] for details.

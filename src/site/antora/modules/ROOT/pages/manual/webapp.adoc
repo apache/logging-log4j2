@@ -20,7 +20,7 @@
 
 == Using Log4j 2 in Web Applications
 
-You must take particular care when using Log4j or any other logging framework within a Java EE web application. It's important for logging resources to be properly cleaned up (database connections closed, files closed, etc.) when the container shuts down or the web application is undeployed. Because of the nature of class loaders within web applications, Log4j resources cannot be cleaned up through normal means. Log4j must be "started" when the web application deploys and "shut down" when the web application undeploys. How this works varies depending on whether your application is a link:Servlet-3.0[Servlet 3.0 or newer] or link:Servlet-2.5[Servlet 2.5] web application.
+You must take particular care when using Log4j or any other logging framework within a Java EE web application. It's important for logging resources to be properly cleaned up (database connections closed, files closed, etc.) when the container shuts down or the web application is undeployed. Because of the nature of class loaders within web applications, Log4j resources cannot be cleaned up through normal means. Log4j must be "started" when the web application deploys and "shut down" when the web application undeploys. How this works varies depending on whether your application is a xref:#Servlet-3-0[Servlet 3.0 or newer] or xref:#Servlet-2-5[Servlet 2.5] web application.
 
 Due to the namespace change from `javax` to `jakarta`, you need to use `log4j-jakarta-web` instead of `log4j-web` for Servlet 5.0 or newer.
 
@@ -36,9 +36,10 @@ To avoid problems, the Log4j shutdown hook will automatically be disabled when t
 Log4j allows the configuration file to be specified in web.xml using the `log4jConfiguration` context parameter. Log4j will search for configuration files by:
 
 1. If a location is provided it will be searched for as a servlet context resource. For example, if `log4jConfiguration` contains "logging.xml" then Log4j will look for a file with that name in the root directory of the web application.
-2. If no location is defined Log4j will search for a file that starts with "log4j2" in the WEB-INF directory. If more than one file is found, and if a file that starts with "log4j2-{name}" is present, where {name} is the name of the web application, then it will be used. Otherwise the first file will be used.
+2. If no location is defined Log4j will search for a file that starts with "log4j2" in the WEB-INF directory. If more than one file is found, and if a file that starts with "log4j2-\{name}" is present, where \{name} is the name of the web application, then it will be used. Otherwise the first file will be used.
 3. The "normal" search sequence using the classpath and file URLs will be used to locate the configuration file.
 
+[#Servlet-3-0]
 === Servlet 3.0 and Newer Web Applications
 
 A Servlet 3.0 or newer web application is any `<web-app>` whose `version` attribute has a value of "3.0" or higher. Of course, the application must also be running in a compatible web container.
@@ -53,7 +54,7 @@ Some examples are:
 
 ==== The Short Story
 
-Log4j 2 "just works" in Servlet 3.0 and newer web applications. It is capable of automatically starting when the application deploys and shutting down when the application undeploys. Thanks to the link:https://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html[ServletContainerInitializer] API added to Servlet 3.0, the relevant `Filter` and `ServletContextListener` classes can be registered dynamically on web application startup.
+Log4j 2 "just works" in Servlet 3.0 and newer web applications. It is capable of automatically starting when the application deploys and shutting down when the application undeploys. Thanks to the https://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html[ServletContainerInitializer] API added to Servlet 3.0, the relevant `Filter` and `ServletContextListener` classes can be registered dynamically on web application startup.
 
 [warning]
 ====
@@ -63,7 +64,7 @@ For performance reasons, containers often ignore certain JARs known not to conta
 
 ==== The Long Story
 
-The Log4j 2 Web JAR file is a web-fragment configured to order before any other web fragments in your application. It contains a `ServletContainerInitializer` (link:../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletContainerInitializer.html[Log4jServletContainerInitializer]) that the container automatically discovers and initializes. This adds the link:../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html[Log4jServletContextListener] and link:../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html[Log4jServletFilter] to the `ServletContext`. These classes properly initialize and deinitialize the Log4j configuration.
+The Log4j 2 Web JAR file is a web-fragment configured to order before any other web fragments in your application. It contains a `ServletContainerInitializer` (`Log4jServletContainerInitializer`) that the container automatically discovers and initializes. This adds the link:../javadoc/log4j-core/org/apache/logging/log4j/web/Log4jServletContextListener.html[Log4jServletContextListener] and `Log4jServletFilter` to the `ServletContext`. These classes properly initialize and deinitialize the Log4j configuration.
 
 For some users, automatically starting Log4j is problematic or undesirable. You can easily disable this feature using the `isLog4jAutoInitializationDisabled` context parameter. Simply add it to your deployment descriptor with the value "true" to disable auto-initialization. You _must_ define the context parameter in `web.xml`. If you set in programmatically, it will be too late for Log4j to detect the setting.
 
@@ -75,10 +76,11 @@ For some users, automatically starting Log4j is problematic or undesirable. You 
 </context-param>
 ----
 
-Once you disable auto-initialization, you must initialize Log4j as you would a link:Servlet-2.5[Servlet 2.5 web application]. You must do so in a way that this initialization happens before any other application code (such as Spring Framework startup code) executes.
+Once you disable auto-initialization, you must initialize Log4j as you would a link:#Servlet-2-5[Servlet 2.5 web application]. You must do so in a way that this initialization happens before any other application code (such as Spring Framework startup code) executes.
 
-You can customize the behavior of the listener and filter using the `log4jContextName`, `log4jConfiguration`, and/or `isLog4jContextSelectorNamed` context parameters. Read more about this in the link:#ContextParams[Context Parameters] section below. You _must not_ manually configure the `Log4jServletContextListener` or `Log4jServletFilter` in your deployment descriptor (`web.xml`) or in another initializer or listener in a Servlet 3.0 or newer application _unless you disable auto-initialization_ with `isLog4jAutoInitializationDisabled`. Doing so will result in startup errors and unspecified erroneous behavior.
+You can customize the behavior of the listener and filter using the `log4jContextName`, `log4jConfiguration`, and/or `isLog4jContextSelectorNamed` context parameters. Read more about this in the xref:#ContextParams[Context Parameters] section below. You _must not_ manually configure the `Log4jServletContextListener` or `Log4jServletFilter` in your deployment descriptor (`web.xml`) or in another initializer or listener in a Servlet 3.0 or newer application _unless you disable auto-initialization_ with `isLog4jAutoInitializationDisabled`. Doing so will result in startup errors and unspecified erroneous behavior.
 
+[#Servlet-2-5]
 === Servlet 2.5 Web Applications
 
 A Servlet 2.5 web application is any `<web-app>` whose `version` attribute has a value of "2.5." The `version` attribute is the only thing that matters; even if the web application is running in a Servlet 3.0 or newer container, it is a Servlet 2.5 web application if the `version` attribute is "2.5." Note that Log4j 2 does not support Servlet 2.4 and older web applications.
@@ -108,6 +110,7 @@ If you are using Log4j in a Servlet 2.5 web application, or if you have disabled
 
 You can customize the behavior of the listener and filter using the log4jContextName, log4jConfiguration, and/or isLog4jContextSelectorNamed context parameters. Read more about this in the Context Parameters section below.
 
+[#ContextParams]
 === Context Parameters
 
 By default, Log4j 2 uses the ServletContext's context name as the LoggerContext name and uses the standard pattern for locating the Log4j configuration file. There are three context parameters that you can use to control this behavior. The first, isLog4jContextSelectorNamed, specifies whether the context should be selected using the JndiContextSelector. If isLog4jContextSelectorNamed is not specified or is anything other than true, it is assumed to be false.
@@ -317,4 +320,4 @@ Log4j provides a Servlet Appender that uses the servlet context as the log targe
 </Configuration>
 ----
 
-To avoid double logging of exceptions to the servlet context, you must use %ex{none} in your PatternLayout as shown in the example. The exception will be omitted from the message text but it is passed to the servlet context as the actual Throwable object.
+To avoid double logging of exceptions to the servlet context, you must use %ex\{none} in your PatternLayout as shown in the example. The exception will be omitted from the message text but it is passed to the servlet context as the actual Throwable object.

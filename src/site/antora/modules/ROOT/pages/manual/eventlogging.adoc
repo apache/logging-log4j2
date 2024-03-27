@@ -135,4 +135,4 @@ public class MyApp {
 The `EventLogger` class uses a `Logger` named "EventLogger". `EventLogger`
 uses a logging level of OFF as the default to indicate that it cannot be
 filtered. These events can be formatted for printing using the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/layout/StructuredDataLayout.html[`StructuredDataLayout`].
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StructuredDataLayout.html[`StructuredDataLayout`].

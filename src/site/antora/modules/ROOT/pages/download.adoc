@@ -67,7 +67,7 @@ compile 'org.apache.logging.log4j:log4j-core:{project-version}'
 
 
 To keep your Log4j module versions in sync with each other, a BOM (Bill of Material)
-pom.xml file is provided for your convenience. To use this with link:https://maven.apache.org/[Maven],
+pom.xml file is provided for your convenience. To use this with https://maven.apache.org/[Maven],
 add the dependency listed below to your `pom.xml` file.
 When you specify the version identifier in this section, you don't have to specify the version in your `<dependencies/>` section.
 
@@ -107,7 +107,7 @@ dependencies {
 }
 ----
 
-To use this with Gradle, an additional link:https://github.com/spring-gradle-plugins/dependency-management-plugin[Gradle plugin]
+To use this with Gradle, an additional https://github.com/spring-gradle-plugins/dependency-management-plugin[Gradle plugin]
 is required for dependency management functionality.
 
 == Snapshot builds
@@ -207,7 +207,7 @@ program called sha512sum is included in many unix distributions.
 == Requirements
 
 The Apache Log4j runtime requires a minimum of Java 17.
-See the link:http://logging.apache.org/2.x[Log4j 2 website] for the latest releases supporting Java 6, 7, and 8.
+See the http://logging.apache.org/2.x[Log4j 2 website] for the latest releases supporting Java 6, 7, and 8.
 
 == Previous Releases
 

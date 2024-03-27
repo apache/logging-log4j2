@@ -20,7 +20,7 @@ Ralph Goers <rgoers@apache.org>
 Lookups provide a way to add values to the Log4j configuration at
 arbitrary places. They are a particular type of Plugin that implements
 the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`]
 interface. Information on how to use Lookups in configuration files can
 be found in the link:configuration.html#PropertySubstitution[Property
 Substitution] section of the link:configuration.html[Configuration]
@@ -269,7 +269,7 @@ For example:
 
 As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=true` be set as a system property or the
 corresponding environment variable for this lookup to function. See the
-link:./configuration.html#enableJndi[log4j2.enableJndi] system property.
+xref:manual/configuration.adoc#enableJndiLookup[log4j2.enableJndiLookup] system property.
 
 The JndiLookup allows variables to be retrieved via JNDI. By default the
 key will be prefixed with java:comp/env/, however if the key contains a
@@ -339,7 +339,7 @@ Log4j Kubernetes provides access to the following container attributes:
     <KeyValuePair key="docker.containerId" value="${docker:containerId:-}"/>
     <KeyValuePair key="application" value="$${lower:${spring:spring.application.name}}"/>
     <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-    <KeyValuePair key="kubernetes.clusterName" value="${k8s:clusterName:-}/>
+    <KeyValuePair key="kubernetes.clusterName" value="${k8s:clusterName:-}"/>
     <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
     <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
     <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
@@ -402,10 +402,11 @@ application to Log4j:
 [source,java]
 ----
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
-
-public static void main(String args[]) {
-  MainMapLookup.setMainArguments(args);
-  ...
+public class Main {
+    public static void main(String[] args) {
+      MainMapLookup.setMainArguments(args);
+      // ...
+    }
 }
 ----
 
@@ -480,13 +481,13 @@ The MapLookup serves several purposes.
 1.  Provide the base for Properties declared in the configuration file.
 2.  Retrieve values from MapMessages in LogEvents.
 3.  Retrieve values set with
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29[MapLookup.setMainArguments(String[])]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String%5B%5D%29[MapLookup.setMainArguments(String[])]
 
 The first item simply means that the MapLookup is used to substitute
 properties that are defined in the configuration file. These variables
-are specified without a prefix - e.g. `${name}`. The second usage allows
+are specified without a prefix - e.g. `$\{name}`. The second usage allows
 a value from the current
-link:../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`],
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`],
 if one is part of the current log event, to be substituted. In the
 example below the RoutingAppender will use a different
 RollingFileAppender for each unique value of the key named "type" in the
@@ -584,7 +585,7 @@ check for the existence of a marker where `name` is the marker name. If
 the marker exists, the expression returns the name, otherwise `null`.
 
 == Resource Bundle Lookup
-The resource bundle lookup retrieves values from Resource Bundles (see Java documentation). The format is ${dollar}{bundle:BundleName:BundleKey}. The bundle name follows package naming conventions, for example: ${dollar}{bundle:com.domain.Messages:MyKey}.
+The resource bundle lookup retrieves values from Resource Bundles (see Java documentation). The format is `${bundle:BundleName:BundleKey}`. The bundle name follows package naming conventions, for example: `${bundle:com.domain.Messages:MyKey}`.
 
 [source, xml]
 ----
@@ -596,7 +597,7 @@ The resource bundle lookup retrieves values from Resource Bundles (see Java docu
 ----
 
 == Spring Boot Lookup
-The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as values of the active and default profiles. Specifying a key of "profiles.active" will return the active profiles while a key of "profiles.default" will return the default profiles. The default and active profiles can be an array. If more than one profile is present they will be returned as a comma separated list. To retrieve a single item from the array append "[{index}]" to the key. For example, to return the first active profile in the list specify "profiles.active[0]".
+The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as values of the active and default profiles. Specifying a key of "profiles.active" will return the active profiles while a key of "profiles.default" will return the default profiles. The default and active profiles can be an array. If more than one profile is present they will be returned as a comma separated list. To retrieve a single item from the array append "[\{index}]" to the key. For example, to return the first active profile in the list specify "profiles.active[0]".
 
 This Lookup will return null values until Spring Boot initializes application logging. The Spring Boot Lookup requires the log4j-spring-boot jar be included as a dependency.
 
@@ -620,7 +621,7 @@ values it will also return the name portion of the id (not including the
 enterprise number) and the type field. The main difference between the
 example below and the example for MapMessage is that the "type" is an
 attribute of the
-link:../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html[StructuredDataMessage]
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[StructuredDataMessage]
 while "type" would have to be an item in the Map in a MapMessage.
 
 [source,xml]

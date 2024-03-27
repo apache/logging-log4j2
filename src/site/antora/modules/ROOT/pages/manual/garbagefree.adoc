@@ -130,7 +130,7 @@ performance is important, consider using Async Loggers.
 Instead of system properties, the above properties can also be specified
 in a file named `log4j2.component.properties` by including this file in
 the classpath of the application. See the
-link:configuration.html#SystemProperties[manual regarding system
+xref:manual/configuration.adoc#SystemProperties[manual regarding system
 properties] for more info.
 
 [#Appenders]
@@ -191,11 +191,11 @@ PatternLayout with the following limited set of conversion patterns is
 garbage-free. Format modifiers to control such things as field width,
 padding, left and right justification will not generate garbage.
 
-[cols="1,2"]
+[cols="1m,2"]
 |===
 |Conversion Pattern |Description
 
-|%c{precision}, %logger{precision}
+|%c\{precision}, %logger\{precision}
 |Logger name
 
 |%d, %date
@@ -203,25 +203,26 @@ a|
 Note: Only the predefined date formats are garbage-free: (millisecond
 separator may be either a comma ',' or a period '.')
 
+[cols="1m,1"]
 !===
 !Pattern !Example
 
-!%d{DEFAULT}
+!%d\{DEFAULT}
 !2012-11-02 14:34:02,781
 
-!%d{ISO8601}
+!%d\{ISO8601}
 !2012-11-02T14:34:02,781
 
-!%d{ISO8601_BASIC}
+!%d\{ISO8601_BASIC}
 !20121102T143402,781
 
-!%d{ABSOLUTE}
+!%d\{ABSOLUTE}
 !14:34:02,781
 
-!%d{DATE}
+!%d\{DATE}
 !02 Nov 2012 14:34:02,781
 
-!%d{COMPACT}
+!%d\{COMPACT}
 !20121102143402781
 
 !%d{HH:mm:ss,SSS}
@@ -233,32 +234,32 @@ separator may be either a comma ',' or a period '.')
 !%d{HH:mm:ss}{GMT+0}
 !18:34:02
 
-!%d{UNIX}
+!%d\{UNIX}
 !1351866842
 
-!%d{UNIX_MILLIS}
+!%d\{UNIX_MILLIS}
 !1351866842781
 !===
 
-|%enc{pattern}, %encode{pattern}
+|%enc\{pattern}, %encode\{pattern}
 |Encodes special characters such as
 '\n' and HTML characters to help prevent log forging and some XSS
 attacks that could occur when displaying logs in a web browser -
 garbage-free since 2.8
 
-|%equals{pattern}{test}{substitution},
-%equalsIgnoreCase{pattern}{test}{substitution}
+|%equals\{pattern}\{test}\{substitution},
+%equalsIgnoreCase\{pattern}\{test}\{substitution}
 |Replaces occurrences
 of 'test', a string, with its replacement 'substitution' in the string
 resulting from evaluation of the pattern - garbage-free since 2.8
 
-|%highlight{pattern}{style}
+|%highlight\{pattern}\{style}
 |Adds ANSI colors - garbage-free since 2.7
 (unless nested pattern is not garbage free)
 
-|%K{key}, %map{key}, %MAP{key}
+|%K\{key}, %map\{key}, %MAP\{key}
 |Outputs the entries in a
-link:../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
 if one is present in the event - garbage-free since 2.8.
 
 |%m, %msg, %message
@@ -283,8 +284,8 @@ characters - garbage-free since 2.8
 |%N, %nano
 |System.nanoTime() when the event was logged
 
-|%notEmpty{pattern}, %varsNotEmpty{pattern},
-%variablesNotEmpty{pattern}
+|%notEmpty\{pattern}, %varsNotEmpty\{pattern},
+%variablesNotEmpty\{pattern}
 |Outputs the result of evaluating the
 pattern if and only if all variables in the pattern are not empty -
 garbage-free since 2.8
@@ -300,7 +301,7 @@ started until the creation of the logging event - garbage-free since 2.8
 |A sequence number that will be incremented in
 every event - garbage-free since 2.8
 
-|%style{pattern}{ANSI style}
+|%style\{pattern}{ANSI style}
 |Style the message - garbage-free since
 2.7 (unless nested pattern is not garbage free)
 
@@ -422,7 +423,7 @@ configured to be garbage-free by setting system property
 * Logging very large messages (more than 518 characters) when all
 loggers are Async Loggers will cause the internal StringBuilder in the
 RingBuffer to be trimmed back to their max size.
-* Logging messages containing '${': substituting a ${variable} creates
+* Logging messages containing '${': substituting a `$\{variable}` creates
 temporary objects.
 * Logging a lambda _as a parameter_
 (`logger.info("lambda value is {}", () -> callExpensiveMethod())`)

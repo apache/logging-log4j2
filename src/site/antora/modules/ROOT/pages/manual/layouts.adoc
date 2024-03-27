@@ -162,6 +162,7 @@ Produces a CSV record with the following fields:
 Additional link:../runtime-dependencies.html[runtime dependencies] are
 required for using CSV layouts.
 
+[#GELFLayout]
 == GELF Layout
 
 Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -226,7 +227,7 @@ Custom fields are included in the order they are declared. The values support li
 
 See also:
 
-* The link:https://docs.graylog.org/en/latest/pages/gelf.html#gelf[GELF specification]
+* The https://docs.graylog.org/en/latest/pages/gelf.html#gelf[GELF specification]
 
 
 [#HTMLLayout]
@@ -375,7 +376,7 @@ The compact attribute determines whether the output will be "pretty" or not. The
 [options="header"]
 |===
 | Parameter Name            | Type      | Description
-| charset                   | String    | The character set to use when converting to a byte array. The value must be a valid ${Charset}. If not specified, UTF-8 will be used.
+| charset                   | String    | The character set to use when converting to a byte array. The value must be a valid `Charset`. If not specified, UTF-8 will be used.
 | compact                   | boolean   | If true, the appender does not use end-of-lines and indentation. Defaults to false.
 | eventEol                  | boolean   | If true, the appender appends an end-of-line after each record. Defaults to false. Use with eventEol=true and compact=true to get one record per line.
 | endOfLine                 | String    | If set, overrides the default end-of-line string. E.g., set it to "\n" and use with eventEol=true and compact=true to have one record per line separated by "\n" instead of "\r\n". Defaults to null (i.e., not set).
@@ -552,13 +553,13 @@ WARN  [main]: Message 2
 Note that there is no explicit separator between text and conversion
 specifiers. The pattern parser knows when it has reached the end of a
 conversion specifier when it reads a conversion character. In the
-example above the conversion specifier *%-5p* means the priority of the
+example above the conversion specifier `%-5p` means the priority of the
 logging event should be left justified to a width of five characters.
 
 If the pattern string does not contain a specifier to handle a Throwable
-being logged, parsing of the pattern will act as if the "%xEx" specifier
+being logged, parsing of the pattern will act as if the `%xEx` specifier
 had be added to the end of the string. To suppress formatting of the
-Throwable completely simply add "%ex{0}" as a specifier in the pattern
+Throwable completely simply add `%ex\{0}` as a specifier in the pattern
 string.
 
 .PatternLayout Parameters
@@ -644,12 +645,12 @@ https://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html[Pattern].
 
 The conversions that are provided with Log4j are:
 
-[cols="1,3a"]
+[cols="1m,3a"]
 |===
 |Conversion Pattern |Description
 
-|*c*{precision} +
-*logger*{precision}
+|*c*\{precision} +
+*logger*\{precision}
 |Outputs the name of the logger that published the logging event. The
 logger conversion specifier can be optionally followed by _precision
 specifier_, which consists of a decimal integer, or a pattern starting
@@ -672,15 +673,15 @@ default, the layout prints the logger name in full.
 !===
 !Conversion Pattern !Logger Name !Result
 
-!%c{1}
+!%c\{1}
 !org.apache.commons.Foo
 !Foo
 
-!%c{2}
+!%c\{2}
 !org.apache.commons.Foo
 !commons.Foo
 
-!%c{10}
+!%c\{10}
 !org.apache.commons.Foo
 !org.apache.commons.Foo
 
@@ -726,8 +727,8 @@ default, the layout prints the logger name in full.
 
 !===
 
-|[[PatternClass]] *C*{precision} +
-*class*{precision}
+|[[PatternClass]] *C*\{precision} +
+*class*\{precision}
 |Outputs the fully qualified class name of the caller issuing the logging
 request. This conversion specifier can be optionally followed by
 _precision specifier_, that follows the same rules as the logger name
@@ -737,8 +738,8 @@ Generating the class name of the caller
 (link:#LocationInformation[location information]) is an expensive
 operation and may impact performance. Use with caution.
 
-|[[PatternDate]] *d*{pattern} +
-*date*{pattern}
+|[[PatternDate]] *d*\{pattern} +
+*date*\{pattern}
 |Outputs the date of the logging event. The date conversion specifier may
 be followed by a set of braces containing a date and time pattern string per
 https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
@@ -749,49 +750,49 @@ The predefined _named_ formats are:
 !===
 !Pattern !Example
 
-!%d{DEFAULT}
+!%d\{DEFAULT}
 !2012-11-02 14:34:02,123
 
-!%d{DEFAULT_MICROS}
+!%d\{DEFAULT_MICROS}
 !2012-11-02 14:34:02,123456
 
-!%d{DEFAULT_NANOS}
+!%d\{DEFAULT_NANOS}
 !2012-11-02 14:34:02,123456789
 
-!%d{ISO8601}
+!%d\{ISO8601}
 !2012-11-02T14:34:02,781
 
-!%d{ISO8601_BASIC}
+!%d\{ISO8601_BASIC}
 !20121102T143402,781
 
-!%d{ISO8601_OFFSET_DATE_TIME_HH}
+!%d\{ISO8601_OFFSET_DATE_TIME_HH}
 !2012-11-02'T'14:34:02,781-07
 
-!%d{ISO8601_OFFSET_DATE_TIME_HHMM}
+!%d\{ISO8601_OFFSET_DATE_TIME_HHMM}
 !2012-11-02'T'14:34:02,781-0700
 
-!%d{ISO8601_OFFSET_DATE_TIME_HHCMM}
+!%d\{ISO8601_OFFSET_DATE_TIME_HHCMM}
 !2012-11-02'T'14:34:02,781-07:00
 
-!%d{ABSOLUTE}
+!%d\{ABSOLUTE}
 !14:34:02,781
 
-!%d{ABSOLUTE_MICROS}
+!%d\{ABSOLUTE_MICROS}
 !14:34:02,123456
 
-!%d{ABSOLUTE_NANOS}
+!%d\{ABSOLUTE_NANOS}
 !14:34:02,123456789
 
-!%d{DATE}
+!%d\{DATE}
 !02 Nov 2012 14:34:02,781
 
-!%d{COMPACT}
+!%d\{COMPACT}
 !20121102143402781
 
-!%d{UNIX}
+!%d\{UNIX}
 !1351866842
 
-!%d{UNIX_MILLIS}
+!%d\{UNIX_MILLIS}
 !1351866842781
 !===
 
@@ -821,7 +822,7 @@ You can define custom date formats:
 !18:34:02
 !===
 
-%d{UNIX} outputs the UNIX time in seconds. %d{UNIX_MILLIS} outputs the
+`%d\{UNIX}` outputs the UNIX time in seconds. `%d\{UNIX_MILLIS}` outputs the
 UNIX time in milliseconds. The UNIX time is the difference, in seconds
 for UNIX and in milliseconds for UNIX_MILLIS, between the current time
 and midnight, January 1, 1970 UTC. While the time unit is milliseconds,
@@ -841,8 +842,8 @@ the "fraction-of-second" pattern letter `S`.
 Users may revert back to a millisecond-precision clock when running on
 Java 9 by setting system property `log4j2.Clock` to `SystemMillisClock`.
 
-|*enc*{_pattern_}{[HTML\|XML\|JSON\|CRLF]} +
-*encode*{_pattern_}{[HTML\|XML\|JSON\|CRLF]}
+|*enc*\{pattern}{[HTML\|XML\|JSON\|CRLF]} +
+*encode*\{pattern}{[HTML\|XML\|JSON\|CRLF]}
 |Encodes and escapes special characters suitable for output in specific
 markup languages. By default, this encodes for HTML if only one option
 is specified. The second option is used to specify which encoding format
@@ -851,7 +852,7 @@ provided data so that the output data is not written improperly or
 insecurely.
 
 A typical usage would encode the message `%enc{%m}` but user input could
-come from other locations as well, such as the MDC `%enc{%mdc{key}}`
+come from other locations as well, such as the MDC `%enc{%mdc\{key}}`
 
 Using the HTML encoding format, the following characters are replaced:
 
@@ -894,7 +895,7 @@ specified by https://www.ietf.org/rfc/rfc4627.txt[RFC 4627 section 2.5]:
 !\\
 !===
 
-For example, the pattern `{"message": "%enc{%m}{JSON}"}` could be used
+For example, the pattern `{"message": "%enc{%m}\{JSON}"}` could be used
 to output a valid JSON document containing the log message as a string
 value.
 
@@ -907,8 +908,8 @@ Using the CRLF encoding format, the following characters are replaced:
 !Converted into literal strings "\r" and "\n" respectively
 !===
 
-|*equals*{pattern}{test}{substitution} +
-*equalsIgnoreCase*{pattern}{test}{substitution}
+|*equals*\{pattern}\{test}\{substitution} +
+*equalsIgnoreCase*\{pattern}\{test}\{substitution}
 |Replaces occurrences of 'test', a string, with its replacement
 'substitution' in the string resulting from evaluation of the pattern.
 For example, "%equals{[%marker]}{[]}\{}" will replace '[]' strings
@@ -938,9 +939,9 @@ will output the full trace as one would normally find with a call to
 `Throwable.printStackTrace()`.
 
 You can follow the throwable conversion word with an option in the form
-`%throwable{option}`.
+`%throwable\{option}`.
 
-`%throwable{short}` outputs the first line of the Throwable.
+`%throwable\{short}` outputs the first line of the Throwable.
 
 `%throwable{short.className}` outputs the name of the class where the
 exception occurred.
@@ -958,9 +959,9 @@ exception occurred.
 
 `%throwable{short.localizedMessage}` outputs the localized message.
 
-`%throwable{n}` outputs the first n lines of the stack trace.
+`%throwable\{n}` outputs the first n lines of the stack trace.
 
-Specifying `%throwable{none}` or `%throwable{0}` suppresses output of
+Specifying `%throwable\{none}` or `%throwable\{0}` suppresses output of
 the exception.
 
 Use `{filters(packages)}` where _packages_ is a list of package names to
@@ -981,7 +982,7 @@ Generating the file information (link:#LocationInformation[location
 information]) is an expensive operation and may impact performance. Use
 with caution.
 
-|*highlight*{pattern}{style}
+|*highlight*\{pattern}\{style}
 |Adds ANSI colors to the result of the enclosed pattern based on the
 current event's logging level. (See Jansi link:#enable-jansi[configuration].)
 
@@ -1010,7 +1011,7 @@ The default colors for each level are:
 !===
 
 The color names are ANSI names defined in the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/pattern/AnsiEscape.html[`AnsiEscape`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/AnsiEscape.html[`AnsiEscape`]
 class.
 
 The color and attribute names and are standard, but the exact shade,
@@ -1031,7 +1032,7 @@ You can use the default colors with:
 %highlight{%d [%t] %-5level: %msg%n%throwable}
 ....
 
-You can override the default colors in the optional {style} option. For
+You can override the default colors in the optional `\{style}` option. For
 example:
 
 ....
@@ -1077,14 +1078,14 @@ The STYLE value can be one of:
 !TRACE !Normal
 !===
 
-|[[PatternMap]] *K*{key} +
-*map*{key} +
-*MAP*{key}
+|[[PatternMap]] *K*\{key} +
+*map*\{key} +
+*MAP*\{key}
 |Outputs the entries in a
-link:../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
-if one is present in the event. The *K* conversion character can be
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
+if one is present in the event. The `K` conversion character can be
 followed by the key for the map placed between braces, as in
-*%K{clientNumber}* where `clientNumber` is the key. The value in the
+`%K\{clientNumber}` where `clientNumber` is the key. The value in the
 Map corresponding to the key will be output. If no additional sub-option
 is specified, then the entire contents of the Map key value pair set is
 output using a format {{key1,val1},{key2,val2}}
@@ -1108,13 +1109,13 @@ Generating line number information (link:#LocationInformation[location
 information]) is an expensive operation and may impact performance. Use
 with caution.
 
-|[[PatternMessage]] *m*{lookups}{ansi} +
-*msg*{lookups}{ansi} +
-*message{lookups}{ansi}
+|[[PatternMessage]] *m*\{lookups}\{ansi} +
+*msg*\{lookups}\{ansi} +
+*message\{lookups}\{ansi}
 |Outputs the application supplied message associated with the logging
 event.
 
-Add `{ansi}` to render messages with ANSI escape codes (requires JAnsi,
+Add `\{ansi}` to render messages with ANSI escape codes (requires JAnsi,
 see link:#enable-jansi[configuration].)
 
 The default syntax for embedded ANSI codes is:
@@ -1154,7 +1155,7 @@ The call site can look like this:
 logger.info("@\|KeyStyle {}\|@ = @\|ValueStyle {}\|@", entry.getKey(), entry.getValue());
 ....
 
-Use `{lookups}` to log messages like `"${date:YYYY-MM-dd}"` using lookups.
+Use `\{lookups}` to log messages like `"${date:YYYY-MM-dd}"` using lookups.
 using any lookups. This will replace the date template `{date:YYYY-MM-dd}`
 with an actual date. This can be confusing in many cases, and it's often both easier and
 more obvious to handle the lookup in code.
@@ -1185,9 +1186,9 @@ If the length is greater than 20, then the output will contain a
 trailing ellipsis. If the provided length is invalid, a default value of
 100 is used.
 
-Example syntax: `%maxLen{%p: %c{1} - %m%notEmpty{ =>%ex{short}}}{160}`
+Example syntax: `%maxLen{%p: %c\{1} - %m%notEmpty{ =>%ex\{short}}}\{160}`
 will be limited to 160 characters with a trailing ellipsis. Another
-example: `%maxLen{%m}{20}` will be limited to 20 characters and no
+example: `%maxLen{%m}\{20}` will be limited to 20 characters and no
 trailing ellipsis.
 
 |[[PatternNewLine]] *n*
@@ -1208,9 +1209,9 @@ event was created.
 underlying platform. An optional default value may be specified to be
 shown if the platform does not support process IDs.
 
-|[[VariablesNotEmpty]] *variablesNotEmpty*{pattern} +
-*varsNotEmpty*{pattern} +
-*notEmpty*{pattern}
+|[[VariablesNotEmpty]] *variablesNotEmpty*\{pattern} +
+*varsNotEmpty*\{pattern} +
+*notEmpty*\{pattern}
 |Outputs the result of evaluating the pattern if and only if all
 variables in the pattern are not empty.
 
@@ -1271,12 +1272,12 @@ upper-case):
 |Outputs the number of milliseconds elapsed since the JVM was
 started until the creation of the logging event.
 
-|[[PatternRepeat]] *R*{string}{count} +
-*repeat*{string}{count}
+|[[PatternRepeat]] *R*\{string}\{count} +
+*repeat*\{string}\{count}
 |Produces a string containing the requested number of instances of the specified string.
-For example, "%repeat{\*}{2}" will result in the string "**".
+For example, "%repeat{\*}\{2}" will result in the string "**".
 
-|[[PatternReplace]] *replace*{pattern}{regex}{substitution}
+|[[PatternReplace]] *replace*\{pattern}\{regex}\{substitution}
 |Replaces occurrences of 'regex', a regular expression, with its
 replacement 'substitution' in the string resulting from evaluation of
 the pattern. For example, "%replace{%msg}{\s}\{}" will remove all
@@ -1304,10 +1305,10 @@ printed starting with the first exception that was thrown followed by
 each subsequent wrapping exception.
 
 The throwable conversion word can be followed by an option in the form
-`%rEx{short}` which will only output the first line of the Throwable or
-`%rEx{n}` where the first n lines of the stack trace will be printed.
+`%rEx\{short}` which will only output the first line of the Throwable or
+`%rEx\{n}` where the first n lines of the stack trace will be printed.
 
-Specifying `%rEx{none}` or `%rEx{0}` will suppress printing of the
+Specifying `%rEx\{none}` or `%rEx\{0}` will suppress printing of the
 exception.
 
 Use `filters(packages)` where _packages_ is a list of package names to
@@ -1326,7 +1327,7 @@ only when there is a throwable to print.
 every event. The counter is a static variable so will only be unique
 within applications that share the same converter Class object.
 
-|[[PatternStyle]] *style*{pattern}{ANSI style}
+|[[PatternStyle]] *style*\{pattern}{ANSI style}
 |Uses ANSI escape sequences to style the result of the enclosed pattern.
 The style can consist of a comma separated list of style names from the
 following table. (See Jansi link:#enable-jansi[configuration].)
@@ -1459,7 +1460,7 @@ logging event.
 |Outputs the Thread Context Map (also known as the Mapped Diagnostic
 Context or MDC) associated with the thread that generated the logging
 event. The *X* conversion character can be followed by one or more keys
-for the map placed between braces, as in *%X{clientNumber}* where
+for the map placed between braces, as in *%X\{clientNumber}* where
 `clientNumber` is the key. The value in the MDC corresponding to the key
 will be output.
 
@@ -1473,7 +1474,7 @@ value pair set is output using a format {key1=val1, key2=val2}. The
 key/value pairs will be printed in sorted order.
 
 See the
-link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html[ThreadContext]
+link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[ThreadContext]
 class for more details.
 
 |[[PatternUUID]] *u*{"RANDOM" \| "TIME"} +
@@ -1511,9 +1512,9 @@ class packaging data will be preceded by a tilde, i.e. the '~'
 character.
 
 The throwable conversion word can be followed by an option in the form
-`%xEx{short}` which will only output the first line of the Throwable or
-`%xEx{n}` where the first n lines of the stack trace will be printed.
-Specifying `%xEx{none}` or `%xEx{0}` will suppress printing of the
+`%xEx\{short}` which will only output the first line of the Throwable or
+`%xEx\{n}` where the first n lines of the stack trace will be printed.
+Specifying `%xEx\{none}` or `%xEx\{0}` will suppress printing of the
 exception.
 
 Use `filters(packages)` where _packages_ is a list of package names to
@@ -1524,7 +1525,7 @@ example: `separator(\|)`. The default value is the `line.separator`
 system property, which is operating system dependent.
 
 The `ansi` option renders stack traces with ANSI escapes code using the
-JAnsi library. (See link:#enable-jansi[configuration].) Use `{ansi}` to
+JAnsi library. (See link:#enable-jansi[configuration].) Use `\{ansi}` to
 use the default color mapping. You can specify your own mappings with
 `key=value` pairs. The keys are:
 
@@ -1678,11 +1679,13 @@ in stack traces.
 
 [source,xml]
 ----
-<properties>
-  <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
-</properties>
-...
-<PatternLayout pattern="%m%xEx{filters(${filters})}%n"/>
+<Configuration>
+  <properties>
+    <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
+  </properties>
+  <!-- ... -->
+  <PatternLayout pattern="%m%xEx{filters(${filters})}%n"/>
+</Configuration>
 ----
 
 The result printed to the console will appear similar to:
@@ -1959,8 +1962,6 @@ within the message text.
 [[XMLLayout]]
 == XML Layout
 
-NOTE: FIXME: log4j.dtd link is broken. Appends a series of `Event` elements as defined in the link:log4j.dtd[log4j.dtd].
-
 === Complete well-formed XML vs. fragment XML
 
 If you configure `complete="true"`, the appender outputs a well-formed XML document where the default namespace is the Log4j namespace `https://logging.apache.org/log4j/2.0/events`. By default, with `complete="false"`, you should include the output as an _external entity_ in a separate file to form a well-formed XML document, in which case the appender uses `namespacePrefix` with a default of `log4j`.
@@ -2029,7 +2030,7 @@ By default, the XML layout is not compact (a.k.a. not "pretty") with `compact="f
 [options="header"]
 |===
 | Parameter Name         | Type      | Description
-| charset                | String    | The character set to use when converting to a byte array. The value must be a valid ${Charset}. If not specified, UTF-8 will be used.
+| charset                | String    | The character set to use when converting to a byte array. The value must be a valid `Charset`. If not specified, UTF-8 will be used.
 | compact                | boolean   | If true, the appender does not use end-of-lines and indentation. Defaults to false.
 | complete               | boolean   | If true, the appender includes the XML header and footer. Defaults to false.
 | properties             | boolean   | If true, the appender includes the thread context map in the generated XML. Defaults to false.
@@ -2107,7 +2108,7 @@ source:
 [options="header"]
 |===
 | Parameter Name       | Type     | Description
-| charset              | String   | The character set to use when converting to a byte array. The value must be a valid ${Charset}. If not specified, UTF-8 will be used.
+| charset              | String   | The character set to use when converting to a byte array. The value must be a valid `Charset`. If not specified, UTF-8 will be used.
 | properties           | boolean  | If true, the appender includes the thread context map in the generated YAML. Defaults to false.
 | locationInfo         | boolean  | If true, the appender includes the location information in the generated YAML. Defaults to false. Generating location information is an expensive operation and may impact performance. Use with caution.
 | includeStacktrace    | boolean  | If true, include full stacktrace of any logged Throwable (optional, default to true).

@@ -302,10 +302,10 @@ configuration file. The default configuration, provided in the
 DefaultConfiguration class, will set up:
 
 * A
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/appender/ConsoleAppender.html[`ConsoleAppender`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/ConsoleAppender.html[`ConsoleAppender`]
 attached to the root logger.
 * A
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html[`PatternLayout`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternLayout.html[`PatternLayout`]
 set to the pattern "%d\{HH:mm:ss.SSS} [%t] %-5level %logger\{36} -
 %msg%n" attached to the ConsoleAppender
 
@@ -387,10 +387,13 @@ configuration:
 
 [source,xml]
 ----
-<Logger name="com.foo.Bar" level="TRACE"/>
-<Root level="ERROR">
-  <AppenderRef ref="STDOUT">
-</Root>
+<Configuration>
+  <!-- ... -->
+  <Logger name="com.foo.Bar" level="TRACE"/>
+  <Root level="ERROR">
+    <AppenderRef ref="STDOUT"/>
+  </Root>
+</Configuration>
 ----
 
 With this configuration all log events from `com.foo.Bar` will be
@@ -614,7 +617,7 @@ don't wait for background tasks. Not all appenders will honor this, it
 is a hint and not an absolute guarantee that the shutdown procedure will
 not take longer. Setting this too low increase the risk of losing
 outstanding log events not yet written to the final destination. See
-link:../log4j-core/target/site/apidocs/org/apache/logging/log4j/core/LoggerContext.html$%7Besc.hash%7Dstop(long,%20java.util.concurrent.TimeUnit)[LoggerContext.stop(long,
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html$%7Besc.hash%7Dstop(long,%20java.util.concurrent.TimeUnit)[LoggerContext.stop(long,
 java.util.concurrent.TimeUnit)]. (Not used if `shutdownHook` is set to
 "disable".)
 
@@ -1220,11 +1223,11 @@ will be resolved when the configuration file is interpreted while others
 may be passed to components where they will be evaluated at runtime. To
 accomplish this, Log4j uses variations of
 https://commons.apache.org/proper/commons-lang/[Apache Commons Lang]'s
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
 and
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`]
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`]
 classes. In a manner similar to Ant or Maven, this allows variables
-declared as `${name}` to be resolved using properties declared in the
+declared as `$\{name}` to be resolved using properties declared in the
 configuration itself. For example, the following example shows the
 filename for the rolling file appender being declared as a property.
 
@@ -1285,9 +1288,9 @@ that are built in to Log4j are:
               <tr>
                 <td>base64</td>
                 <td>
-                  Base64 encoded data. The format is <code>${dollar}{base64:Base64_encoded_data}</code>.
+                  Base64 encoded data. The format is <code>${base64:Base64_encoded_data}</code>.
                   For example:
-                  <code>${dollar}{base64:SGVsbG8gV29ybGQhCg==}</code> yields <code>Hello World!</code>.
+                  <code>${base64:SGVsbG8gV29ybGQhCg==}</code> yields <code>Hello World!</code>.
                 </td>
               </tr>
 
@@ -1307,7 +1310,7 @@ The bundle name follows package naming conventions, for example:
 |Inserts the current date and/or time using the specified format
 
 |docker
-| Returns attributes from the Docker container the application is running in. The format is ${docker:some.attribute}. See xref:manual/manual/manual//log4j-docker.html[Docker documentation] for requirements and a list of available attributes.
+| Returns attributes from the Docker container the application is running in. The format is ${docker:some.attribute}. See xref:log4j-docker.adoc[Docker documentation] for requirements and a list of available attributes.
 
 |env
 |System environment variables. The formats are `${env:ENV_NAME}` and `${env:ENV_NAME:-default_value}`.
@@ -1386,7 +1389,7 @@ included, such as ``${main:\--file:-app.properties}`. This would use the
 == Enabling Message Pattern Lookups
 A message is processed (by default) without using lookups, for example if you defined
 `<Property name="foo.bar">FOO_BAR</Property>`, then `logger.info("${foo.bar}")` will output `${foo.bar}` instead of `FOO_BAR`.
-You could enable message pattern lookups by defining the message pattern using %m{lookups}.
+You could enable message pattern lookups by defining the message pattern using `%m\{lookups}`.
 
 [#RuntimeLookup]
 == Lookup Variables with Multiple Leading '$' Characters
@@ -1701,7 +1704,7 @@ initialization. In addition, normal logging within appenders could
 create infinite recursion which Log4j will detect and cause the
 recursive events to be ignored. To accomodate this need, the Log4j 2 API
 includes a
-link:../log4j-api/apidocs/org/apache/logging/log4j/status/StatusLogger.html[`StatusLogger`].
+link:../javadoc/log4j-api/org/apache/logging/log4j/status/StatusLogger.html[`StatusLogger`].
 Components declare an instance of the StatusLogger similar to:
 
 [source,java]
@@ -1868,8 +1871,7 @@ public class AwesomeTest {
 }
 ----
 
-
-
+[#SystemProperties]
 == System Properties
 
 The Log4j documentation references a number of System Properties that can be used to control various aspects of Log4j 2 behavior. The table below lists these properties along with their default value and a description of what they control. Any spaces present in the property name are for visual flow and should be removed.
@@ -1943,10 +1945,10 @@ The following is a list of available global configuration properties. Note that 
 |
     Creates the `LoggerContext`s. An application can have one or more active LoggerContexts depending
     on the circumstances.
-    See xref:manual/manual/manual//logsep.html[Log Separation] for more details.
+    See xref:manual/logsep.adoc[Log Separation] for more details.
     Available context selector implementation classes:<br>
-    `org.apache.logging.log4j.core.async .AsyncLoggerContextSelector` - makes xref:manual/manual/manual//async.html[all loggers asynchronous].<br>
-    `org.apache.logging.log4j.core.async .BasicAsyncLoggerContextSelector` - makes xref:manual/manual/manual//async.html[all loggers asynchronous] using a single shared AsyncLoggerContext.<br>
+    `org.apache.logging.log4j.core.async .AsyncLoggerContextSelector` - makes xref:manual/async.adoc[all loggers asynchronous].<br>
+    `org.apache.logging.log4j.core.async .BasicAsyncLoggerContextSelector` - makes xref:manual/async.adoc[all loggers asynchronous] using a single shared AsyncLoggerContext.<br>
     `org.apache.logging.log4j.core.selector .BasicContextSelector` - creates a single shared LoggerContext.<br>
     `org.apache.logging.log4j.core.selector .ClassLoaderContextSelector` - separate LoggerContexts for each web application.<br>
     `org.apache.logging.log4j.core.selector .JndiContextSelector` - use JNDI to locate each web application's LoggerContext.<br>
@@ -2030,7 +2032,7 @@ The following is a list of available global configuration properties. Note that 
 | org.apache.logging.log4j.core.util .DefaultShutdownCallbackRegistry
 |
     Fully specified class name of a class implementing
-    xref:manual/manual/manual//../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html" class="javadoc[ShutdownCallbackRegistry].
+    link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html" class="javadoc[ShutdownCallbackRegistry].
     If specified, an instance of this class is used instead of `DefaultShutdownCallbackRegistry`.
     The specified class must have a default constructor.
 
@@ -2264,71 +2266,71 @@ The following is a list of available global configuration properties. Note that 
   ([[AsyncLogger.ExceptionHandler]]AsyncLogger.ExceptionHandler)
 | LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER
 | default handler
-| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerRingBufferSize]]log4j2.asyncLoggerRingBufferSize
   ([[AsyncLogger.RingBufferSize]]AsyncLogger.RingBufferSize)
 | LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE
 | 256*1024 or 4*1024 in garbage-free mode
-| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerWaitStrategy]]log4j2.asyncLoggerWaitStrategy
   ([[AsyncLogger.WaitStrategy]]AsyncLogger.WaitStrategy)
 | LOG4J_ASYNC_LOGGER_WAIT_STRATEGY
 | Timeout
-| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerTimeout]]log4j2.asyncLoggerTimeout
   ([[AsyncLogger.Timeout]]AsyncLogger.Timeout)
 | LOG4J_ASYNC_LOGGER_TIMEOUT
 | 10
-| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerSleepTimeNs]]log4j2.asyncLoggerSleepTimeNs
   ([[AsyncLogger.SleepTimeNs]]AsyncLogger.SleepTimeNs)
 | LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
 | 100
-| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerRetries]]log4j2.asyncLoggerRetries
   ([[AsyncLogger.Retries]]AsyncLogger.Retries)
 | LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
 | 200
-| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[AsyncLogger.SynchronizeEnqueueWhenQueueFull]]AsyncLogger.SynchronizeEnqueueWhenQueueFull
 | ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
 | true
-| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerThreadNameStrategy]]log4j2.asyncLoggerThreadNameStrategy
   ([[AsyncLogger.ThreadNameStrategy]]AsyncLogger.ThreadNameStrategy)
 | LOG4J_ASYNC_LOGGER_THREAD_NAME_STRATEGY
 | CACHED
-| See xref:manual/manual/manual//async.html#SysPropsAllAsync[Async Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsAllAsync[Async Logger System Properties] for details.
 
 | [[asyncLoggerConfigExceptionHandler]]log4j2.asyncLoggerConfigExceptionHandler
   ([[AsyncLoggerConfig.ExceptionHandler]]AsyncLoggerConfig.ExceptionHandler)
 | LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER
 | default handler
-| See xref:manual/manual/manual//async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
 
 | [[asyncLoggerConfigRingBufferSize]]log4j2.asyncLoggerConfigRingBufferSize
   ([[AsyncLoggerConfig.RingBufferSize]]AsyncLoggerConfig.RingBufferSize)
 | LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE
 | 256*1024 or 4*1024 in garbage-free mode
-| See xref:manual/manual/manual//async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
 
 | [[asyncLoggerConfigWaitStrategy]]log4j2.asyncLoggerConfigWaitStrategy
   ([[AsyncLoggerConfig.WaitStrategy]]AsyncLoggerConfig.WaitStrategy)
 | LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY
 | Timeout
-| See xref:manual/manual/manual//async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
 
 | [[AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull]]AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
 | ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
 | true
-| See xref:manual/manual/manual//async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
+| See xref:manual/async.adoc#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger System Properties] for details.
 
 | [[julLoggerAdapter]]log4j2.julLoggerAdapter
   ([[log4j.jul.LoggerAdapter]]log4j.jul.LoggerAdapter)
@@ -2446,7 +2448,7 @@ or as if it is not part of a web application (when false).
   ([[log4j.LoggerContext.stacktrace.on.start]]log4j.LoggerContext.stacktrace.on.start)
 | LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START
 | false
-| Prints a stacktrace to the xref:manual/manual/manual//#StatusMessages[status logger] at DEBUG level when the LoggerContext is started. For debug purposes.
+| Prints a stacktrace to the xref:#StatusMessages[status logger] at DEBUG level when the LoggerContext is started. For debug purposes.
 
 | [[log4j2.trustStoreLocation]]log4j2.trustStoreLocation
 | LOG4J_TRUST_STORE_LOCATION
@@ -2525,4 +2527,3 @@ or as if it is not part of a web application (when false).
 | Disables the usage of the Spring Boot `Log4j2CloudConfigLoggingSystem`. Defaults to `false`.
 
 |===
-

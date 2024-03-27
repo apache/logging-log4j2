@@ -17,7 +17,6 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     limitations under the License.
 ////
 = API Separation
-:doctype: book
 
 When selecting a logging library, some care must be taken in order to ensure that multiple different logging libraries are properly accounted for.
 For example, library code that you depend on may use slf4j, while other libraries may simply use java.util.logging.
@@ -230,7 +229,7 @@ we can then quickly and easily configure these messages to use Log4j2 as the log
 There are some limitations to this, but it is expected to work for the majority of common cases.
 See the link:migration.html[manual page on migration] for more information on this feature.
 
-= Conclusion
+== Conclusion
 
 With the API separation that Log4j2 provides, it is possible to use multiple logging APIs and implementations in the same project.
 This allows for greater flexibility, ensuring that you are not tied to a single API or implementation.

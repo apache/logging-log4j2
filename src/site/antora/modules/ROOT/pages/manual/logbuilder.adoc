@@ -52,7 +52,7 @@ can simply ask for the stack trace entry at a fixed index instead of having to w
 to determine the calling class. Of course, if the location information will not be used by the layout
 this will result in slower performance.</li>
 
-=== Location Performance
+== Location Performance
 
 The table below shows some of the results from the FileAppenderBenchmark and FileAppenderWithLocationBenchmark
 classes in the log4j-perf-test project when configured to use 4 threads. The results show that lazily including

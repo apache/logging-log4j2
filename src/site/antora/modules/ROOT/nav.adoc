@@ -53,6 +53,7 @@
 ** xref:manual/customloglevels.adoc[]
 ** xref:manual/jmx.adoc[]
 ** xref:manual/logsep.adoc[]
+** xref:manual/performance.adoc[]
 
 .Components
 * Internal components

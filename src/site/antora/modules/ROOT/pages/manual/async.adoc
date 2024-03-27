@@ -83,18 +83,18 @@ state of the `myObject` parameter at the time of the call to
 `logger.debug()`. The log message will not change even if `myObject` is
 modified later. It is safe to asynchronously log mutable objects because
 most
-link:../log4j-api/apidocs/org/apache/logging/log4j/message/Message.html[`Message`]
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
 implementations built-in to Log4j take a snapshot of the parameters.
 There are some exceptions however:
-link:../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`]
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`]
 and
-link:../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`]
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`]
 are mutable by design: fields can be added to these messages after the
 message object was created. These messages should not be modified after
 they are logged with asynchronous loggers or asynchronous appenders; you
 may or may not see the modifications in the resulting log output.
 Similarly, custom
-link:../log4j-api/apidocs/org/apache/logging/log4j/message/Message.html[`Message`]
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
 implementations should be designed with asynchronous use in mind, and
 either take a snapshot of their parameters at construction time, or
 document their thread-safety characteristics.
@@ -211,7 +211,7 @@ system.
 When the application is logging faster than the underlying appender can
 keep up with for a long enough time to fill up the queue, the behaviour
 is determined by the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
 
 |[[asyncLoggerWaitStrategy]]log4j2.asyncLoggerWaitStrategy
 |`Timeout`
@@ -395,7 +395,7 @@ system.
 When the application is logging faster than the underlying appender can
 keep up with for a long enough time to fill up the queue, the behavious
 is determined by the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
 
 |[[asyncLoggerConfigWaitStrategy]]log4j2.asyncLoggerConfigWaitStrategy
 |`Timeout`

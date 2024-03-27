@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Runtime Dependencies
-= Log4j Runtime Dependencies
 
 Some Log4J features depend on external libraries. This page lists the required and optional dependencies.
 
@@ -116,13 +115,13 @@ As of version 2.4, Log4J requires Java 7.
 
 Log4j version 2.3 and older require Java 6.
 
-=== log4j-api
+== log4j-api
 
-The Log4J link:log4j-api/index.html[API] module has no external dependencies.
+The Log4J xref:log4j-api.adoc[API] module has no external dependencies.
 
-=== log4j-core
+== log4j-core
 
-The Log4J link:log4j-core/index.html[Implementation] has several optional link:log4j-core/dependencies.html[dependencies]. See the link:log4j-core/dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed for these features.
+The Log4J implementation has several optional dependencies.
 
 Optional Dependencies per Feature in Log4J Implementation:
 
@@ -137,37 +136,37 @@ Optional Dependencies per Feature in Log4J Implementation:
 | -
 
 | JSON configuration
-| link:https://github.com/FasterXML/jackson[Jackson core and databind]
+| https://github.com/FasterXML/jackson[Jackson core and databind]
 
 | YAML configuration
-| link:https://github.com/FasterXML/jackson[Jackson databind] and link:https://github.com/FasterXML/jackson-dataformat-yaml[YAML data format]
+| https://github.com/FasterXML/jackson[Jackson databind] and https://github.com/FasterXML/jackson-dataformat-yaml[YAML data format]
 
 | CSV Layout
-| link:https://commons.apache.org/proper/commons-csv/[Apache Commons CSV]
+| https://commons.apache.org/proper/commons-csv/[Apache Commons CSV]
 
 | JSON Layout
-| link:https://github.com/FasterXML/jackson[Jackson core and databind]
+| https://github.com/FasterXML/jackson[Jackson core and databind]
 
 | XML Layout
-| link:https://github.com/FasterXML/jackson[Jackson core, databind and dataformat XML] and `com.fasterxml.woodstox:woodstox-core:5.0.2`
+| https://github.com/FasterXML/jackson[Jackson core, databind and dataformat XML] and `com.fasterxml.woodstox:woodstox-core:5.0.2`
 
 | YAML Layout
-| link:https://github.com/FasterXML/jackson[Jackson core, databind] and link:https://github.com/FasterXML/jackson-dataformat-yaml[YAML data format]
+| https://github.com/FasterXML/jackson[Jackson core, databind] and https://github.com/FasterXML/jackson-dataformat-yaml[YAML data format]
 
 | Async Loggers
-| link:https://lmax-exchange.github.io/disruptor/[LMAX Disruptor]
+| https://lmax-exchange.github.io/disruptor/[LMAX Disruptor]
 
 | Kafka Appender
-| link:https://kafka.apache.org/[Kafka client library]. Note that you need to use a version of the Kafka client library matching the Kafka server used.
+| https://kafka.apache.org/[Kafka client library]. Note that you need to use a version of the Kafka client library matching the Kafka server used.
 
 | SMTP Appender
 | an implementation of `javax.mail`
 
 | JMS Appender
-| a JMS broker like link:https://activemq.apache.org/[Apache ActiveMQ]
+| a JMS broker like https://activemq.apache.org/[Apache ActiveMQ]
 
 | Windows console color support
-| link:https://fusesource.github.io/jansi/[Jansi]
+| https://fusesource.github.io/jansi/[Jansi]
 
 | JDBC Appender
 | a JDBC driver for the database you choose to write events to
@@ -185,27 +184,27 @@ Optional Dependencies per Feature in Log4J Implementation:
 | Datastax Cassandra driver and Log4j Cassandra library
 
 | Bzip2, Deflate, Pack200, and XZ compression on rollover
-| link:https://commons.apache.org/proper/commons-compress/[Apache Commons Compress]. In addition, XZ requires link:https://tukaani.org/xz/java.html[xz-java] and ZStandard requires link:https://github.com/luben/zstd-jni[zstd-jni]
+| https://commons.apache.org/proper/commons-compress/[Apache Commons Compress]. In addition, XZ requires https://tukaani.org/xz/java.html[xz-java] and ZStandard requires https://github.com/luben/zstd-jni[zstd-jni]
 
 | ZeroMQ Appender
-| The ZeroMQ appender uses the link:https://github.com/zeromq/jeromq[JeroMQ] library which is licensed under the terms of the Mozilla Public License Version 2.0 (MPLv2). For details see the file link:https://github.com/zeromq/jeromq/blob/master/LICENSE[LICENSE] included with the JeroMQ distribution.
+| The ZeroMQ appender uses the https://github.com/zeromq/jeromq[JeroMQ] library which is licensed under the terms of the Mozilla Public License Version 2.0 (MPLv2). For details see the file https://github.com/zeromq/jeromq/blob/master/LICENSE[LICENSE] included with the JeroMQ distribution.
 |===
 
 == log4j-docker
 
-link:log4j-docker/index.html[Log4j Docker Support] requires link:https://github.com/FasterXML/jackson[Jackson annotations, core, and databind]. See the link:log4j-docker/dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed.
+xref:log4j-docker.adoc[Log4j Docker Support] requires https://github.com/FasterXML/jackson[Jackson annotations, core, and databind].
 
 == log4j-jcl
 
-The link:log4j-jcl/index.html[Commons Logging Bridge] requires link:https://commons.apache.org/proper/commons-logging/[Commons Logging]. See the link:log4j-jcl/dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed.
+The xref:log4j-jcl.adoc[Commons Logging Bridge] requires https://commons.apache.org/proper/commons-logging/[Commons Logging].
 
 == log4j-1.2-api
 
-The link:log4j-1.2-api/index.html[Log4j 1.2 Bridge] has no external dependencies. This only requires the Log4j API. Including Log4j Core provides optional, extra functionality.
+The xref:log4j-1.2-api.adoc[Log4j 1.2 Bridge] has no external dependencies. This only requires the Log4j API. Including Log4j Core provides optional, extra functionality.
 
 == log4j-slf4j-impl
 
-The Log4j 2 link:log4j-slf4j-impl/index.html[SLF4J Binding] depends on the link:https://www.slf4j.org/[SLF4J] API. See the link:log4j-slf4j-impl/dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed.
+The Log4j 2 xref:log4j-slf4j-impl.adoc[SLF4J Binding] depends on the https://www.slf4j.org/[SLF4J] API.
 
 [WARNING]
 .Do not use this with the log4j-to-slf4j module.
@@ -213,11 +212,11 @@ The Log4j 2 link:log4j-slf4j-impl/index.html[SLF4J Binding] depends on the link:
 
 == log4j-jul
 
-The Log4j 2 link:log4j-jul/index.html[Java Util Logging Adapter] has no external dependencies. It optionally depends on the link:log4j-api/index.html[Log4j Core] library. The only required module is the Log4j API.
+The Log4j 2 xref:log4j-jul.adoc[Java Util Logging Adapter] has no external dependencies. It optionally depends on the xref:log4j-api.adoc[Log4j Core] library. The only required module is the Log4j API.
 
 == log4j-to-slf4j
 
-The link:log4j-to-slf4j/index.html[Log4j 2 to SLF4J Adapter] requires the link:https://www.slf4j.org/[SLF4J] API and an SLF4J implementation. See the link:log4j-to-slf4j/dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed.
+The xref:log4j-to-slf4j.adoc[Log4j 2 to SLF4J Adapter] requires the https://www.slf4j.org/[SLF4J] API and an SLF4J implementation.
 
 [WARNING]
 .Do not use this with the log4j-slf4j-impl module.
@@ -225,35 +224,39 @@ The link:log4j-to-slf4j/index.html[Log4j 2 to SLF4J Adapter] requires the link:h
 
 == log4j-flume-ng
 
-The link:log4j-flume-ng/index.html[Flume Appender] requires link:https://flume.apache.org/[Apache Flume] and link:https://avro.apache.org/[Apache Avro]. The persistent agent uses Berkeley DB. See the link:log4j-flume-ng/dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed.
+The xref:log4j-flume-ng.adoc[Flume Appender] requires https://flume.apache.org/[Apache Flume] and https://avro.apache.org/[Apache Avro]. The persistent agent uses Berkeley DB.
 
 == log4j-spring-cloud-config-client
 
-link:log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html[Log4j Spring Cloud Config Client] requires link:https://spring.io/projects/spring-cloud-config[Spring Cloud Config]. link:https://spring.io/projects/spring-cloud-bus[Spring Cloud Bus] is required if notification of logging configuration changes is desired. link:https://spring.io/projects/spring-boot[Spring Boot] is required but applications do not have to be packaged as a Spring Boot application. link:log4j-spring-cloud-config/log4j-spring-cloud-config-client/dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed.
+xref:log4j-spring-cloud-config-client.adoc[Log4j Spring Cloud Config Client] requires https://spring.io/projects/spring-cloud-config[Spring Cloud Config]. https://spring.io/projects/spring-cloud-bus[Spring Cloud Bus] is required if notification of logging configuration changes is desired. https://spring.io/projects/spring-boot[Spring Boot] is required but applications do not have to be packaged as a Spring Boot application.
 
 == log4j-taglib
 
-The Log4j link:log4j-taglib/index.html[Log Tag Library] requires the link:https://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Taglib] and the Servlet API. See the link:log4j-taglib/dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed.
+The Log4j xref:log4j-taglib.adoc[Log Tag Library] requires the https://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Taglib] and the Servlet API.
 
 == log4j-web
 
-The Log4j link:log4j-web/index.html[Web] module requires the Servlet API. See the link:log4j-web/dependencies.html#Dependency_Tree[Dependency Tree] for the exact list of JAR files needed. Note that this works with the Servlet 2.5 API as well as the Servlet 3.x API.
+The Log4j link:log4j-web.adoc[Web] module requires the Servlet API. Note that this works with the Servlet 2.5 API as well as the Servlet 3.x API.
 
 == log4j-couchdb
 
-The Log4J link:log4j-couchdb/index.html[CouchDB] module depends on the link:https://www.lightcouch.org/[LightCouch] CouchDB client library.
+The Log4J xref:log4j-couchdb.adoc[CouchDB] module depends on the https://www.lightcouch.org/[LightCouch] CouchDB client library.
 
-== log4j-mongodb
+== log4j-mongodb3
 
-The Log4J link:log4j-mongodb/index.html[MongoDB] module depends on the link:https://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client driver].
+The Log4J xref:log4j-mongodb3.adoc[MongoDB 3] module depends on the https://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client driver].
+
+== log4j-mongodb4
+
+The Log4J xref:log4j-mongodb4.adoc[MongoDB 4] module depends on the https://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client driver].
 
 == log4j-cassandra
 
-The Log4J link:log4j-cassandra/index.html[Cassandra] module depends on the link:https://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html[Datastax Cassandra driver].
+The Log4J xref:log4j-cassandra.adoc[Cassandra] module depends on the https://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html[Datastax Cassandra driver].
 
 == log4j-iostreams
 
-The Log4j link:log4j-iostreams/index.html[IO Streams] module has no external dependencies. This only requires the Log4j API.
+The Log4j xref:log4j-iostreams.adoc[IO Streams] module has no external dependencies. This only requires the Log4j API.
 
 == log4j-jakarta-smtp
 
