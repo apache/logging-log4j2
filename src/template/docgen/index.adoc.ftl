@@ -25,7 +25,7 @@ You can use this reference manual to precisely customize your `log4j2.xml`.
 
 [TIP]
 ====
-Every running Log4j system is a constellation of xref:../manual/plugins.adoc[plugins], which is analogous to beans in Java EE and Spring.
+Every running Log4j system is a constellation of link:manual/plugins.html[plugins], which is analogous to beans in Java EE and Spring.
 This not only allows Log4j itself to be developed in individual components, but also enables extensibility users can leverage.
 ====
 
@@ -57,3 +57,21 @@ Below is a list of all types reachable by plugins grouped by the Maven coordinat
     </#if>
 include::_plugin-reference/${sourcedType.groupId}-${sourcedType.artifactId}-${sourcedType.type.className}.adoc[leveloffset=+3]
 </#list>
+
+++++
+<script>
+(function() {
+
+    var aElement = document.createElement("a");
+    aElement.href = "index.html";
+    aElement.textContent = "Home";
+
+    var liElement = document.createElement("li");
+    liElement.appendChild(aElement);
+
+    var ulElement = document.getElementsByClassName("sectlevel1")[0];
+    ulElement.insertBefore(liElement, ulElement.childNodes[0]);
+
+})();
+</script>
+++++

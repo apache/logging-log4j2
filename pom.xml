@@ -1012,10 +1012,6 @@
               </resources>
               <sourceDirectory>${project.build.directory}/generated-site/asciidoc</sourceDirectory>
               <outputDirectory>${project.build.directory}/site</outputDirectory>
-              <preserveDirectories>false</preserveDirectories>
-              <templateDirs>
-                <dir>${project.basedir}/src/template/asciidoctor</dir>
-              </templateDirs>
               <attributes>
                 <source-highlighter>rouge</source-highlighter>
                 <toc>left</toc>
