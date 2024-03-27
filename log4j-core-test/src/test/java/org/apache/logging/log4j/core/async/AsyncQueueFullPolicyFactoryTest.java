@@ -22,14 +22,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.impl.CoreKeys;
-import org.apache.logging.log4j.test.junit.Tags;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests the AsyncQueueFullPolicyFactory class.
  */
-@Tag(Tags.PARALLEL)
+@Tag("parallel")
 public class AsyncQueueFullPolicyFactoryTest {
 
     private static final CoreKeys.AsyncQueueFullPolicy DEFAULT = CoreKeys.AsyncQueueFullPolicy.defaultValue();
