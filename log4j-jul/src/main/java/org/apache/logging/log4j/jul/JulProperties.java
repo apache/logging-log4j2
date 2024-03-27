@@ -14,9 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger;
+package org.apache.logging.log4j.jul;
 
-/**
- * Default disruptor exception handler for errors that occur in the AsyncLogger background thread.
- */
-public class AsyncLoggerDefaultExceptionHandler extends AbstractAsyncExceptionHandler<RingBufferLogEvent> {}
+import org.apache.logging.log4j.kit.env.Log4jProperty;
+import org.jspecify.annotations.Nullable;
+
+@Log4jProperty(name = "jul")
+public record JulProperties(
+        @Nullable Class<? extends LevelConverter> levelConverter,
+        @Nullable Class<? extends AbstractLoggerAdapter> loggerAdapter) {}

@@ -46,7 +46,7 @@ public final class LevelTranslator {
 
     static {
         final Class<? extends LevelConverter> levelConverterClass =
-                PropertyEnvironment.getGlobal().getProperty(JulKeys.JUL.class).levelConverter();
+                PropertyEnvironment.getGlobal().getProperty(JulProperties.class).levelConverter();
         if (levelConverterClass != null) {
             LevelConverter levelConverter;
             try {

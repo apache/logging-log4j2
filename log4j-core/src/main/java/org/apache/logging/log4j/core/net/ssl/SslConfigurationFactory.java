@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.net.ssl;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.CoreKeys.TransportSecurity;
+import org.apache.logging.log4j.core.impl.CoreProperties.TransportSecurityProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -31,10 +31,10 @@ public final class SslConfigurationFactory {
     private SslConfigurationFactory() {}
 
     public static SslConfiguration getSslConfiguration(final PropertyEnvironment props) {
-        return getSslConfiguration(props.getProperty(TransportSecurity.class));
+        return getSslConfiguration(props.getProperty(TransportSecurityProperties.class));
     }
 
-    static SslConfiguration getSslConfiguration(final TransportSecurity config) {
+    static SslConfiguration getSslConfiguration(final TransportSecurityProperties config) {
         KeyStoreConfiguration keyStoreConfiguration = null;
         TrustStoreConfiguration trustStoreConfiguration = null;
         if (config != null) {

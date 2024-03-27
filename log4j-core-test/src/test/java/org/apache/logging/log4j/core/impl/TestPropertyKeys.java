@@ -17,6 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 /**
- * This class contains the stringified version of properties from {@link CoreKeys}.
+ * This class contains the stringified version of properties from {@link CoreProperties}.
  */
 public class TestPropertyKeys {}

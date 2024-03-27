@@ -51,7 +51,7 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.arbiters.Arbiter;
 import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -783,7 +783,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         final LoggerConfig rootLoggerConfig = getRootLogger();
         rootLoggerConfig.addAppender(appender, null, null);
         final Level defaultLevel =
-                environment.getProperty(CoreKeys.Configuration.class).level();
+                environment.getProperty(ConfigurationProperties.class).level();
         rootLoggerConfig.setLevel(defaultLevel != null ? defaultLevel : Level.ERROR);
     }
 
@@ -888,7 +888,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
         final String strategy =
-                getEnvironment().getProperty(CoreKeys.Configuration.class).reliabilityStrategy();
+                getEnvironment().getProperty(ConfigurationProperties.class).reliabilityStrategy();
         return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig, strategy);
     }
 

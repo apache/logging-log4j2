@@ -19,17 +19,17 @@ package org.apache.logging.log4j.core.test;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Constants for system properties used by Log4j Core.
+ * Constants for system properties used by Log4j Core and other artifacts.
  */
 public final class TestConstants {
 
     private TestConstants() {}
 
-    private static final String ASYNC = "log4j.Async.";
+    private static final String ASYNC = "log4j.async.";
 
     public static final String ASYNC_FORMAT_MESSAGES_IN_BACKGROUND = ASYNC + "formatMessagesInBackground";
 
-    private static final String ASYNC_LOGGER = "log4j.AsyncLogger.";
+    private static final String ASYNC_LOGGER = ASYNC + "logger.";
 
     public static final String ASYNC_LOGGER_EXCEPTION_HANDLER = ASYNC_LOGGER + "exceptionHandler";
 
@@ -38,62 +38,64 @@ public final class TestConstants {
     public static final String ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL =
             ASYNC_LOGGER + "synchronizeEnqueueWhenQueueFull";
 
-    public static final String ASYNC_LOGGER_WAIT_STRATEGY = ASYNC_LOGGER + "waitStrategy";
+    public static final String ASYNC_LOGGER_WAIT_STRATEGY = ASYNC_LOGGER + "waitStrategy.type";
 
-    private static final String ASYNC_LOGGER_CONFIG = "log4j.AsyncLoggerConfig.";
-
-    public static final String ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE = ASYNC_LOGGER_CONFIG + "ringBufferSize";
+    public static final String ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE = ASYNC_LOGGER + "ringBufferSize";
 
     public static final String ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL =
-            ASYNC_LOGGER_CONFIG + "synchronizeEnqueueWhenQueueFull";
+            ASYNC_LOGGER + "synchronizeEnqueueWhenQueueFull";
 
-    public static final String ASYNC_QUEUE_FULL_POLICY_CLASS_NAME = "log4j.AsyncQueueFullPolicy.className";
+    public static final String ASYNC_QUEUE_FULL_POLICY_CLASS_NAME = "log4j.async.queueFullPolicy.type";
 
-    private static final String CONFIGURATION = "log4j.Configuration.";
+    private static final String AUTH = "log4j.auth.";
+
+    private static final String AUTH_BASIC = AUTH + "basic.";
+
+    public static final String AUTH_BASIC_USERNAME = AUTH_BASIC + "username";
+
+    public static final String AUTH_BASIC_PASSWORD = AUTH_BASIC + "password";
+
+    private static final String CONFIGURATION = "log4j.configuration.";
 
     public static final String CONFIGURATION_ALLOWED_PROTOCOLS = CONFIGURATION + "allowedProtocols";
 
-    private static final String CONFIGURATION_BASIC_AUTH = CONFIGURATION + "basicAuth.";
-
-    public static final String CONFIGURATION_BASIC_AUTH_USERNAME = CONFIGURATION_BASIC_AUTH + "username";
-
-    public static final String CONFIGURATION_BASIC_AUTH_PASSWORD = CONFIGURATION_BASIC_AUTH + "password";
-
     public static final String CONFIGURATION_CONFIGURATION_FACTORY = CONFIGURATION + "configurationFactory";
 
-    public static final String CONFIGURATION_FILE = CONFIGURATION + "file";
+    public static final String CONFIGURATION_FILE = CONFIGURATION + "location";
 
     public static final String CONFIGURATION_RELIABILITY_STRATEGY = CONFIGURATION + "reliabilityStrategy";
 
     public static final String CONFIGURATION_USE_PRECISE_CLOCK = CONFIGURATION + "usePreciseClock";
 
-    public static final String CONSOLE_JANSI_ENABLED = "log4j.Console.jansiEnabled";
+    public static final String CONSOLE_JANSI_ENABLED = "log4j.console.jansiEnabled";
 
-    private static final String GC = "log4j.GC.";
+    private static final String GC = "log4j.gc.";
 
     public static final String GC_ENABLE_DIRECT_ENCODERS = GC + "enableDirectEncoders";
 
-    private static final String JNDI = "log4j.JNDI.";
+    private static final String JNDI = "log4j.jndi.";
 
-    public static final String JNDI_CONTEXT_SELECTOR = JNDI + "contextSelector";
+    public static final String JNDI_CONTEXT_SELECTOR = JNDI + "enableContextSelector";
 
     public static final String JNDI_ENABLE_LOOKUP = JNDI + "enableLookup";
 
-    public static final String JNDI_ENABLE_JDBC = JNDI + "enableJDBC";
+    public static final String JNDI_ENABLE_JDBC = JNDI + "enableJdbc";
 
-    public static final String JNDI_ENABLE_JMS = JNDI + "enableJMS";
+    public static final String JNDI_ENABLE_JMS = JNDI + "enableJms";
 
-    private static final String LOGGER_CONTEXT = "log4j.LoggerContext.";
-
-    public static final String LOGGER_CONTEXT_LOG_EVENT_FACTORY = LOGGER_CONTEXT + "logEventFactory";
+    private static final String LOGGER_CONTEXT = "log4j.loggerContext.";
 
     public static final String LOGGER_CONTEXT_SELECTOR = LOGGER_CONTEXT + "selector";
 
-    private static final String MESSAGE = "log4j.Message.";
+    private static final String LOG_EVENT = "log4j.logEvent.";
+
+    public static final String LOG_EVENT_FACTORY = LOG_EVENT + "logEventFactory";
+
+    private static final String MESSAGE = "log4j.message.";
 
     public static final String MESSAGE_FACTORY = MESSAGE + "factory";
 
-    private static final String STATUS_LOGGER = "log4j.StatusLogger.";
+    private static final String STATUS_LOGGER = "log4j.statusLogger.";
 
     public static final String STATUS_LOGGER_DEFAULT_STATUS_LEVEL = STATUS_LOGGER + "defaultStatusLevel";
 
@@ -101,7 +103,7 @@ public final class TestConstants {
 
     public static final String VERSION1_COMPATIBILITY = "log4j1.compatibility";
 
-    private static final String THREAD_CONTEXT = "log4j.ThreadContext.";
+    private static final String THREAD_CONTEXT = "log4j.threadContext.";
 
     public static final String THREAD_CONTEXT_CONTEXT_DATA = THREAD_CONTEXT + "contextData";
 
@@ -109,7 +111,7 @@ public final class TestConstants {
 
     public static final String THREAD_CONTEXT_MAP_CLASS = THREAD_CONTEXT + "mapClass";
 
-    private static final String WEB = "log4j.WEB.";
+    private static final String WEB = "log4j.web.";
 
     public static final String WEB_IS_WEB_APP = WEB + "isWebApp";
 

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import org.apache.logging.log4j.core.impl.CoreProperties.ThreadContextProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
@@ -54,7 +55,7 @@ public class Log4jProvider extends Provider {
     @Override
     public String getThreadContextMap() {
         final PropertyEnvironment environment = instanceFactory.getInstance(PropertyEnvironment.class);
-        final CoreKeys.ThreadContext threadContext = environment.getProperty(CoreKeys.ThreadContext.class);
+        final ThreadContextProperties threadContext = environment.getProperty(ThreadContextProperties.class);
         if (threadContext.enable() && threadContext.enableMap()) {
 
             if (threadContext.mapClass() != null) {

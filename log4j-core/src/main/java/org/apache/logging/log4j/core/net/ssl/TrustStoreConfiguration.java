@@ -21,7 +21,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.net.ssl.TrustManagerFactory;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -64,7 +64,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
         }
     }
 
-    static TrustStoreConfiguration createKeyStoreConfiguration(final CoreKeys.KeyStore props)
+    static TrustStoreConfiguration createKeyStoreConfiguration(final CoreProperties.KeyStoreProperties props)
             throws StoreConfigurationException {
         return createKeyStoreConfiguration(
                 props.location(),

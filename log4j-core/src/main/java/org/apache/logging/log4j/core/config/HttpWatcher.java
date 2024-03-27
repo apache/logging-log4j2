@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.function.Consumer;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AbstractWatcher;
@@ -64,7 +65,8 @@ public class HttpWatcher extends AbstractWatcher {
         super(configuration, reconfigurable, configurationListeners);
         properties = configuration.getEnvironment();
         sslConfiguration = SslConfigurationFactory.getSslConfiguration(properties);
-        authorizationProvider = AuthorizationProvider.getAuthorizationProvider(properties);
+        authorizationProvider =
+                AuthorizationProvider.getAuthorizationProvider(properties.getProperty(AuthenticationProperties.class));
         this.lastModifiedMillis = lastModifiedMillis;
     }
 

@@ -17,10 +17,13 @@
 package org.apache.logging.log4j.async.logger.internal;
 
 import com.lmax.disruptor.WaitStrategy;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.async.logger.AsyncLoggerConfigDisruptor;
 import org.apache.logging.log4j.async.logger.AsyncLoggerDisruptor;
-import org.apache.logging.log4j.async.logger.AsyncLoggerKeys;
+import org.apache.logging.log4j.async.logger.AsyncLoggerProperties;
+import org.apache.logging.log4j.async.logger.AsyncWaitStrategyFactory;
 import org.apache.logging.log4j.async.logger.DisruptorConfiguration;
+import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
@@ -33,41 +36,66 @@ import org.apache.logging.log4j.plugins.condition.ConditionalOnPresentBindings;
 /**
  * Provides default services for the per-context instance factory.
  */
-public class DefaultBundle {
+public final class AsyncLoggerDefaultBundle {
 
     @Factory
     @Named("AsyncLogger")
     @ConditionalOnMissingBinding
-    public WaitStrategy asyncLoggerWaitStrategy(final PropertyEnvironment environment) {
-        return DisruptorUtil.createWaitStrategy(environment.getProperty(AsyncLoggerKeys.AsyncLogger.class), null);
+    public WaitStrategy asyncLoggerWaitStrategy(
+            final PropertyEnvironment environment, final @Named("StatusLogger") Logger statusLogger) {
+        statusLogger.debug("No AsyncWaitStrategyFactory was configured in the configuration, using default factory...");
+        return new DefaultAsyncWaitStrategyFactory(
+                        environment.getProperty(AsyncLoggerProperties.class).waitStrategy())
+                .createWaitStrategy();
     }
 
     @SingletonFactory
     @ConditionalOnMissingBinding
     public AsyncLoggerDisruptor.Factory asyncLoggerDisruptorFactory(
-            final @Named("AsyncLogger") WaitStrategy waitStrategy, final PropertyEnvironment environment) {
+            final AsyncQueueFullPolicy asyncQueueFullPolicy,
+            final @Named("AsyncLogger") WaitStrategy waitStrategy,
+            final PropertyEnvironment environment) {
         return contextName -> new AsyncLoggerDisruptor(
-                contextName, waitStrategy, environment.getProperty(AsyncLoggerKeys.AsyncLogger.class));
+                contextName, asyncQueueFullPolicy, waitStrategy, environment.getProperty(AsyncLoggerProperties.class));
     }
 
+    /**
+     * The {@link WaitStrategy} for an {@link org.apache.logging.log4j.async.logger.AsyncLoggerConfig} can be also
+     * configured in a configuration file, whereas the strategy for an
+     * {@link org.apache.logging.log4j.async.logger.AsyncLogger} must be configured through properties only.
+     * @see #asyncLoggerWaitStrategy
+     */
     @Factory
     @Named("AsyncLoggerConfig")
     @ConditionalOnPresentBindings(bindings = Configuration.class)
     public WaitStrategy defaultAsyncLoggerWaitStrategy(
-            final Configuration configuration, final PropertyEnvironment environment) {
+            final Configuration configuration,
+            final PropertyEnvironment environment,
+            final @Named("StatusLogger") Logger statusLogger) {
         final DisruptorConfiguration disruptorConfiguration = configuration.getExtension(DisruptorConfiguration.class);
-        return DisruptorUtil.createWaitStrategy(
-                environment.getProperty(AsyncLoggerKeys.AsyncLoggerConfig.class),
-                disruptorConfiguration != null ? disruptorConfiguration.getWaitStrategyFactory() : null);
+        if (disruptorConfiguration != null) {
+            final AsyncWaitStrategyFactory factory = disruptorConfiguration.getWaitStrategyFactory();
+            if (factory != null) {
+                statusLogger.debug(
+                        "Using configured AsyncWaitStrategyFactory {}",
+                        factory.getClass().getName());
+                return factory.createWaitStrategy();
+            }
+        }
+        return asyncLoggerWaitStrategy(environment, statusLogger);
     }
 
     @Factory
     @ConditionalOnPresentBindings(bindings = Configuration.class)
     public AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor(
+            final AsyncQueueFullPolicy asyncQueueFullPolicy,
             final @Named("AsyncLoggerConfig") WaitStrategy waitStrategy,
             final LogEventFactory logEventFactory,
             final PropertyEnvironment environment) {
         return new AsyncLoggerConfigDisruptor(
-                waitStrategy, logEventFactory, environment.getProperty(AsyncLoggerKeys.AsyncLoggerConfig.class));
+                asyncQueueFullPolicy,
+                waitStrategy,
+                logEventFactory,
+                environment.getProperty(AsyncLoggerProperties.class));
     }
 }

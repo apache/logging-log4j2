@@ -23,17 +23,20 @@ import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
-import org.apache.logging.log4j.core.impl.CoreKeys.Configuration;
-import org.apache.logging.log4j.core.impl.CoreKeys.Logger;
-import org.apache.logging.log4j.core.impl.CoreKeys.LoggerContext;
-import org.apache.logging.log4j.core.impl.CoreKeys.StatusLogger;
-import org.apache.logging.log4j.core.impl.CoreKeys.ThreadContext;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.LogEventProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.LoggerContextProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.MessageProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.StatusLoggerProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.ThreadContextProperties;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
@@ -41,39 +44,44 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Post-processor that registers {@link DefaultBundle} for default bindings
+ * Post-processor that registers {@link CoreDefaultBundle} for default bindings
  * used in Log4j and the services specified by properties.
  */
 @Ordered(Ordered.LAST - 1000)
 @ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
 @NullMarked
-public class Log4jInstanceFactoryPostProcessor implements ConfigurableInstanceFactoryPostProcessor {
+public class CoreInstanceFactoryPostProcessor implements ConfigurableInstanceFactoryPostProcessor {
     @Override
     public void postProcessFactory(final ConfigurableInstanceFactory factory) {
         final PropertyEnvironment env = factory.getInstance(PropertyEnvironment.class);
         registerFromProperties(factory, env);
-        factory.registerBundles(ClockFactory.class, DefaultBundle.class);
+        factory.registerBundles(ClockFactory.class, CoreDefaultBundle.class);
     }
 
     private void registerFromProperties(final ConfigurableInstanceFactory factory, final PropertyEnvironment env) {
-        final Configuration configuration = env.getProperty(Configuration.class);
-        registerIfPresent(factory, AuthorizationProvider.class, configuration.authorizationProvider());
+        final AuthenticationProperties auth = env.getProperty(AuthenticationProperties.class);
+        registerIfPresent(factory, AuthorizationProvider.class, auth.type());
+
+        final ConfigurationProperties configuration = env.getProperty(ConfigurationProperties.class);
         registerIfPresent(factory, ConfigurationFactory.class, configuration.configurationFactory());
         registerIfPresent(factory, MergeStrategy.class, configuration.mergeStrategy());
 
-        final Logger logger = env.getProperty(Logger.class);
-        registerIfPresent(factory, LogEventFactory.class, logger.logEventFactory());
+        final LogEventProperties logEvent = env.getProperty(LogEventProperties.class);
+        registerIfPresent(factory, LogEventFactory.class, logEvent.factory());
 
-        final LoggerContext loggerContext = env.getProperty(LoggerContext.class);
+        final MessageProperties message = env.getProperty(MessageProperties.class);
+        registerIfPresent(factory, MessageFactory.class, message.factory());
+
+        final LoggerContextProperties loggerContext = env.getProperty(LoggerContextProperties.class);
         registerIfPresent(factory, ContextSelector.class, loggerContext.selector());
         registerIfPresent(factory, ShutdownCallbackRegistry.class, loggerContext.shutdownCallbackRegistry());
 
-        final StatusLogger statusLogger = env.getProperty(StatusLogger.class);
+        final StatusLoggerProperties statusLogger = env.getProperty(StatusLoggerProperties.class);
         if (statusLogger.defaultStatusLevel() != null) {
             factory.registerBinding(Constants.DEFAULT_STATUS_LEVEL_KEY, statusLogger::defaultStatusLevel);
         }
 
-        final ThreadContext threadContext = env.getProperty(ThreadContext.class);
+        final ThreadContextProperties threadContext = env.getProperty(ThreadContextProperties.class);
         registerIfPresent(factory, ContextDataInjector.class, threadContext.contextDataInjector());
     }
 

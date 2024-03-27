@@ -14,20 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jul;
+package org.apache.logging.log4j.script;
 
 import org.apache.logging.log4j.kit.env.Log4jProperty;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Properties used by the JUL support.
- */
-public final class JulKeys {
-
-    private JulKeys() {}
-
-    @Log4jProperty
-    public record JUL(
-            @Nullable Class<? extends LevelConverter> levelConverter,
-            @Nullable Class<? extends AbstractLoggerAdapter> loggerAdapter) {}
-}
+@Log4jProperty(name = "script")
+public record ScriptProperties(@Nullable String enableLanguages) {}

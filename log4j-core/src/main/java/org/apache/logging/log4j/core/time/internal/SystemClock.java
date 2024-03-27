@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.time.internal;
 
 import java.time.Instant;
-import org.apache.logging.log4j.core.impl.CoreKeys.Configuration;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.PreciseClock;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
@@ -31,8 +31,9 @@ public final class SystemClock implements PreciseClock {
     private final boolean usePreciseClock;
 
     public SystemClock() {
-        usePreciseClock =
-                PropertyEnvironment.getGlobal().getProperty(Configuration.class).usePreciseClock();
+        usePreciseClock = PropertyEnvironment.getGlobal()
+                .getProperty(ConfigurationProperties.class)
+                .usePreciseClock();
     }
 
     /**

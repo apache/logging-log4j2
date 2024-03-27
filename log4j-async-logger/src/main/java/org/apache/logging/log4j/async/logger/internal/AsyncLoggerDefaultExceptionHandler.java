@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.script;
+package org.apache.logging.log4j.async.logger.internal;
 
-public final class TestConstants {
+import org.apache.logging.log4j.async.logger.AsyncLoggerExceptionHandler;
+import org.apache.logging.log4j.async.logger.RingBufferLogEvent;
 
-    public static final String SCRIPT_ENABLE_LANGUAGES = "log4j.script.enableLanguages";
-
-    private TestConstants() {}
-}
+/**
+ * Default disruptor exception handler for errors that occur in the AsyncLogger background thread.
+ */
+public class AsyncLoggerDefaultExceptionHandler extends AbstractAsyncExceptionHandler<RingBufferLogEvent>
+        implements AsyncLoggerExceptionHandler {}

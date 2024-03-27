@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -47,7 +47,7 @@ public final class ReliabilityStrategyFactory {
         return getReliabilityStrategy(
                 loggerConfig,
                 PropertyEnvironment.getGlobal()
-                        .getProperty(CoreKeys.Configuration.class)
+                        .getProperty(CoreProperties.ConfigurationProperties.class)
                         .reliabilityStrategy());
     }
 

@@ -20,6 +20,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.logging.log4j.core.test.TestConstants.ASYNC_FORMAT_MESSAGES_IN_BACKGROUND;
 import static org.apache.logging.log4j.core.test.TestConstants.ASYNC_LOGGER_RING_BUFFER_SIZE;
 import static org.apache.logging.log4j.core.test.TestConstants.ASYNC_QUEUE_FULL_POLICY_CLASS_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
@@ -28,13 +29,14 @@ import org.apache.logging.log4j.core.GarbageCollectionHelper;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
 import org.apache.logging.log4j.core.async.DiscardingAsyncQueueFullPolicy;
+import org.apache.logging.log4j.core.impl.CoreProperties;
 import org.apache.logging.log4j.core.test.async.BlockingAppender;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -51,7 +53,10 @@ public class QueueFullAsyncLogger3Test extends QueueFullAsyncAbstractTest {
     protected void checkConfig(final LoggerContext ctx) {
         assertAsyncLogger(ctx, 128);
         assertFormatMessagesInBackground();
-        Assertions.assertThat(AsyncQueueFullPolicyFactory.create()).isInstanceOf(DiscardingAsyncQueueFullPolicy.class);
+        assertThat(AsyncQueueFullPolicyFactory.create(
+                        ctx.getEnvironment().getProperty(CoreProperties.QueueFullPolicyProperties.class),
+                        StatusLogger.getLogger()))
+                .isInstanceOf(DiscardingAsyncQueueFullPolicy.class);
     }
 
     @Test

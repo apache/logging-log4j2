@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.time;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
@@ -42,7 +42,7 @@ public final class ClockFactory {
 
     /**
      * Returns a {@code Clock} instance depending on the value of system
-     * property {@link CoreKeys.Configuration#clock()}.
+     * property {@link ConfigurationProperties#clock()}.
      * <p>
      * If system property {@code log4j.Clock=CachedClock} is specified,
      * this method returns an instance of {@link CachedClock}. If system
@@ -72,7 +72,7 @@ public final class ClockFactory {
     @SingletonFactory
     @Deprecated(forRemoval = true)
     public Clock clock(final PropertyEnvironment environment) {
-        final CoreKeys.Configuration configuration = environment.getProperty(CoreKeys.Configuration.class);
+        final ConfigurationProperties configuration = environment.getProperty(ConfigurationProperties.class);
         if (configuration.clock() == null) {
             return logSupportedPrecision(new SystemClock());
         }

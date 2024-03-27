@@ -24,8 +24,8 @@ import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.script.ScriptManagerFactory;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
-import org.apache.logging.log4j.script.ScriptKeys;
 import org.apache.logging.log4j.script.ScriptManagerImpl;
+import org.apache.logging.log4j.script.ScriptProperties;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -38,7 +38,7 @@ public class ScriptManagerFactoryImpl implements ScriptManagerFactory {
     @Override
     public ScriptManager createScriptManager(final Configuration configuration, final WatchManager watchManager) {
         final String scriptLanguages = PropertyEnvironment.getGlobal()
-                .getProperty(ScriptKeys.Script.class)
+                .getProperty(ScriptProperties.class)
                 .enableLanguages();
         if (scriptLanguages != null) {
             try {

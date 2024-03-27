@@ -34,28 +34,36 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.StringMap;
 import org.jspecify.annotations.Nullable;
 
-public final class CoreKeys {
+public final class CoreProperties {
 
-    private CoreKeys() {}
+    private CoreProperties() {}
 
-    @Log4jProperty
-    public record Async(boolean formatMessagesInBackground) {}
+    @Log4jProperty(name = "async")
+    public record AsyncProperties(boolean formatMessagesInBackground) {}
 
-    @Log4jProperty
-    public record AsyncQueueFullPolicy(
-            @Nullable String className, @Log4jProperty(defaultValue = "INFO") Level discardThreshold) {
-        public static AsyncQueueFullPolicy defaultValue() {
-            return new AsyncQueueFullPolicy(null, Level.INFO);
+    @Log4jProperty(name = "async.queueFullPolicy")
+    public record QueueFullPolicyProperties(
+            @Nullable String type, @Log4jProperty(defaultValue = "INFO") Level discardThreshold) {
+        public static QueueFullPolicyProperties defaultValue() {
+            return new QueueFullPolicyProperties(null, Level.INFO);
         }
 
-        public AsyncQueueFullPolicy withClassName(final @Nullable String className) {
-            return new AsyncQueueFullPolicy(className, discardThreshold);
+        public QueueFullPolicyProperties withType(final @Nullable String type) {
+            return new QueueFullPolicyProperties(type, discardThreshold);
         }
 
-        public AsyncQueueFullPolicy withLevel(final Level discardThreshold) {
-            return new AsyncQueueFullPolicy(className, discardThreshold);
+        public QueueFullPolicyProperties withLevel(final Level discardThreshold) {
+            return new QueueFullPolicyProperties(type, discardThreshold);
         }
     }
+
+    /**
+     * @param type The {@link AuthorizationProvider} to use for HTTP requests or {@code null}.
+     * @param basic Authentication data for HTTP Basic authentication.
+     */
+    @Log4jProperty(name = "auth")
+    public record AuthenticationProperties(
+            @Nullable Class<? extends AuthorizationProvider> type, BasicAuthenticationProperties basic) {}
 
     /**
      * Configuration properties for HTTP Basic authentication.
@@ -64,12 +72,12 @@ public final class CoreKeys {
      * @param password A possibly encrypted password.
      * @param passwordDecryptor
      */
-    @Log4jProperty
-    public record BasicAuth(String username, String password, Class<? extends PasswordDecryptor> passwordDecryptor) {}
+    public record BasicAuthenticationProperties(
+            String username, String password, Class<? extends PasswordDecryptor> passwordDecryptor) {}
+
     /**
      * Properties related to the retrieval of a configuration.
      *
-     * @param authorizationProvider The {@link AuthorizationProvider} to use for HTTP requests or {@code null}.
      * @param clock A custom {@link Clock} implementation to use to timestamp log events. The supported values are:
      *              <ul>
      *                  <li>{@code SystemMillisClock}</li>
@@ -79,21 +87,19 @@ public final class CoreKeys {
      *              <p>If {@code null}, the system clock will be used.</p>
      * @param configurationFactory The {@link ConfigurationFactory} to use or {@code  null} for the default one.
      * @param level The default level to use for the root logger.
-     * @param file The location (file path or {@link URI}) of the configuration file. If {@code null} a standard set
+     * @param location The location (file path or {@link URI}) of the configuration file. If {@code null} a standard set
      *             of locations is used.
      * @param mergeStrategy The {@link MergeStrategy} to use if multiple configuration files are present.
      * @param reliabilityStrategy The {@link ReliabilityStrategy} to use during the reconfiguration process.
      * @param waitMillisBeforeStopOldConfig The number of milliseconds to wait for the old configuration to stop.
      */
-    @Log4jProperty
-    public record Configuration(
+    @Log4jProperty(name = "configuration")
+    public record ConfigurationProperties(
             @Log4jProperty(defaultValue = "file,https,jar") String allowedProtocols,
-            @Nullable Class<? extends AuthorizationProvider> authorizationProvider,
-            BasicAuth basicAuth,
             @Nullable String clock,
             @Nullable Class<? extends ConfigurationFactory> configurationFactory,
             @Log4jProperty(defaultValue = "ERROR") Level level,
-            @Nullable String file,
+            @Nullable String location,
             @Nullable Class<? extends MergeStrategy> mergeStrategy,
             @Log4jProperty(defaultValue = "AwaitCompletion") String reliabilityStrategy,
             boolean usePreciseClock,
@@ -102,26 +108,20 @@ public final class CoreKeys {
     /**
      * Properties to tune console output.
      */
-    @Log4jProperty
-    public record Console(@Nullable Boolean jansiEnabled) {}
+    @Log4jProperty(name = "console")
+    public record ConsoleProperties(@Nullable Boolean jansiEnabled) {}
 
     /**
      * Properties to tune garbage collection.
      */
-    @Log4jProperty
-    public record GC(
+    @Log4jProperty(name = "gc")
+    public record GarbageCollectionProperties(
             @Log4jProperty(defaultValue = "8192") int encoderByteBufferSize,
             @Log4jProperty(defaultValue = "2048") int encoderCharBufferSize,
             @Log4jProperty(defaultValue = "true") boolean enableDirectEncoders,
             @Log4jProperty(defaultValue = "128") int initialReusableMessageSize,
             @Log4jProperty(defaultValue = "518") int maxReusableMessageSize,
             @Log4jProperty(defaultValue = "2048") int layoutStringBuilderMaxSize) {}
-
-    @Log4jProperty
-    public record JANSI() {}
-
-    @Log4jProperty
-    public record JUL() {}
 
     /**
      * A container for keystore configuration data.
@@ -133,52 +133,40 @@ public final class CoreKeys {
      * @param type The type of keystore.
      * @param keyManagerFactoryAlgorithm The {@link javax.net.ssl.KeyManagerFactory} algorithm.
      */
-    public record KeyStore(
+    public record KeyStoreProperties(
             @Nullable String location,
             char @Nullable [] password,
             @Nullable String passwordEnvVar,
             @Nullable Path passwordFile,
             @Nullable String type,
             @Nullable String keyManagerFactoryAlgorithm) {
-        public static KeyStore defaultValue() {
-            return new KeyStore(null, null, null, null, null, null);
+        public static KeyStoreProperties defaultValue() {
+            return new KeyStoreProperties(null, null, null, null, null, null);
         }
     }
 
-    @Log4jProperty
-    public record Loader(boolean ignoreTCL) {}
+    @Log4jProperty(name = "loader")
+    public record LoaderProperties(boolean ignoreTCL) {}
 
-    @Log4jProperty
-    public record Logger(@Nullable Class<? extends LogEventFactory> logEventFactory) {}
+    @Log4jProperty(name = "logEvent")
+    public record LogEventProperties(@Nullable Class<? extends LogEventFactory> factory) {}
 
-    @Log4jProperty
-    public record LoggerContext(
+    @Log4jProperty(name = "loggerContext")
+    public record LoggerContextProperties(
             @Nullable Class<? extends LoggerContextFactory> factory,
             @Nullable Class<? extends ContextSelector> selector,
             @Nullable Class<? extends ShutdownCallbackRegistry> shutdownCallbackRegistry,
             @Log4jProperty(defaultValue = "true") boolean shutdownHookEnabled,
             boolean stacktraceOnStart) {}
 
-    @Log4jProperty
-    public record Message(@Nullable Class<? extends MessageFactory> factory) {}
+    @Log4jProperty(name = "message")
+    public record MessageProperties(@Nullable Class<? extends MessageFactory> factory) {}
 
-    @Log4jProperty
-    public record Recycler() {}
+    @Log4jProperty(name = "statusLogger")
+    public record StatusLoggerProperties(@Log4jProperty(defaultValue = "ERROR") Level defaultStatusLevel) {}
 
-    @Log4jProperty
-    public record Script() {}
-
-    @Log4jProperty
-    public record SimpleLogger() {}
-
-    @Log4jProperty
-    public record StatusLogger(@Log4jProperty(defaultValue = "ERROR") Level defaultStatusLevel) {}
-
-    @Log4jProperty
-    public record System() {}
-
-    @Log4jProperty
-    public record ThreadContext(
+    @Log4jProperty(name = "threadContext")
+    public record ThreadContextProperties(
             @Nullable Class<? extends StringMap> contextData,
             @Nullable Class<? extends ContextDataInjector> contextDataInjector,
             @Log4jProperty(defaultValue = "true") boolean enable,
@@ -195,27 +183,26 @@ public final class CoreKeys {
      * @param keyStore The configuration of the {@link javax.net.ssl.KeyManager}.
      * @param verifyHostName If set to {@code true} hostname are verified.
      */
-    @Log4jProperty
-    public record TransportSecurity(KeyStore trustStore, KeyStore keyStore, boolean verifyHostName) {
-        public static TransportSecurity defaultValue() {
-            return new TransportSecurity(KeyStore.defaultValue(), KeyStore.defaultValue(), false);
+    @Log4jProperty(name = "transportSecurity")
+    public record TransportSecurityProperties(
+            KeyStoreProperties trustStore, KeyStoreProperties keyStore, boolean verifyHostName) {
+        public static TransportSecurityProperties defaultValue() {
+            return new TransportSecurityProperties(
+                    KeyStoreProperties.defaultValue(), KeyStoreProperties.defaultValue(), false);
         }
 
-        public TransportSecurity withKeyStore(final KeyStore keyStore) {
-            return new TransportSecurity(trustStore, keyStore, verifyHostName);
+        public TransportSecurityProperties withKeyStore(final KeyStoreProperties keyStore) {
+            return new TransportSecurityProperties(trustStore, keyStore, verifyHostName);
         }
 
-        public TransportSecurity withTrustStore(final KeyStore trustStore) {
-            return new TransportSecurity(trustStore, keyStore, verifyHostName);
+        public TransportSecurityProperties withTrustStore(final KeyStoreProperties trustStore) {
+            return new TransportSecurityProperties(trustStore, keyStore, verifyHostName);
         }
     }
 
-    @Log4jProperty
-    public record UUID(long sequence) {}
+    @Log4jProperty(name = "uuid")
+    public record UuidProperties(long sequence) {}
 
-    @Log4jProperty
-    public record Version1(String configuration, boolean compatibility) {}
-
-    @Log4jProperty
-    public record Web(@Nullable Boolean isWebApp) {}
+    @Log4jProperty(name = "v1")
+    public record Version1Properties(String configuration, boolean compatibility) {}
 }

@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.CoreKeys.Console;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConsoleProperties;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
@@ -232,7 +232,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
         if (!PropertiesUtil.getProperties().isOsWindows()
-                || !Boolean.FALSE.equals(properties.getProperty(Console.class).jansiEnabled())
+                || !Boolean.FALSE.equals(
+                        properties.getProperty(ConsoleProperties.class).jansiEnabled())
                 || direct) {
             return outputStream;
         }

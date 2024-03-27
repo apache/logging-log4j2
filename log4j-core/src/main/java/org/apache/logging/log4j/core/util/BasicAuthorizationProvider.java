@@ -21,7 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import java.net.URLConnection;
 import java.util.Base64;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties.BasicAuthenticationProperties;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -29,20 +29,13 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * Provides the Basic Authorization header to a request.
  */
 public class BasicAuthorizationProvider implements AuthorizationProvider {
-    private static final String[] PREFIXES = {"log4j2.config.", "log4j2.Configuration.", "logging.auth."};
-    private static final String AUTH_USER_NAME = "username";
-    private static final String AUTH_PASSWORD = "password";
-    private static final String AUTH_PASSWORD_DECRYPTOR = "passwordDecryptor";
-    public static final String CONFIG_USER_NAME = "log4j2.configurationUserName";
-    public static final String CONFIG_PASSWORD = "log4j2.configurationPassword";
-    public static final String PASSWORD_DECRYPTOR = "log4j2.passwordDecryptor";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Base64.Encoder encoder = Base64.getEncoder();
 
     private String authString = null;
 
-    public BasicAuthorizationProvider(final CoreKeys.BasicAuth props) {
+    public BasicAuthorizationProvider(final BasicAuthenticationProperties props) {
         String password = props.password();
         if (props.passwordDecryptor() != null) {
             try {

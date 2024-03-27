@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag("async")
 @SetTestProperty(
-        key = TestConstants.LOGGER_CONTEXT_LOG_EVENT_FACTORY,
+        key = TestConstants.LOG_EVENT_FACTORY,
         value = "org.apache.logging.log4j.core.impl.DefaultLogEventFactory")
 public class AsyncLoggerConfigErrorOnFormat {
 

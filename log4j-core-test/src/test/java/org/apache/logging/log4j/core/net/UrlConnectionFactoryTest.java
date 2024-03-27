@@ -103,8 +103,8 @@ public class UrlConnectionFactoryTest {
     }
 
     @Test
-    @SetTestProperty(key = TestConstants.CONFIGURATION_BASIC_AUTH_USERNAME, value = "foo")
-    @SetTestProperty(key = TestConstants.CONFIGURATION_BASIC_AUTH_PASSWORD, value = "bar")
+    @SetTestProperty(key = TestConstants.AUTH_BASIC_USERNAME, value = "foo")
+    @SetTestProperty(key = TestConstants.AUTH_BASIC_PASSWORD, value = "bar")
     @SetTestProperty(key = TestConstants.CONFIGURATION_ALLOWED_PROTOCOLS, value = "http")
     public void testBadCrdentials() throws Exception {
         final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
@@ -113,8 +113,8 @@ public class UrlConnectionFactoryTest {
     }
 
     @Test
-    @SetTestProperty(key = TestConstants.CONFIGURATION_BASIC_AUTH_USERNAME, value = "testuser")
-    @SetTestProperty(key = TestConstants.CONFIGURATION_BASIC_AUTH_PASSWORD, value = "password")
+    @SetTestProperty(key = TestConstants.AUTH_BASIC_USERNAME, value = "testuser")
+    @SetTestProperty(key = TestConstants.AUTH_BASIC_PASSWORD, value = "password")
     @SetTestProperty(key = TestConstants.CONFIGURATION_ALLOWED_PROTOCOLS, value = "http")
     public void withAuthentication() throws Exception {
         final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");

@@ -20,6 +20,7 @@ import java.net.URI;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.kit.env.Log4jProperty;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
@@ -126,12 +127,11 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory i
      */
     @Deprecated
     public static AuthorizationProvider authorizationProvider(final PropertiesUtil props) {
-        return AuthorizationProvider.getAuthorizationProvider(
-                new PropertiesUtilPropertyEnvironment(props, StatusLogger.getLogger()));
+        return authorizationProvider(new PropertiesUtilPropertyEnvironment(props, StatusLogger.getLogger()));
     }
 
     public static AuthorizationProvider authorizationProvider(final PropertyEnvironment env) {
-        return AuthorizationProvider.getAuthorizationProvider(env);
+        return AuthorizationProvider.getAuthorizationProvider(env.getProperty(AuthenticationProperties.class));
     }
 
     @Override

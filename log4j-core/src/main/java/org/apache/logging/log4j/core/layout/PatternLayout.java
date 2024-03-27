@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
@@ -595,7 +595,7 @@ public final class PatternLayout extends AbstractStringLayout {
             final boolean isPlatformSupportsAnsi =
                     !PropertiesUtil.getProperties().isOsWindows();
             final boolean isJansiRequested = TRUE.equals(PropertyEnvironment.getGlobal()
-                    .getProperty(CoreKeys.Console.class)
+                    .getProperty(CoreProperties.ConsoleProperties.class)
                     .jansiEnabled());
             return isPlatformSupportsAnsi || isJansiRequested;
         }

@@ -20,7 +20,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -40,7 +40,7 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
 
     private static long sleepMillis() {
         return PropertyEnvironment.getGlobal()
-                .getProperty(CoreKeys.Configuration.class)
+                .getProperty(ConfigurationProperties.class)
                 .waitMillisBeforeStopOldConfig();
     }
 

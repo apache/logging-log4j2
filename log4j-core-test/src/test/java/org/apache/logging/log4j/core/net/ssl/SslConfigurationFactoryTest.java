@@ -19,28 +19,28 @@ package org.apache.logging.log4j.core.net.ssl;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.apache.logging.log4j.core.impl.CoreKeys;
-import org.apache.logging.log4j.core.impl.CoreKeys.TransportSecurity;
+import org.apache.logging.log4j.core.impl.CoreProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.TransportSecurityProperties;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.junit.jupiter.api.Test;
 
 public class SslConfigurationFactoryTest {
 
-    private static CoreKeys.KeyStore createKeyStoreProps() {
-        return new CoreKeys.KeyStore(
+    private static CoreProperties.KeyStoreProperties createKeyStoreProps() {
+        return new CoreProperties.KeyStoreProperties(
                 TestConstants.KEYSTORE_FILE_RESOURCE, null, null, null, TestConstants.KEYSTORE_TYPE, null);
     }
 
-    private static CoreKeys.KeyStore createTrustStoreProps() {
-        return new CoreKeys.KeyStore(
+    private static CoreProperties.KeyStoreProperties createTrustStoreProps() {
+        return new CoreProperties.KeyStoreProperties(
                 TestConstants.TRUSTSTORE_FILE_RESOURCE, null, null, null, TestConstants.KEYSTORE_TYPE, null);
     }
 
     @Test
     public void testStaticConfiguration() {
-        final CoreKeys.KeyStore keyStore = createKeyStoreProps();
-        final CoreKeys.KeyStore trustStore = createTrustStoreProps();
-        TransportSecurity transportSecurity = TransportSecurity.defaultValue();
+        final CoreProperties.KeyStoreProperties keyStore = createKeyStoreProps();
+        final CoreProperties.KeyStoreProperties trustStore = createTrustStoreProps();
+        TransportSecurityProperties transportSecurity = TransportSecurityProperties.defaultValue();
         // No keystore and truststore -> no SslConfiguration
         SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(transportSecurity);
         assertNull(sslConfiguration);

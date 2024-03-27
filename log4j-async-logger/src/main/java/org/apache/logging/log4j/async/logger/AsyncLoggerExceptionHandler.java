@@ -14,19 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger.internal;
+package org.apache.logging.log4j.async.logger;
 
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceProvider;
-import org.apache.logging.log4j.plugins.Ordered;
-import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
-import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
+import com.lmax.disruptor.ExceptionHandler;
 
-@Ordered(Ordered.LAST - 2000)
-@ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
-public class InstanceFactoryPostProcessor implements ConfigurableInstanceFactoryPostProcessor {
-    @Override
-    public void postProcessFactory(final ConfigurableInstanceFactory factory) {
-        factory.registerBundle(new DefaultBundle());
-    }
-}
+/**
+ * Specialization of {@link ExceptionHandler} to be used by the {@link AsyncLogger} class.
+ */
+public interface AsyncLoggerExceptionHandler extends ExceptionHandler<RingBufferLogEvent> {}

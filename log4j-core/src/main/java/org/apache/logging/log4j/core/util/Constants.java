@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.CoreKeys;
-import org.apache.logging.log4j.core.impl.CoreKeys.Async;
+import org.apache.logging.log4j.core.impl.CoreProperties.AsyncProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.GarbageCollectionProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Key;
@@ -55,9 +55,9 @@ public final class Constants {
      * Supports user request LOG4J2-898 to have the option to format a message in the background thread.
      */
     public static final boolean FORMAT_MESSAGES_IN_BACKGROUND =
-            ENV.getProperty(Async.class).formatMessagesInBackground();
+            ENV.getProperty(AsyncProperties.class).formatMessagesInBackground();
 
-    private static final CoreKeys.GC GC = ENV.getProperty(CoreKeys.GC.class);
+    private static final GarbageCollectionProperties GC = ENV.getProperty(GarbageCollectionProperties.class);
 
     /**
      * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into

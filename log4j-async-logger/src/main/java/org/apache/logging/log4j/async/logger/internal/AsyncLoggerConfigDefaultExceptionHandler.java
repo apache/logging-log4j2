@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jndi;
+package org.apache.logging.log4j.async.logger.internal;
 
-import org.apache.logging.log4j.kit.env.Log4jProperty;
+import org.apache.logging.log4j.async.logger.AsyncLoggerConfigDisruptor;
+import org.apache.logging.log4j.async.logger.AsyncLoggerConfigExceptionHandler;
 
-public final class JNDIKeys {
-
-    private JNDIKeys() {}
-
-    @Log4jProperty
-    public record JNDI(boolean contextSelector, boolean enableJDBC, boolean enableJMS, boolean enableLookup) {}
-}
+/**
+ * Default disruptor exception handler for errors that occur in the AsyncLogger background thread.
+ */
+public class AsyncLoggerConfigDefaultExceptionHandler
+        extends AbstractAsyncExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>
+        implements AsyncLoggerConfigExceptionHandler {}

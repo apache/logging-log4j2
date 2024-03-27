@@ -43,7 +43,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
@@ -220,7 +220,7 @@ enum GcFreeLoggingTestUtil {
         final String classpath = getProperty("java.class.path");
         final String javaagent = "-javaagent:" + agentJar();
         final boolean usePreciseClock = PropertyEnvironment.getGlobal()
-                .getProperty(CoreKeys.Configuration.class)
+                .getProperty(ConfigurationProperties.class)
                 .usePreciseClock();
 
         final File tempFile = File.createTempFile("allocations", ".txt");

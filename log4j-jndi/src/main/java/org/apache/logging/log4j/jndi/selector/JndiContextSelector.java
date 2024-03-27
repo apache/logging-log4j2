@@ -104,7 +104,7 @@ public class JndiContextSelector extends AbstractContextSelector implements Name
     public JndiContextSelector(final ConfigurableInstanceFactory instanceFactory) {
         super(instanceFactory);
         if (!JndiManager.isJndiContextSelectorEnabled()) {
-            throw new IllegalStateException("JNDI must be enabled by setting log4j2.enableJndiContextSelector=true");
+            throw new IllegalStateException("JNDI must be enabled by setting log4j.jndi.enableContextSelector=true");
         }
     }
 

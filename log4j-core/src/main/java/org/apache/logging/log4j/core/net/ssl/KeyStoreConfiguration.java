@@ -22,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.util.Arrays;
 import javax.net.ssl.KeyManagerFactory;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -90,7 +90,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
                 keyManagerFactoryAlgorithm);
     }
 
-    static KeyStoreConfiguration createKeyStoreConfiguration(final CoreKeys.KeyStore props)
+    static KeyStoreConfiguration createKeyStoreConfiguration(final CoreProperties.KeyStoreProperties props)
             throws StoreConfigurationException {
         return createKeyStoreConfiguration(
                 props.location(),

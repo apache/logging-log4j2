@@ -35,9 +35,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Lookup
 @Plugin("jndi")
 @RequiredProperty(
-        name = "JNDI.enableLookup",
+        name = "jndi.enableLookup",
         value = "true",
-        message = "JNDI must be enabled by setting JNDI.enableLookup=true")
+        message = "JNDI must be enabled by setting jndi.enableLookup=true")
 public class JndiLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

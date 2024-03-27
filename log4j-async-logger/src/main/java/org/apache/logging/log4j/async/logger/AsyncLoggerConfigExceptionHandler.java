@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.script;
+package org.apache.logging.log4j.async.logger;
 
-public final class TestConstants {
+import com.lmax.disruptor.ExceptionHandler;
 
-    public static final String SCRIPT_ENABLE_LANGUAGES = "log4j.script.enableLanguages";
-
-    private TestConstants() {}
-}
+/**
+ * Specialization of {@link ExceptionHandler} to be used by the {@link AsyncLoggerConfig} class.
+ */
+public interface AsyncLoggerConfigExceptionHandler
+        extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> {}

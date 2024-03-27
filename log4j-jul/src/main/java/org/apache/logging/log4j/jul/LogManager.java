@@ -51,7 +51,7 @@ public class LogManager extends java.util.logging.LogManager {
     public LogManager() {
         AbstractLoggerAdapter adapter = null;
         final Class<? extends AbstractLoggerAdapter> adapterClass =
-                PropertyEnvironment.getGlobal().getProperty(JulKeys.JUL.class).loggerAdapter();
+                PropertyEnvironment.getGlobal().getProperty(JulProperties.class).loggerAdapter();
         if (adapterClass != null) {
             try {
                 LOGGER.info("Trying to use LoggerAdapter [{}] specified by Log4j property.", adapterClass.getName());

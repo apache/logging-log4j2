@@ -67,7 +67,7 @@ public class ContextDataInjectorFactory {
     public static ContextDataInjector createInjector() {
         try {
             final Class<? extends ContextDataInjector> injectorClass = PropertyEnvironment.getGlobal()
-                    .getProperty(CoreKeys.ThreadContext.class)
+                    .getProperty(CoreProperties.ThreadContextProperties.class)
                     .contextDataInjector();
             if (injectorClass != null) {
                 return LoaderUtil.newInstanceOf(injectorClass);

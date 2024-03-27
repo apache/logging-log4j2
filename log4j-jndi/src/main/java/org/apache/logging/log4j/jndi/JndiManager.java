@@ -26,7 +26,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.jndi.JNDIKeys.JNDI;
 import org.apache.logging.log4j.jndi.internal.JndiCloser;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 
@@ -39,7 +38,7 @@ public class JndiManager extends AbstractManager {
 
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
     private static final String JAVA_SCHEME = "java";
-    private static final JNDI props = PropertyEnvironment.getGlobal().getProperty(JNDI.class);
+    private static final JndiProperties props = PropertyEnvironment.getGlobal().getProperty(JndiProperties.class);
 
     private final Context context;
 
@@ -48,11 +47,11 @@ public class JndiManager extends AbstractManager {
     }
 
     public static boolean isJndiContextSelectorEnabled() {
-        return props.contextSelector();
+        return props.enableContextSelector();
     }
 
     public static boolean isJndiJmsEnabled() {
-        return props.enableJMS();
+        return props.enableJms();
     }
 
     public static boolean isJndiLookupEnabled() {
@@ -60,7 +59,7 @@ public class JndiManager extends AbstractManager {
     }
 
     public static boolean isJndiJdbcEnabled() {
-        return props.enableJDBC();
+        return props.enableJdbc();
     }
 
     private JndiManager(final String name, final Context context) {

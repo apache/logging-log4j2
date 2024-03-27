@@ -17,8 +17,7 @@
 package org.apache.logging.log4j.core.util;
 
 import java.net.URLConnection;
-import org.apache.logging.log4j.core.impl.CoreKeys;
-import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -30,19 +29,15 @@ public interface AuthorizationProvider {
 
     void addAuthorization(URLConnection urlConnection);
 
-    static AuthorizationProvider getAuthorizationProvider(final PropertyEnvironment env) {
-        final CoreKeys.Configuration configuration = env.getProperty(CoreKeys.Configuration.class);
-        if (configuration.authorizationProvider() != null) {
+    static AuthorizationProvider getAuthorizationProvider(final AuthenticationProperties props) {
+        if (props.type() != null) {
             try {
-                return LoaderUtil.newInstanceOf(configuration.authorizationProvider());
+                return LoaderUtil.newInstanceOf(props.type());
             } catch (final ReflectiveOperationException | LinkageError e) {
                 StatusLogger.getLogger()
-                        .warn(
-                                "Unable to create {}, using default",
-                                configuration.authorizationProvider().getName(),
-                                e);
+                        .warn("Unable to create {}, using default", props.type().getName(), e);
             }
         }
-        return new BasicAuthorizationProvider(configuration.basicAuth());
+        return new BasicAuthorizationProvider(props.basic());
     }
 }

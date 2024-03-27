@@ -25,32 +25,31 @@ import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.async.logger.AsyncLoggerKeys;
+import org.apache.logging.log4j.async.logger.AsyncLoggerProperties.WaitStrategyProperties;
 import org.apache.logging.log4j.async.logger.AsyncWaitStrategyFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 public class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final AsyncLoggerKeys.DisruptorProperties disruptorProps;
+    private final WaitStrategyProperties properties;
 
-    public DefaultAsyncWaitStrategyFactory(final AsyncLoggerKeys.DisruptorProperties disruptorProps) {
-        this.disruptorProps = disruptorProps;
+    public DefaultAsyncWaitStrategyFactory(final WaitStrategyProperties properties) {
+        this.properties = properties;
     }
 
     @Override
     public WaitStrategy createWaitStrategy() {
-        final String strategy = disruptorProps.waitStrategy() != null ? disruptorProps.waitStrategy() : "TIMEOUT";
-        LOGGER.trace("DefaultAsyncWaitStrategyFactory strategy name: {}", strategy);
+        LOGGER.trace("DefaultAsyncWaitStrategyFactory strategy name: {}", properties.type());
         // String (not enum) is deliberately used here to avoid IllegalArgumentException being thrown. In case of
         // incorrect property value, default WaitStrategy is created.
-        return switch (toRootUpperCase(strategy)) {
+        return switch (toRootUpperCase(properties.type())) {
             case "SLEEP" -> {
                 LOGGER.trace(
                         "DefaultAsyncWaitStrategyFactory creating SleepingWaitStrategy(retries={}, sleepTimeNs={})",
-                        disruptorProps.retries(),
-                        disruptorProps.sleepTimeNS());
-                yield new SleepingWaitStrategy(disruptorProps.retries(), disruptorProps.sleepTimeNS());
+                        properties.retries(),
+                        properties.sleepTimeNs());
+                yield new SleepingWaitStrategy(properties.retries(), properties.sleepTimeNs());
             }
             case "YIELD" -> {
                 LOGGER.trace("DefaultAsyncWaitStrategyFactory creating YieldingWaitStrategy");
@@ -67,8 +66,8 @@ public class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory
             default -> {
                 LOGGER.trace(
                         "DefaultAsyncWaitStrategyFactory creating TimeoutBlockingWaitStrategy(timeout={}, unit=MILLIS)",
-                        disruptorProps.timeout());
-                yield new TimeoutBlockingWaitStrategy(disruptorProps.timeout(), TimeUnit.MILLISECONDS);
+                        properties.timeout());
+                yield new TimeoutBlockingWaitStrategy(properties.timeout(), TimeUnit.MILLISECONDS);
             }
         };
     }

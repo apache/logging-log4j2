@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import javax.net.ssl.HttpsURLConnection;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -332,7 +333,8 @@ public class ConfigurationSource {
             // A "jar:" URL file remains open after the stream is closed, so do not cache it.
             urlConnection.setUseCaches(false);
             final PropertyEnvironment env = PropertyEnvironment.getGlobal();
-            final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(env);
+            final AuthorizationProvider provider =
+                    AuthorizationProvider.getAuthorizationProvider(env.getProperty(AuthenticationProperties.class));
             provider.addAuthorization(urlConnection);
             if (url.getProtocol().equals(HTTPS)) {
                 final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(env);

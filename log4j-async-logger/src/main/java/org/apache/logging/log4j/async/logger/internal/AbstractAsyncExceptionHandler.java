@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.async.logger;
+package org.apache.logging.log4j.async.logger.internal;
 
 import com.lmax.disruptor.ExceptionHandler;
 
 /**
  * Default disruptor exception handler for errors that occur in the AsyncLogger background thread.
  */
-abstract class AbstractAsyncExceptionHandler<T> implements ExceptionHandler<T> {
+public abstract class AbstractAsyncExceptionHandler<T> implements ExceptionHandler<T> {
 
     @Override
     public void handleEventException(final Throwable throwable, final long sequence, final T event) {

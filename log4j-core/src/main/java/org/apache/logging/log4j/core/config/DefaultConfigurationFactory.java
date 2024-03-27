@@ -26,7 +26,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -58,8 +58,8 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         final List<URIConfigurationFactory> configurationFactories = loadConfigurationFactories(instanceFactory);
         final StrSubstitutor substitutor = instanceFactory.getInstance(ConfigurationStrSubstitutor.class);
         if (configLocation == null) {
-            final CoreKeys.Configuration options = environment.getProperty(CoreKeys.Configuration.class);
-            final String configLocationStr = substitutor.replace(options.file());
+            final ConfigurationProperties properties = environment.getProperty(ConfigurationProperties.class);
+            final String configLocationStr = substitutor.replace(properties.location());
             if (configLocationStr != null) {
                 final String[] sources = parseConfigLocations(configLocationStr);
                 if (sources.length > 1) {
@@ -86,9 +86,9 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 }
                 return getConfiguration(null, loggerContext, configLocationStr, configurationFactories);
             } else {
-                // TODO: replace with CoreKeys.Version1.class
+                // TODO: replace with CoreProperties.Version1Properties.class
                 final String log4j1ConfigStr =
-                        substitutor.replace(environment.getStringProperty("log4j.configuration"));
+                        substitutor.replace(environment.getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY));
                 if (log4j1ConfigStr != null) {
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr, configurationFactories);
                 }
@@ -299,7 +299,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private static List<URIConfigurationFactory> loadConfigurationFactories(final InstanceFactory instanceFactory) {
         final List<URIConfigurationFactory> factories = new ArrayList<>();
 
-        Optional.of(PropertyEnvironment.getGlobal().getProperty(CoreKeys.Configuration.class))
+        Optional.of(PropertyEnvironment.getGlobal().getProperty(ConfigurationProperties.class))
                 .flatMap(props -> Optional.ofNullable(props.configurationFactory()))
                 .map(clazz -> {
                     try {

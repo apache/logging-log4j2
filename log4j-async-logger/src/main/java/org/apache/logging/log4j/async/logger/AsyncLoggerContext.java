@@ -18,7 +18,7 @@ package org.apache.logging.log4j.async.logger;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-import org.apache.logging.log4j.async.logger.internal.DefaultBundle;
+import org.apache.logging.log4j.async.logger.internal.AsyncLoggerDefaultBundle;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -43,7 +43,7 @@ public class AsyncLoggerContext extends LoggerContext {
             final URI configLocation,
             final ConfigurableInstanceFactory instanceFactory) {
         super(name, externalContext, configLocation, instanceFactory);
-        instanceFactory.registerBundle(DefaultBundle.class);
+        instanceFactory.registerBundle(AsyncLoggerDefaultBundle.class);
         instanceFactory.registerBinding(Key.forClass(AsyncLoggerDisruptor.class), loggerDisruptor);
     }
 

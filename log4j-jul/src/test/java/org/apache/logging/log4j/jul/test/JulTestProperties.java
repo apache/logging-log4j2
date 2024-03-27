@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-public final class JulTestKeys {
+public final class JulTestProperties {
 
-    public static final String JUL_LOGGER_ADAPTER = "log4j.JUL.loggerAdapter";
+    public static final String JUL_LOGGER_ADAPTER = "log4j.jul.loggerAdapter";
 
-    private JulTestKeys() {}
+    private JulTestProperties() {}
 }

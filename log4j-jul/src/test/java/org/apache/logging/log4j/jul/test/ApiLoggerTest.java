@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-import static org.apache.logging.log4j.jul.test.JulTestKeys.JUL_LOGGER_ADAPTER;
+import static org.apache.logging.log4j.jul.test.JulTestProperties.JUL_LOGGER_ADAPTER;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

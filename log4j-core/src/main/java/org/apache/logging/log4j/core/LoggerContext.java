@@ -43,7 +43,7 @@ import org.apache.logging.log4j.core.config.LoggerContextAwarePostProcessor;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.URIConfigurationFactory;
-import org.apache.logging.log4j.core.impl.CoreKeys;
+import org.apache.logging.log4j.core.impl.CoreProperties.LoggerContextProperties;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.ExecutorServices;
@@ -208,10 +208,6 @@ public class LoggerContext extends AbstractLifeCycle
         return environment;
     }
 
-    private CoreKeys.LoggerContext contextProperties() {
-        return environment.getProperty(CoreKeys.LoggerContext.class);
-    }
-
     @Override
     public void addShutdownListener(final LoggerContextShutdownAware listener) {
         listeners.get().add(listener);
@@ -309,7 +305,7 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public void start() {
         LOGGER.debug("Starting {}...", this);
-        if (contextProperties().stacktraceOnStart()) {
+        if (environment.getProperty(LoggerContextProperties.class).stacktraceOnStart()) {
             LOGGER.debug(
                     "Stack trace to locate invoker",
                     new Exception("Not a real error, showing stack trace to locate invoker"));

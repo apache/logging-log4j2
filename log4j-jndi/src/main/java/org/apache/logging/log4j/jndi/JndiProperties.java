@@ -14,18 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.script;
+package org.apache.logging.log4j.jndi;
 
 import org.apache.logging.log4j.kit.env.Log4jProperty;
-import org.jspecify.annotations.Nullable;
 
-/**
- * Properties used by script support;
- */
-public final class ScriptKeys {
-
-    private ScriptKeys() {}
-
-    @Log4jProperty
-    public record Script(@Nullable String enableLanguages) {}
-}
+@Log4jProperty(name = "jndi")
+public record JndiProperties(
+        boolean enableContextSelector, boolean enableJdbc, boolean enableJms, boolean enableLookup) {}

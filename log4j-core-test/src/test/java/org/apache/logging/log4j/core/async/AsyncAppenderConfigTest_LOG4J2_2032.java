@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag("async")
 @SetTestProperty(
-        key = TestConstants.LOGGER_CONTEXT_LOG_EVENT_FACTORY,
+        key = TestConstants.LOG_EVENT_FACTORY,
         value = "org.apache.logging.log4j.core.impl.ReusableLogEventFactory")
 @SetTestProperty(key = TestConstants.MESSAGE_FACTORY, value = "org.apache.logging.log4j.message.ReusableMessageFactory")
 @SetTestProperty(key = TestConstants.CONFIGURATION_FILE, value = "AsyncAppenderConfigTest-LOG4J2-2032.xml")

@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
@@ -332,7 +333,8 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                         new NoOpFilter(), null, 0, null, getOnMatch(), getOnMismatch(), configuration);
             }
             final PropertyEnvironment props = configuration.getEnvironment();
-            final AuthorizationProvider authorizationProvider = AuthorizationProvider.getAuthorizationProvider(props);
+            final AuthorizationProvider authorizationProvider =
+                    AuthorizationProvider.getAuthorizationProvider(props.getProperty(AuthenticationProperties.class));
             final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
             Filter filter;
             if (pollInterval <= 0) {

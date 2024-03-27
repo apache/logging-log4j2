@@ -22,6 +22,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
+import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfigurationFactory;
 import org.apache.logging.log4j.core.config.URIConfigurationFactory;
@@ -40,8 +42,10 @@ import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.SingletonFactory;
@@ -68,7 +72,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @see LogEventFactory
  * @see StrSubstitutor
  */
-public class DefaultBundle {
+public final class CoreDefaultBundle {
 
     @SingletonFactory
     @ConditionalOnMissingBinding
@@ -193,5 +197,13 @@ public class DefaultBundle {
     @ConditionalOnMissingBinding
     public Logger defaultStatusLogger() {
         return StatusLogger.getLogger();
+    }
+
+    @Factory
+    @ConditionalOnMissingBinding
+    public AsyncQueueFullPolicy asyncQueueFullPolicy(
+            final PropertyEnvironment environment, final @Named("StatusLogger") Logger statusLogger) {
+        return AsyncQueueFullPolicyFactory.create(
+                environment.getProperty(CoreProperties.QueueFullPolicyProperties.class), statusLogger);
     }
 }

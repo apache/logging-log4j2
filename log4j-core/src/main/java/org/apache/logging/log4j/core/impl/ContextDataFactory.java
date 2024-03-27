@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.StringMap;
  * instances may be either populated with key-value pairs from the context, or completely replaced altogether.
  * <p>
  * By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
- * {@link CoreKeys.ThreadContext#contextData()}
+ * {@link CoreProperties.ThreadContextProperties#contextData()}
  * to the fully qualified class name of a class implementing the {@code StringMap}
  * interface. The class must have a public default constructor, and if possible should also have a public constructor
  * that takes a single {@code int} argument for the initial capacity.
@@ -45,7 +45,7 @@ import org.apache.logging.log4j.util.StringMap;
  */
 public class ContextDataFactory {
     private static final Class<? extends StringMap> CACHED_CLASS = PropertyEnvironment.getGlobal()
-            .getProperty(CoreKeys.ThreadContext.class)
+            .getProperty(CoreProperties.ThreadContextProperties.class)
             .contextData();
 
     /**

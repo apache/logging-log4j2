@@ -82,7 +82,7 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
 
     public ScriptManagerImpl(final Configuration configuration, final WatchManager watchManager) {
         final String scriptLanguages = PropertyEnvironment.getGlobal()
-                .getProperty(ScriptKeys.Script.class)
+                .getProperty(ScriptProperties.class)
                 .enableLanguages();
         this.configuration = configuration;
         this.watchManager = watchManager;
