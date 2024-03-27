@@ -19,7 +19,7 @@
  */
 @Export
 @Version("2.24.0")
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.core.impl.internal;
 
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;
