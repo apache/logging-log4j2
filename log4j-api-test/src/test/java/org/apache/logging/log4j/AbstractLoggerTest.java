@@ -33,7 +33,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.Resources;
+import org.apache.logging.log4j.test.junit.Log4jStaticResources;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
@@ -42,7 +42,7 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 @StatusLoggerLevel("WARN")
-@ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
+@ResourceLock(value = Log4jStaticResources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
 public class AbstractLoggerTest {
 
     private static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");

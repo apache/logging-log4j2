@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.test.TestProperties;
-import org.apache.logging.log4j.test.junit.Resources;
+import org.apache.logging.log4j.test.junit.Log4jStaticResources;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -46,8 +46,8 @@ import org.junit.jupiter.api.parallel.ResourceLock;
  * Unit test for simple App.
  */
 @UsingTestProperties
-@ResourceLock(Resources.THREAD_CONTEXT)
-@ResourceLock(Resources.LOG_MANAGER)
+@ResourceLock(Log4jStaticResources.THREAD_CONTEXT)
+@ResourceLock(Log4jStaticResources.LOG_MANAGER)
 public class MutableThreadContextMapFilterTest implements MutableThreadContextMapFilter.FilterConfigUpdateListener {
 
     static final String CONFIG = "MutableThreadContextMapFilterTest.xml";

@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.logging.log4j.test.junit.Resources;
+import org.apache.logging.log4j.test.junit.Log4jStaticResources;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
-@ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ_WRITE)
+@ResourceLock(value = Log4jStaticResources.MARKER_MANAGER, mode = ResourceAccessMode.READ_WRITE)
 public class MarkerTest {
 
     @BeforeEach

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.Resources;
+import org.apache.logging.log4j.test.junit.Log4jStaticResources;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 import org.opentest4j.AssertionFailedError;
 
 @UsingTestProperties
-@ResourceLock(Resources.STATUS_LOGGER)
+@ResourceLock(Log4jStaticResources.STATUS_LOGGER)
 public class XmlConfigurationPropsTest {
 
     private static final String CONFIG_NAME = "XmlConfigurationPropsTest";

@@ -21,7 +21,7 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 /**
  * Constants to use the {@link ResourceLock} annotation.
  */
-public final class Resources {
+public final class Log4jStaticResources {
 
     /**
      * Marks tests that require access to {@link org.apache.logging.log4j.LogManager} methods or change its
@@ -51,5 +51,5 @@ public final class Resources {
      */
     public static final String STATUS_LOGGER = "log4j.StatusLogger";
 
-    private Resources() {}
+    private Log4jStaticResources() {}
 }
