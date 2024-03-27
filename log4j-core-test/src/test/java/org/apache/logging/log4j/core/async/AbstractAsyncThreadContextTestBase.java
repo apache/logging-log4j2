@@ -39,7 +39,7 @@ import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.TestProperties;
-import org.apache.logging.log4j.test.junit.Resources;
+import org.apache.logging.log4j.test.junit.Log4jStaticResources;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.apache.logging.log4j.util.Unbox;
@@ -48,7 +48,7 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 
 @UsingStatusListener
 @UsingTestProperties
-@ResourceLock(value = Resources.THREAD_CONTEXT)
+@ResourceLock(value = Log4jStaticResources.THREAD_CONTEXT)
 public abstract class AbstractAsyncThreadContextTestBase {
 
     private static final int LINE_COUNT = 130;
