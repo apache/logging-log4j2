@@ -23,9 +23,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -83,7 +86,10 @@ class BasicPropertyEnvironmentTest {
             @Nullable String stringAttr,
             @Nullable StandardLevel enumAttr,
             @Nullable Level levelAttr,
-            @Nullable Path pathAttr) {}
+            @Nullable Path pathAttr,
+            @Nullable Locale localeAttr,
+            @Nullable TimeZone timeZoneAttr,
+            @Nullable ZoneId zoneIdAttr) {}
 
     @Log4jProperty
     record DefaultScalarValues(
@@ -92,7 +98,10 @@ class BasicPropertyEnvironmentTest {
             @Log4jProperty(defaultValue = "Hello child!") String stringAttr,
             @Log4jProperty(defaultValue = "WARN") StandardLevel enumAttr,
             @Log4jProperty(defaultValue = "INFO") Level levelAttr,
-            @Log4jProperty(defaultValue = "app.log") Path pathAttr) {}
+            @Log4jProperty(defaultValue = "app.log") Path pathAttr,
+            @Log4jProperty(defaultValue = "en-US") Locale localeAttr,
+            @Log4jProperty(defaultValue = "Europe/Warsaw") TimeZone timeZoneAttr,
+            @Log4jProperty(defaultValue = "UTC+01:00") ZoneId zoneIdAttr) {}
 
     private static final Map<String, String> SCALAR_PROPS = Map.of(
             "ScalarValues.charsetAttr",
@@ -106,11 +115,17 @@ class BasicPropertyEnvironmentTest {
             "ScalarValues.levelAttr",
             "INFO",
             "ScalarValues.pathAttr",
-            "app.log");
+            "app.log",
+            "ScalarValues.localeAttr",
+            "en-US",
+            "ScalarValues.timeZoneAttr",
+            "Europe/Warsaw",
+            "ScalarValues.zoneIdAttr",
+            "UTC+01:00");
 
     @Test
     void should_support_scalar_values() {
-        assertMapConvertsTo(Map.of(), new ScalarValues(null, null, null, null, null, null));
+        assertMapConvertsTo(Map.of(), new ScalarValues(null, null, null, null, null, null, null, null, null));
         assertMapConvertsTo(
                 SCALAR_PROPS,
                 new ScalarValues(
@@ -119,7 +134,10 @@ class BasicPropertyEnvironmentTest {
                         "Hello child!",
                         StandardLevel.WARN,
                         Level.INFO,
-                        Paths.get("app.log")));
+                        Paths.get("app.log"),
+                        Locale.forLanguageTag("en-US"),
+                        TimeZone.getTimeZone("Europe/Warsaw"),
+                        ZoneId.of("UTC+01:00")));
         // Default values
         assertMapConvertsTo(
                 SCALAR_PROPS,
@@ -129,7 +147,10 @@ class BasicPropertyEnvironmentTest {
                         "Hello child!",
                         StandardLevel.WARN,
                         Level.INFO,
-                        Paths.get("app.log")));
+                        Paths.get("app.log"),
+                        Locale.forLanguageTag("en-US"),
+                        TimeZone.getTimeZone("Europe/Warsaw"),
+                        ZoneId.of("UTC+01:00")));
     }
 
     @Log4jProperty
@@ -213,6 +234,24 @@ class BasicPropertyEnvironmentTest {
         final PropertyEnvironment env = new TestPropertyEnvironment(Map.of(key, value), logger);
         assertThat(env.getProperty(clazz)).isEqualTo(expected);
         Assertions.<String>assertThat(logger.getMessages()).containsExactlyElementsOf(expectedMessages);
+    }
+
+    @Log4jProperty
+    record SystemValues(
+            @Log4jProperty(defaultValue = "system") Charset charsetAttr,
+            @Log4jProperty(defaultValue = "system") Locale localeAttr,
+            @Log4jProperty(defaultValue = "system") TimeZone timeZoneAttr,
+            @Log4jProperty(defaultValue = "system") ZoneId zoneIdAttr) {}
+
+    @Test
+    void should_support_system_defaults() {
+        final TestListLogger logger = new TestListLogger(BasicPropertyEnvironmentTest.class.getName());
+        final PropertyEnvironment env = new TestPropertyEnvironment(Map.of(), logger);
+        assertThat(env.getProperty(SystemValues.class))
+                .isEqualTo(new SystemValues(
+                        Charset.defaultCharset(), Locale.getDefault(), TimeZone.getDefault(), ZoneId.systemDefault()));
+        // Check for warnings
+        assertThat(logger.getMessages()).isEmpty();
     }
 
     private void assertMapConvertsTo(final Map<String, String> map, final Object expected) {

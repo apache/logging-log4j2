@@ -34,6 +34,11 @@ import java.lang.annotation.Target;
 public @interface Log4jProperty {
 
     /**
+     * If used as default value, points to a JVM-dependent constant.
+     */
+    String SYSTEM = "system";
+
+    /**
      * Provides a name for the configuration property.
      */
     String name() default "";
@@ -42,6 +47,11 @@ public @interface Log4jProperty {
      * Provides the default value of the property.
      * <p>
      *     This only applies to scalar values.
+     * </p>
+     * <p>
+     *     If the property is of type {@link java.nio.charset.Charset}, {@link java.util.Locale},
+     *     {@link java.util.TimeZone} or {@link java.time.ZoneId}, the special constant {@value SYSTEM} uses the JVM's
+     *     default value.
      * </p>
      */
     String defaultValue() default "";

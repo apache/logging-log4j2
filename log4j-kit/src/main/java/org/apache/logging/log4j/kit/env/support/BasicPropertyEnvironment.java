@@ -28,9 +28,14 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
+import java.util.IllformedLocaleException;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
@@ -111,7 +116,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
 
     protected @Nullable Charset toCharset(final String value) {
         try {
-            return Charset.forName(value);
+            return Log4jProperty.SYSTEM.equals(value) ? Charset.defaultCharset() : Charset.forName(value);
         } catch (final IllegalCharsetNameException | UnsupportedOperationException e) {
             statusLogger.warn("Invalid Charset value '{}': {}", value, e.getMessage(), e);
         }
@@ -163,6 +168,20 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         return null;
     }
 
+    protected @Nullable Locale toLocale(final String value) {
+        try {
+            if (Log4jProperty.SYSTEM.equals(value)) {
+                return Locale.getDefault();
+            }
+            // Allows the usage of POSIX locale names like 'pl_PL'
+            final String languageTag = value.replace('_', '-');
+            return new Locale.Builder().setLanguageTag(languageTag).build();
+        } catch (final IllformedLocaleException e) {
+            statusLogger.warn("Invalid locale value '{}': {}.", value, e.getMessage(), e);
+        }
+        return null;
+    }
+
     protected @Nullable Long toLong(final String value) {
         try {
             return Long.valueOf(value);
@@ -183,6 +202,20 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
 
     protected @Nullable Level toLevel(final String value) {
         return Level.toLevel(value, null);
+    }
+
+    protected @Nullable TimeZone toTimeZone(final String value) {
+        final ZoneId zoneId = toZoneId(value);
+        return zoneId != null ? TimeZone.getTimeZone(zoneId) : null;
+    }
+
+    protected @Nullable ZoneId toZoneId(final String value) {
+        try {
+            return Log4jProperty.SYSTEM.equals(value) ? ZoneId.systemDefault() : ZoneId.of(value);
+        } catch (final DateTimeException e) {
+            statusLogger.warn("Invalid timezone id value '{}': {}.", value, e.getMessage(), e);
+        }
+        return null;
     }
 
     private <T> T getRecordProperty(final @Nullable String parentPrefix, final Class<T> propertyClass) {
@@ -258,6 +291,9 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
             if (Integer.class.equals(clazz)) {
                 return getObjectPropertyWithStringDefault(name, defaultValue, this::toInteger);
             }
+            if (Locale.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toLocale);
+            }
             if (long.class.equals(clazz)) {
                 return getObjectPropertyWithStringDefault(name, Objects.toString(defaultValue, "0"), this::toLong);
             }
@@ -269,6 +305,12 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
             }
             if (Path.class.equals(clazz)) {
                 return getObjectPropertyWithStringDefault(name, defaultValue, this::toPath);
+            }
+            if (TimeZone.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toTimeZone);
+            }
+            if (ZoneId.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toZoneId);
             }
             if (String.class.equals(clazz)) {
                 return getObjectPropertyWithStringDefault(name, defaultValue, x -> x);
