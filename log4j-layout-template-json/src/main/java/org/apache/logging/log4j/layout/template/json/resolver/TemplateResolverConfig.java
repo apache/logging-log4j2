@@ -19,7 +19,7 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutProperties;
 import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
 
 /**
@@ -59,8 +59,11 @@ import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
  */
 public class TemplateResolverConfig extends MapAccessor {
 
-    TemplateResolverConfig(final Map<String, Object> map) {
+    private final JsonTemplateLayoutProperties defaults;
+
+    TemplateResolverConfig(final Map<String, Object> map, final JsonTemplateLayoutProperties defaults) {
         super(map);
+        this.defaults = defaults;
     }
 
     public Locale getLocale(final String key) {
@@ -71,7 +74,7 @@ public class TemplateResolverConfig extends MapAccessor {
     public Locale getLocale(final String[] path) {
         final String spec = getString(path);
         if (spec == null) {
-            return JsonTemplateLayoutDefaults.getLocale();
+            return defaults.locale();
         }
         final String[] specFields = spec.split("_", 3);
         switch (specFields.length) {
@@ -84,5 +87,9 @@ public class TemplateResolverConfig extends MapAccessor {
         }
         final String message = String.format("was expecting a locale at path %s: %s", Arrays.asList(path), this);
         throw new IllegalArgumentException(message);
+    }
+
+    JsonTemplateLayoutProperties getDefaults() {
+        return defaults;
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.DEFAULTS;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -76,7 +78,7 @@ class JsonTemplateLayoutAdditionalFieldTest {
 
         // Deserialize the serialized event.
         final byte[] serializedEvent = serializedEvents.get(0);
-        final String serializedEventJson = new String(serializedEvent, JsonTemplateLayoutDefaults.getCharset());
+        final String serializedEventJson = new String(serializedEvent, DEFAULTS.charset());
         final Object serializedEventObject = JsonReader.read(serializedEventJson);
         Assertions.assertThat(serializedEventObject).isInstanceOf(Map.class);
         @SuppressWarnings("unchecked")

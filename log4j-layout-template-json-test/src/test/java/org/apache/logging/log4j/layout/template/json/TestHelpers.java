@@ -39,6 +39,9 @@ public final class TestHelpers {
 
     public static final Configuration CONFIGURATION = new DefaultConfiguration();
 
+    public static final JsonTemplateLayoutProperties DEFAULTS =
+            CONFIGURATION.getEnvironment().getProperty(JsonTemplateLayoutProperties.class);
+
     private static final JsonWriter JSON_WRITER = JsonWriter.newBuilder()
             .setMaxStringLength(10_000)
             .setTruncatedStringSuffix("…")

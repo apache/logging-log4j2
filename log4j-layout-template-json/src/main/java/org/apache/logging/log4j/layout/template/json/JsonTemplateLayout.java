@@ -87,7 +87,7 @@ public class JsonTemplateLayout implements StringLayout {
     private JsonTemplateLayout(final Builder builder) {
         this.charset = builder.charset;
         this.contentType = "application/json; charset=" + charset;
-        final String eventDelimiterSuffix = builder.isNullEventDelimiterEnabled() ? "\0" : "";
+        final String eventDelimiterSuffix = builder.getNullEventDelimiterEnabled() ? "\0" : "";
         this.eventDelimiter = builder.eventDelimiter + eventDelimiterSuffix;
         final Configuration configuration = builder.configuration;
         final JsonWriter jsonWriter = JsonWriter.newBuilder()
@@ -276,43 +276,43 @@ public class JsonTemplateLayout implements StringLayout {
         private Configuration configuration;
 
         @PluginBuilderAttribute
-        private Charset charset = JsonTemplateLayoutDefaults.getCharset();
+        private Charset charset;
 
         @PluginBuilderAttribute
-        private boolean locationInfoEnabled = JsonTemplateLayoutDefaults.isLocationInfoEnabled();
+        private Boolean locationInfoEnabled;
 
         @PluginBuilderAttribute
-        private boolean stackTraceEnabled = JsonTemplateLayoutDefaults.isStackTraceEnabled();
+        private Boolean stackTraceEnabled;
 
         @PluginBuilderAttribute
-        private String eventTemplate = JsonTemplateLayoutDefaults.getEventTemplate();
+        private String eventTemplate;
 
         @PluginBuilderAttribute
-        private String eventTemplateUri = JsonTemplateLayoutDefaults.getEventTemplateUri();
+        private String eventTemplateUri;
 
         @PluginBuilderAttribute
-        private String eventTemplateRootObjectKey = JsonTemplateLayoutDefaults.getEventTemplateRootObjectKey();
+        private String eventTemplateRootObjectKey;
 
         @PluginElement("EventTemplateAdditionalField")
         private EventTemplateAdditionalField[] eventTemplateAdditionalFields;
 
         @PluginBuilderAttribute
-        private String stackTraceElementTemplate = JsonTemplateLayoutDefaults.getStackTraceElementTemplate();
+        private String stackTraceElementTemplate;
 
         @PluginBuilderAttribute
-        private String stackTraceElementTemplateUri = JsonTemplateLayoutDefaults.getStackTraceElementTemplateUri();
+        private String stackTraceElementTemplateUri;
 
         @PluginBuilderAttribute
-        private String eventDelimiter = JsonTemplateLayoutDefaults.getEventDelimiter();
+        private String eventDelimiter;
 
         @PluginBuilderAttribute
-        private boolean nullEventDelimiterEnabled = JsonTemplateLayoutDefaults.isNullEventDelimiterEnabled();
+        private Boolean nullEventDelimiterEnabled;
 
         @PluginBuilderAttribute
-        private int maxStringLength = JsonTemplateLayoutDefaults.getMaxStringLength();
+        private Integer maxStringLength;
 
         @PluginBuilderAttribute
-        private String truncatedStringSuffix = JsonTemplateLayoutDefaults.getTruncatedStringSuffix();
+        private String truncatedStringSuffix;
 
         private Builder() {
             // Do nothing.
@@ -336,20 +336,20 @@ public class JsonTemplateLayout implements StringLayout {
             return this;
         }
 
-        public boolean isLocationInfoEnabled() {
+        public Boolean getLocationInfoEnabled() {
             return locationInfoEnabled;
         }
 
-        public Builder setLocationInfoEnabled(final boolean locationInfoEnabled) {
+        public Builder setLocationInfoEnabled(final Boolean locationInfoEnabled) {
             this.locationInfoEnabled = locationInfoEnabled;
             return this;
         }
 
-        public boolean isStackTraceEnabled() {
+        public Boolean getStackTraceEnabled() {
             return stackTraceEnabled;
         }
 
-        public Builder setStackTraceEnabled(final boolean stackTraceEnabled) {
+        public Builder setStackTraceEnabled(final Boolean stackTraceEnabled) {
             this.stackTraceEnabled = stackTraceEnabled;
             return this;
         }
@@ -418,20 +418,20 @@ public class JsonTemplateLayout implements StringLayout {
             return this;
         }
 
-        public boolean isNullEventDelimiterEnabled() {
+        public Boolean getNullEventDelimiterEnabled() {
             return nullEventDelimiterEnabled;
         }
 
-        public Builder setNullEventDelimiterEnabled(final boolean nullEventDelimiterEnabled) {
+        public Builder setNullEventDelimiterEnabled(final Boolean nullEventDelimiterEnabled) {
             this.nullEventDelimiterEnabled = nullEventDelimiterEnabled;
             return this;
         }
 
-        public int getMaxStringLength() {
+        public Integer getMaxStringLength() {
             return maxStringLength;
         }
 
-        public Builder setMaxStringLength(final int maxStringLength) {
+        public Builder setMaxStringLength(final Integer maxStringLength) {
             this.maxStringLength = maxStringLength;
             return this;
         }
@@ -447,8 +447,51 @@ public class JsonTemplateLayout implements StringLayout {
 
         @Override
         public JsonTemplateLayout build() {
+            applyDefaults();
             validate();
             return new JsonTemplateLayout(this);
+        }
+
+        private void applyDefaults() {
+            Objects.requireNonNull(configuration, "configuration");
+            final JsonTemplateLayoutProperties props =
+                    configuration.getEnvironment().getProperty(JsonTemplateLayoutProperties.class);
+            if (charset == null) {
+                charset = props.charset();
+            }
+            if (eventDelimiter == null) {
+                eventDelimiter = props.eventDelimiter();
+            }
+            if (eventTemplate == null) {
+                eventTemplate = props.eventTemplate();
+            }
+            if (eventTemplateRootObjectKey == null) {
+                eventTemplateRootObjectKey = props.eventTemplateRootObjectKey();
+            }
+            if (eventTemplateUri == null) {
+                eventTemplateUri = props.eventTemplateUri();
+            }
+            if (locationInfoEnabled == null) {
+                locationInfoEnabled = props.locationInfoEnabled();
+            }
+            if (maxStringLength == null) {
+                maxStringLength = props.maxStringLength();
+            }
+            if (nullEventDelimiterEnabled == null) {
+                nullEventDelimiterEnabled = props.nullEventDelimiterEnabled();
+            }
+            if (stackTraceEnabled == null) {
+                stackTraceEnabled = props.stackTraceEnabled();
+            }
+            if (stackTraceElementTemplate == null) {
+                stackTraceElementTemplate = props.stackTraceElementTemplate();
+            }
+            if (stackTraceElementTemplateUri == null) {
+                stackTraceElementTemplateUri = props.stackTraceElementTemplateUri();
+            }
+            if (truncatedStringSuffix == null) {
+                truncatedStringSuffix = props.truncatedStringSuffix();
+            }
         }
 
         private void validate() {

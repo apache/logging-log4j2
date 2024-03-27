@@ -396,7 +396,7 @@ public final class TemplateResolvers {
         if (resolverFactory == null) {
             throw new IllegalArgumentException("unknown resolver: " + resolverName);
         }
-        final TemplateResolverConfig resolverConfig = new TemplateResolverConfig(configMap);
+        final TemplateResolverConfig resolverConfig = new TemplateResolverConfig(configMap, context.getDefaults());
         return resolverFactory.create(context, resolverConfig);
     }
 

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 import java.util.Locale;
 import java.util.function.Function;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutProperties;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.util.JsonReader;
 
@@ -49,7 +49,7 @@ import org.apache.logging.log4j.util.JsonReader;
  * a lookup string, an object pointing to another resolver.
  * <p>
  * Unless provided, {@code locale} points to the one returned by
- * {@link JsonTemplateLayoutDefaults#getLocale()}, which is configured by
+ * {@link JsonTemplateLayoutProperties#locale()}, which is configured by
  * {@code log4j.layout.jsonTemplate.locale} system property and by default set
  * to the default system locale.
  * <p>
