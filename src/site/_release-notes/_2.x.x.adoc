@@ -34,6 +34,7 @@ This releases contains ...
 
 * Fix usage of `log4j-api` in GraalVM without additional reachability data. (https://github.com/apache/logging-log4j2/pull/1539[1539])
 * Centralize initialization in the `Provider` class and deprecate `log4j2.loggerContextFactory` property. (https://github.com/apache/logging-log4j2/pull/2374[2374])
+* Remove `log4j-kubernetes` lookup. User should migrate to https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`kubernetes-log4j`] (https://github.com/apache/logging-log4j2/pull/2412[2412])
 
 [#release-notes-2-x-x-fixed]
 === Fixed
