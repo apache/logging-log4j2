@@ -24,7 +24,10 @@ import java.util.Map;
  * {@code disableThreadContext} is {@code true}. This implementation does nothing.
  *
  * @since 2.7
+ * @deprecated since 2.24.0. Return the {@value Provider#NO_OP_CONTEXT_MAP} constant in
+ * {@link Provider#getThreadContextMap()} instead.
  */
+@Deprecated
 public class NoOpThreadContextMap implements ThreadContextMap {
     @Override
     public void clear() {}

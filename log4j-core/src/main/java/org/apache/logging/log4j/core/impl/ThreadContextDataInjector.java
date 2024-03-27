@@ -19,13 +19,13 @@ package org.apache.logging.log4j.core.impl;
 import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -79,7 +79,10 @@ public class ThreadContextDataInjector {
 
     private static List<ContextDataProvider> getServiceProviders() {
         final List<ContextDataProvider> providers = new ArrayList<>();
-        ServiceLoaderUtil.loadServices(ContextDataProvider.class, MethodHandles.lookup(), false)
+        ServiceLoaderUtil.safeStream(
+                        ContextDataProvider.class,
+                        ServiceLoader.load(ContextDataProvider.class, ThreadContextDataInjector.class.getClassLoader()),
+                        LOGGER)
                 .forEach(providers::add);
         return Collections.unmodifiableList(providers);
     }

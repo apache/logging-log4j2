@@ -18,14 +18,30 @@ package org.apache.logging.slf4j;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**
  * Bind the Log4j API to SLF4J.
  */
 @ServiceProvider(value = Provider.class, resolution = Resolution.OPTIONAL)
 public class SLF4JProvider extends Provider {
+
+    private static final LoggerContextFactory CONTEXT_FACTORY = new SLF4JLoggerContextFactory();
+    private static final ThreadContextMap THREAD_CONTEXT_MAP = new MDCContextMap();
+
     public SLF4JProvider() {
-        super(15, "2.6.0", SLF4JLoggerContextFactory.class, MDCContextMap.class);
+        super(15, CURRENT_VERSION);
+    }
+
+    @Override
+    public LoggerContextFactory getLoggerContextFactory() {
+        return CONTEXT_FACTORY;
+    }
+
+    @Override
+    public ThreadContextMap getThreadContextMapInstance() {
+        return THREAD_CONTEXT_MAP;
     }
 }

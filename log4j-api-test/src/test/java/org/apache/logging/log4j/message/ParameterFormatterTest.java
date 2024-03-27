@@ -17,14 +17,17 @@
 package org.apache.logging.log4j.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
-import org.apache.logging.log4j.test.junit.UsingStatusLoggerMock;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -33,8 +36,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests {@link ParameterFormatter}.
  */
-@UsingStatusLoggerMock
+@UsingStatusListener
 class ParameterFormatterTest {
+
+    final ListStatusListener statusListener;
+
+    ParameterFormatterTest(ListStatusListener statusListener) {
+        this.statusListener = statusListener;
+    }
 
     @ParameterizedTest
     @CsvSource({
@@ -69,12 +78,20 @@ class ParameterFormatterTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"1,foo {}", "2,bar {}{}"})
-    void format_should_fail_on_insufficient_args(final int placeholderCount, final String pattern) {
-        final int argCount = placeholderCount - 1;
-        assertThatThrownBy(() -> ParameterFormatter.format(pattern, new Object[argCount], argCount))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(
+    @CsvSource({"2,pan {} {},a,pan a {}", "3,pan {}{}{},a b,pan ab{}", "1,pan {},a b c,pan a"})
+    void format_should_warn_on_insufficient_args(
+            final int placeholderCount, final String pattern, final String argsStr, final String expectedMessage) {
+        final String[] args = argsStr.split(" ");
+        final int argCount = args.length;
+
+        String actualMessage = ParameterFormatter.format(pattern, args, argCount);
+        assertThat(actualMessage).isEqualTo(expectedMessage);
+        final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
+        assertThat(statusDataList).hasSize(1);
+        final StatusData statusData = statusDataList.get(0);
+        assertThat(statusData.getLevel()).isEqualTo(Level.WARN);
+        assertThat(statusData.getMessage().getFormattedMessage())
+                .isEqualTo(
                         "found %d argument placeholders, but provided %d for pattern `%s`",
                         placeholderCount, argCount, pattern);
     }

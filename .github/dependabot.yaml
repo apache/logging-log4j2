@@ -95,6 +95,10 @@ updates:
     # Plexus Utils 4.x are for Maven 4.x
     - dependency-name: "org.codehaus.plexus:plexus-utils"
       versions: ["4,)"]
+    # MongoDB 3.x should only upgrade to 3.x and
+    # MongoDB 4.x should only upgrade to 4.x
+    - dependency-name: "org.mongodb:*"
+      update-types: ["version-update:semver-major"]
 
 - package-ecosystem: github-actions
   directory: "/"

@@ -39,6 +39,14 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
 
     private final boolean useStack;
 
+    public DefaultThreadContextStack() {
+        this(true);
+    }
+
+    /**
+     * @deprecated since 2.24.0 without a replacement.
+     */
+    @Deprecated
     public DefaultThreadContextStack(final boolean useStack) {
         this.useStack = useStack;
     }

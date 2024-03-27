@@ -761,9 +761,6 @@
               <resources>
                 <resource>
                   <directory>${project.basedir}/src/site</directory>
-                  <excludes>
-                    <exclude>/resources/logo/**/*</exclude>
-                  </excludes>
                 </resource>
               </resources>
             </configuration>

@@ -34,7 +34,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.Resources;
+import org.apache.logging.log4j.test.junit.Log4jStaticResources;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.MessageSupplier;
@@ -45,7 +45,7 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 @StatusLoggerLevel("WARN")
-@ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
+@ResourceLock(value = Log4jStaticResources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
 @SetSystemProperty(key = "log4j2.status.entries", value = "200")
 @SetSystemProperty(key = "log4j2.StatusLogger.level", value = "WARN")
 public class AbstractLoggerTest {

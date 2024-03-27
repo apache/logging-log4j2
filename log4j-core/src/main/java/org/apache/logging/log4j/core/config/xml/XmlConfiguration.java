@@ -141,7 +141,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             try (final InputStream is =
                     Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader())) {
                 if (is != null) {
-                    final javax.xml.transform.Source src = new StreamSource(is);
+                    final javax.xml.transform.Source src = new StreamSource(is, schemaResource);
                     final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                     Schema schema = null;
                     try {

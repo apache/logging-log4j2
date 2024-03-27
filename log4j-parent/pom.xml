@@ -78,7 +78,7 @@
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch-java.version>8.12.2</elasticsearch-java.version>
+    <elasticsearch-java.version>8.13.0</elasticsearch-java.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.9.0</flapdoodle-embed.version>
@@ -157,7 +157,6 @@
          ===================================================== -->
     <asm.version>9.6</asm.version>
     <byte-buddy.version>1.14.9</byte-buddy.version>
-    <commons-httpclient.version>3.1</commons-httpclient.version>
     <commons-pool2.version>2.12.0</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
@@ -375,12 +374,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-dbcp2</artifactId>
         <version>${commons-dbcp2.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>${commons-httpclient.version}</version>
       </dependency>
 
       <dependency>
@@ -1203,8 +1196,8 @@
 
       <id>plugin-processing</id>
 
-      <!-- Profile gets activated using a file instead of, say, a property.
-           Since a Maven property lookup requires model interpolation and that hasn't happened at this stage yet.
+      <!-- Profile gets activated using a file instead of, say, a property defined by the child `pom.xml`.
+           Since a Maven property lookup requires model interpolation and that happens after the profile activation phase.
            See: https://maven.apache.org/ref/3.9.6/maven-model-builder -->
       <activation>
         <file>

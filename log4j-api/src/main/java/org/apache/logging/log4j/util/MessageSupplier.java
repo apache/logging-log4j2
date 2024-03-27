@@ -33,12 +33,14 @@ import org.apache.logging.log4j.message.Message;
  *
  * @since 2.4
  */
-public interface MessageSupplier {
+@FunctionalInterface
+public interface MessageSupplier extends Supplier<Message> {
 
     /**
      * Gets a Message.
      *
      * @return a Message
      */
+    @Override
     Message get();
 }
