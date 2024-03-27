@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMapMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 /**
@@ -83,6 +84,11 @@ public class TestLogger extends AbstractLogger {
         if (!mdc.isEmpty()) {
             sb.append(' ');
             sb.append(mdc);
+            sb.append(' ');
+        }
+        if (message instanceof ParameterizedMapMessage) {
+            sb.append(" Resource data: ");
+            sb.append(((ParameterizedMapMessage) message).getData().toString());
             sb.append(' ');
         }
         final Object[] params = message.getParameters();

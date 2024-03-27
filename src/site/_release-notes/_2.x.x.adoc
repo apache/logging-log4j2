@@ -43,6 +43,7 @@ This releases contains ...
 [#release-notes-2-x-x-updated]
 === Updated
 
+* Add ScopedContext to log4j-api and ScopedContextDataProvider in log4j-core. (https://github.com/apache/logging-log4j-kotlin/issues/71[kotlin-71], https://github.com/apache/logging-log4j2/discussions/2214[2214])
 * Update `actions/checkout` to version `4.1.2` (https://github.com/apache/logging-log4j2/pull/2370[2370])
 * Update `co.elastic.clients:elasticsearch-java` to version `8.13.0` (https://github.com/apache/logging-log4j2/pull/2413[2413])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2372[2372])

@@ -29,6 +29,8 @@
 * xref:/manual/eventlogging.html[Event Logging]
 * xref:/manual/messages.html[Messages]
 * xref:/manual/thread-context.html[ThreadContext]
+* xref:/manual/scoped-context.html[ScopedContext]
+* xref:/manual/resource-logger.html[ResourceLogger]
 
 == Configuration
 
