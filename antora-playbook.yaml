@@ -24,6 +24,7 @@ content:
       branches: HEAD
       start_paths:
         - target/generated-site/antora
+      edit_url:
 asciidoc:
   attributes:
     log4j-docgen-descriptor-directory: target/plugin-descriptors
@@ -36,6 +37,8 @@ ui:
   bundle:
     url: "https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable"
     snapshot: true
+  # Template files: https://github.com/asciidoctor/asciidoctor-docs-ui/blob/main/src
+  # Template variables: https://docs.antora.org/antora-ui-default/templates
   supplemental_files:
     - path: partials/header-content.hbs
       contents: |
@@ -43,7 +46,7 @@ ui:
           <nav class="navbar">
             <div class="navbar-brand">
               <div class="navbar-item">
-                <a href="{{ site.url }}">Apache Log4j</a>
+                <a href="{{site.url}}">Apache Log4j</a>
               </div>
             </div>
           </nav>
@@ -57,3 +60,7 @@ ui:
     # Disable component version selector
     - path: partials/nav-explore.hbs
       contents: ""
+    # Fix the `Edit this page` link
+    - path: partials/edit-this-page.hbs
+      contents: |
+        <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/{{page.module}}/pages/{{page.relativeSrcPath}}">Edit this Page</a></div>

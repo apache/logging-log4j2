@@ -24,10 +24,6 @@
 ** xref:thanks.adoc[Thanks]
 
 .Learn
-* xref:plugin-reference.adoc[Plugin reference]
-* xref:javadoc.adoc[Java API reference]
-* xref:articles.adoc[Articles]
-* xref:faq.adoc[F.A.Q.]
 * xref:manual/index.adoc[]
 ** xref:manual/architecture.adoc[]
 ** xref:manual/migration.adoc[]
@@ -54,6 +50,10 @@
 ** xref:manual/jmx.adoc[]
 ** xref:manual/logsep.adoc[]
 ** xref:manual/performance.adoc[]
+* xref:plugin-reference.adoc[Plugin reference]
+* xref:javadoc.adoc[Java API reference]
+* xref:articles.adoc[Articles]
+* xref:faq.adoc[F.A.Q.]
 
 .Components
 * Internal components
