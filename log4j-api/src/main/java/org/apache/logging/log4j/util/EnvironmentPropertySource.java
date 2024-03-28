@@ -36,19 +36,31 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class EnvironmentPropertySource implements PropertySource {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
     private static final String PREFIX = "LOG4J_";
-
     private static final int DEFAULT_PRIORITY = 100;
+
+    private static final PropertySource INSTANCE = new EnvironmentPropertySource();
+
+    /**
+     * Method used by Java 9+ to instantiate providers
+     * @since 2.24.0
+     * @see java.util.ServiceLoader
+     */
+    public static PropertySource provider() {
+        return INSTANCE;
+    }
 
     @Override
     public int getPriority() {
         return DEFAULT_PRIORITY;
     }
 
-    private void logException(final SecurityException error) {
-        // There is no status logger yet.
-        LOGGER.error("The system environment variables are not available to Log4j due to security restrictions", error);
+    private static void logException(final SecurityException error) {
+        LOGGER.error("The environment variables are not available to Log4j due to security restrictions.", error);
+    }
+
+    private static void logException(final SecurityException error, final String key) {
+        LOGGER.error("The environment variable {} is not available to Log4j due to security restrictions.", key, error);
     }
 
     @Override
@@ -88,8 +100,8 @@ public class EnvironmentPropertySource implements PropertySource {
             return System.getenv().keySet();
         } catch (final SecurityException e) {
             logException(e);
-            return PropertySource.super.getPropertyNames();
         }
+        return PropertySource.super.getPropertyNames();
     }
 
     @Override
@@ -97,9 +109,9 @@ public class EnvironmentPropertySource implements PropertySource {
         try {
             return System.getenv(key);
         } catch (final SecurityException e) {
-            logException(e);
-            return PropertySource.super.getProperty(key);
+            logException(e, key);
         }
+        return PropertySource.super.getProperty(key);
     }
 
     @Override
@@ -107,7 +119,7 @@ public class EnvironmentPropertySource implements PropertySource {
         try {
             return System.getenv().containsKey(key);
         } catch (final SecurityException e) {
-            logException(e);
+            logException(e, key);
             return PropertySource.super.containsProperty(key);
         }
     }
