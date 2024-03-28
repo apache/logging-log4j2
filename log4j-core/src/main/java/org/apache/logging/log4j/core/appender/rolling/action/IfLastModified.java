@@ -19,23 +19,25 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * PathCondition that accepts paths that are older than the specified duration.
+ * @since 2.5
  */
 @Configurable(printObject = true)
 @Plugin
@@ -49,9 +51,12 @@ public final class IfLastModified implements PathCondition {
     private IfLastModified(final Duration age, final PathCondition[] nestedConditions, final Clock clock) {
         this.age = Objects.requireNonNull(age, "age");
         this.nestedConditions = PathCondition.copy(nestedConditions);
-        this.clock = clock;
+        this.clock = Objects.requireNonNull(clock, "clock");
     }
 
+    /**
+     * @since 3.0.0
+     */
     public Duration getAge() {
         return age;
     }
@@ -60,12 +65,6 @@ public final class IfLastModified implements PathCondition {
         return List.of(nestedConditions);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path,
-     * java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
-     */
     @Override
     public boolean accept(final Path basePath, final Path relativePath, final BasicFileAttributes attrs) {
         final FileTime fileTime = attrs.lastModifiedTime();
@@ -81,11 +80,6 @@ public final class IfLastModified implements PathCondition {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
-     */
     @Override
     public void beforeFileTreeWalk() {
         IfAll.beforeFileTreeWalk(nestedConditions);
@@ -97,17 +91,24 @@ public final class IfLastModified implements PathCondition {
         return "IfLastModified(age=" + age + nested + ")";
     }
 
+    /**
+     * @since 2.24.0
+     */
     @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder implements Supplier<IfLastModified> {
+    /**
+     * @since 2.24.0
+     */
+    public static final class Builder implements Supplier<IfLastModified> {
         private Duration age;
         private PathCondition[] nestedConditions;
         private Clock clock;
 
-        public Builder setAge(@PluginAttribute final Duration age) {
+        public Builder setAge(
+                @PluginAttribute @Required(message = "No age provided for IfLastModified") final Duration age) {
             this.age = age;
             return this;
         }
@@ -125,9 +126,6 @@ public final class IfLastModified implements PathCondition {
 
         @Override
         public IfLastModified get() {
-            if (clock == null) {
-                clock = ClockFactory.getClock();
-            }
             return new IfLastModified(age, nestedConditions, clock);
         }
     }
