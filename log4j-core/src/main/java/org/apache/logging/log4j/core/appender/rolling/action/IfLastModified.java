@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -50,8 +51,12 @@ public final class IfLastModified implements PathCondition {
         this.nestedConditions = PathCondition.copy(nestedConditions);
     }
 
-    public Duration getAge() {
-        return age;
+    /**
+     * @deprecated since 2.24.0 without a replacement.
+     */
+    @Deprecated
+    public org.apache.logging.log4j.core.appender.rolling.action.Duration getAge() {
+        return org.apache.logging.log4j.core.appender.rolling.action.Duration.ofMillis(age.toMillis());
     }
 
     public List<PathCondition> getNestedConditions() {
@@ -90,19 +95,28 @@ public final class IfLastModified implements PathCondition {
     }
 
     /**
+     * @deprecated since 2.24.0 use {@link #createAgeCondition(Duration, PathCondition...)} instead.
+     */
+    @Deprecated
+    public static IfLastModified createAgeCondition(
+            final org.apache.logging.log4j.core.appender.rolling.action.Duration age,
+            final PathCondition... pathConditions) {
+        return createAgeCondition(Duration.ofMillis(age.toMillis()), pathConditions);
+    }
+
+    /**
      * Create an IfLastModified condition.
      *
      * @param age The path age that is accepted by this condition. Must be a valid Duration.
-     * @param nestedConditions nested conditions to evaluate if this condition accepts a path
+     * @param pathConditions Nested conditions to evaluate if this condition accepts a path.
      * @return An IfLastModified condition.
+     * @since 2.24.0
      */
     @PluginFactory
     public static IfLastModified createAgeCondition(
-            // @formatter:off
             @PluginAttribute("age") @Required(message = "No age provided for IfLastModified") final Duration age,
-            @PluginElement("PathConditions") final PathCondition... nestedConditions) {
-        // @formatter:on
-        return new IfLastModified(age, nestedConditions);
+            @PluginElement("pathConditions") final PathCondition... pathConditions) {
+        return new IfLastModified(age, Objects.requireNonNull(pathConditions));
     }
 
     @Override
