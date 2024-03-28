@@ -711,7 +711,7 @@
             <phase>pre-site</phase>
             <configuration>
               <target>
-                <copy file="${project.basedir}/src/site/antora/antora.tmpl.yml" tofile="${project.build.directory}/antora-yml/antora.yml" overwrite="true"/>
+                <copy file="${project.basedir}/src/site/antora/antora.tmpl.yml" overwrite="true" tofile="${project.build.directory}/antora-yml/antora.yml" />
               </target>
             </configuration>
           </execution>
