@@ -37,6 +37,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * PathCondition that accepts paths that are older than the specified duration.
+ * @since 2.5
  */
 @Plugin(name = "IfLastModified", category = Core.CATEGORY_NAME, printObject = true)
 public final class IfLastModified implements PathCondition {
@@ -52,7 +53,7 @@ public final class IfLastModified implements PathCondition {
     }
 
     /**
-     * @deprecated since 2.24.0 without a replacement.
+     * @deprecated since 2.24.0. In 3.0.0 the signature will change.
      */
     @Deprecated
     public org.apache.logging.log4j.core.appender.rolling.action.Duration getAge() {
@@ -102,11 +103,17 @@ public final class IfLastModified implements PathCondition {
         return "IfLastModified(age=" + age + nested + ")";
     }
 
+    /**
+     * @since 2.24.0
+     */
     @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
+    /**
+     * @since 2.24.0
+     */
     public static final class Builder implements org.apache.logging.log4j.core.util.Builder<IfLastModified> {
         @PluginBuilderAttribute
         @Required(message = "No age provided for IfLastModified")
