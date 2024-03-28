@@ -16,10 +16,6 @@
 ////
 = Articles and Tutorials
 
-++++
-<link rel="stylesheet" type="text/css" href="css/tables.css">
-++++
-
 A collection of external articles and tutorials about Log4j 2. The manual/index.html[Log4j 2 manual] is the ultimate
 guide for up-to-date and detailed information on how to configure and use Log4j 2.
 

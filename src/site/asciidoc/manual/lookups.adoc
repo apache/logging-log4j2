@@ -17,10 +17,6 @@
 = Lookups
 Ralph Goers <rgoers@apache.org>
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 Lookups provide a way to add values to the Log4j configuration at
 arbitrary places. They are a particular type of Plugin that implements
 the
@@ -314,33 +310,7 @@ https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.htm
 [#KubernetesLookup]
 == Kubernetes Lookup
 
-The KubernetesLookup can be used to lookup attributes from the Kubernetes environment for the container
-the application is running in.
-
-Log4j Kubernetes provides access to the following container attributes:
-[cols="1m,4a"]
-|===
-|Attribute |Description
-|accountName|The service account name
-|clusterName|The name of the cluster the application is deployed in
-|containerId|>The full id assigned to the container
-|containerName|The name assigned to the container
-|host|The name assigned to the host operating system
-|hostIp|The host's ip address
-|imageId|The id assigned to the container image
-|imageName|The name assigned to the container image
-|labels|All labels formatted in a list
-|labels.app|The application name
-|labels.podTemplateHash|The pod's template hash value
-|masterUrl|The URL used to access the API server
-|namespaceId|The id of the namespace the various kubernetes components are located within
-|namespaceName|The namespace the various kubernetes components are located within
-|podId|The pod's ip number
-|podIp|The pod's ip address
-|podName|The name of the pod
-|===
-
-This Lookup is subject to the configuration requirements listed at link:../log4j-kubernetes/index.html[Log4j Kubernetes Support]
+For retrieving attributes using Fabric8's Kubernetes Client, see their https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[Kubernetes Log4j Lookup].
 
 [#Log4jConfigLookup]
 == Log4j Configuration Location Lookup

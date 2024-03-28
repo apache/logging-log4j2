@@ -16,14 +16,6 @@
 ////
 = Frequently Asked Questions
 
-++++
-<link rel="stylesheet" type="text/css" href="css/tables.css">
-++++
-
-:toc:
-
-'''
-
 [#missing_core]
 == I'm seeing this error "Unable to locate a logging implementation, using SimpleLogger". What is wrong?
 

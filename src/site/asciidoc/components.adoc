@@ -1,0 +1,45 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Components of Apache Log4j
+
+== Internal Components
+
+* xref:/log4j-api.html[API]
+* xref:/log4j-core.html[Implementation]
+* xref:/log4j-1.2-api.html[Log4j 1.2 API]
+* xref:/log4j-slf4j-impl.html[SLF4J Binding]
+* xref:/log4j-jul.html[JUL Adapter]
+* xref:/log4j-jpl.html[JDK Platform Logger]
+* xref:/log4j-to-slf4j.html[Log4j 2 to SLF4J Adapter]
+* xref:/log4j-jdbc-dbcp2.html[JDBC Appender]
+* xref:/log4j-flume-ng.html[Apache Flume Appender]
+* xref:/log4j-mongodb4.html[MongoDB 4 appender]
+* xref:/log4j-iostreams.html[IO Streams]
+* xref:/log4j-docker.html[Docker Support]
+* xref:/log4j-kubernetes.html[Kubernetes Support]
+* xref:/log4j-spring-cloud-config-client.html[Spring Cloud Config Client]
+* xref:/log4j-transform[Log4j Transformation Tools]
+
+== External Components
+
+* xref:/log4j/jakarta[Log4j Jakarta EE]
+* xref:/log4j/jmx-gui[Log4j JMX GUI]
+* xref:/log4j/kotlin[Log4j Kotlin]
+* xref:/log4j/scala[Log4j Scala]
+* xref:/log4j/tools[Log4j Tools]
+* xref:/log4j/transform[Log4j Transformation Tools]
+

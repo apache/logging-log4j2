@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.layout.Encoder;
 
 /**
  * Converts {@link LogEvent} instances into different layouts of data. A layout typically encodes into either
- * a {@link String} or {@code byte[]}. Since version 2.6, layouts implement {@link Encoder Encoder&lt;LogEvent&gt;}
+ * a {@link String} or {@code byte[]}. Since version 2.6, layouts implement {@link Encoder}
  * to support direct encoding of a log event into a {@link ByteBufferDestination} without creating temporary
  * intermediary objects. Since version 3.0.0, layouts no longer reference the legacy Java serialization API
  * and are limited to strings or bytes.

@@ -47,6 +47,13 @@ RELEASE_NOTES_FILE="$SCRIPT_DIR/../src/site/_release-notes/_$PROJECT_VERSION.ado
     exit 1
 }
 
+dump_review_kit() {
+    wget -q -O - https://raw.githubusercontent.com/apache/logging-parent/main/.github/release-review-kit.txt \
+        | sed -n '/-----8<-----~( cut here )~-----8<-----/,$p' \
+        | tail -n +2 \
+        | sed -r 's!^!    !g'
+}
+
 dump_release_notes() {
     awk "f{print} /^Release date::/{f=1}" "$RELEASE_NOTES_FILE" \
         | sed -r 's!'$PROJECT_REPO'/(issues|pull)/[0-9]+\[([0-9]+)\]!#\2!g'
@@ -76,7 +83,15 @@ Please download, test, and cast your votes on this mailing list.
 This vote is open for 72 hours and will pass unless getting a
 net negative vote count. All votes are welcome and we encourage
 everyone to test the release, but only the Logging Services PMC
-votes are officially counted.
+votes are officially counted. At least 3 +1 votes and more
+positive than negative votes are required.
+
+== Review kit
+
+The minimum set of steps needed to review the uploaded distribution
+files in the Subversion repository can be summarized as follows:
+
+$(dump_review_kit)
 
 == Release Notes
 EOF

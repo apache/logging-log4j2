@@ -17,10 +17,6 @@
 = Log4j 2 API
 Ralph Goers <rgoers@apache.org>
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 [#EventLogging]
 == Event Logging
 

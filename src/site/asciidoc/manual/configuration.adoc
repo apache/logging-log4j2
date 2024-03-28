@@ -17,10 +17,6 @@
 = Configuration
 Ralph Goers <rgoers@apache.org>
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 Inserting log requests into the application code requires a fair amount
 of planning and effort. Observation shows that approximately 4 percent
 of code is dedicated to logging. Consequently, even moderately sized

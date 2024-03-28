@@ -16,10 +16,6 @@
 ////
 = Usage
 
-++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
-++++
-
 [#Static_vs_Non_Static]
 == Static vs Non-Static Loggers
 As with any variable in Java, Loggers may be declared as static variables or class member variables. However,

@@ -20,11 +20,36 @@
 This release contains...
 
 
+[#release-notes-3-x-x-added]
+=== Added
+
+* Add _"Plugin Reference"_ to the website. It is a Javadoc-on-steroids focusing on Log4j plugins. (https://github.com/apache/logging-log4j2/issues/1954[1954])
+
+[#release-notes-3-x-x-changed]
+=== Changed
+
+* Remove `log4j-kubernetes` lookup. User should migrate to https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`kubernetes-log4j`] (https://github.com/apache/logging-log4j2/pull/2408[2408])
+
 [#release-notes-3-x-x-updated]
 === Updated
 
 * Update `co.elastic.logging:log4j2-ecs-layout` to version `1.6.0` (https://github.com/apache/logging-log4j2/pull/2303[2303])
+* Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2371[2371])
+* Update `com.github.luben:zstd-jni` to version `1.5.6-1` (https://github.com/apache/logging-log4j2/pull/2423[2423])
 * Update `com.github.tomakehurst:wiremock-jre8` to version `2.35.2` (https://github.com/apache/logging-log4j2/pull/2305[2305])
-* Update `org.apache.commons:commons-compress` to version `1.26.0` (https://github.com/apache/logging-log4j2/pull/2300[2300])
-* Update `org.apache.tomcat:tomcat-juli` to version `10.1.19` (https://github.com/apache/logging-log4j2/pull/2302[2302])
-* Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.3` (https://github.com/apache/logging-log4j2/pull/2316[2316])
+* Update `com.google.guava:guava` to version `33.1.0-jre` (https://github.com/apache/logging-log4j2/pull/2375[2375])
+* Update `commons-logging:commons-logging` to version `1.3.1` (https://github.com/apache/logging-log4j2/pull/2405[2405])
+* Update `io.netty:netty-bom` to version `4.1.108.Final` (https://github.com/apache/logging-log4j2/pull/2399[2399])
+* Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2358[2358])
+* Update `org.apache.commons:commons-dbcp2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2342[2342])
+* Update `org.apache.groovy:groovy-bom` to version `4.0.20` (https://github.com/apache/logging-log4j2/pull/2376[2376])
+* Update `org.apache.tomcat:tomcat-juli` to version `10.1.20` (https://github.com/apache/logging-log4j2/pull/2415[2415])
+* Update `org.awaitility:awaitility` to version `4.2.1` (https://github.com/apache/logging-log4j2/pull/2388[2388])
+* Update `org.eclipse.platform:org.eclipse.osgi` to version `3.19.0` (https://github.com/apache/logging-log4j2/pull/2367[2367])
+* Update `org.elasticsearch.client:elasticsearch-rest-high-level-client` to version `7.17.19` (https://github.com/apache/logging-log4j2/pull/2418[2418])
+* Update `org.graalvm.truffle:truffle-api` to version `24.0.0` (https://github.com/apache/logging-log4j2/pull/2394[2394])
+* Update `org.mockito:mockito-bom` to version `5.11.0` (https://github.com/apache/logging-log4j2/pull/2333[2333])
+* Update `org.mongodb:bson` to version `5.0.0` (https://github.com/apache/logging-log4j2/pull/2327[2327])
+* Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.4` (https://github.com/apache/logging-log4j2/pull/2398[2398])
+* Update `org.springframework.cloud:spring-cloud-context` to version `4.1.2` (https://github.com/apache/logging-log4j2/pull/2421[2421])
+* Update `org.springframework:spring-framework-bom` to version `6.1.5` (https://github.com/apache/logging-log4j2/pull/2382[2382])

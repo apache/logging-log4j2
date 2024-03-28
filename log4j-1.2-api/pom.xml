@@ -16,17 +16,21 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-1.2-api</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j 1.x Compatibility API</name>
   <description>The Apache Log4j 1.x Compatibility API</description>
+
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
 
@@ -48,6 +52,7 @@
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
     <!-- we have an `bnd.bnd` file to override the parent's defaults -->
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>javax.jms</groupId>
@@ -129,21 +134,6 @@
 
   <build>
     <plugins>
-
-      <!-- Enable Log4j plugin processing -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <annotationProcessorPaths combine.children="append">
-            <path>
-              <groupId>org.apache.logging.log4j</groupId>
-              <artifactId>log4j-plugin-processor</artifactId>
-              <version>${project.version}</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
-      </plugin>
 
       <!-- Illegal access is disabled by default in Java 16 due to JEP-396.
            We are relaxing it for tests. -->

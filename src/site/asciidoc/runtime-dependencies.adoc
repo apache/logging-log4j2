@@ -16,10 +16,6 @@
 ////
 = Runtime Dependencies
 
-++++
-<link rel="stylesheet" type="text/css" href="css/tables.css">
-++++
-
 Some Log4j features depend on external libraries. This page lists the
 required and optional dependencies.
 
