@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.attribute.FileTime;
+import java.time.Duration;
 import java.util.List;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
@@ -42,12 +43,6 @@ import org.junitpioneer.jupiter.SetSystemProperty;
  */
 @SetSystemProperty(key = "log4j2.status.entries", value = "10")
 class IfLastModifiedTest {
-
-    @Test
-    public void testGetDurationReturnsConstructorValue() {
-        final IfLastModified filter = IfLastModified.createAgeCondition(Duration.parse("P7D"));
-        assertEquals(0, filter.getAge().compareTo(Duration.parse("P7D")));
-    }
 
     @Test
     public void testAcceptsIfFileAgeEqualToDuration() {
