@@ -33,7 +33,7 @@ evaluated during event processing.
 
 Appenders usually are only responsible for writing the event data to the
 target destination. In most cases they delegate responsibility for
-formatting the event to a link:layouts.html[layout]. Some appenders wrap
+formatting the event to a xref:manual/layouts.adoc[layout]. Some appenders wrap
 other appenders so that they can modify the `LogEvent`, handle a failure
 in an `Appender`, route the event to a subordinate `Appender` based on
 advanced `Filter` criteria or provide similar functionality that does not
@@ -61,9 +61,9 @@ https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueu
 which does not require any external libraries. Note that multi-threaded
 applications should exercise care when using this appender as such: the
 blocking queue is susceptible to lock contention and our
-link:../performance.html#asyncLogging[tests showed] performance may
+xref:manual/performance.adoc#asyncLogging[tests showed] performance may
 become worse when more threads are logging concurrently. Consider using
-link:async.html[lock-free Async Loggers] for optimal performance.
+xref:manual/async.adoc[lock-free Async Loggers] for optimal performance.
 
 .AsyncAppender Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
@@ -120,7 +120,7 @@ There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
 with the logging rate and the queue is filling up. See the details for
 system properties
-link:configuration.html#log4j2.AsyncQueueFullPolicy[`log4j2.AsyncQueueFullPolicy`
+xref:manual/configuration.adoc#log4j2.AsyncQueueFullPolicy[`log4j2.AsyncQueueFullPolicy`
 and `log4j2.DiscardThreshold`].
 
 A typical AsyncAppender configuration might look like:
@@ -1223,7 +1223,7 @@ public class ConnectionFactory {
 }
 ----
 
-This appender is link:messages.html#MapMessage[`MapMessage`]-aware.
+This appender is xref:manual/messages.adoc#MapMessage[`MapMessage`]-aware.
 
 The following configuration uses no layout to indicate that the
 Appender should match the keys of a `MapMessage` to the names of
@@ -1600,7 +1600,7 @@ Optional, default is 0 (infinite timeout).
 Optional, default is 0 (infinite timeout).
 
 |headers |Property[] |Additional HTTP headers to use. The values support
-link:lookups.html[lookups].
+xref:manual/lookups.adoc[lookups].
 
 |ignoreExceptions |boolean |The default is `true`, causing exceptions
 encountered while appending events to be internally logged and then
@@ -1642,7 +1642,7 @@ The KafkaAppender logs events to an https://kafka.apache.org/[Apache Kafka] topi
 
 |key
 |String
-|The key that will be sent to Kafka with every message. Optional value defaulting to `null`. Any of the link:./lookups.html[Lookups] can be included.
+|The key that will be sent to Kafka with every message. Optional value defaulting to `null`. Any of the xref:manual/lookups.adoc[Lookups] can be included.
 
 |filter
 |Filter
@@ -1983,7 +1983,7 @@ This section details specializations of the link:#NoSQLAppender[NoSQLAppender] p
 |Specify the size in bytes of the capped collection to use if enabled. The minimum size is 4096 bytes, and larger sizes will be increased to the nearest integer multiple of 256. See the capped collection documentation linked above for more information.
 |===
 
-This appender is link:messages.html#MapMessage[MapMessage]-aware.
+This appender is xref:manual/messages.adoc#MapMessage[MapMessage]-aware.
 
 Here are a few sample configurations for the NoSQLAppender and MongoDB3 provider:
 
@@ -2073,7 +2073,7 @@ be increased to the nearest integer multiple of 256. See the capped
 collection documentation linked above for more information.
 |=======================================================================
 
-This appender is link:messages.html#MapMessage[MapMessage]-aware.
+This appender is xref:manual/messages.adoc#MapMessage[MapMessage]-aware.
 
 Here are a few sample configurations for the NoSQLAppender and MongoDB4
 provider:
@@ -2221,7 +2221,7 @@ cannot be switched off) and internally it uses a
 `ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`. We
 saw a 20-200% performance improvement compared to FileAppender with
 "bufferedIO=true" in our
-link:../performance.html#whichAppender[measurements]. Similar to the
+xref:manual/performance.adoc#whichAppender[measurements]. Similar to the
 FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to
 actually perform the file I/O. While RandomAccessFileAppender from
 different Configurations cannot be shared, the RandomAccessFileManagers
@@ -2540,7 +2540,7 @@ allows specifying a padding, like %3i for space-padding the counter to
 3 digits or (usually more useful) %03i for zero-padding the counter to
 3 digits. The pattern also
 supports interpolation at runtime so any of the Lookups (such as the
-link:./lookups.html#DateLookup[DateLookup]) can be included in the
+xref:manual/lookups.adoc#DateLookup[DateLookup]) can be included in the
 pattern.
 
 |immediateFlush |boolean a|
@@ -3039,7 +3039,7 @@ default is 1, meaning only the files in the specified base directory.
 false.
 
 |testMode |boolean |If true, files are not deleted but instead a message
-is printed to the link:configuration.html#StatusMessages[status logger]
+is printed to the xref:manual/configuration.adoc#StatusMessages[status logger]
 at INFO level. Use this to do a dry run to test if the configuration
 works as expected. Default is false.
 
@@ -3088,7 +3088,7 @@ specifying a script.
 
 The ScriptCondition should contain a link:#ScriptCondition[Script,
 ScriptRef or ScriptFile] element that specifies the logic to be
-executed. (See also the link:filters.html#Script[ScriptFilter]
+executed. (See also the xref:manual/filters.adoc#Script[ScriptFilter]
 documentation for more examples of configuring ScriptFiles and
 ScriptRefs.)
 
@@ -3273,7 +3273,7 @@ comes first.
 specifies the logic to be executed. The script is passed a list of paths
 found under the base path and must return the paths to delete as a
 `java.util.List<PathWithAttributes>`. See also the
-link:filters.html#Script[ScriptFilter] documentation for an example of
+xref:manual/filters.adoc#Script[ScriptFilter] documentation for an example of
 how ScriptFiles and ScriptRefs can be configured.
 |=======================================================================
 
@@ -3475,7 +3475,7 @@ buffered (this cannot be switched off) and internally it uses a
 `ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`. We
 saw a 20-200% performance improvement compared to RollingFileAppender
 with "bufferedIO=true" in our
-link:../performance.html#whichAppender[measurements]. The
+xref:manual/performance.adoc#whichAppender[measurements]. The
 RollingRandomAccessFileAppender writes to the File named in the fileName
 parameter and rolls the file over according the TriggeringPolicy and the
 RolloverPolicy. Similar to the RollingFileAppender,
@@ -3521,7 +3521,7 @@ a date/time pattern compatible with
 https://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
 and/or a %i which represents an integer counter. The pattern also
 supports interpolation at runtime so any of the Lookups (such as the
-link:./lookups.html#DateLookup[DateLookup] can be included in the
+xref:manual/lookups.adoc#DateLookup[DateLookup] can be included in the
 pattern.
 
 |immediateFlush |boolean a|
@@ -3958,7 +3958,7 @@ The default behavior is to trigger sending an email whenever an ERROR or higher 
 
 |layout
 |Layout
-|The Layout to use to format the LogEvent. If no layout is supplied link:layouts.html#HTMLLayout[HTML layout] will be used.
+|The Layout to use to format the LogEvent. If no layout is supplied xref:manual/layouts.adoc#HTMLLayout[HTML layout] will be used.
 
 |filter
 |Filter

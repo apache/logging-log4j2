@@ -88,11 +88,8 @@ Committee.
 
 Git::
 All of the Apache products are maintained in information repositories
-using either Subversion or Git; Log4j uses
-link:source-repository.html[Git]. Only some of the Apache developers
-have write access to the Apache Logging repositories; everyone has
-https://gitbox.apache.org/repos/asf?p=logging-log4j2.git[read
-access].
+using either Subversion or Git; Log4j uses Git.
+Only some of the Apache developers have write access to the Apache Logging repositories; everyone has read access.
 
 [#issues]
 == Issue Management

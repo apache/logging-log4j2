@@ -107,9 +107,9 @@ are not garbage-free since they
 cause `java.util.concurrent.locks.AbstractQueuedSynchronizer$Node` objects to be created.
 The default wait strategy used by Log4j uses a synchronized block instead of a ReentrantLock to avoid this problem.
 The Yield and Sleep wait strategies are garbage-free. (For configuring predefined wait strategies, see
-link:async.html#SysPropsAllAsync[here] and
-link:async.html#SysPropsMixedSync-Async[here],
-you may also configure a link:async.html#WaitStrategy[custom wait strategy].)
+xref:manual/async.adoc#SysPropsAllAsync[here] and
+xref:manual/async.adoc#SysPropsMixedSync-Async[here],
+you may also configure a xref:manual/async.adoc#WaitStrategy[custom wait strategy].)
 
 === Disabling Garbage-free Logging
 
@@ -136,7 +136,7 @@ properties] for more info.
 [#Appenders]
 === Supported Appenders
 
-The following link:appenders.html[appenders] are garbage-free during
+The following xref:manual/appenders.adoc[appenders] are garbage-free during
 steady-state logging:
 
 * Console
@@ -149,13 +149,13 @@ file rollover)
 
 Any other appenders not in the above list (including AsyncAppender)
 create temporary objects during steady-state logging. Instead of
-AsyncAppender, use link:async.html[Async Loggers] to log asynchronously
+AsyncAppender, use xref:manual/async.adoc[Async Loggers] to log asynchronously
 in a garbage-free manner.
 
 [#Filters]
 === Supported Filters
 
-The following link:filters.html[filters] are garbage-free during
+The following xref:manual/filters.adoc[filters] are garbage-free during
 steady-state logging:
 
 * CompositeFilter (adding and removing element filters creates temporary
@@ -183,7 +183,7 @@ GelfLayout is garbage-free when used with compressionType="OFF", as long as no a
 ==== JsonTemplateLayout
 
 `JsonTemplateLayout` is garbage-free with
-link:json-template-layout.html#faq-garbage-free[a few exceptions].
+xref:manual/json-template-layout.adoc#faq-garbage-free[a few exceptions].
 
 ==== PatternLayout
 
@@ -448,7 +448,7 @@ spike in service time adds queueing delay for many of the subsequent
 operations. Service time is easy to measure (and often looks good on
 paper) but is irrelevant for users since it omits the time spent waiting
 for service. For this reason we report response time: service time plus
-wait time. See the link:../performance.html#responseTime[response time
+wait time. See the xref:manual/performance.adoc#responseTime[response time
 section] of the performance page for more detail.
 
 The response time test results below were all derived from running the

@@ -27,7 +27,7 @@ However, this does allow any other Log4j Provider besides the Core provider to b
 == Requirements
 
 The JDK Logging Adapter is dependent on the Log4j API and optionally Log4j Core.
-For more information, see link:runtime-dependencies.html[Runtime Dependencies].
+For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
 
 == Usage
 

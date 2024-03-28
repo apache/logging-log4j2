@@ -105,7 +105,7 @@ another thread is not likely to give better performance.
 is faster than the maximum sustained throughput of the underlying
 appender, the queue will fill up and the application will end up logging
 at the speed of the slowest appender. If this happens, consider
-selecting a link:../performance.html#whichAppender[faster appender], or
+selecting a xref:manual/performance.adoc#whichAppender[faster appender], or
 logging less. If neither of these is an option, you may get better
 throughput and fewer latency spikes by logging synchronously.
 
@@ -179,7 +179,7 @@ of the application.
 
 NOTE: System properties were renamed into a more consistent style in
 Log4j 2.10.0. All old property names are still supported which are
-documented link:configuration.html#SystemProperties[here].
+documented xref:manual/configuration.adoc#SystemProperties[here].
 
 [[SysPropsAllAsync]]
 
@@ -298,7 +298,7 @@ There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
 with the logging rate and the queue is filling up. See the details for
 system properties
-link:configuration.html#asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
+xref:manual/configuration.adoc#asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
 and `log4j2.discardThreshold`].
 
 [#MixedSync-Async]
@@ -365,7 +365,7 @@ of the application.
 
 NOTE: All system properties were renamed into a more consistent style in
 Log4j 2.10. All old property names are still supported which are
-documented link:configuration.html#SystemProperties[here].
+documented xref:manual/configuration.adoc#SystemProperties[here].
 
 [[SysPropsMixedSync-Async]]
 
@@ -451,7 +451,7 @@ There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
 with the logging rate and the queue is filling up. See the details for
 system properties
-link:configuration.html#asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
+xref:manual/configuration.adoc#asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
 and `log4j2.discardThreshold`].
 
 [#WaitStrategy]
@@ -509,12 +509,12 @@ WaitStrategy-related system properties are ignored if a `AsyncWaitStrategyFactor
 == Location, location, location...
 
 If one of the layouts is configured with a location-related attribute
-like HTML link:layouts.html#HtmlLocationInfo[locationInfo], or one of
-the patterns link:layouts.html#PatternClass[%C or $class],
-link:layouts.html#PatternFile[%F or %file],
-link:layouts.html#PatternLocation[%l or %location],
-link:layouts.html#PatternLine[%L or %line],
-link:layouts.html#PatternMethod[%M or %method], Log4j will take a
+like HTML xref:manual/layouts.adoc#HtmlLocationInfo[locationInfo], or one of
+the patterns xref:manual/layouts.adoc#PatternClass[%C or $class],
+xref:manual/layouts.adoc#PatternFile[%F or %file],
+xref:manual/layouts.adoc#PatternLocation[%l or %location],
+xref:manual/layouts.adoc#PatternLine[%L or %line],
+xref:manual/layouts.adoc#PatternMethod[%M or %method], Log4j will take a
 snapshot of the stack, and walk the stack trace to find the location
 information.
 
@@ -526,7 +526,7 @@ be taken.
 However, asynchronous loggers need to make this decision before passing
 the log message to another thread; the location information will be lost
 after that point. The
-link:../performance.html#asyncLoggingWithLocation[performance impact] of
+xref:manual/performance.adoc#asyncLoggingWithLocation[performance impact] of
 taking a stack trace snapshot is even higher for asynchronous loggers:
 logging with location is 30-100 times slower than without location. For
 this reason, asynchronous loggers and asynchronous appenders do not
@@ -651,7 +651,7 @@ threads
 
 This section has been rewritten with the Log4j 2.6 release. The
 previous version only reported _service time_ instead of _response
-time_. See the link:../performance.html#responseTime[response time] side
+time_. See the xref:manual/performance.adoc#responseTime[response time] side
 bar on the performance page on why this is too optimistic. Furthermore
 the previous version reported average latency, which does not make sense
 since latency is not a normal distribution. Finally, the previous
@@ -665,7 +665,7 @@ his http://www.infoq.com/presentations/latency-response-time[How NOT to
 measure latency] presentation. (Now we know why this is also known as
 the "Oh s#@t!" presentation.)
 
-link:../performance.html#responseTime[Response time] is how long it
+xref:manual/performance.adoc#responseTime[Response time] is how long it
 takes to log a message under a certain load. What is often reported as
 latency is actually _service time_: how long it took to perform the
 operation. This hides the fact that a single spike in service time adds
@@ -706,7 +706,7 @@ larger than Log4j 2]
 The graph below zooms in on the Log4j 2 results for the same test. We
 see that the worst-case response time is highest for the
 ArrayBlockingQueue-based Async Appender.
-link:garbagefree.html[Garbage-free] async loggers have the best response
+xref:manual/garbagefree.adoc[Garbage-free] async loggers have the best response
 time behaviour.
 
 image:ResponseTimeAsyncLogging16Threads_8kEachLog4j2Only-labeled.png[image]

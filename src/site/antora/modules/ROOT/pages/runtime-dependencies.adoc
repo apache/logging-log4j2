@@ -267,4 +267,4 @@ The Log4j Simple Mail Transfer Protocol (SMTP) Appender, version for Jakarta EE 
 
 == log4j-jakarta-web
 
-The Log4j link:log4j-jakarta-web.html[Jakarta-Web] module for Jakarta EE 9+ web servlet containers requires the Servlet API and `log4j-core`.
+The Log4j xref:log4j-jakarta-web.adoc[Jakarta-Web] module for Jakarta EE 9+ web servlet containers requires the Servlet API and `log4j-core`.

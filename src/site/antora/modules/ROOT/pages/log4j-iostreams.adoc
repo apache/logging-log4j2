@@ -26,7 +26,7 @@ The IOStreams component is a link:javadoc/log4j-api/index.html[Log4j API] extens
 
 The Log4j IOStreams API extension requires the Log4j 2 API.
 This component was introduced in Log4j 2.1.
-For more information, see link:runtime-dependencies.html[Runtime Dependencies].
+For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
 
 == Usage
 

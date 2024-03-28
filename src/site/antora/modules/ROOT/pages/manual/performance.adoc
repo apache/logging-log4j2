@@ -147,15 +147,15 @@ the underlying appenders at best.
 
 image:async-throughput-comparison.png[Peak throughput comparison]
 
-For details, see the link:manual/async.html[Async Loggers] manual page.
+For details, see the xref:manual/async.adoc[Async Loggers] manual page.
 
 [#asyncLoggingResponseTime]
 === Asynchronous Logging Response Time
 
 Response time behaviour varies a lot with the workload and the number of
-threads that log concurrently. The link:manual/async.html#Latency[Async
+threads that log concurrently. The xref:manual/async.adoc#Latency[Async
 Loggers] manual page and the
-link:manual/garbagefree.html#Latency[garbage-free logging] manual page
+xref:manual/garbagefree.adoc#Latency[garbage-free logging] manual page
 provide some graphs showing response time behaviour under various loads.
 
 This section shows another graph showing response time latency behaviour
@@ -247,12 +247,12 @@ the log4j-perf-test module.
 Some layouts can show the class, method and line number in the
 application where the logging call was made. In Log4j 2, examples of
 such layout options are HTML
-link:layouts.html#HtmlLocationInfo[locationInfo], or one of the patterns
-link:layouts.html#PatternClass[%C or $class],
-link:layouts.html#PatternFile[%F or %file],
-link:layouts.html#PatternLocation[%l or %location],
-link:layouts.html#PatternLine[%L or %line],
-link:layouts.html#PatternMethod[%M or %method]. In order to provide
+xref:manual/layouts.adoc#HtmlLocationInfo[locationInfo], or one of the patterns
+xref:manual/layouts.adoc#PatternClass[%C or $class],
+xref:manual/layouts.adoc#PatternFile[%F or %file],
+xref:manual/layouts.adoc#PatternLocation[%l or %location],
+xref:manual/layouts.adoc#PatternLine[%L or %line],
+xref:manual/layouts.adoc#PatternMethod[%M or %method]. In order to provide
 caller location information, the logging library will take a snapshot of
 the stack, and walk the stack trace to find the location information.
 

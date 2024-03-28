@@ -91,7 +91,7 @@ image:DockerFluentdAggregator.png[Docker Fluentd, "Logging via StdOut using the 
 
 While this is not the recommended 12-Factor approach, it performs very well.
 However, it requires that the  application declares a volume where the log files will reside and then configures the log forwarder to tail  those files.
-Care must also be taken to automatically manage the disk space used for the logs, which Log4j  can perform via the "Delete" action on the link:appenders.html#RollingFileAppender[RollingFileAppender].
+Care must also be taken to automatically manage the disk space used for the logs, which Log4j  can perform via the "Delete" action on the xref:manual/appenders.adoc#RollingFileAppender[RollingFileAppender].
 
 image:DockerLogFile.png[File, "Logging to a File"]
 
@@ -106,7 +106,7 @@ image:DockerTCP.png[TCP, "Application Logging to a Forwarder via TCP"]
 Similar to sending logs to a forwarder, logs can also be sent to a cluster of aggregators.
 However, setting this up is not as simple since, to be highly available, a cluster of aggregators must be used.
 However, the SocketAppender currently can only be configured with a single host and port.
-To allow  for failover if the primary aggregator fails the SocketAppender must be enclosed in a  link:appenders.html#FailoverAppender[FailoverAppender], which would also have the secondary aggregator configured.
+To allow  for failover if the primary aggregator fails the SocketAppender must be enclosed in a  xref:manual/appenders.adoc#FailoverAppender[FailoverAppender], which would also have the secondary aggregator configured.
 Another option is to have the SocketAppender  point to a highly available proxy that can forward to the Log Aggregator.
 
 If the log aggregator used is Apache Flume (or similar) the Appenders for these support
@@ -444,16 +444,14 @@ filebeat.inputs:
 === Kibana
 
 Using the EnhancedGelf template or the custom template, the above configurations will allow the message
-field to contain a fully formatted log event. The ThreadContext attributes, custom fields, thread name, etc., will all be available as attributes on each log event that can be used for filtering. The result will resemble:
-
-image:kibana.png[Kibana, "Kibana Display"]
+field to contain a fully formatted log event. The ThreadContext attributes, custom fields, thread name, etc., will all be available as attributes on each log event that can be used for filtering.
 
 == Managing Logging Configuration
 
 Spring Boot provides another least common denominator approach to logging configuration.
 It will let you set the  log level for various Loggers within an application which can be dynamically updated via REST endpoints provided  by Spring.
 While this works in a lot of cases it does not support any of the more advanced filtering features of  Log4j.
-For example, since it cannot add or modify any Filters other than the log level of a logger, changes cannot be made to allow  all log events for a specific user or customer to temporarily be logged  (see link:filters.html#DynamicThresholdFilter[DynamicThresholdFilter] or  link:filters.html#ThreadContextMapFilter[ThreadContextMapFilter]) or any other kinds of changes to filters.
+For example, since it cannot add or modify any Filters other than the log level of a logger, changes cannot be made to allow  all log events for a specific user or customer to temporarily be logged  (see xref:manual/filters.adoc#DynamicThresholdFilter[DynamicThresholdFilter] or  xref:manual/filters.adoc#ThreadContextMapFilter[ThreadContextMapFilter]) or any other kinds of changes to filters.
 Also, in a microservices, clustered environment it is quite likely that these changes will need to be propagated to multiple servers at the same time.
 Trying to achieve this via REST calls could be difficult.
 

@@ -47,7 +47,7 @@ This is a low-effort way to migrate, and may also allow for migration to proceed
 Enable the Log4j 1.x bridge via one of the following steps:
 
 . Set the system property "log4j1.compatibility" to a value of "true".
-Log4j 2 will then add log4j.properties, log4j-test.properties, log4j.xml and log4j-test.xml to the link:configuration.html#AutomaticConfiguration[configuration files] it searches for on the class path.
+Log4j 2 will then add log4j.properties, log4j-test.properties, log4j.xml and log4j-test.xml to the xref:manual/configuration.adoc#AutomaticConfiguration[configuration files] it searches for on the class path.
 . Set the Log4j 1 system property "log4j.configuration" to the location of the log4j 1 configuration file.
 The files must have a file extension of either ".properties" or ".xml".
 
@@ -164,7 +164,7 @@ Equivalent functionality is provided in the Log4j 2 implementation classes, see 
 | Parameterized messages like `logger.info("hi {}", userName)`
 
 | http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html[`org.apache.log4j.MDC`] and http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/NDC.html[`org.apache.log4j.NDC`]
-| link:thread-context.html[Thread Context]
+| xref:manual/thread-context.adoc[Thread Context]
 |===
 
 [#Log4j2ConfigurationFormat]
@@ -175,7 +175,7 @@ Although the Log4j 2 configuration syntax is different from that of Log4j 1.x, m
 === Interpolation
 
 Note that system property interpolation via the `+${foo}+` syntax has been extended to allow property lookups from many different sources.
-See the link:lookups.html[Lookups] documentation for more details.
+See the xref:manual/lookups.adoc[Lookups] documentation for more details.
 For example, using a lookup for the system property named `catalina.base`, in Log4j 1.x, the syntax would be `${catalina.base}`.
 In Log4j 2, the syntax would be `${sys:catalina.base}`.
 

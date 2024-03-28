@@ -222,10 +222,10 @@ Some Appenders make special use of `MapMessage` objects:
 * When a JMS Appender is configured
 with a no layout, it converts a Log4j `MapMessage` to a JMS
 `javax.jms.MapMessage`.
-* When a link:appenders.html#JDBCAppender[JDBC Appender] is configured
+* When a xref:manual/appenders.adoc#JDBCAppender[JDBC Appender] is configured
 with no layout, it converts a Log4j `MapMessage` to values in a
 SQL INSERT statement.
-* When a link:appenders.html#NoSQLAppenderMongoDB4[MongoDB4 Appender] is
+* When a xref:manual/appenders.adoc#NoSQLAppenderMongoDB4[MongoDB4 Appender] is
 configured with no layout, it converts a Log4j `MapMessage` to
 fields in a MongoDB object.
 

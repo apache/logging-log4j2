@@ -60,7 +60,7 @@ The following Log4j 1.x methods will behave differently when the Log4j 2 Core mo
 If log4j-core is not present location information will not be accurate in calls using the Log4j 1.2 API.
 The config package which attempts to convert Log4j 1.x configurations to Log4j 2 is not supported without Log4j 2.
 
-For more information, see link:runtime-dependencies.html[Runtime Dependencies].
+For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
 
 == Usage
 

@@ -186,4 +186,4 @@ If not provided the default key store will be used.
 == Requirements
 
 The Log4j 2 Spring Cloud Configuration integration has a dependency on Log4j 2 API, Log4j 2 Core, and  Spring Cloud Configuration versions 2.0.3.RELEASE or 2.1.1.RELEASE or later versions it either release series.
-For more information, see link:runtime-dependencies.html[Runtime Dependencies].
+For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].

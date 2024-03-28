@@ -85,10 +85,7 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderCon
   Associates LoggerContexts with the ClassLoader that created the caller
   of the getLogger(...) call. This is the default ContextSelector.
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector.html[`JndiContextSelector`]::
-  Locates the LoggerContext by querying JNDI. Please see link:../manual/configuration.html#allowedJndiProtocols[log4j2.allowedJndiProtocols],
-link:../manual/configuration.html#allowedLdapClasses[log4j2.allowedLdapClasses], and
-link:../manual/configuration.html#allowedLdapHosts[log4j2.allowedLdapHosts] for restrictions on using JNDI
-with Log4j.
+  Locates the LoggerContext by querying JNDI.
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[`AsyncLoggerContextSelector`]::
   Creates a LoggerContext that ensures that all loggers are
   AsyncLoggers.
@@ -192,7 +189,7 @@ public static class RootLogger extends LoggerConfig {
 
 A LogEventFactory is used to generate LogEvents. Applications may replace the standard LogEventFactory by setting the value of the system property Log4jLogEventFactory to the name of the custom LogEventFactory class.
 
-Note: When log4j is configured to have link:async.html#AllAsync[all
+Note: When log4j is configured to have xref:manual/async.adoc#AllAsync[all
 loggers asynchronous], log events are pre-allocated in a ring buffer and
 the `LogEventFactory` is not used.
 
@@ -224,7 +221,7 @@ A Lookup must be declared using a `@Plugin @Lookup` annotation. The `value` spec
 match the prefix. The example below shows a Lookup that will return
 the value of a System Property.
 
-The provided Lookups are documented here: link:./lookups.html[Lookups]
+The provided Lookups are documented here: xref:manual/lookups.adoc[Lookups]
 
 [source,java]
 ----

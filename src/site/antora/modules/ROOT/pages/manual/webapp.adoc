@@ -24,7 +24,7 @@ You must take particular care when using Log4j or any other logging framework wi
 
 Due to the namespace change from `javax` to `jakarta`, you need to use `log4j-jakarta-web` instead of `log4j-web` for Servlet 5.0 or newer.
 
-In either case, you'll need to add the `log4j-web` module to your deployment as detailed in the link:../maven-artifacts.html[Maven, Ivy, and Gradle Artifacts] manual page.
+In either case, you'll need to add the `log4j-web` module to your deployment.
 
 [.note]
 ====
@@ -170,7 +170,7 @@ You may want to use information about the web application during configuration. 
 === JavaServer Pages Logging
 You may use Log4j 2 within JSPs just as you would within any other Java code. Simply obtain a Logger and call its methods to log events. However, this requires you to use Java code within your JSPs, and some development teams rightly are not comfortable doing this. If you have a dedicated user interface development team that is not familiar with using Java, you may even have Java code disabled in your JSPs.
 
-For this reason, Log4j 2 provides a JSP Tag Library that enables you to log events without using any Java code. To read more about using this tag library, link:/log4j-taglib/index.html[read the Log4j Tag Library documentation].
+For this reason, Log4j 2 provides a JSP Tag Library that enables you to log events without using any Java code. To read more about using this tag library, xref:log4j-taglib.adoc[read the Log4j Tag Library documentation].
 
 Important Note! As noted above, containers often ignore certain JARs known not to contain TLDs and do not scan them for TLD files. Importantly, Tomcat 7 <7.0.43 ignores all JAR files named log4j*.jar, which prevents the JSP tag library from being automatically discovered. This does not affect Tomcat 6.x and has been fixed in Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 <7.0.43 you will need to change catalina.properties and remove "log4j*.jar" from the jarsToSkip property. You may need to do something similar on other containers if they skip scanning Log4j JAR files.
 
@@ -257,7 +257,7 @@ public class TestAsyncServlet extends HttpServlet {
 }
 ----
 
-Alternatively, you can obtain the link:/log4j-web/apidocs/org/apache/logging/log4j/web/Log4jWebLifeCycle.html[Log4jWebLifeCycle] instance from the ServletContext attributes, call its setLoggerContext method as the very first line of code in your asynchronous thread, and call its clearLoggerContext method as the very last line of code in your asynchronous thread. The following code demonstrates this. It uses the container thread pool to execute asynchronous request processing, passing an anonymous inner Runnable to the start method.
+Alternatively, you can obtain the `Log4jWebLifeCycle` instance from the ServletContext attributes, call its setLoggerContext method as the very first line of code in your asynchronous thread, and call its clearLoggerContext method as the very last line of code in your asynchronous thread. The following code demonstrates this. It uses the container thread pool to execute asynchronous request processing, passing an anonymous inner Runnable to the start method.
 
 [source,java]
 ----

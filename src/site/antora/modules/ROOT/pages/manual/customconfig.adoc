@@ -67,7 +67,7 @@ follow.
 == Understanding ConfigurationFactory
 
 During initialization, Log4j 2 will search for available
-link:extending.html#ConfigurationFactory[ConfigurationFactories] and
+xref:manual/extending.adoc#ConfigurationFactory[ConfigurationFactories] and
 then select the one to use. The selected `ConfigurationFactory` creates
 the `Configuration` that Log4j will use. Here is how Log4j finds the
 available ConfigurationFactories:

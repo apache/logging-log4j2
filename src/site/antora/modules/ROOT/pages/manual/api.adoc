@@ -51,7 +51,7 @@ public class HelloWorld {
 
 The output from the call to `logger.info()` will vary significantly
 depending on the configuration used. See the
-link:configuration.html[Configuration] section for more details.
+xref:manual/configuration.adoc[Configuration] section for more details.
 
 === Substituting Parameters
 

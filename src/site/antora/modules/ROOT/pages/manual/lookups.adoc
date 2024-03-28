@@ -22,8 +22,8 @@ arbitrary places. They are a particular type of Plugin that implements
 the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`]
 interface. Information on how to use Lookups in configuration files can
-be found in the link:configuration.html#PropertySubstitution[Property
-Substitution] section of the link:configuration.html[Configuration]
+be found in the xref:manual/configuration.adoc#PropertySubstitution[Property
+Substitution] section of the xref:manual/configuration.adoc[Configuration]
 page.
 
 [#ContextMapLookup]
@@ -104,7 +104,7 @@ Log4j Docker provides access to the following container attributes:
 </JsonTemplateLayout>
 ----
 
-This Lookup is subject to the requirements listed at link:../log4j-docker/index.html[Log4j Docker Support]
+This Lookup is subject to the requirements listed at xref:log4j-docker.adoc[Log4j Docker Support]
 
 [#EnvironmentLookup]
 == Environment Lookup
@@ -448,8 +448,8 @@ RollingFileAppender for each unique value of the key named "type" in the
 MapMessage. Note that when used this way a value for "type" should be
 declared in the properties declaration to provide a default value in
 case the message is not a MapMessage or the MapMessage does not contain
-the key. See the link:configuration.html#PropertySubstitution[Property
-Substitution] section of the link:configuration.html[Configuration]
+the key. See the xref:manual/configuration.adoc#PropertySubstitution[Property
+Substitution] section of the xref:manual/configuration.adoc[Configuration]
 page for information on how to set the default values.
 
 [source,xml]

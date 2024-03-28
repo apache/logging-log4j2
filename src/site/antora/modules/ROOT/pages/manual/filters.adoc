@@ -701,7 +701,7 @@ Throwable as part of the Message.
 
 The sample below shows how to declare script fields and then reference
 them in specific components. See
-link:appenders.html#ScriptCondition[ScriptCondition] for an example of
+xref:manual/appenders.adoc#ScriptCondition[ScriptCondition] for an example of
 how the `ScriptPlugin` element can be used to embed script code directly in
 the configuration.
 

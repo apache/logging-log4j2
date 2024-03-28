@@ -40,8 +40,7 @@ image:whichjar-2.x.png[Diagram showing which JARs correspond to which systems]
 image:whichjar-slf4j-2.x.png[Diagram showing the dependency flow to use Log4j 2 API with SLF4J]
 
 Some of the Log4j components have features with optional dependencies.
-The component page will have more detail.
-For example, the link:log4j-core/index.html[log4j-core component page] has an outline of which log4j-core features have external dependencies.
+See xref:runtime-dependencies.adoc[the runtime dependencies page] for more information.
 
 [#exclusions]
 == How do I exclude conflicting dependencies?
@@ -162,7 +161,7 @@ See http://logging.apache.org/log4j/2.x/manual/webapp.html#ContextParams[this se
 [#config_from_code]
 == How do I configure log4j2 in code without a configuration file?
 
-Starting with version 2.4, Log4j 2 provides an link:manual/customconfig.html[API for programmatic configuration] The new link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html[`ConfigurationBuilder` API] allows you to create Configurations in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.
+Starting with version 2.4, Log4j 2 provides an xref:manual/customconfig.adoc[API for programmatic configuration] The new link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html[`ConfigurationBuilder` API] allows you to create Configurations in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.
 
 [#reconfig_from_code]
 == How do I reconfigure log4j2 in code with a specific configuration file?
@@ -234,7 +233,7 @@ You need at least log4j-api and log4j-core.
 Next, check the name of your configuration file.
 By default, log4j2 will look for a configuration file named `log4j2.xml` on the classpath.
 Note the "2" in the file name!
-(See the link:manual/configuration.html#AutomaticConfiguration[configuration manual page] for more details.)
+(See the xref:manual/configuration.adoc#AutomaticConfiguration[configuration manual page] for more details.)
 
 *From log4j-2.9 onward*
 
@@ -329,10 +328,10 @@ Configurator.setRootLevel(Level.DEBUG);
 == How do I set my log archive retention policy?
 How do I delete old log archives?
 
-The `DefaultRolloverStrategy` of the Rolling File appender (and Rolling Random Access File appender) supports a link:manual/appenders.html#CustomDeleteOnRollover[Delete] element.
+The `DefaultRolloverStrategy` of the Rolling File appender (and Rolling Random Access File appender) supports a xref:manual/appenders.adoc#CustomDeleteOnRollover[Delete] element.
 
 Starting at a specified base directory, you can delete all files for which some condition holds true, for example all files that match a given file name pattern and are older than some number of days.
-More complex conditions are possible, and if the built-in conditions are not sufficient, users can provide custom conditions by creating link:manual/appenders.html#DeletePathCondition[plugin conditions] or by writing a link:manual/appenders.html#ScriptCondition[script condition].
+More complex conditions are possible, and if the built-in conditions are not sufficient, users can provide custom conditions by creating xref:manual/appenders.adoc#DeletePathCondition[plugin conditions] or by writing a xref:manual/appenders.adoc#ScriptCondition[script condition].
 
 [#api-tradeoffs]
 == What are the trade-offs of using the Log4j 2 API versus the SLF4J API?
@@ -350,11 +349,11 @@ There are several advantages to using the Log4j 2 API:
 * SLF4J forces your application to log Strings.
 The Log4j 2 API supports logging any CharSequence if you want to log text, but also supports logging any Object as is.
 It is the responsibility of the logging _implementation_ to handle this object, and we consider it a design mistake to limit applications to logging Strings.
-* The Log4j 2 API offers support for logging link:manual/messages.html[Message objects].
+* The Log4j 2 API offers support for logging xref:manual/messages.adoc[Message objects].
 Messages allow support for interesting and complex constructs to be passed through the logging system and be efficiently manipulated.
 Users are free to create their own Message types and write custom Layouts, Filters and Lookups to manipulate them.
-* The Log4j 2 API has support for Java 8 link:manual/api.html#LambdaSupport[lambda expressions].
-* The Log4j 2 API has better support for link:manual/garbagefree.html[garbage-free logging]: it avoids creating vararg arrays and avoids creating Strings when logging CharSequence objects.
+* The Log4j 2 API has support for Java 8 xref:manual/api.adoc#LambdaSupport[lambda expressions].
+* The Log4j 2 API has better support for xref:manual/garbagefree.adoc[garbage-free logging]: it avoids creating vararg arrays and avoids creating Strings when logging CharSequence objects.
 
 [#gc-free-slf4j]
 == Is Log4j 2 still garbage-free when I use the SLF4J API?

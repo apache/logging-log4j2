@@ -170,7 +170,7 @@ public class Log4j2Test {
 }
 ----
 
-We can then also route these messages to the Log4j2 core by adding in the JUL bridge, and setting `-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager` on the JVM (see the documentation on link:../log4j-jul/index.html[the JUL adapter] for more information as to how this works).
+We can then also route these messages to the Log4j2 core by adding in the JUL bridge, and setting `-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager` on the JVM (see the documentation on xref:../log4j-jul.adoc[the JUL adapter] for more information as to how this works).
 
 In order to route these messages to Log4j2, your dependencies would look like the following:
 
@@ -227,7 +227,7 @@ we can then quickly and easily configure these messages to use Log4j2 as the log
 ----
 
 There are some limitations to this, but it is expected to work for the majority of common cases.
-See the link:migration.html[manual page on migration] for more information on this feature.
+See the xref:manual/migration.adoc[manual page on migration] for more information on this feature.
 
 == Conclusion
 

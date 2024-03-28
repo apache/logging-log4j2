@@ -72,7 +72,7 @@ default, each JAR bundle is scanned for its own Log4j configuration
 file. Similar to the web application paradigm, every bundle has its own
 LoggerContext. As this may be undesirable when a global Log4j
 configuration is wanted, then the
-link:extending.html#ContextSelector[ContextSelector] should be
+xref:manual/extending.adoc#ContextSelector[ContextSelector] should be
 overridden with `BasicContextSelector` or `JndiContextSelector`.
 
 [#Approaches]
@@ -100,7 +100,7 @@ create a single LoggerContext using a single configuration that will be
 shared across all applications.
 2.  Place the logging jars in the container's classpath and use the
 default ClassLoaderContextSelector. Follow the
-link:webapp.html[instructions to initialize Log4j 2 in a web
+xref:manual/webapp.adoc[instructions to initialize Log4j 2 in a web
 application]. Each application can be configured to share the same
 configuration used at the container or can be individually configured.
 If status logging is set to debug in the configuration there will be
@@ -109,7 +109,7 @@ in each web application.
 
 The `JndiContextSelector` will not work unless `log4j2.enableJndi=true` is set as a system property
 or environment variable. See the
-link:./configuration.html#enableJndi[log4j2.enableJndi] system property.
+xref:manual/configuration.adoc#enableJndi[log4j2.enableJndi] system property.
 
 The exact method for setting system properties depends on the container.
 For Tomcat, edit `$CATALINA_HOME/conf/catalina.properties`. Consult the

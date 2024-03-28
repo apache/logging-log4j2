@@ -29,7 +29,7 @@ If you have questions like:
 * _"My layout is not working as expected; what should I do?"_
 * _"How can I migrate from Log4j 1 with this custom configuration?"_
 
-We urge you to first check our link:faq.html[FAQ] to see if it has already been answered.
+We urge you to first check our xref:faq.adoc[FAQ] to see if it has already been answered.
 If not, you can ask your questions on one of our official user support channels:
 
 * https://github.com/apache/logging-log4j2/discussions[GitHub Discussions]

@@ -36,8 +36,8 @@ interface to add components to the default configuration.
 
 This page focuses primarily on configuring Log4j through a configuration
 file. Information on programmatically configuring Log4j can be found at
-link:extending.html[Extending Log4j 2] and
-link:customconfig.html[Programmatic Log4j Configuration].
+xref:manual/extending.adoc[Extending Log4j 2] and
+xref:manual/customconfig.adoc[Programmatic Log4j Configuration].
 
 All available formats are functionally equivalent. For example, a
 configuration file in XML can be rewritten using the properties format
@@ -899,7 +899,7 @@ declare multiple loggers as an array.
 }
 ----
 
-Additional link:../runtime-dependencies.html[runtime dependencies] are
+Additional xref:runtime-dependencies.adoc[runtime dependencies] are
 required for using JSON configuration files.
 
 [#YAML]
@@ -960,7 +960,7 @@ Configuration:
           
 ----
 
-Additional link:../runtime-dependencies.html[runtime dependencies] are
+Additional xref:runtime-dependencies.adoc[runtime dependencies] are
 required for using YAML configuration files.
 
 [#Properties]
@@ -1077,7 +1077,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
 
 An understanding of how loggers work in Log4j is critical before trying
 to configure them. Please reference the Log4j
-link:architecture.html[architecture] if more information is required.
+xref:manual/architecture.adoc[architecture] if more information is required.
 Trying to configure Log4j without understanding those concepts will lead
 to frustration.
 
@@ -1278,7 +1278,7 @@ While this is useful, there are many more places properties can
 originate from. To accommodate this, Log4j also supports the syntax
 `${prefix:name}` where the prefix identifies tells Log4j that variable
 name should be evaluated in a specific context. See the
-link:lookups.html[Lookups] manual page for more details. The contexts
+xref:manual/lookups.adoc[Lookups] manual page for more details. The contexts
 that are built in to Log4j are:
 
 [cols="1m,5"]
@@ -1429,7 +1429,7 @@ _As a footnote, it is worth pointing out that the variables in the
 RollingFile appender declaration will also not be evaluated when the
 configuration is processed. This is simply because the resolution of the
 whole RollingFile element is deferred until a match occurs. See
-link:appenders.html#RoutingAppender[RoutingAppender] for more
+xref:manual/appenders.adoc#RoutingAppender[RoutingAppender] for more
 information._
 
 [#Scripts]

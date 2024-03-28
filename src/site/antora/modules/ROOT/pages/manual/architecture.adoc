@@ -82,7 +82,7 @@ All other Loggers can be retrieved using the
 link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)[`LogManager.getLogger`]
 static method by passing the name of the desired Logger. Further
 information on the Logging API can be found in the
-link:../log4j-api/api.html[Log4j 2 API].
+xref:manual/api.adoc[Log4j API].
 
 === LoggerContext
 
@@ -91,7 +91,7 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html[`Log
 acts as the anchor point for the Logging system. However, it is possible
 to have multiple active LoggerContexts in an application depending on
 the circumstances. More details on the LoggerContext are in the
-link:logsep.html[Log Separation] section.
+xref:manual/logsep.adoc[Log Separation] section.
 
 === Configuration
 
@@ -131,7 +131,7 @@ Logger y = LogManager.getLogger("wombat");
 
 Configuration of the log4j environment is typically done at application
 initialization. The preferred way is by reading a configuration file.
-This is discussed in link:configuration.html[Configuration].
+This is discussed in xref:manual/configuration.adoc[Configuration].
 
 Log4j makes it easy to name Loggers by _software component_. This can be
 accomplished by instantiating a Logger in each class, with the logger
@@ -165,9 +165,9 @@ process the event.
 LoggerConfigs will be assigned a Log
 link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`].
 The set of built-in levels includes ALL, TRACE, DEBUG, INFO, WARN, ERROR,
-FATAL, and OFF. Log4j 2 also supports link:customloglevels.html[custom log
+FATAL, and OFF. Log4j 2 also supports xref:manual/customloglevels.adoc[custom log
 levels]. Another mechanism for getting more granularity is to use
-link:../log4j-api/api.html#Markers[Markers] instead. The OFF and ALL
+xref:manual/markers.adoc[markers] instead. The OFF and ALL
 levels are not intended to be used on calls to the logging API.
 Specifying OFF in the configuration implies no logging events should
 match while specifying ALL would mean all events match, including custom
@@ -340,7 +340,7 @@ is called an
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html[`Appender`].
 Currently, appenders exist for the console, files, remote socket
 servers, Apache Flume, remote UNIX Syslog daemons, and various
-database APIs. See the section on link:appenders.html[Appenders] for
+database APIs. See the section on xref:manual/appenders.adoc[Appenders] for
 more details on the various types available. More than one Appender can
 be attached to a Logger.
 
@@ -448,7 +448,7 @@ third field is the level of the log statement. The fourth field is the
 name of the logger associated with the log request. The text after the
 '-' is the message of the statement.
 
-Log4j comes with many different link:layouts.html[Layouts] for various
+Log4j comes with many different xref:manual/layouts.adoc[Layouts] for various
 use cases such as JSON, XML, HTML, and Syslog (including the new RFC
 5424 version). Other appenders such as the database connectors fill in
 specified fields instead of a particular textual layout.
@@ -477,5 +477,5 @@ a mechanism to allow the configuration to reference variables coming
 from System Properties, the configuration file, the ThreadContext Map,
 StructuredData in the LogEvent. The variables can either be resolved
 when the configuration is processed or as each event is processed, if
-the component is capable of handling it. See link:lookups.html[Lookups]
+the component is capable of handling it. See xref:manual/lookups.adoc[Lookups]
 for more information.

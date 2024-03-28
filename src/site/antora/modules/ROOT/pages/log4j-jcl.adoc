@@ -23,7 +23,7 @@ The Commons Logging Bridge allows applications coded to the Commons Logging API 
 == Requirements
 
 The Commons Logging Bridge is dependent on the Log4j 2 API and Commons Logging.
-For more information, see link:runtime-dependencies.html[Runtime Dependencies].
+For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
 
 == Usage
 

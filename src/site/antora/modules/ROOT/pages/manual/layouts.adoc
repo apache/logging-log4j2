@@ -159,7 +159,7 @@ Produces a CSV record with the following fields:
 0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
 ....
 
-Additional link:../runtime-dependencies.html[runtime dependencies] are
+Additional xref:runtime-dependencies.adoc[runtime dependencies] are
 required for using CSV layouts.
 
 [#GELFLayout]
@@ -223,7 +223,7 @@ To include any custom field in the output, use following syntax:
 </GelfLayout>
 ----
 
-Custom fields are included in the order they are declared. The values support link:lookups.html[lookups].
+Custom fields are included in the order they are declared. The values support xref:manual/lookups.adoc[lookups].
 
 See also:
 
@@ -401,9 +401,9 @@ To include any custom field in the output, use following syntax:
 </JsonLayout>
 ----
 
-Custom fields are always last, in the order they are declared. The values support link:lookups.html[lookups].
+Custom fields are always last, in the order they are declared. The values support xref:manual/lookups.adoc[lookups].
 
-Additional link:../runtime-dependencies.html[runtime dependencies] are required for using JsonLayout.
+Additional xref:runtime-dependencies.adoc[runtime dependencies] are required for using JsonLayout.
 
 
 [#JSONTemplateLayout]
@@ -509,7 +509,7 @@ JSON Template Layout will render JSON documents as follows:
 }
 ----
 
-See link:json-template-layout.html[JSON Template Layout] page for the complete
+See xref:manual/json-template-layout.adoc[JSON Template Layout] page for the complete
 documentation.
 
 [#PatternLayout]
@@ -1761,7 +1761,7 @@ the pattern specified on that PatternMatch element will be used.
 ==== ScriptPatternSelector
 
 The ScriptPatternSelector executes a script as descibed in the
-link:../configuration.html#Scripts[Scripts] section of the Configuration
+xref:manual/configuration.adoc#Scripts[Scripts] section of the Configuration
 chapter. The script is passed all the properties configured in the
 Properties section of the configuration, the StrSubstitutor used by the
 Confguration in the "substitutor" variables, and the log event in the
@@ -2050,9 +2050,9 @@ To include any custom field in the output, use the following syntax:
 </XmlLayout>
 ----
 
-Custom fields are always last, in the order they are declared. The values support link:lookups.html[lookups].
+Custom fields are always last, in the order they are declared. The values support xref:manual/lookups.adoc[lookups].
 
-NOTE: Additional link:../runtime-dependencies.html[runtime dependencies] are required for using XmlLayout.
+NOTE: Additional xref:runtime-dependencies.adoc[runtime dependencies] are required for using XmlLayout.
 
 [[YamlLayout]]
 == YAML Layout
@@ -2126,9 +2126,9 @@ To include any custom field in the output, use the following syntax:
 </YamlLayout>
 ----
 
-Custom fields are always last, in the order they are declared. The values support link:lookups.html[lookups].
+Custom fields are always last, in the order they are declared. The values support xref:manual/lookups.adoc[lookups].
 
-NOTE: Additional link:../runtime-dependencies.html[runtime dependencies] are required for using YamlLayout.
+NOTE: Additional xref:runtime-dependencies.adoc[runtime dependencies] are required for using YamlLayout.
 
 
 [#LocationInformation]
@@ -2149,7 +2149,7 @@ be taken.
 However, asynchronous loggers need to make this decision before passing
 the log message to another thread; the location information will be lost
 after that point. The
-link:../performance.html#asyncLoggingWithLocation[performance impact] of
+xref:manual/performance.adoc#asyncLoggingWithLocation[performance impact] of
 taking a stack trace snapshot is even higher for asynchronous loggers:
 logging with location is 30-100 times slower than without location. For
 this reason, asynchronous loggers and asynchronous appenders do not
