@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.kit.recycler;
 
 import org.apache.logging.log4j.kit.env.Log4jProperty;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -35,14 +36,18 @@ public record RecyclerProperties(@Nullable String factory, @Nullable Integer cap
     private static final int DEFAULT_CAPACITY =
             Math.max(2 * Runtime.getRuntime().availableProcessors() + 1, 8);
 
-    @Override
-    public Integer capacity() {
-        if (capacity == null) {
-            return DEFAULT_CAPACITY;
+    public RecyclerProperties {
+        capacity = validateCapacity(capacity);
+    }
+
+    private static Integer validateCapacity(final @Nullable Integer capacity) {
+        if (capacity != null) {
+            if (capacity >= 1) {
+                return capacity;
+            }
+            StatusLogger.getLogger()
+                    .warn("Invalid recycler capacity {}, using default capacity {}.", capacity, DEFAULT_CAPACITY);
         }
-        if (capacity < 1) {
-            throw new IllegalArgumentException("was expecting a `capacity` greater than 1, found: " + capacity);
-        }
-        return capacity;
+        return DEFAULT_CAPACITY;
     }
 }
