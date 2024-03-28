@@ -118,7 +118,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         try {
             return Log4jProperty.SYSTEM.equals(value) ? Charset.defaultCharset() : Charset.forName(value);
         } catch (final IllegalCharsetNameException | UnsupportedOperationException e) {
-            statusLogger.warn("Invalid Charset value '{}': {}", value, e.getMessage(), e);
+            statusLogger.warn("Invalid Charset value '{}'.", value, e);
         }
         return null;
     }
@@ -127,7 +127,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         try {
             return Duration.parse(value);
         } catch (final DateTimeParseException e) {
-            statusLogger.warn("Invalid Duration value '{}': {}", value, e.getMessage(), e);
+            statusLogger.warn("Invalid Duration value '{}'.", value, e);
         }
         return null;
     }
@@ -145,7 +145,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
             }
             statusLogger.warn("Invalid Class value '{}': class does not extend {}.", className, upperBound.getName());
         } catch (final ReflectiveOperationException e) {
-            statusLogger.warn("Invalid Class value '{}': {}", className, e.getMessage(), e);
+            statusLogger.warn("Invalid Class value '{}'.", className, e);
         }
         return null;
     }
@@ -163,7 +163,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         try {
             return Integer.valueOf(value);
         } catch (final NumberFormatException e) {
-            statusLogger.warn("Invalid integer value '{}': {}.", value, e.getMessage(), e);
+            statusLogger.warn("Invalid integer value '{}'.", value, e);
         }
         return null;
     }
@@ -177,7 +177,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
             final String languageTag = value.replace('_', '-');
             return new Locale.Builder().setLanguageTag(languageTag).build();
         } catch (final IllformedLocaleException e) {
-            statusLogger.warn("Invalid locale value '{}': {}.", value, e.getMessage(), e);
+            statusLogger.warn("Invalid locale value '{}'.", value, e);
         }
         return null;
     }
@@ -186,7 +186,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         try {
             return Long.valueOf(value);
         } catch (final NumberFormatException e) {
-            statusLogger.warn("Invalid long value '{}': {}.", value, e.getMessage(), e);
+            statusLogger.warn("Invalid long value '{}'.", value, e);
         }
         return null;
     }
@@ -195,7 +195,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         try {
             return Paths.get(value);
         } catch (final InvalidPathException e) {
-            statusLogger.warn("Invalid path value {}: {}.", value, e.getMessage(), e);
+            statusLogger.warn("Invalid path value {}.", value, e);
         }
         return null;
     }
@@ -213,7 +213,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         try {
             return Log4jProperty.SYSTEM.equals(value) ? ZoneId.systemDefault() : ZoneId.of(value);
         } catch (final DateTimeException e) {
-            statusLogger.warn("Invalid timezone id value '{}': {}.", value, e.getMessage(), e);
+            statusLogger.warn("Invalid timezone id value '{}'.", value, e);
         }
         return null;
     }
@@ -248,8 +248,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
             return constructor.newInstance(initArgs);
         } catch (final ReflectiveOperationException e) {
             throw new IllegalArgumentException(
-                    "Unable to parse configuration properties class " + propertyClass.getName() + ": " + e.getMessage(),
-                    e);
+                    "Unable to parse configuration properties class " + propertyClass.getName() + ".", e);
         }
     }
 
