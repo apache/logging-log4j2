@@ -32,12 +32,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Provider;
 import java.security.Security;
+import java.time.Duration;
 import java.time.ZoneId;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
@@ -96,7 +96,7 @@ public final class CoreTypeConverters {
 
         @Override
         public byte[] convert(final String value) {
-            byte[] bytes;
+            final byte[] bytes;
             if (value == null || value.isEmpty()) {
                 bytes = new byte[0];
             } else if (value.startsWith(PREFIX_BASE64)) {
