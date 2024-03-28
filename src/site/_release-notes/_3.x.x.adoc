@@ -50,6 +50,6 @@ This release contains...
 * Update `org.graalvm.truffle:truffle-api` to version `24.0.0` (https://github.com/apache/logging-log4j2/pull/2394[2394])
 * Update `org.mockito:mockito-bom` to version `5.11.0` (https://github.com/apache/logging-log4j2/pull/2333[2333])
 * Update `org.mongodb:bson` to version `5.0.0` (https://github.com/apache/logging-log4j2/pull/2327[2327])
-* Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.3` (https://github.com/apache/logging-log4j2/pull/2316[2316])
+* Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.4` (https://github.com/apache/logging-log4j2/pull/2398[2398])
 * Update `org.springframework.cloud:spring-cloud-context` to version `4.1.2` (https://github.com/apache/logging-log4j2/pull/2421[2421])
 * Update `org.springframework:spring-framework-bom` to version `6.1.5` (https://github.com/apache/logging-log4j2/pull/2382[2382])
