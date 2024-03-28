@@ -27,7 +27,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
@@ -63,12 +63,6 @@ public final class IfLastModified implements PathCondition {
         return Collections.unmodifiableList(Arrays.asList(nestedConditions));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path,
-     * java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
-     */
     @Override
     public boolean accept(final Path basePath, final Path relativePath, final BasicFileAttributes attrs) {
         final FileTime fileTime = attrs.lastModifiedTime();
@@ -84,44 +78,56 @@ public final class IfLastModified implements PathCondition {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
-     */
     @Override
     public void beforeFileTreeWalk() {
         IfAll.beforeFileTreeWalk(nestedConditions);
     }
 
     /**
-     * @deprecated since 2.24.0 use {@link #createAgeCondition(Duration, PathCondition...)} instead.
+     * @deprecated since 2.24.0 use {@link #newBuilder()}  instead.
      */
     @Deprecated
     public static IfLastModified createAgeCondition(
             final org.apache.logging.log4j.core.appender.rolling.action.Duration age,
             final PathCondition... pathConditions) {
-        return createAgeCondition(Duration.ofMillis(age.toMillis()), pathConditions);
-    }
-
-    /**
-     * Create an IfLastModified condition.
-     *
-     * @param age The path age that is accepted by this condition. Must be a valid Duration.
-     * @param pathConditions Nested conditions to evaluate if this condition accepts a path.
-     * @return An IfLastModified condition.
-     * @since 2.24.0
-     */
-    @PluginFactory
-    public static IfLastModified createAgeCondition(
-            @PluginAttribute("age") @Required(message = "No age provided for IfLastModified") final Duration age,
-            @PluginElement("pathConditions") final PathCondition... pathConditions) {
-        return new IfLastModified(age, Objects.requireNonNull(pathConditions));
+        return newBuilder()
+                .setAge(Duration.ofMillis(age.toMillis()))
+                .setNestedConditions(pathConditions)
+                .build();
     }
 
     @Override
     public String toString() {
         final String nested = nestedConditions.length == 0 ? "" : " AND " + Arrays.toString(nestedConditions);
         return "IfLastModified(age=" + age + nested + ")";
+    }
+
+    @PluginFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder implements org.apache.logging.log4j.core.util.Builder<IfLastModified> {
+        @PluginBuilderAttribute
+        @Required(message = "No age provided for IfLastModified")
+        private Duration age;
+
+        @PluginElement("nestedConditions")
+        private PathCondition[] nestedConditions;
+
+        public Builder setAge(final Duration age) {
+            this.age = age;
+            return this;
+        }
+
+        public Builder setNestedConditions(final PathCondition... nestedConditions) {
+            this.nestedConditions = nestedConditions;
+            return this;
+        }
+
+        @Override
+        public IfLastModified build() {
+            return isValid() ? new IfLastModified(age, nestedConditions) : null;
+        }
     }
 }
