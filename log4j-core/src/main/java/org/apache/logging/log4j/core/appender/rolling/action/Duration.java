@@ -30,7 +30,9 @@ import java.util.regex.Pattern;
  * This implementation does not support fractions or negative values.
  *
  * @see #parse(CharSequence)
+ * @deprecated since 2.24.0 use {@link java.time.Duration} instead.
  */
+@Deprecated
 public class Duration implements Serializable, Comparable<Duration> {
     private static final long serialVersionUID = -3756810052716342061L;
 
@@ -65,6 +67,13 @@ public class Duration implements Serializable, Comparable<Duration> {
      */
     private static final Pattern PATTERN = Pattern.compile(
             "P?(?:([0-9]+)D)?" + "(T?(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9]+)?S)?)?", Pattern.CASE_INSENSITIVE);
+
+    /**
+     * @since 2.24.0
+     */
+    public static Duration ofMillis(final long millis) {
+        return new Duration(millis / 1000L);
+    }
 
     /**
      * The number of seconds in the duration.

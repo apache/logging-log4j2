@@ -18,7 +18,7 @@
  * Support classes for the Rolling File Appender.
  */
 @Export
-@Version("2.20.2")
+@Version("2.24.0")
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import org.osgi.annotation.bundle.Export;
