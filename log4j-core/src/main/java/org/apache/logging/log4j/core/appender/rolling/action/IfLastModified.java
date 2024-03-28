@@ -28,8 +28,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
@@ -106,7 +106,7 @@ public final class IfLastModified implements PathCondition {
     /**
      * @since 2.24.0
      */
-    @PluginFactory
+    @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -134,7 +134,7 @@ public final class IfLastModified implements PathCondition {
 
         @Override
         public IfLastModified build() {
-            return isValid() ? new IfLastModified(age, nestedConditions) : null;
+            return isValid() ? new IfLastModified(Duration.ofMillis(age.toMillis()), nestedConditions) : null;
         }
     }
 }
