@@ -62,7 +62,7 @@ The Log4j2 core implementation is responsible for the following (note: this is n
 * Opening files and other resources for logging (e.g.
 network sockets)
 
-The link:configuration.html[configuration] page in the manual describes the configuration format supported by the Log4j2 core implementation.
+The xref:manual/configuration.adoc[configuration] page in the manual describes the configuration format supported by the Log4j2 core implementation.
 
 To use both the API and the core implementation, you would add the following to your dependencies (assuming that you are using Maven):
 

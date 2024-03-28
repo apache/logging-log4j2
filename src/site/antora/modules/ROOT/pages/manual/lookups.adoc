@@ -275,7 +275,13 @@ The JndiLookup allows variables to be retrieved via JNDI. By default the
 key will be prefixed with java:comp/env/, however if the key contains a
 ":" no prefix will be added.
 
-The JNDI Lookup only supports the java protocol or no protocol (as shown in the example below).
+By default the JNDI Lookup only supports the java, ldap, and ldaps protocols or no protocol. Additional
+protocols may be supported by specifying them on the ``log4j2.allowedJndiProtocols`` property.
+When using LDAP Java classes that implement the Referenceable interface are not supported for security
+reasons. Only the Java primative classes are supported by default as well as any classes specified by the
+``log4j2.allowedLdapClasses`` property. When using LDAP only references to the local host name
+or ip address are supported along with any hosts or ip addresses listed in the
+``log4j2.allowedLdapHosts`` property.
 
 [source,xml]
 ----
@@ -304,59 +310,7 @@ https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.htm
 [#KubernetesLookup]
 == Kubernetes Lookup
 
-The KubernetesLookup can be used to lookup attributes from the Kubernetes environment for the container
-the application is running in.
-
-Log4j Kubernetes provides access to the following container attributes:
-[cols="1m,4a"]
-|===
-|Attribute |Description
-|accountName|The service account name
-|clusterName|The name of the cluster the application is deployed in
-|containerId|>The full id assigned to the container
-|containerName|The name assigned to the container
-|host|The name assigned to the host operating system
-|hostIp|The host's ip address
-|imageId|The id assigned to the container image
-|imageName|The name assigned to the container image
-|labels|All labels formatted in a list
-|labels.app|The application name
-|labels.podTemplateHash|The pod's template hash value
-|masterUrl|The URL used to access the API server
-|namespaceId|The id of the namespace the various kubernetes components are located within
-|namespaceName|The namespace the various kubernetes components are located within
-|podId|The pod's ip number
-|podIp|The pod's ip address
-|podName|The name of the pod
-|===
-
-[source,xml]
-----
-<GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true"
-                  compressionType="OFF">
-    <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
-    <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
-    <KeyValuePair key="docker.containerId" value="${docker:containerId:-}"/>
-    <KeyValuePair key="application" value="$${lower:${spring:spring.application.name}}"/>
-    <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-    <KeyValuePair key="kubernetes.clusterName" value="${k8s:clusterName:-}"/>
-    <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
-    <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
-    <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
-    <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
-    <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
-    <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
-    <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
-    <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
-    <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
-    <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
-    <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
-    <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
-    <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
-</GelfLayout>
-----
-
-This Lookup is subject to the configuration requirements listed at link:../log4j-kubernetes/index.html[Log4j Kubernetes Support]
+For retrieving attributes using Fabric8's Kubernetes Client, see their https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[Kubernetes Log4j Lookup].
 
 [#Log4jConfigLookup]
 == Log4j Configuration Location Lookup
@@ -430,6 +384,7 @@ For example, suppose the static void main String[] arguments are:
 
 Then the following substitutions are possible:
 
+[cols="m,m"]
 |===
 |Expression |Result
 
@@ -460,7 +415,6 @@ Then the following substitutions are possible:
 |${main:\--quiet:-true}
 |true
 |===
-
 
 Example usage:
 
