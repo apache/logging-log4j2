@@ -25,6 +25,11 @@ This release contains...
 
 * Add _"Plugin Reference"_ to the website. It is a Javadoc-on-steroids focusing on Log4j plugins. (https://github.com/apache/logging-log4j2/issues/1954[1954])
 
+[#release-notes-3-x-x-changed]
+=== Changed
+
+* Remove `log4j-kubernetes` lookup. User should migrate to https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`kubernetes-log4j`] (https://github.com/apache/logging-log4j2/pull/2408[2408])
+
 [#release-notes-3-x-x-updated]
 === Updated
 
@@ -45,4 +50,5 @@ This release contains...
 * Update `org.mockito:mockito-bom` to version `5.11.0` (https://github.com/apache/logging-log4j2/pull/2333[2333])
 * Update `org.mongodb:bson` to version `5.0.0` (https://github.com/apache/logging-log4j2/pull/2327[2327])
 * Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.3` (https://github.com/apache/logging-log4j2/pull/2316[2316])
+* Update `org.springframework.cloud:spring-cloud-context` to version `4.1.2` (https://github.com/apache/logging-log4j2/pull/2421[2421])
 * Update `org.springframework:spring-framework-bom` to version `6.1.5` (https://github.com/apache/logging-log4j2/pull/2382[2382])
