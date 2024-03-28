@@ -105,7 +105,7 @@ public class AsyncLoggerDisruptor extends AbstractLifeCycle {
             }
             setStarting();
             LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
-            final int ringBufferSize = properties.roundedRingBufferSize();
+            final int ringBufferSize = properties.ringBufferSize();
 
             final ThreadFactory threadFactory =
                     new Log4jThreadFactory("AsyncLogger[" + contextName + "]", true, Thread.NORM_PRIORITY) {

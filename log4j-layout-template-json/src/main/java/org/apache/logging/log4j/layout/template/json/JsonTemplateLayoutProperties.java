@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.TimeZone;
 import org.apache.logging.log4j.kit.env.Log4jProperty;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -44,15 +45,21 @@ public record JsonTemplateLayoutProperties(
         @Log4jProperty(defaultValue = "16384") int maxStringLength,
         @Log4jProperty(defaultValue = "…") String truncatedStringSuffix) {
 
-    @Override
-    public String eventDelimiter() {
-        return eventDelimiter != null ? eventDelimiter : System.lineSeparator();
+    private static final int DEFAULT_MAX_STRING_LENGTH = 16384;
+
+    public JsonTemplateLayoutProperties {
+        eventDelimiter = eventDelimiter != null ? eventDelimiter : System.lineSeparator();
+        maxStringLength = validateMaxStringLength(maxStringLength);
     }
 
-    @Override
-    public int maxStringLength() {
+    private int validateMaxStringLength(final int maxStringLength) {
         if (maxStringLength <= 0) {
-            throw new IllegalArgumentException("was expecting a non-zero positive maxStringLength: " + maxStringLength);
+            StatusLogger.getLogger()
+                    .warn(
+                            "Invalid `maxStringLength` value {}, using default value {}.",
+                            maxStringLength,
+                            DEFAULT_MAX_STRING_LENGTH);
+            return DEFAULT_MAX_STRING_LENGTH;
         }
         return maxStringLength;
     }

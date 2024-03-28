@@ -34,13 +34,22 @@ public record AsyncLoggerProperties(
 
     private static final int RING_BUFFER_MIN_SIZE = 128;
 
-    public int roundedRingBufferSize() {
+    public AsyncLoggerProperties {
+        ringBufferSize = validateRingBufferSize(ringBufferSize);
+    }
+
+    private static int validateRingBufferSize(final int ringBufferSize) {
         if (ringBufferSize < RING_BUFFER_MIN_SIZE) {
             StatusLogger.getLogger()
                     .warn("Invalid RingBuffer size {}, using minimum size {}.", ringBufferSize, RING_BUFFER_MIN_SIZE);
             return RING_BUFFER_MIN_SIZE;
         }
-        return Integers.ceilingNextPowerOfTwo(ringBufferSize);
+        final int roundedRingBufferSize = Integers.ceilingNextPowerOfTwo(ringBufferSize);
+        if (ringBufferSize != roundedRingBufferSize) {
+            StatusLogger.getLogger()
+                    .warn("Invalid RingBuffer size {}, using rounded size {}.", ringBufferSize, roundedRingBufferSize);
+        }
+        return roundedRingBufferSize;
     }
 
     public record WaitStrategyProperties(
