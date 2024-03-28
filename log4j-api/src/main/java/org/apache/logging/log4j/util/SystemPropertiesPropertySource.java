@@ -21,6 +21,8 @@ import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Properties;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * PropertySource backed by the current system properties. Other than having a
@@ -32,19 +34,32 @@ import java.util.Properties;
 @ServiceProvider(value = PropertySource.class, resolution = Resolution.OPTIONAL)
 public class SystemPropertiesPropertySource implements PropertySource {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int DEFAULT_PRIORITY = 0;
     private static final String PREFIX = "log4j2.";
 
+    private static final PropertySource INSTANCE = new SystemPropertiesPropertySource();
+
     /**
-     * Used by bootstrap code to get system properties without loading PropertiesUtil.
+     * Method used by Java 9+ to instantiate providers
+     * @since 2.24.0
+     * @see java.util.ServiceLoader
      */
+    public static PropertySource provider() {
+        return INSTANCE;
+    }
+
     public static String getSystemProperty(final String key, final String defaultValue) {
-        try {
-            return System.getProperty(key, defaultValue);
-        } catch (SecurityException e) {
-            // Silently ignore the exception
-            return defaultValue;
-        }
+        final String value = INSTANCE.getProperty(key);
+        return value != null ? value : defaultValue;
+    }
+
+    private static void logException(final SecurityException error) {
+        LOGGER.error("The Java system properties are not available to Log4j due to security restrictions.", error);
+    }
+
+    private static void logException(final SecurityException error, final String key) {
+        LOGGER.error("The Java system property {} is not available to Log4j due to security restrictions.", key, error);
     }
 
     @Override
@@ -54,15 +69,11 @@ public class SystemPropertiesPropertySource implements PropertySource {
 
     @Override
     public void forEach(final BiConsumer<String, String> action) {
-        Properties properties;
+        final Properties properties;
         try {
             properties = System.getProperties();
         } catch (final SecurityException e) {
-            // (1) There is no status logger.
-            // (2) LowLevelLogUtil also consults system properties ("line.separator") to
-            // open a BufferedWriter, so this may fail as well. Just having a hard reference
-            // in this code to LowLevelLogUtil would cause a problem.
-            // (3) We could log to System.err (nah) or just be quiet as we do now.
+            logException(e);
             return;
         }
         // Lock properties only long enough to get a thread-safe SAFE snapshot of its
@@ -89,8 +100,9 @@ public class SystemPropertiesPropertySource implements PropertySource {
         try {
             return System.getProperties().stringPropertyNames();
         } catch (final SecurityException e) {
-            return PropertySource.super.getPropertyNames();
+            logException(e);
         }
+        return PropertySource.super.getPropertyNames();
     }
 
     @Override
@@ -98,8 +110,9 @@ public class SystemPropertiesPropertySource implements PropertySource {
         try {
             return System.getProperty(key);
         } catch (final SecurityException e) {
-            return PropertySource.super.getProperty(key);
+            logException(e, key);
         }
+        return PropertySource.super.getProperty(key);
     }
 
     @Override

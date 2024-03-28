@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -63,6 +67,8 @@ public final class PropertiesUtil {
 
     private static final Lazy<PropertiesUtil> COMPONENT_PROPERTIES =
             Lazy.lazy(() -> new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME, false));
+
+    private static final Pattern DURATION_PATTERN = Pattern.compile("([+-]?\\d+)\\s*(\\w+)?", Pattern.CASE_INSENSITIVE);
 
     private final Environment environment;
 
@@ -200,9 +206,8 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    @SuppressWarnings("deprecation")
     public Boolean getBooleanProperty(final String[] prefixes, final String key, final Supplier<Boolean> supplier) {
-        for (String prefix : prefixes) {
+        for (final String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
                 return getBooleanProperty(prefix + key);
             }
@@ -243,7 +248,7 @@ public final class PropertiesUtil {
                 return Charset.forName(mapped);
             }
         }
-        LOGGER.error(
+        LOGGER.warn(
                 "Unable to read charset `{}` from property `{}`. Falling back to the default: `{}`",
                 charsetName,
                 name,
@@ -263,8 +268,13 @@ public final class PropertiesUtil {
         if (prop != null) {
             try {
                 return Double.parseDouble(prop);
-            } catch (final Exception ignored) {
-                // returns default value
+            } catch (final NumberFormatException e) {
+                LOGGER.warn(
+                        "Unable to read double `{}` from property `{}`. Falling back to the default: `{}`",
+                        prop,
+                        name,
+                        defaultValue,
+                        e);
             }
         }
         return defaultValue;
@@ -283,8 +293,13 @@ public final class PropertiesUtil {
         if (prop != null) {
             try {
                 return Integer.parseInt(prop.trim());
-            } catch (final Exception ignored) {
-                // ignore
+            } catch (final NumberFormatException e) {
+                LOGGER.warn(
+                        "Unable to read int `{}` from property `{}`. Falling back to the default: `{}`",
+                        prop,
+                        name,
+                        defaultValue,
+                        e);
             }
         }
         return defaultValue;
@@ -299,9 +314,8 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    @SuppressWarnings("deprecation")
     public Integer getIntegerProperty(final String[] prefixes, final String key, final Supplier<Integer> supplier) {
-        for (String prefix : prefixes) {
+        for (final String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
                 return getIntegerProperty(prefix + key, 0);
             }
@@ -321,8 +335,13 @@ public final class PropertiesUtil {
         if (prop != null) {
             try {
                 return Long.parseLong(prop);
-            } catch (final Exception ignored) {
-                // returns the default value
+            } catch (final NumberFormatException e) {
+                LOGGER.warn(
+                        "Unable to read long `{}` from property `{}`. Falling back to the default: `{}`",
+                        prop,
+                        name,
+                        defaultValue,
+                        e);
             }
         }
         return defaultValue;
@@ -337,9 +356,8 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    @SuppressWarnings("deprecation")
     public Long getLongProperty(final String[] prefixes, final String key, final Supplier<Long> supplier) {
-        for (String prefix : prefixes) {
+        for (final String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
                 return getLongProperty(prefix + key, 0);
             }
@@ -357,8 +375,15 @@ public final class PropertiesUtil {
      */
     public Duration getDurationProperty(final String name, final Duration defaultValue) {
         final String prop = getStringProperty(name);
-        if (prop != null) {
-            return TimeUnit.getDuration(prop);
+        try {
+            return parseDuration(prop);
+        } catch (final DateTimeParseException e) {
+            LOGGER.warn(
+                    "Unable to read duration `{}` from property `{}`. Falling back to the default: `{}`",
+                    prop,
+                    name,
+                    defaultValue,
+                    e);
         }
         return defaultValue;
     }
@@ -372,9 +397,8 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    @SuppressWarnings("deprecation")
     public Duration getDurationProperty(final String[] prefixes, final String key, final Supplier<Duration> supplier) {
-        for (String prefix : prefixes) {
+        for (final String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
                 return getDurationProperty(prefix + key, null);
             }
@@ -391,9 +415,8 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    @SuppressWarnings("deprecation")
     public String getStringProperty(final String[] prefixes, final String key, final Supplier<String> supplier) {
-        for (String prefix : prefixes) {
+        for (final String prefix : prefixes) {
             final String result = getStringProperty(prefix + key);
             if (result != null) {
                 return result;
@@ -472,16 +495,18 @@ public final class PropertiesUtil {
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
-            final PropertyFilePropertySource sysProps =
-                    new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
+            final PropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
             try {
                 sysProps.forEach((key, value) -> {
                     if (System.getProperty(key) == null) {
                         System.setProperty(key, value);
                     }
                 });
-            } catch (SecurityException ex) {
-                // Access to System Properties is restricted so just skip it.
+            } catch (final SecurityException e) {
+                LOGGER.warn(
+                        "Unable to set Java system properties from {} file, due to security restrictions.",
+                        LOG4J_SYSTEM_PROPERTIES_FILE_NAME,
+                        e);
             }
             sources.add(propertySource);
             // We don't log anything on the status logger.
@@ -649,45 +674,57 @@ public final class PropertiesUtil {
      * @return true if system properties tell us we are running on Windows.
      */
     public boolean isOsWindows() {
-        return getStringProperty("os.name", "").startsWith("Windows");
+        return SystemPropertiesPropertySource.getSystemProperty("os.name", "").startsWith("Windows");
+    }
+
+    static Duration parseDuration(final String value) {
+        final Matcher matcher = DURATION_PATTERN.matcher(value);
+        if (matcher.matches()) {
+            return Duration.of(TimeUnit.parseAmount(matcher), TimeUnit.parseUnit(matcher));
+        }
+        throw new DateTimeParseException("Invalid duration value: should be in the format nnn[unit].", value, 0);
     }
 
     private enum TimeUnit {
-        NANOS("ns,nano,nanos,nanosecond,nanoseconds", ChronoUnit.NANOS),
-        MICROS("us,micro,micros,microsecond,microseconds", ChronoUnit.MICROS),
-        MILLIS("ms,milli,millis,millsecond,milliseconds", ChronoUnit.MILLIS),
-        SECONDS("s,second,seconds", ChronoUnit.SECONDS),
-        MINUTES("m,minute,minutes", ChronoUnit.MINUTES),
-        HOURS("h,hour,hours", ChronoUnit.HOURS),
-        DAYS("d,day,days", ChronoUnit.DAYS);
+        NANOS(new String[] {"ns", "nano", "nanos", "nanosecond", "nanoseconds"}, ChronoUnit.NANOS),
+        MICROS(new String[] {"us", "micro", "micros", "microsecond", "microseconds"}, ChronoUnit.MICROS),
+        MILLIS(new String[] {"ms", "milli", "millis", "millisecond", "milliseconds"}, ChronoUnit.MILLIS),
+        SECONDS(new String[] {"s", "second", "seconds"}, ChronoUnit.SECONDS),
+        MINUTES(new String[] {"m", "minute", "minutes"}, ChronoUnit.MINUTES),
+        HOURS(new String[] {"h", "hour", "hours"}, ChronoUnit.HOURS),
+        DAYS(new String[] {"d", "day", "days"}, ChronoUnit.DAYS);
 
-        /*
-         * https://errorprone.info/bugpattern/ImmutableEnumChecker
-         * This field is effectively immutable.
-         */
-        @SuppressWarnings("ImmutableEnumChecker")
         private final String[] descriptions;
+        private final TemporalUnit timeUnit;
 
-        private final ChronoUnit timeUnit;
-
-        TimeUnit(final String descriptions, final ChronoUnit timeUnit) {
-            this.descriptions = descriptions.split(",");
+        TimeUnit(final String[] descriptions, final TemporalUnit timeUnit) {
+            this.descriptions = descriptions;
             this.timeUnit = timeUnit;
         }
 
-        static Duration getDuration(final String time) {
-            final String value = time.trim();
-            TemporalUnit temporalUnit = ChronoUnit.MILLIS;
-            long timeVal = 0;
-            for (TimeUnit timeUnit : values()) {
-                for (String suffix : timeUnit.descriptions) {
-                    if (value.endsWith(suffix)) {
-                        temporalUnit = timeUnit.timeUnit;
-                        timeVal = Long.parseLong(value.substring(0, value.length() - suffix.length()));
+        private static long parseAmount(final MatchResult matcher) {
+            final String amount = matcher.group(1);
+            try {
+                return Long.parseLong(amount);
+            } catch (final NumberFormatException e) {
+                throw new DateTimeParseException(
+                        "Invalid time amount '" + amount + "'", matcher.group(), matcher.start(1), e);
+            }
+        }
+
+        private static TemporalUnit parseUnit(final MatchResult matcher) {
+            final String unit = matcher.group(2);
+            if (unit != null) {
+                for (final TimeUnit value : values()) {
+                    for (final String description : value.descriptions) {
+                        if (unit.equals(description)) {
+                            return value.timeUnit;
+                        }
                     }
                 }
+                throw new DateTimeParseException("Invalid time unit '" + unit + "'", matcher.group(), matcher.start(2));
             }
-            return Duration.of(timeVal, temporalUnit);
+            return ChronoUnit.MILLIS;
         }
     }
 }
