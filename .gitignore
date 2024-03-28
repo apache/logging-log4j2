@@ -35,3 +35,7 @@ velocity.log
 felix-cache/
 /.metadata/
 .DS_Store
+node
+node_modules
+package.json
+package-lock.json

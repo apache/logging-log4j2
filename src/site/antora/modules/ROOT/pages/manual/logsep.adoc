@@ -1,0 +1,116 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Logging Separation
+Ralph Goers <rgoers@apache.org>
+
+There are many well known use cases where applications may share an
+environment with other applications and each has a need to have its own,
+separate logging environment. This purpose of this section is to discuss
+some of these cases and ways to accomplish this.
+
+[#UseCases]
+== Use Cases
+
+This section describes some of the use cases where Log4j could be used
+and what its desired behavior might be.
+
+=== Standalone Application
+
+Standalone applications are usually relatively simple. They typically
+have one bundled executable that requires only a single logging
+configuration.
+
+=== Web Applications
+
+A typical web application will be packaged as a WAR file and will
+include all of its dependencies in WEB-INF/lib and will have its
+configuration file located in the class path or in a location configured
+in the web.xml. Be sure to follow the instructions in http://logging.apache.org/log4j/jakarta[Log4j Jakarta EE] page.
+
+=== Java EE Applications
+
+A Java EE application will consist of one or more WAR files and possible
+some EJBs, typically all packaged in an EAR file. Usually, it is
+desirable to have a single configuration that applies to all the
+components in the EAR. The logging classes will generally be placed in a
+location shared across all the components and the configuration needs to
+also be shareable. Be sure to follow the instructions in the
+http://logging.apache.org/log4j/jakarta[Log4j Jakarta EE] page.
+
+=== "Shared" Web Applications and REST Service Containers
+
+In this scenario there are multiple WAR files deployed into a single
+container. Each of the applications should use the same logging
+configuration and share the same logging implementation across each of
+the web applications. When writing to files and streams each of the
+applications should share them to avoid the issues that can occur when
+multiple components try to write to the same file(s) through different
+File objects, channels, etc.
+
+=== OSGi Applications
+
+An OSGi container physically separates each JAR into its own
+ClassLoader, thus enforcing modularity of JARs as well as providing
+standardized ways for JARs to share code based on version numbers.
+Suffice to say, the OSGi framework is beyond the scope of this manual.
+There are some differences when using Log4j in an OSGi container. By
+default, each JAR bundle is scanned for its own Log4j configuration
+file. Similar to the web application paradigm, every bundle has its own
+LoggerContext. As this may be undesirable when a global Log4j
+configuration is wanted, then the
+xref:manual/extending.adoc#ContextSelector[ContextSelector] should be
+overridden with `BasicContextSelector` or `JndiContextSelector`.
+
+[#Approaches]
+== Approaches
+
+=== The Simple Approach
+
+The simplest approach for separating logging within applications is to
+package each application with its own copy of Log4j and to use the
+BasicContextSelector. While this works for standalone applications and
+may work for web applications and possibly Java EE applications, it does
+not work at all in the last case. However, when this approach does work
+it should be used as it is ultimately the simplest and most
+straightforward way of implementing logging.
+
+=== Using Context Selectors
+
+There are a few patterns for achieving the desired state of logging
+separation using ContextSelectors:
+
+1.  Place the logging jars in the container's classpath and set the
+system property `log4j2.contextSelector` to
+`org.apache.logging.log4j.core.selector.BasicContextSelector`. This will
+create a single LoggerContext using a single configuration that will be
+shared across all applications.
+2.  Place the logging jars in the container's classpath and use the
+default ClassLoaderContextSelector. Follow the
+xref:manual/webapp.adoc[instructions to initialize Log4j 2 in a web
+application]. Each application can be configured to share the same
+configuration used at the container or can be individually configured.
+If status logging is set to debug in the configuration there will be
+output from when logging is initialized in the container and then again
+in each web application.
+
+The `JndiContextSelector` will not work unless `log4j2.enableJndi=true` is set as a system property
+or environment variable. See the
+xref:manual/configuration.adoc#enableJndi[log4j2.enableJndi] system property.
+
+The exact method for setting system properties depends on the container.
+For Tomcat, edit `$CATALINA_HOME/conf/catalina.properties`. Consult the
+documentation for other web containers.
