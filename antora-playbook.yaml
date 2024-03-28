@@ -24,6 +24,14 @@ content:
       branches: HEAD
       start_paths:
         - target/generated-site/antora
+asciidoc:
+  attributes:
+    log4j-docgen-descriptor-directory: target/plugin-descriptors
+    log4j-docgen-type-filter-exclude-pattern: ^java\..+
+    log4j-docgen-type-target-template: |
+      #{{{replaceAll sourcedType.groupId "." "-"}}}_{{{replaceAll sourcedType.artifactId "." "-"}}}_{{{replaceAll sourcedType.type.className "." "-"}}}
+  extensions:
+    - src/docgen/apiref-macro.js
 ui:
   bundle:
     url: "https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable"

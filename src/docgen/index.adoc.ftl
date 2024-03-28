@@ -53,25 +53,7 @@ Below is a list of all types reachable by plugins grouped by the Maven coordinat
 
 [#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}]
 === `${sourcedType.groupId}:${sourcedType.artifactId}`
-
     </#if>
+
 include::_plugin-reference/${sourcedType.groupId}-${sourcedType.artifactId}-${sourcedType.type.className}.adoc[leveloffset=+3]
 </#list>
-
-++++
-<script>
-(function() {
-
-    var aElement = document.createElement("a");
-    aElement.href = "index.html";
-    aElement.textContent = "Home";
-
-    var liElement = document.createElement("li");
-    liElement.appendChild(aElement);
-
-    var ulElement = document.getElementsByClassName("sectlevel1")[0];
-    ulElement.insertBefore(liElement, ulElement.childNodes[0]);
-
-})();
-</script>
-++++

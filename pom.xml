@@ -338,6 +338,8 @@
          ===================================================== -->
     <!-- Antora `>=3.2.x` is required for linked Git worktree integration: -->
     <antora.version>3.2.0-alpha.4</antora.version>
+    <fast-xml-parser.version>4.3.6</fast-xml-parser.version>
+    <handlebars.version>4.7.8</handlebars.version>
     <log4j-docgen.version>0.8.0</log4j-docgen.version>
     <node.version>21.7.1</node.version>
     <npm.version>10.5.0</npm.version>
@@ -843,14 +845,14 @@
             </goals>
             <phase>pre-site</phase>
             <configuration>
-              <templateDirectory>${project.basedir}/src/template/docgen</templateDirectory>
+              <templateDirectory>${project.basedir}/src/docgen</templateDirectory>
               <indexTemplate>
                 <source>index.adoc.ftl</source>
-                <target>${project.build.directory}/generated-site/asciidoc/plugin-reference.adoc</target>
+                <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/plugin-reference.adoc</target>
               </indexTemplate>
               <typeTemplate>
                 <source>type.adoc.ftl</source>
-                <target>${project.build.directory}/generated-site/asciidoc/_plugin-reference/%g-%a-%c.adoc</target>
+                <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/_plugin-reference/%g-%a-%c.adoc</target>
               </typeTemplate>
             </configuration>
           </execution>
@@ -900,7 +902,7 @@
             </goals>
             <phase>pre-site</phase>
             <configuration>
-              <arguments>install @antora/cli@${antora.version} @antora/site-generator-default@${antora.version}</arguments>
+              <arguments>install @antora/cli@${antora.version} @antora/site-generator-default@${antora.version} fast-xml-parser@${fast-xml-parser.version} handlebars@${handlebars.version}</arguments>
             </configuration>
           </execution>
 
@@ -924,7 +926,7 @@
               <executable>${project.basedir}/node/node</executable>
               <arguments>
                 <argument>${project.basedir}/node_modules/.bin/antora</argument>
-                <argument>${project.basedir}/antora-playbook.yml</argument>
+                <argument>${project.basedir}/antora-playbook.yaml</argument>
                 <argument>--to-dir=${project.build.directory}/site</argument>
               </arguments>
             </configuration>
@@ -932,96 +934,14 @@
         </executions>
       </plugin>
 
-      <!-- ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
-           ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
-           ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
-           ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
-            ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
-
-           DON'T USE `asciidoctor-maven-plugin` FOR COMPILING CONTENT FOR THE WEBSITE!
-
-           This project uses Antora to generate its website, see `src/site/antora`.
-           `asciidoctor-maven-plugin` is *only* used to generate the plugin reference using Docgen.
-
-           Docgen AsciiDoc files cannot be compiled using Antora.
-           Docgen-generated AsciiDoc contains `apiref` macro and `log4j-docgen-asciidoctor-extension` resolving it is a Java library.
-           Antora is written in JavaScript and cannot run Java extensions.
-           Even if we rewrite `log4j-docgen-asciidoctor-extension` as an Antora extension in JavaScript or Ruby, there is still `log4j-docgen-type-target-template` argument that must be processed using FreeMarker, which is again a Java library.
-           Hence, we use `asciidoctor-maven-plugin` *only* to compile Docgen AsciiDoc files. -->
+      <!-- Skip the `export-asciidoc-to-html` execution inherited from `logging-parent` -->
       <plugin>
-
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
-        <!-- `log4j-docgen` uses `asciidoctorj` version `3.x`.
-             Though `asciidoctor-maven-plugin` version `<3.0.0` doesn't work against `asciidoctorj` version `3.x`.
-             Hence, override the `asciidoctor-maven-plugin` version to `3.x`. -->
-        <version>3.0.0</version>
         <inherited>false</inherited>
-
-        <dependencies>
-          <dependency>
-            <groupId>io.spring.asciidoctor</groupId>
-            <artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
-            <version>0.6.3</version>
-          </dependency>
-          <!-- `log4j-docgen` uses `asciidoctorj` version `3.x`.
-               Though `asciidoctor-maven-plugin` version `3.x` still uses `asciidoctorj` version `2.x`.
-               Hence, upgrade the `asciidoctorj` used to version `3.x`. -->
-          <dependency>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctorj</artifactId>
-            <version>3.0.0-alpha.2</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-docgen-asciidoctor-extension</artifactId>
-            <version>${log4j-docgen.version}</version>
-          </dependency>
-        </dependencies>
-
-        <executions>
-
-          <!-- Skip the `export-asciidoc-to-html` execution inherited from `logging-parent` -->
-          <execution>
-            <!-- Execution ID must match the one inherited from `logging-parent` (i.e., `export-asciidoc-to-html`) to override it! -->
-            <id>export-asciidoc-to-html</id>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-            <phase>site</phase>
-            <configuration combine.self="override">
-              <skip>true</skip>
-            </configuration>
-          </execution>
-
-          <!-- Compile Docgen AsciiDoc files -->
-          <execution>
-            <id>export-docgen-asciidoc-to-html</id>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-            <phase>site</phase>
-            <configuration combine.self="override">
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}/generated-site/resources</directory>
-                </resource>
-              </resources>
-              <sourceDirectory>${project.build.directory}/generated-site/asciidoc</sourceDirectory>
-              <outputDirectory>${project.build.directory}/site</outputDirectory>
-              <attributes>
-                <source-highlighter>rouge</source-highlighter>
-                <toc>left</toc>
-                <toc-title><![CDATA[]]></toc-title>
-                <log4j-docgen-descriptor-directory>${project.build.directory}/plugin-descriptors</log4j-docgen-descriptor-directory>
-                <log4j-docgen-type-filter-exclude-pattern>${log4j.docgen.typeFilter.excludePattern}</log4j-docgen-type-filter-exclude-pattern>
-                <log4j-docgen-type-target-template><![CDATA[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${sourcedType.type.className?replace('.', '-')}]]></log4j-docgen-type-target-template>
-              </attributes>
-            </configuration>
-          </execution>
-
-        </executions>
-
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
 
       <!-- ███████ ███    ██ ██████         ███████ ██ ████████ ███████
