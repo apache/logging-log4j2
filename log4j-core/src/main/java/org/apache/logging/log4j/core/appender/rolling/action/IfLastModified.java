@@ -117,13 +117,13 @@ public final class IfLastModified implements PathCondition {
     public static final class Builder implements org.apache.logging.log4j.core.util.Builder<IfLastModified> {
         @PluginBuilderAttribute
         @Required(message = "No age provided for IfLastModified")
-        private Duration age;
+        private org.apache.logging.log4j.core.appender.rolling.action.Duration age;
 
         @PluginElement("nestedConditions")
         private PathCondition[] nestedConditions;
 
         public Builder setAge(final Duration age) {
-            this.age = age;
+            this.age = org.apache.logging.log4j.core.appender.rolling.action.Duration.ofMillis(age.toMillis());
             return this;
         }
 
