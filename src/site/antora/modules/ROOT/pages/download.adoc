@@ -28,8 +28,12 @@ Please add the following to your build systems configuration file `pom.xml` to u
 
 Log4j needs two dependencies, since it is separated between the API and the Core.
 
-[source,xml,indent=0,role="primary",subs="+attributes"]
-.Maven (pom.xml)
+[tabs%sync]
+====
+Maven::
++
+.`pom.xml` snippet
+[source,xml,subs="+attributes"]
 ----
 <dependencies>
   <dependency>
@@ -37,42 +41,48 @@ Log4j needs two dependencies, since it is separated between the API and the Core
     <artifactId>log4j-api</artifactId>
     <version>{project-version}</version>
   </dependency>
-</dependencies>
-<dependencies>
-    <dependency>
+  <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-core</artifactId>
     <version>{project-version}</version>
-    </dependency>
+  </dependency>
 </dependencies>
 ----
 
-[source,indent=0,role="secondary",subs="+attributes"]
-.Gradle (build.gradle)
+Gradle::
++
+.`build.gradle` snippet
+[source,subs="+attributes"]
 ----
 compile 'org.apache.logging.log4j:log4j-api:{project-version}'
 compile 'org.apache.logging.log4j:log4j-core:{project-version}'
 ----
 
-[source,xml,indent=0,role="secondary",subs="+attributes"]
-.Ivy (ivy.xml)
+Ivy::
++
+.`ivy.xml` snippet
+[source,xml,subs="+attributes"]
 ----
 <dependencies>
-<dependency org="org.apache.logging.log4j" name="log4j-api" rev="{project-version}" />
-<dependency org="org.apache.logging.log4j" name="log4j-core" rev="{project-version}" />
+  <dependency org="org.apache.logging.log4j" name="log4j-api" rev="{project-version}" />
+  <dependency org="org.apache.logging.log4j" name="log4j-core" rev="{project-version}" />
 </dependencies>
 ----
+====
 
 == Bill of materials
-
 
 To keep your Log4j module versions in sync with each other, a BOM (Bill of Material)
 pom.xml file is provided for your convenience. To use this with https://maven.apache.org/[Maven],
 add the dependency listed below to your `pom.xml` file.
 When you specify the version identifier in this section, you don't have to specify the version in your `<dependencies/>` section.
 
-[source,xml,indent=0,role="primary",subs="+attributes"]
-.Maven (pom.xml)
+[tabs%sync]
+====
+Maven::
++
+.`pom.xml` snippet
+[source,xml,subs="+attributes"]
 ----
 <dependencyManagement>
   <dependencies>
@@ -87,11 +97,13 @@ When you specify the version identifier in this section, you don't have to speci
 </dependencyManagement>
 ----
 
-[source,indent=0,role="secondary",subs="+attributes"]
-.Gradle (build.gradle)
+Gradle::
++
+.`build.gradle` snippet
+[source,subs="+attributes"]
 ----
 plugins {
-  id 'io.spring.dependency-management' version '1.0.1.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.1.RELEASE' //<1>
 }
 
 dependencyManagement {
@@ -106,9 +118,8 @@ dependencies {
   // etc.
 }
 ----
-
-To use this with Gradle, an additional https://github.com/spring-gradle-plugins/dependency-management-plugin[Gradle plugin]
-is required for dependency management functionality.
+<1> The additional https://github.com/spring-gradle-plugins/dependency-management-plugin[Gradle plugin] required for dependency management functionality.
+====
 
 == Snapshot builds
 
@@ -121,8 +132,12 @@ if the latest release were `3.0`, then master would be using the version
 
 To enable snapshots you'll need to enable Snapshots repositories in your build system.
 
-[source,xml,indent=0,role="primary",subs="+attributes"]
-.Maven (pom.xml)
+[tabs%sync]
+====
+Maven::
++
+.`pom.xml` snippet
+[source,xml,subs="+attributes"]
 ----
 <repositories>
   <repository>
@@ -136,8 +151,10 @@ To enable snapshots you'll need to enable Snapshots repositories in your build s
 </repositories>
 ----
 
-[source,indent=0,role="secondary",subs="+attributes"]
-.Gradle (build.gradle)
+Gradle::
++
+.`build.gradle` snippet
+[source,subs="+attributes"]
 ----
 repositories {
   mavenCentral()
@@ -145,11 +162,14 @@ repositories {
 }
 ----
 
-[source,indent=0,role="secondary",subs="+attributes"]
-.SBT (build.sbt)
+SBT::
++
+.`build.sbt` snippet
+[source,subs="+attributes"]
 ----
 resolvers += "Apache Snapshot Repository" at "https://repository.apache.org/snapshots"
 ----
+====
 
 == Manual Download
 
