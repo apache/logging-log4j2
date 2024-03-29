@@ -23,10 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.Duration;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +37,10 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -377,12 +378,13 @@ public final class PropertiesUtil {
         final String prop = getStringProperty(name);
         try {
             return parseDuration(prop);
-        } catch (final DateTimeParseException e) {
+        } catch (final IllegalArgumentException e) {
             LOGGER.warn(
-                    "Unable to read duration `{}` from property `{}`. Falling back to the default: `{}`",
+                    "Unable to read duration `{}` from property `{}`.\nExpected format 'n unit', where 'n' is an "
+                            + "integer and 'unit' is one of: {}.",
                     prop,
                     name,
-                    defaultValue,
+                    TimeUnit.getValidUnits().collect(Collectors.joining(", ")),
                     e);
         }
         return defaultValue;
@@ -677,12 +679,20 @@ public final class PropertiesUtil {
         return SystemPropertiesPropertySource.getSystemProperty("os.name", "").startsWith("Windows");
     }
 
-    static Duration parseDuration(final String value) {
+    static Duration parseDuration(final CharSequence value) {
         final Matcher matcher = DURATION_PATTERN.matcher(value);
         if (matcher.matches()) {
-            return Duration.of(TimeUnit.parseAmount(matcher), TimeUnit.parseUnit(matcher));
+            return Duration.of(parseDurationAmount(matcher.group(1)), TimeUnit.parseUnit(matcher.group(2)));
         }
-        throw new DateTimeParseException("Invalid duration value: should be in the format nnn[unit].", value, 0);
+        throw new IllegalArgumentException("Invalid duration value '" + value + "'.");
+    }
+
+    private static long parseDurationAmount(final String amount) {
+        try {
+            return Long.parseLong(amount);
+        } catch (final NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid duration amount '" + amount + "'", e);
+        }
     }
 
     private enum TimeUnit {
@@ -702,18 +712,11 @@ public final class PropertiesUtil {
             this.timeUnit = timeUnit;
         }
 
-        private static long parseAmount(final MatchResult matcher) {
-            final String amount = matcher.group(1);
-            try {
-                return Long.parseLong(amount);
-            } catch (final NumberFormatException e) {
-                throw new DateTimeParseException(
-                        "Invalid time amount '" + amount + "'", matcher.group(), matcher.start(1), e);
-            }
+        private static Stream<String> getValidUnits() {
+            return Arrays.stream(values()).flatMap(unit -> Arrays.stream(unit.descriptions));
         }
 
-        private static TemporalUnit parseUnit(final MatchResult matcher) {
-            final String unit = matcher.group(2);
+        private static TemporalUnit parseUnit(final String unit) {
             if (unit != null) {
                 for (final TimeUnit value : values()) {
                     for (final String description : value.descriptions) {
@@ -722,7 +725,7 @@ public final class PropertiesUtil {
                         }
                     }
                 }
-                throw new DateTimeParseException("Invalid time unit '" + unit + "'", matcher.group(), matcher.start(2));
+                throw new IllegalArgumentException("Invalid duration unit '" + unit + "'");
             }
             return ChronoUnit.MILLIS;
         }

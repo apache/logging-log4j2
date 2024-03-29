@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +143,7 @@ public class PropertiesUtilTest {
     @ParameterizedTest
     @MethodSource
     void should_throw_on_invalid_duration(final String value) {
-        assertThrows(DateTimeParseException.class, () -> PropertiesUtil.parseDuration(value));
+        assertThrows(IllegalArgumentException.class, () -> PropertiesUtil.parseDuration(value));
     }
 
     @Test
