@@ -49,6 +49,7 @@ This releases contains ...
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2372[2372])
 * Update `com.github.luben:zstd-jni` to version `1.5.6-1` (https://github.com/apache/logging-log4j2/pull/2422[2422])
 * Update `com.google.guava:guava` to version `33.1.0-jre` (https://github.com/apache/logging-log4j2/pull/2377[2377])
+* Update `commons-io:commons-io` to version `2.16.0` (https://github.com/apache/logging-log4j2/pull/2430[2430])
 * Update `github/codeql-action` to version `3.24.9` (https://github.com/apache/logging-log4j2/pull/2403[2403])
 * Update `org.apache.activemq:activemq-broker` to version `6.1.0` (https://github.com/apache/logging-log4j2/pull/2387[2387])
 * Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2361[2361])
