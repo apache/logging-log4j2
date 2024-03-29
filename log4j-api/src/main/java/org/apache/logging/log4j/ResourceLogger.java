@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -37,9 +37,8 @@ import org.apache.logging.log4j.util.Strings;
  * Unlike regular Loggers ResourceLoggers CANNOT be declared to be static. A ResourceLogger
  * must be declared as a class member that will be garbage collected along with the instance of the resource.
  */
-public final class ResourceLogger extends AbstractLogger {
+public final class ResourceLogger extends ExtendedLoggerWrapper {
     private static final long serialVersionUID = -5837924138744974513L;
-    private final ExtendedLogger logger;
     private final Supplier<Map<String, ?>> supplier;
 
     public static ResourceLoggerBuilder newBuilder() {
@@ -52,150 +51,8 @@ public final class ResourceLogger extends AbstractLogger {
      */
     private ResourceLogger(
             final ExtendedLogger logger, final Supplier<Map<String, ?>> supplier, MessageFactory messageFactory) {
-        super(logger.getName(), messageFactory);
-        this.logger = logger;
+        super(logger, logger.getName(), messageFactory);
         this.supplier = supplier;
-    }
-
-    @Override
-    public Level getLevel() {
-        return logger.getLevel();
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, Message message, Throwable t) {
-        return logger.isEnabled(level, marker, message, t);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, CharSequence message, Throwable t) {
-        return logger.isEnabled(level, marker, message, t);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, Object message, Throwable t) {
-        return logger.isEnabled(level, marker, message, t);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String message, Throwable t) {
-        return logger.isEnabled(level, marker, message, t);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String message) {
-        return logger.isEnabled(level, marker, message);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String message, Object... params) {
-        return logger.isEnabled(level, marker, message, params);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String message, Object p0) {
-        return logger.isEnabled(level, marker, message, p0);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1) {
-        return logger.isEnabled(level, marker, message, p0, p1);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2) {
-        return logger.isEnabled(level, marker, message, p0, p1, p2);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
-        return logger.isEnabled(level, marker, message, p0, p1, p2, p3);
-    }
-
-    @Override
-    public boolean isEnabled(
-            Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
-        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4);
-    }
-
-    @Override
-    public boolean isEnabled(
-            Level level,
-            Marker marker,
-            String message,
-            Object p0,
-            Object p1,
-            Object p2,
-            Object p3,
-            Object p4,
-            Object p5) {
-        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5);
-    }
-
-    @Override
-    public boolean isEnabled(
-            Level level,
-            Marker marker,
-            String message,
-            Object p0,
-            Object p1,
-            Object p2,
-            Object p3,
-            Object p4,
-            Object p5,
-            Object p6) {
-        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6);
-    }
-
-    @Override
-    public boolean isEnabled(
-            Level level,
-            Marker marker,
-            String message,
-            Object p0,
-            Object p1,
-            Object p2,
-            Object p3,
-            Object p4,
-            Object p5,
-            Object p6,
-            Object p7) {
-        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
-    }
-
-    @Override
-    public boolean isEnabled(
-            Level level,
-            Marker marker,
-            String message,
-            Object p0,
-            Object p1,
-            Object p2,
-            Object p3,
-            Object p4,
-            Object p5,
-            Object p6,
-            Object p7,
-            Object p8) {
-        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
-    }
-
-    @Override
-    public boolean isEnabled(
-            Level level,
-            Marker marker,
-            String message,
-            Object p0,
-            Object p1,
-            Object p2,
-            Object p3,
-            Object p4,
-            Object p5,
-            Object p6,
-            Object p7,
-            Object p8,
-            Object p9) {
-        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
     @Override
