@@ -40,6 +40,7 @@
 ** xref:manual/lookups.adoc[]
 ** xref:manual/appenders.adoc[]
 ** xref:manual/layouts.adoc[]
+*** xref:manual/json-template-layout.adoc[]
 ** xref:manual/filters.adoc[]
 ** xref:manual/async.adoc[]
 ** xref:manual/garbagefree.adoc[]

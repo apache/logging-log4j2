@@ -30,6 +30,10 @@ content:
 
 asciidoc:
   attributes:
+    # JSON Template Layout manual page has a deep sectioning, support it.
+    # The trailing `@` is added so the attribute can still can be overridden in the header of a page.
+    # For instance, we override this value in release notes page.
+    page-toclevels: "4@"
     log4j-docgen-descriptor-directory: target/plugin-descriptors
     log4j-docgen-type-filter-exclude-pattern: ^java\..+
     log4j-docgen-type-target-template: |
@@ -71,6 +75,12 @@ ui:
         <link rel="stylesheet" href="{{{uiRootPath}}}/css/site.css">
         <!-- `@asciidoctor/tabs` extension styles -->
         <link rel="stylesheet" href="{{{uiRootPath}}}/css/vendor/tabs.css">
+        <!-- `page-toclevels` greater than 4 are not supported by Antora UI, patching it: -->
+        <style>
+          .toc .toc-menu li[data-level="4"] a {
+            padding-left: 2.75rem
+          }
+        </style>
 
     - path: partials/header-content.hbs
       contents: |
