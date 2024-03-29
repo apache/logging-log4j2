@@ -45,7 +45,7 @@ enough to enable access to `JsonTemplateLayout` in your Log4j configuration:
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-layout-template-json</artifactId>
-    <version>{project-version}</version>
+    <version>{log4j-layout-template-json-version}</version>
 </dependency>
 ----
 

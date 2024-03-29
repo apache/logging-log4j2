@@ -38,8 +38,10 @@ version: ~
 start_page: index.adoc
 asciidoc:
   attributes:
+    log4j-api-version: "${site-log4j-api.version}"
+    log4j-core-version: "${site-log4j-core.version}"
+    log4j-layout-template-json-version: "${site-log4j-layout-template-json.version}"
     project-github-url: "${scm.url}"
-    project-version: "${project.version}"
     project-name: "Log4j"
     project-id: "log4j"
     java-target-version: "${maven.compiler.target}"

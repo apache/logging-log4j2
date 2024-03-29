@@ -38,8 +38,10 @@ version: ~
 start_page: index.adoc
 asciidoc:
   attributes:
+    log4j-api-version: "1.2.3-api"
+    log4j-core-version: "1.2.3-core"
+    log4j-layout-template-json-version: "1.2.3-layout-template-json"
     project-github-url: "https://github.com/apache/logging-log4j2"
-    project-version: "X.Y.Z"
     project-name: "Log4j"
     project-id: "log4j"
     java-target-version: "8"

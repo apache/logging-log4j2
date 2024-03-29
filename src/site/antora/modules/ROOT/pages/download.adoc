@@ -39,12 +39,12 @@ Maven::
   <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-api</artifactId>
-    <version>{project-version}</version>
+    <version>{log4j-api-version}</version>
   </dependency>
   <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-core</artifactId>
-    <version>{project-version}</version>
+    <version>{log4j-core-version}</version>
   </dependency>
 </dependencies>
 ----
@@ -54,8 +54,8 @@ Gradle::
 .`build.gradle` snippet
 [source,subs="+attributes"]
 ----
-compile 'org.apache.logging.log4j:log4j-api:{project-version}'
-compile 'org.apache.logging.log4j:log4j-core:{project-version}'
+compile 'org.apache.logging.log4j:log4j-api:{log4j-api-version}'
+compile 'org.apache.logging.log4j:log4j-core:{log4j-core-version}'
 ----
 
 Ivy::
@@ -64,8 +64,8 @@ Ivy::
 [source,xml,subs="+attributes"]
 ----
 <dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-api" rev="{project-version}" />
-  <dependency org="org.apache.logging.log4j" name="log4j-core" rev="{project-version}" />
+  <dependency org="org.apache.logging.log4j" name="log4j-api" rev="{log4j-api-version}" />
+  <dependency org="org.apache.logging.log4j" name="log4j-core" rev="{log4j-core-version}" />
 </dependencies>
 ----
 ====
@@ -89,7 +89,7 @@ Maven::
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-bom</artifactId>
-      <version>{project-version}</version>
+      <version>{log4j-core-version}</version>
       <scope>import</scope>
       <type>pom</type>
     </dependency>
@@ -108,7 +108,7 @@ plugins {
 
 dependencyManagement {
   imports {
-    mavenBom 'org.apache.logging.log4j:log4j-bom:{project-version}'
+    mavenBom 'org.apache.logging.log4j:log4j-bom:{log4j-core-version}'
   }
 }
 
@@ -182,24 +182,24 @@ signature are links to the originals on the main distribution server.
 |Distribution |Mirrors |Checksum |Signature
 
 |Apache Log4j binary (tar.gz)
-|https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.tar.gz[apache-log4j-{project-version}-bin.tar.gz]
-|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.tar.gz.sha512[apache-log4j-{project-version}-bin.tar.gz.sha512]
-|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.tar.gz.asc[apache-log4j-{project-version}-bin.tar.gz.asc]
+|https://www.apache.org/dyn/closer.lua/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-bin.tar.gz[apache-log4j-{log4j-core-version}-bin.tar.gz]
+|https://www.apache.org/dist/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-bin.tar.gz.sha512[apache-log4j-{log4j-core-version}-bin.tar.gz.sha512]
+|https://www.apache.org/dist/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-bin.tar.gz.asc[apache-log4j-{log4j-core-version}-bin.tar.gz.asc]
 
 |Apache Log4j binary (zip)
-|https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.zip[apache-log4j-{project-version}-bin.zip]
-|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.zip.sha512[apache-log4j-{project-version}-bin.zip.sha512]
-|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-bin.zip.asc[apache-log4j-{project-version}-bin.zip.asc]
+|https://www.apache.org/dyn/closer.lua/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-bin.zip[apache-log4j-{log4j-core-version}-bin.zip]
+|https://www.apache.org/dist/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-bin.zip.sha512[apache-log4j-{log4j-core-version}-bin.zip.sha512]
+|https://www.apache.org/dist/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-bin.zip.asc[apache-log4j-{log4j-core-version}-bin.zip.asc]
 
 |Apache Log4j source (tar.gz)
-|https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-src.tar.gz[apache-log4j-{project-version}-src.tar.gz]
-|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.tar.gz.sha512[apache-log4j-{project-version}-src.tar.gz.sha512]
-|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.tar.gz.asc[apache-log4j-{project-version}-src.tar.gz.asc]
+|https://www.apache.org/dyn/closer.lua/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-src.tar.gz[apache-log4j-{log4j-core-version}-src.tar.gz]
+|https://www.apache.org/dist/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-src.tar.gz.sha512[apache-log4j-{log4j-core-version}-src.tar.gz.sha512]
+|https://www.apache.org/dist/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-src.tar.gz.asc[apache-log4j-{log4j-core-version}-src.tar.gz.asc]
 
 |Apache Log4j source (zip)
-|https://www.apache.org/dyn/closer.lua/logging/log4j/{project-version}/apache-log4j-{project-version}-src.zip[apache-log4j-{project-version}-src.zip]
-|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.zip.sha512[apache-log4j-{project-version}-src.zip.sha512]
-|https://www.apache.org/dist/logging/log4j/{project-version}/apache-log4j-{project-version}-src.zip.asc[apache-log4j-{project-version}-src.zip.asc]
+|https://www.apache.org/dyn/closer.lua/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-src.zip[apache-log4j-{log4j-core-version}-src.zip]
+|https://www.apache.org/dist/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-src.zip.sha512[apache-log4j-{log4j-core-version}-src.zip.sha512]
+|https://www.apache.org/dist/logging/log4j/{log4j-core-version}/apache-log4j-{log4j-core-version}-src.zip.asc[apache-log4j-{log4j-core-version}-src.zip.asc]
 |===
 
 It is essential that you verify the integrity of the downloaded files
@@ -217,7 +217,7 @@ directory], rather than from a mirror. Then verify the signatures using
 [source,sh,subs=attributes,subs="+attributes"]
 ----
 gpg --import KEYS
-gpg --verify apache-log4j-{project-version}-bin.zip.asc
+gpg --verify apache-log4j-{log4j-core-version}-bin.zip.asc
 ----
 
 Alternatively, you can verify the SHA512 signature on the files. A unix
@@ -241,8 +241,8 @@ To use Log4j in your application make sure that the API, Plugins, and Core
 jars are in the application’s classpath. Add the dependencies listed
 below to your classpath.
 
-* log4j-api-{project-version}.jar
-* log4j-plugins-{project-version}.jar
-* log4j-core-{project-version}.jar
+* log4j-api-{log4j-api-version}.jar
+* log4j-plugins-{log4j-core-version}.jar
+* log4j-core-{log4j-core-version}.jar
 
 You can do this from the command line or a manifest file.
