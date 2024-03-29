@@ -78,7 +78,7 @@ public class ResourceLoggerTest {
         events.clear();
     }
 
-    private static class MapSupplier implements Supplier<Map<String, String>> {
+    private static class MapSupplier implements Supplier<Map<String, ?>> {
 
         private final Connection connection;
 
@@ -87,7 +87,7 @@ public class ResourceLoggerTest {
         }
 
         @Override
-        public Map<String, String> get() {
+        public Map<String, ?> get() {
             Map<String, String> map = new HashMap<>();
             map.put("Name", connection.name);
             map.put("Type", connection.type);
