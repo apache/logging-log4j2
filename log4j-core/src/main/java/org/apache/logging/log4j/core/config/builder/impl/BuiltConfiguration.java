@@ -25,8 +25,12 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.model.PluginType;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This is the general version of the Configuration created by the Builder. It may be extended to
@@ -46,8 +50,16 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private String contentType = "text";
 
     public BuiltConfiguration(
-            final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
-        super(loggerContext, source);
+            final @Nullable LoggerContext loggerContext,
+            final ConfigurationSource source,
+            final Component rootComponent) {
+        super(
+                loggerContext,
+                source,
+                loggerContext != null ? loggerContext.getEnvironment() : PropertyEnvironment.getGlobal(),
+                loggerContext != null
+                        ? (ConfigurableInstanceFactory) loggerContext.getInstanceFactory()
+                        : DI.createInitializedFactory());
         statusConfig = new StatusConfiguration().setStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {

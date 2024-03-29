@@ -17,22 +17,23 @@
 package org.apache.logging.log4j.core.time.internal;
 
 import java.time.Instant;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.PreciseClock;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 
 /**
  * Implementation of the {@code Clock} interface that returns the system time.
  * @since 2.11.0
  */
-public final class SystemClock implements Clock, PreciseClock {
+public final class SystemClock implements PreciseClock {
 
     private final boolean usePreciseClock;
 
     public SystemClock() {
-        usePreciseClock = PropertiesUtil.getProperties().getBooleanProperty(Log4jPropertyKey.USE_PRECISE_CLOCK, false);
+        usePreciseClock = PropertyEnvironment.getGlobal()
+                .getProperty(ConfigurationProperties.class)
+                .usePreciseClock();
     }
 
     /**

@@ -16,30 +16,34 @@
  */
 package org.apache.log4j.config;
 
+import static org.apache.logging.log4j.core.config.ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LegacyLoggerContextSource;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
+import org.junitpioneer.jupiter.RestoreSystemProperties;
 
 /**
  * Test configuration from Properties.
  */
-public class PropertiesRollingWithPropertiesTest {
+class PropertiesRollingWithPropertiesTest {
 
-    private static final String TEST_DIR = "target/PropertiesRollingWithPropertiesTest";
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    @SetSystemProperty(key = "test.directory", value = TEST_DIR)
-    @CleanUpDirectories(TEST_DIR)
-    @LegacyLoggerContextSource("log4j1-rolling-properties.properties")
-    public void testProperties(final LoggerContext context) throws Exception {
-        final Logger logger = context.getLogger("test");
-        logger.debug("This is a test of the root logger");
-        assertThat(Paths.get(TEST_DIR, "somefile.log")).exists().isNotEmptyFile();
+    @RestoreSystemProperties
+    void testProperties() {
+        System.setProperty("test.directory", loggingPath.toString());
+        System.setProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY, "log4j1-rolling-properties.properties");
+
+        try (final LoggerContext context = LoggerContext.getContext(false)) {
+            final Logger logger = context.getLogger("test");
+            logger.debug("This is a test of the root logger");
+            assertThat(loggingPath.resolve("somefile.log")).exists().isNotEmptyFile();
+        }
     }
 }

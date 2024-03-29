@@ -20,15 +20,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Comparator;
 import java.util.List;
-import org.apache.logging.log4j.spi.recycler.RecyclerFactoryProvider;
-import org.apache.logging.log4j.spi.recycler.RecyclerFactoryRegistry;
+import java.util.ServiceLoader;
+import org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.junit.jupiter.api.Test;
 
 class JCToolsRecyclerFactoryProviderTest {
 
     @Test
     void verify_is_the_first() {
-        final List<Class<?>> providerClasses = RecyclerFactoryRegistry.getRecyclerFactoryProviders().stream()
+        final List<Class<?>> providerClasses = ServiceLoaderUtil.safeStream(
+                        RecyclerFactoryProvider.class,
+                        ServiceLoader.load(
+                                RecyclerFactoryProvider.class, getClass().getClassLoader()),
+                        StatusLogger.getLogger())
                 .sorted(Comparator.comparing(RecyclerFactoryProvider::getOrder))
                 .<Class<?>>map(RecyclerFactoryProvider::getClass)
                 .toList();

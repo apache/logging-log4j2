@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -28,19 +28,18 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class RoutingDefaultAppenderTest {
-    private static final String LOG_FILE = "target/routing1/routingtest.log";
+class RoutingDefaultAppenderTest {
+    private static final String LOG_FILE = "routingtest.log";
+
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    @CleanUpFiles(LOG_FILE)
-    @LoggerContextSource("log4j-routing3.xml")
-    public void routingTest(@Named("List") final ListAppender app) {
+    @LoggerContextSource
+    void routingTest(@Named("List") final ListAppender app) {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
@@ -48,7 +47,6 @@ public class RoutingDefaultAppenderTest {
         assertEquals(1, list.size(), "Incorrect number of events. Expected 1, got " + list.size());
         msg = new StructuredDataMessage("Test", "This is a test", "Alert");
         EventLogger.logEvent(msg);
-        final File file = new File(LOG_FILE);
-        assertTrue(file.exists(), "Alert file was not created");
+        assertThat(loggingPath.resolve(LOG_FILE)).as("check log file").exists();
     }
 }

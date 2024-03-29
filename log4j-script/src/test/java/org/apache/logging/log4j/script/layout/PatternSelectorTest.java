@@ -25,12 +25,12 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
-import org.apache.logging.log4j.script.ScriptPropertyKey;
+import org.apache.logging.log4j.script.TestConstants;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
-@SetSystemProperty(key = ScriptPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "bsh, Javascript")
+@SetTestProperty(key = TestConstants.SCRIPT_ENABLE_LANGUAGES, value = "bsh, Javascript")
 @LoggerContextSource(value = "log4j-patternSelector.xml", reconfigure = ReconfigurationPolicy.BEFORE_EACH)
 public class PatternSelectorTest {
 

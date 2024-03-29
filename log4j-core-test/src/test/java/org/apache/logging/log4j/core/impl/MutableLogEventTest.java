@@ -96,7 +96,7 @@ public class MutableLogEventTest {
                 .setTimeMillis(987654321)
                 .build();
         final MutableLogEvent mutable = new MutableLogEvent();
-        mutable.initFrom(source);
+        mutable.moveValuesFrom(source);
         assertEquals(CONTEXT_DATA, mutable.getContextData(), "contextMap");
         assertEquals(STACK, mutable.getContextStack(), "stack");
         assertTrue(mutable.isEndOfBatch(), "endOfBatch");
@@ -138,7 +138,7 @@ public class MutableLogEventTest {
                 .setTimeMillis(987654321)
                 .build();
         final MutableLogEvent mutable = new MutableLogEvent();
-        mutable.initFrom(source);
+        mutable.moveValuesFrom(source);
         assertEquals("msg in a {}", mutable.getFormat(), "format");
         assertEquals("msg in a bottle", mutable.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, mutable.getParameters(), "parameters");
@@ -182,7 +182,7 @@ public class MutableLogEventTest {
                 .setTimeMillis(987654321)
                 .build();
         final MutableLogEvent mutable = new MutableLogEvent();
-        mutable.initFrom(source);
+        mutable.moveValuesFrom(source);
         assertNull(mutable.getFormat(), "format");
         assertEquals(param.toString(), mutable.getFormattedMessage(), "formatted");
         assertArrayEquals(new Object[] {param}, mutable.getParameters(), "parameters");

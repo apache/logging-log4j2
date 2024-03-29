@@ -29,12 +29,15 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.TestBinding;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
+@SetTestProperty(key = TestConstants.LOGGER_CONTEXT_SHUTDOWN_HOOK_ENABLED, value = "true")
 @TestBinding(api = ShutdownCallbackRegistry.class, implementation = ShutdownCallbackRegistryTest.Registry.class)
 @LoggerContextSource
 public class ShutdownCallbackRegistryTest {

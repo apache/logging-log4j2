@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
@@ -35,6 +34,7 @@ import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory resolver for {@link PluginElement}-annotated keys. This injects configurable child plugin instances.

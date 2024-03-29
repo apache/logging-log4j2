@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -380,7 +380,7 @@ public final class OptionConverter {
             j += DELIM_START_LEN;
             final String key = val.substring(j, k);
             // first try in System properties
-            String replacement = PropertiesUtil.getProperties().getStringProperty(key, null);
+            String replacement = PropertyEnvironment.getGlobal().getStringProperty(key, null);
             // then try props parameter
             if (replacement == null && props != null) {
                 replacement = props.getProperty(key);

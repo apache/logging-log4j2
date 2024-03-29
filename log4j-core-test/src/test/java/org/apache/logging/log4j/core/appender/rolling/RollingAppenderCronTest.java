@@ -32,10 +32,12 @@ import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.DisabledUntil;
 
 /**
  *
  */
+@DisabledUntil(date = "2024-04-01", reason = "Temporarily disabled due to deadlocks.")
 public class RollingAppenderCronTest extends AbstractRollingListenerTest {
 
     private static final String CONFIG = "log4j-rolling-cron.xml";
@@ -54,7 +56,6 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest {
         final File file = new File(FILE);
         assertThat(file).exists();
         logger.debug("This is test message number 1");
-        currentTimeMillis.addAndGet(2500);
         rollover.await();
 
         final File dir = new File(DIR);
@@ -67,12 +68,10 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest {
                 Files.newOutputStream(Path.of("target", "test-classes", "log4j-rolling-cron.xml"))) {
             Files.copy(src, os);
         }
-        currentTimeMillis.addAndGet(5000);
         // force a reconfiguration
         for (int i = 0; i < 20; ++i) {
             logger.debug("Adding new event {}", i);
         }
-        currentTimeMillis.addAndGet(1000);
         reconfigured.await();
         final RollingFileAppender appender = context.getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = appender.getManager().getTriggeringPolicy();

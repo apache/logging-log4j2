@@ -22,6 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.URIConfigurationFactory;
 
 /**
  * Specifies a particular {@link ConfigurationFactory} class to use for a test class or method instead of the default.
@@ -31,5 +32,5 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 @Inherited
 @Log4jTest
 public @interface ConfigurationFactoryType {
-    Class<? extends ConfigurationFactory> value();
+    Class<? extends URIConfigurationFactory> value();
 }

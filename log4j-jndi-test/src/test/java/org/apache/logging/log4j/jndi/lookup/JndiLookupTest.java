@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
+import static org.apache.logging.log4j.core.test.TestConstants.JNDI_ENABLE_LOOKUP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -46,7 +47,7 @@ public class JndiLookupTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.*.JNDI.enableLookup", "true");
+        System.setProperty(JNDI_ENABLE_LOOKUP, "true");
     }
 
     private Map<String, Object> createBindings() {

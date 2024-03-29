@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import java.util.Map;
+import org.apache.logging.log4j.kit.json.JsonReader;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.JsonReader;
 
 /**
  * Interceptor to add {@link EventTemplateAdditionalField

@@ -30,15 +30,15 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.test.appender.rolling.action.DummyFileAttributes;
 import org.apache.logging.log4j.script.ScriptPlugin;
-import org.apache.logging.log4j.script.ScriptPropertyKey;
+import org.apache.logging.log4j.script.TestConstants;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests the ScriptCondition class.
  */
-@SetSystemProperty(key = ScriptPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "js, javascript, groovy")
+@SetTestProperty(key = TestConstants.SCRIPT_ENABLE_LANGUAGES, value = "js, javascript, groovy")
 public class ScriptConditionTest {
 
     @Test

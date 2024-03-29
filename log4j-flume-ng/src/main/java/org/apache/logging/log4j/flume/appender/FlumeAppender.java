@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.Facility;
@@ -37,6 +37,7 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.plugins.di.Key;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
@@ -211,7 +212,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
             @PluginElement final FlumeEventFactory factory,
             @PluginElement Layout layout,
             @PluginElement final Filter filter,
-            final ConfigurableInstanceFactory instanceFactory) {
+            final Configuration configuration) {
 
         final boolean embed = embedded != null
                 ? Boolean.parseBoolean(embedded)
@@ -255,7 +256,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         if (layout == null) {
             final int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
             layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
-                    .setConfig(new DefaultConfiguration())
+                    .setConfig(configuration)
                     .setFacility(Facility.LOCAL0)
                     .setEin(String.valueOf(enterpriseNumber))
                     .setIncludeMDC(true)
@@ -303,7 +304,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                         delayMillis,
                         lockTimeoutRetryCount,
                         dataDir,
-                        instanceFactory);
+                        configuration.getComponent(Key.forClass(ConfigurableInstanceFactory.class)));
                 break;
             default:
                 LOGGER.debug("No manager type specified. Defaulting to AVRO");

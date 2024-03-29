@@ -42,8 +42,9 @@ import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.HttpWatcher;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.net.UrlConnectionFactory;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test the WatchManager
  */
-@SetTestProperty(key = UrlConnectionFactory.ALLOWED_PROTOCOLS, value = "http,https")
+@SetTestProperty(key = TestConstants.CONFIGURATION_ALLOWED_PROTOCOLS, value = "http,https")
 @WireMockTest
 public class WatchHttpTest {
 
@@ -84,7 +85,7 @@ public class WatchHttpTest {
                         .withHeader("Content-Type", XML)));
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
-        final WatchManager watchManager = new WatchManager(scheduler);
+        final WatchManager watchManager = new WatchManager(scheduler, StatusLogger.getLogger());
         watchManager.setIntervalSeconds(1);
         scheduler.start();
         watchManager.start();
@@ -123,7 +124,7 @@ public class WatchHttpTest {
                         .withHeader("Content-Type", XML)));
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
-        final WatchManager watchManager = new WatchManager(scheduler);
+        final WatchManager watchManager = new WatchManager(scheduler, StatusLogger.getLogger());
         watchManager.setIntervalSeconds(1);
         scheduler.start();
         watchManager.start();

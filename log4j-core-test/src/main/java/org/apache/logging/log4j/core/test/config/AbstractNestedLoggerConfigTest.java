@@ -20,11 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
+import org.apache.logging.log4j.plugins.di.DI;
 import org.junit.jupiter.api.Test;
 
 public abstract class AbstractNestedLoggerConfigTest {
@@ -51,8 +53,9 @@ public abstract class AbstractNestedLoggerConfigTest {
 
     private Configuration loadConfiguration(final String resourcePath) throws IOException {
         try (final InputStream in = getClass().getResourceAsStream(getClass().getSimpleName() + resourcePath)) {
-            final Configuration configuration =
-                    new XmlConfiguration(new LoggerContext("test"), new ConfigurationSource(in));
+            final Configuration configuration = new XmlConfiguration(
+                    new LoggerContext("test", null, (URI) null, DI.createInitializedFactory()),
+                    new ConfigurationSource(in));
             configuration.initialize();
             configuration.start();
             return configuration;

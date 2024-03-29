@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutProperties;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
@@ -37,10 +38,13 @@ final class StackTraceElementResolverContext
 
     private final JsonWriter jsonWriter;
 
+    private final JsonTemplateLayoutProperties defaults;
+
     private StackTraceElementResolverContext(final Builder builder) {
         this.resolverFactoryByName = builder.resolverFactoryByName;
         this.substitutor = builder.substitutor;
         this.jsonWriter = builder.jsonWriter;
+        this.defaults = builder.defaults;
     }
 
     @Override
@@ -69,6 +73,11 @@ final class StackTraceElementResolverContext
         return jsonWriter;
     }
 
+    @Override
+    public JsonTemplateLayoutProperties getDefaults() {
+        return defaults;
+    }
+
     static Builder newBuilder() {
         return new Builder();
     }
@@ -80,6 +89,8 @@ final class StackTraceElementResolverContext
         private StackTraceElementResolverStringSubstitutor substitutor;
 
         private JsonWriter jsonWriter;
+
+        private JsonTemplateLayoutProperties defaults;
 
         private Builder() {
             // Do nothing.
@@ -100,6 +111,11 @@ final class StackTraceElementResolverContext
             return this;
         }
 
+        Builder setDefaults(final JsonTemplateLayoutProperties defaults) {
+            this.defaults = defaults;
+            return this;
+        }
+
         StackTraceElementResolverContext build() {
             validate();
             return new StackTraceElementResolverContext(this);
@@ -112,6 +128,7 @@ final class StackTraceElementResolverContext
             }
             Objects.requireNonNull(substitutor, "substitutor");
             Objects.requireNonNull(jsonWriter, "jsonWriter");
+            Objects.requireNonNull(defaults, "defaults");
         }
     }
 }

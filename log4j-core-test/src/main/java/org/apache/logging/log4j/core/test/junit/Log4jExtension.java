@@ -17,22 +17,27 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.URIConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.plugins.util.ReflectionUtil;
+import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.util.ProviderUtil;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -104,14 +109,15 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
             final AnnotatedElement element,
             final Class<?> testClass) {
         final ConfigurableInstanceFactory instanceFactory = configureInstanceFactory(builder, element);
-        final Log4jContextFactory factory = instanceFactory.getInstance(Log4jContextFactory.class);
-        store.put(LoggerContextFactoryHolder.class, new LoggerContextFactoryHolder(factory));
+        final Provider provider = instanceFactory.getInstance(Provider.class);
+        store.put(ProviderHolder.class, new ProviderHolder(provider));
+        final Log4jContextFactory factory = (Log4jContextFactory) provider.getLoggerContextFactory();
         if (AnnotationSupport.isAnnotated(element, LoggingResolvers.class)) {
             AnnotationSupport.findAnnotation(element, LoggerContextSource.class)
                     .map(source -> configureLoggerContextSource(source, testClass, factory))
                     .or(() -> AnnotationSupport.findAnnotation(element, LegacyLoggerContextSource.class)
                             .map(source -> configureLegacyLoggerContextSource(source, testClass, factory)))
-                    .ifPresent(provider -> store.put(LoggerContextProvider.class, provider));
+                    .ifPresent(p -> store.put(LoggerContextProvider.class, p));
         }
     }
 
@@ -125,7 +131,7 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
                         .toFunction(instanceFactory -> instanceFactory.getFactory(clazz)));
         AnnotationSupport.findAnnotation(element, ConfigurationFactoryType.class)
                 .map(ConfigurationFactoryType::value)
-                .ifPresent(clazz -> builder.addBindingFrom(ConfigurationFactory.KEY)
+                .ifPresent(clazz -> builder.addBindingFrom(URIConfigurationFactory.KEY)
                         .toFunction(instanceFactory -> instanceFactory.getFactory(clazz)));
         return builder.build();
     }
@@ -184,8 +190,10 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
     private static LoggerContextProvider configureLegacyLoggerContextSource(
             final LegacyLoggerContextSource source, final Class<?> testClass, final Log4jContextFactory factory) {
         final String configLocation = source.value();
-        System.setProperty(Log4jPropertyKey.CONFIG_V1_FILE_NAME.getSystemKey(), configLocation);
-        System.setProperty(Log4jPropertyKey.CONFIG_V1_COMPATIBILITY_ENABLED.getSystemKey(), "true");
+        final String configurationKey = TestConstants.VERSION1_CONFIGURATION;
+        final String compatibilityKey = TestConstants.VERSION1_COMPATIBILITY;
+        System.setProperty(configurationKey, configLocation);
+        System.setProperty(compatibilityKey, "true");
         final String contextName = testClass.getSimpleName();
         final LoggerContext context =
                 factory.getContext(FQCN, testClass.getClassLoader(), null, false, (URI) null, contextName);
@@ -195,8 +203,8 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
         }
         final Runnable cleaner = () -> {
             context.close();
-            System.clearProperty(Log4jPropertyKey.CONFIG_V1_FILE_NAME.getSystemKey());
-            System.clearProperty(Log4jPropertyKey.CONFIG_V1_COMPATIBILITY_ENABLED.getSystemKey());
+            System.clearProperty(configurationKey);
+            System.clearProperty(compatibilityKey);
         };
         return new LoggerContextResource(context, cleaner);
     }
@@ -229,15 +237,49 @@ class Log4jExtension implements BeforeAllCallback, BeforeEachCallback, AfterEach
         return provider.loggerContext();
     }
 
-    private record LoggerContextFactoryHolder(LoggerContextFactory factory)
-            implements ExtensionContext.Store.CloseableResource {
-        LoggerContextFactoryHolder {
-            LogManager.setFactory(factory);
+    /**
+     * TODO: remove this class by fixing tests that use both injection of parameters and static
+     *       LogManager/ThreadContext methods.
+     */
+    private static final class ProviderHolder implements ExtensionContext.Store.CloseableResource {
+
+        private static final Field startupLock;
+        private static final Field providerField;
+
+        private final Provider oldProvider;
+
+        static {
+            try {
+                providerField = ProviderUtil.class.getDeclaredField("PROVIDER");
+                startupLock = ProviderUtil.class.getDeclaredField("STARTUP_LOCK");
+            } catch (final NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private ProviderHolder(final Provider provider) {
+            oldProvider = setProvider(provider);
         }
 
         @Override
         public void close() {
-            LogManager.setFactory(null);
+            setProvider(oldProvider);
+        }
+
+        Provider setProvider(final Provider provider) {
+            final Lock lock = (Lock) ReflectionUtil.getStaticFieldValue(startupLock);
+            lock.lock();
+            try {
+                final Provider oldProvider = (Provider) ReflectionUtil.getStaticFieldValue(providerField);
+                ReflectionUtil.setStaticFieldValue(providerField, provider);
+                if (provider != null) {
+                    LogManager.setFactory(provider.getLoggerContextFactory());
+                    ThreadContext.init();
+                }
+                return oldProvider;
+            } finally {
+                lock.unlock();
+            }
         }
     }
 

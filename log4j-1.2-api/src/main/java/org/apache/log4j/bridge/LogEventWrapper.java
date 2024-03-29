@@ -37,6 +37,7 @@ import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Exposes a Log4j 1 logging event as a Log4j 2 LogEvent.
@@ -109,10 +110,15 @@ public class LogEventWrapper implements LogEvent {
     }
 
     @Override
-    public StackTraceElement getSource() {
+    public @Nullable StackTraceElement peekSource() {
         final LocationInfo info = event.getLocationInformation();
         return new StackTraceElement(
                 info.getClassName(), info.getMethodName(), info.getFileName(), Integer.parseInt(info.getLineNumber()));
+    }
+
+    @Override
+    public @Nullable StackTraceElement getSource() {
+        return peekSource();
     }
 
     @Override

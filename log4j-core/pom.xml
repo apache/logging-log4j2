@@ -46,6 +46,7 @@
       com.lmax.disruptor.*;resolution:=optional,
       org.apache.commons.compress.*;resolution:=optional,
       org.fusesource.jansi;resolution:=optional,
+      org.jspecify.annotations.*;resolution:=optional,
       <!-- Optional Java modules -->
       <!-- java.management -->
       java.lang.management;resolution:=optional,
@@ -74,10 +75,19 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.framework</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <!-- Naturally, all implementations require the log4j-api JAR -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-kit</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutProperties;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
@@ -41,6 +42,8 @@ interface TemplateResolverContext<V, C extends TemplateResolverContext<V, C>> {
     TemplateResolverStringSubstitutor<V> getSubstitutor();
 
     JsonWriter getJsonWriter();
+
+    JsonTemplateLayoutProperties getDefaults();
 
     /**
      * Process the read template before compiler (i.e.,

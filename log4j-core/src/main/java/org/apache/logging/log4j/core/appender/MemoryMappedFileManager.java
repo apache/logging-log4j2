@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.plugins.util.ReflectionUtil;
 
 // Lines too long...
 // CHECKSTYLE:OFF

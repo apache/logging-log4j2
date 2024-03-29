@@ -28,16 +28,23 @@
   <packaging>jar</packaging>
   <name>Apache Log4j Plugins</name>
   <description>Log4j Plugin Support</description>
+
   <properties>
     <bnd-extra-package-options>
       <!-- External optional dependencies -->
-      com.google.errorprone.annotations.concurrent;resolution:=optional
+      com.google.errorprone.annotations.concurrent;resolution:=optional,
+      org.jspecify.annotations.*;resolution:=optional
     </bnd-extra-package-options>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-kit</artifactId>
     </dependency>
   </dependencies>
 

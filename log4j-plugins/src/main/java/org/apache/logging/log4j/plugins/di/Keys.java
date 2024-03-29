@@ -26,15 +26,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.internal.util.AnnotatedAnnotation;
+import org.apache.logging.log4j.plugins.internal.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
 import org.apache.logging.log4j.plugins.name.AliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.util.AnnotatedAnnotation;
-import org.apache.logging.log4j.plugins.util.AnnotationUtil;
+import org.apache.logging.log4j.plugins.util.ReflectionUtil;
 import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.Strings;
 
 public final class Keys {

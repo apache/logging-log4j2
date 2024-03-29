@@ -131,7 +131,7 @@
               </includes>
               <systemPropertyVariables>
                 <java.util.logging.config.file>src/test/resources/logging-test.properties</java.util.logging.config.file>
-                <Configuration.file>log4j2-julBridge-test.xml</Configuration.file>
+                <log4j.configuration.location>classpath:log4j2-julBridge-test.xml</log4j.configuration.location>
               </systemPropertyVariables>
             </configuration>
           </execution>

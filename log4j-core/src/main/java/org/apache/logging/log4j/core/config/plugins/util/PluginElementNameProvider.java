@@ -16,16 +16,18 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import static java.util.Optional.ofNullable;
+import static org.apache.logging.log4j.util.Strings.trimToNull;
+
 import java.util.Optional;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
-import org.apache.logging.log4j.util.Strings;
 
 @Deprecated(since = "3.0", forRemoval = true)
 @SuppressWarnings("removal")
 public class PluginElementNameProvider implements AnnotatedElementNameProvider<PluginElement> {
     @Override
     public Optional<String> getSpecifiedName(final PluginElement annotation) {
-        return Strings.trimToOptional(annotation.value());
+        return ofNullable(trimToNull(annotation.value()));
     }
 }

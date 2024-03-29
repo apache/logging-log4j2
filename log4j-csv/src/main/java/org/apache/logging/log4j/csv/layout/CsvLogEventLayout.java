@@ -42,7 +42,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin
 public class CsvLogEventLayout extends AbstractCsvLayout {
 
-    public static CsvLogEventLayout createDefaultLayout() {
+    static CsvLogEventLayout createDefaultLayout() {
         return new CsvLogEventLayout(
                 new DefaultConfiguration(),
                 Charset.forName(DEFAULT_CHARSET),

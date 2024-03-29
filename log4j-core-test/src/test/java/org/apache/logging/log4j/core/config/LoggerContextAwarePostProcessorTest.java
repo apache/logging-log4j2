@@ -18,7 +18,9 @@ package org.apache.logging.log4j.core.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +36,8 @@ class LoggerContextAwarePostProcessorTest {
 
     @Test
     void loggerContextAwareInjection() {
-        try (final LoggerContext context = new LoggerContext(getClass().getName())) {
+        try (final LoggerContext context =
+                new LoggerContext(getClass().getName(), null, (URI) null, DI.createInitializedFactory())) {
             final InstanceFactory instanceFactory = context.getInstanceFactory();
             final TestBean instance = instanceFactory.getInstance(TestBean.class);
             assertThat(instance.context).isSameAs(context);

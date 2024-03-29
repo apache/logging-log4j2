@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.script.appender.routing;
 
+import static org.apache.logging.log4j.core.test.TestConstants.setSystemProperty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -28,7 +29,7 @@ import org.apache.logging.log4j.core.appender.routing.RoutingAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.script.ScriptPropertyKey;
+import org.apache.logging.log4j.script.TestConstants;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -57,7 +58,7 @@ public class DefaultRouteScriptAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ScriptPropertyKey.SCRIPT_ENABLE_LANGUAGES.getSystemKey(), "Groovy, Javascript");
+        setSystemProperty(TestConstants.SCRIPT_ENABLE_LANGUAGES, "Groovy, Javascript");
     }
 
     @Rule

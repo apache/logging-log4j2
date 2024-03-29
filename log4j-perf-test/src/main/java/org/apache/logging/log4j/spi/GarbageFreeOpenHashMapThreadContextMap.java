@@ -16,11 +16,9 @@
  */
 package org.apache.logging.log4j.spi;
 
-import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_INITIAL_CAPACITY;
-
+import org.apache.logging.log4j.core.impl.CoreProperties.ThreadContextProperties;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -39,10 +37,13 @@ public class GarbageFreeOpenHashMapThreadContextMap extends GarbageFreeSortedArr
     /** Constant used in benchmark code */
     public static final Class<? extends ThreadContextMap> SUPER = GarbageFreeSortedArrayThreadContextMap.class;
 
+    private final int initialCapacity = PropertyEnvironment.getGlobal()
+            .getProperty(ThreadContextProperties.class)
+            .initialCapacity();
+
     @Override
-    protected StringMap createStringMap(final int initialCapacity) {
-        return new OpenHashStringMap<>(PropertiesUtil.getProperties()
-                .getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY));
+    protected StringMap createStringMap() {
+        return new OpenHashStringMap<>(initialCapacity);
     }
 
     @Override

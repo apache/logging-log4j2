@@ -60,7 +60,7 @@ public class CsvParameterLayout extends AbstractCsvLayout {
                 null);
     }
 
-    public static AbstractCsvLayout createLayout(final CSVFormat format) {
+    static AbstractCsvLayout createLayout(final CSVFormat format) {
         return new CsvParameterLayout(new DefaultConfiguration(), Charset.forName(DEFAULT_CHARSET), format, null, null);
     }
 

@@ -39,6 +39,7 @@ public class YamlConfiguration extends AbstractJacksonConfiguration {
         return new YamlConfiguration(loggerContext, configurationSource);
     }
 
+    @Override
     protected ObjectMapper getObjectMapper() {
         return YAMLMapper.builder()
                 .configure(JsonParser.Feature.ALLOW_COMMENTS, true)

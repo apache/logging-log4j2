@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.spi;
 
+import org.apache.logging.log4j.core.impl.CoreProperties.ThreadContextProperties;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -31,6 +33,10 @@ public class CopyOnWriteOpenHashMapThreadContextMap extends CopyOnWriteSortedArr
 
     /** Constant used in benchmark code */
     public static final Class<? extends ThreadContextMap> SUPER = CopyOnWriteSortedArrayThreadContextMap.class;
+
+    private final int initialCapacity = PropertyEnvironment.getGlobal()
+            .getProperty(ThreadContextProperties.class)
+            .initialCapacity();
 
     @Override
     protected StringMap createStringMap() {

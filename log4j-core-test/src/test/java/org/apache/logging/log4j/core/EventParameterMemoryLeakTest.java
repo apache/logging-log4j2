@@ -29,15 +29,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.TestConstants;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 @Tag("functional")
-@SetSystemProperty(key = Log4jPropertyKey.Constant.GC_ENABLE_DIRECT_ENCODERS, value = "true")
-@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "EventParameterMemoryLeakTest.xml")
+@SetTestProperty(key = TestConstants.GC_ENABLE_DIRECT_ENCODERS, value = "true")
+@SetTestProperty(key = TestConstants.CONFIGURATION_FILE, value = "EventParameterMemoryLeakTest.xml")
 public class EventParameterMemoryLeakTest {
 
     @Test

@@ -48,18 +48,18 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
 @Singleton
-public class ClassLoaderContextSelector implements ContextSelector, LoggerContextShutdownAware {
+public class ClassLoaderContextSelector extends AbstractContextSelector
+        implements ContextSelector, LoggerContextShutdownAware {
 
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    protected final Lazy<LoggerContext> defaultContext = Lazy.lazy(() -> createContext(defaultContextName(), null));
+    protected final Lazy<LoggerContext> defaultContext =
+            Lazy.lazy(() -> createContext(defaultContextName(), null, getClass().getClassLoader()));
     protected final Map<String, AtomicReference<WeakReference<LoggerContext>>> contextMap = new ConcurrentHashMap<>();
-
-    protected final ConfigurableInstanceFactory instanceFactory;
 
     @Inject
     public ClassLoaderContextSelector(final ConfigurableInstanceFactory instanceFactory) {
-        this.instanceFactory = instanceFactory;
+        super(instanceFactory);
     }
 
     @Override
@@ -188,16 +188,6 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return Collections.unmodifiableList(list);
     }
 
-    private ConfigurableInstanceFactory getConfigurableInstanceFactory(final Map.Entry<String, Object> entry) {
-        if (entry != null) {
-            final Object value = entry.getValue();
-            if (value instanceof ConfigurableInstanceFactory) {
-                return (ConfigurableInstanceFactory) value;
-            }
-        }
-        return instanceFactory;
-    }
-
     private LoggerContext locateContext(
             final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry, final URI configLocation) {
         // LOG4J2-477: class loader may be null
@@ -237,7 +227,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                     } */
                 }
             }
-            final LoggerContext ctx = createContext(name, configLocation, getConfigurableInstanceFactory(entry));
+            final LoggerContext ctx = createContext(name, configLocation, loader);
             if (entry != null) {
                 ctx.putObject(entry.getKey(), entry.getValue());
             }
@@ -269,7 +259,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             }
             return ctx;
         }
-        ctx = createContext(name, configLocation, getConfigurableInstanceFactory(entry));
+        ctx = createContext(name, configLocation, loader);
         if (entry != null) {
             ctx.putObject(entry.getKey(), entry.getValue());
         }
@@ -277,16 +267,6 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             ctx.addShutdownListener(this);
         }
         return ctx;
-    }
-
-    protected LoggerContext createContext(final String name, final URI configLocation) {
-        final ConfigurableInstanceFactory instanceFactory = this.instanceFactory;
-        return createContext(name, configLocation, instanceFactory);
-    }
-
-    protected LoggerContext createContext(
-            final String name, final URI configLocation, final ConfigurableInstanceFactory instanceFactory) {
-        return new LoggerContext(name, null, configLocation, instanceFactory);
     }
 
     protected String toContextMapKey(final ClassLoader loader) {

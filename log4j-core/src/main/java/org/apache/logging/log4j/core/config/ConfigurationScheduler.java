@@ -226,7 +226,10 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         @Override
         public void run() {
             try {
-                final long millis = scheduledFuture.getFireTime().getTime() - System.currentTimeMillis();
+                final CronScheduledFuture<?> scheduledFuture = this.scheduledFuture;
+                final long millis = scheduledFuture != null
+                        ? scheduledFuture.getFireTime().getTime() - System.currentTimeMillis()
+                        : 0L;
                 if (millis > 0) {
                     LOGGER.debug("{} Cron thread woke up {} millis early. Sleeping", name, millis);
                     try {

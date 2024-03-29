@@ -32,14 +32,14 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.script.ScriptPropertyKey;
+import org.apache.logging.log4j.script.TestConstants;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Test Configuration
  */
-@SetSystemProperty(key = ScriptPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "beanshell, Groovy, Javascript")
+@SetTestProperty(key = TestConstants.SCRIPT_ENABLE_LANGUAGES, value = "beanshell, Groovy, Javascript")
 public class TestConfigurator {
     @Test
     public void testBuilderWithScripts() throws Exception {

@@ -51,8 +51,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
@@ -103,14 +103,14 @@ public class FlumePersistentAppenderTest {
         System.setProperty("alternatePort", Integer.toString(altPort));
         primary = new EventCollector(primaryPort);
         alternate = new EventCollector(altPort);
-        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG);
+        System.setProperty(TestConstants.CONFIGURATION_FILE, CONFIG);
         ctx = LoggerContext.getContext(false);
         ctx.reconfigure();
     }
 
     @After
     public void teardown() throws Exception {
-        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
+        System.clearProperty(TestConstants.CONFIGURATION_FILE);
         ctx.reconfigure();
         primary.stop();
         alternate.stop();

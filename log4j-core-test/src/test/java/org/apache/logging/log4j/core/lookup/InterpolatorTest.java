@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.apache.logging.log4j.core.lookup.StrSubstitutorTest.LOOKUP_PLUGINS;
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -66,7 +67,7 @@ public class InterpolatorTest {
         final Map<String, String> map = new HashMap<>();
         map.put(TESTKEY, TESTVAL);
         final MapLookup defaultLookup = new MapLookup(map);
-        final Interpolator interpolator = new Interpolator(defaultLookup);
+        final Interpolator interpolator = new Interpolator(defaultLookup, LOOKUP_PLUGINS);
         assertEquals(defaultLookup.getMap(), ((MapLookup) interpolator.getDefaultLookup()).getMap());
         assertSame(defaultLookup, interpolator.getDefaultLookup());
     }
@@ -75,7 +76,7 @@ public class InterpolatorTest {
     public void testLookup() {
         final Map<String, String> map = new HashMap<>();
         map.put(TESTKEY, TESTVAL);
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = new Interpolator(new MapLookup(map), LOOKUP_PLUGINS);
         ThreadContext.put(TESTKEY, TESTVAL);
         String value = lookup.lookup(TESTKEY);
         assertEquals(TESTVAL, value);
@@ -101,7 +102,7 @@ public class InterpolatorTest {
 
     @Test
     public void testLookupWithDefaultInterpolator() {
-        final StrLookup lookup = new Interpolator();
+        final StrLookup lookup = new Interpolator(new PropertiesLookup(Map.of()), LOOKUP_PLUGINS);
         String value = lookup.lookup("sys:" + TESTKEY);
         assertEquals(TESTVAL, value);
         value = lookup.lookup("env:PATH");
@@ -123,7 +124,7 @@ public class InterpolatorTest {
     public void testInterpolatorMapMessageWithNoPrefix() {
         final HashMap<String, String> configProperties = new HashMap<>();
         configProperties.put("key", "configProperties");
-        final Interpolator interpolator = new Interpolator(configProperties);
+        final Interpolator interpolator = new Interpolator(new PropertiesLookup(configProperties), LOOKUP_PLUGINS);
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
         final LogEvent event = Log4jLogEvent.newBuilder()
@@ -137,7 +138,8 @@ public class InterpolatorTest {
 
     @Test
     public void testInterpolatorMapMessageWithNoPrefixConfigDoesntMatch() {
-        final Interpolator interpolator = new Interpolator(Collections.emptyMap());
+        final Interpolator interpolator =
+                new Interpolator(new PropertiesLookup(Collections.emptyMap()), LOOKUP_PLUGINS);
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
         final LogEvent event = Log4jLogEvent.newBuilder()
@@ -153,7 +155,7 @@ public class InterpolatorTest {
     public void testInterpolatorMapMessageWithMapPrefix() {
         final HashMap<String, String> configProperties = new HashMap<>();
         configProperties.put("key", "configProperties");
-        final Interpolator interpolator = new Interpolator(configProperties);
+        final Interpolator interpolator = new Interpolator(new PropertiesLookup(configProperties), LOOKUP_PLUGINS);
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
         final LogEvent event = Log4jLogEvent.newBuilder()

@@ -18,9 +18,9 @@ package org.apache.logging.log4j.script.filter;
 
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
-import org.apache.logging.log4j.script.ScriptPropertyKey;
-import org.junitpioneer.jupiter.SetSystemProperty;
+import org.apache.logging.log4j.script.TestConstants;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 
-@SetSystemProperty(key = ScriptPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "Groovy, Javascript")
+@SetTestProperty(key = TestConstants.SCRIPT_ENABLE_LANGUAGES, value = "Groovy, Javascript")
 @LoggerContextSource(value = "log4j-scriptFile-filters.xml", reconfigure = ReconfigurationPolicy.BEFORE_EACH)
 public class ScriptFileFilterTest extends AbstractScriptFilterTest {}

@@ -27,8 +27,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.config.LoggerContextAware;
-import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
-import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -60,49 +58,12 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
     private WeakReference<LoggerContext> loggerContext = null;
 
     /**
-     * Constructs an Interpolator using a given StrLookup and a list of packages to find Lookup plugins in.
-     * Only used in the Interpolator.
-     *
-     * @param defaultLookup  the default StrLookup to use as a fallback
-     * @since 2.1
+     * @param defaultLookup The default {@link StrLookup}.
+     * @param additionalLookups A map associating a prefix with a secondary {@link StrLookup}.
      */
-    public Interpolator(final StrLookup defaultLookup) {
-        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
-        final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
-        // TODO(ms): this should use plugin map injection
-        instanceFactory.getInstance(PLUGIN_CATEGORY_KEY).forEach((key, value) -> {
-            try {
-                strLookups.put(
-                        key, instanceFactory.getFactory(value.getPluginClass().asSubclass(StrLookup.class)));
-            } catch (final Throwable t) {
-                handleError(key, t);
-            }
-        });
-    }
-
-    /**
-     * Used by interpolatrorFactory.
-     *
-     * @param defaultLookup The default Lookup.
-     * @param strLookupPlugins The Lookup Plugins.
-     */
-    public Interpolator(final StrLookup defaultLookup, final Map<String, Supplier<StrLookup>> strLookupPlugins) {
+    public Interpolator(final StrLookup defaultLookup, final Map<String, Supplier<StrLookup>> additionalLookups) {
         this.defaultLookup = defaultLookup;
-        strLookups.putAll(strLookupPlugins);
-    }
-
-    /**
-     * Create the default Interpolator.
-     */
-    public Interpolator() {
-        this(Map.of());
-    }
-
-    /**
-     * Creates the default Interpolator with the provided properties.
-     */
-    public Interpolator(final Map<String, String> properties) {
-        this(new PropertiesLookup(properties));
+        strLookups.putAll(additionalLookups);
     }
 
     public StrLookup getDefaultLookup() {

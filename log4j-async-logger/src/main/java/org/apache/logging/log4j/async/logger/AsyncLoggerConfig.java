@@ -29,11 +29,10 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.LogEventFactory;
+import org.apache.logging.log4j.kit.logger.AbstractLogger;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -65,10 +64,10 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Configurable(printObject = true)
 @Plugin("asyncLogger")
-public class AsyncLoggerConfig extends LoggerConfig {
+public final class AsyncLoggerConfig extends LoggerConfig {
 
     private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = ThreadLocal.withInitial(() -> Boolean.FALSE);
-    private AsyncLoggerConfigDelegate delegate;
+    private AsyncLoggerConfigDisruptor disruptor;
 
     @PluginFactory
     public static <B extends Builder<B>> B newAsyncBuilder() {
@@ -80,9 +79,10 @@ public class AsyncLoggerConfig extends LoggerConfig {
         @Override
         public LoggerConfig build() {
             final String name = getLoggerName().equals(ROOT) ? Strings.EMPTY : getLoggerName();
+            final Configuration config = getConfig();
             final LevelAndRefs container =
-                    LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(), getConfig());
-            final String includeLocationConfigValue = getIncludeLocation();
+                    LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(), config);
+            final boolean includeLocation = Boolean.TRUE.equals(getIncludeLocation());
             return new AsyncLoggerConfig(
                     name,
                     container.refs,
@@ -90,13 +90,12 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     container.level,
                     isAdditivity(),
                     getProperties(),
-                    getConfig(),
-                    Boolean.parseBoolean(includeLocationConfigValue),
-                    getLogEventFactory());
+                    config,
+                    includeLocation);
         }
     }
 
-    protected AsyncLoggerConfig(
+    private AsyncLoggerConfig(
             final String name,
             final List<AppenderRef> appenders,
             final Filter filter,
@@ -104,22 +103,23 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final boolean additive,
             final Property[] properties,
             final Configuration config,
-            final boolean includeLocation,
-            final LogEventFactory logEventFactory) {
-        super(name, appenders, filter, level, additive, properties, config, includeLocation, logEventFactory);
+            final boolean includeLocation) {
+        super(name, appenders, filter, level, additive, properties, config, includeLocation);
     }
 
     @Override
     public void initialize() {
         final Configuration configuration = getConfiguration();
-        final DisruptorConfiguration disruptorConfig = configuration.addExtensionIfAbsent(
-                DisruptorConfiguration.class,
-                () -> DisruptorConfiguration.newBuilder().build());
-        delegate = disruptorConfig.getAsyncLoggerConfigDelegate();
-        delegate.setLogEventFactory(getLogEventFactory());
+        // Retrieve or create the common holder for the disruptor.
+        final DisruptorConfiguration disruptorConfiguration = configuration.addExtensionIfAbsent(
+                DisruptorConfiguration.class, () -> DisruptorConfiguration.newBuilder()
+                        .setConfiguration(configuration)
+                        .build());
+        this.disruptor = disruptorConfiguration.getLoggerConfigDisruptor();
         super.initialize();
     }
 
+    @Override
     protected void log(final LogEvent event, final Predicate<LoggerConfig> predicate) {
         // See LOG4J2-2301
         if (predicate == null
@@ -153,8 +153,8 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     // package-protected for testing
-    AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
-        return delegate;
+    AsyncLoggerConfigDisruptor getAsyncLoggerConfigDisruptor() {
+        return disruptor;
     }
 
     @Override
@@ -165,8 +165,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     private void logToAsyncDelegate(final LogEvent event) {
         // Passes on the event to a separate thread that will call
         // asyncCallAppenders(LogEvent).
-        populateLazilyInitializedFields(event);
-        if (!delegate.tryEnqueue(event, this)) {
+        if (!disruptor.tryEnqueue(event, this)) {
             handleQueueFull(event);
         }
     }
@@ -178,7 +177,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             logToAsyncLoggerConfigsOnCurrentThread(event);
         } else {
             // otherwise, we leave it to the user preference
-            final EventRoute eventRoute = delegate.getEventRoute(event.getLevel());
+            final EventRoute eventRoute = disruptor.getEventRoute(event.getLevel());
             switch (eventRoute) {
                 case DISCARD:
                     break;
@@ -193,20 +192,16 @@ public class AsyncLoggerConfig extends LoggerConfig {
         }
     }
 
-    private void populateLazilyInitializedFields(final LogEvent event) {
-        event.getSource();
-        event.getThreadName();
-    }
-
     void logInBackgroundThread(final LogEvent event) {
-        delegate.enqueueEvent(event, this);
+        disruptor.enqueueEvent(event, this);
     }
 
     /**
      * Called by AsyncLoggerConfigHelper.RingBufferLog4jEventHandler.
-     *
+     * <p>
      * This method will log the provided event to only configs of type {@link AsyncLoggerConfig} (not
      * default {@link LoggerConfig} definitions), which will be invoked on the <b>calling thread</b>.
+     * </p>
      */
     void logToAsyncLoggerConfigsOnCurrentThread(final LogEvent event) {
         // skip the filter, which was already called on the logging thread
@@ -237,30 +232,33 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @Configurable(printObject = true)
     @Plugin("asyncRoot")
-    public static class RootLogger extends LoggerConfig {
+    public static final class RootLogger extends LoggerConfig {
 
         @PluginFactory
-        public static <B extends Builder<B>> B newAsyncRootBuilder() {
-            return new Builder<B>().asBuilder();
+        public static Builder newAsyncRootBuilder() {
+            return new Builder();
         }
 
-        public static class Builder<B extends Builder<B>> extends RootLogger.Builder<B> {
+        private RootLogger() {
+            super(Strings.EMPTY, Level.ERROR, false, null);
+        }
+
+        public static class Builder extends RootLogger.Builder {
 
             @Override
             public LoggerConfig build() {
                 final LevelAndRefs container =
                         LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(), getConfig());
-                final String includeLocationConfigValue = getIncludeLocation();
+                final boolean includeLocation = Boolean.TRUE.equals(getIncludeLocation());
                 return new AsyncLoggerConfig(
                         LogManager.ROOT_LOGGER_NAME,
                         container.refs,
                         getFilter(),
                         container.level,
-                        isAdditivity(),
+                        ADDITIVITY,
                         getProperties(),
                         getConfig(),
-                        Boolean.parseBoolean(includeLocationConfigValue),
-                        getLogEventFactory());
+                        includeLocation);
             }
         }
     }

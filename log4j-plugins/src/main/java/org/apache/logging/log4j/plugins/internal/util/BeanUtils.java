@@ -38,7 +38,6 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.NotInjectableException;
 import org.apache.logging.log4j.plugins.di.spi.DependencyChain;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
-import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.InternalApi;
 

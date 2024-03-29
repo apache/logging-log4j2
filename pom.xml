@@ -233,8 +233,6 @@
     <!-- Last comes the rest of the modules in alphabetical order.
          Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
     <module>log4j-1.2-api</module>
-    <module>log4j-api</module>
-    <module>log4j-api-test</module>
     <module>log4j-async-logger</module>
     <module>log4j-config-jackson</module>
     <module>log4j-config-properties</module>
@@ -253,6 +251,7 @@
     <module>log4j-jndi-test</module>
     <module>log4j-jpl</module>
     <module>log4j-jul</module>
+    <module>log4j-kit</module>
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-test</module>
     <module>log4j-mongodb4</module>
@@ -325,6 +324,9 @@
          Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
     <project.build.outputTimestamp>2024-02-17T17:58:36Z</project.build.outputTimestamp>
 
+    <!-- Version of Log4j API required -->
+    <log4j-api.version>2.24.0-SNAPSHOT</log4j-api.version>
+
     <!-- ========================
          Site-specific properties
          ======================== -->
@@ -366,13 +368,13 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <version>${project.version}</version>
+        <version>${log4j-api.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api-test</artifactId>
-        <version>${project.version}</version>
+        <version>${log4j-api.version}</version>
       </dependency>
 
       <dependency>
@@ -510,6 +512,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-script</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-kit</artifactId>
         <version>${project.version}</version>
       </dependency>
 

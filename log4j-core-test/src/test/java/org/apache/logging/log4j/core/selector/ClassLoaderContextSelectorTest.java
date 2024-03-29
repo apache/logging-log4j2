@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.plugins.util.ReflectionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

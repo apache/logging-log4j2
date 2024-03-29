@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.InstantFormatter;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutProperties;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
@@ -55,9 +55,9 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  *
  * If no configuration options are provided, <tt>pattern-config</tt> is
  * employed. There {@link
- * JsonTemplateLayoutDefaults#getTimestampFormatPattern()}, {@link
- * JsonTemplateLayoutDefaults#getTimeZone()}, {@link
- * JsonTemplateLayoutDefaults#getLocale()} are used as defaults for
+ * JsonTemplateLayoutProperties#timestampFormatPattern()}, {@link
+ * JsonTemplateLayoutProperties#timeZone()}, {@link
+ * JsonTemplateLayoutProperties#locale()} are used as defaults for
  * <tt>pattern</tt>, <tt>timeZone</tt>, and <tt>locale</tt>, respectively.
  *
  * In <tt>epoch-config</tt>, <tt>millis.nanos</tt>, <tt>secs.nanos</tt> stand
@@ -233,13 +233,13 @@ public final class TimestampResolver implements EventResolver {
 
         private static String readPattern(final TemplateResolverConfig config) {
             final String format = config.getString(new String[] {"pattern", "format"});
-            return format != null ? format : JsonTemplateLayoutDefaults.getTimestampFormatPattern();
+            return format != null ? format : config.getDefaults().timestampFormatPattern();
         }
 
         private static TimeZone readTimeZone(final TemplateResolverConfig config) {
             final String timeZoneId = config.getString(new String[] {"pattern", "timeZone"});
             if (timeZoneId == null) {
-                return JsonTemplateLayoutDefaults.getTimeZone();
+                return config.getDefaults().timeZone();
             }
             boolean found = false;
             for (final String availableTimeZone : TimeZone.getAvailableIDs()) {

@@ -33,16 +33,16 @@ import org.apache.logging.log4j.util.Lazy;
  * Returns either this Thread's context or the default LoggerContext.
  */
 @Singleton
-public class BasicContextSelector implements ContextSelector, LoggerContextShutdownAware {
+public class BasicContextSelector extends AbstractContextSelector
+        implements ContextSelector, LoggerContextShutdownAware {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     protected final Lazy<LoggerContext> context = Lazy.lazy(this::createContext);
-    protected final ConfigurableInstanceFactory instanceFactory;
 
     @Inject
     public BasicContextSelector(final ConfigurableInstanceFactory instanceFactory) {
-        this.instanceFactory = instanceFactory;
+        super(instanceFactory);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     }
 
     protected LoggerContext createContext() {
-        return new LoggerContext("Default", null, (URI) null, instanceFactory);
+        return createContext("Default", null, getClass().getClassLoader());
     }
 
     @Override

@@ -42,6 +42,7 @@ import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
@@ -430,6 +431,11 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
 
     @Override
     public StackTraceElement getSource() {
+        return peekSource();
+    }
+
+    @Override
+    public @Nullable StackTraceElement peekSource() {
         return location;
     }
 

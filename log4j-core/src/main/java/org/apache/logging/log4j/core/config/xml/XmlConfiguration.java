@@ -27,6 +27,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -69,19 +70,19 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     @SuppressFBWarnings(
             value = "XXE_DOCUMENT",
             justification = "The `newDocumentBuilder` method disables DTD processing.")
-    public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
-        super(loggerContext, configSource);
+    public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
+        super(loggerContext, configurationSource);
         byte[] buffer = null;
 
         try {
-            final InputStream configStream = configSource.getInputStream();
+            final InputStream configStream = configurationSource.getInputStream();
             try {
                 buffer = configStream.readAllBytes();
             } finally {
                 Closer.closeSilently(configStream);
             }
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
-            source.setSystemId(configSource.getLocation());
+            source.setSystemId(configurationSource.getLocation());
             final DocumentBuilder documentBuilder = newDocumentBuilder(true);
             Document document;
             try {
@@ -128,19 +129,19 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
                     monitorIntervalSeconds = Integers.parseInt(value);
                 } else if ("advertiser".equalsIgnoreCase(key)) {
-                    createAdvertiser(value, configSource, buffer, "text/xml");
+                    createAdvertiser(value, configurationSource, buffer, "text/xml");
                 }
             }
-            initializeWatchers(this, configSource, monitorIntervalSeconds);
+            initializeWatchers(this, configurationSource, monitorIntervalSeconds);
             statusConfig.initialize();
         } catch (final SAXException | IOException | ParserConfigurationException e) {
-            LOGGER.error("Error parsing " + configSource.getLocation(), e);
+            LOGGER.error("Error parsing " + configurationSource.getLocation(), e);
         }
         if (strict && schemaResource != null && buffer != null) {
             try (final InputStream is =
                     Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader())) {
                 if (is != null) {
-                    final javax.xml.transform.Source src = new StreamSource(is, LOG4J_XSD);
+                    final Source src = new StreamSource(is, LOG4J_XSD);
                     final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                     Schema schema = null;
                     try {
@@ -165,7 +166,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         }
 
         if (getName() == null) {
-            setName(configSource.getLocation());
+            setName(configurationSource.getLocation());
         }
     }
 

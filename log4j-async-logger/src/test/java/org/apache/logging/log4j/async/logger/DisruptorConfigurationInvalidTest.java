@@ -19,6 +19,7 @@ package org.apache.logging.log4j.async.logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.apache.logging.log4j.async.logger.internal.TimeoutBlockingWaitStrategy;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;

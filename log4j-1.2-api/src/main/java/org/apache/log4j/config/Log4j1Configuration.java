@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.config;
 
+import java.util.Optional;
 import org.apache.log4j.Level;
 import org.apache.log4j.builders.BuilderManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -23,6 +24,9 @@ import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.plugins.di.DI;
 
 /**
  * Base Configuration for Log4j 1.
@@ -49,7 +53,15 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
             final LoggerContext loggerContext,
             final ConfigurationSource configurationSource,
             final int monitorIntervalSeconds) {
-        super(loggerContext, configurationSource);
+        super(
+                loggerContext,
+                configurationSource,
+                Optional.ofNullable(loggerContext)
+                        .map(LoggerContext::getEnvironment)
+                        .orElseGet(PropertyEnvironment::getGlobal),
+                Optional.ofNullable(loggerContext)
+                        .map(ctx -> (ConfigurableInstanceFactory) ctx.getInstanceFactory())
+                        .orElseGet(DI::createInitializedFactory));
         initializeWatchers(this, configurationSource, monitorIntervalSeconds);
         manager = instanceFactory.getInstance(BuilderManager.class);
     }

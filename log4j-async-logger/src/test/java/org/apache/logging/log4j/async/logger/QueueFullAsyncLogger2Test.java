@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.async.logger;
 
+import static org.apache.logging.log4j.core.test.TestConstants.ASYNC_FORMAT_MESSAGES_IN_BACKGROUND;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 
@@ -23,7 +25,7 @@ import org.apache.logging.log4j.test.junit.SetTestProperty;
  * Needs to be a separate class since {@link org.apache.logging.log4j.core.util.Constants#FORMAT_MESSAGES_IN_BACKGROUND}
  * is immutable.
  */
-@SetTestProperty(key = "AsyncLogger.formatMsg", value = "true")
+@SetTestProperty(key = ASYNC_FORMAT_MESSAGES_IN_BACKGROUND, value = "true")
 public class QueueFullAsyncLogger2Test extends QueueFullAsyncAbstractTest {
 
     @Override

@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.apache.logging.log4j.kit.json.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.util.JsonReader;
 
 /**
  * Main class for compiling {@link TemplateResolver}s from a template.
@@ -396,7 +396,7 @@ public final class TemplateResolvers {
         if (resolverFactory == null) {
             throw new IllegalArgumentException("unknown resolver: " + resolverName);
         }
-        final TemplateResolverConfig resolverConfig = new TemplateResolverConfig(configMap);
+        final TemplateResolverConfig resolverConfig = new TemplateResolverConfig(configMap, context.getDefaults());
         return resolverFactory.create(context, resolverConfig);
     }
 

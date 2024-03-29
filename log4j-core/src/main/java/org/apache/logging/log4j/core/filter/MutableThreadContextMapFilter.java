@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
@@ -46,15 +47,15 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil;
 import org.apache.logging.log4j.core.util.internal.LastModifiedSource;
 import org.apache.logging.log4j.core.util.internal.Status;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.kit.json.JsonReader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.JsonReader;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
@@ -331,8 +332,9 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                 return new MutableThreadContextMapFilter(
                         new NoOpFilter(), null, 0, null, getOnMatch(), getOnMismatch(), configuration);
             }
-            final PropertyEnvironment props = configuration.getContextProperties();
-            final AuthorizationProvider authorizationProvider = AuthorizationProvider.getAuthorizationProvider(props);
+            final PropertyEnvironment props = configuration.getEnvironment();
+            final AuthorizationProvider authorizationProvider =
+                    AuthorizationProvider.getAuthorizationProvider(props.getProperty(AuthenticationProperties.class));
             final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
             Filter filter;
             if (pollInterval <= 0) {
@@ -371,7 +373,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
 
         @Override
         public void run() {
-            final PropertyEnvironment properties = configuration.getContextProperties();
+            final PropertyEnvironment properties = configuration.getEnvironment();
             final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(properties);
             final ConfigResult result = getConfig(source, authorizationProvider, properties, sslConfiguration);
             if (result.status == Status.SUCCESS) {

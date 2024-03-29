@@ -20,7 +20,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.util.AnnotationUtil;
+import org.apache.logging.log4j.plugins.internal.util.AnnotationUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 public class OnPropertyCondition implements Condition {

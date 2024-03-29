@@ -20,12 +20,12 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.function.Function;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.resolver.AbstractAttributeFactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 @Deprecated(since = "3.0", forRemoval = true)
 @SuppressWarnings("removal")

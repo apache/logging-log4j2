@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 @Export
-@Version("1.0.0")
+@Version("3.0.0")
 package org.apache.logging.log4j.plugins.util;
 
 import org.osgi.annotation.bundle.Export;

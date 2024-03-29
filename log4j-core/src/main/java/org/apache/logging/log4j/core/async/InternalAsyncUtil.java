@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AsyncAppender;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper class providing some async logging-related functionality.
@@ -49,5 +54,34 @@ public final class InternalAsyncUtil {
     private static boolean canFormatMessageInBackground(final Message message) {
         return Constants.FORMAT_MESSAGES_IN_BACKGROUND // LOG4J2-898: user wants to format all msgs in background
                 || message.getClass().isAnnotationPresent(AsynchronouslyFormattable.class); // LOG4J2-1718
+    }
+
+    public static void makeLocationImmutable(final AsyncAppender appender, final LogEvent event) {
+        makeLocationImmutable(appender.isIncludeLocation(), event);
+    }
+
+    public static void makeLocationImmutable(final LoggerConfig loggerConfig, final LogEvent event) {
+        makeLocationImmutable(loggerConfig.isIncludeLocation(), event);
+    }
+
+    private static void makeLocationImmutable(final boolean includeLocation, final LogEvent event) {
+        if (includeLocation) {
+            event.getSource();
+        } else {
+            event.setIncludeLocation(includeLocation);
+        }
+    }
+
+    /**
+     * Computes the location of the logging call
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class.
+     * @param location The location of the logging call or {@code null} if unknown.
+     * @param requiresLocation If {@code true}, forces the computation of the location.
+     * @return The location of the logging call.
+     */
+    public static @Nullable StackTraceElement getLocation(
+            final String fqcn, final @Nullable StackTraceElement location, final boolean requiresLocation) {
+        return location != null ? location : requiresLocation ? StackLocatorUtil.calcLocation(fqcn) : null;
     }
 }

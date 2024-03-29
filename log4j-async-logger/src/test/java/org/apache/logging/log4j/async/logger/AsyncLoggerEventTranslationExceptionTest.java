@@ -21,19 +21,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import com.lmax.disruptor.ExceptionHandler;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.kit.logger.AbstractLogger;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Test an exception thrown in {@link RingBufferLogEventTranslator#translateTo(RingBufferLogEvent, long)}
@@ -44,8 +43,8 @@ import org.junitpioneer.jupiter.SetSystemProperty;
  */
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
-@SetSystemProperty(
-        key = Log4jPropertyKey.Constant.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME,
+@SetTestProperty(
+        key = TestConstants.ASYNC_LOGGER_EXCEPTION_HANDLER,
         value = "org.apache.logging.log4j.async.logger.AsyncLoggerEventTranslationExceptionTest$TestExceptionHandler")
 class AsyncLoggerEventTranslationExceptionTest {
 
@@ -67,7 +66,7 @@ class AsyncLoggerEventTranslationExceptionTest {
                 TestExceptionHandler.EVENT_EXCEPTION_ENCOUNTERED, "ExceptionHandler encountered an event exception");
     }
 
-    public static final class TestExceptionHandler implements ExceptionHandler<RingBufferLogEvent> {
+    public static final class TestExceptionHandler implements AsyncLoggerExceptionHandler {
 
         private static boolean INSTANTIATED = false;
 

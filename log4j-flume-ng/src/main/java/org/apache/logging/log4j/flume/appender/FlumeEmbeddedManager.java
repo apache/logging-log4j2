@@ -18,6 +18,9 @@ package org.apache.logging.log4j.flume.appender;
 
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -28,13 +31,12 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.util.NameUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
 
 public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
-    private static final String FILE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
+    private static final String FILE_SEP = PropertyEnvironment.getGlobal().getStringProperty("file.separator");
 
     private static final String IN_MEMORY = "InMemory";
 
@@ -106,10 +108,32 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 props.append(prop.getName()).append('=').append(prop.getValue());
                 sep = "_";
             }
-            sb.append(NameUtil.md5(props.toString()));
+            sb.append(md5(props.toString()));
         }
 
         return sb.toString();
+    }
+
+    @SuppressFBWarnings(value = "WEAK_MESSAGE_DIGEST_MD5", justification = "Used to create unique identifiers.")
+    private static String md5(final String input) {
+        try {
+            final byte[] inputBytes = input.getBytes();
+            final MessageDigest digest = MessageDigest.getInstance("MD5");
+            final byte[] bytes = digest.digest(inputBytes);
+            final StringBuilder md5 = new StringBuilder(bytes.length * 2);
+            for (final byte b : bytes) {
+                md5.append(Character.forDigit((0xFF & b) >> 4, 16));
+                md5.append(Character.forDigit(0x0F & b, 16));
+            }
+            return md5.toString();
+        }
+        // Every implementation of the Java platform is required to support MD5.
+        // Hence, this catch block should be unreachable.
+        // See https://docs.oracle.com/javase/8/docs/api/java/security/MessageDigest.html
+        // for details.
+        catch (final NoSuchAlgorithmException error) {
+            throw new RuntimeException(error);
+        }
     }
 
     @Override

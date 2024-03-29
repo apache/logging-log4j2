@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.async.logger;
 
 import com.lmax.disruptor.WaitStrategy;
+import java.util.function.Supplier;
 
 /**
  * This interface allows users to configure a custom Disruptor WaitStrategy used for
@@ -24,7 +25,8 @@ import com.lmax.disruptor.WaitStrategy;
  *
  * @since 2.17.3
  */
-public interface AsyncWaitStrategyFactory {
+@FunctionalInterface
+public interface AsyncWaitStrategyFactory extends Supplier<WaitStrategy> {
     /**
      * Creates and returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
      * This WaitStrategy will be used by Log4j Async Loggers and Async LoggerConfigs.
@@ -32,4 +34,9 @@ public interface AsyncWaitStrategyFactory {
      * @return the WaitStrategy instance to be used by Async Loggers and Async LoggerConfigs
      */
     WaitStrategy createWaitStrategy();
+
+    @Override
+    default WaitStrategy get() {
+        return createWaitStrategy();
+    }
 }

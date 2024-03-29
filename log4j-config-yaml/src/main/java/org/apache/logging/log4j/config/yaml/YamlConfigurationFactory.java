@@ -40,7 +40,7 @@ public class YamlConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public String[] getSupportedTypes() {
+    protected String[] getSupportedTypes() {
         return SUFFIXES;
     }
 }

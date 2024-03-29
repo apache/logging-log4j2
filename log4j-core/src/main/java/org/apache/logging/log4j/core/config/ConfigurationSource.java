@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import javax.net.ssl.HttpsURLConnection;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -40,9 +41,8 @@ import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Represents the source for the logging configuration.
@@ -59,7 +59,6 @@ public class ConfigurationSource {
     public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(new byte[0], null, 0);
 
     private static final String HTTPS = "https";
-    private static final String HTTP = "http";
 
     private final InputStream stream;
     private volatile byte[] data;
@@ -333,11 +332,12 @@ public class ConfigurationSource {
             final URLConnection urlConnection = url.openConnection();
             // A "jar:" URL file remains open after the stream is closed, so do not cache it.
             urlConnection.setUseCaches(false);
-            final PropertyEnvironment props = PropertiesUtil.getProperties();
-            final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
+            final PropertyEnvironment env = PropertyEnvironment.getGlobal();
+            final AuthorizationProvider provider =
+                    AuthorizationProvider.getAuthorizationProvider(env.getProperty(AuthenticationProperties.class));
             provider.addAuthorization(urlConnection);
             if (url.getProtocol().equals(HTTPS)) {
-                final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
+                final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(env);
                 if (sslConfiguration != null) {
                     ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
                     if (!sslConfiguration.isVerifyHostName()) {

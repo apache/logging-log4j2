@@ -30,7 +30,20 @@
   <name>Apache Log4j Async Logger</name>
   <description>Alternative implementation of logger that uses LMAX Disruptor.</description>
 
+  <properties>
+    <bnd-extra-package-options>
+      <!-- JSpecify is optional at runtime -->
+      org.jspecify.annotations.*;resolution:=optional
+    </bnd-extra-package-options>
+  </properties>
+
   <dependencies>
+
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

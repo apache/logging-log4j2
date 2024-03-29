@@ -20,10 +20,10 @@ import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
@@ -31,7 +31,6 @@ import org.apache.logging.log4j.util.Supplier;
  */
 public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrategy {
 
-    private static final long DEFAULT_SLEEP_MILLIS = 5000; // 5 seconds
     private static final long SLEEP_MILLIS = sleepMillis();
     private final LoggerConfig loggerConfig;
 
@@ -40,10 +39,9 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
     }
 
     private static long sleepMillis() {
-        return PropertiesUtil.getProperties()
-                .getLongProperty(
-                        Log4jPropertyKey.CONFIG_RELIABILITY_STRATEGY_AWAIT_UNCONDITIONALLY_MILLIS,
-                        DEFAULT_SLEEP_MILLIS);
+        return PropertyEnvironment.getGlobal()
+                .getProperty(ConfigurationProperties.class)
+                .waitMillisBeforeStopOldConfig();
     }
 
     /*

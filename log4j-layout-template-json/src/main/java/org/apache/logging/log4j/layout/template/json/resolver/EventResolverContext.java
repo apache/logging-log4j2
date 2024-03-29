@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutProperties;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.util.Strings;
 
@@ -107,6 +108,11 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     @Override
     public JsonWriter getJsonWriter() {
         return jsonWriter;
+    }
+
+    @Override
+    public JsonTemplateLayoutProperties getDefaults() {
+        return configuration.getEnvironment().getProperty(JsonTemplateLayoutProperties.class);
     }
 
     public int getMaxStringByteCount() {

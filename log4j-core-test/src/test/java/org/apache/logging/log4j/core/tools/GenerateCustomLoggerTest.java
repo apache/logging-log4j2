@@ -38,9 +38,9 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
@@ -52,7 +52,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 
 @Tag("functional")
 @SetSystemProperty(
-        key = LoggingSystemProperty.Constant.LOGGER_CONTEXT_FACTORY_CLASS,
+        key = TestConstants.LOGGER_CONTEXT_FACTORY,
         value = "org.apache.logging.log4j.test.TestLoggerContextFactory")
 public class GenerateCustomLoggerTest {
 

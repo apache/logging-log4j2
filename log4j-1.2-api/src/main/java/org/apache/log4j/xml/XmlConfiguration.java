@@ -112,8 +112,10 @@ public class XmlConfiguration extends Log4j1Configuration {
     private final Properties props = null;
 
     public XmlConfiguration(
-            final LoggerContext loggerContext, final ConfigurationSource source, final int monitorIntervalSeconds) {
-        super(loggerContext, source, monitorIntervalSeconds);
+            final LoggerContext loggerContext,
+            final ConfigurationSource configurationSource,
+            final int monitorIntervalSeconds) {
+        super(loggerContext, configurationSource, monitorIntervalSeconds);
         appenderMap = new HashMap<>();
     }
 
@@ -563,7 +565,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         final boolean additivity = OptionConverter.toBoolean(subst(loggerElement.getAttribute(ADDITIVITY_ATTR)), true);
         LoggerConfig loggerConfig = getLogger(catName);
         if (loggerConfig == null) {
-            loggerConfig = new LoggerConfig(catName, org.apache.logging.log4j.Level.ERROR, additivity);
+            loggerConfig = new LoggerConfig(catName, org.apache.logging.log4j.Level.ERROR, additivity, this);
             addLogger(catName, loggerConfig);
         } else {
             loggerConfig.setAdditive(additivity);

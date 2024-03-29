@@ -19,10 +19,10 @@ package org.apache.logging.log4j.plugins.validation.validators;
 import java.util.Collection;
 import java.util.Map;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.util.Assert;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Assert;
 
 /**
  * Validator that checks an object for emptiness. Emptiness is defined here as:

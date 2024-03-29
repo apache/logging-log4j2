@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 public class BasicConfigurationFactory extends ConfigurationFactory {
 
     @Override
-    public String[] getSupportedTypes() {
+    protected String[] getSupportedTypes() {
         return new String[] {"*"};
     }
 

@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.function.Consumer;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AbstractWatcher;
@@ -32,11 +33,11 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil;
 import org.apache.logging.log4j.core.util.internal.LastModifiedSource;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  *
@@ -62,9 +63,10 @@ public class HttpWatcher extends AbstractWatcher {
             final List<Consumer<Reconfigurable>> configurationListeners,
             final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
-        properties = configuration.getContextProperties();
+        properties = configuration.getEnvironment();
         sslConfiguration = SslConfigurationFactory.getSslConfiguration(properties);
-        authorizationProvider = AuthorizationProvider.getAuthorizationProvider(properties);
+        authorizationProvider =
+                AuthorizationProvider.getAuthorizationProvider(properties.getProperty(AuthenticationProperties.class));
         this.lastModifiedMillis = lastModifiedMillis;
     }
 

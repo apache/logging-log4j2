@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.Level;
@@ -28,19 +26,19 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
-@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_JANSI_ENABLED, value = "true")
+@SetTestProperty(key = TestConstants.CONSOLE_JANSI_ENABLED, value = "true")
 public class StyleConverterTest {
 
     private static final String EXPECTED =
@@ -54,11 +52,8 @@ public class StyleConverterTest {
         logger.error(this.getClass().getName());
 
         final List<String> msgs = app.getMessages();
-        assertNotNull(msgs);
-        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
-        assertTrue(
-                msgs.get(0).endsWith(EXPECTED),
-                "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
+        assertThat(msgs).isNotEmpty();
+        assertThat(msgs.get(0)).as("check formatted message").endsWith(EXPECTED);
     }
 
     @Test

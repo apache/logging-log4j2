@@ -16,25 +16,28 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.apache.logging.log4j.plugins.util.ReflectionUtil.getFieldValue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
+import org.apache.logging.log4j.core.test.TestConstants;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Tests the ContextDataFactory class.
  */
-@SetSystemProperty(
-        key = Log4jPropertyKey.Constant.THREAD_CONTEXT_DATA_CLASS_NAME,
+@SetTestProperty(
+        key = TestConstants.THREAD_CONTEXT_CONTEXT_DATA,
         value = "org.apache.logging.log4j.core.impl.FactoryTestStringMapWithoutIntConstructor")
 public class ContextDataFactoryPropertySetMissingConstructorTest {
 
     @Test
     public void intArgReturnsSortedArrayStringMapIfPropertySpecifiedButMissingIntConstructor() throws Exception {
-        assertTrue(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap);
+        assertInstanceOf(SortedArrayStringMap.class, ContextDataFactory.createContextData(2));
         final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
-        assertEquals(2, actual.getThreshold());
+        assertThat(getFieldValue(SortedArrayStringMap.class.getDeclaredField("threshold"), actual))
+                .isEqualTo(2);
     }
 }

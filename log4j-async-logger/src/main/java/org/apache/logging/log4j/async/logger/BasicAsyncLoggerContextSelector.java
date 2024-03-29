@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.async.logger;
 
-import java.net.URI;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.plugins.Inject;
@@ -37,7 +36,12 @@ public class BasicAsyncLoggerContextSelector extends BasicContextSelector {
     }
 
     @Override
+    protected LoggerContext.Builder newBuilder() {
+        return instanceFactory.getInstance(AsyncLoggerContext.Builder.class);
+    }
+
+    @Override
     protected LoggerContext createContext() {
-        return new AsyncLoggerContext("AsyncDefault", null, (URI) null, instanceFactory);
+        return createContext("AsyncDefault", null, getClass().getClassLoader());
     }
 }

@@ -30,6 +30,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -52,7 +53,7 @@ public class WatchManagerTest {
     public void testWatchManager() throws Exception {
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
-        final WatchManager watchManager = new WatchManager(scheduler);
+        final WatchManager watchManager = new WatchManager(scheduler, StatusLogger.getLogger());
         watchManager.setIntervalSeconds(1);
         scheduler.start();
         watchManager.start();
@@ -82,7 +83,7 @@ public class WatchManagerTest {
     public void testWatchManagerReset() throws Exception {
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
-        final WatchManager watchManager = new WatchManager(scheduler);
+        final WatchManager watchManager = new WatchManager(scheduler, StatusLogger.getLogger());
         watchManager.setIntervalSeconds(1);
         scheduler.start();
         watchManager.start();
@@ -115,7 +116,7 @@ public class WatchManagerTest {
     public void testWatchManagerResetFile() throws Exception {
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
-        final WatchManager watchManager = new WatchManager(scheduler);
+        final WatchManager watchManager = new WatchManager(scheduler, StatusLogger.getLogger());
         watchManager.setIntervalSeconds(1);
         scheduler.start();
         watchManager.start();

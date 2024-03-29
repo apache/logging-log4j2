@@ -23,11 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.core.config.URIConfigurationFactory;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
@@ -48,11 +49,12 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
      *
      * @param configurations The List of Configurations to merge.
      */
-    public CompositeConfiguration(final List<? extends AbstractConfiguration> configurations) {
-        super(configurations.get(0).getLoggerContext(), ConfigurationSource.COMPOSITE_SOURCE);
+    public CompositeConfiguration(
+            final LoggerContext loggerContext, final List<? extends AbstractConfiguration> configurations) {
+        super(loggerContext, ConfigurationSource.COMPOSITE_SOURCE);
         rootNode = configurations.get(0).getRootNode();
         this.configurations = configurations;
-        mergeStrategy = getComponent(MergeStrategy.KEY);
+        this.mergeStrategy = getInstanceFactory().getInstance(MergeStrategy.class);
         for (final AbstractConfiguration config : configurations) {
             mergeStrategy.mergeRootProperties(rootNode, config);
         }
@@ -127,7 +129,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     public Configuration reconfigure() {
         LOGGER.debug("Reconfiguring composite configuration");
         final List<AbstractConfiguration> configs = new ArrayList<>();
-        final ConfigurationFactory factory = instanceFactory.getInstance(ConfigurationFactory.KEY);
+        final URIConfigurationFactory factory = instanceFactory.getInstance(URIConfigurationFactory.KEY);
         for (final AbstractConfiguration config : configurations) {
             final ConfigurationSource source = config.getConfigurationSource();
             final URI sourceURI = source.getURI();
@@ -145,7 +147,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             configs.add((AbstractConfiguration) currentConfig);
         }
 
-        return new CompositeConfiguration(configs);
+        return new CompositeConfiguration(getLoggerContext(), configs);
     }
 
     private void staffChildConfiguration(final AbstractConfiguration childConfiguration) {

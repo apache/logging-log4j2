@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.config;
 
+import static org.apache.logging.log4j.core.config.ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,9 +28,10 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.test.junit.LegacyLoggerContextSource;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Test configuration from XML.
@@ -37,9 +39,10 @@ import org.junit.jupiter.api.Test;
 public class AutoConfigTest {
 
     @Test
-    @LegacyLoggerContextSource("log4j.xml")
-    public void testListAppender(final org.apache.logging.log4j.core.LoggerContext context) {
+    @SetSystemProperty(key = LOG4J1_CONFIGURATION_FILE_PROPERTY, value = "log4j.xml")
+    public void testListAppender() {
         final Logger logger = LogManager.getLogger("test");
+        final LoggerContext context = LoggerContext.getContext(false);
         logger.debug("This is a test of the root logger");
         final Configuration configuration = context.getConfiguration();
         final Map<String, Appender> appenders = configuration.getAppenders();

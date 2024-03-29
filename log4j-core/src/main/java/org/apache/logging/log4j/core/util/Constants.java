@@ -17,38 +17,29 @@
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.CoreProperties.AsyncProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.GarbageCollectionProperties;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyKey;
 
 /**
  * Log4j Constants.
  */
 public final class Constants {
 
-    private static final String JNDI_MANAGER_CLASS = "org.apache.logging.log4j.jndi.JndiManager";
+    private static final PropertyEnvironment ENV = PropertyEnvironment.getGlobal();
 
-    /**
-     * Check to determine if the JNDI feature is available.
-     * @param key The feature to check.
-     * @return true if the feature is available.
-     */
-    private static boolean isJndiEnabled(final PropertyKey key) {
-        return PropertiesUtil.getProperties().getBooleanProperty(key, false) && isClassAvailable(JNDI_MANAGER_CLASS);
-    }
+    public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = Key.builder(Level.class)
+            .setName("StatusLogger")
+            .setQualifierType(Named.class)
+            .get();
 
-    public static boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_CONTEXT_SELECTOR);
-
-    public static boolean JNDI_JMS_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_JMS);
-
-    public static boolean JNDI_LOOKUP_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_LOOKUP);
-
-    public static boolean JNDI_JDBC_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_JDBC);
-
-    public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = new @Named("StatusLogger") Key<>() {};
+    public static final Key<Logger> DEFAULT_STATUS_LOGGER_KEY = Key.builder(Logger.class)
+            .setName("StatusLogger")
+            .setQualifierType(Named.class)
+            .get();
 
     /**
      * JNDI context name string literal.
@@ -63,8 +54,10 @@ public final class Constants {
     /**
      * Supports user request LOG4J2-898 to have the option to format a message in the background thread.
      */
-    public static final boolean FORMAT_MESSAGES_IN_BACKGROUND = PropertiesUtil.getProperties()
-            .getBooleanProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, false);
+    public static final boolean FORMAT_MESSAGES_IN_BACKGROUND =
+            ENV.getProperty(AsyncProperties.class).formatMessagesInBackground();
+
+    private static final GarbageCollectionProperties GC = ENV.getProperty(GarbageCollectionProperties.class);
 
     /**
      * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into
@@ -77,11 +70,7 @@ public final class Constants {
      *
      * @since 2.6
      */
-    public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties()
-            .getBooleanProperty(
-                    Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS, true); // enable GC-free text encoding by default
-    // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
-    // AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
+    public static final boolean ENABLE_DIRECT_ENCODERS = GC.enableDirectEncoders();
 
     /**
      * Initial StringBuilder size used in RingBuffer LogEvents to store the contents of reusable Messages.
@@ -90,8 +79,7 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int INITIAL_REUSABLE_MESSAGE_SIZE =
-            size(Log4jPropertyKey.GC_INITIAL_REUSABLE_MESSAGE_SIZE, 128);
+    public static final int INITIAL_REUSABLE_MESSAGE_SIZE = GC.initialReusableMessageSize();
 
     /**
      * Maximum size of the StringBuilders used in RingBuffer LogEvents to store the contents of reusable Messages.
@@ -102,8 +90,7 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE =
-            size(Log4jPropertyKey.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = GC.maxReusableMessageSize();
 
     /**
      * Size of CharBuffers used by text encoders.
@@ -112,7 +99,7 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int ENCODER_CHAR_BUFFER_SIZE = size(Log4jPropertyKey.GC_ENCODER_CHAR_BUFFER_SIZE, 2048);
+    public static final int ENCODER_CHAR_BUFFER_SIZE = GC.encoderCharBufferSize();
 
     /**
      * Default size of ByteBuffers used to encode LogEvents without allocating temporary objects.
@@ -122,25 +109,7 @@ public final class Constants {
      * @see org.apache.logging.log4j.core.layout.ByteBufferDestination
      * @since 2.6
      */
-    public static final int ENCODER_BYTE_BUFFER_SIZE = size(Log4jPropertyKey.GC_ENCODER_BYTE_BUFFER_SIZE, 8 * 1024);
-
-    private static int size(final PropertyKey property, final int defaultValue) {
-        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
-    }
-
-    /**
-     * Determines if a named Class can be loaded or not.
-     *
-     * @param className The class name.
-     * @return {@code true} if the class could be found or {@code false} otherwise.
-     */
-    private static boolean isClassAvailable(final String className) {
-        try {
-            return LoaderUtil.loadClass(className) != null;
-        } catch (final Throwable e) {
-            return false;
-        }
-    }
+    public static final int ENCODER_BYTE_BUFFER_SIZE = GC.encoderByteBufferSize();
 
     /**
      * Prevent class instantiation.

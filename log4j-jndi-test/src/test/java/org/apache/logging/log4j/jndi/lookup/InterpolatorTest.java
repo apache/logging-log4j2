@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
+import static org.apache.logging.log4j.core.test.TestConstants.JNDI_ENABLE_LOOKUP;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -28,6 +29,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -35,9 +38,13 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.StringMapMessage;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.model.PluginType;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
@@ -47,6 +54,14 @@ import org.junit.rules.RuleChain;
  * Tests {@link Interpolator}.
  */
 public class InterpolatorTest {
+
+    static final ConfigurableInstanceFactory INSTANCE_FACTORY = DI.createInitializedFactory();
+    static final Map<String, Supplier<StrLookup>> LOOKUP_PLUGINS =
+            INSTANCE_FACTORY.getInstance(StrLookup.PLUGIN_CATEGORY_KEY).stream()
+                    .collect(Collectors.toMap(
+                            PluginType::getKey,
+                            value -> INSTANCE_FACTORY.getFactory(
+                                    value.getPluginClass().asSubclass(StrLookup.class))));
 
     private static final String TESTKEY = "TestKey";
     private static final String TESTKEY2 = "TestKey2";
@@ -61,14 +76,14 @@ public class InterpolatorTest {
                 protected void before() throws Throwable {
                     System.setProperty(TESTKEY, TESTVAL);
                     System.setProperty(TESTKEY2, TESTVAL);
-                    System.setProperty("log4j2.*.JNDI.enableLookup", "true");
+                    System.setProperty(JNDI_ENABLE_LOOKUP, "true");
                 }
 
                 @Override
                 protected void after() {
                     System.clearProperty(TESTKEY);
                     System.clearProperty(TESTKEY2);
-                    System.clearProperty("log4j2.*.JNDI.enableLookup");
+                    System.clearProperty(JNDI_ENABLE_LOOKUP);
                 }
             })
             .around(new JndiRule(
@@ -79,7 +94,7 @@ public class InterpolatorTest {
         final Map<String, String> map = new HashMap<>();
         map.put(TESTKEY, TESTVAL);
         final MapLookup defaultLookup = new MapLookup(map);
-        final Interpolator interpolator = new Interpolator(defaultLookup);
+        final Interpolator interpolator = new Interpolator(defaultLookup, LOOKUP_PLUGINS);
         assertEquals(getLookupMap(defaultLookup), getLookupMap((MapLookup) interpolator.getDefaultLookup()));
         assertSame(defaultLookup, interpolator.getDefaultLookup());
     }
@@ -100,7 +115,7 @@ public class InterpolatorTest {
     public void testLookup() {
         final Map<String, String> map = new HashMap<>();
         map.put(TESTKEY, TESTVAL);
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = new Interpolator(new MapLookup(map), LOOKUP_PLUGINS);
         ThreadContext.put(TESTKEY, TESTVAL);
         String value = lookup.lookup(TESTKEY);
         assertEquals(TESTVAL, value);
@@ -128,7 +143,7 @@ public class InterpolatorTest {
 
     @Test
     public void testLookupWithDefaultInterpolator() {
-        final StrLookup lookup = new Interpolator();
+        final StrLookup lookup = new Interpolator(new PropertiesLookup(Map.of()), LOOKUP_PLUGINS);
         String value = lookup.lookup("sys:" + TESTKEY);
         assertEquals(TESTVAL, value);
         value = lookup.lookup("env:PATH");
@@ -152,7 +167,7 @@ public class InterpolatorTest {
     public void testInterpolatorMapMessageWithNoPrefix() {
         final HashMap<String, String> configProperties = new HashMap<>();
         configProperties.put("key", "configProperties");
-        final Interpolator interpolator = new Interpolator(configProperties);
+        final Interpolator interpolator = new Interpolator(new PropertiesLookup(configProperties), LOOKUP_PLUGINS);
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
         final LogEvent event = Log4jLogEvent.newBuilder()
@@ -166,7 +181,8 @@ public class InterpolatorTest {
 
     @Test
     public void testInterpolatorMapMessageWithNoPrefixConfigDoesntMatch() {
-        final Interpolator interpolator = new Interpolator(Collections.emptyMap());
+        final Interpolator interpolator =
+                new Interpolator(new PropertiesLookup(Collections.emptyMap()), LOOKUP_PLUGINS);
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
         final LogEvent event = Log4jLogEvent.newBuilder()
@@ -182,7 +198,7 @@ public class InterpolatorTest {
     public void testInterpolatorMapMessageWithMapPrefix() {
         final HashMap<String, String> configProperties = new HashMap<>();
         configProperties.put("key", "configProperties");
-        final Interpolator interpolator = new Interpolator(configProperties);
+        final Interpolator interpolator = new Interpolator(new PropertiesLookup(configProperties), LOOKUP_PLUGINS);
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
         final LogEvent event = Log4jLogEvent.newBuilder()

@@ -37,6 +37,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
@@ -144,10 +145,14 @@ public class WatchManager extends AbstractLifeCycle {
     private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
 
     @Inject
-    public WatchManager(final ConfigurationScheduler scheduler) {
+    public WatchManager(
+            final ConfigurationScheduler scheduler,
+            final @Named("StatusLogger") org.apache.logging.log4j.Logger statusLogger) {
         this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
         eventServiceList = ServiceLoaderUtil.safeStream(
-                        ServiceLoader.load(WatchEventService.class, WatchManager.class.getClassLoader()))
+                        WatchEventService.class,
+                        ServiceLoader.load(WatchEventService.class, WatchManager.class.getClassLoader()),
+                        statusLogger)
                 .collect(Collectors.toList());
     }
 

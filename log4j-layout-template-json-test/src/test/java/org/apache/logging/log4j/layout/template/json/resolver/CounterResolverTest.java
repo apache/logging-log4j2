@@ -24,8 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigInteger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.kit.json.JsonReader;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.util.JsonReader;
 import org.junit.jupiter.api.Test;
 
 class CounterResolverTest {

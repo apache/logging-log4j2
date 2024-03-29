@@ -20,10 +20,10 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
+import org.apache.logging.log4j.core.impl.CoreProperties;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Load resources (or images) from various sources.
@@ -34,8 +34,9 @@ public final class Loader {
 
     private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
-    static final Boolean ignoreTccl = Boolean.valueOf(PropertiesUtil.getProperties()
-            .getStringProperty(LoggingSystemProperty.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null));
+    static final Boolean ignoreTccl = PropertyEnvironment.getGlobal()
+            .getProperty(CoreProperties.LoaderProperties.class)
+            .ignoreTCL();
 
     private Loader() {}
 
@@ -295,7 +296,8 @@ public final class Loader {
     }
 
     /**
-     * Loads a class by name. This method respects the {@link LoggingSystemProperty#LOADER_IGNORE_THREAD_CONTEXT_LOADER} Log4j property. If this property is
+     * Loads a class by name. This method respects the {@link CoreProperties.LoaderProperties#ignoreTCL()} Log4j property. If this
+     * property is
      * specified and set to anything besides {@code false}, then the default ClassLoader will be used.
      *
      * @param className The class name.

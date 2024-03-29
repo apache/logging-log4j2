@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
@@ -113,7 +112,7 @@ public class SyslogAppender extends SocketAppender {
             if (layout == null) {
                 layout = RFC5424.equalsIgnoreCase(format)
                         ? new Rfc5424Layout.Rfc5424LayoutBuilder()
-                                .setConfig(new DefaultConfiguration())
+                                .setConfig(configuration)
                                 .setFacility(facility)
                                 .setId(id)
                                 .setEin(enterpriseNumber)
@@ -131,12 +130,11 @@ public class SyslogAppender extends SocketAppender {
                                 .setExceptionPattern(exceptionPattern)
                                 .setUseTLSMessageFormat(useTlsMessageFormat)
                                 .setLoggerFields(loggerFields)
-                                .setConfig(configuration)
                                 .build()
                         :
                         // @formatter:off
                         SyslogLayout.newBuilder()
-                                .setConfiguration(new DefaultConfiguration())
+                                .setConfiguration(configuration)
                                 .setFacility(facility)
                                 .setIncludeNewLine(newLine)
                                 .setEscapeNL(escapeNL)

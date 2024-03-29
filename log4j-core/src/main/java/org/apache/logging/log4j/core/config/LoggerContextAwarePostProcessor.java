@@ -18,9 +18,9 @@ package org.apache.logging.log4j.core.config;
 
 import java.lang.ref.WeakReference;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.lang.NullMarked;
 import org.apache.logging.log4j.plugins.di.spi.InstancePostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
+import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class LoggerContextAwarePostProcessor implements InstancePostProcessor {

@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An abstract log event implementation with default values for all methods. The setters are no-ops.
@@ -78,6 +79,11 @@ public abstract class AbstractLogEvent implements LogEvent {
 
     @Override
     public StackTraceElement getSource() {
+        return null;
+    }
+
+    @Override
+    public @Nullable StackTraceElement peekSource() {
         return null;
     }
 

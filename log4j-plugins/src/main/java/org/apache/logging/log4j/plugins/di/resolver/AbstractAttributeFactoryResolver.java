@@ -21,7 +21,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
@@ -31,6 +30,7 @@ import org.apache.logging.log4j.plugins.di.spi.InjectionPoint;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractAttributeFactoryResolver<T, A extends Annotation> implements FactoryResolver<T> {
     protected static final Logger LOGGER = StatusLogger.getLogger();

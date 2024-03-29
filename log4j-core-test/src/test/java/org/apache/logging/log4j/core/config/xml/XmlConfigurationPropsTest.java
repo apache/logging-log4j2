@@ -21,16 +21,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.stream.StreamSupport;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.Log4jStaticResources;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.opentest4j.AssertionFailedError;
 
 @UsingTestProperties
+@ResourceLock(Log4jStaticResources.STATUS_LOGGER)
 public class XmlConfigurationPropsTest {
 
     private static final String CONFIG_NAME = "XmlConfigurationPropsTest";
@@ -66,10 +70,10 @@ public class XmlConfigurationPropsTest {
     }
 
     @Test
-    @SetTestProperty(key = "StatusLogger.defaultStatusLevel", value = "WARN")
+    @SetTestProperty(key = TestConstants.STATUS_LOGGER_DEFAULT_STATUS_LEVEL, value = "FATAL")
     @LoggerContextSource(value = CONFIG1)
     public void testDefaultStatus(final Configuration config) {
-        testConfiguration(config, CONFIG1_NAME, Level.WARN, null);
+        testConfiguration(config, CONFIG1_NAME, Level.FATAL, null);
     }
 
     @Test

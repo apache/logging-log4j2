@@ -1,0 +1,34 @@
+{ "configuration": { "status": "off", "name": "RoutingTest",
+    "ThresholdFilter": { "level": "debug" },
+    "appenders": {
+      "appender": [
+         { "type": "Console", "name": "STDOUT", "PatternLayout": { "pattern": "%m%n" }},
+         { "type": "List", "name": "List", "ThresholdFilter": { "level": "debug" }},
+         { "type": "Routing",  "name": "Routing",
+          "Routes": { "pattern": "$${sd:type}",
+            "Route": [
+              {
+                "RollingFile": {
+                  "name": "Rolling-${sd:type}", "fileName": "${test:logging.path}/rollingtest-${sd:type}.log",
+                  "filePattern": "${test:logging.path}/test1-${sd:type}.%i.log.gz",
+                  "PatternLayout": {"pattern": "%d %p %C{1.} [%t] %m%n"},
+                  "SizeBasedTriggeringPolicy": { "size": "500" }
+                }
+              },
+              { "ref": "STDOUT", "key": "Audit"},
+              { "ref": "List", "key": "Service"}
+            ]
+          }
+        }
+      ]
+    },
+    "loggers": {
+      "logger": [
+        { "name": "EventLogger", "level": "info", "additivity": "false", "AppenderRef": { "ref": "Routing" }},
+        { "name": "com.foo.bar", "level": "error", "additivity": "false", "AppenderRef": { "ref": "STDOUT" }},
+        { "name": "org.apache.logging", "level": "error", "additivity": "false", "AppenderRef": [{"ref": "List"}, {"ref": "STDOUT"}]}
+      ],
+      "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
+    }
+  }
+}

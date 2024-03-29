@@ -24,7 +24,7 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutProperties;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -181,11 +181,11 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </pre>
  *
  * @see JsonTemplateLayout.Builder#getTruncatedStringSuffix()
- * @see JsonTemplateLayoutDefaults#getTruncatedStringSuffix()
+ * @see JsonTemplateLayoutProperties#truncatedStringSuffix()
  * @see JsonTemplateLayout.Builder#getStackTraceElementTemplate()
- * @see JsonTemplateLayoutDefaults#getStackTraceElementTemplate()
+ * @see JsonTemplateLayoutProperties#stackTraceElementTemplate()
  * @see JsonTemplateLayout.Builder#getStackTraceElementTemplateUri()
- * @see JsonTemplateLayoutDefaults#getStackTraceElementTemplateUri()
+ * @see JsonTemplateLayoutProperties#stackTraceElementTemplateUri()
  * @see ExceptionRootCauseResolver
  * @see StackTraceElementResolver
  */
@@ -364,6 +364,7 @@ public class ExceptionResolver implements EventResolver {
                         .setResolverFactoryByName(STACK_TRACE_ELEMENT_RESOLVER_FACTORY_BY_NAME)
                         .setSubstitutor(substitutor)
                         .setJsonWriter(context.getJsonWriter())
+                        .setDefaults(config.getDefaults())
                         .build();
         final String stackTraceElementTemplate = findEffectiveStackTraceElementTemplate(context, config);
         return TemplateResolvers.ofTemplate(stackTraceElementResolverContext, stackTraceElementTemplate);

@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.config;
 
+import static org.apache.logging.log4j.core.config.ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,9 +32,9 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.test.junit.LegacyLoggerContextSource;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
  * Test RewriteAppender
@@ -42,9 +43,10 @@ import org.junit.jupiter.api.Test;
 public class RewriteAppenderTest {
 
     @Test
-    @LegacyLoggerContextSource("log4j1-rewrite.xml")
-    public void testRewrite(final LoggerContext context) {
+    @SetSystemProperty(key = LOG4J1_CONFIGURATION_FILE_PROPERTY, value = "log4j1-rewrite.xml")
+    public void testRewrite() {
         final Logger logger = LogManager.getLogger("test");
+        final LoggerContext context = LoggerContext.getContext(false);
         ThreadContext.put("key1", "This is a test");
         ThreadContext.put("hello", "world");
         final long logTime = System.currentTimeMillis();

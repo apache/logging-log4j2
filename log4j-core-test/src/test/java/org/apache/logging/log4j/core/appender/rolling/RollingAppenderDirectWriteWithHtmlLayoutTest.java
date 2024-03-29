@@ -71,7 +71,7 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
                 .setStrategy(DirectWriteRolloverStrategy.newBuilder()
                         .setConfig(config)
                         .build())
-                .setLayout(HtmlLayout.createDefaultLayout())
+                .setLayout(HtmlLayout.newBuilder().setConfiguration(config).build())
                 .setAppend(append)
                 .build();
         boolean stopped = false;

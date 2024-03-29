@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGURATION;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.DEFAULTS;
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
@@ -37,7 +38,6 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -379,8 +379,8 @@ class StackTraceStringResolverTest {
 
             // Check the serialized event.
             usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-                final int expectedLength = maxStringLength
-                        + JsonTemplateLayoutDefaults.getTruncatedStringSuffix().length();
+                final int expectedLength =
+                        maxStringLength + DEFAULTS.truncatedStringSuffix().length();
                 assertThat(accessor.getString("ex").length()).isEqualTo(expectedLength);
             });
         }

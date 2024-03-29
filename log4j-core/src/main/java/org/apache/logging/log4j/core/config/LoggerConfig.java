@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -32,21 +33,20 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
-import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Logger object that is created via configuration.
@@ -56,6 +56,7 @@ import org.apache.logging.log4j.util.Strings;
 public class LoggerConfig extends AbstractFilterable {
 
     public static final String ROOT = "root";
+    static Key<LoggerConfig> KEY = Key.forClass(LoggerConfig.class).withQualifierType(PluginElement.class);
 
     private List<AppenderRef> appenderRefs = new ArrayList<>();
     private final AppenderControlArraySet appenders = new AppenderControlArraySet();
@@ -86,20 +87,19 @@ public class LoggerConfig extends AbstractFilterable {
             implements org.apache.logging.log4j.plugins.util.Builder<LoggerConfig> {
 
         @PluginBuilderAttribute
-        private Boolean additivity;
+        private boolean additivity = true;
 
         private Level level;
         private String levelAndRefs;
         private String loggerName;
-        private String includeLocation;
+        private @Nullable Boolean includeLocation;
         private AppenderRef[] refs;
         private Property[] properties;
         private Configuration config;
         private Filter filter;
-        private LogEventFactory logEventFactory;
 
         public boolean isAdditivity() {
-            return additivity == null || additivity;
+            return additivity;
         }
 
         public B setAdditivity(final boolean additivity) {
@@ -135,13 +135,19 @@ public class LoggerConfig extends AbstractFilterable {
             return asBuilder();
         }
 
-        public String getIncludeLocation() {
+        public @Nullable Boolean getIncludeLocation() {
             return includeLocation;
         }
 
-        public B setIncludeLocation(@PluginAttribute final String includeLocation) {
+        public B setIncludeLocation(final @Nullable Boolean includeLocation) {
             this.includeLocation = includeLocation;
             return asBuilder();
+        }
+
+        // TODO: remove this once https://github.com/apache/logging-log4j2/pull/2329 is solved.
+        @Deprecated
+        public B setIncludeLocation(final @PluginAttribute @Nullable String includeLocation) {
+            return setIncludeLocation(includeLocation != null ? Boolean.valueOf(includeLocation) : null);
         }
 
         public AppenderRef[] getRefs() {
@@ -180,31 +186,13 @@ public class LoggerConfig extends AbstractFilterable {
             return asBuilder();
         }
 
-        public LogEventFactory getLogEventFactory() {
-            return logEventFactory;
-        }
-
-        @Inject
-        public B setLogEventFactory(final LogEventFactory logEventFactory) {
-            this.logEventFactory = logEventFactory;
-            return asBuilder();
-        }
-
         @Override
         public LoggerConfig build() {
             final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
             final LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
-            final boolean useLocation = includeLocation(includeLocation, config);
+            final boolean useLocation = includeLocation(getIncludeLocation(), config);
             return new LoggerConfig(
-                    name,
-                    container.refs,
-                    filter,
-                    container.level,
-                    isAdditivity(),
-                    properties,
-                    config,
-                    useLocation,
-                    logEventFactory);
+                    name, container.refs, filter, container.level, isAdditivity(), properties, config, useLocation);
         }
 
         @SuppressWarnings("unchecked")
@@ -214,34 +202,14 @@ public class LoggerConfig extends AbstractFilterable {
     }
 
     /**
-     * Default constructor.
-     */
-    public LoggerConfig() {
-        this.logEventFactory = DI.createInitializedFactory().getInstance(ReusableLogEventFactory.class);
-        this.level = Level.ERROR;
-        this.name = Strings.EMPTY;
-        this.properties = null;
-        this.propertiesRequireLookup = false;
-        this.config = null;
-        this.reliabilityStrategy = new DefaultReliabilityStrategy(this);
-    }
-
-    /**
      * Constructor that sets the name, level and additive values.
      *
      * @param name The Logger name.
      * @param level The Level.
      * @param additive true if the Logger is additive, false otherwise.
      */
-    public LoggerConfig(final String name, final Level level, final boolean additive) {
-        this.logEventFactory = DI.createInitializedFactory().getInstance(ReusableLogEventFactory.class);
-        this.name = name;
-        this.level = level;
-        this.additive = additive;
-        this.properties = null;
-        this.propertiesRequireLookup = false;
-        this.config = null;
-        this.reliabilityStrategy = new DefaultReliabilityStrategy(this);
+    public LoggerConfig(final String name, final Level level, final boolean additive, final Configuration config) {
+        this(name, Collections.emptyList(), null, level, additive, null, config, includeLocation(null, config));
     }
 
     protected LoggerConfig(
@@ -252,12 +220,9 @@ public class LoggerConfig extends AbstractFilterable {
             final boolean additive,
             final Property[] properties,
             final Configuration config,
-            final boolean includeLocation,
-            final LogEventFactory logEventFactory) {
+            final boolean includeLocation) {
         super(filter, null);
-        this.logEventFactory = logEventFactory != null
-                ? logEventFactory
-                : DI.createInitializedFactory().getInstance(ReusableLogEventFactory.class);
+        this.logEventFactory = config.getLogEventFactory();
         this.name = name;
         this.appenderRefs = appenders;
         this.level = level;
@@ -669,17 +634,12 @@ public class LoggerConfig extends AbstractFilterable {
 
     // Note: for asynchronous loggers, includeLocation default is FALSE,
     // for synchronous loggers, includeLocation default is TRUE.
-    protected static boolean includeLocation(
-            final String includeLocationConfigValue, final Configuration configuration) {
-        if (includeLocationConfigValue == null) {
-            if (configuration != null) {
-                final LoggerContext context = configuration.getLoggerContext();
-                return context != null ? context.includeLocation() : false;
-            } else {
-                return false;
-            }
+    protected static boolean includeLocation(final Boolean configuredValue, final Configuration configuration) {
+        if (configuredValue == null) {
+            final LoggerContext context = configuration.getLoggerContext();
+            return context != null && context.includeLocation();
         }
-        return Boolean.parseBoolean(includeLocationConfigValue);
+        return configuredValue;
     }
 
     protected final boolean hasAppenders() {
@@ -691,112 +651,101 @@ public class LoggerConfig extends AbstractFilterable {
      */
     @Configurable(printObject = true)
     @Plugin(ROOT)
-    public static class RootLogger extends LoggerConfig {
+    public static final class RootLogger extends LoggerConfig {
 
         @PluginFactory
-        public static <B extends Builder<B>> B newRootBuilder() {
-            return new Builder<B>().asBuilder();
+        public static Builder newRootBuilder() {
+            return new Builder();
+        }
+
+        private RootLogger() {
+            super(Strings.EMPTY, Level.ERROR, false, null);
         }
 
         /**
          * Builds LoggerConfig instances.
-         *
-         * @param <B>
          *            The type to build
          */
-        public static class Builder<B extends Builder<B>>
-                implements org.apache.logging.log4j.plugins.util.Builder<LoggerConfig> {
+        public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<LoggerConfig> {
 
-            private boolean additivity;
+            protected static final boolean ADDITIVITY = true;
+
             private Level level;
             private String levelAndRefs;
-            private String includeLocation;
+            // TODO: Change to Boolean, once the DI starts supporting null Booleans.
+            private @Nullable Boolean includeLocation;
             private AppenderRef[] refs;
             private Property[] properties;
             private Configuration config;
             private Filter filter;
-            private LogEventFactory logEventFactory;
-
-            public boolean isAdditivity() {
-                return additivity;
-            }
-
-            public B setAdditivity(@PluginAttribute final boolean additivity) {
-                this.additivity = additivity;
-                return asBuilder();
-            }
 
             public Level getLevel() {
                 return level;
             }
 
-            public B setLevel(@PluginAttribute final Level level) {
+            public Builder setLevel(@PluginAttribute final Level level) {
                 this.level = level;
-                return asBuilder();
+                return this;
             }
 
             public String getLevelAndRefs() {
                 return levelAndRefs;
             }
 
-            public B setLevelAndRefs(@PluginAttribute final String levelAndRefs) {
+            public Builder setLevelAndRefs(@PluginAttribute final String levelAndRefs) {
                 this.levelAndRefs = levelAndRefs;
-                return asBuilder();
+                return this;
             }
 
-            public String getIncludeLocation() {
+            public @Nullable Boolean getIncludeLocation() {
                 return includeLocation;
             }
 
-            public B setIncludeLocation(@PluginAttribute final String includeLocation) {
+            public Builder setIncludeLocation(final @Nullable Boolean includeLocation) {
                 this.includeLocation = includeLocation;
-                return asBuilder();
+                return this;
+            }
+
+            // TODO: remove this once https://github.com/apache/logging-log4j2/pull/2329 is solved.
+            @Deprecated
+            public Builder setIncludeLocation(final @PluginAttribute @Nullable String includeLocation) {
+                return setIncludeLocation(includeLocation != null ? Boolean.valueOf(includeLocation) : null);
             }
 
             public AppenderRef[] getRefs() {
                 return refs;
             }
 
-            public B setRefs(@PluginElement final AppenderRef[] refs) {
+            public Builder setRefs(@PluginElement final AppenderRef[] refs) {
                 this.refs = refs;
-                return asBuilder();
+                return this;
             }
 
             public Property[] getProperties() {
                 return properties;
             }
 
-            public B setProperties(@PluginElement final Property[] properties) {
+            public Builder setProperties(@PluginElement final Property[] properties) {
                 this.properties = properties;
-                return asBuilder();
+                return this;
             }
 
             public Configuration getConfig() {
                 return config;
             }
 
-            public B setConfig(@PluginConfiguration final Configuration config) {
+            public Builder setConfig(@PluginConfiguration final Configuration config) {
                 this.config = config;
-                return asBuilder();
+                return this;
             }
 
             public Filter getFilter() {
                 return filter;
             }
 
-            public B setFilter(@PluginElement final Filter filter) {
+            public Builder setFilter(@PluginElement final Filter filter) {
                 this.filter = filter;
-                return asBuilder();
-            }
-
-            public LogEventFactory getLogEventFactory() {
-                return logEventFactory;
-            }
-
-            @Inject
-            public B setLogEventFactory(final LogEventFactory logEventFactory) {
-                this.logEventFactory = logEventFactory;
-                return asBuilder();
+                return this;
             }
 
             @Override
@@ -807,16 +756,10 @@ public class LoggerConfig extends AbstractFilterable {
                         container.refs,
                         filter,
                         container.level,
-                        additivity,
+                        ADDITIVITY,
                         properties,
                         config,
-                        includeLocation(includeLocation, config),
-                        logEventFactory);
-            }
-
-            @SuppressWarnings("unchecked")
-            public B asBuilder() {
-                return (B) this;
+                        includeLocation(getIncludeLocation(), config));
             }
         }
     }

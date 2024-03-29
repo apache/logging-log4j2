@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,8 @@ public class AsyncLoggerCustomSelectorLocationTest {
 
     @Singleton
     public static final class CustomAsyncContextSelector implements ContextSelector {
-        private static final LoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");
+        private static final LoggerContext CONTEXT =
+                new AsyncLoggerContext("AsyncDefault", null, null, DI.createInitializedFactory());
 
         @Override
         public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {

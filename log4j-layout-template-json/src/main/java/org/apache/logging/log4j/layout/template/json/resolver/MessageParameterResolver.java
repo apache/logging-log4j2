@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.kit.recycler.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ParameterVisitable;
-import org.apache.logging.log4j.spi.recycler.Recycler;
 
 /**
  * {@link Message} parameter (i.e., {@link Message#getParameters()}) resolver.

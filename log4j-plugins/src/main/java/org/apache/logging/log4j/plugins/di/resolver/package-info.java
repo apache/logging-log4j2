@@ -29,7 +29,7 @@
 @NullMarked
 package org.apache.logging.log4j.plugins.di.resolver;
 
-import org.apache.logging.log4j.lang.NullMarked;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
+import org.jspecify.annotations.NullMarked;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;

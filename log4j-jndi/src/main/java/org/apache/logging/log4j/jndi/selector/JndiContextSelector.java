@@ -27,11 +27,15 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.selector.AbstractContextSelector;
 import org.apache.logging.log4j.core.selector.NamedContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jndi.JndiManager;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Lazy;
 
 /**
  * This class can be used to define a custom logger repository. It makes use of the fact that in J2EE environments, each
@@ -87,17 +91,20 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 @Singleton
-public class JndiContextSelector implements NamedContextSelector {
+public class JndiContextSelector extends AbstractContextSelector implements NamedContextSelector {
 
-    private static final LoggerContext CONTEXT = new LoggerContext("Default");
+    private final Lazy<LoggerContext> defaultContextLazy =
+            Lazy.lazy(() -> createContext("Default", null, JndiContextSelector.class.getClassLoader()));
 
-    private static final ConcurrentMap<String, LoggerContext> CONTEXT_MAP = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, LoggerContext> CONTEXT_MAP = new ConcurrentHashMap<>();
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    public JndiContextSelector() {
+    @Inject
+    public JndiContextSelector(final ConfigurableInstanceFactory instanceFactory) {
+        super(instanceFactory);
         if (!JndiManager.isJndiContextSelectorEnabled()) {
-            throw new IllegalStateException("JNDI must be enabled by setting log4j2.enableJndiContextSelector=true");
+            throw new IllegalStateException("JNDI must be enabled by setting log4j.jndi.enableContextSelector=true");
         }
     }
 
@@ -145,7 +152,9 @@ public class JndiContextSelector implements NamedContextSelector {
 
         final String loggingContextName = getContextName();
 
-        return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null, configLocation);
+        return loggingContextName == null
+                ? defaultContextLazy.get()
+                : locateContext(loggingContextName, null, configLocation);
     }
 
     private static String getContextName() {
@@ -166,7 +175,7 @@ public class JndiContextSelector implements NamedContextSelector {
             return null;
         }
         if (!CONTEXT_MAP.containsKey(name)) {
-            final LoggerContext ctx = new LoggerContext(name, externalContext, configLocation);
+            final LoggerContext ctx = createContext(name, configLocation, JndiContextSelector.class.getClassLoader());
             CONTEXT_MAP.putIfAbsent(name, ctx);
         }
         return CONTEXT_MAP.get(name);

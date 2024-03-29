@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.gctests;
 
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +38,7 @@ public class JsonTemplateLayoutGcFreeTest {
      * This code runs in a separate process, instrumented with the Google Allocation Instrumenter.
      */
     public static void main(final String[] args) throws Exception {
-        System.setProperty(LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED.getSystemKey(), "true");
+        System.setProperty(TestConstants.THREAD_CONTEXT_GARBAGE_FREE, "true");
         GcFreeLoggingTestUtil.executeLogging("gcFreeJsonTemplateLayoutLogging.xml", JsonTemplateLayoutGcFreeTest.class);
     }
 }

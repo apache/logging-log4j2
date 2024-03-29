@@ -31,10 +31,11 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
@@ -54,27 +55,20 @@ public class PluginRegistry {
     /**
      * Contains plugins found from {@link PluginService} services and legacy Log4j2Plugins.dat cache files in the main CLASSPATH.
      */
-    private final Lazy<Namespaces> namespacesLazy = Lazy.lazy(() -> {
-        final Namespaces namespaces = decodeCacheFiles(LoaderUtil.getClassLoader());
-        Throwable throwable = null;
-        ClassLoader errorClassLoader = null;
-        boolean allFail = true;
-        for (ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+    private final Lazy<Namespaces> namespacesLazy;
+
+    @Inject
+    public PluginRegistry(final ClassLoader classLoader) {
+        namespacesLazy = Lazy.lazy(() -> {
+            final Namespaces namespaces = decodeCacheFiles(classLoader);
             try {
                 loadPlugins(classLoader, namespaces);
-                allFail = false;
-            } catch (Throwable ex) {
-                if (throwable == null) {
-                    throwable = ex;
-                    errorClassLoader = classLoader;
-                }
+            } catch (final Throwable e) {
+                LOGGER.debug("Unable to retrieve provider from ClassLoader {}", classLoader, e);
             }
-        }
-        if (allFail && throwable != null) {
-            LOGGER.debug("Unable to retrieve provider from ClassLoader {}", errorClassLoader, throwable);
-        }
-        return namespaces;
-    });
+            return namespaces;
+        });
+    }
 
     /**
      * Resets the registry to an empty state.
@@ -89,23 +83,20 @@ public class PluginRegistry {
      * @param namespaces The Namespaces to merge discovered plugins to
      * @since 3.0
      */
-    private void loadPlugins(ClassLoader classLoader, Namespaces namespaces) {
+    private void loadPlugins(final ClassLoader classLoader, final Namespaces namespaces) {
         final long startTime = System.nanoTime();
-        final ServiceLoader<PluginService> serviceLoader = ServiceLoader.load(PluginService.class, classLoader);
         final AtomicInteger pluginCount = new AtomicInteger();
-        for (final PluginService pluginService : serviceLoader) {
-            pluginService
-                    .getNamespaces()
-                    .values()
-                    .forEach(category -> pluginCount.addAndGet(namespaces.merge(category)));
-        }
-        final int numPlugins = pluginCount.get();
-        LOGGER.debug(() -> {
-            final long endTime = System.nanoTime();
-            final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-            return "Took " + numFormat.format((endTime - startTime) * 1e-9) + " seconds to load " + numPlugins
-                    + " plugins from " + classLoader;
-        });
+        ServiceLoaderUtil.safeStream(
+                        PluginService.class,
+                        ServiceLoader.load(PluginService.class, classLoader),
+                        StatusLogger.getLogger())
+                .forEach(pluginService -> {
+                    pluginService
+                            .getNamespaces()
+                            .values()
+                            .forEach(category -> pluginCount.addAndGet(namespaces.merge(category)));
+                });
+        reportLoadTime(classLoader, startTime, pluginCount);
     }
 
     private Namespaces decodeCacheFiles(final ClassLoader classLoader) {
@@ -128,14 +119,18 @@ public class PluginRegistry {
             namespaces.add(type);
             pluginCount.incrementAndGet();
         }));
+        reportLoadTime(classLoader, startTime, pluginCount);
+        return namespaces;
+    }
+
+    private void reportLoadTime(final ClassLoader classLoader, final long startTime, final AtomicInteger pluginCount) {
         final int numPlugins = pluginCount.get();
-        LOGGER.debug(() -> {
+        LOGGER.info(() -> {
             final long endTime = System.nanoTime();
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
             return "Took " + numFormat.format((endTime - startTime) * 1e-9) + " seconds to load " + numPlugins
                     + " plugins from " + classLoader;
         });
-        return namespaces;
     }
 
     /**

@@ -35,8 +35,6 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.CleanFiles;
-import org.apache.logging.log4j.test.junit.CleanFolders;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;

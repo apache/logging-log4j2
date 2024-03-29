@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Log4j implementation of {@link java.util.logging.LogManager}. Note that the system property
@@ -50,14 +50,15 @@ public class LogManager extends java.util.logging.LogManager {
 
     public LogManager() {
         AbstractLoggerAdapter adapter = null;
-        final String overrideAdaptorClassName =
-                PropertiesUtil.getProperties().getStringProperty(JulPropertyKey.LOGGER_ADAPTER);
-        if (overrideAdaptorClassName != null) {
+        final Class<? extends AbstractLoggerAdapter> adapterClass =
+                PropertyEnvironment.getGlobal().getProperty(JulProperties.class).loggerAdapter();
+        if (adapterClass != null) {
             try {
-                LOGGER.info("Trying to use LoggerAdaptor [{}] specified by Log4j property.", overrideAdaptorClassName);
-                adapter = LoaderUtil.newCheckedInstanceOf(overrideAdaptorClassName, AbstractLoggerAdapter.class);
+                LOGGER.info("Trying to use LoggerAdapter [{}] specified by Log4j property.", adapterClass.getName());
+                adapter = LoaderUtil.newInstanceOf(adapterClass);
             } catch (final Exception e) {
-                LOGGER.error("Specified LoggerAdapter [{}] is incompatible.", overrideAdaptorClassName, e);
+                LOGGER.error(
+                        "Specified LoggerAdapter [{}] can not be created, using default.", adapterClass.getName(), e);
             }
         }
         if (adapter == null) {

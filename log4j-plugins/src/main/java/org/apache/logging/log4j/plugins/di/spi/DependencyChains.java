@@ -21,8 +21,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.StringJoiner;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.jspecify.annotations.Nullable;
 
 class DependencyChains {
     static final DependencyChain EMPTY = new EmptyChain();

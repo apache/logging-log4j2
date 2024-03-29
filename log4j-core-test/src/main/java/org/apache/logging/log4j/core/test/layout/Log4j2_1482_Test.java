@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.test.junit.CleanFolders;
+import org.apache.logging.log4j.core.test.junit.CleanFolders;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

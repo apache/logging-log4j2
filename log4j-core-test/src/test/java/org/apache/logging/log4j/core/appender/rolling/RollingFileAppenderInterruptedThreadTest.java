@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.test.junit.CleanFolders;
+import org.apache.logging.log4j.core.test.junit.CleanFolders;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

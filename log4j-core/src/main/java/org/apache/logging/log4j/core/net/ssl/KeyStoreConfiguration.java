@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.nio.file.Path;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.util.Arrays;
 import javax.net.ssl.KeyManagerFactory;
+import org.apache.logging.log4j.core.impl.CoreProperties;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -88,6 +90,17 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
                 keyManagerFactoryAlgorithm);
     }
 
+    static KeyStoreConfiguration createKeyStoreConfiguration(final CoreProperties.KeyStoreProperties props)
+            throws StoreConfigurationException {
+        return createKeyStoreConfiguration(
+                props.location(),
+                props.password(),
+                props.passwordEnvVar(),
+                props.passwordFile(),
+                props.type(),
+                props.keyManagerFactoryAlgorithm());
+    }
+
     /**
      * Creates a KeyStoreConfiguration.
      *
@@ -108,7 +121,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
             @PluginAttribute final String location,
             @PluginAttribute(sensitive = true) final char[] password,
             @PluginAttribute final String passwordEnvironmentVariable,
-            @PluginAttribute final String passwordFile,
+            @PluginAttribute final Path passwordFile,
             @PluginAttribute("type") final String keyStoreType,
             @PluginAttribute final String keyManagerFactoryAlgorithm)
             throws StoreConfigurationException {

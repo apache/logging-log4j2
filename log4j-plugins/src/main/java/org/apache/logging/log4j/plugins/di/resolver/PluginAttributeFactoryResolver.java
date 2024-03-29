@@ -19,12 +19,12 @@ package org.apache.logging.log4j.plugins.di.resolver;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.function.Function;
-import org.apache.logging.log4j.lang.Nullable;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory resolver for {@link PluginAttribute}-annotated keys. This injects configuration parameters to a

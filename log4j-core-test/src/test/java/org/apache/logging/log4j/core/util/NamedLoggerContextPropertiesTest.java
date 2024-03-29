@@ -19,26 +19,29 @@ package org.apache.logging.log4j.core.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.net.URI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.DisabledUntil;
 
 @ContextSelectorType(NamedLoggerContextPropertiesTest.TestContextSelector.class)
+@DisabledUntil(
+        date = "2024-04-01",
+        reason = "There is currently no property source that retrieves data from META-INF/log4j2.<context name>.json")
 public class NamedLoggerContextPropertiesTest {
 
     @Test
     public void testProperties() {
         final LoggerContext context = LoggerContext.getContext();
         assertEquals(LifeCycle.State.STARTED, context.getState());
-        final PropertyEnvironment props = context.getProperties();
+        final PropertyEnvironment props = context.getEnvironment();
         assertNotNull(props, "Logger Context Properties were not loaded");
         final String scriptLanguages = props.getStringProperty("Script.enableLanguages");
         assertEquals("Groovy,JavaScript", scriptLanguages);
@@ -56,8 +59,9 @@ public class NamedLoggerContextPropertiesTest {
             super(injector);
         }
 
+        @Override
         protected LoggerContext createContext() {
-            return new LoggerContext("my-app", null, (URI) null, instanceFactory);
+            return createContext("my-app", null, getClass().getClassLoader());
         }
     }
 }

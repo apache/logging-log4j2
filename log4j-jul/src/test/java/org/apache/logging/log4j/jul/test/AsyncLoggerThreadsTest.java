@@ -22,8 +22,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.async.logger.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.jspecify.annotations.Nullable;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,17 +33,18 @@ import org.junit.experimental.categories.Category;
 @Category(AsyncLoggers.class)
 public class AsyncLoggerThreadsTest {
 
+    static @Nullable String oldSelector;
+
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(
-                Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
-                AsyncLoggerContextSelector.class.getName());
+        oldSelector = TestConstants.setSystemProperty(
+                TestConstants.LOGGER_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey());
+        TestConstants.setSystemProperty(TestConstants.LOGGER_CONTEXT_SELECTOR, oldSelector);
         System.clearProperty("java.util.logging.manager");
     }
 

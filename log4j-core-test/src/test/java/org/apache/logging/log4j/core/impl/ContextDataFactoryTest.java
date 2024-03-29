@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.apache.logging.log4j.plugins.util.ReflectionUtil.getFieldValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -39,6 +40,7 @@ public class ContextDataFactoryTest {
     @Test
     public void intArgSetsCapacityIfNoPropertySpecified() throws Exception {
         final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
-        assertEquals(2, actual.getThreshold());
+        assertThat(getFieldValue(SortedArrayStringMap.class.getDeclaredField("threshold"), actual))
+                .isEqualTo(2);
     }
 }

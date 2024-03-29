@@ -18,31 +18,31 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class RollingAppenderDirectWriteWithReconfigureTest extends AbstractRollingListenerTest {
+class RollingAppenderDirectWriteWithReconfigureTest extends AbstractRollingListenerTest {
 
-    private static final String CONFIG = "log4j-rolling-direct-reconfigure.xml";
-
-    private static final String DIR = "target/rolling-direct-reconfigure";
+    private static final String CONFIG =
+            "org/apache/logging/log4j/core/appender/rolling/RollingAppenderDirectWriteWithReconfigureTest.xml";
 
     private final CountDownLatch rollover = new CountDownLatch(1);
 
+    @TempLoggingDir
+    private static Path loggingPath;
+
     @Test
-    @CleanUpDirectories(DIR)
-    @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testRollingFileAppenderWithReconfigure(final LoggerContext context) throws Exception {
+    @LoggerContextSource(timeout = 10)
+    void testRollingFileAppenderWithReconfigure(final LoggerContext context) throws Exception {
         final var logger = context.getLogger(getClass());
         logger.debug("Before reconfigure");
 
@@ -53,9 +53,10 @@ public class RollingAppenderDirectWriteWithReconfigureTest extends AbstractRolli
         appender.getManager().addRolloverListener(this);
         logger.debug("Force a rollover");
         rollover.await();
-        final File dir = new File(DIR);
-        assertThat(dir).isNotEmptyDirectory();
-        assertThat(dir.listFiles()).hasSize(2);
+        assertThat(loggingPath).isNotEmptyDirectory();
+        try (final Stream<Path> files = Files.list(loggingPath)) {
+            assertThat(files).as("check log file count").hasSize(2);
+        }
     }
 
     @Override

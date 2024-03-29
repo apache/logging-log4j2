@@ -17,18 +17,17 @@
 package org.apache.logging.log4j.jctools;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.logging.log4j.spi.recycler.Recycler.DEFAULT_CAPACITY;
 
 import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
-import org.apache.logging.log4j.spi.recycler.AbstractRecycler;
-import org.apache.logging.log4j.spi.recycler.Recycler;
-import org.apache.logging.log4j.spi.recycler.RecyclerFactory;
-import org.apache.logging.log4j.spi.recycler.RecyclerFactoryProvider;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.kit.recycler.Recycler;
+import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
+import org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider;
+import org.apache.logging.log4j.kit.recycler.RecyclerProperties;
+import org.apache.logging.log4j.kit.recycler.support.AbstractRecycler;
 import org.jctools.queues.MpmcArrayQueue;
 
 /**
@@ -52,10 +51,7 @@ public final class JCToolsRecyclerFactoryProvider implements RecyclerFactoryProv
     @Override
     public RecyclerFactory createForEnvironment(final PropertyEnvironment environment) {
         requireNonNull(environment, "environment");
-        final int capacity = environment.getIntegerProperty(LoggingSystemProperty.RECYCLER_CAPACITY, DEFAULT_CAPACITY);
-        if (capacity < 1) {
-            throw new IllegalArgumentException("was expecting a `capacity` greater than 1, found: " + capacity);
-        }
+        final int capacity = environment.getProperty(RecyclerProperties.class).capacity();
         return new JCToolsMpmcRecyclerFactory(capacity);
     }
 

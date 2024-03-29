@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringMap;
@@ -64,11 +65,12 @@ public class ThreadContextDataInjector {
         final List<ContextDataProvider> providers = new ArrayList<>();
         final ServiceLoader<ContextDataProvider> serviceLoader =
                 ServiceLoader.load(ContextDataProvider.class, ThreadContextDataInjector.class.getClassLoader());
-        ServiceLoaderUtil.safeStream(serviceLoader).forEachOrdered(provider -> {
-            if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
-                providers.add(provider);
-            }
-        });
+        ServiceLoaderUtil.safeStream(ContextDataProvider.class, serviceLoader, StatusLogger.getLogger())
+                .forEachOrdered(provider -> {
+                    if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
+                        providers.add(provider);
+                    }
+                });
         return Collections.unmodifiableList(providers);
     }
 

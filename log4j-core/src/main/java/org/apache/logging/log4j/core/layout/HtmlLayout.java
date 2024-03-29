@@ -32,7 +32,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
@@ -375,15 +374,6 @@ public final class HtmlLayout extends AbstractStringLayout {
         } finally {
             stringBuilderRecycler.release(sbuf);
         }
-    }
-
-    /**
-     * Creates an HTML Layout using the default settings.
-     *
-     * @return an HTML Layout.
-     */
-    public static HtmlLayout createDefaultLayout() {
-        return newBuilder().setConfiguration(new DefaultConfiguration()).build();
     }
 
     @PluginFactory

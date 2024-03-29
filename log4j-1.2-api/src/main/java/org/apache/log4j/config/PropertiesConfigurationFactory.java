@@ -21,9 +21,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Configures Log4j from a log4j 1 format properties file.
@@ -45,33 +45,40 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
      */
     protected static final String DEFAULT_PREFIX = "log4j";
 
+    private final boolean enabled;
+
+    public PropertiesConfigurationFactory() {
+        this(PropertyEnvironment.getGlobal());
+    }
+
+    private PropertiesConfigurationFactory(final PropertyEnvironment props) {
+        this.enabled = props.getBooleanProperty(LOG4J1_EXPERIMENTAL)
+                || props.getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY) != null;
+    }
+
     @Override
     protected String[] getSupportedTypes() {
-        if (!PropertiesUtil.getProperties()
-                .getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
-            return null;
-        }
-        return new String[] {FILE_EXTENSION};
+        return enabled ? new String[] {FILE_EXTENSION} : null;
     }
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        final int interval = PropertiesUtil.getProperties().getIntegerProperty(Log4j1Configuration.MONITOR_INTERVAL, 0);
+        final int interval = loggerContext.getEnvironment().getIntegerProperty(Log4j1Configuration.MONITOR_INTERVAL, 0);
         return new PropertiesConfiguration(loggerContext, source, interval);
     }
 
     @Override
-    protected String getTestPrefix() {
+    public String getTestPrefix() {
         return TEST_PREFIX;
     }
 
     @Override
-    protected String getDefaultPrefix() {
+    public String getDefaultPrefix() {
         return DEFAULT_PREFIX;
     }
 
     @Override
-    protected String getVersion() {
+    public String getVersion() {
         return LOG4J1_VERSION;
     }
 }

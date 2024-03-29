@@ -17,36 +17,32 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
-public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
+class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
-    private static final String CONFIG = "log4j-rolling-folder-direct.xml";
-
-    // Note that the path is hardcoded in the configuration!
-    private static final String DIR = "target/rolling-folder-direct";
     private final CountDownLatch rollover = new CountDownLatch(2);
     private boolean isFirst = true;
     private String ignored = null;
 
+    @TempLoggingDir
+    private Path loggingPath;
+
     @Test
-    @CleanUpDirectories(DIR)
-    @LoggerContextSource(value = CONFIG, timeout = 15)
-    public void streamClosedError(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager)
+    @LoggerContextSource(timeout = 15)
+    void streamClosedError(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager)
             throws Exception {
         manager.addRolloverListener(this);
 
@@ -68,48 +64,22 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
         rollover.await();
 
-        final File logDir = new File(DIR);
-        assertThat(logDir).isNotEmptyDirectory();
-        final File[] logFolders = logDir.listFiles();
-        assertNotNull(logFolders);
-        Arrays.sort(logFolders);
+        assertThat(loggingPath).isNotEmptyDirectory();
+        final List<Path> logFolders;
+        try (final Stream<Path> files = Files.list(loggingPath)) {
+            logFolders = files.sorted().toList();
+        }
 
-        try {
+        final int minExpectedLogFolderCount = 2;
+        assertThat(logFolders).hasSizeGreaterThanOrEqualTo(minExpectedLogFolderCount);
 
-            final int minExpectedLogFolderCount = 2;
-            assertThat(logFolders).hasSizeGreaterThanOrEqualTo(minExpectedLogFolderCount);
-
-            for (File logFolder : logFolders) {
-                // It is possible a log file is created at startup and by he time we get here it
-                // has rolled but has no data and so was deleted.
-                if (ignored != null && logFolder.getAbsolutePath().equals(ignored)) {
-                    continue;
-                }
-                final File[] logFiles = logFolder.listFiles();
-                if (logFiles != null) {
-                    Arrays.sort(logFiles);
-                }
-                assertThat(logFiles).isNotEmpty();
+        for (final Path logFolder : logFolders) {
+            // It is possible a log file is created at startup and by he time we get here it
+            // has rolled but has no data and so was deleted.
+            if (logFolder.toAbsolutePath().toString().equals(ignored)) {
+                continue;
             }
-
-        } catch (AssertionError error) {
-            final StringBuilder sb = new StringBuilder(error.getMessage())
-                    .append(" log directory (")
-                    .append(DIR)
-                    .append(") contents: [");
-            final Iterator<File> fileIterator =
-                    FileUtils.iterateFilesAndDirs(logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
-            int totalFileCount = 0;
-            while (fileIterator.hasNext()) {
-                totalFileCount++;
-                final File file = fileIterator.next();
-                sb.append("-> ").append(file).append(" (").append(file.length()).append(')');
-                if (fileIterator.hasNext()) {
-                    sb.append(", ");
-                }
-            }
-            sb.append("] total file count: ").append(totalFileCount);
-            throw new AssertionFailedError(sb.toString(), error);
+            assertThat(logFolder).isNotEmptyDirectory();
         }
     }
 

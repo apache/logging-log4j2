@@ -22,23 +22,23 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.ReusableLogEvent;
-import org.apache.logging.log4j.core.async.InternalAsyncUtil;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.kit.recycler.Recycler;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ParameterVisitable;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.spi.recycler.Recycler;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mutable implementation of the {@code ReusableLogEvent} interface.
@@ -53,7 +53,6 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
     private final MutableInstant instant = new MutableInstant();
     private long nanoTime;
     private short parameterCount;
-    private boolean includeLocation;
     private boolean endOfBatch = false;
     private Level level;
     private String threadName;
@@ -66,9 +65,11 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
     private ThrowableProxy thrownProxy;
     private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
-    private String loggerFqcn;
-    private StackTraceElement source;
     private ThreadContext.ContextStack contextStack;
+    // Location information
+    private String loggerFqcn;
+    private @Nullable StackTraceElement source;
+    private boolean includeLocation;
 
     public MutableLogEvent() {
         // messageText and the parameter array are lazily initialized
@@ -93,8 +94,7 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
      *
      * @param event the event to copy data from
      */
-    public void initFrom(final LogEvent event) {
-        this.loggerFqcn = event.getLoggerFqcn();
+    public void moveValuesFrom(final LogEvent event) {
         this.marker = event.getMarker();
         this.level = event.getLevel();
         this.loggerName = event.getLoggerName();
@@ -109,19 +109,21 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
         this.contextData.putAll(event.getContextData());
 
         this.contextStack = event.getContextStack();
-        this.source = event.isIncludeLocation() ? event.getSource() : null;
         this.threadId = event.getThreadId();
         this.threadName = event.getThreadName();
         this.threadPriority = event.getThreadPriority();
         this.endOfBatch = event.isEndOfBatch();
         this.includeLocation = event.isIncludeLocation();
         this.nanoTime = event.getNanoTime();
+        // Location data
+        this.loggerFqcn = event.getLoggerFqcn();
+        this.source = event.peekSource();
+        this.includeLocation = event.isIncludeLocation();
         setMessage(event.getMessage());
     }
 
     @Override
     public void clear() {
-        loggerFqcn = null;
         marker = null;
         level = null;
         loggerName = null;
@@ -129,7 +131,6 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
         messageFormat = null;
         thrown = null;
         thrownProxy = null;
-        source = null;
         if (contextData != null) {
             if (contextData.isFrozen()) { // came from CopyOnWrite thread context
                 contextData = null;
@@ -138,6 +139,9 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
             }
         }
         contextStack = null;
+        // Location information
+        loggerFqcn = null;
+        source = null;
 
         // ThreadName should not be cleared: this field is set in the ReusableLogEventFactory
         // where this instance is kept in a ThreadLocal, so it usually does not change.
@@ -211,15 +215,14 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
     }
 
     @Override
-    public void setMessage(final Message msg) {
-        if (msg instanceof ReusableMessage) {
-            final ReusableMessage reusable = (ReusableMessage) msg;
+    public void setMessage(final Message message) {
+        if (message instanceof final ReusableMessage reusable) {
             reusable.formatTo(getMessageTextForWriting());
-            this.messageFormat = msg.getFormat();
+            messageFormat = message.getFormat();
             parameters = reusable.swapParameters(parameters == null ? new Object[10] : parameters);
             parameterCount = reusable.getParameterCount();
         } else {
-            this.message = InternalAsyncUtil.makeMessageImmutable(msg);
+            this.message = message;
         }
     }
 
@@ -373,13 +376,14 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
      */
     @Override
     public StackTraceElement getSource() {
-        if (source != null) {
-            return source;
+        if (source == null && loggerFqcn != null) {
+            return source = includeLocation ? StackLocatorUtil.calcLocation(loggerFqcn) : null;
         }
-        if (loggerFqcn == null || !includeLocation) {
-            return null;
-        }
-        source = StackLocatorUtil.calcLocation(loggerFqcn);
+        return peekSource();
+    }
+
+    @Override
+    public @Nullable StackTraceElement peekSource() {
         return source;
     }
 

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.time.Instant;
@@ -32,6 +32,7 @@ import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Immutable copy of a LogEvent.
@@ -50,8 +51,8 @@ public class MementoLogEvent implements LogEvent {
     private boolean endOfBatch;
     private final Message message;
     private final ReadOnlyStringMap contextData;
-    private final ThreadContext.ContextStack contextStack;
-    private final StackTraceElement source;
+    private final ContextStack contextStack;
+    private final @Nullable StackTraceElement source;
     private final String threadName;
     private final long threadId;
     private final int threadPriority;
@@ -72,9 +73,9 @@ public class MementoLogEvent implements LogEvent {
         if (instant.getEpochMillisecond() == 0 && message instanceof TimestampMessage) {
             instant.initFromEpochMilli(((TimestampMessage) message).getTimestamp(), 0);
         }
-        contextData = memento(event.getContextData());
+        contextData = mementoOfContextData(event.getContextData());
         contextStack = event.getContextStack();
-        source = includeLocation ? event.getSource() : null;
+        source = includeLocation ? event.getSource() : event.peekSource();
         threadName = event.getThreadName();
         threadId = event.getThreadId();
         threadPriority = event.getThreadPriority();
@@ -82,40 +83,27 @@ public class MementoLogEvent implements LogEvent {
         thrownProxy = event.getThrownProxy();
     }
 
-    public MementoLogEvent(final LogEvent event, final boolean includeLocation) {
-        loggerFqcn = event.getLoggerFqcn();
-        loggerName = event.getLoggerName();
-        instant.initFrom(event.getInstant());
-        nanoTime = event.getNanoTime();
-        level = event.getLevel();
-        marker = event.getMarker();
-        locationRequired = includeLocation;
-        endOfBatch = event.isEndOfBatch();
-        message = mementoOfMessage(event);
-        if (instant.getEpochMillisecond() == 0 && message instanceof TimestampMessage) {
-            instant.initFromEpochMilli(((TimestampMessage) message).getTimestamp(), 0);
+    private static ReadOnlyStringMap mementoOfContextData(final ReadOnlyStringMap readOnlyMap) {
+        if (readOnlyMap instanceof final StringMap stringMap && !stringMap.isFrozen()) {
+            final StringMap data = ContextDataFactory.createContextData(readOnlyMap);
+            data.freeze();
+            return data;
         }
-        contextData = memento(event.getContextData());
-        contextStack = event.getContextStack();
-        source = includeLocation ? event.getSource() : null;
-        threadName = event.getThreadName();
-        threadId = event.getThreadId();
-        threadPriority = event.getThreadPriority();
-        thrown = event.getThrown();
-        thrownProxy = event.getThrownProxy();
+        // otherwise immutable
+        return readOnlyMap;
+    }
+
+    private static Message mementoOfMessage(final LogEvent event) {
+        final Message message = event.getMessage();
+        if (message instanceof LoggerNameAwareMessage) {
+            ((LoggerNameAwareMessage) message).setLoggerName(event.getLoggerName());
+        }
+        return message instanceof final ReusableMessage reusable ? reusable.memento() : message;
     }
 
     @Override
     public LogEvent toImmutable() {
         return this;
-    }
-
-    @Override
-    public LogEvent toMemento(final boolean includeLocation) {
-        if (locationRequired || !includeLocation) {
-            return this;
-        }
-        return LogEvent.super.toMemento(true);
     }
 
     @Override
@@ -129,7 +117,7 @@ public class MementoLogEvent implements LogEvent {
     }
 
     @Override
-    public ThreadContext.ContextStack getContextStack() {
+    public ContextStack getContextStack() {
         return contextStack;
     }
 
@@ -170,6 +158,11 @@ public class MementoLogEvent implements LogEvent {
 
     @Override
     public StackTraceElement getSource() {
+        return peekSource();
+    }
+
+    @Override
+    public @Nullable StackTraceElement peekSource() {
         return source;
     }
 
@@ -274,23 +267,5 @@ public class MementoLogEvent implements LogEvent {
         final String n = loggerName.isEmpty() ? LoggerConfig.ROOT : loggerName;
         return "Logger=" + n + " Level=" + level.name() + " Message="
                 + (message == null ? Strings.EMPTY : message.getFormattedMessage());
-    }
-
-    private static ReadOnlyStringMap memento(final ReadOnlyStringMap readOnlyMap) {
-        if (readOnlyMap instanceof StringMap && !((StringMap) readOnlyMap).isFrozen()) {
-            final StringMap data = ContextDataFactory.createContextData(readOnlyMap);
-            data.freeze();
-            return data;
-        }
-        // otherwise immutable
-        return readOnlyMap;
-    }
-
-    private static Message mementoOfMessage(final LogEvent event) {
-        final Message message = event.getMessage();
-        if (message instanceof LoggerNameAwareMessage) {
-            ((LoggerNameAwareMessage) message).setLoggerName(event.getLoggerName());
-        }
-        return message instanceof ReusableMessage ? ((ReusableMessage) message).memento() : message;
     }
 }

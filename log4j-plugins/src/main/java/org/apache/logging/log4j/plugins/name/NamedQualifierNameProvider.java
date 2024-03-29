@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.plugins.name;
 
+import static java.util.Optional.ofNullable;
+import static org.apache.logging.log4j.util.Strings.trimToNull;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.util.Strings;
 
 public class NamedQualifierNameProvider
         implements AnnotatedElementNameProvider<Named>, AnnotatedElementAliasesProvider<Named> {
@@ -30,7 +32,7 @@ public class NamedQualifierNameProvider
         if (names == null || names.length == 0) {
             return Optional.empty();
         }
-        return Strings.trimToOptional(names[0]);
+        return ofNullable(trimToNull(names[0]));
     }
 
     @Override

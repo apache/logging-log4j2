@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.template.json;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGURATION;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.DEFAULTS;
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
@@ -706,7 +707,7 @@ class JsonTemplateLayoutTest {
 
         // Check serialized event.
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-            final String truncatedStringSuffix = JsonTemplateLayoutDefaults.getTruncatedStringSuffix();
+            final String truncatedStringSuffix = DEFAULTS.truncatedStringSuffix();
             final String truncatedMessageString =
                     excessiveMessageString.substring(0, maxStringLength) + truncatedStringSuffix;
             assertThat(accessor.getString(messageKey)).isEqualTo(truncatedMessageString);
@@ -1462,7 +1463,7 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Check the serialized event.
-        final String expectedSerializedLogEventJson = "{}" + JsonTemplateLayoutDefaults.getEventDelimiter();
+        final String expectedSerializedLogEventJson = "{}" + DEFAULTS.eventDelimiter();
         final String actualSerializedLogEventJson = layout.toSerializable(logEvent);
         assertThat(actualSerializedLogEventJson).isEqualTo(expectedSerializedLogEventJson);
     }

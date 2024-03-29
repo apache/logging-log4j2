@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.jul.test;
 
+import static org.apache.logging.log4j.jul.test.JulTestProperties.JUL_LOGGER_ADAPTER;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.logging.Logger;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.jul.ApiLoggerAdapter;
-import org.apache.logging.log4j.jul.JulPropertyKey;
 import org.apache.logging.log4j.jul.LogManager;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -34,16 +35,18 @@ import org.junit.Test;
 
 public class ApiLoggerTest extends AbstractLoggerTest {
 
+    private static String oldAdapter;
+
     @BeforeClass
     public static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
-        System.setProperty(JulPropertyKey.LOGGER_ADAPTER.getSystemKey(), ApiLoggerAdapter.class.getName());
+        oldAdapter = TestConstants.setSystemProperty(JUL_LOGGER_ADAPTER, ApiLoggerAdapter.class.getName());
     }
 
     @AfterClass
     public static void tearDownClass() {
         System.clearProperty("java.util.logging.manager");
-        System.clearProperty(JulPropertyKey.LOGGER_ADAPTER.getSystemKey());
+        TestConstants.setSystemProperty(JUL_LOGGER_ADAPTER, oldAdapter);
     }
 
     @Before

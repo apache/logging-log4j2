@@ -17,7 +17,12 @@
 package org.apache.logging.log4j.gctests;
 
 import static java.lang.System.getProperty;
-import static org.apache.logging.log4j.util.Constants.isWebApp;
+import static org.apache.logging.log4j.core.test.TestConstants.CONFIGURATION_FILE;
+import static org.apache.logging.log4j.core.test.TestConstants.GC_ENABLE_DIRECT_ENCODERS;
+import static org.apache.logging.log4j.core.test.TestConstants.WEB_IS_WEB_APP;
+import static org.apache.logging.log4j.core.test.TestConstants.setSystemProperty;
+import static org.apache.logging.log4j.core.util.Constants.ENABLE_DIRECT_ENCODERS;
+import static org.apache.logging.log4j.util.Constants.IS_WEB_APP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,10 +44,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
+import org.apache.logging.log4j.core.test.TestConstants;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
 
 /**
  * Utility methods for the GC-free logging tests.
@@ -52,12 +57,12 @@ enum GcFreeLoggingTestUtil {
 
     static void executeLogging(final String configurationFile, final Class<?> testClass) throws Exception {
 
-        System.setProperty(Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS.getSystemKey(), "true");
-        System.setProperty(LoggingSystemProperty.IS_WEBAPP.getSystemKey(), "false");
-        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), configurationFile);
+        setSystemProperty(GC_ENABLE_DIRECT_ENCODERS, "true");
+        setSystemProperty(WEB_IS_WEB_APP, "false");
+        setSystemProperty(CONFIGURATION_FILE, configurationFile);
 
-        assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
-        assertFalse(isWebApp(), "Constants.isWebApp()");
+        assertTrue(ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
+        assertFalse(IS_WEB_APP, "Constants.isWebApp()");
 
         final MyCharSeq myCharSeq = new MyCharSeq();
         final Marker testGrandParent = MarkerManager.getMarker("testGrandParent");
@@ -214,15 +219,17 @@ enum GcFreeLoggingTestUtil {
         final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         final String classpath = getProperty("java.class.path");
         final String javaagent = "-javaagent:" + agentJar();
-        final String usePreciseClock = System.getProperty(Log4jPropertyKey.USE_PRECISE_CLOCK.getSystemKey());
+        final boolean usePreciseClock = PropertyEnvironment.getGlobal()
+                .getProperty(ConfigurationProperties.class)
+                .usePreciseClock();
 
         final File tempFile = File.createTempFile("allocations", ".txt");
         // tempFile.deleteOnExit();
         final List<String> command = new ArrayList<>();
         command.add(javaBin);
         command.add(javaagent);
-        if (usePreciseClock != null) {
-            command.add("-D" + Log4jPropertyKey.USE_PRECISE_CLOCK.getSystemKey() + "=" + usePreciseClock);
+        if (usePreciseClock) {
+            command.add("-D" + TestConstants.CONFIGURATION_USE_PRECISE_CLOCK + "=" + usePreciseClock);
         }
         command.add("-cp");
         command.add(classpath);

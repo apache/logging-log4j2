@@ -20,7 +20,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jdbc.appender.internal.JndiUtil;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -63,7 +62,7 @@ public final class DataSourceConnectionSource extends AbstractConnectionSource {
      */
     @PluginFactory
     public static DataSourceConnectionSource createConnectionSource(@PluginAttribute final String jndiName) {
-        if (!Constants.JNDI_JDBC_ENABLED) {
+        if (!JndiUtil.isJndiJdbcEnabled()) {
             LOGGER.error("JNDI must be enabled by setting log4j2.enableJndiJdbc=true");
             return null;
         }

@@ -26,8 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.async.logger.AsyncLoggerContext;
 import org.apache.logging.log4j.async.logger.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.spi.LoggingSystemProperty;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -57,8 +56,8 @@ import org.slf4j.LoggerFactory;
 public class FileAppenderThrowableBenchmark {
     static {
         // log4j2
-        System.setProperty(LoggingSystemProperty.Constant.WEB_IS_WEBAPP, "false");
-        System.setProperty("log4j.configurationFile", "log4j2-perf-file-throwable.xml");
+        System.setProperty(TestConstants.WEB_IS_WEB_APP, "false");
+        System.setProperty(TestConstants.CONFIGURATION_FILE, "log4j2-perf-file-throwable.xml");
         // log4j 1.2
         System.setProperty("log4j.configuration", "log4j12-perf-file-throwable.xml");
         // logback
@@ -224,9 +223,7 @@ public class FileAppenderThrowableBenchmark {
 
             @Override
             void setUp() throws Exception {
-                System.setProperty(
-                        Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
-                        AsyncLoggerContextSelector.class.getName());
+                System.setProperty(TestConstants.LOGGER_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
                 logger = LogManager.getLogger("RAFExtendedException");
                 if (!AsyncLoggerContext.class.equals(
                         LogManager.getContext(false).getClass())) {
@@ -279,9 +276,7 @@ public class FileAppenderThrowableBenchmark {
 
             @Override
             void setUp() throws Exception {
-                System.setProperty(
-                        Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
-                        AsyncLoggerContextSelector.class.getName());
+                System.setProperty(TestConstants.LOGGER_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
                 logger = LogManager.getLogger("RAFSimpleException");
                 if (!AsyncLoggerContext.class.equals(
                         LogManager.getContext(false).getClass())) {

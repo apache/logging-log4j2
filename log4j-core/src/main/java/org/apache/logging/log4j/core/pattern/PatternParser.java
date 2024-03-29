@@ -123,6 +123,7 @@ public final class PatternParser {
             final String converterKey,
             final Class<?> expectedClass,
             final Class<?> filterClass) {
+        // Only null in tests
         config = configuration != null ? configuration : new NullConfiguration();
         final Key<PluginNamespace> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withNamespace(converterKey);
         final PluginNamespace plugins = config.getComponent(pluginCategoryKey);

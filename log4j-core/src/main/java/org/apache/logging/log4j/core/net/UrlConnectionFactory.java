@@ -28,13 +28,14 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
+import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -52,7 +53,6 @@ public class UrlConnectionFactory {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final String JAR = "jar";
-    private static final String DEFAULT_ALLOWED_PROTOCOLS = "https, file, jar";
     private static final String NO_PROTOCOLS = "_none";
     public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
 
@@ -64,7 +64,7 @@ public class UrlConnectionFactory {
             final AuthorizationProvider authorizationProvider)
             throws IOException {
         return createConnection(
-                url, lastModifiedMillis, sslConfiguration, authorizationProvider, PropertiesUtil.getProperties());
+                url, lastModifiedMillis, sslConfiguration, authorizationProvider, PropertyEnvironment.getGlobal());
     }
 
     @SuppressFBWarnings(
@@ -78,7 +78,7 @@ public class UrlConnectionFactory {
             final PropertyEnvironment props)
             throws IOException {
         final List<String> allowed = Arrays.asList(Strings.splitList(
-                toRootLowerCase(props.getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS))));
+                toRootLowerCase(props.getProperty(ConfigurationProperties.class).allowedProtocols())));
         if (allowed.size() == 1 && NO_PROTOCOLS.equals(allowed.get(0))) {
             throw new ProtocolException("No external protocols have been enabled");
         }
@@ -134,8 +134,9 @@ public class UrlConnectionFactory {
     public static URLConnection createConnection(final URL url) throws IOException {
         final URLConnection urlConnection;
         if (url.getProtocol().equals(HTTPS) || url.getProtocol().equals(HTTP)) {
-            final PropertyEnvironment props = PropertiesUtil.getProperties();
-            final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
+            final PropertyEnvironment props = PropertyEnvironment.getGlobal();
+            final AuthorizationProvider provider =
+                    AuthorizationProvider.getAuthorizationProvider(props.getProperty(AuthenticationProperties.class));
             final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
             urlConnection = createConnection(url, 0, sslConfiguration, provider, props);
         } else {
