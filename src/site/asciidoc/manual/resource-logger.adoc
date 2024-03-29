@@ -78,7 +78,7 @@ inside the Resource Logger.
 With the PatternLayout configured with a pattern of
 
 ----
-%K %m%n
+%X %m%n
 ----
 
 and a loginId of testUser and a role of Admin, after a successful login would result in a log message of
@@ -87,7 +87,4 @@ and a loginId of testUser and a role of Admin, after a successful login would re
 {LoginId=testUser, Role=Admin, Count=1} Login succeeded
 ----
 
-ResourceLoggers always create ParameterizedMapMessages for every log event.  A ParameterizedMapMessage is similar to a ParameterizedMessage but with a Map attached. Since ParameterizedMapMessage is a MapMessage all the tooling available
-in Layouts, Filters, and Lookups may be used.
-
-The supplier configured on the ResourceLogger is called when generating every log event. This allows values, such as counters, to be updated and the log event will contain the actual value at the time the event was logged.
+Every logging call is wrapped in a ScopedContext and populated by the supplier configured on the ResourceLogger, which is called when generating every log event. This allows values, such as counters, to be updated and the log event will contain the actual value at the time the event was logged.

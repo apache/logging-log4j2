@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ParameterizedMapMessageFactory;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -40,6 +40,7 @@ import org.apache.logging.log4j.util.Strings;
 public final class ResourceLogger extends AbstractLogger {
     private static final long serialVersionUID = -5837924138744974513L;
     private final ExtendedLogger logger;
+    private final Supplier<Map<String, ?>> supplier;
 
     public static ResourceLoggerBuilder newBuilder() {
         return new ResourceLoggerBuilder();
@@ -49,9 +50,11 @@ public final class ResourceLogger extends AbstractLogger {
      * Pass our MessageFactory with its Supplier to AbstractLogger. This will be used to create
      * the Messages prior to them being passed to the "real" Logger.
      */
-    private ResourceLogger(final ExtendedLogger logger, final Supplier<Map<String, String>> supplier) {
-        super(logger.getName(), new ParameterizedMapMessageFactory(supplier));
+    private ResourceLogger(
+            final ExtendedLogger logger, final Supplier<Map<String, ?>> supplier, MessageFactory messageFactory) {
+        super(logger.getName(), messageFactory);
         this.logger = logger;
+        this.supplier = supplier;
     }
 
     @Override
@@ -197,7 +200,11 @@ public final class ResourceLogger extends AbstractLogger {
 
     @Override
     public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
-        logger.logMessage(fqcn, level, marker, message, t);
+        if (supplier != null) {
+            ScopedContext.runWhere(supplier.get(), () -> logger.logMessage(fqcn, level, marker, message, t));
+        } else {
+            logger.logMessage(fqcn, level, marker, message, t);
+        }
     }
 
     /**
@@ -207,7 +214,8 @@ public final class ResourceLogger extends AbstractLogger {
         private static final Logger LOGGER = StatusLogger.getLogger();
         private ExtendedLogger logger;
         private String name;
-        private Supplier<Map<String, String>> supplier;
+        private Supplier<Map<String, ?>> supplier;
+        private MessageFactory messageFactory;
 
         /**
          * Create the builder.
@@ -252,8 +260,19 @@ public final class ResourceLogger extends AbstractLogger {
          * @param supplier the method that provides the Map of resource data to include in logs.
          * @return the ResourceLoggerBuilder.
          */
-        public ResourceLoggerBuilder withSupplier(Supplier<Map<String, String>> supplier) {
+        public ResourceLoggerBuilder withSupplier(Supplier<Map<String, ?>> supplier) {
             this.supplier = supplier;
+            return this;
+        }
+
+        /**
+         * Adds a MessageFactory.
+         * @param messageFactory the MessageFactory to use to build messages. If a MessageFactory
+         * is not specified the default MessageFactory will be used.
+         * @return the ResourceLoggerBuilder.
+         */
+        public ResourceLoggerBuilder withMessageFactory(MessageFactory messageFactory) {
+            this.messageFactory = messageFactory;
             return this;
         }
 
@@ -269,8 +288,8 @@ public final class ResourceLogger extends AbstractLogger {
                 }
                 this.logger = (ExtendedLogger) LogManager.getLogger(name);
             }
-            Supplier<Map<String, String>> mapSupplier = this.supplier != null ? this.supplier : Collections::emptyMap;
-            return new ResourceLogger(logger, mapSupplier);
+            Supplier<Map<String, ?>> mapSupplier = this.supplier != null ? this.supplier : Collections::emptyMap;
+            return new ResourceLogger(logger, mapSupplier, messageFactory);
         }
     }
 }

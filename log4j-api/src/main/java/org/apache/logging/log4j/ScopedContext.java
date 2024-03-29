@@ -124,7 +124,7 @@ public class ScopedContext {
      * @param map the Map.
      * @return the ScopedContext Instance constructed.
      */
-    public static Instance where(Map<String, Object> map) {
+    public static Instance where(Map<String, ?> map) {
         if (map != null && !map.isEmpty()) {
             Map<String, Renderable> renderableMap = new HashMap<>();
             if (current().isPresent()) {
@@ -212,11 +212,11 @@ public class ScopedContext {
      * @param map the Map.
      * @param op the Runnable to call.
      */
-    public static void runWhere(Map<String, Object> map, Runnable op) {
+    public static void runWhere(Map<String, ?> map, Runnable op) {
         if (map != null && !map.isEmpty()) {
             Map<String, Renderable> renderableMap = new HashMap<>();
             if (current().isPresent()) {
-                map.putAll(current().get().contextMap);
+                renderableMap.putAll(current().get().contextMap);
             }
             map.forEach((key, value) -> {
                 renderableMap.put(key, value instanceof Renderable ? (Renderable) value : new ObjectRenderable(value));
@@ -296,11 +296,11 @@ public class ScopedContext {
      * @param map the Map.
      * @param op the Runnable to call.
      */
-    public static <R> R callWhere(Map<String, Object> map, Callable<R> op) throws Exception {
+    public static <R> R callWhere(Map<String, ?> map, Callable<R> op) throws Exception {
         if (map != null && !map.isEmpty()) {
             Map<String, Renderable> renderableMap = new HashMap<>();
             if (current().isPresent()) {
-                map.putAll(current().get().contextMap);
+                renderableMap.putAll(current().get().contextMap);
             }
             map.forEach((key, value) -> {
                 renderableMap.put(key, value instanceof Renderable ? (Renderable) value : new ObjectRenderable(value));

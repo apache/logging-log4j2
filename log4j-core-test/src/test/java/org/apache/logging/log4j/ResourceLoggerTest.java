@@ -18,9 +18,10 @@ package org.apache.logging.log4j.message;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -59,14 +61,14 @@ public class ResourceLoggerTest {
         logger.debug("Hello, {}", "World");
         List<LogEvent> events = app.getEvents();
         assertThat(events, hasSize(1));
-        Message message = events.get(0).getMessage();
-        assertTrue(message instanceof ParameterizedMapMessage);
-        Map<String, String> data = ((ParameterizedMapMessage) message).getData();
-        assertThat(data, aMapWithSize(3));
+        ReadOnlyStringMap map = events.get(0).getContextData();
+        assertNotNull(map);
+        Map<String, String> data = map.toMap();
+        assertThat(data.size(), equalTo(3));
         assertEquals("Test", data.get("Name"));
         assertEquals("dummy", data.get("Type"));
         assertEquals("1", data.get("Count"));
-        assertEquals("Hello, World", message.getFormattedMessage());
+        assertEquals("Hello, World", events.get(0).getMessage().getFormattedMessage());
         assertEquals(this.getClass().getName(), events.get(0).getLoggerName());
         assertEquals(this.getClass().getName(), events.get(0).getSource().getClassName());
         app.clear();
@@ -74,9 +76,9 @@ public class ResourceLoggerTest {
         logger.debug("Used the connection");
         events = app.getEvents();
         assertThat(events, hasSize(1));
-        message = events.get(0).getMessage();
-        assertTrue(message instanceof ParameterizedMapMessage);
-        data = ((ParameterizedMapMessage) message).getData();
+        map = events.get(0).getContextData();
+        assertNotNull(map);
+        data = map.toMap();
         assertThat(data, aMapWithSize(3));
         assertEquals("2", data.get("Count"));
         app.clear();
@@ -87,20 +89,20 @@ public class ResourceLoggerTest {
         logger.debug("Connection: {}", "NewConnection");
         events = app.getEvents();
         assertThat(events, hasSize(1));
-        message = events.get(0).getMessage();
-        assertTrue(message instanceof ParameterizedMapMessage);
-        data = ((ParameterizedMapMessage) message).getData();
+        map = events.get(0).getContextData();
+        assertNotNull(map);
+        data = map.toMap();
         assertThat(data, aMapWithSize(3));
         assertEquals("NewConnection", data.get("Name"));
         assertEquals("fiber", data.get("Type"));
         assertEquals("1", data.get("Count"));
-        assertEquals("Connection: NewConnection", message.getFormattedMessage());
+        assertEquals("Connection: NewConnection", events.get(0).getMessage().getFormattedMessage());
         assertEquals(this.getClass().getName(), events.get(0).getLoggerName());
         assertEquals(this.getClass().getName(), events.get(0).getSource().getClassName());
         app.clear();
     }
 
-    private static class MapSupplier implements Supplier<Map<String, String>> {
+    private static class MapSupplier implements Supplier<Map<String, ?>> {
 
         private final Connection connection;
 
