@@ -43,7 +43,7 @@
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- Dependency versions -->
-    <mongodb3.version>3.12.11</mongodb3.version>
+    <mongodb3.version>3.12.14</mongodb3.version>
   </properties>
 
   <dependencyManagement>

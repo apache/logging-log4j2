@@ -35,6 +35,7 @@ This releases contains ...
 * Fix usage of `log4j-api` in GraalVM without additional reachability data. (https://github.com/apache/logging-log4j2/pull/1539[1539])
 * Centralize initialization in the `Provider` class and deprecate `log4j2.loggerContextFactory` property. (https://github.com/apache/logging-log4j2/pull/2374[2374])
 * Remove `log4j-kubernetes` lookup. User should migrate to https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`kubernetes-log4j`] (https://github.com/apache/logging-log4j2/pull/2412[2412])
+* Deprecate `org.apache.logging.log4j.core.appender.rolling.action.Duration` class for removal.
 
 [#release-notes-2-x-x-fixed]
 === Fixed
@@ -55,4 +56,5 @@ This releases contains ...
 * Update `org.apache.activemq:activemq-broker` to version `6.1.0` (https://github.com/apache/logging-log4j2/pull/2387[2387])
 * Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2361[2361])
 * Update `org.awaitility:awaitility` to version `4.2.1` (https://github.com/apache/logging-log4j2/pull/2386[2386])
+* Update `org.mongodb:bson` to version `3.12.14` (https://github.com/apache/logging-log4j2/pull/2409[2409])
 * Update `org.springframework:spring-framework-bom` to version `5.3.33` (https://github.com/apache/logging-log4j2/pull/2378[2378])
