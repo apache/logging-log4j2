@@ -723,6 +723,30 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
 
+        <!-- These are dummy dependencies!
+             They are not used anywhere while running `maven-resources-plugin`.
+             `filter-antora-yml` execution above injects these `*.version` properties into `antora.yml`.
+             Later on, we use them in the manual while referencing to Maven artifacts with their versions.
+             We need these `<dependency>` entries to trick `dependabot` to update the version properties automatically.
+             No, we cannot use `${project.version}`, because it is not released yet. -->
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${site-log4j-api.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${site-log4j-core.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-layout-template-json</artifactId>
+            <version>${site-log4j-layout-template-json.version}</version>
+          </dependency>
+        </dependencies>
+
         <executions>
 
           <!-- Process `target/antora-yml` and output to `target/generated-site/antora` -->
@@ -784,30 +808,6 @@
           </execution>
 
         </executions>
-
-        <!-- These are dummy dependencies!
-             They are not used anywhere while running `maven-resources-plugin`.
-             `filter-antora-yml` execution above injects these `*.version` properties into `antora.yml`.
-             Later on, we use them in the manual while referencing to Maven artifacts with their versions.
-             We need these `<dependency>` entries to trick `dependabot` to update the version properties automatically.
-             No, we cannot use `${project.version}`, because it is not released yet. -->
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${site-log4j-api.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${site-log4j-core.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-layout-template-json</artifactId>
-            <version>${site-log4j-layout-template-json.version}</version>
-          </dependency>
-        </dependencies>
 
       </plugin>
 
