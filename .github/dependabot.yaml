@@ -158,7 +158,10 @@ updates:
       update-types: ["version-update:semver-major"]
     # Plexus Utils 4.x are for Maven 4.x
     - dependency-name: "org.codehaus.plexus:plexus-utils"
-      versions: ["4,)"]
+      versions: ["[4,)"]
+    # Don't upgrade to 3.x
+    - dependency-name: "org.apache.logging.log4j:log4j-api"
+      versions: ["[3,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
