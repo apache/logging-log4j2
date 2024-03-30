@@ -42,12 +42,10 @@
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
-    <!-- Override of the parent POM version -->
+    <!-- Dependency versions -->
     <mongodb.version>3.12.11</mongodb.version>
   </properties>
 
-  <!-- Use explicit versions as a temporary workaround to a Coursier/Ivy bug:
-    https://github.com/apache/logging-log4j2/issues/2065 -->
   <dependencyManagement>
     <dependencies>
       <dependency>
