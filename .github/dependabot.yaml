@@ -90,7 +90,7 @@ updates:
       versions: ["2.1.0,)"]
     # SLF4J 1.7.x should only upgrade to 1.7.x and
     # SLF4J 2.x should only upgrade to 2.x.
-    - dependency-name: "org.slf4j:slf4j-api"
+    - dependency-name: "org.slf4j:*"
       update-types: ["version-update:semver-major"]
     # Plexus Utils 4.x are for Maven 4.x
     - dependency-name: "org.codehaus.plexus:plexus-utils"
