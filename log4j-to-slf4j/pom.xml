@@ -37,7 +37,20 @@
       <!-- This bridge also support SLF4J 2.x -->
       org.slf4j.*;version="${slf4j.support.range}"
     </bnd-extra-package-options>
+
+    <slf4j2.version>2.0.9</slf4j2.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j2.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>

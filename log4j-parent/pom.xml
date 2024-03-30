@@ -135,7 +135,6 @@
     <osgi.api.version>6.0.0</osgi.api.version>
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.1</plexus-utils.version>
-    <slf4j.version>2.0.9</slf4j.version>
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.33</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
@@ -907,12 +906,6 @@
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>${plexus-utils.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
       </dependency>
 
       <dependency>
