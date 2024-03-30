@@ -30,6 +30,11 @@ This release contains...
 
 * Remove `log4j-kubernetes` lookup. User should migrate to https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`kubernetes-log4j`] (https://github.com/apache/logging-log4j2/pull/2408[2408])
 
+[#release-notes-3-x-x-removed]
+=== Removed
+
+* Remove deprecated `org.apache.logging.log4j.core.appender.rolling.action.Duration` class.
+
 [#release-notes-3-x-x-updated]
 === Updated
 
@@ -41,6 +46,7 @@ This release contains...
 * Update `commons-io:commons-io` to version `2.16.0` (https://github.com/apache/logging-log4j2/pull/2429[2429])
 * Update `commons-logging:commons-logging` to version `1.3.1` (https://github.com/apache/logging-log4j2/pull/2405[2405])
 * Update `io.netty:netty-bom` to version `4.1.108.Final` (https://github.com/apache/logging-log4j2/pull/2399[2399])
+* Update `net.bytebuddy:byte-buddy` to version `1.14.13` (https://github.com/apache/logging-log4j2/pull/2433[2433])
 * Update `org.apache.commons:commons-compress` to version `1.26.1` (https://github.com/apache/logging-log4j2/pull/2358[2358])
 * Update `org.apache.commons:commons-dbcp2` to version `2.12.0` (https://github.com/apache/logging-log4j2/pull/2342[2342])
 * Update `org.apache.groovy:groovy-bom` to version `4.0.20` (https://github.com/apache/logging-log4j2/pull/2376[2376])
