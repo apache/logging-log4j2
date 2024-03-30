@@ -42,6 +42,7 @@
     <surefire.jdkToolchain>[9, )</surefire.jdkToolchain>
     <spotbugs.skip>true</spotbugs.skip>
 
+    <!-- Dependency versions -->
     <slf4j2.version>2.0.9</slf4j2.version>
   </properties>
 
