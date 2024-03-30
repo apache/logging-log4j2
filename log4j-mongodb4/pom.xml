@@ -39,7 +39,7 @@
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- Dependency versions -->
-    <mongodb.version>4.11.1</mongodb.version>
+    <mongodb4.version>4.11.1</mongodb4.version>
   </properties>
 
   <dependencyManagement>
@@ -47,22 +47,22 @@
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>bson</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb4.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-core</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb4.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-legacy</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb4.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-sync</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb4.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
