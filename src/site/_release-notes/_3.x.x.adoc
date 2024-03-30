@@ -55,6 +55,7 @@ This release contains...
 * Update `org.eclipse.platform:org.eclipse.osgi` to version `3.19.0` (https://github.com/apache/logging-log4j2/pull/2367[2367])
 * Update `org.elasticsearch.client:elasticsearch-rest-high-level-client` to version `7.17.19` (https://github.com/apache/logging-log4j2/pull/2418[2418])
 * Update `org.graalvm.truffle:truffle-api` to version `24.0.0` (https://github.com/apache/logging-log4j2/pull/2394[2394])
+* Update `org.javassist:javassist` to version `3.30.2-GA` (https://github.com/apache/logging-log4j2/pull/2432[2432])
 * Update `org.mockito:mockito-bom` to version `5.11.0` (https://github.com/apache/logging-log4j2/pull/2333[2333])
 * Update `org.mongodb:bson` to version `5.0.0` (https://github.com/apache/logging-log4j2/pull/2327[2327])
 * Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.4` (https://github.com/apache/logging-log4j2/pull/2398[2398])
