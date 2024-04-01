@@ -63,15 +63,11 @@ configuration, and as a result the same application with Log4j 2.6 has a
 memory allocation rate of 1.6 MB/sec and was GC-free with 0 (zero)
 garbage collections.
 
-[cols="2*"]
-|===
-|link:../images/log4j-2.5-FlightRecording.png[image:log4j-2.5-FlightRecording-thumbnail40pct.png[image]] +
-With Log4j 2.5: memory allocation rate 809 MB/sec, 141 minor
-collections.
-|link:../images/log4j-2.6-FlightRecording.png[image:log4j-2.6-FlightRecording-thumbnail40pct.png[image]] +
-Log4j 2.6 did not allocate temporary objects: 0 (zero) garbage
-collections.
-|===
+.Using Log4j 2.5: memory allocation rate 809 MB/sec, 141 minor collections
+image:log4j-2.5-FlightRecording-thumbnail40pct.png[xref=image$log4j-2.5-FlightRecording.png]
+
+.Using Log4j 2.6: no temporary object allocations, 0 (zero) garbage collections
+image:log4j-2.6-FlightRecording-thumbnail40pct.png[xref=image$log4j-2.6-FlightRecording.png]
 
 [#Config]
 == Configuration
