@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.kit.recycler.internal;
 
+import static org.apache.logging.log4j.kit.recycler.internal.CapacityUtil.DEFAULT_CAPACITY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
@@ -27,9 +28,6 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 
 public class RecyclerFactoryRegistryTest {
-
-    private static final int DEFAULT_CAPACITY =
-            Math.max(2 * Runtime.getRuntime().availableProcessors() + 1, 8);
 
     @Test
     void DummyRecyclerFactory_should_work() {

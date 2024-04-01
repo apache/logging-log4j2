@@ -24,19 +24,25 @@
     <relativePath>../log4j-parent</relativePath>
   </parent>
 
-  <artifactId>log4j-kit</artifactId>
-  <name>Apache Log4j Kit</name>
-  <description>Helpers to implement Log4j 2.x API.</description>
+  <artifactId>log4j-conversant</artifactId>
+  <name>Apache Log4j Conversant Disruptor-based supplements</name>
+  <description>Provides ConversantMedia Disruptor-based data structure implementations for the Apache Log4j.</description>
 
   <properties>
-    <maven.javadoc.skip>false</maven.javadoc.skip>
-
-    <bnd-extra-package-options>
-      <!-- JSpecify is optional at runtime -->
-      org.jspecify.annotations.*;resolution:=optional
-    </bnd-extra-package-options>
-    <bnd-extra-module-options>org.jspecify;transitive:=false</bnd-extra-module-options>
+    <conversant.disruptor.version>1.2.21</conversant.disruptor.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>com.conversantmedia</groupId>
+        <artifactId>disruptor</artifactId>
+        <version>${conversant.disruptor.version}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
 
@@ -47,19 +53,23 @@
     </dependency>
 
     <dependency>
+      <groupId>com.conversantmedia</groupId>
+      <artifactId>disruptor</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
+      <artifactId>log4j-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit-pioneer</groupId>
-      <artifactId>junit-pioneer</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -70,36 +80,11 @@
     </dependency>
 
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.javassist</groupId>
-      <artifactId>javassist</artifactId>
-      <version>3.30.2-GA</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api-test</artifactId>
+      <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
     </dependency>
 
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>--add-opens java.base/java.lang=ALL-UNNAMED
-            --add-opens java.base/java.util=ALL-UNNAMED</argLine>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

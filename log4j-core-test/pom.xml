@@ -108,12 +108,7 @@
       <artifactId>commons-compress</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
-    <dependency>
-      <groupId>com.conversantmedia</groupId>
-      <artifactId>disruptor</artifactId>
-      <optional>true</optional>
-    </dependency>
+
     <!-- Required for AsyncLoggers -->
     <dependency>
       <groupId>com.lmax</groupId>

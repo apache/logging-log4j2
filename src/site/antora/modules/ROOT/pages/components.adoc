@@ -103,6 +103,23 @@ See xref:manual/configuration.adoc#configuration-factories[predefined `Configura
 
 include::partial$components/log4j-config-yaml.adoc[]
 
+[#log4j-conversant]
+== `log4j-conversant`
+
+|===
+| JPMS module
+| `org.apache.logging.log4j.conversant`
+|===
+
+The `log4j-conversant` artifact contains a
+xref:manual/appenders/delegating.adoc#BlockingQueueFactory[blocking queue factory]
+that uses
+https://github.com/conversant/disruptor[Conversant Disruptor BlockingQueue].
+
+See xref:manual/appenders/delegating.adoc#DisruptorBlockingQueueFactory[Conversant Disruptor Blocking Queue] for more details.
+
+include::partial$components/log4j-conversant.adoc[]
+
 [#log4j-core]
 == `log4j-core`
 

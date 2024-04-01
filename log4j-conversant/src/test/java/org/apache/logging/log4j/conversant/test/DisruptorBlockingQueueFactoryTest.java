@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.jctools;
+package org.apache.logging.log4j.conversant.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.conversantmedia.util.concurrent.DisruptorBlockingQueue;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.junit.jupiter.api.Test;
 
-class JCToolsBlockingQueueFactoryTest {
+class DisruptorBlockingQueueFactoryTest {
 
     private static void exceptionTest(final LoggerContext context) throws InterruptedException {
         final ExtendedLogger logger = context.getLogger(AsyncAppender.class);
@@ -70,7 +71,7 @@ class JCToolsBlockingQueueFactoryTest {
         assertEquals("Hello world!", messages.get(1));
     }
 
-    private static void assertJCToolsIsUsed(final LoggerContext context) {
+    private static void assertConversantDisruptorIsUsed(final LoggerContext context) {
         final AsyncAppender appender = context.getConfiguration().getAppender("ASYNC");
         assertThat(appender).isNotNull();
         final BlockingQueue<?> queue = (BlockingQueue<?>) assertDoesNotThrow(() -> {
@@ -78,13 +79,13 @@ class JCToolsBlockingQueueFactoryTest {
             queueField.setAccessible(true);
             return queueField.get(appender);
         });
-        assertThat(queue).isInstanceOf(JCToolsBlockingQueueFactory.MpscBlockingQueue.class);
+        assertThat(queue).isInstanceOf(DisruptorBlockingQueue.class);
     }
 
     @Test
-    @LoggerContextSource("JCToolsBlockingQueueFactoryTest.xml")
+    @LoggerContextSource("DisruptorBlockingQueueFactoryTest.xml")
     public void testJcToolsBlockingQueue(final LoggerContext context) throws InterruptedException {
-        assertJCToolsIsUsed(context);
+        assertConversantDisruptorIsUsed(context);
         rewriteTest(context);
         exceptionTest(context);
     }

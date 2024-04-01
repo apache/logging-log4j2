@@ -53,7 +53,10 @@ The following `log4j-core` features were moved to their own modules or were remo
 |===
 | Log4j 2 feature | Log4j 3 module
 
-| xref:manual/appenders/delegating.adoc#BlockingQueueFactory[Asynchronous appender: JCTools-based queue]
+| xref:manual/appenders/delegating.adoc#DisruptorBlockingQueueFactory[Asynchronous appender: Conversant Disruptor-based queue]
+| xref:components.adoc#log4j-conversant[`log4j-conversant`]
+
+| xref:manual/appenders/delegating.adoc#JCToolsBlockingQueueFactory[Asynchronous appender: JCTools-based queue]
 | xref:components.adoc#log4j-jctools[`log4j-jctools`]
 
 | xref:manual/async.adoc[Asynchronous logger]

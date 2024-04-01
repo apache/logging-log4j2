@@ -269,7 +269,7 @@ The purpose of the sections below is to remove IDE errors while editing configur
 == AsyncWaitStrategyFactory
 [#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-BlockingQueueFactory]
 == `BlockingQueueFactory`
-[#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-DisruptorBlockingQueueFactory]
+[#org-apache-logging-log4j_log4j-conversant_org-apache-logging-log4j-conversant-DisruptorBlockingQueueFactory]
 == DisruptorBlockingQueue
 [#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-JCToolsBlockingQueueFactory]
 == JCToolsBlockingQueue

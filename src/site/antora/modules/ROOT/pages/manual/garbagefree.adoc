@@ -129,8 +129,7 @@ In case there is a problem, the <<log4j.gc.enableDirectEncoders,`log4j.gc.enable
 The following xref:manual/filters.adoc[filters] are garbage-free during steady-state logging:
 
 // Maintain the alphabetical ordering while making changes, please!
-* xref:manual/filters.adoc#CompositeFilter[`CompositeFilter`] (adding and removing element filters creates temporary
-objects for thread safety)
+* xref:manual/filters.adoc#CompositeFilter[`CompositeFilter`] (adding and removing element filters creates temporary objects for thread safety)
 * xref:manual/filters.adoc#DynamicThresholdFilter[`DynamicThresholdFilter`]
 * xref:manual/filters.adoc#LevelRangeFilter[`LevelRangeFilter`] (garbage-free since `2.8`)
 * xref:manual/filters.adoc#MapFilter[`MapFilter`] (garbage-free since `2.8`)
@@ -153,7 +152,8 @@ Log4j chooses a recycler using the following procedure:
 
 . Using `ServiceLoader` mechanism, loads all available `RecyclerFactoryProvider` implementations
 . Sorts providers (the lower `order` value will come first)
-. If <<#log4j.recycler.factory>> is provided, the first provider whose name matching with this property value will be used. Otherwise, the first provider will be used.
+. If <<#log4j.recycler.factory>> is provided, the first provider whose name matching with this property value will be used.
+Otherwise, the first provider will be used.
 
 The predefined recycler factory providers are as follows:
 
@@ -182,7 +182,7 @@ Intended as a test utility.)
 [cols="1h,5"]
 |===
 | Module
-| `log4j-kit`
+| xref:components.adoc#log4j-kit[`log4j-kit`]
 
 | Name
 | `threadLocal`
@@ -203,7 +203,7 @@ Note that it is effectively disabled for servlet environments.
 [cols="1h,5"]
 |===
 | Module
-| `log4j-kit`
+| xref:components.adoc#log4j-kit[`log4j-kit`]
 
 | Name
 | `queue`
@@ -221,7 +221,7 @@ If pool runs out of capacity (see <<log4j.recycler.capacity>>), it will start cr
 [cols="1h,5"]
 |===
 | Module
-| `log4j-jctools`
+| xref:components.adoc#log4j-jctools[`log4j-jctools`]
 
 | Name
 | `jctools-mpmc`
@@ -232,6 +232,29 @@ If pool runs out of capacity (see <<log4j.recycler.capacity>>), it will start cr
 
 Pools objects in a fixed-size JCTools MPMC queue.
 If pool runs out of capacity (see <<log4j.recycler.capacity>>), it will start creating fresh instances for new requests.
+
+[#recyclers-conversant]
+==== Conversant Disruptor recycler
+
+[cols="1h,5"]
+|===
+| Module
+| xref:components.adoc#log4j-conversant[`log4j-conversant`]
+
+| Name
+| `conversant-disruptor`
+
+| Order
+| 600
+|===
+
+Pools objects in a fixed-size ring buffer.
+If pool runs out of capacity (see <<log4j.recycler.capacity>>), a spin policy is applied (see <<log4j.recycler.conversant.spinPolicy>>).
+
+[NOTE]
+====
+The capacity of this recycler **must** be at least 8 and a power of 2.
+====
 
 [#core-limitations]
 === Limitations
@@ -275,17 +298,12 @@ or
 [#codeImpact]
 === Avoiding autoboxing
 
-We made an effort to make logging garbage-free without requiring code
-changes in existing applications, but there is one area where this was
-not possible. When logging primitive values (i.e. int, double, boolean,
-etc.) the JVM autoboxes these primitive values to their Object wrapper
-equivalents, creating garbage.
+We made an effort to make logging garbage-free without requiring code changes in existing applications, but there is one area where this was not possible.
+When logging primitive values (i.e. int, double, boolean, etc.) the JVM autoboxes these primitive values to their Object wrapper equivalents, creating garbage.
 
-Log4j provides an `Unbox` utility to prevent autoboxing of primitive
-parameters. This utility contains a thread-local pool of reused
-`StringBuilder`s. The `Unbox.box(primitive)` methods write directly into
-a StringBuilder, and the resulting text will be copied into the final
-log message text without creating temporary objects.
+Log4j provides an `Unbox` utility to prevent autoboxing of primitive parameters.
+This utility contains a thread-local pool of reused
+`StringBuilder`s. The `Unbox.box(primitive)` methods write directly into a StringBuilder, and the resulting text will be copied into the final log message text without creating temporary objects.
 
 [source,java]
 ----

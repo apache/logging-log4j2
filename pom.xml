@@ -236,6 +236,7 @@
     <module>log4j-config-jackson</module>
     <module>log4j-config-properties</module>
     <module>log4j-config-yaml</module>
+    <module>log4j-conversant</module>
     <module>log4j-core</module>
     <module>log4j-core-test</module>
     <module>log4j-csv</module>
@@ -404,6 +405,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-config-yaml</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-conversant</artifactId>
         <version>${project.version}</version>
       </dependency>
 

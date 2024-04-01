@@ -14,24 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.conversant;
 
 import com.conversantmedia.util.concurrent.DisruptorBlockingQueue;
 import com.conversantmedia.util.concurrent.SpinPolicy;
 import java.util.concurrent.BlockingQueue;
+import org.apache.logging.log4j.core.async.BlockingQueueFactory;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
- * Factory for creating instances of {@link DisruptorBlockingQueue}.
+ * A {@link BlockingQueueFactory} based on <a href="https://github.com/conversant/disruptor">Conversant Disruptor BlockingQueue</a>.
  *
- * @since 2.7
+ * @since 3.0.0
  */
 @Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE, printObject = true)
 @Plugin("DisruptorBlockingQueue")
-public class DisruptorBlockingQueueFactory implements BlockingQueueFactory {
+public final class DisruptorBlockingQueueFactory implements BlockingQueueFactory {
 
     private final SpinPolicy spinPolicy;
 
