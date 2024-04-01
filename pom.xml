@@ -941,9 +941,21 @@
             <configuration>
               <executable>${project.basedir}/node/node</executable>
               <arguments>
-                <argument>${project.basedir}/node_modules/.bin/antora</argument>
-                <argument>${project.basedir}/antora-playbook.yaml</argument>
-                <argument>--to-dir=${project.build.directory}/site</argument>
+                <!-- Running `node/node node_modules/.bin/antora antora-playbook.yaml ...` doesn't work on Windows[1].
+                     I come up with the below solution working on both Linux and Windows.
+                     Pay attention to the following details:
+
+                     1. `@antora/cli` is executed programmatically (this is what `node_modules/.bin/antora` does under the hood)
+                     2. Single-quotes must be used (double-quotes get erased and hence cause syntax errors)
+                     3. Relative paths must be used[2]
+
+                     [1] For some reason, the `node_modules/.bin/antora` script is not properly executed.
+                         The following works though: `cd node_modules/.bin; ../../node/node antora ../../antora-playbook.yaml`.
+                         Motivated by this, tried configuring the `workingDirectory` parameter of the plugin, though it did not help.
+                     [2] `${project.basedir}/antora-playbook.yaml` strangely resolves to `C:\Users\user\logging-log4j2\Usersuserlogging-log4j2/antora-playbook.yaml`.
+                         I tried using `const path = require('path'); ... path.resolve('${project.basedir}', 'antora-playbook.yaml')`, but it failed with the same error too. -->
+                <argument>--eval</argument>
+                <argument>require('@antora/cli')(['generate', '--playbook', 'antora-playbook.yaml', '--to-dir', 'target/site'])</argument>
               </arguments>
             </configuration>
           </execution>
