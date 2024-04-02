@@ -1,0 +1,7 @@
+{
+  "script": {
+    "enableLanguages": [
+      "log4j2.scriptEnableLanguages"
+    ]
+  }
+}

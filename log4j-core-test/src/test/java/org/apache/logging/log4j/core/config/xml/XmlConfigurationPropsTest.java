@@ -70,7 +70,7 @@ public class XmlConfigurationPropsTest {
     }
 
     @Test
-    @SetTestProperty(key = TestConstants.STATUS_LOGGER_DEFAULT_STATUS_LEVEL, value = "FATAL")
+    @SetTestProperty(key = TestConstants.STATUS_LOGGER_LEVEL, value = "FATAL")
     @LoggerContextSource(value = CONFIG1)
     public void testDefaultStatus(final Configuration config) {
         testConfiguration(config, CONFIG1_NAME, Level.FATAL, null);

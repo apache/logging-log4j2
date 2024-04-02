@@ -59,12 +59,12 @@ public class Log4jProvider extends Provider {
     public String getThreadContextMap() {
         final PropertyEnvironment environment = instanceFactory.getInstance(PropertyEnvironment.class);
         final ThreadContextProperties threadContext = environment.getProperty(ThreadContextProperties.class);
-        if (threadContext.enable() && threadContext.enableMap()) {
-            if (threadContext.mapClass() != null) {
-                return threadContext.mapClass();
+        if (threadContext.enable() && threadContext.map().enable()) {
+            if (threadContext.map().type() != null) {
+                return threadContext.map().type();
             }
             if (Constants.ENABLE_THREADLOCALS) {
-                return threadContext.garbageFree() ? GARBAGE_FREE_CONTEXT_MAP : COPY_ON_WRITE_CONTEXT_MAP;
+                return threadContext.map().garbageFree() ? GARBAGE_FREE_CONTEXT_MAP : COPY_ON_WRITE_CONTEXT_MAP;
             }
             return WEB_APP_CONTEXT_MAP;
         }

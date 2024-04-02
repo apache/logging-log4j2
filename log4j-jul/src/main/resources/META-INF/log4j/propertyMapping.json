@@ -1,0 +1,10 @@
+{
+  "jul": {
+    "levelConverter": [
+      "log4j2.julLevelConverter"
+    ],
+    "loggerAdapter": [
+      "log4j2.julLoggerAdapter"
+    ]
+  }
+}

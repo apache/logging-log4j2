@@ -942,7 +942,7 @@ public class LoggerContext extends AbstractLifeCycle
         private PropertyEnvironment createProperties(final String contextName, final ClassLoader loader) {
             final PropertyEnvironment parentEnvironment = parentInstanceFactory.getInstance(PropertyEnvironment.class);
             final org.apache.logging.log4j.Logger statusLogger =
-                    parentInstanceFactory.getInstance(Constants.DEFAULT_STATUS_LOGGER_KEY);
+                    parentInstanceFactory.getInstance(Constants.STATUS_LOGGER_KEY);
             return new CompositePropertyEnvironment(
                     parentEnvironment,
                     List.of(

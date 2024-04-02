@@ -58,7 +58,7 @@ public class ConfigurationAssemblerTest {
 
     @Test
     @SetTestProperty(
-            key = TestConstants.CONFIGURATION_CONFIGURATION_FACTORY,
+            key = TestConstants.CONFIGURATION_FACTORY,
             value = "org.apache.logging.log4j.script.config.builder.CustomConfigurationFactory")
     public void testCustomConfigurationFactory() throws Exception {
         final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();

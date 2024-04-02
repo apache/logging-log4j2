@@ -98,7 +98,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
                 props.passwordEnvVar(),
                 props.passwordFile(),
                 props.type(),
-                props.keyManagerFactoryAlgorithm());
+                props.keyManagerFactory().algorithm());
     }
 
     /**

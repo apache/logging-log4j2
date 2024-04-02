@@ -33,14 +33,14 @@ public final class TestConstants {
 
     public static final String ASYNC_LOGGER_EXCEPTION_HANDLER = ASYNC_LOGGER + "exceptionHandler";
 
-    public static final String ASYNC_LOGGER_RING_BUFFER_SIZE = ASYNC_LOGGER + "ringBufferSize";
+    public static final String ASYNC_LOGGER_RING_BUFFER_SIZE = ASYNC_LOGGER + "ringBuffer.size";
 
     public static final String ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL =
             ASYNC_LOGGER + "synchronizeEnqueueWhenQueueFull";
 
     public static final String ASYNC_LOGGER_WAIT_STRATEGY = ASYNC_LOGGER + "waitStrategy.type";
 
-    public static final String ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE = ASYNC_LOGGER + "ringBufferSize";
+    public static final String ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE = ASYNC_LOGGER + "ringBuffer.size";
 
     public static final String ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL =
             ASYNC_LOGGER + "synchronizeEnqueueWhenQueueFull";
@@ -59,7 +59,7 @@ public final class TestConstants {
 
     public static final String CONFIGURATION_ALLOWED_PROTOCOLS = CONFIGURATION + "allowedProtocols";
 
-    public static final String CONFIGURATION_CONFIGURATION_FACTORY = CONFIGURATION + "configurationFactory";
+    public static final String CONFIGURATION_FACTORY = CONFIGURATION + "factory";
 
     public static final String CONFIGURATION_FILE = CONFIGURATION + "location";
 
@@ -89,6 +89,8 @@ public final class TestConstants {
 
     private static final String LOG_EVENT = "log4j.logEvent.";
 
+    public static final String LOG_EVENT_CONTEXT_DATA_TYPE = LOG_EVENT + "contextData.type";
+
     public static final String LOG_EVENT_FACTORY = LOG_EVENT + "logEventFactory";
 
     private static final String MESSAGE = "log4j.message.";
@@ -97,7 +99,7 @@ public final class TestConstants {
 
     private static final String STATUS_LOGGER = "log4j.statusLogger.";
 
-    public static final String STATUS_LOGGER_DEFAULT_STATUS_LEVEL = STATUS_LOGGER + "defaultStatusLevel";
+    public static final String STATUS_LOGGER_LEVEL = STATUS_LOGGER + "level";
 
     public static final String VERSION1_CONFIGURATION = "log4j.configuration";
 
@@ -105,11 +107,9 @@ public final class TestConstants {
 
     private static final String THREAD_CONTEXT = "log4j.threadContext.";
 
-    public static final String THREAD_CONTEXT_CONTEXT_DATA = THREAD_CONTEXT + "contextData";
+    public static final String THREAD_CONTEXT_MAP_GARBAGE_FREE = THREAD_CONTEXT + "map.garbageFree";
 
-    public static final String THREAD_CONTEXT_GARBAGE_FREE = THREAD_CONTEXT + "garbageFree";
-
-    public static final String THREAD_CONTEXT_MAP_CLASS = THREAD_CONTEXT + "mapClass";
+    public static final String THREAD_CONTEXT_MAP_TYPE = THREAD_CONTEXT + "map.type";
 
     public static final String WEB_IS_WEB_APP = "log4j2.isWebApp";
 

@@ -513,7 +513,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected Level getDefaultStatus() {
-        return instanceFactory.getInstance(Constants.DEFAULT_STATUS_LEVEL_KEY);
+        return instanceFactory.getInstance(Constants.STATUS_LOGGER_LEVEL_KEY);
     }
 
     protected void createAdvertiser(

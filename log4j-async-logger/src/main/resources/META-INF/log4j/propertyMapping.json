@@ -1,0 +1,37 @@
+{
+  "auth": {
+    "logger": {
+      "configExceptionHandler": [
+        "log4j2.asyncLoggerConfigExceptionHandler"
+      ],
+      "exceptionHandler": [
+        "log4j2.asyncLoggerExceptionHandler"
+      ],
+      "ringBuffer": {
+        "size": [
+          "log4j2.asyncLoggerRingBufferSize",
+          "log4j2.asyncLoggerConfigRingBufferSize"
+        ]
+      },
+      "synchronizeEnqueueWhenQueueFull": [
+        "log4j2.asyncLoggerSynchronizeEnqueueWhenQueueFull",
+        "log4j2.asyncLoggerConfigSynchronizeEnqueueWhenQueueFull"
+      ],
+      "waitStrategy": {
+        "retries": [
+          "log4j2.asyncLoggerRetries"
+        ],
+        "sleepTimeNs": [
+          "log4j2.asyncLoggerSleepTimeNs"
+        ],
+        "timeout": [
+          "log4j2.asyncLoggerTimeout"
+        ],
+        "type": [
+          "log4j2.asyncLoggerWaitStrategy",
+          "log4j2.asyncLoggerConfigWaitStrategy"
+        ]
+      }
+    }
+  }
+}

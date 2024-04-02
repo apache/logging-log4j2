@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.CoreProperties;
+import org.apache.logging.log4j.core.impl.CoreProperties.LoaderProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -34,9 +34,8 @@ public final class Loader {
 
     private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
-    static final Boolean ignoreTccl = PropertyEnvironment.getGlobal()
-            .getProperty(CoreProperties.LoaderProperties.class)
-            .ignoreTCL();
+    static final Boolean ignoreTccl =
+            PropertyEnvironment.getGlobal().getProperty(LoaderProperties.class).ignoreTccl();
 
     private Loader() {}
 
@@ -296,7 +295,7 @@ public final class Loader {
     }
 
     /**
-     * Loads a class by name. This method respects the {@link CoreProperties.LoaderProperties#ignoreTCL()} Log4j property. If this
+     * Loads a class by name. This method respects the {@link LoaderProperties#ignoreTccl()} Log4j property. If this
      * property is
      * specified and set to anything besides {@code false}, then the default ClassLoader will be used.
      *

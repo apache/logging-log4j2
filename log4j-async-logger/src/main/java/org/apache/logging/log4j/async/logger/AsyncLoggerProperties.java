@@ -26,35 +26,36 @@ import org.jspecify.annotations.Nullable;
  */
 @Log4jProperty(name = "async.logger")
 public record AsyncLoggerProperties(
-        @Nullable Class<? extends AsyncLoggerExceptionHandler> exceptionHandler,
         @Nullable Class<? extends AsyncLoggerConfigExceptionHandler> configExceptionHandler,
-        @Log4jProperty(defaultValue = "4096") int ringBufferSize,
+        @Nullable Class<? extends AsyncLoggerExceptionHandler> exceptionHandler,
+        RingBufferProperties ringBuffer,
         @Log4jProperty(defaultValue = "true") boolean synchronizeEnqueueWhenQueueFull,
         WaitStrategyProperties waitStrategy) {
 
-    private static final int RING_BUFFER_MIN_SIZE = 128;
+    public record RingBufferProperties(@Log4jProperty(defaultValue = "4096") int size) {
+        private static final int RING_BUFFER_MIN_SIZE = 128;
 
-    public AsyncLoggerProperties {
-        ringBufferSize = validateRingBufferSize(ringBufferSize);
-    }
+        public RingBufferProperties {
+            size = validateRingBufferSize(size);
+        }
 
-    private static int validateRingBufferSize(final int ringBufferSize) {
-        if (ringBufferSize < RING_BUFFER_MIN_SIZE) {
-            StatusLogger.getLogger()
-                    .warn("Invalid RingBuffer size {}, using minimum size {}.", ringBufferSize, RING_BUFFER_MIN_SIZE);
-            return RING_BUFFER_MIN_SIZE;
+        private static int validateRingBufferSize(final int size) {
+            if (size < RING_BUFFER_MIN_SIZE) {
+                StatusLogger.getLogger()
+                        .warn("Invalid RingBuffer size {}, using minimum size {}.", size, RING_BUFFER_MIN_SIZE);
+                return RING_BUFFER_MIN_SIZE;
+            }
+            final int roundedSize = Integers.ceilingNextPowerOfTwo(size);
+            if (size != roundedSize) {
+                StatusLogger.getLogger().warn("Invalid RingBuffer size {}, using rounded size {}.", size, roundedSize);
+            }
+            return roundedSize;
         }
-        final int roundedRingBufferSize = Integers.ceilingNextPowerOfTwo(ringBufferSize);
-        if (ringBufferSize != roundedRingBufferSize) {
-            StatusLogger.getLogger()
-                    .warn("Invalid RingBuffer size {}, using rounded size {}.", ringBufferSize, roundedRingBufferSize);
-        }
-        return roundedRingBufferSize;
     }
 
     public record WaitStrategyProperties(
-            @Log4jProperty(defaultValue = "TIMEOUT") String type,
-            @Log4jProperty(defaultValue = "100") long sleepTimeNs,
             @Log4jProperty(defaultValue = "200") int retries,
-            @Log4jProperty(defaultValue = "10") int timeout) {}
+            @Log4jProperty(defaultValue = "100") long sleepTimeNs,
+            @Log4jProperty(defaultValue = "10") int timeout,
+            @Log4jProperty(defaultValue = "TIMEOUT") String type) {}
 }

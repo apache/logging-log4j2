@@ -1,0 +1,173 @@
+{
+  "async": {
+    "formatMessagesInBackground": [
+      "log4j2.formatMsgAsync"
+    ],
+    "queueFullPolicy": {
+      "type": [
+        "log4j2.asyncQueueFullPolicy"
+      ],
+      "discardThreshold": [
+        "log4j2.discardThreshold"
+      ]
+    },
+    "auth": {
+      "provider": [
+        "log4j2.configurationAuthorizationProvider"
+      ],
+      "basic": {
+        "password": [
+          "log4j2.configurationPassword"
+        ],
+        "passwordDecryptor": [
+          "log4j2.configurationPasswordDecryptor"
+        ],
+        "username": [
+          "log4j2.configurationUsername"
+        ]
+      }
+    },
+    "configuration": {
+      "allowedProtocols": [
+        "log4j2.configurationAllowedProtocols"
+      ],
+      "clock": [
+        "log4j2.clock"
+      ],
+      "factory": [
+        "log4j2.configurationFactory"
+      ],
+      "level": [
+        "log4j2.level"
+      ],
+      "location": [
+        "log4j2.configurationFile"
+      ],
+      "mergeStrategy": [
+        "log4j2.mergeStrategy"
+      ]
+    },
+    "gc": {
+      "enableDirectEncoders": [
+        "log4j2.enableDirectEncoders"
+      ],
+      "initialReusableMessageSize": [
+        "log4j2.initialReusableMsgSize"
+      ],
+      "layoutStringBuilderMaxSize": [
+        "log4j2.layoutStringBuilderMaxSize"
+      ],
+      "maxReusableMessageSize": [
+        "log4j2.maxReusableMsgSize"
+      ]
+    },
+    "loader": {
+      "ignoreTccl": [
+        "log4j2.ignoreTCL"
+      ]
+    },
+    "logEvent": {
+      "contextData": {
+        "injector": [
+          "log4j2.contextDataInjector"
+        ],
+        "type": []
+      },
+      "factory": [
+        "log4j2.logEventFactory"
+      ]
+    },
+    "loggerContext": {
+      "factory": [
+        "log4j2.loggerContextFactory"
+      ],
+      "selector": [
+        "log4j2.loggerContextSelector"
+      ],
+      "shutdownCallbackRegistry": [
+        "log4j2.shutdownCallbackRegistry"
+      ],
+      "shutdownHookEnabled": [
+        "log4j2.shutdownHookEnabled"
+      ],
+      "stacktraceOnStart": [
+        "log4j2.loggerContextStacktraceOnStart"
+      ]
+    },
+    "message": {
+      "factory": [
+        "log4j2.messageFactory"
+      ]
+    },
+    "statusLogger": {
+      "level": [
+        "log4j2.defaultStatusLevel",
+        "log4j2.statusLoggerLevel"
+      ]
+    },
+    "threadContext": {
+      "map": {
+        "garbageFree": [
+          "log4j2.garbagefreeThreadContextMap"
+        ],
+        "type": [
+          "log4j2.threadContextMap"
+        ]
+      }
+    },
+    "transportSecurity": {
+      "keyStore": {
+        "keyManagerFactory": {
+          "algorithm": [
+            "log4j2.keyStoreKeyManagerFactoryAlgorithm"
+          ]
+        },
+        "location": [
+          "log4j2.keyStoreLocation"
+        ],
+        "password": [
+          "log4j2.keyStorePassword"
+        ],
+        "passwordFile": [
+          "log4j2.keyStorePasswordFile"
+        ],
+        "passwordEnvVar": [
+          "log4j2.keyStorePasswordEnvironmentVariable"
+        ],
+        "type": [
+          "log4j2.keyStoreType"
+        ]
+      },
+      "trustStore": {
+        "keyManagerFactory": {
+          "algorithm": [
+            "log4j2.trustStoreKeyManagerFactoryAlgorithm"
+          ]
+        },
+        "location": [
+          "log4j2.trustStoreLocation"
+        ],
+        "password": [
+          "log4j2.trustStorePassword"
+        ],
+        "passwordFile": [
+          "log4j2.trustStorePasswordFile"
+        ],
+        "passwordEnvVar": [
+          "log4j2.trustStorePasswordEnvironmentVariable"
+        ],
+        "type": [
+          "log4j2.trustStoreType"
+        ]
+      },
+      "verifyHostName": [
+        "log4j2.sslVerifyHostName"
+      ]
+    },
+    "uuid": {
+      "sequence": [
+        "log4j2.uuidSequence"
+      ]
+    }
+  }
+}

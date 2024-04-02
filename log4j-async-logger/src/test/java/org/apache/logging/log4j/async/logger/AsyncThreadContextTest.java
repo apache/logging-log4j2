@@ -87,7 +87,7 @@ public class AsyncThreadContextTest {
 
         void init() {
             final String PACKAGE = "org.apache.logging.log4j.spi.";
-            TestConstants.setSystemProperty(TestConstants.THREAD_CONTEXT_MAP_CLASS, PACKAGE + implClassSimpleName());
+            TestConstants.setSystemProperty(TestConstants.THREAD_CONTEXT_MAP_TYPE, PACKAGE + implClassSimpleName());
             ThreadContextTestAccess.init();
         }
 

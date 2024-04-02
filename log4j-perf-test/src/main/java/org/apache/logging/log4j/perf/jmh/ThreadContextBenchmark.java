@@ -105,7 +105,7 @@ public class ThreadContextBenchmark {
     @Setup
     public void setup() {
         System.setProperty(
-                TestConstants.THREAD_CONTEXT_MAP_CLASS,
+                TestConstants.THREAD_CONTEXT_MAP_TYPE,
                 IMPLEMENTATIONS.get(threadContextMapAlias).getName());
         ThreadContextBenchmarkAccess.init();
 
@@ -141,7 +141,7 @@ public class ThreadContextBenchmark {
 
     @TearDown
     public void tearDown() {
-        System.clearProperty(TestConstants.THREAD_CONTEXT_MAP_CLASS);
+        System.clearProperty(TestConstants.THREAD_CONTEXT_MAP_TYPE);
         ThreadContextBenchmarkAccess.init();
     }
 

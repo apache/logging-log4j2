@@ -36,6 +36,7 @@ public class CopyOnWriteOpenHashMapThreadContextMap extends CopyOnWriteSortedArr
 
     private final int initialCapacity = PropertyEnvironment.getGlobal()
             .getProperty(ThreadContextProperties.class)
+            .map()
             .initialCapacity();
 
     @Override

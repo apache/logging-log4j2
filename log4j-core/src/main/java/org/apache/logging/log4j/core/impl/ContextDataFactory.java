@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.CoreProperties.LogEventProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -45,8 +46,9 @@ import org.apache.logging.log4j.util.StringMap;
  */
 public class ContextDataFactory {
     private static final Class<? extends StringMap> CACHED_CLASS = PropertyEnvironment.getGlobal()
-            .getProperty(CoreProperties.ThreadContextProperties.class)
-            .contextData();
+            .getProperty(LogEventProperties.class)
+            .contextData()
+            .type();
 
     /**
      * In LOG4J2-2649 (https://issues.apache.org/jira/browse/LOG4J2-2649),

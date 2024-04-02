@@ -30,12 +30,15 @@ public interface AuthorizationProvider {
     void addAuthorization(URLConnection urlConnection);
 
     static AuthorizationProvider getAuthorizationProvider(final AuthenticationProperties props) {
-        if (props.type() != null) {
+        if (props.provider() != null) {
             try {
-                return LoaderUtil.newInstanceOf(props.type());
+                return LoaderUtil.newInstanceOf(props.provider());
             } catch (final ReflectiveOperationException | LinkageError e) {
                 StatusLogger.getLogger()
-                        .warn("Unable to create {}, using default", props.type().getName(), e);
+                        .warn(
+                                "Unable to create {}, using default",
+                                props.provider().getName(),
+                                e);
             }
         }
         return new BasicAuthorizationProvider(props.basic());

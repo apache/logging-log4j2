@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.CoreProperties.LogEventProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
@@ -66,11 +67,12 @@ public class ContextDataInjectorFactory {
      */
     public static ContextDataInjector createInjector() {
         try {
-            final Class<? extends ContextDataInjector> injectorClass = PropertyEnvironment.getGlobal()
-                    .getProperty(CoreProperties.ThreadContextProperties.class)
-                    .contextDataInjector();
-            if (injectorClass != null) {
-                return LoaderUtil.newInstanceOf(injectorClass);
+            final Class<? extends ContextDataInjector> injector = PropertyEnvironment.getGlobal()
+                    .getProperty(LogEventProperties.class)
+                    .contextData()
+                    .injector();
+            if (injector != null) {
+                return LoaderUtil.newInstanceOf(injector);
             }
         } catch (final ReflectiveOperationException e) {
             StatusLogger.getLogger().warn("Could not create ContextDataInjector: {}", e.getMessage(), e);

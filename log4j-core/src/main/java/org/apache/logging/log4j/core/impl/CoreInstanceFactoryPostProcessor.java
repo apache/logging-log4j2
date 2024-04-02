@@ -31,7 +31,6 @@ import org.apache.logging.log4j.core.impl.CoreProperties.LogEventProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.LoggerContextProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.MessageProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.StatusLoggerProperties;
-import org.apache.logging.log4j.core.impl.CoreProperties.ThreadContextProperties;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
@@ -71,14 +70,11 @@ public class CoreInstanceFactoryPostProcessor implements ConfigurableInstanceFac
             final ConfigurableInstanceFactory factory, final PropertyEnvironment env) {
         final LogEventProperties logEvent = env.getProperty(LogEventProperties.class);
         registerIfPresent(factory, LogEventFactory.class, logEvent.factory());
+        registerIfPresent(
+                factory, ContextDataInjector.class, logEvent.contextData().injector());
 
         final StatusLoggerProperties statusLogger = env.getProperty(StatusLoggerProperties.class);
-        if (statusLogger.defaultStatusLevel() != null) {
-            factory.registerBinding(Constants.DEFAULT_STATUS_LEVEL_KEY, statusLogger::defaultStatusLevel);
-        }
-
-        final ThreadContextProperties threadContext = env.getProperty(ThreadContextProperties.class);
-        registerIfPresent(factory, ContextDataInjector.class, threadContext.contextDataInjector());
+        factory.registerBinding(Constants.STATUS_LOGGER_LEVEL_KEY, statusLogger::level);
     }
 
     private void registerGlobalServices(final ConfigurableInstanceFactory factory, final PropertyEnvironment env) {
@@ -90,10 +86,10 @@ public class CoreInstanceFactoryPostProcessor implements ConfigurableInstanceFac
     private void registerLoggerContextSevices(
             final ConfigurableInstanceFactory factory, final PropertyEnvironment env) {
         final AuthenticationProperties auth = env.getProperty(AuthenticationProperties.class);
-        registerIfPresent(factory, AuthorizationProvider.class, auth.type());
+        registerIfPresent(factory, AuthorizationProvider.class, auth.provider());
 
         final ConfigurationProperties configuration = env.getProperty(ConfigurationProperties.class);
-        registerIfPresent(factory, ConfigurationFactory.class, configuration.configurationFactory());
+        registerIfPresent(factory, ConfigurationFactory.class, configuration.factory());
         registerIfPresent(factory, MergeStrategy.class, configuration.mergeStrategy());
 
         final MessageProperties message = env.getProperty(MessageProperties.class);

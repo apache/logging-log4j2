@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
  * Tests the ContextDataFactory class.
  */
 @SetTestProperty(
-        key = TestConstants.THREAD_CONTEXT_CONTEXT_DATA,
+        key = TestConstants.LOG_EVENT_CONTEXT_DATA_TYPE,
         value = "org.apache.logging.log4j.core.impl.FactoryTestStringMapWithoutIntConstructor")
 public class ContextDataFactoryPropertySetMissingConstructorTest {
 

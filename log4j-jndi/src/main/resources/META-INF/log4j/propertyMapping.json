@@ -1,0 +1,16 @@
+{
+  "jndi": {
+    "enableContextSelector": [
+      "log4j2.enableJndiContextSelector"
+    ],
+    "enableJdbc": [
+      "log4j2.enableJndiJdbc"
+    ],
+    "enableJms": [
+      "log4j2.enableJndiJms"
+    ],
+    "enableLookup": [
+      "log4j2.enableJndiLookup"
+    ]
+  }
+}

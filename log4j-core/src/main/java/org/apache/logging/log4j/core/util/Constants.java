@@ -31,12 +31,12 @@ public final class Constants {
 
     private static final PropertyEnvironment ENV = PropertyEnvironment.getGlobal();
 
-    public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = Key.builder(Level.class)
+    public static final Key<Level> STATUS_LOGGER_LEVEL_KEY = Key.builder(Level.class)
             .setName("StatusLogger")
             .setQualifierType(Named.class)
             .get();
 
-    public static final Key<Logger> DEFAULT_STATUS_LOGGER_KEY = Key.builder(Logger.class)
+    public static final Key<Logger> STATUS_LOGGER_KEY = Key.builder(Logger.class)
             .setName("StatusLogger")
             .setQualifierType(Named.class)
             .get();

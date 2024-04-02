@@ -58,12 +58,12 @@ public final class CoreProperties {
     }
 
     /**
-     * @param type The {@link AuthorizationProvider} to use for HTTP requests or {@code null}.
+     * @param provider The {@link AuthorizationProvider} to use for HTTP requests or {@code null}.
      * @param basic Authentication data for HTTP Basic authentication.
      */
     @Log4jProperty(name = "auth")
     public record AuthenticationProperties(
-            @Nullable Class<? extends AuthorizationProvider> type, BasicAuthenticationProperties basic) {}
+            @Nullable Class<? extends AuthorizationProvider> provider, BasicAuthenticationProperties basic) {}
 
     /**
      * Configuration properties for HTTP Basic authentication.
@@ -78,6 +78,7 @@ public final class CoreProperties {
     /**
      * Properties related to the retrieval of a configuration.
      *
+     * @param allowedProtocols The protocols allowed for the configuration location.
      * @param clock A custom {@link Clock} implementation to use to timestamp log events. The supported values are:
      *              <ul>
      *                  <li>{@code SystemMillisClock}</li>
@@ -85,19 +86,20 @@ public final class CoreProperties {
      *                  <li>{@code CoarseCachedClock}</li>
      *              </ul>
      *              <p>If {@code null}, the system clock will be used.</p>
-     * @param configurationFactory The {@link ConfigurationFactory} to use or {@code  null} for the default one.
-     * @param level The default level to use for the root logger.
+     * @param factory The {@link ConfigurationFactory} to use or {@code  null} for the default one.
+     * @param level The default level of the root logger.
      * @param location The location (file path or {@link URI}) of the configuration file. If {@code null} a standard set
      *             of locations is used.
      * @param mergeStrategy The {@link MergeStrategy} to use if multiple configuration files are present.
      * @param reliabilityStrategy The {@link ReliabilityStrategy} to use during the reconfiguration process.
+     * @param usePreciseClock If {@code true} a clock with nanosecond precision will be used whenever available.
      * @param waitMillisBeforeStopOldConfig The number of milliseconds to wait for the old configuration to stop.
      */
     @Log4jProperty(name = "configuration")
     public record ConfigurationProperties(
             @Log4jProperty(defaultValue = "file,https,jar") String allowedProtocols,
             @Nullable String clock,
-            @Nullable Class<? extends ConfigurationFactory> configurationFactory,
+            @Nullable Class<? extends ConfigurationFactory> factory,
             @Log4jProperty(defaultValue = "ERROR") Level level,
             @Nullable String location,
             @Nullable Class<? extends MergeStrategy> mergeStrategy,
@@ -124,32 +126,49 @@ public final class CoreProperties {
             @Log4jProperty(defaultValue = "2048") int layoutStringBuilderMaxSize) {}
 
     /**
+     * @param algorithm The {@link javax.net.ssl.KeyManagerFactory} algorithm.
+     */
+    public record KeyManagerFactoryProperties(@Nullable String algorithm) {}
+
+    /**
      * A container for keystore configuration data.
      *
+     * @param keyManagerFactory Configuration of the {@link javax.net.ssl.KeyManagerFactory}.
      * @param location The location of the key store.
      * @param password The password as characters.
      * @param passwordEnvVar The environment variable containing the password.
      * @param passwordFile The file containing the password.
      * @param type The type of keystore.
-     * @param keyManagerFactoryAlgorithm The {@link javax.net.ssl.KeyManagerFactory} algorithm.
      */
     public record KeyStoreProperties(
+            KeyManagerFactoryProperties keyManagerFactory,
             @Nullable String location,
             char @Nullable [] password,
             @Nullable String passwordEnvVar,
             @Nullable Path passwordFile,
-            @Nullable String type,
-            @Nullable String keyManagerFactoryAlgorithm) {
+            @Nullable String type) {
         public static KeyStoreProperties defaultValue() {
             return new KeyStoreProperties(null, null, null, null, null, null);
         }
     }
 
     @Log4jProperty(name = "loader")
-    public record LoaderProperties(boolean ignoreTCL) {}
+    public record LoaderProperties(boolean ignoreTccl) {}
 
+    /**
+     * @param contextData Configuration for the context data.
+     * @param factory The {@link LogEventFactory} to use.
+     */
     @Log4jProperty(name = "logEvent")
-    public record LogEventProperties(@Nullable Class<? extends LogEventFactory> factory) {}
+    public record LogEventProperties(
+            ContextDataProperties contextData, @Nullable Class<? extends LogEventFactory> factory) {}
+
+    /**
+     * @param type The {@link StringMap} class to use for context data.
+     * @param injector The {@link ContextDataInjector} to use to retrieve context data.
+     */
+    public record ContextDataProperties(
+            @Nullable Class<? extends StringMap> type, @Nullable Class<? extends ContextDataInjector> injector) {}
 
     @Log4jProperty(name = "loggerContext")
     public record LoggerContextProperties(
@@ -162,19 +181,29 @@ public final class CoreProperties {
     @Log4jProperty(name = "message")
     public record MessageProperties(@Nullable Class<? extends MessageFactory> factory) {}
 
+    /**
+     * @param level The default level of the status logger.
+     */
     @Log4jProperty(name = "statusLogger")
-    public record StatusLoggerProperties(@Log4jProperty(defaultValue = "ERROR") Level defaultStatusLevel) {}
+    public record StatusLoggerProperties(@Log4jProperty(defaultValue = "ERROR") Level level) {}
 
     @Log4jProperty(name = "threadContext")
     public record ThreadContextProperties(
-            @Nullable Class<? extends StringMap> contextData,
-            @Nullable Class<? extends ContextDataInjector> contextDataInjector,
             @Log4jProperty(defaultValue = "true") boolean enable,
-            @Log4jProperty(defaultValue = "true") boolean enableMap,
             @Log4jProperty(defaultValue = "true") boolean enableStack,
+            ThreadContextMapProperties map) {}
+
+    /**
+     * @param enable If {@code false} disables the thread context map,
+     * @param type The fully-qualified class name of a {@link org.apache.logging.log4j.spi.ThreadContextMap}
+     *            implementation or one of the recognized constants.
+     * @see org.apache.logging.log4j.spi.Provider
+     */
+    public record ThreadContextMapProperties(
+            @Log4jProperty(defaultValue = "true") boolean enable,
             boolean garbageFree,
             @Log4jProperty(defaultValue = "16") int initialCapacity,
-            @Nullable String mapClass) {}
+            @Nullable String type) {}
 
     /**
      * Stores the configuration of the default SslConfiguration.

@@ -38,7 +38,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * ConfigurationFactory allows the configuration implementation to be
  * dynamically chosen in 1 of 3 ways:
  * <ol>
- * <li>A system property named "log4j.configurationFactory" can be set with the
+ * <li>A system property named "log4j.configuration.factory" can be set with the
  * name of the ConfigurationFactory to be used.</li>
  * <li>A {@link ConfigurableInstanceFactory} binding for ConfigurationFactory may be registered.</li>
  * <li>

@@ -300,7 +300,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         final List<URIConfigurationFactory> factories = new ArrayList<>();
 
         Optional.of(PropertyEnvironment.getGlobal().getProperty(ConfigurationProperties.class))
-                .flatMap(props -> Optional.ofNullable(props.configurationFactory()))
+                .flatMap(props -> Optional.ofNullable(props.factory()))
                 .map(clazz -> {
                     try {
                         return instanceFactory.getInstance(clazz);

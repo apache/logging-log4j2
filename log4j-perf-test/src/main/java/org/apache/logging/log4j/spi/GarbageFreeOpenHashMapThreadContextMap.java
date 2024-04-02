@@ -39,6 +39,7 @@ public class GarbageFreeOpenHashMapThreadContextMap extends GarbageFreeSortedArr
 
     private final int initialCapacity = PropertyEnvironment.getGlobal()
             .getProperty(ThreadContextProperties.class)
+            .map()
             .initialCapacity();
 
     @Override
