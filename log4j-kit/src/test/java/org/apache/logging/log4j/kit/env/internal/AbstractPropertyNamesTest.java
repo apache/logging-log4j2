@@ -31,7 +31,7 @@ public abstract class AbstractPropertyNamesTest {
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
     protected Stream<String> testPropertyNames() {
-        return Stream.of("Message.factory", "TransportSecurity.keyStore.path");
+        return Stream.of("message.factory", "transportSecurity.keyStore.path");
     }
 
     protected void assertPropertiesAreSet(final String expected, final PropertyEnvironment environment) {

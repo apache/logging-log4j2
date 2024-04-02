@@ -16,20 +16,21 @@
  */
 package org.apache.logging.log4j.kit.env.internal;
 
-import java.util.Collections;
-import org.apache.logging.log4j.kit.env.PropertyEnvironment;
-import org.apache.logging.log4j.kit.env.support.CompositePropertyEnvironment;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class ContextualJavaPropsPropertySourceTest extends AbstractPropertyNamesTest {
+import java.util.List;
+import org.junit.jupiter.api.Test;
+
+class DefaultPropertyMapperParserTest {
+
+    private static final String RESOURCE = "META-INF/log4j/propertyMapping.json";
 
     @Test
-    @SetSystemProperty(key = "log4j.contexts.foo.message.factory", value = "3.x")
-    @SetSystemProperty(key = "log4j.contexts.foo.transportSecurity.keyStore.path", value = "3.x")
-    void properties_3_x_are_recognized() {
-        final PropertyEnvironment environment = new CompositePropertyEnvironment(
-                null, Collections.singleton(new ContextualJavaPropsPropertySource("foo", 0)), LOADER, LOGGER);
-        assertPropertiesAreSet("3.x", environment);
+    void should_parse_property_mapping_from_resource() throws Exception {
+        final PropertyMapping mapping = DefaultPropertyMappingParser.parse(RESOURCE);
+        assertThat(mapping.getLegacyKeys("two.legacy.keys")).isEqualTo(List.of("foo", "bar"));
+        assertThat(mapping.getLegacyKeys("no.legacy.keys")).isEmpty();
+        // this one does not exist in the file
+        assertThat(mapping.getLegacyKeys("non.existent.key")).isEmpty();
     }
 }

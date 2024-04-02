@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.kit.env.internal;
 
+import java.io.IOException;
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.kit.env.support.BasicPropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An adapter of the {@link PropertiesUtil} from Log4j API 2.x.
@@ -32,20 +35,42 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public class PropertiesUtilPropertyEnvironment extends BasicPropertyEnvironment {
 
     private static final String PREFIX = "log4j.";
+    private static final String PROPERTY_MAPPING_RESOURCE = "META-INF/log4j/propertyMapping.json";
     public static final PropertyEnvironment INSTANCE =
             new PropertiesUtilPropertyEnvironment(PropertiesUtil.getProperties(), StatusLogger.getLogger());
 
     private final PropertiesUtil propsUtil;
+    private final PropertyMapping propertyMapping;
 
     public PropertiesUtilPropertyEnvironment(final PropertiesUtil propsUtil, final Logger statusLogger) {
+        this(propsUtil, statusLogger, getPropertyMapping(statusLogger));
+    }
+
+    PropertiesUtilPropertyEnvironment(
+            final PropertiesUtil propsUtil, final Logger statusLogger, final PropertyMapping propertyMapping) {
         super(statusLogger);
         this.propsUtil = propsUtil;
+        this.propertyMapping = propertyMapping;
+    }
+
+    private static PropertyMapping getPropertyMapping(final Logger statusLogger) {
+        try {
+            return DefaultPropertyMappingParser.parse(PROPERTY_MAPPING_RESOURCE);
+        } catch (final IllegalArgumentException | IOException e) {
+            statusLogger.error("Unable to load legacy property mappings.", e);
+            return PropertyMapping.EMPTY;
+        }
     }
 
     @Override
-    public String getStringProperty(final String name) {
-        // TODO: temporary hack to allow the usage of legacy names like "log4j.configuration"
-        // or "log4j1.compatibility"
-        return propsUtil.getStringProperty(name.startsWith("log4j") ? name : PREFIX + name);
+    public @Nullable String getStringProperty(final String name) {
+        String value = propsUtil.getStringProperty(PREFIX + name);
+        if (value == null) {
+            final List<? extends String> legacyKeys = propertyMapping.getLegacyKeys(name);
+            for (int i = 0; value == null && i < legacyKeys.size(); i++) {
+                value = propsUtil.getStringProperty(legacyKeys.get(i));
+            }
+        }
+        return value;
     }
 }

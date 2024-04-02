@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.kit.env.internal;
 
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.DisabledUntil;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
@@ -42,10 +43,18 @@ class PropertiesUtilPropertyEnvironmentTest extends AbstractPropertyNamesTest {
     }
 
     @Test
-    @SetSystemProperty(key = "log4j.Message.factory", value = "3.x")
-    @SetSystemProperty(key = "log4j.TransportSecurity.keyStore.path", value = "3.x")
+    @SetSystemProperty(key = "log4j.message.factory", value = "3.x")
+    @SetSystemProperty(key = "log4j.transportSecurity.keyStore.path", value = "3.x")
     void properties_3_x_are_recognized() {
         final PropertyEnvironment environment = new PropertiesUtilPropertyEnvironment(PROPERTIES_UTIL, LOGGER);
         assertPropertiesAreSet("3.x", environment);
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j2.fooBar", value = "test")
+    @SetTestProperty(key = "log4j2.baz", value = "test")
+    void legacy_properties_are_recognized() {
+        final PropertyEnvironment environment = new PropertiesUtilPropertyEnvironment(PROPERTIES_UTIL, LOGGER);
+        assertPropertiesAreSet("test", environment);
     }
 }

@@ -1,0 +1,20 @@
+{
+  "message": {
+    "factory": ["log4j2.fooBar"]
+  },
+  "transportSecurity": {
+    "keyStore": {
+      "path": ["log4j2.baz"]
+    }
+  },
+  "no": {
+    "legacy": {
+      "keys": []
+    }
+  },
+  "two": {
+    "legacy": {
+      "keys": ["foo", "bar"]
+    }
+  }
+}
