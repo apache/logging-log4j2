@@ -30,11 +30,14 @@ However, the "category" attribute from Jakarta has become the "logger" attribute
 The Log4j Tag Library requires at least Servlet 2.5 (or Java EE 5), at least JSP 2.1 (or Java EE 5), and is dependent on the Log4j 2 API.
 For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].
 
-[.label.label-important]#Important Note!# For performance reasons, containers often ignore certain JARs known not to contain TLDs and do not scan them for TLD files.
-Importantly, Tomcat 7 <7.0.43 ignores all JAR files named log4j__.jar, which prevents the JSP tag library from being automatically discovered.
+[IMPORTANT]
+====
+For performance reasons, containers often ignore certain JARs known not to contain TLDs and do not scan them for TLD files.
+Importantly, Tomcat 7 <7.0.43 ignores all JAR files named ``log4j\__.jar``, which prevents the JSP tag library from being automatically discovered.
 This does not affect Tomcat 6.x and has been fixed in Tomcat 7.0.43, Tomcat 8, and later.
-In Tomcat 7 <7.0.43 you will need to change `catalina.properties` and remove "log4j__.jar" from the `jarsToSkip` property.
+In Tomcat 7 <7.0.43 you will need to change `catalina.properties` and remove ``log4j__.jar`` from the `jarsToSkip` property.
 You may need to do something similar on other containers if they skip scanning Log4j JAR files.
+====
 
 == Usage
 

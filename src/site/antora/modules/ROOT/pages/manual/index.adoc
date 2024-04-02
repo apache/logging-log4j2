@@ -23,7 +23,7 @@ In conformance with this rule, the E.U. http://www.semper.org[SEMPER]
 project decided to write its own tracing API. This was in early 1996.
 After countless enhancements, several incarnations and much work that
 API has evolved to become log4j, a popular logging package for Java. The
-package is distributed under the link:../LICENSE[Apache Software
+package is distributed under the https://www.apache.org/licenses/LICENSE-2.0[Apache Software
 License], a fully-fledged open source license certified by the
 http://www.opensource.org[open source] initiative. The latest log4j
 version, including full-source code, class files and documentation can

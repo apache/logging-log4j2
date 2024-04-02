@@ -236,7 +236,7 @@ The Log4j xref:log4j-taglib.adoc[Log Tag Library] requires the https://jakarta.a
 
 == log4j-web
 
-The Log4j link:log4j-web.adoc[Web] module requires the Servlet API. Note that this works with the Servlet 2.5 API as well as the Servlet 3.x API.
+The Log4j xref:log4j-web.adoc[Web] module requires the Servlet API. Note that this works with the Servlet 2.5 API as well as the Servlet 3.x API.
 
 == log4j-couchdb
 

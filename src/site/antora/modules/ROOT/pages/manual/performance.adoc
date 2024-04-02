@@ -77,13 +77,9 @@ little: to do X amount of work it always takes X amount of time. The
 serviced. _As the workload increases, wait time often grows to many
 times the service time._
 
-[[responseTimeVsServiceTime]]
+[#responseTimeVsServiceTime]
+=== Why Care About Response Time Latency?
 
-.Why Care About Response Time Latency?
-****
-[width="100%",cols="50%,50%"]
-|===
-a|
 What is often measured and reported as _latency_ is actually _service
 time_, and omits that a service time spike adds wait time for many
 subsequent events. This may present results that are more optimistic
@@ -105,10 +101,7 @@ To learn more, watch Gil Tene's eye-opening presentation
 http://www.infoq.com/presentations/latency-response-time[How NOT to
 measure latency].
 
-
-|link:images/ResponseTimeVsServiceTimeAsyncLoggers.png[image:ResponseTimeVsServiceTimeAsyncLoggers.png[image,width=480,height=288]]
-|===
-****
+image:ResponseTimeVsServiceTimeAsyncLoggers.png[image,width=480,height=288]
 
 [#loglibComparison]
 == Logging Library Performance Comparison
