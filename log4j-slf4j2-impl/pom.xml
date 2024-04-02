@@ -29,6 +29,20 @@
   <name>Apache Log4j SLF4J 2.0 Binding</name>
   <description>The Apache Log4j SLF4J 2.0 API binding to Log4j 2 Core</description>
 
+  <properties>
+    <slf4j2.version>2.0.9</slf4j2.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j2.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>

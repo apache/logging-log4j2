@@ -36,7 +36,6 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -224,14 +223,17 @@ public final class TypeConverters {
     }
 
     /**
-     * Converts a {@link String} into a {@link Duration}.
+     * Converts a {@link String} into a {@link org.apache.logging.log4j.core.appender.rolling.action.Duration}.
      * @since 2.5
+     * @deprecated since 2.24.0. A {@link java.time.Duration} converter will be available in 3.0.0.
      */
     @Plugin(name = "Duration", category = CATEGORY)
-    public static class DurationConverter implements TypeConverter<Duration> {
+    @Deprecated
+    public static class DurationConverter
+            implements TypeConverter<org.apache.logging.log4j.core.appender.rolling.action.Duration> {
         @Override
-        public Duration convert(final String s) {
-            return Duration.parse(s);
+        public org.apache.logging.log4j.core.appender.rolling.action.Duration convert(final String s) {
+            return org.apache.logging.log4j.core.appender.rolling.action.Duration.parse(s);
         }
     }
 

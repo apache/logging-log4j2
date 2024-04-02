@@ -42,33 +42,31 @@
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
-    <!-- Override of the parent POM version -->
-    <mongodb.version>3.12.11</mongodb.version>
+    <!-- Dependency versions -->
+    <mongodb3.version>3.12.14</mongodb3.version>
   </properties>
 
-  <!-- Use explicit versions as a temporary workaround to a Coursier/Ivy bug:
-    https://github.com/apache/logging-log4j2/issues/2065 -->
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>bson</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb3.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-core</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb3.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-legacy</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb3.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-sync</artifactId>
-        <version>${mongodb.version}</version>
+        <version>${mongodb3.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -162,11 +160,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit-jupiter.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>${slf4j.version}</version>
           </dependency>
         </dependencies>
       </plugin>

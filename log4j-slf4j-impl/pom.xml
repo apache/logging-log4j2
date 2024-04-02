@@ -27,18 +27,17 @@
   <packaging>jar</packaging>
   <name>Apache Log4j SLF4J Binding</name>
   <description>The Apache Log4j SLF4J API binding to Log4j 2 Core</description>
+
   <properties>
-    <slf4j.version>1.7.36</slf4j.version>
+    <slf4j1.version>1.7.36</slf4j1.version>
   </properties>
 
-  <!-- Use explicit versions as a temporary workaround to a Coursier/Ivy bug:
-    https://github.com/apache/logging-log4j2/issues/2065 -->
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
+        <version>${slf4j1.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
