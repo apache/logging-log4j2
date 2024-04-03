@@ -5,5 +5,5 @@
        type="updated">
   <issue id="kotlin-71" link="https://github.com/apache/logging-log4j-kotlin/issues/71"/>
   <issue id="2214" link="https://github.com/apache/logging-log4j2/discussions/2214"/>
-  <description format="asciidoc">Add ScopedContext to log4j-api and ScopedContextDataProvider in log4j-core.</description>
+  <description format="asciidoc">Add ScopedContext to log4j-api and ScopedContextDataProvider in log4j-core. Moved ContextDataProvider to log4j-api to allow custom data providers to be included in lookups.</description>
 </entry>
