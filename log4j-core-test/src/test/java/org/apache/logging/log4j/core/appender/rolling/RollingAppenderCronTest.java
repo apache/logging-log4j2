@@ -74,11 +74,6 @@ class RollingAppenderCronTest extends AbstractRollingListenerTest {
         Files.deleteIfExists(CONFIG);
     }
 
-    @AfterAll
-    static void cleanUp() throws Exception {
-        Files.deleteIfExists(CONFIG);
-    }
-
     @Test
     @LoggerContextSource(timeout = 10)
     public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager)
