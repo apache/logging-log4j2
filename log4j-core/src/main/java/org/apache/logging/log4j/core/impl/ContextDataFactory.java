@@ -32,11 +32,10 @@ import org.apache.logging.log4j.util.StringMap;
  * context data}. When context data is {@linkplain ContextDataInjector injected} into the log event, these StringMap
  * instances may be either populated with key-value pairs from the context, or completely replaced altogether.
  * <p>
- * By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
- * {@link CoreProperties.ThreadContextProperties#contextData()}
- * to the fully qualified class name of a class implementing the {@code StringMap}
- * interface. The class must have a public default constructor, and if possible should also have a public constructor
- * that takes a single {@code int} argument for the initial capacity.
+ *     By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
+ *     {@code "log4j.logEvent.contextData.type"} to the fully qualified class name of a class implementing the {@code
+ *     StringMap} interface. The class must have a public default constructor, and if possible should also have a
+ *     public constructor that takes a single {@code int} argument for the initial capacity.
  * </p>
  *
  * @see LogEvent#getContextData()
@@ -44,22 +43,22 @@ import org.apache.logging.log4j.util.StringMap;
  * @see SortedArrayStringMap
  * @since 2.7
  */
-public class ContextDataFactory {
+public final class ContextDataFactory {
     private static final Class<? extends StringMap> CACHED_CLASS = PropertyEnvironment.getGlobal()
             .getProperty(LogEventProperties.class)
             .contextData()
             .type();
 
     /**
-     * In LOG4J2-2649 (https://issues.apache.org/jira/browse/LOG4J2-2649),
-     * the reporter said some reason about using graalvm to static compile.
-     * In graalvm doc (https://github.com/oracle/graal/blob/master/substratevm/LIMITATIONS.md),
-     * graalvm is not support MethodHandle now, so the Constructor need not to return MethodHandle.
+     * Due to GraalVM limitations this can not be a {@link java.lang.invoke.MethodHandle}.
+     * <p>
+     *     See <a href="https://issues.apache.org/jira/browse/LOG4J2-2649">LOG4J2-2649</a>.
+     * </p>
      */
-    private static final Constructor<? extends StringMap> DEFAULT_CONSTRUCTOR = createDefaultConstructor(CACHED_CLASS);
+    private static final Constructor<? extends StringMap> DEFAULT_CONSTRUCTOR = createDefaultConstructor();
 
     private static final Constructor<? extends StringMap> INITIAL_CAPACITY_CONSTRUCTOR =
-            createInitialCapacityConstructor(CACHED_CLASS);
+            createInitialCapacityConstructor();
 
     private static final StringMap EMPTY_STRING_MAP = createContextData(0);
 
@@ -67,25 +66,25 @@ public class ContextDataFactory {
         EMPTY_STRING_MAP.freeze();
     }
 
-    private static Constructor<? extends StringMap> createDefaultConstructor(
-            final Class<? extends StringMap> cachedClass) {
-        if (cachedClass == null) {
+    private ContextDataFactory() {}
+
+    private static Constructor<? extends StringMap> createDefaultConstructor() {
+        if (CACHED_CLASS == null) {
             return null;
         }
         try {
-            return cachedClass.getConstructor();
+            return CACHED_CLASS.getConstructor();
         } catch (final NoSuchMethodException | IllegalAccessError ignored) {
             return null;
         }
     }
 
-    private static Constructor<? extends StringMap> createInitialCapacityConstructor(
-            final Class<? extends StringMap> cachedClass) {
-        if (cachedClass == null) {
+    private static Constructor<? extends StringMap> createInitialCapacityConstructor() {
+        if (CACHED_CLASS == null) {
             return null;
         }
         try {
-            return cachedClass.getConstructor(int.class);
+            return CACHED_CLASS.getConstructor(int.class);
         } catch (final NoSuchMethodException | IllegalAccessError ignored) {
             return null;
         }
