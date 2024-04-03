@@ -103,7 +103,9 @@ public final class TestConstants {
 
     public static final String VERSION1_CONFIGURATION = "log4j.configuration";
 
-    public static final String VERSION1_COMPATIBILITY = "log4j1.compatibility";
+    public static final String VERSION1_COMPATIBILITY = "log4j.v1.compatibility";
+
+    public static final String VERSION1_MONITOR_INTERVAL = "log4j.v1.monitorInterval";
 
     private static final String THREAD_CONTEXT = "log4j.threadContext.";
 

@@ -26,6 +26,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.impl.CoreProperties;
 import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -86,9 +87,9 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 }
                 return getConfiguration(null, loggerContext, configLocationStr, configurationFactories);
             } else {
-                // TODO: replace with CoreProperties.Version1Properties.class
-                final String log4j1ConfigStr =
-                        substitutor.replace(environment.getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY));
+                final String log4j1ConfigStr = substitutor.replace(environment
+                        .getProperty(CoreProperties.Version1Properties.class)
+                        .configuration());
                 if (log4j1ConfigStr != null) {
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr, configurationFactories);
                 }

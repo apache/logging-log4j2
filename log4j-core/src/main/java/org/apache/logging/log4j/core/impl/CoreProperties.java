@@ -232,6 +232,18 @@ public final class CoreProperties {
     @Log4jProperty(name = "uuid")
     public record UuidProperties(long sequence) {}
 
+    /**
+     * Configuration properties for the Log4j 1.x bridge.
+     * <p>
+     *     This property class is in Log4j Core instead of Log4j 1.2 API, because it is used by the
+     *     {@link org.apache.logging.log4j.core.config.DefaultConfigurationFactory} to detect if
+     *     {@code "log4j.configuration"} was set.
+     * </p>
+     * @param compatibility If {@code true}, the automatic configuration process will scan for version 1.x
+     *                      configuration files.
+     * @param configuration The location of a 1.x configuration file.
+     * @param monitorInterval The interval in seconds to scan for updates in a 1.x configuration file.
+     */
     @Log4jProperty(name = "v1")
-    public record Version1Properties(String configuration, boolean compatibility) {}
+    public record Version1Properties(boolean compatibility, @Nullable String configuration, int monitorInterval) {}
 }

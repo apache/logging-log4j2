@@ -16,12 +16,12 @@
  */
 package org.apache.log4j.config;
 
-import static org.apache.logging.log4j.core.config.ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.RestoreSystemProperties;
@@ -38,7 +38,7 @@ class PropertiesRollingWithPropertiesTest {
     @RestoreSystemProperties
     void testProperties() {
         System.setProperty("test.directory", loggingPath.toString());
-        System.setProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY, "log4j1-rolling-properties.properties");
+        System.setProperty(TestConstants.VERSION1_CONFIGURATION, "log4j1-rolling-properties.properties");
 
         try (final LoggerContext context = LoggerContext.getContext(false)) {
             final Logger logger = context.getLogger("test");

@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.config;
 
+import static org.apache.logging.log4j.core.test.TestConstants.VERSION1_MONITOR_INTERVAL;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -49,7 +50,7 @@ public class XmlReconfigurationTest {
 
     @Test
     public void testReconfiguration() throws Exception {
-        System.setProperty(Log4j1Configuration.MONITOR_INTERVAL, "1");
+        System.setProperty(VERSION1_MONITOR_INTERVAL, "1");
         final File file = new File(CONFIG);
         assertNotNull(file, "No Config file");
         final long configMillis = file.lastModified();

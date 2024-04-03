@@ -16,12 +16,12 @@
  */
 package org.apache.log4j.xml;
 
-import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
+import org.apache.logging.log4j.core.impl.CoreProperties.Version1Properties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -49,12 +49,11 @@ public class XmlConfigurationFactory extends ConfigurationFactory {
     private final boolean enabled;
 
     public XmlConfigurationFactory() {
-        this(PropertyEnvironment.getGlobal());
+        this(PropertyEnvironment.getGlobal().getProperty(Version1Properties.class));
     }
 
-    private XmlConfigurationFactory(final PropertyEnvironment props) {
-        this.enabled = props.getBooleanProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY)
-                || props.getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY) != null;
+    private XmlConfigurationFactory(final Version1Properties properties) {
+        this.enabled = properties.compatibility() || properties.configuration() != null;
     }
 
     @Override
@@ -64,7 +63,10 @@ public class XmlConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        final int interval = loggerContext.getEnvironment().getIntegerProperty(Log4j1Configuration.MONITOR_INTERVAL, 0);
+        final int interval = loggerContext
+                .getEnvironment()
+                .getProperty(Version1Properties.class)
+                .monitorInterval();
         return new XmlConfiguration(loggerContext, source, interval);
     }
 

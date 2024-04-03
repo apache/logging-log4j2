@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationProperties;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.kit.env.Log4jProperty;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.kit.env.internal.PropertiesUtilPropertyEnvironment;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -54,20 +53,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * last if no configuration has been returned.
  */
 public abstract class ConfigurationFactory extends ConfigurationBuilderFactory implements URIConfigurationFactory {
-
-    /**
-     * If Log4j 1.2 Bridge is present on the classpath, this property will be interpreted as the location of a Log4j 1.x
-     * configuration file.
-     */
-    @Log4jProperty
-    public static final String LOG4J1_CONFIGURATION_FILE_PROPERTY = "log4j.configuration";
-
-    /**
-     * If Log4j 1.2 Bridge is present on the classpath, setting this property to {@code true} will enable the legacy
-     * Log4j 1.x configuration process.
-     */
-    @Log4jProperty
-    public static final String LOG4J1_EXPERIMENTAL = "log4j1.compatibility";
 
     /**
      * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.plugins.Plugin}

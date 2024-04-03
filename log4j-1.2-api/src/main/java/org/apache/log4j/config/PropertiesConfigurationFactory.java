@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
+import org.apache.logging.log4j.core.impl.CoreProperties.Version1Properties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -48,12 +49,11 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     private final boolean enabled;
 
     public PropertiesConfigurationFactory() {
-        this(PropertyEnvironment.getGlobal());
+        this(PropertyEnvironment.getGlobal().getProperty(Version1Properties.class));
     }
 
-    private PropertiesConfigurationFactory(final PropertyEnvironment props) {
-        this.enabled = props.getBooleanProperty(LOG4J1_EXPERIMENTAL)
-                || props.getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY) != null;
+    private PropertiesConfigurationFactory(final Version1Properties properties) {
+        this.enabled = properties.compatibility() || properties.configuration() != null;
     }
 
     @Override
@@ -63,7 +63,10 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        final int interval = loggerContext.getEnvironment().getIntegerProperty(Log4j1Configuration.MONITOR_INTERVAL, 0);
+        final int interval = loggerContext
+                .getEnvironment()
+                .getProperty(Version1Properties.class)
+                .monitorInterval();
         return new PropertiesConfiguration(loggerContext, source, interval);
     }
 

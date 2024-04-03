@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.config;
 
+import static org.apache.logging.log4j.core.test.TestConstants.VERSION1_MONITOR_INTERVAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -200,7 +201,7 @@ public class PropertiesReconfigurationTest {
     @Test
     @Tag("sleepy")
     public void testTestListener() throws Exception {
-        System.setProperty(Log4j1Configuration.MONITOR_INTERVAL, "1");
+        System.setProperty(VERSION1_MONITOR_INTERVAL, "1");
         final File file = new File(CONFIG_FILE_APPENDER_1);
         assertTrue(file.exists(), "No Config file");
         final long configMillis = file.lastModified();

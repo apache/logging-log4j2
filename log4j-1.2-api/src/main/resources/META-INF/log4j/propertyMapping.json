@@ -1,0 +1,13 @@
+{
+  "v1": {
+    "compatibility": [
+      "log4j1.compatibility"
+    ],
+    "configuration": [
+      "log4j.configuration"
+    ],
+    "monitorInterval": [
+      "log4j1.monitorInterval"
+    ]
+  }
+}
