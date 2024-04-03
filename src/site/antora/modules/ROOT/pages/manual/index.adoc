@@ -69,7 +69,7 @@ simple to understand and to use.
 
 == Log4j 2
 
-Log4j 1.x has been widely adopted and used in many applications.
+Log4j 1 has been widely adopted and used in many applications.
 However, through the years development on it has slowed down. It has
 become more difficult to maintain due to its need to be compliant with
 very old versions of Java and became

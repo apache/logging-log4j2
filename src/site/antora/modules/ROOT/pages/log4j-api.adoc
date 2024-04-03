@@ -14,7 +14,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 API
+= Log4j API
 
 The Log4j 2 API provides the interface that applications should code to and provides the adapter components required for implementers to create a logging implementation.
 

@@ -14,7 +14,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 JDK Platform Logging Adapter
+= Log4j JDK Platform Logging Adapter
 
 The Log4j 2 JDK Logging Adapter allow to route all System.Logger events to Log4j 2 APIs.
 

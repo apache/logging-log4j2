@@ -14,7 +14,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 SLF4J Binding
+= Log4j SLF4J Binding
 
 The Log4j 2 SLF4J Binding allows applications coded to the SLF4J API to use Log4j 2 as the implementation.
 
