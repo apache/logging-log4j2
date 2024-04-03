@@ -21,7 +21,7 @@
  * {@link org.apache.logging.log4j.core.lookup.StrLookup#CATEGORY Lookup}.
  */
 @Export
-@Version("2.20.1")
+@Version("2.24.0")
 package org.apache.logging.log4j.core.lookup;
 
 import org.osgi.annotation.bundle.Export;

@@ -14,37 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.spi;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.ScopedContext;
-import org.apache.logging.log4j.core.util.ContextDataProvider;
-import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.ThreadContext;
 
 /**
- * ContextDataProvider for {@code Map<String, String>} data.
+ * ContextDataProvider for ThreadContext data.
  */
 @ServiceProvider(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL)
-public class ScopedContextDataProvider implements ContextDataProvider {
+public class ThreadContextDataProvider implements ContextDataProvider {
 
     @Override
-    public Map<String, String> supplyContextData() {
-        Map<String, ScopedContext.Renderable> contextMap = ScopedContext.getContextMap();
-        if (!contextMap.isEmpty()) {
-            Map<String, String> map = new HashMap<>();
-            contextMap.forEach((key, value) -> map.put(key, value.render()));
-            return map;
-        } else {
-            return Collections.emptyMap();
-        }
+    public String get(String key) {
+        return ThreadContext.get(key);
     }
 
     @Override
-    public StringMap supplyStringMap() {
-        return new JdkMapAdapterStringMap(supplyContextData());
+    public Map<String, String> supplyContextData() {
+        return ThreadContext.getImmutableContext();
+    }
+
+    @Override
+    public int size() {
+        return ThreadContext.getContext().size();
+    }
+
+    @Override
+    public void addAll(Map<String, String> map) {
+        map.putAll(ThreadContext.getContext());
     }
 }

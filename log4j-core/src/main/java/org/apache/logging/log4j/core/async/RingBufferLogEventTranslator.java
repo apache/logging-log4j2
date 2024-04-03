@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import com.lmax.disruptor.EventTranslator;
+import org.apache.logging.log4j.ContextData;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -57,6 +58,13 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
     public void translateTo(final RingBufferLogEvent event, final long sequence) {
         try {
             final ReadOnlyStringMap contextData = event.getContextData();
+            if (contextData != null) {
+                if (INJECTOR == null) {
+                    ContextData.addAll((StringMap) contextData);
+                } else {
+                    INJECTOR.injectContextData(null, (StringMap) contextData);
+                }
+            }
             event.setValues(
                     asyncLogger,
                     loggerName,
@@ -67,7 +75,7 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
                     thrown,
                     // config properties are taken care of in the EventHandler thread
                     // in the AsyncLogger#actualAsyncLog method
-                    INJECTOR.injectContextData(null, contextData instanceof StringMap ? (StringMap) contextData : null),
+                    null,
                     contextStack,
                     threadId,
                     threadName,

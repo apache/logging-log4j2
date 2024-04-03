@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.internal.ScopedContextAnchor;
+import org.apache.logging.log4j.spi.ScopedContextDataProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -59,7 +59,7 @@ public class ScopedContext {
      * @return the Map of Renderable objects.
      */
     public static Map<String, Renderable> getContextMap() {
-        Optional<Instance> context = ScopedContextAnchor.getContext();
+        Optional<Instance> context = ScopedContextDataProvider.getContext();
         if (context.isPresent()
                 && context.get().contextMap != null
                 && !context.get().contextMap.isEmpty()) {
@@ -69,13 +69,23 @@ public class ScopedContext {
     }
 
     /**
-     * Return the key from the current ScopedContext, if there is one and the key exists.
+     * @hidden
+     * Returns the number of entries in the context map.
+     * @return the number of items in the context map.
+     */
+    public static int size() {
+        Optional<Instance> context = ScopedContextDataProvider.getContext();
+        return context.map(instance -> instance.contextMap.size()).orElse(0);
+    }
+
+    /**
+     * Return the value of the key from the current ScopedContext, if there is one and the key exists.
      * @param key The key.
      * @return The value of the key in the current ScopedContext.
      */
     @SuppressWarnings("unchecked")
     public static <T> T get(String key) {
-        Optional<Instance> context = ScopedContextAnchor.getContext();
+        Optional<Instance> context = ScopedContextDataProvider.getContext();
         if (context.isPresent()) {
             Renderable renderable = context.get().contextMap.get(key);
             if (renderable != null) {
@@ -83,6 +93,36 @@ public class ScopedContext {
             }
         }
         return null;
+    }
+
+    /**
+     * Return String value of the key from the current ScopedContext, if there is one and the key exists.
+     * @param key The key.
+     * @return The value of the key in the current ScopedContext.
+     */
+    public static String getString(String key) {
+        Optional<Instance> context = ScopedContextDataProvider.getContext();
+        if (context.isPresent()) {
+            Renderable renderable = context.get().contextMap.get(key);
+            if (renderable != null) {
+                return renderable.render();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Adds all the String rendered objects in the context map to the provided Map.
+     * @param map The Map to add entries to.
+     */
+    public static void addAll(Map<String, String> map) {
+        Optional<Instance> context = ScopedContextDataProvider.getContext();
+        if (context.isPresent()) {
+            Map<String, Renderable> contextMap = context.get().contextMap;
+            if (contextMap != null && !contextMap.isEmpty()) {
+                contextMap.forEach((key, value) -> map.put(key, value.render()));
+            }
+        }
     }
 
     /**
@@ -316,7 +356,7 @@ public class ScopedContext {
      * @return an Optional containing the active ScopedContext, if there is one.
      */
     private static Optional<Instance> current() {
-        return ScopedContextAnchor.getContext();
+        return ScopedContextDataProvider.getContext();
     }
 
     public static class Instance {
@@ -460,11 +500,11 @@ public class ScopedContext {
             if (contextStack != null) {
                 ThreadContext.setStack(contextStack);
             }
-            ScopedContextAnchor.addScopedContext(scopedContext);
+            ScopedContextDataProvider.addScopedContext(scopedContext);
             try {
                 op.run();
             } finally {
-                ScopedContextAnchor.removeScopedContext();
+                ScopedContextDataProvider.removeScopedContext();
                 ThreadContext.clearAll();
             }
         }
@@ -511,11 +551,11 @@ public class ScopedContext {
             if (contextStack != null) {
                 ThreadContext.setStack(contextStack);
             }
-            ScopedContextAnchor.addScopedContext(scopedContext);
+            ScopedContextDataProvider.addScopedContext(scopedContext);
             try {
                 return op.call();
             } finally {
-                ScopedContextAnchor.removeScopedContext();
+                ScopedContextDataProvider.removeScopedContext();
                 ThreadContext.clearAll();
             }
         }
@@ -523,6 +563,10 @@ public class ScopedContext {
 
     /**
      * Interface for converting Objects stored in the ContextScope to Strings for logging.
+     *
+     * Users implementing this interface are encouraged to make the render method as lightweight as possible,
+     * Typically by creating the String representation of the object during its construction and just returning
+     * the String.
      */
     public static interface Renderable {
         /**

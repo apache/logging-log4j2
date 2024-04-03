@@ -14,17 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.internal;
+package org.apache.logging.log4j.spi;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.apache.logging.log4j.ScopedContext;
 
 /**
- * Anchor for the ScopedContext. This class is private and not for public consumption.
+ * ContextDataProvider for {@code Map<String, String>} data.
+ * @since 2.24.0
  */
-public class ScopedContextAnchor {
+@ServiceProvider(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL)
+public class ScopedContextDataProvider implements ContextDataProvider {
+
     private static final ThreadLocal<Deque<ScopedContext.Instance>> scopedContext = new ThreadLocal<>();
 
     /**
@@ -65,5 +73,32 @@ public class ScopedContextAnchor {
                 scopedContext.remove();
             }
         }
+    }
+
+    @Override
+    public String get(String key) {
+        return ScopedContext.getString(key);
+    }
+
+    @Override
+    public Map<String, String> supplyContextData() {
+        Map<String, ScopedContext.Renderable> contextMap = ScopedContext.getContextMap();
+        if (!contextMap.isEmpty()) {
+            Map<String, String> map = new HashMap<>();
+            contextMap.forEach((key, value) -> map.put(key, value.render()));
+            return map;
+        } else {
+            return Collections.emptyMap();
+        }
+    }
+
+    @Override
+    public int size() {
+        return ScopedContext.size();
+    }
+
+    @Override
+    public void addAll(Map<String, String> map) {
+        ScopedContext.addAll(map);
     }
 }

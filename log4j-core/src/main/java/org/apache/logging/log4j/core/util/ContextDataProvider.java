@@ -22,17 +22,11 @@ import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Source of context data to be added to each log event.
+ * @deprecated Use ContextDataProvider from Log4j API from 2.24.0.
  */
-public interface ContextDataProvider {
+@Deprecated
+public interface ContextDataProvider extends org.apache.logging.log4j.spi.ContextDataProvider {
 
-    /**
-     * Returns a Map containing context data to be injected into the event or null if no context data is to be added.
-     * <p>
-     *     Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
-     *     underlying context data will not be reflected in the returned object.
-     * </p>
-     * @return A Map containing the context data or null.
-     */
     Map<String, String> supplyContextData();
 
     /**
@@ -42,7 +36,9 @@ public interface ContextDataProvider {
      *     underlying context data will not be reflected in the returned object.
      * </p>
      * @return the context data in a StringMap.
+     * @deprecated No longer used since 2.24.0. Will be removed in 3.0.0.
      */
+    @Deprecated
     default StringMap supplyStringMap() {
         return new JdkMapAdapterStringMap(supplyContextData(), true);
     }

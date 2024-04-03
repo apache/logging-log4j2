@@ -40,12 +40,17 @@ public class ResourceLoggerTest {
         System.setProperty("log4j2.loggerContextFactory", TestLoggerContextFactory.class.getName());
     }
 
+    @BeforeAll
+    public static void afterAll() {
+        System.clearProperty("log4j2.loggerContextFactory");
+    }
+
     @Test
     public void testFactory() throws Exception {
         Connection connection = new Connection("Test", "dummy");
         connection.useConnection();
         MapSupplier mapSupplier = new MapSupplier(connection);
-        ResourceLogger logger = ResourceLogger.newBuilder()
+        Logger logger = ResourceLogger.newBuilder()
                 .withClass(this.getClass())
                 .withSupplier(mapSupplier)
                 .build();

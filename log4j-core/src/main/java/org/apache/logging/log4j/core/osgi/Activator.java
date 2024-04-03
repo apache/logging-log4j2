@@ -18,14 +18,14 @@ package org.apache.logging.log4j.core.osgi;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
+import org.apache.logging.log4j.ContextData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
 import org.apache.logging.log4j.core.impl.Log4jProvider;
-import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
-import org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.ContextDataProvider;
+import org.apache.logging.log4j.spi.ContextDataProvider;
+import org.apache.logging.log4j.spi.ThreadContextDataProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderActivator;
@@ -99,7 +99,7 @@ public final class Activator extends ProviderActivator implements SynchronousBun
                     bundleContext.getServiceReferences(ContextDataProvider.class, null);
             for (final ServiceReference<ContextDataProvider> serviceReference : serviceReferences) {
                 final ContextDataProvider provider = bundleContext.getService(serviceReference);
-                ThreadContextDataInjector.contextDataProviders.add(provider);
+                ContextData.addProvider(provider);
             }
         } catch (final InvalidSyntaxException ex) {
             LOGGER.error("Error accessing context data provider", ex);

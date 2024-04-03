@@ -28,8 +28,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Logger for resources. Formats all events using the ParameterizedMapMessageFactory along with the provided
- * Supplier. The Supplier provides resource attributes that should be included in all log events generated
+ * Logger for resources. The Supplier provides resource attributes that should be included in all log events generated
  * from the current resource. Note that since the Supplier is called for every LogEvent being generated
  * the values returned may change as necessary. Care should be taken to make the Supplier as efficient as
  * possible to avoid performance issues.
@@ -137,7 +136,7 @@ public final class ResourceLogger extends ExtendedLoggerWrapper {
          * Construct the ResourceLogger.
          * @return the ResourceLogger.
          */
-        public ResourceLogger build() {
+        public Logger build() {
             if (this.logger == null) {
                 if (Strings.isEmpty(name)) {
                     Class<?> clazz = StackLocatorUtil.getCallerClass(2);

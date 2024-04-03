@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ResourceLogger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -54,7 +55,7 @@ public class ResourceLoggerTest {
         Connection connection = new Connection("Test", "dummy");
         connection.useConnection();
         MapSupplier mapSupplier = new MapSupplier(connection);
-        ResourceLogger logger = ResourceLogger.newBuilder()
+        Logger logger = ResourceLogger.newBuilder()
                 .withClass(this.getClass())
                 .withSupplier(mapSupplier)
                 .build();
