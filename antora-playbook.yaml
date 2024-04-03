@@ -73,6 +73,7 @@ ui:
     - path: partials/head-styles.hbs
       contents: |
         <link rel="stylesheet" href="{{{uiRootPath}}}/css/site.css">
+        <link rel="icon" href="{{{uiRootPath}}}/../_images/favicon.ico" type="image/x-icon">
         <!-- `@asciidoctor/tabs` extension styles -->
         <link rel="stylesheet" href="{{{uiRootPath}}}/css/vendor/tabs.css">
         <style>
@@ -92,7 +93,7 @@ ui:
           <nav class="navbar">
             <div class="navbar-brand">
               <div class="navbar-item">
-                <a href="{{site.url}}">Apache Log4j</a>
+                <img src="{{{uiRootPath}}}/../_images/logo-small-white.png" alt="Apache Log4j"/>
               </div>
             </div>
           </nav>
