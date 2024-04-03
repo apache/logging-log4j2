@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.File;
-import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
@@ -30,44 +31,55 @@ import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.DisabledUntil;
+import org.opentest4j.TestAbortedException;
 
-/**
- *
- */
-@DisabledUntil(date = "2024-04-01", reason = "Temporarily disabled due to deadlocks.")
-public class RollingAppenderCronTest extends AbstractRollingListenerTest {
+class RollingAppenderCronTest extends AbstractRollingListenerTest {
 
-    private static final String CONFIG = "log4j-rolling-cron.xml";
-    private static final String DIR = "target/rolling-cron";
-    private static final String FILE = "target/rolling-cron/rollingtest.log";
+    private static final Path CONFIG;
+
+    static {
+        try {
+            CONFIG = Path.of(requireNonNull(RollingAppenderCronTest.class.getResource("RollingAppenderCronTest.xml"))
+                    .toURI());
+        } catch (final URISyntaxException e) {
+            throw new TestAbortedException("Unable to compute configuration location.", e);
+        }
+    }
+
     private final CountDownLatch rollover = new CountDownLatch(2);
     private final CountDownLatch reconfigured = new CountDownLatch(1);
 
+    @TempLoggingDir
+    private static Path loggingPath;
+
+    @BeforeEach
+    void beforeEach() throws Exception {
+        final Path src =
+                Path.of(requireNonNull(RollingAppenderCronTest.class.getResource("RollingAppenderCronTest.old.xml"))
+                        .toURI());
+        Files.copy(src, CONFIG, REPLACE_EXISTING);
+    }
+
     @Test
-    @CleanUpDirectories(DIR)
-    @LoggerContextSource(value = CONFIG, timeout = 10)
+    @LoggerContextSource(timeout = 10)
     public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager)
             throws Exception {
         manager.addRolloverListener(this);
         final Logger logger = context.getLogger(getClass());
-        final File file = new File(FILE);
-        assertThat(file).exists();
+        assertThat(loggingPath.resolve("rollingtest.log")).exists();
         logger.debug("This is test message number 1");
         rollover.await();
+        assertThat(loggingPath).isNotEmptyDirectory().isDirectoryContaining("glob:**.gz");
 
-        final File dir = new File(DIR);
-        assertThat(dir).isNotEmptyDirectory();
-        assertThat(dir).isDirectoryContaining("glob:**.gz");
-
-        final Path src = Path.of("target", "test-classes", "log4j-rolling-cron2.xml");
+        final Path src =
+                Path.of(requireNonNull(RollingAppenderCronTest.class.getResource("RollingAppenderCronTest.new.xml"))
+                        .toURI());
         context.addConfigurationStartedListener(ignored -> reconfigured.countDown());
-        try (final OutputStream os =
-                Files.newOutputStream(Path.of("target", "test-classes", "log4j-rolling-cron.xml"))) {
-            Files.copy(src, os);
-        }
+        Files.copy(src, CONFIG, REPLACE_EXISTING);
+
         // force a reconfiguration
         for (int i = 0; i < 20; ++i) {
             logger.debug("Adding new event {}", i);
