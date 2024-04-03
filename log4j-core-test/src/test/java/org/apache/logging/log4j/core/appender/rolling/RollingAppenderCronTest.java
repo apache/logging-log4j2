@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.concurrent.CountDownLatch;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -64,6 +65,13 @@ class RollingAppenderCronTest extends AbstractRollingListenerTest {
                 Path.of(requireNonNull(RollingAppenderCronTest.class.getResource("RollingAppenderCronTest.old.xml"))
                         .toURI());
         Files.copy(src, CONFIG, REPLACE_EXISTING);
+        // Set modification time to the start of the epoch, in order for modification detection to work on every OS.
+        Files.setLastModifiedTime(CONFIG, FileTime.fromMillis(0L));
+    }
+
+    @AfterAll
+    static void cleanUp() throws Exception {
+        Files.deleteIfExists(CONFIG);
     }
 
     @AfterAll
