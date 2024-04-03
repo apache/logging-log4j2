@@ -1,5 +1,3 @@
-// vim: set syn=markdown :
-
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -75,6 +73,7 @@ ch.qos.logback:logback-core
 
 Using Apache Maven, dependencies can be globally excluded in your project like so:
 
+[source,xml]
 ----
 <dependencies>
   <dependency>
@@ -89,6 +88,7 @@ Using Apache Maven, dependencies can be globally excluded in your project like s
 Dependencies can be explicitly excluded for specific dependencies as well.
 For example, to use a project with Log4j 2 instead of Log4j 1.x:
 
+[source,xml]
 ----
 <dependencies>
   <dependency>
@@ -126,6 +126,7 @@ For example, to use a project with Log4j 2 instead of Log4j 1.x:
 
 Dependencies can be globally excluded in Gradle like so:
 
+[source]
 ----
 configurations {
   all*.exclude group: 'log4j', module: 'log4j'
@@ -134,6 +135,7 @@ configurations {
 
 The equivalent Gradle config for the above Maven exclusion would look like:
 
+[source]
 ----
 dependencies {
   compile('com.example:example-project:1.0') {
@@ -169,6 +171,7 @@ Starting with version 2.4, Log4j 2 provides an xref:manual/customconfig.adoc[API
 See the below example.
 Be aware that this LoggerContext class is not part of the public API so your code may break with any minor release.
 
+[source,java]
 ----
 // import org.apache.logging.log4j.core.LoggerContext;
 
@@ -189,6 +192,7 @@ Web applications should include the log4j-web module in their classpath which di
 However, if you need to manually shut down Log4j, you can do so as in the below example.
 Note that there is an optional parameter for specifying which `LoggerContext` to shut down.
 
+[source,java]
 ----
 import org.apache.logging.log4j.LogManager;
 
@@ -202,6 +206,7 @@ LogManager.shutdown();
 You don't need to declare separate loggers to achieve this.
 You can set the logging level on the `AppenderRef` element.
 
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
@@ -258,6 +263,7 @@ You can define multiple routes in the configuration, and put values in the `Thre
 
 You can use the `ThreadContext` map value to determine the log file name.
 
+[source,xml]
 ----
 <Routing name="Routing">
   <Routes pattern="${dollar}${dollar}{ctx:ROUTINGKEY}">
@@ -315,6 +321,7 @@ You can use the `ThreadContext` map value to determine the log file name.
 You can set a logger's level with the class link:javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html[`Configurator`] from Log4j Core.
 Be aware that the `Configurator` class is not part of the public API.
 
+[source,java]
 ----
 // org.apache.logging.log4j.core.config.Configurator;
 
@@ -381,6 +388,7 @@ However, for many domain objects it may not be trivial to implement this without
 An alternative is to implement the `org.apache.logging.log4j.util.StringBuilderFormattable` interface.
 If an object is logged that implements this interface, its `formatTo` method is called instead of `toString()`.
 
+[source,java]
 ----
 package org.apache.logging.log4j.util;
 public interface StringBuilderFormattable {
@@ -414,6 +422,7 @@ The generated logger code will take care of the FQCN.
 
 When you are using Log4j with ProGuard/R8 enabled, you need to add the following rules to your configuration file:
 
+[source]
 ----
 -keep,allowoptimization class org.apache.logging.log4j.** { *; }
 ----

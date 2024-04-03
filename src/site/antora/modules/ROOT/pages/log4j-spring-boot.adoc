@@ -1,5 +1,3 @@
-// vim: set syn=markdown :
-
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -50,6 +48,7 @@ New with Log4j 2.15.0 are "Arbiters" which are conditionals that can cause a por
 log4j-spring-boot provides an Arbiter that allows a Spring profile value to be used for  this purpose.
 Below is an example:
 
+[source,xml]
 ----
 <Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
   <Appenders>

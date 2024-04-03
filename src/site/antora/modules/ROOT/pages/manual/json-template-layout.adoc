@@ -115,7 +115,7 @@ in combination with the below `log4j2.xml` configuration:
 
 or with the below `log4j2.properties` configuration:
 
-[source,ini]
+[source,properties]
 ----
 appender.console.layout.type = JsonTemplateLayout
 appender.console.layout.eventTemplateUri = classpath:EcsLayout.json

@@ -1,5 +1,3 @@
-// vim: set syn=markdown :
-
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -39,14 +37,8 @@ Log4j Docker provides access to the following container attributes:
 * shortContainerId - The first 12 characters of the container id.
 * shortImageId - The first 12 characters of the image id.
 
-#set( $D = '${' ) #set( $container = 'docker:containerId}') Attributes may be accessed by adding
-
-----
-$D$container
-----
-
-to the configuration.
-Note that docker variables are only resolved once during logging initialization so they shouldn't be referenced with more than one '$' character.
+Attributes may be accessed by adding `${docker:containerId}` to the configuration.
+Note that docker variables are only resolved once during logging initialization so they shouldn't be referenced with more than one `$` character.
 
 == Requirements Log4j Docker requires Log4j Core, Log4j API and a minimum of Java 8.
 For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].

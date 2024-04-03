@@ -385,7 +385,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 
 A typical Console configuration might look like:
 
-[source,prettyprint,linenums]
+[source,xml,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -1611,10 +1611,11 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 
 Here is a sample HttpAppender configuration snippet:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-  ...
+<Configuration>
+  <!-- ... -->
   <Appenders>
     <Http name="Http" url="https://localhost:9200/test/log4j/">
       <Property name="X-Java-Runtime" value="$${java:runtime}" />
@@ -1625,6 +1626,8 @@ Here is a sample HttpAppender configuration snippet:
       </SSL>
     </Http>
   </Appenders>
+  <!-- ... -->
+</Configuration>
 ----
 
 [[KafkaAppender]]
@@ -1674,13 +1677,16 @@ Here is a sample KafkaAppender configuration snippet:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-...
-<Appenders>
-  <Kafka name="Kafka" topic="log-test">
-    <PatternLayout pattern="%date %message"/>
-    <Property name="bootstrap.servers">localhost:9092</Property>
-  </Kafka>
-</Appenders>
+<Configuration>
+  <!-- ... -->
+  <Appenders>
+    <Kafka name="Kafka" topic="log-test">
+      <PatternLayout pattern="%date %message"/>
+      <Property name="bootstrap.servers">localhost:9092</Property>
+    </Kafka>
+  </Appenders>
+  <!-- ... -->
+</Configuration>
 ----
 
 This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server, timeout for this can be set with the `timeout.ms` property (defaults to 30 seconds). Wrap with https://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender[Async appender] and/or set syncSend to `false` to log asynchronously.
@@ -1692,13 +1698,16 @@ _Note:_ Make sure to not let `org.apache.kafka` log to a Kafka appender on DEBUG
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-...
-<Loggers>
-  <Root level="DEBUG">
-    <AppenderRef ref="Kafka"/>
-  </Root>
-  <Logger name="org.apache.kafka" level="INFO" /> <!-- avoid recursive logging -->
-</Loggers>
+<Configuration>
+  <!-- ... -->
+  <Loggers>
+    <Root level="DEBUG">
+      <AppenderRef ref="Kafka"/>
+    </Root>
+    <Logger name="org.apache.kafka" level="INFO" /> <!-- avoid recursive logging -->
+  </Loggers>
+  <!-- ... -->
+</Configuration>
 ----
 
 
@@ -1794,7 +1803,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 
 Here is a sample MemoryMappedFile configuration:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -1856,7 +1865,7 @@ providers as a guide for creating your own provider.
 The following example demonstrates how log events are persisted in NoSQL
 databases if represented in a JSON format:
 
-[source,prettyprint,lang-javascript]
+[source,json]
 ----
 {
     "level": "WARN",
@@ -2280,7 +2289,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 
 Here is a sample RandomAccessFile configuration:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -2357,7 +2366,7 @@ will add or update elements of the Map.
 The following configuration shows a RewriteAppender configured to add a
 product key and its value to the MapMessage.:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -2398,7 +2407,7 @@ keys and values to be added to the ThreadContext Map.
 The following configuration shows a RewriteAppender configured to add a
 product key and its value to the MapMessage:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -2444,7 +2453,7 @@ The following configuration shows a RewriteAppender configured to map
 level INFO to DEBUG and level WARN to INFO for all loggers that start
 with `com.foo.bar`.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -2625,7 +2634,7 @@ For example, the following XML fragment defines policies that rollover
 the log when the JVM starts, when the log size reaches twenty megabytes,
 and when the current date no longer matches the log’s start date.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <Policies>
   <OnStartupTriggeringPolicy />
@@ -2869,7 +2878,7 @@ both the time and size based triggering policies, will create up to 7
 archives on the same day (1-7) that are stored in a directory based on
 the current year and month, and will compress each archive using gzip:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -2896,7 +2905,7 @@ the current year and month, and will compress each archive using gzip:
 This second example shows a rollover strategy that will keep up to 20
 files before removing them.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -2927,7 +2936,7 @@ archives on the same day (1-7) that are stored in a directory based on
 the current year and month, and will compress each archive using gzip
 and will roll every 6 hours when the hour is divisible by 6:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -2956,7 +2965,7 @@ and size based triggering policies, and writes directly to an unlimited
 number of archive files. The cron trigger causes a rollover every hour
 while the file size is limited to 250MB:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -2982,7 +2991,7 @@ while the file size is limited to 250MB:
 This sample configuration is the same as the previous but limits the
 number of files saved each hour to 10:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -3184,7 +3193,7 @@ Archives are stored in a directory based on the current year and month.
 All files under the base directory that match the "*/app-*.log.gz" glob
 and are 60 days old or older are deleted at rollover time.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -3221,7 +3230,7 @@ delete files that match "*/app-*.log.gz" and are 30 days old or older,
 but keep the most recent 100 GB or the most recent 10 files, whichever
 comes first.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -3311,7 +3320,7 @@ The script returns a list of rolled over files under the base directory
 dated Friday the 13th. The Delete action will delete all files returned
 by the script.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="trace" name="MyApp">
@@ -3436,7 +3445,7 @@ Below is a sample configuration that uses a RollingFileAppender and
 defines different POSIX file attribute view for current and rolled log
 files.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="trace" name="MyApp">
@@ -3602,7 +3611,7 @@ triggering policies, will create up to 7 archives on the same day (1-7)
 that are stored in a directory based on the current year and month, and
 will compress each archive using gzip:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -3629,7 +3638,7 @@ will compress each archive using gzip:
 This second example shows a rollover strategy that will keep up to 20
 files before removing them.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -3661,7 +3670,7 @@ that are stored in a directory based on the current year and month, and
 will compress each archive using gzip and will roll every 6 hours when
 the hour is divisible by 6:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -3743,7 +3752,7 @@ default route on Windows and "ServiceOther" on all other operating
 systems. Note that the List Appender is one of our test appenders, any
 appender can be used, it is only used as a shorthand.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" name="RoutingTest">
@@ -3812,7 +3821,7 @@ Script.
 In this example, the script runs for each log event and picks a route
 based on the presence of a Marker named "AUDIT".
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" name="RoutingTest">
@@ -3877,7 +3886,7 @@ RollingFileAppender that captures only the specific event type. Note
 that the AuditAppender was predefined while the RollingFileAppenders are
 created as needed.
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -4031,7 +4040,7 @@ appender name is recorded under the name of the
 `ScriptAppenderSelector`, not the name of the selected appender, in this
 example, "SelectIt".
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <Configuration status="WARN" name="ScriptAppenderSelectorExample">
   <Appenders>
@@ -4127,7 +4136,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 
 This is an unsecured TCP configuration:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -4146,7 +4155,7 @@ This is an unsecured TCP configuration:
 
 This is a secured link:#SSL[SSL] configuration:
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -4268,14 +4277,12 @@ algorithms].
 [#Example]
 === Example
 
-[source,prettyprint,linenums]
+[source,xml]
 ----
-  ...
-      <SSL>
-        <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
-        <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
-      </SSL>
-  ...
+<SSL>
+  <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
+  <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
+</SSL>
 ----
 
 [#SyslogAppender]

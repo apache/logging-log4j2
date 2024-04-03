@@ -96,6 +96,7 @@ Log4j Docker provides access to the following container attributes:
 |The first 12 characters of the image id.
 |===
 
+[source,xml]
 ----
 <JsonTemplateLayout>
   <EventTemplateAdditionalField key="containerId" value="${docker:containerId}"/>
@@ -173,7 +174,7 @@ The EventLookup provides access to fields within the log event from the configur
 
 In this example the RoutingAppender picks a route based on the presence of a Marker named "AUDIT" being
 present in the log event.
-[source,prettyprint,linenums]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" name="RoutingTest">

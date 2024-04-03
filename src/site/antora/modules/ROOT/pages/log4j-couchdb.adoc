@@ -1,5 +1,3 @@
-// vim: set syn=markdown :
-
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -17,14 +15,13 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     limitations under the License.
 ////
 
-#set($h1='#') #set($h2='##')
+// TODO: use properties for dynamic dependency versions
 
-== TODO: use properties for dynamic dependency versions
-
-$h1 CouchDB Appender
+= CouchDB Appender
 
 https://couchdb.apache.org/[Apache CouchDB] is supported through the http://www.lightcouch.org/[LightCouch] driver.
 
+[source,xml]
 ----
   <dependencyManagement>
     <dependencies>
@@ -43,7 +40,7 @@ https://couchdb.apache.org/[Apache CouchDB] is supported through the http://www.
   </dependencies>
 ----
 
-$h2 Requirements
+== Requirements
 
 The CouchDB Appender is dependent on the Log4j 2 API and implementation.
 For more information, see xref:runtime-dependencies.adoc[Runtime Dependencies].

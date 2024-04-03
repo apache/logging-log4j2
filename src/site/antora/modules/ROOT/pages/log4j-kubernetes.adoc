@@ -1,5 +1,3 @@
-// vim: set syn=markdown :
-
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -50,14 +48,8 @@ Log4j Kubernetes provides access to the following container attributes:
 * podIp - The pod's ip address.
 * podName - The name of the pod.
 
-#set( $D = '${' ) #set( $container = 'k8s:containerId}') Attributes may be accessed by adding
-
-----
-$D$container
-----
-
-to the configuration.
-Note that kubernetes variables are only resolved once during logging initialization so they shouldn't be referenced with more than one '$' character.
+Attributes may be accessed by adding `${k8s:containerId}` to the configuration.
+Note that kubernetes variables are only resolved once during logging initialization so they shouldn't be referenced with more than one `$` character.
 
 == Configuration
 

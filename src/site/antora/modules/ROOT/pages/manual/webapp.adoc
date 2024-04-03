@@ -87,7 +87,7 @@ A Servlet 2.5 web application is any `<web-app>` whose `version` attribute has a
 
 If you are using Log4j in a Servlet 2.5 web application, or if you have disabled auto-initialization with the isLog4jAutoInitializationDisabled context parameter, you must configure the Log4jServletContextListener and Log4jServletFilter in the deployment descriptor or programmatically. The filter should match all requests of any type. The listener should be the very first listener defined in your application, and the filter should be the very first filter defined and mapped in your application. This is easily accomplished using the following web.xml code:
 
-[source, xml]
+[source,xml]
 ----
 <listener>
         <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>

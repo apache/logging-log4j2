@@ -1,5 +1,3 @@
-// vim: set syn=markdown :
-
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -32,6 +30,7 @@ The following dependency should be added to your pom.xml in addition to the log4
 
 // TODO: use variables for dependency versions
 
+[source,xml]
 ----
   <dependencyManagement>
     <dependencies>
@@ -62,6 +61,7 @@ The following dependency should be added to your pom.xml in addition to the log4
 
 The following is a sample pom file for Maven that can be used as a template for integrating the Flume Embedded Appender into an application.
 
+[source,xml]
 ----
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">

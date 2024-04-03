@@ -1,5 +1,3 @@
-// vim: set syn=markdown :
-
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -37,6 +35,7 @@ If the  monitor interval is less than zero Log4j will not check for changes to t
 
 When referencing a configuration located in Spring Cloud Config the configuration should be referenced similar to
 
+[source,properties]
 ----
 log4j.configurationFile=http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2.xml
 ----
@@ -46,9 +45,9 @@ The standard way to do that is to concatentate the paths to the files in a comma
 Unfortunately, Spring validates the URL being provided and commas are not allowed.
 Therefore, additional configurations must be supplied as "override" query parametes.
 
+[source,properties]
 ----
-log4j.configurationFile=http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2.xml
-?override=http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2-sampleapp.xml
+log4j.configurationFile=http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2.xml?override=http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2-sampleapp.xml
 ----
 
 Note that the location within the directory structure and how configuration files are located is completely  dependent on the searchPaths setting in the Spring Cloud Config server.
@@ -85,6 +84,7 @@ Any of the alternatives may be used in any configuration location.
 | Class used to create HTTP Authorization header
 |===
 
+[source,properties]
 ----
 log4j2.configurationUserName=guest
 log4j2.configurationPassword=guest
@@ -93,6 +93,7 @@ log4j2.configurationPassword=guest
 As noted above, Log4j supports accessing logging configuration from bootstrap.yml.
 As an example, to configure reading  from a Spring Cloud Configuration service using basic authoriztion you can do:
 
+[source,yaml]
 ----
 spring:
   application:
