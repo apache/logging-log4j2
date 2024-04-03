@@ -32,7 +32,8 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.TestAbortedException;
 
@@ -42,8 +43,10 @@ class RollingAppenderCronTest extends AbstractRollingListenerTest {
 
     static {
         try {
-            CONFIG = Path.of(requireNonNull(RollingAppenderCronTest.class.getResource("RollingAppenderCronTest.xml"))
-                    .toURI());
+            final Path config =
+                    Path.of(requireNonNull(RollingAppenderCronTest.class.getResource("RollingAppenderCronTest.old.xml"))
+                            .toURI());
+            CONFIG = config.resolveSibling("RollingAppenderCronTest.xml");
         } catch (final URISyntaxException e) {
             throw new TestAbortedException("Unable to compute configuration location.", e);
         }
@@ -55,12 +58,17 @@ class RollingAppenderCronTest extends AbstractRollingListenerTest {
     @TempLoggingDir
     private static Path loggingPath;
 
-    @BeforeEach
-    void beforeEach() throws Exception {
+    @BeforeAll
+    static void beforeEach() throws Exception {
         final Path src =
                 Path.of(requireNonNull(RollingAppenderCronTest.class.getResource("RollingAppenderCronTest.old.xml"))
                         .toURI());
         Files.copy(src, CONFIG, REPLACE_EXISTING);
+    }
+
+    @AfterAll
+    static void cleanUp() throws Exception {
+        Files.deleteIfExists(CONFIG);
     }
 
     @Test
