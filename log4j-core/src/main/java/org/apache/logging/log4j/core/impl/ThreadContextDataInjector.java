@@ -47,7 +47,7 @@ import org.apache.logging.log4j.util.StringMap;
  * @see ContextDataInjector
  * @see ContextDataInjectorFactory
  * @since 2.7
- * @Deprecated Use @{link ContextData} instead.
+ * @deprecated Use @{link ContextData} instead.
  */
 @Deprecated
 public class ThreadContextDataInjector {
