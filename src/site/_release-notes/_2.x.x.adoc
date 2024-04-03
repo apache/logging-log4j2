@@ -33,6 +33,7 @@ This releases contains ...
 === Changed
 
 * Fix usage of `log4j-api` in GraalVM without additional reachability data. (https://github.com/apache/logging-log4j2/pull/1539[1539])
+* Add logging to `PropertiesUtil` and fix `Duration` parser. (https://github.com/apache/logging-log4j2/pull/1936[1936])
 * Centralize initialization in the `Provider` class and deprecate `log4j2.loggerContextFactory` property. (https://github.com/apache/logging-log4j2/pull/2374[2374])
 * Remove `log4j-kubernetes` lookup. User should migrate to https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md[`kubernetes-log4j`] (https://github.com/apache/logging-log4j2/pull/2412[2412])
 * Deprecate `org.apache.logging.log4j.core.appender.rolling.action.Duration` class for removal.
@@ -46,7 +47,7 @@ This releases contains ...
 === Updated
 
 * Update `actions/checkout` to version `4.1.2` (https://github.com/apache/logging-log4j2/pull/2370[2370])
-* Update `co.elastic.clients:elasticsearch-java` to version `8.13.0` (https://github.com/apache/logging-log4j2/pull/2413[2413])
+* Update `co.elastic.clients:elasticsearch-java` to version `8.13.1` (https://github.com/apache/logging-log4j2/pull/2437[2437])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2372[2372])
 * Update `com.github.luben:zstd-jni` to version `1.5.6-1` (https://github.com/apache/logging-log4j2/pull/2422[2422])
 * Update `com.google.guava:guava` to version `33.1.0-jre` (https://github.com/apache/logging-log4j2/pull/2377[2377])
