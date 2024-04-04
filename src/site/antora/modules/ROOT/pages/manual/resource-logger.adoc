@@ -14,10 +14,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 API
-Ralph Goers <rgoers@apache.org>;
 
-== Resource Logging
+= Resource Logging
 The link:../log4j-api/apidocs/org/apache/logging/log4j/ResourceLogger.html[`ResourceLogger`]
 is available in Log4j API releases 2.24.0 and greater.
 

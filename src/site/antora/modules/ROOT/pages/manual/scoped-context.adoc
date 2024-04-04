@@ -14,10 +14,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 API
-Ralph Goers <rgoers@apache.org>;
 
-== Scoped Context
+= Scoped Context
 The link:../log4j-api/apidocs/org/apache/logging/log4j/ScopedContext.html[`ScopedContext`]
 is available in Log4j API releases 2.24.0 and greater.
 
@@ -60,7 +58,7 @@ if they do not implement the Renderable interface.
 Note that in the example above `UUID.randomUUID()` returns a UUID. By default, when it is
 included in LogEvents its toString() method will be used.
 
-=== Thread Support ===
+== Thread Support
 
 ScopedContext provides support for passing the ScopedContext and the ThreadContext to
 child threads by way of an ExecutorService. For example, the following will create a
@@ -95,7 +93,7 @@ private class Worker implements Runnable {
 ScopeContext also supports call methods in addition to run methods so the called functions can
 directly return values.
 
-=== Nested ScopedContexts
+== Nested ScopedContexts
 
 ScopedContexts may be nested. Becuase ScopedContexts are immutable the `where` method may
 be called on the current ScopedContext from within the run or call methods to append new
