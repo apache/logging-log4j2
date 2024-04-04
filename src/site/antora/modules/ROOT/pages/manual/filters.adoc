@@ -1,0 +1,1017 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Filters
+Ralph Goers <rgoers@apache.org>
+Volkan Yazıcı <vy@apache.org>
+
+Filters allow Log Events to be evaluated to determine if or how they
+should be published. A Filter will be called on one of its `filter`
+methods and will return a `Result`, which is an Enum that has one of 3
+values - `ACCEPT`, `DENY` or `NEUTRAL`.
+
+Filters may be configured in one of four locations:
+
+1.  Context-wide Filters are configured directly in the configuration.
+Events that are rejected by these filters will not be passed to loggers
+for further processing. Once an event has been accepted by a
+Context-wide filter it will not be evaluated by any other Context-wide
+Filters nor will the Logger's Level be used to filter the event. The
+event will be evaluated by Logger and Appender Filters however.
+2.  Logger Filters are configured on a specified Logger. These are
+evaluated after the Context-wide Filters and the Log Level for the
+Logger. Events that are rejected by these filters will be discarded and
+the event will not be passed to a parent Logger regardless of the
+additivity setting.
+3.  Appender Filters are used to determine if a specific Appender should
+handle the formatting and publication of the event.
+4.  Appender Reference Filters are used to determine if a Logger should
+route the event to an appender.
+
+[#BurstFilter]
+== BurstFilter
+
+The BurstFilter provides a mechanism to control the rate at which
+LogEvents are processed by silently discarding events after the maximum
+limit has been reached.
+
+.Burst Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|level
+|String
+|Level of messages to be filtered. Anything at or below
+this level will be filtered out if `maxBurst` has been exceeded. The
+default is WARN meaning any messages that are higher than warn will be
+logged regardless of the size of a burst.
+
+|rate
+|float
+|The average number of events per second to allow.
+
+|maxBurst
+|integer
+|The maximum number of events that can occur before
+events are filtered for exceeding the average rate. The default is 10
+times the rate.
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A configuration containing the BurstFilter might look like:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#CompositeFilter]
+== CompositeFilter
+
+The CompositeFilter provides a way to specify more than one filter. It
+is added to the configuration as a filters element and contains other
+filters to be evaluated. The filters element accepts no parameters.
+
+A configuration containing the CompositeFilter might look like:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Filters>
+    <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+    <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
+                            onMatch="ACCEPT" onMismatch="NEUTRAL">
+      <KeyValuePair key="User1" value="DEBUG"/>
+    </DynamicThresholdFilter>
+  </Filters>
+  <Appenders>
+    <File name="Audit" fileName="logs/audit.log">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="EventLogger" level="info">
+      <AppenderRef ref="Audit"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#DynamicThresholdFilter]
+== DynamicThresholdFilter
+
+The DynamicThresholdFilter allows filtering by log level based on
+specific attributes. For example, if the user's loginId is being
+captured in the ThreadContext Map then it is possible to enable debug
+logging for only that user. If the log event does not contain the
+specified ThreadContext item NEUTRAL will be returned.
+
+.Dynamic Threshold Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|key
+|String
+|The name of the item in the ThreadContext Map to compare.
+
+|defaultThreshold
+|String
+|Level of messages to be filtered. The default
+threshold only applies if the log event contains the specified
+ThreadContext Map item and its value does not match any key in the
+key/value pairs.
+
+|keyValuePair
+|KeyValuePair[]
+|One or more KeyValuePair elements that
+define the matching value for the key and the Level to evaluate when the
+key matches.
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+Here is a sample configuration containing the DynamicThresholdFilter:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
+                          onMatch="ACCEPT" onMismatch="NEUTRAL">
+    <KeyValuePair key="User1" value="DEBUG"/>
+  </DynamicThresholdFilter>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#LevelRangeFilter]
+== LevelRangeFilter
+
+`LevelRangeFilter` allows filtering against a level range, where levels get compared by their associated integral values; `OFF` has an integral value of 0, `FATAL` 100, `ERROR` 200, and so on.
+
+.`LevelRangeFilter` parameters
+[cols="1m,1m,4"]
+|===
+|Parameter Name |Type |Description
+
+|minLevel
+|Level
+|the minimum level threshold (defaults to `OFF`, which has an integral value of 0)
+
+|maxLevel
+|Level
+|the maximum level threshold (defaults to `ALL`, which has an integral value of `Integer.MAX_VALUE`)
+
+|onMatch
+|Filter.Result
+|the result to return on a match, where allowed values are `ACCEPT`, `DENY`, or `NEUTRAL` (default)
+
+|onMismatch
+|Filter.Result
+|the result to return on a mismatch, where allowed values are `ACCEPT`, `DENY` (default), or `NEUTRAL`
+|===
+
+In the following example configuration, a `LevelRangeFilter` is configured with `maxLevel` set to `INFO`.
+The filter will return `onMismatch` result (i.e., `DENY`, the default) for log events of level with higher integral values than `INFO`; i.e., `DEBUG`, `TRACE`, etc.
+
+.Example configuration using `LevelRangeFilter`
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="MyApp">
+  <Appenders>
+    <Console name="STDOUT">
+      <LevelRangeFilter maxLevel="INFO"/>
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="ERROR">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#MapFilter]
+== MapFilter
+
+The MapFilter allows filtering against data elements that are in a
+MapMessage.
+
+.Map Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|keyValuePair
+|KeyValuePair[]
+|One or more KeyValuePair elements that
+define the key in the map and the value to match on. If the same key is
+specified more than once then the check for that key will automatically
+be an "or" since a Map can only contain a single value.
+
+|operator
+|String
+|If the operator is "or" then a match by any one of
+the key/value pairs will be considered to be a match, otherwise all the
+key/value pairs must match.
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+As in this configuration, the MapFilter can be used to log particular
+events:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+    <KeyValuePair key="eventId" value="Login"/>
+    <KeyValuePair key="eventId" value="Logout"/>
+  </MapFilter>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+This sample configuration will exhibit the same behavior as the
+preceding example since the only logger configured is the root.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+        <KeyValuePair key="eventId" value="Login"/>
+        <KeyValuePair key="eventId" value="Logout"/>
+      </MapFilter>
+      <AppenderRef ref="RollingFile">
+      </AppenderRef>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+This third sample configuration will exhibit the same behavior as the
+preceding examples since the only logger configured is the root and the
+root is only configured with a single appender reference.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile">
+        <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+          <KeyValuePair key="eventId" value="Login"/>
+          <KeyValuePair key="eventId" value="Logout"/>
+        </MapFilter>
+      </AppenderRef>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#MarkerFilter]
+== MarkerFilter
+
+The MarkerFilter compares the configured Marker value against the Marker
+that is included in the LogEvent. A match occurs when the Marker name
+matches either the Log Event's Marker or one of its parents.
+
+.Marker Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|marker
+|String
+|The name of the Marker to compare.
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A sample configuration that only allows the event to be written by the
+appender if the Marker matches:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#MutableThreadContextMapFilter]
+== MutableThreadContextMapFilter
+
+The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context. By default this is the ThreadContext Map. The values to compare are defined externally and can be periodically polled for changes.
+
+.Mutable Context Map Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|configLocation
+|String
+|A file path or URI that points to the configuration. See below for a sample configuration.
+
+|operator
+|String
+|If the operator is "or" then a match by any one of
+the key/value pairs will be considered to be a match, otherwise all the
+key/value pairs must match.
+
+|pollInterval
+|int
+|The number of seconds to wait before checking to see if the configuration has been modified. When using HTTP or HTTPS the server must support the If-Modified-Since header and return a Last-Modified header containing the date and time the file was last modified. Note that by default only the https, file, and jar protocols are allowed. Support for other protocols can be enabled by specifying them in the log4j2.Configuration.allowedProtocols system property
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A sample configuration that only allows the event to be written by the
+appender if the Marker matches:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <MutableContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"
+    configLocation="http://localhost:8080/threadContextFilter.json" pollInterval="300"/>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+----
+
+The configuration file supplied to the filter should look similar to:
+[source,json]
+----
+{
+  "configs": {
+    "loginId": ["rgoers@apache.org", "logging@apache.org"],
+    "accountNumber": ["30510263"]
+  }
+}
+----
+
+[#NoMarkerFilter]
+== NoMarkerFilter
+
+The NoMarkerFilter checks that there is no marker included in the LogEvent. A match occurs when there is no
+marker in the Log Event.
+
+.No Marker Filter Parameters
+[cols="1m,1,3"]
+|===
+|Parameter Name |Type |Description
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A sample configuration that only allows the event to be written by the
+appender if no marker is there:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <NoMarkerFilter onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#RegexFilter]
+== RegexFilter
+
+The RegexFilter allows the formatted or unformatted message to be
+compared against a regular expression.
+
+.Regex Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|regex
+|String
+|The regular expression.
+
+|useRawMsg
+|boolean
+|If true the unformatted message will be used,
+otherwise the formatted message will be used. The default value is
+false.
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A sample configuration that only allows the event to be written by the
+appender if it contains the word "test":
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <RegexFilter regex=".* test .*" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[[Script]]
+
+The ScriptFilter executes a script that returns true or false.
+
+.Script Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|script
+|Script, ScriptFile or ScriptRef
+|The Script element that specifies the logic to be executed.
+
+|onMatch
+|String
+|Action to take when the script returns true. May be
+ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter returns false. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+.Script Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|configuration
+|Configuration
+|The Configuration that owns this
+ScriptFilter.
+
+|level
+|Level
+|The logging Level associated with the event. Only present
+when configured as a global filter.
+
+|loggerName
+|String
+|The name of the logger. Only present when
+configured as a global filter.
+
+|logEvent
+|LogEvent
+|The LogEvent being processed. Not present when
+configured as a global filter.
+
+|marker
+|Marker
+|The Marker passed on the logging call, if any. Only
+present when configured as a global filter.
+
+|message
+|Message
+|The Message associated with the logging call. Only
+present when configured as a global filter.
+
+|parameters
+|Object[]
+|The parameters passed to the logging call. Only
+present when configured as a global filter. Some Messages include the
+parameters as part of the Message.
+
+|throwable
+|Throwable
+|The Throwable passed to the logging call, if any.
+Only present when configured as a global filter. Som Messages include
+Throwable as part of the Message.
+
+|substitutor
+|StrSubstitutor
+|The StrSubstitutor used to replace lookup variables.
+|===
+
+The sample below shows how to declare script fields and then reference
+them in specific components. See
+xref:manual/appenders.adoc#ScriptCondition[ScriptCondition] for an example of
+how the `ScriptPlugin` element can be used to embed script code directly in
+the configuration.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Scripts>
+    <ScriptFile name="filter.js" language="JavaScript" path="src/test/resources/scripts/filter.js" charset="UTF-8" />
+    <ScriptFile name="filter.groovy" language="groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
+  </Scripts>
+  <Appenders>
+    <List name="List">
+      <PatternLayout pattern="[%-5level] %c{1.} %msg%n"/>
+    </List>
+  </Appenders>
+  <Loggers>
+    <Logger name="TestJavaScriptFilter" level="trace" additivity="false">
+      <AppenderRef ref="List">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <ScriptRef ref="filter.js" />
+        </ScriptFilter>
+      </AppenderRef>
+    </Logger>
+    <Logger name="TestGroovyFilter" level="trace" additivity="false">
+      <AppenderRef ref="List">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <ScriptRef ref="filter.groovy" />
+        </ScriptFilter>
+      </AppenderRef>
+    </Logger>
+    <Root level="trace">
+      <AppenderRef ref="List" />
+    </Root>
+  </Loggers>
+</Configuration>
+          
+----
+
+[#StructuredDataFilter]
+== StructuredDataFilter
+
+The StructuredDataFilter is a MapFilter that also allows filtering on
+the event id, type and message.
+
+.StructuredData Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|keyValuePair
+|KeyValuePair[]
+|One or more KeyValuePair elements that
+define the key in the map and the value to match on. "id", "id.name",
+"type", and "message" should be used to match on the StructuredDataId,
+the name portion of the StructuredDataId, the type, and the formatted
+message respectively. If the same key is specified more than once then
+the check for that key will automatically be an "or" since a Map can
+only contain a single value.
+
+|operator
+|String
+|If the operator is "or" then a match by any one of
+the key/value pairs will be considered to be a match, otherwise all the
+key/value pairs must match.
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+As in this configuration, the StructuredDataFilter can be used to log
+particular events:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+    <KeyValuePair key="id" value="Login"/>
+    <KeyValuePair key="id" value="Logout"/>
+  </StructuredDataFilter>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#ThreadContextMapFilter]
+== ThreadContextMapFilter
+
+The ThreadContextMapFilter or ContextMapFilter allows filtering against
+data elements that are in the current context. By default this is the
+ThreadContext Map.
+
+.Context Map Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|keyValuePair
+|KeyValuePair[]
+|One or more KeyValuePair elements that
+define the key in the map and the value to match on. If the same key is
+specified more than once then the check for that key will automatically
+be an "or" since a Map can only contain a single value.
+
+|operator
+|String
+|If the operator is "or" then a match by any one of
+the key/value pairs will be considered to be a match, otherwise all the
+key/value pairs must match.
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A configuration containing the ContextMapFilter might look like:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+    <KeyValuePair key="User1" value="DEBUG"/>
+    <KeyValuePair key="User2" value="WARN"/>
+  </ContextMapFilter>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+The ContextMapFilter can also be applied to a logger for filtering:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+      <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+        <KeyValuePair key="foo" value="bar"/>
+        <KeyValuePair key="User2" value="WARN"/>
+      </ContextMapFilter>
+    </Root>
+  </Loggers>
+</Configuration>
+  
+----
+
+[#ThresholdFilter]
+== ThresholdFilter
+
+This filter returns the onMatch result if the level in the LogEvent is
+the same or more specific than the configured level and the onMismatch
+value otherwise. For example, if the ThresholdFilter is configured with
+Level ERROR and the LogEvent contains Level DEBUG then the onMismatch
+value will be returned since ERROR events are more specific than DEBUG.
+
+.Threshold Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|level
+|String
+|A valid Level name to match on.
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A sample configuration that only allows the event to be written by the
+appender if the level matches:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#TimeFilter]
+== TimeFilter
+
+The time filter can be used to restrict filter to only a certain portion
+of the day.
+
+.Time Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|start
+|String
+|A time in HH:mm:ss format.
+
+|end
+|String
+|A time in HH:mm:ss format. Specifying an end time less
+than the start time will result in no log entries being written.
+
+|timezone
+|String
+|The timezone to use when comparing to the event
+timestamp.
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A sample configuration that only allows the event to be written by the
+appender from 5:00 to 5:30 am each day using the default timezone:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----

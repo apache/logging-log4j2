@@ -1,0 +1,270 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Runtime Dependencies
+
+Some Log4J features depend on external libraries. This page lists the required and optional dependencies.
+
+As of version 2.10.0, the Log4j API is a named Java module (with a `module-info.java`). Since version 2.21.0, all the remaining artifacts are named modules. The characteristics of the modules are:
+
+[options="header"]
+|===
+| Artifact Name | Module Name | Module Characteristics
+
+| log4j-api
+| org.apache.logging.log4j
+| Module Directive	Notes
+exports org.apache.logging.log4j
+exports org.apache.logging.log4j.message
+exports org.apache.logging.log4j.simple
+exports org.apache.logging.log4j.spi
+exports org.apache.logging.log4j.spi
+exports org.apache.logging.log4j.util	Some classes in this package are used by the logging implementation and should be considered private. The module info definition may be modified in the future to export these only to the logging implementation.
+uses org.apache.logging.log4j.spi.Provider	Service that must be provided by the logging implementation.
+
+
+| log4j-appserver
+| org.apache.logging.log4j.appserver
+| Named Module
+
+| log4j-cassandra
+| org.apache.logging.log4j.cassandra
+| Named Module
+
+| log4j-core
+| org.apache.logging.log4j.core
+| Named Module. Most of its dependencies are optional.
+
+| log4j-couchdb
+| org.apache.logging.log4j.couchdb
+| Named Module
+
+| log4j-docker
+| org.apache.logging.log4j.docker
+| Named Module
+
+| log4j-1.2-api
+| org.apache.log4j
+| Named Module
+
+| log4j-flume-ng
+| org.apache.logging.log4j.flume
+| Named Module
+
+| log4j-iostreams
+| org.apache.logging.log4j.iostreams
+| Named Module
+
+| log4j-jakarta-smtp
+| org.apache.logging.log4j.smtp
+| Named Module
+
+| log4j-jakarta-web
+| org.apache.logging.log4j.web
+| Named Module. Uses the same name as `log4j-web` since it is its Jakarta EE 9 equivalent.
+
+| log4j-jcl
+| org.apache.logging.log4j.jcl
+| Named Module
+
+| log4j-jul
+| org.apache.logging.log4j.jul
+| Named Module
+
+| log4j-mongodb
+| org.apache.logging.log4j.mongodb
+| Named Module
+
+| log4j-slf4j-impl
+| org.apache.logging.log4j.slf4j.impl
+| Named Module
+
+| log4j-slf4j2-impl
+| org.apache.logging.log4j.slf4j2.impl
+| Named Module
+
+| log4j-taglib
+| org.apache.logging.log4j.taglib
+| Named Module
+
+| log4j-to-slf4j
+| org.apache.logging.log4j.to.slf4j
+| Named Module
+
+| log4j-web
+| org.apache.logging.log4j.web
+| Named Module. Uses the same name as `log4j-jakarta-web` since it is its Java EE 8 equivalent.
+|===
+
+As of version 2.9.1, Log4j supports Java 9 but will still work in Java 7 or 8. In this version, log4j-api is packaged as a multi-release jar and supports the use of the StackWalker and Process APIs.
+
+As of version 2.4, Log4J requires Java 7.
+
+Log4j version 2.3 and older require Java 6.
+
+== log4j-api
+
+The Log4J xref:log4j-api.adoc[API] module has no external dependencies.
+
+== log4j-core
+
+The Log4J implementation has several optional dependencies.
+
+Optional Dependencies per Feature in Log4J Implementation:
+
+[options="header"]
+|===
+| Feature | Requirements
+
+| XML configuration
+| -
+
+| Properties configuration
+| -
+
+| JSON configuration
+| https://github.com/FasterXML/jackson[Jackson core and databind]
+
+| YAML configuration
+| https://github.com/FasterXML/jackson[Jackson databind] and https://github.com/FasterXML/jackson-dataformat-yaml[YAML data format]
+
+| CSV Layout
+| https://commons.apache.org/proper/commons-csv/[Apache Commons CSV]
+
+| JSON Layout
+| https://github.com/FasterXML/jackson[Jackson core and databind]
+
+| XML Layout
+| https://github.com/FasterXML/jackson[Jackson core, databind and dataformat XML] and `com.fasterxml.woodstox:woodstox-core:5.0.2`
+
+| YAML Layout
+| https://github.com/FasterXML/jackson[Jackson core, databind] and https://github.com/FasterXML/jackson-dataformat-yaml[YAML data format]
+
+| Async Loggers
+| https://lmax-exchange.github.io/disruptor/[LMAX Disruptor]
+
+| Kafka Appender
+| https://kafka.apache.org/[Kafka client library]. Note that you need to use a version of the Kafka client library matching the Kafka server used.
+
+| SMTP Appender
+| an implementation of `javax.mail`
+
+| JMS Appender
+| a JMS broker like https://activemq.apache.org/[Apache ActiveMQ]
+
+| Windows console color support
+| https://fusesource.github.io/jansi/[Jansi]
+
+| JDBC Appender
+| a JDBC driver for the database you choose to write events to
+
+| JPA Appender
+| the Java Persistence API classes, a JPA provider implementation, and a decorated entity that the user implements. It also requires an appropriate JDBC driver
+
+| NoSQL Appender with MongoDB provider
+| MongoDB Java Client driver and Log4j MongoDB library
+
+| NoSQL Appender with Apache CouchDB provider
+| LightCouch CouchDB client library and Log4j CouchDB library
+
+| Cassandra Appender
+| Datastax Cassandra driver and Log4j Cassandra library
+
+| Bzip2, Deflate, Pack200, and XZ compression on rollover
+| https://commons.apache.org/proper/commons-compress/[Apache Commons Compress]. In addition, XZ requires https://tukaani.org/xz/java.html[xz-java] and ZStandard requires https://github.com/luben/zstd-jni[zstd-jni]
+
+| ZeroMQ Appender
+| The ZeroMQ appender uses the https://github.com/zeromq/jeromq[JeroMQ] library which is licensed under the terms of the Mozilla Public License Version 2.0 (MPLv2). For details see the file https://github.com/zeromq/jeromq/blob/master/LICENSE[LICENSE] included with the JeroMQ distribution.
+|===
+
+== log4j-docker
+
+xref:log4j-docker.adoc[Log4j Docker Support] requires https://github.com/FasterXML/jackson[Jackson annotations, core, and databind].
+
+== log4j-jcl
+
+The xref:log4j-jcl.adoc[Commons Logging Bridge] requires https://commons.apache.org/proper/commons-logging/[Commons Logging].
+
+== log4j-1.2-api
+
+The xref:log4j-1.2-api.adoc[Log4j 1.2 Bridge] has no external dependencies. This only requires the Log4j API. Including Log4j Core provides optional, extra functionality.
+
+== log4j-slf4j-impl
+
+The Log4j 2 xref:log4j-slf4j-impl.adoc[SLF4J Binding] depends on the https://www.slf4j.org/[SLF4J] API.
+
+[WARNING]
+.Do not use this with the log4j-to-slf4j module.
+====
+
+== log4j-jul
+
+The Log4j 2 xref:log4j-jul.adoc[Java Util Logging Adapter] has no external dependencies. It optionally depends on the xref:log4j-api.adoc[Log4j Core] library. The only required module is the Log4j API.
+
+== log4j-to-slf4j
+
+The xref:log4j-to-slf4j.adoc[Log4j 2 to SLF4J Adapter] requires the https://www.slf4j.org/[SLF4J] API and an SLF4J implementation.
+
+[WARNING]
+.Do not use this with the log4j-slf4j-impl module.
+====
+
+== log4j-flume-ng
+
+The xref:log4j-flume-ng.adoc[Flume Appender] requires https://flume.apache.org/[Apache Flume] and https://avro.apache.org/[Apache Avro]. The persistent agent uses Berkeley DB.
+
+== log4j-spring-cloud-config-client
+
+xref:log4j-spring-cloud-config-client.adoc[Log4j Spring Cloud Config Client] requires https://spring.io/projects/spring-cloud-config[Spring Cloud Config]. https://spring.io/projects/spring-cloud-bus[Spring Cloud Bus] is required if notification of logging configuration changes is desired. https://spring.io/projects/spring-boot[Spring Boot] is required but applications do not have to be packaged as a Spring Boot application.
+
+== log4j-taglib
+
+The Log4j xref:log4j-taglib.adoc[Log Tag Library] requires the https://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Taglib] and the Servlet API.
+
+== log4j-web
+
+The Log4j xref:log4j-web.adoc[Web] module requires the Servlet API. Note that this works with the Servlet 2.5 API as well as the Servlet 3.x API.
+
+== log4j-couchdb
+
+The Log4J xref:log4j-couchdb.adoc[CouchDB] module depends on the https://www.lightcouch.org/[LightCouch] CouchDB client library.
+
+== log4j-mongodb3
+
+The Log4J xref:log4j-mongodb3.adoc[MongoDB 3] module depends on the https://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client driver].
+
+== log4j-mongodb4
+
+The Log4J xref:log4j-mongodb4.adoc[MongoDB 4] module depends on the https://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client driver].
+
+== log4j-cassandra
+
+The Log4J xref:log4j-cassandra.adoc[Cassandra] module depends on the https://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html[Datastax Cassandra driver].
+
+== log4j-iostreams
+
+The Log4j xref:log4j-iostreams.adoc[IO Streams] module has no external dependencies. This only requires the Log4j API.
+
+== log4j-jakarta-smtp
+
+The Log4j Simple Mail Transfer Protocol (SMTP) Appender, version for Jakarta EE 9 module has 2 external runtime dependencies for the jakarta.activation-api and jakarta.mail-api.
+
+. org.eclipse.angus:angus-activation
+. org.eclipse.angus:jakarta.mail
+
+== log4j-jakarta-web
+
+The Log4j xref:log4j-jakarta-web.adoc[Jakarta-Web] module for Jakarta EE 9+ web servlet containers requires the Servlet API and `log4j-core`.

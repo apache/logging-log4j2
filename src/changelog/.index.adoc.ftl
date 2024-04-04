@@ -33,6 +33,9 @@
     3. Commit both `.index.adoc.ftl` and the generated `.index.adoc`
 ////
 
+// Release notes index does not look nice with a deep sectioning, override it:
+:page-toclevels: 1
+
 [#release-notes]
 = Release Notes
 
