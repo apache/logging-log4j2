@@ -1,5 +1,4 @@
-#!/bin/sh
-# ----------------------------------------------------------------------------
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -8,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#    http://www.apache.org/licenses/LICENSE-2.0
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -16,13 +15,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-<<<<<<<< HEAD:format-code.sh
-# ----------------------------------------------------------------------------
-./mvnw spotless:apply -pl '!log4j-bom' -T2C
-========
 #
 RewriteEngine On
 RewriteRule "^(/log4j/[23].x)/log4j-(core|api)/apidocs(.*)" "$1/javadoc/$2$3" [R=permanent]
 RewriteRule "^(/log4j/[23].x)/manual/scala-api.html" "/log4j/scala" [R=permanent]
 RewriteRule "^(/log4j/[23].x)/release-notes/index.html" "$1/release-notes.html" [R=permanent]
->>>>>>>> 8e79b25e79 (Migrate `2.x` website to Antora (#2427)):src/site/resources/.htaccess

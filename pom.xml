@@ -339,9 +339,8 @@
     <!-- Skipping `maven-site-plugin` globally. -->
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
-    <site-log4j-api.version>2.23.1</site-log4j-api.version>
-    <site-log4j-core.version>2.23.1</site-log4j-core.version>
-    <site-log4j-layout-template-json.version>2.23.1</site-log4j-layout-template-json.version>
+    <site-log4j-core.version>3.0.0-beta2</site-log4j-core.version>
+    <site-log4j-layout-template-json.version>3.0.0-beta2</site-log4j-layout-template-json.version>
 
     <!-- ============================================================
          Direct dependency version properties (in alphabetical order)
@@ -767,11 +766,6 @@
              We need these `<dependency>` entries to trick `dependabot` to update the version properties automatically.
              No, we cannot use `${project.version}`, because it is not released yet. -->
         <dependencies>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${site-log4j-api.version}</version>
-          </dependency>
           <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>

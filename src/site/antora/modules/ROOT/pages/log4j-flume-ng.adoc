@@ -116,11 +116,6 @@ The following is a sample pom file for Maven that can be used as a template for 
         <version>${log4j.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jcl</artifactId>
-        <version>${log4j.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-core-asl</artifactId>
         <version>${jackson.version}</version>
@@ -173,11 +168,6 @@ The following is a sample pom file for Maven that can be used as a template for 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-ext</artifactId>
-    </dependency>
-    <!-- Commson Logging to Log4j 2 binding -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jcl</artifactId>
     </dependency>
     <!-- Avro transport protocol - required for Flume -->
     <dependency>
