@@ -16,7 +16,7 @@
  */
 { "configuration": { "status": "error", "name": "RoutingTest",
     "properties": {
-      "property": { "name": "filename", "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
+      "property": { "name": "filename", "value" : "target/rolling1/routingtest2-$${sd:type}.log" }
     },
     "ThresholdFilter": { "level": "debug" },
     "appenders": {
