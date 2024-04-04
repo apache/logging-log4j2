@@ -21,8 +21,9 @@ import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.ScopedContext;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
+import org.apache.logging.log4j.spi.ScopedContextProvider;
+import org.apache.logging.log4j.util.ProviderUtil;
 
 /**
  * ContextDataProvider for {@code Map<String, String>} data.
@@ -31,16 +32,19 @@ import org.apache.logging.log4j.core.util.ContextDataProvider;
 @ServiceProvider(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL)
 public class ScopedContextDataProvider implements ContextDataProvider {
 
+    private final ScopedContextProvider scopedContext =
+            ProviderUtil.getProvider().getScopedContextProvider();
+
     @Override
-    public String get(String key) {
-        return ScopedContext.getString(key);
+    public String get(final String key) {
+        return scopedContext.getString(key);
     }
 
     @Override
     public Map<String, String> supplyContextData() {
-        Map<String, Object> contextMap = ScopedContext.getContextMap();
+        final Map<String, ?> contextMap = scopedContext.getContextMap();
         if (!contextMap.isEmpty()) {
-            Map<String, String> map = new HashMap<>();
+            final Map<String, String> map = new HashMap<>();
             contextMap.forEach((key, value) -> map.put(key, value.toString()));
             return map;
         } else {
@@ -50,11 +54,11 @@ public class ScopedContextDataProvider implements ContextDataProvider {
 
     @Override
     public int size() {
-        return ScopedContext.size();
+        return scopedContext.getContextMap().size();
     }
 
     @Override
-    public void addAll(Map<String, String> map) {
-        ScopedContext.addAll(map);
+    public void addAll(final Map<String, String> map) {
+        scopedContext.getContextMap().forEach((key, value) -> map.put(key, String.valueOf(value)));
     }
 }

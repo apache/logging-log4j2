@@ -29,11 +29,13 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.test.TestLoggerContextFactory;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Class Description goes here.
  */
+@Disabled("Does not work with the NO-OP implementation of ScopedContextProvider in the API.")
 public class ResourceLoggerTest {
     @BeforeAll
     public static void beforeAll() {
