@@ -798,6 +798,21 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         return sb.toString();
     }
 
+    @Override
+    public Object save() {
+        return getImmutableMapOrNull();
+    }
+
+    @Override
+    public Object restore(final Object contextMap) {
+        final Object current = save();
+        clear();
+        if (contextMap instanceof Map) {
+            putAll((Map<? extends K, ? extends V>) contextMap);
+        }
+        return current;
+    }
+
     private static final class HashCommon {
         private HashCommon() {}
 

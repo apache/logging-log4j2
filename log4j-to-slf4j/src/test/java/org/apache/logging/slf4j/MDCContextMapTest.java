@@ -24,27 +24,55 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.test.spi.ThreadContextMapSuite;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.Issue;
-import org.slf4j.MDCTestHelper;
+import org.slf4j.helpers.BasicMDCAdapter;
 import org.slf4j.spi.MDCAdapter;
 
-class MDCContextMapTest {
+@Execution(ExecutionMode.CONCURRENT)
+class MDCContextMapTest extends ThreadContextMapSuite {
+
+    private static final String KEY = "key";
 
     @Test
     @Issue("https://github.com/apache/logging-log4j2/issues/1426")
     void nonNullGetCopy() {
-        final ThreadContextMap contextMap = new MDCContextMap();
         final MDCAdapter mockAdapter = mock(MDCAdapter.class);
+        final ThreadContextMap contextMap = new MDCContextMap(mockAdapter);
         when(mockAdapter.getCopyOfContextMap()).thenReturn(null);
-        final MDCAdapter adapter = MDCTestHelper.replaceMDCAdapter(mockAdapter);
-        try {
-            assertThat(contextMap.getImmutableMapOrNull()).isNull();
-            assertThat(contextMap.getCopy()).isNotNull();
-            verify(mockAdapter, times(2)).getCopyOfContextMap();
-            verifyNoMoreInteractions(mockAdapter);
-        } finally {
-            MDCTestHelper.replaceMDCAdapter(adapter);
-        }
+
+        assertThat(contextMap.getImmutableMapOrNull()).isNullOrEmpty();
+        assertThat(contextMap.getCopy()).isNotNull();
+        verify(mockAdapter, times(2)).getCopyOfContextMap();
+        verifyNoMoreInteractions(mockAdapter);
+    }
+
+    private static ThreadContextMap createThreadContextMap() {
+        return new MDCContextMap(new BasicMDCAdapter());
+    }
+
+    @Test
+    void threadLocalInheritable() {
+        final ThreadContextMap threadContext = createThreadContextMap();
+        threadContext.put(KEY, "threadLocalInheritable");
+        assertThreadContextValueOnANewThread(threadContext, KEY, "threadLocalInheritable");
+    }
+
+    @Test
+    void saveAndRestoreMap() {
+        assertContextDataCanBeSavedAndRestored(createThreadContextMap());
+    }
+
+    @Test
+    void saveAndRestoreMapOnAnotherThread() {
+        assertContextDataCanBeTransferred(createThreadContextMap());
+    }
+
+    @Test
+    void restoreAcceptsNull() {
+        assertNullValueClearsTheContextData(createThreadContextMap());
     }
 }

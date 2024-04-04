@@ -23,19 +23,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.test.junit.Log4jStaticResources;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
 
 /**
  * Tests {@link CloseableThreadContext}.
  *
  * @since 2.6
  */
-@ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
+@ResourceLock(Log4jStaticResources.THREAD_CONTEXT)
 public class CloseableThreadContextTest {
 
     private final String key = "key";

@@ -43,7 +43,7 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
      */
     public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
-    private ThreadLocal<Object[]> threadLocalMapState;
+    private final ThreadLocal<Object[]> threadLocalMapState;
 
     public StringArrayThreadContextMap() {
         threadLocalMapState = new ThreadLocal<>();
@@ -158,6 +158,23 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
     public int size() {
         final Object[] state = threadLocalMapState.get();
         return UnmodifiableArrayBackedMap.getInstance(state).size();
+    }
+
+    @Override
+    public Object save() {
+        return threadLocalMapState.get();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object restore(final Object contextMap) {
+        final Object current = save();
+        if (contextMap == null) {
+            clear();
+        } else {
+            threadLocalMapState.set((Object[]) contextMap);
+        }
+        return current;
     }
 
     @Override

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.spi.ExtendedThreadContext;
+import org.apache.logging.log4j.util.Lazy;
 
 /**
  * Adds entries to the {@link ThreadContext stack or map} and them removes them when the object is closed, e.g. as part
@@ -102,7 +102,8 @@ public class CloseableThreadContext {
     public static class Instance implements AutoCloseable {
 
         private int pushCount = 0;
-        private final Map<String, String> originalValues = new HashMap<>();
+        // Instantiated lazily to provide reusability
+        private final Lazy<Object> originalMap = Lazy.lazy(ExtendedThreadContext::saveMap);
 
         private Instance() {}
 
@@ -114,6 +115,7 @@ public class CloseableThreadContext {
          * @return the instance that will back out the changes when closed.
          */
         public Instance push(final String message) {
+            originalMap.get();
             ThreadContext.push(message);
             pushCount++;
             return this;
@@ -128,6 +130,7 @@ public class CloseableThreadContext {
          * @return the instance that will back out the changes when closed.
          */
         public Instance push(final String message, final Object[] args) {
+            originalMap.get();
             ThreadContext.push(message, args);
             pushCount++;
             return this;
@@ -143,10 +146,7 @@ public class CloseableThreadContext {
          * @return a new instance that will back out the changes when closed.
          */
         public Instance put(final String key, final String value) {
-            // If there are no existing values, a null will be stored as an old value
-            if (!originalValues.containsKey(key)) {
-                originalValues.put(key, ThreadContext.get(key));
-            }
+            originalMap.get();
             ThreadContext.put(key, value);
             return this;
         }
@@ -161,13 +161,8 @@ public class CloseableThreadContext {
          * @since 2.8
          */
         public Instance putAll(final Map<String, String> values) {
-            final Map<String, String> currentValues = ThreadContext.getContext();
+            originalMap.get();
             ThreadContext.putAll(values);
-            for (final String key : values.keySet()) {
-                if (!originalValues.containsKey(key)) {
-                    originalValues.put(key, currentValues.get(key));
-                }
-            }
             return this;
         }
 
@@ -180,6 +175,7 @@ public class CloseableThreadContext {
          * @since 2.8
          */
         public Instance pushAll(final List<String> messages) {
+            originalMap.get();
             for (final String message : messages) {
                 push(message);
             }
@@ -203,22 +199,10 @@ public class CloseableThreadContext {
         }
 
         private void closeMap() {
-            final Map<String, String> valuesToReplace = new HashMap<>(originalValues.size());
-            final List<String> keysToRemove = new ArrayList<>(originalValues.size());
-            for (final Map.Entry<String, String> entry : originalValues.entrySet()) {
-                final String key = entry.getKey();
-                final String originalValue = entry.getValue();
-                if (null == originalValue) {
-                    keysToRemove.add(key);
-                } else {
-                    valuesToReplace.put(key, originalValue);
-                }
-            }
-            if (!valuesToReplace.isEmpty()) {
-                ThreadContext.putAll(valuesToReplace);
-            }
-            if (!keysToRemove.isEmpty()) {
-                ThreadContext.removeAll(keysToRemove);
+            if (originalMap.isInitialized()) {
+                ExtendedThreadContext.restoreMap(originalMap.get());
+                // Prepare to be reused
+                originalMap.set(null);
             }
         }
 

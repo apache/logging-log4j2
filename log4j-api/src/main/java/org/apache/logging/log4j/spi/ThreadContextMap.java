@@ -18,6 +18,7 @@ package org.apache.logging.log4j.spi;
 
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Service provider interface to implement custom MDC behavior for {@link org.apache.logging.log4j.ThreadContext}.
@@ -26,12 +27,35 @@ import org.apache.logging.log4j.ThreadContext;
  * are accessible to applications via the {@link ThreadContext#getThreadContextMap()} method.
  * </p>
  */
+@ProviderType
 public interface ThreadContextMap {
 
     /**
      * Clears the context.
      */
     void clear();
+
+    /**
+     * Saves the context data of the current thread
+     * <p>
+     *     Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
+     *     underlying context data will not be reflected in the returned object.
+     * </p>
+     * @return An opaque representation of the context data.
+     * @since 2.24.0
+     * @see #restore
+     */
+    Object save();
+
+    /**
+     * Restores the context data of the current thread from a saved version
+     * @param contextMap An opaque representation of the context data obtained through a previous call to
+     *                   {@link #save} or {@code restore}.
+     * @return An opaque representation of the current context data.
+     * @since 2.24.0
+     * @see #save
+     */
+    Object restore(Object contextMap);
 
     /**
      * Determines if the key is in the context.

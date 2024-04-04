@@ -62,4 +62,14 @@ public class NoOpThreadContextMap implements ThreadContextMap {
 
     @Override
     public void remove(final String key) {}
+
+    @Override
+    public Object save() {
+        return null;
+    }
+
+    @Override
+    public Object restore(final Object contextMap) {
+        return null;
+    }
 }

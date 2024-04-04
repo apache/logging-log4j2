@@ -231,4 +231,21 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         final Map<String, String> otherMap = other.getImmutableMapOrNull();
         return Objects.equals(map, otherMap);
     }
+
+    @Override
+    public Object save() {
+        return localMap.get();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object restore(final Object contextMap) {
+        final Object current = save();
+        if (contextMap == null) {
+            clear();
+        } else {
+            localMap.set((Map<String, String>) contextMap);
+        }
+        return current;
+    }
 }

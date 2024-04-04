@@ -16,61 +16,85 @@
  */
 package org.apache.logging.log4j.spi;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.Duration;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.internal.map.StringArrayThreadContextMap;
+import org.apache.logging.log4j.test.spi.ThreadContextMapSuite;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class ThreadContextMapTest {
+@Execution(ExecutionMode.CONCURRENT)
+class ThreadContextMapTest extends ThreadContextMapSuite {
 
     private static final String KEY = "key";
+    private static final Lazy<PropertiesUtil> defaultMapProperties = Lazy.pure(() -> createMapProperties(false));
+    private static final Lazy<PropertiesUtil> inheritableMapProperties = Lazy.pure(() -> createMapProperties(true));
+
+    private static PropertiesUtil createMapProperties(final boolean inheritable) {
+        final Properties props = new Properties();
+        // By specifying all the possible properties, the resulting thread context maps do not depend on other
+        // property sources like Java system properties.
+        props.setProperty("log4j2.threadContextInitialCapacity", "16");
+        props.setProperty("log4j2.isThreadContextMapInheritable", inheritable ? "true" : "false");
+        return new PropertiesUtil(props);
+    }
 
     static Stream<ThreadContextMap> defaultMaps() {
         return Stream.of(
                 new DefaultThreadContextMap(),
                 new CopyOnWriteSortedArrayThreadContextMap(),
-                new GarbageFreeSortedArrayThreadContextMap());
+                new GarbageFreeSortedArrayThreadContextMap(),
+                new StringArrayThreadContextMap());
+    }
+
+    static Stream<ThreadContextMap> localMaps() {
+        return Stream.of(
+                new DefaultThreadContextMap(true, defaultMapProperties.get()),
+                new CopyOnWriteSortedArrayThreadContextMap(defaultMapProperties.get()),
+                new GarbageFreeSortedArrayThreadContextMap(defaultMapProperties.get()),
+                new StringArrayThreadContextMap());
     }
 
     static Stream<ThreadContextMap> inheritableMaps() {
-        final Properties props = new Properties();
-        props.setProperty("log4j2.isThreadContextMapInheritable", "true");
-        final PropertiesUtil util = new PropertiesUtil(props);
         return Stream.of(
-                new DefaultThreadContextMap(true, util),
-                new CopyOnWriteSortedArrayThreadContextMap(util),
-                new GarbageFreeSortedArrayThreadContextMap(util));
+                new DefaultThreadContextMap(true, inheritableMapProperties.get()),
+                new CopyOnWriteSortedArrayThreadContextMap(inheritableMapProperties.get()),
+                new GarbageFreeSortedArrayThreadContextMap(inheritableMapProperties.get()));
     }
 
     @ParameterizedTest
     @MethodSource("defaultMaps")
-    void threadLocalNotInheritableByDefault(final ThreadContextMap contextMap) {
-        contextMap.put(KEY, "threadLocalNotInheritableByDefault");
-        verifyThreadContextValueFromANewThread(contextMap, null);
+    void threadLocalNotInheritableByDefault(final ThreadContextMap threadContext) {
+        threadContext.put(KEY, "threadLocalNotInheritableByDefault");
+        assertThreadContextValueOnANewThread(threadContext, KEY, null);
     }
 
     @ParameterizedTest
     @MethodSource("inheritableMaps")
-    void threadLocalInheritableIfConfigured(final ThreadContextMap contextMap) {
-        contextMap.put(KEY, "threadLocalInheritableIfConfigured");
-        verifyThreadContextValueFromANewThread(contextMap, "threadLocalInheritableIfConfigured");
+    void threadLocalInheritableIfConfigured(final ThreadContextMap threadContext) {
+        threadContext.put(KEY, "threadLocalInheritableIfConfigured");
+        assertThreadContextValueOnANewThread(threadContext, KEY, "threadLocalInheritableIfConfigured");
     }
 
-    private static void verifyThreadContextValueFromANewThread(
-            final ThreadContextMap contextMap, final String expected) {
-        final ExecutorService executorService = Executors.newSingleThreadExecutor();
-        try {
-            assertThat(executorService.submit(() -> contextMap.get(KEY)))
-                    .succeedsWithin(Duration.ofSeconds(1))
-                    .isEqualTo(expected);
-        } finally {
-            executorService.shutdown();
-        }
+    @ParameterizedTest
+    @MethodSource("localMaps")
+    void saveAndRestoreMap(final ThreadContextMap threadContext) {
+        assertContextDataCanBeSavedAndRestored(threadContext);
+    }
+
+    @ParameterizedTest
+    @MethodSource("localMaps")
+    void saveAndRestoreMapOnAnotherThread(final ThreadContextMap threadContext) {
+        assertContextDataCanBeTransferred(threadContext);
+    }
+
+    @ParameterizedTest
+    @MethodSource("localMaps")
+    void restoreAcceptsNull(final ThreadContextMap threadContext) {
+        assertNullValueClearsTheContextData(threadContext);
     }
 }

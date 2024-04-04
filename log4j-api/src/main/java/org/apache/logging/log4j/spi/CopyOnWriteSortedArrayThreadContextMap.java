@@ -222,6 +222,23 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     @Override
+    public Object save() {
+        return localMap.get();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object restore(final Object contextMap) {
+        final Object current = save();
+        if (contextMap == null) {
+            clear();
+        } else {
+            localMap.set((StringMap) contextMap);
+        }
+        return current;
+    }
+
+    @Override
     public String toString() {
         final StringMap map = localMap.get();
         return map == null ? "{}" : map.toString();

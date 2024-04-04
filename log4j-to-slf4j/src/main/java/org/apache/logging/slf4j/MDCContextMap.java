@@ -23,6 +23,7 @@ import org.apache.logging.log4j.spi.CleanableThreadContextMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.slf4j.MDC;
+import org.slf4j.spi.MDCAdapter;
 
 /**
  * Bind the ThreadContextMap to the SLF4J MDC.
@@ -35,60 +36,86 @@ public class MDCContextMap implements CleanableThreadContextMap {
         EMPTY_CONTEXT_DATA.freeze();
     }
 
+    private final MDCAdapter mdc;
+
+    public MDCContextMap() {
+        this(MDC.getMDCAdapter());
+    }
+
+    MDCContextMap(final MDCAdapter mdc) {
+        this.mdc = mdc;
+    }
+
     @Override
     public void put(final String key, final String value) {
-        MDC.put(key, value);
+        mdc.put(key, value);
     }
 
     @Override
     public void putAll(final Map<String, String> m) {
         for (final Entry<String, String> entry : m.entrySet()) {
-            MDC.put(entry.getKey(), entry.getValue());
+            mdc.put(entry.getKey(), entry.getValue());
         }
     }
 
     @Override
     public String get(final String key) {
-        return MDC.get(key);
+        return mdc.get(key);
     }
 
     @Override
     public void remove(final String key) {
-        MDC.remove(key);
+        mdc.remove(key);
     }
 
     @Override
     public void removeAll(final Iterable<String> keys) {
         for (final String key : keys) {
-            MDC.remove(key);
+            mdc.remove(key);
         }
     }
 
     @Override
     public void clear() {
-        MDC.clear();
+        mdc.clear();
+    }
+
+    @Override
+    public Object save() {
+        return mdc.getCopyOfContextMap();
+    }
+
+    @Override
+    public Object restore(final Object contextMap) {
+        final Object current = save();
+        if (contextMap == null) {
+            mdc.clear();
+        } else {
+            mdc.setContextMap((Map<String, String>) contextMap);
+        }
+        return current;
     }
 
     @Override
     public boolean containsKey(final String key) {
-        final Map<String, String> map = MDC.getCopyOfContextMap();
+        final Map<String, String> map = mdc.getCopyOfContextMap();
         return map != null && map.containsKey(key);
     }
 
     @Override
     public Map<String, String> getCopy() {
-        final Map<String, String> contextMap = MDC.getCopyOfContextMap();
+        final Map<String, String> contextMap = mdc.getCopyOfContextMap();
         return contextMap != null ? contextMap : new HashMap<>();
     }
 
     @Override
     public Map<String, String> getImmutableMapOrNull() {
-        return MDC.getCopyOfContextMap();
+        return mdc.getCopyOfContextMap();
     }
 
     @Override
     public boolean isEmpty() {
-        final Map<String, String> map = MDC.getCopyOfContextMap();
+        final Map<String, String> map = mdc.getCopyOfContextMap();
         return map == null || map.isEmpty();
     }
 
