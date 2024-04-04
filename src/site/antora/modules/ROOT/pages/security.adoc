@@ -66,7 +66,7 @@ Format strings should be compile-time constants, and under no circumstances shou
 
 When using an unstructured layout such as `PatternLayout`, no guarantees can be made about the output format.
 This layout is mainly useful for development purposes and should not be relied on in production applications.
-For example, if a log message contains new lines, these are not escaped or encoded specially unless the configured pattern uses the `%encode{pattern}{CRLF}` wrapper pattern converter (which will encode a carriage return as the string `\r` and a line feed as the string `\n`) or some other `%encode` option.
+For example, if a log message contains new lines, these are not escaped or encoded specially unless the configured pattern uses the `%encode\{pattern}\{CRLF}` wrapper pattern converter (which will encode a carriage return as the string `\r` and a line feed as the string `\n`) or some other `%encode` option.
 Note that `%xEx` is appended to the pattern unless already present.
 Similarly, other encoding options are available for other formats, but pattern layouts cannot make assumptions about the entire output.
 As such, when using unstructured layouts, no user-controlled input should be included in logs.

@@ -546,25 +546,18 @@ the same pace that log events are written.
 
 == Logging Recommendations
 
-
-1. Use asynchronous logging unless guaranteed delivery is absolutely required. As
+. Use asynchronous logging unless guaranteed delivery is absolutely required. As
 the performance numbers show, so long as the volume of logging is not high enough to fill up the
 circular buffer the overhead of logging will almost be unnoticeable to the application.
-1. If overall performance is a consideration or you require multiline events such as stack traces
+. If overall performance is a consideration or you require multiline events such as stack traces
 be processed properly then log via TCP to a companion container that acts as a log forwarder or directly
 to a log aggregator as shown above in xref:#ELK[Logging with ELK]. Use the
 Log4j Docker Lookup to add the container information to each log event.
-1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such
+. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such
 as the Kafka Appender with syncSend set to true that only return control after the downstream agent
 acknowledges receipt of the event. Beware that using an Appender that writes each event individually should
 be kept to a minimum since it is much slower than sending buffered events.
-1. Logging to files within the container is discouraged. Doing so requires that a volume be declared in
+. Logging to files within the container is discouraged. Doing so requires that a volume be declared in
 the Docker configuration and that the file be tailed by a log forwarder. However, it performs
 better than logging to the standard output stream. If logging via TCP is not an option and
 proper multiline handling is required then consider this option.
-
-
-
-
-
-

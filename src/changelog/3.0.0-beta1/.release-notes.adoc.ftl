@@ -15,7 +15,8 @@
     limitations under the License.
 ////
 
-= ${release.version}<#if release.date?has_content> (${release.date})</#if>
+[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
+== ${release.version}
 
 This is the first beta release of the upcoming major release, i.e., `3.0.0`.
 

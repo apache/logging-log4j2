@@ -194,10 +194,6 @@ Optional Dependencies per Feature in Log4J Implementation:
 
 xref:log4j-docker.adoc[Log4j Docker Support] requires https://github.com/FasterXML/jackson[Jackson annotations, core, and databind].
 
-== log4j-jcl
-
-The xref:log4j-jcl.adoc[Commons Logging Bridge] requires https://commons.apache.org/proper/commons-logging/[Commons Logging].
-
 == log4j-1.2-api
 
 The xref:log4j-1.2-api.adoc[Log4j 1.2 Bridge] has no external dependencies. This only requires the Log4j API. Including Log4j Core provides optional, extra functionality.
@@ -230,29 +226,9 @@ The xref:log4j-flume-ng.adoc[Flume Appender] requires https://flume.apache.org/[
 
 xref:log4j-spring-cloud-config-client.adoc[Log4j Spring Cloud Config Client] requires https://spring.io/projects/spring-cloud-config[Spring Cloud Config]. https://spring.io/projects/spring-cloud-bus[Spring Cloud Bus] is required if notification of logging configuration changes is desired. https://spring.io/projects/spring-boot[Spring Boot] is required but applications do not have to be packaged as a Spring Boot application.
 
-== log4j-taglib
-
-The Log4j xref:log4j-taglib.adoc[Log Tag Library] requires the https://jakarta.apache.org/taglibs/log/[Jakarta Commons Log Taglib] and the Servlet API.
-
-== log4j-web
-
-The Log4j xref:log4j-web.adoc[Web] module requires the Servlet API. Note that this works with the Servlet 2.5 API as well as the Servlet 3.x API.
-
-== log4j-couchdb
-
-The Log4J xref:log4j-couchdb.adoc[CouchDB] module depends on the https://www.lightcouch.org/[LightCouch] CouchDB client library.
-
-== log4j-mongodb3
-
-The Log4J xref:log4j-mongodb3.adoc[MongoDB 3] module depends on the https://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client driver].
-
 == log4j-mongodb4
 
 The Log4J xref:log4j-mongodb4.adoc[MongoDB 4] module depends on the https://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client driver].
-
-== log4j-cassandra
-
-The Log4J xref:log4j-cassandra.adoc[Cassandra] module depends on the https://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html[Datastax Cassandra driver].
 
 == log4j-iostreams
 
@@ -264,7 +240,3 @@ The Log4j Simple Mail Transfer Protocol (SMTP) Appender, version for Jakarta EE 
 
 . org.eclipse.angus:angus-activation
 . org.eclipse.angus:jakarta.mail
-
-== log4j-jakarta-web
-
-The Log4j xref:log4j-jakarta-web.adoc[Jakarta-Web] module for Jakarta EE 9+ web servlet containers requires the Servlet API and `log4j-core`.

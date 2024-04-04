@@ -99,9 +99,9 @@ system property `log4j2.contextSelector` to
 create a single LoggerContext using a single configuration that will be
 shared across all applications.
 2.  Place the logging jars in the container's classpath and use the
-default ClassLoaderContextSelector. Follow the
-xref:manual/webapp.adoc[instructions to initialize Log4j 2 in a web
-application]. Each application can be configured to share the same
+default ClassLoaderContextSelector.
+See the instructions shared in link:/log4j/jakarta[Log4j Jakarta EE].
+Each application can be configured to share the same
 configuration used at the container or can be individually configured.
 If status logging is set to debug in the configuration there will be
 output from when logging is initialized in the container and then again

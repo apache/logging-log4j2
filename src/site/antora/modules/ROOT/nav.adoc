@@ -64,11 +64,9 @@
 * xref:log4j-jpl.adoc[]
 * xref:log4j-to-slf4j.adoc[]
 * xref:log4j-flume-ng.adoc[]
-* xref:log4j-mongodb3.adoc[]
 * xref:log4j-mongodb4.adoc[]
 * xref:log4j-iostreams.adoc[]
 * xref:log4j-docker.adoc[]
-* xref:log4j-kubernetes.adoc[]
 * xref:log4j-spring-cloud-config-client.adoc[]
 
 .Related projects

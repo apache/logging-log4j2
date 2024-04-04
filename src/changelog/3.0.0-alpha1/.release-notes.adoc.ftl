@@ -15,7 +15,8 @@
     limitations under the License.
 ////
 
-= ${release.version}<#if release.date?has_content> (${release.date})</#if>
+[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
+== ${release.version}
 
 As the Java ecosystem has evolved, requests have been received from users, and the need for improved security has
 become more apparent, changes were necessariy in Log4j's design:
