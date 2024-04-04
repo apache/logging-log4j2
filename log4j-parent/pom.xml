@@ -151,7 +151,7 @@
     <osgi.resource.version>1.0.1</osgi.resource.version>
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.1</plexus-utils.version>
-    <slf4j.version>2.0.10</slf4j.version>
+    <slf4j.version>2.0.12</slf4j.version>
     <system-stubs.version>2.1.6</system-stubs.version>
     <tomcat-juli.version>10.1.20</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
