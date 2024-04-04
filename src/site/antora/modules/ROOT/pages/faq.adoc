@@ -266,12 +266,12 @@ You can use the `ThreadContext` map value to determine the log file name.
 [source,xml]
 ----
 <Routing name="Routing">
-  <Routes pattern="${dollar}${dollar}{ctx:ROUTINGKEY}">
+  <Routes pattern="$${ctx:ROUTINGKEY}">
 
     <!-- This route is chosen if ThreadContext has value 'special' for key ROUTINGKEY. -->
     <Route key="special">
-      <RollingFile name="Rolling-${dollar}{ctx:ROUTINGKEY}" fileName="logs/special-${dollar}{ctx:ROUTINGKEY}.log"
-	filePattern="./logs/${dollar}{date:yyyy-MM}/${dollar}{ctx:ROUTINGKEY}-special-%d{yyyy-MM-dd}-%i.log.gz">
+      <RollingFile name="Rolling-${ctx:ROUTINGKEY}" fileName="logs/special-${ctx:ROUTINGKEY}.log"
+	filePattern="./logs/${date:yyyy-MM}/${ctx:ROUTINGKEY}-special-%d{yyyy-MM-dd}-%i.log.gz">
 	<PatternLayout>
 	  <pattern>%d{ISO8601} [%t] %p %c{3} - %m%n</pattern>
 	</PatternLayout>
@@ -283,9 +283,9 @@ You can use the `ThreadContext` map value to determine the log file name.
     </Route>
 
     <!-- This route is chosen if ThreadContext has no value for key ROUTINGKEY. -->
-    <Route key="$${dollar}{ctx:ROUTINGKEY}">
+    <Route key="$${ctx:ROUTINGKEY}">
       <RollingFile name="Rolling-default" fileName="logs/default.log"
-	filePattern="./logs/${dollar}{date:yyyy-MM}/default-%d{yyyy-MM-dd}-%i.log.gz">
+	filePattern="./logs/${date:yyyy-MM}/default-%d{yyyy-MM-dd}-%i.log.gz">
         <PatternLayout>
 	  <pattern>%d{ISO8601} [%t] %p %c{3} - %m%n</pattern>
         </PatternLayout>
@@ -300,8 +300,8 @@ You can use the `ThreadContext` map value to determine the log file name.
          (other than the value 'special' which had its own route above).
          The value dynamically determines the name of the log file. -->
     <Route>
-      <RollingFile name="Rolling-${dollar}{ctx:ROUTINGKEY}" fileName="logs/other-${dollar}{ctx:ROUTINGKEY}.log"
-	filePattern="./logs/${dollar}{date:yyyy-MM}/${dollar}{ctx:ROUTINGKEY}-other-%d{yyyy-MM-dd}-%i.log.gz">
+      <RollingFile name="Rolling-${ctx:ROUTINGKEY}" fileName="logs/other-${ctx:ROUTINGKEY}.log"
+	filePattern="./logs/${date:yyyy-MM}/${ctx:ROUTINGKEY}-other-%d{yyyy-MM-dd}-%i.log.gz">
 	<PatternLayout>
 	  <pattern>%d{ISO8601} [%t] %p %c{3} - %m%n</pattern>
 	</PatternLayout>
