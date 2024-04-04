@@ -23,9 +23,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.ContextData;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ScopedContext;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -80,8 +81,11 @@ public class TestLogger extends AbstractLogger {
             sb.append(' ');
         }
         sb.append(message.getFormattedMessage());
-        final Map<String, String> mdc = new HashMap<>(ContextData.size());
-        ContextData.addAll(mdc);
+        Map<String, ScopedContext.Renderable> contextMap = ScopedContext.getContextMap();
+        final Map<String, String> mdc = new HashMap<>(ThreadContext.getImmutableContext());
+        if (contextMap != null && !contextMap.isEmpty()) {
+            contextMap.forEach((key, value) -> mdc.put(key, value.render()));
+        }
         if (!mdc.isEmpty()) {
             sb.append(' ');
             sb.append(mdc);

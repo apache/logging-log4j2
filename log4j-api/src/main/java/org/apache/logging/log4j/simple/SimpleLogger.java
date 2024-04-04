@@ -23,9 +23,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.ContextData;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ScopedContext;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -295,8 +296,8 @@ public class SimpleLogger extends AbstractLogger {
         }
         sb.append(msg.getFormattedMessage());
         if (showContextMap) {
-            final Map<String, String> mdc = new HashMap<>(ContextData.size());
-            ContextData.addAll(mdc);
+            final Map<String, String> mdc = new HashMap<>(ThreadContext.getImmutableContext());
+            ScopedContext.getContextMap().forEach((key, value) -> mdc.put(key, value.render()));
             if (!mdc.isEmpty()) {
                 sb.append(SPACE);
                 sb.append(mdc.toString());

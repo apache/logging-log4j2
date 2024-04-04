@@ -30,6 +30,11 @@ import org.apache.logging.log4j.util.StringMap;
 public class ThreadContextDataProvider implements ContextDataProvider {
 
     @Override
+    public String get(String key) {
+        return ThreadContext.get(key);
+    }
+
+    @Override
     public Map<String, String> supplyContextData() {
         return ThreadContext.getImmutableContext();
     }
@@ -37,5 +42,15 @@ public class ThreadContextDataProvider implements ContextDataProvider {
     @Override
     public StringMap supplyStringMap() {
         return ThreadContext.getThreadContextMap().getReadOnlyContextData();
+    }
+
+    @Override
+    public int size() {
+        return ThreadContext.getContext().size();
+    }
+
+    @Override
+    public void addAll(Map<String, String> map) {
+        map.putAll(ThreadContext.getContext());
     }
 }

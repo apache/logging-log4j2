@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.core.async;
 
 import com.lmax.disruptor.EventTranslator;
-import org.apache.logging.log4j.ContextData;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.NanoClock;

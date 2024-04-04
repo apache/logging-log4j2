@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.ContextData;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -236,9 +235,9 @@ public class ThreadContextDataInjector {
 
     private static class ProviderIterator implements Iterator<ContextDataProvider> {
 
-        private final Iterator<org.apache.logging.log4j.spi.ContextDataProvider> iter;
+        private final Iterator<ContextDataProvider> iter;
 
-        public ProviderIterator(Iterator<org.apache.logging.log4j.spi.ContextDataProvider> iter) {
+        public ProviderIterator(Iterator<ContextDataProvider> iter) {
             this.iter = iter;
         }
 
@@ -249,7 +248,7 @@ public class ThreadContextDataInjector {
 
         @Override
         public ContextDataProvider next() {
-            org.apache.logging.log4j.spi.ContextDataProvider next = iter.next();
+            ContextDataProvider next = iter.next();
             if (next instanceof ContextDataProvider) {
                 return (ContextDataProvider) next;
             } else if (next != null) {
@@ -261,9 +260,9 @@ public class ThreadContextDataInjector {
 
     private static class ProviderWrapper implements ContextDataProvider {
 
-        private final org.apache.logging.log4j.spi.ContextDataProvider provider;
+        private final ContextDataProvider provider;
 
-        public ProviderWrapper(org.apache.logging.log4j.spi.ContextDataProvider provider) {
+        public ProviderWrapper(ContextDataProvider provider) {
             this.provider = provider;
         }
 

@@ -24,7 +24,6 @@ import java.rmi.MarshalledObject;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.apache.logging.log4j.ContextData;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;

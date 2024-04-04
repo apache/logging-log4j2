@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.spi.ScopedContextDataProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -52,6 +53,48 @@ public class ScopedContext {
 
     public static final Logger LOGGER = StatusLogger.getLogger();
 
+    private static final ThreadLocal<Deque<Instance>> scopedContext = new ThreadLocal<>();
+
+    /**
+     * Returns an immutable Map containing all the key/value pairs as Renderable objects.
+     * @return An immutable copy of the Map at the current scope.
+     */
+    private static Optional<Instance> getContext() {
+        Deque<Instance> stack = scopedContext.get();
+        if (stack != null) {
+            return Optional.of(stack.getFirst());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Add the ScopeContext.
+     * @param context The ScopeContext.
+     */
+    private static void addScopedContext(Instance context) {
+        Deque<Instance> stack = scopedContext.get();
+        if (stack == null) {
+            stack = new ArrayDeque<>();
+            scopedContext.set(stack);
+        }
+        stack.addFirst(context);
+    }
+
+    /**
+     * Remove the top ScopeContext.
+     */
+    private static void removeScopedContext() {
+        Deque<Instance> stack = scopedContext.get();
+        if (stack != null) {
+            if (!stack.isEmpty()) {
+                stack.removeFirst();
+            }
+            if (stack.isEmpty()) {
+                scopedContext.remove();
+            }
+        }
+    }
+
     /**
      * @hidden
      * Returns an unmodifiable copy of the current ScopedContext Map. This method should
@@ -59,7 +102,7 @@ public class ScopedContext {
      * @return the Map of Renderable objects.
      */
     public static Map<String, Renderable> getContextMap() {
-        Optional<Instance> context = ScopedContextDataProvider.getContext();
+        Optional<Instance> context = getContext();
         if (context.isPresent()
                 && context.get().contextMap != null
                 && !context.get().contextMap.isEmpty()) {
@@ -74,7 +117,7 @@ public class ScopedContext {
      * @return the number of items in the context map.
      */
     public static int size() {
-        Optional<Instance> context = ScopedContextDataProvider.getContext();
+        Optional<Instance> context = getContext();
         return context.map(instance -> instance.contextMap.size()).orElse(0);
     }
 
@@ -85,7 +128,7 @@ public class ScopedContext {
      */
     @SuppressWarnings("unchecked")
     public static <T> T get(String key) {
-        Optional<Instance> context = ScopedContextDataProvider.getContext();
+        Optional<Instance> context = getContext();
         if (context.isPresent()) {
             Renderable renderable = context.get().contextMap.get(key);
             if (renderable != null) {
@@ -101,7 +144,7 @@ public class ScopedContext {
      * @return The value of the key in the current ScopedContext.
      */
     public static String getString(String key) {
-        Optional<Instance> context = ScopedContextDataProvider.getContext();
+        Optional<Instance> context = getContext();
         if (context.isPresent()) {
             Renderable renderable = context.get().contextMap.get(key);
             if (renderable != null) {
@@ -116,7 +159,7 @@ public class ScopedContext {
      * @param map The Map to add entries to.
      */
     public static void addAll(Map<String, String> map) {
-        Optional<Instance> context = ScopedContextDataProvider.getContext();
+        Optional<Instance> context = getContext();
         if (context.isPresent()) {
             Map<String, Renderable> contextMap = context.get().contextMap;
             if (contextMap != null && !contextMap.isEmpty()) {
@@ -136,16 +179,16 @@ public class ScopedContext {
     public static Instance where(String key, Object value) {
         if (value != null) {
             Renderable renderable = value instanceof Renderable ? (Renderable) value : new ObjectRenderable(value);
-            Instance parent = current().isPresent() ? current().get() : null;
+            Instance parent = getContext().isPresent() ? getContext().get() : null;
             return new Instance(parent, key, renderable);
         } else {
-            if (current().isPresent()) {
+            if (getContext().isPresent()) {
                 Map<String, Renderable> map = getContextMap();
                 map.remove(key);
                 return new Instance(map);
             }
         }
-        return current().isPresent() ? current().get() : new Instance();
+        return getContext().isPresent() ? getContext().get() : new Instance();
     }
 
     /**
@@ -167,8 +210,8 @@ public class ScopedContext {
     public static Instance where(Map<String, ?> map) {
         if (map != null && !map.isEmpty()) {
             Map<String, Renderable> renderableMap = new HashMap<>();
-            if (current().isPresent()) {
-                renderableMap.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                renderableMap.putAll(getContext().get().contextMap);
             }
             map.forEach((key, value) -> {
                 if (value == null || (value instanceof String && ((String) value).isEmpty())) {
@@ -180,7 +223,7 @@ public class ScopedContext {
             });
             return new Instance(renderableMap);
         } else {
-            return current().isPresent() ? current().get() : new Instance();
+            return getContext().isPresent() ? getContext().get() : new Instance();
         }
     }
 
@@ -194,15 +237,15 @@ public class ScopedContext {
         if (obj != null) {
             Renderable renderable = obj instanceof Renderable ? (Renderable) obj : new ObjectRenderable(obj);
             Map<String, Renderable> map = new HashMap<>();
-            if (current().isPresent()) {
-                map.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                map.putAll(getContext().get().contextMap);
             }
             map.put(key, renderable);
             new Instance(map).run(op);
         } else {
             Map<String, Renderable> map = new HashMap<>();
-            if (current().isPresent()) {
-                map.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                map.putAll(getContext().get().contextMap);
             }
             map.remove(key);
             new Instance(map).run(op);
@@ -220,8 +263,8 @@ public class ScopedContext {
         if (obj != null) {
             Renderable renderable = obj instanceof Renderable ? (Renderable) obj : new ObjectRenderable(obj);
             Map<String, Renderable> map = new HashMap<>();
-            if (current().isPresent()) {
-                map.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                map.putAll(getContext().get().contextMap);
             }
             map.put(key, renderable);
             if (executorService != null) {
@@ -233,8 +276,8 @@ public class ScopedContext {
             }
         } else {
             Map<String, Renderable> map = new HashMap<>();
-            if (current().isPresent()) {
-                map.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                map.putAll(getContext().get().contextMap);
             }
             map.remove(key);
             if (executorService != null) {
@@ -255,8 +298,8 @@ public class ScopedContext {
     public static void runWhere(Map<String, ?> map, Runnable op) {
         if (map != null && !map.isEmpty()) {
             Map<String, Renderable> renderableMap = new HashMap<>();
-            if (current().isPresent()) {
-                renderableMap.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                renderableMap.putAll(getContext().get().contextMap);
             }
             map.forEach((key, value) -> {
                 renderableMap.put(key, value instanceof Renderable ? (Renderable) value : new ObjectRenderable(value));
@@ -277,15 +320,15 @@ public class ScopedContext {
         if (obj != null) {
             Renderable renderable = obj instanceof Renderable ? (Renderable) obj : new ObjectRenderable(obj);
             Map<String, Renderable> map = new HashMap<>();
-            if (current().isPresent()) {
-                map.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                map.putAll(getContext().get().contextMap);
             }
             map.put(key, renderable);
             return new Instance(map).call(op);
         } else {
             Map<String, Renderable> map = new HashMap<>();
-            if (current().isPresent()) {
-                map.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                map.putAll(getContext().get().contextMap);
             }
             map.remove(key);
             return new Instance(map).call(op);
@@ -304,8 +347,8 @@ public class ScopedContext {
         if (obj != null) {
             Renderable renderable = obj instanceof Renderable ? (Renderable) obj : new ObjectRenderable(obj);
             Map<String, Renderable> map = new HashMap<>();
-            if (current().isPresent()) {
-                map.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                map.putAll(getContext().get().contextMap);
             }
             map.put(key, renderable);
             if (executorService != null) {
@@ -318,8 +361,8 @@ public class ScopedContext {
         } else {
             if (executorService != null) {
                 Map<String, Renderable> map = new HashMap<>();
-                if (current().isPresent()) {
-                    map.putAll(current().get().contextMap);
+                if (getContext().isPresent()) {
+                    map.putAll(getContext().get().contextMap);
                 }
                 map.remove(key);
                 return executorService.submit(new Caller<R>(
@@ -339,8 +382,8 @@ public class ScopedContext {
     public static <R> R callWhere(Map<String, ?> map, Callable<R> op) throws Exception {
         if (map != null && !map.isEmpty()) {
             Map<String, Renderable> renderableMap = new HashMap<>();
-            if (current().isPresent()) {
-                renderableMap.putAll(current().get().contextMap);
+            if (getContext().isPresent()) {
+                renderableMap.putAll(getContext().get().contextMap);
             }
             map.forEach((key, value) -> {
                 renderableMap.put(key, value instanceof Renderable ? (Renderable) value : new ObjectRenderable(value));
@@ -349,14 +392,6 @@ public class ScopedContext {
         } else {
             return op.call();
         }
-    }
-
-    /**
-     * Returns an Optional holding the active ScopedContext.Instance
-     * @return an Optional containing the active ScopedContext, if there is one.
-     */
-    private static Optional<Instance> current() {
-        return ScopedContextDataProvider.getContext();
     }
 
     public static class Instance {
@@ -500,11 +535,11 @@ public class ScopedContext {
             if (contextStack != null) {
                 ThreadContext.setStack(contextStack);
             }
-            ScopedContextDataProvider.addScopedContext(scopedContext);
+            addScopedContext(scopedContext);
             try {
                 op.run();
             } finally {
-                ScopedContextDataProvider.removeScopedContext();
+                removeScopedContext();
                 ThreadContext.clearAll();
             }
         }
@@ -551,11 +586,11 @@ public class ScopedContext {
             if (contextStack != null) {
                 ThreadContext.setStack(contextStack);
             }
-            ScopedContextDataProvider.addScopedContext(scopedContext);
+            addScopedContext(scopedContext);
             try {
                 return op.call();
             } finally {
-                ScopedContextDataProvider.removeScopedContext();
+                removeScopedContext();
                 ThreadContext.clearAll();
             }
         }
