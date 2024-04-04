@@ -1,0 +1,80 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+* Get
+** xref:download.adoc[Download]
+** xref:runtime-dependencies.adoc[]
+** xref:release-notes.adoc[]
+* xref:support.adoc[]
+** xref:security.adoc[]
+** xref:thanks.adoc[Thanks]
+
+.Learn
+* xref:manual/index.adoc[]
+** xref:manual/architecture.adoc[]
+** xref:manual/migration.adoc[]
+** xref:manual/api.adoc[]
+** xref:manual/logbuilder.adoc[]
+** xref:manual/flowtracing.adoc[]
+** xref:manual/markers.adoc[]
+** xref:manual/eventlogging.adoc[]
+** xref:manual/messages.adoc[]
+** xref:manual/thread-context.adoc[]
+** xref:manual/configuration.adoc[]
+** xref:manual/usage.adoc[]
+** xref:manual/cloud.adoc[]
+** xref:manual/lookups.adoc[]
+** xref:manual/appenders.adoc[]
+** xref:manual/layouts.adoc[]
+*** xref:manual/json-template-layout.adoc[]
+** xref:manual/filters.adoc[]
+** xref:manual/async.adoc[]
+** xref:manual/garbagefree.adoc[]
+** xref:manual/extending.adoc[]
+** xref:manual/plugins.adoc[]
+** xref:manual/customconfig.adoc[]
+** xref:manual/customloglevels.adoc[]
+** xref:manual/jmx.adoc[]
+** xref:manual/logsep.adoc[]
+** xref:manual/performance.adoc[]
+* xref:plugin-reference.adoc[Plugin reference]
+* xref:javadoc.adoc[Java API reference]
+* xref:articles.adoc[Articles]
+* xref:faq.adoc[F.A.Q.]
+
+.Components
+* xref:log4j-api.adoc[]
+* xref:log4j-1.2-api.adoc[]
+* xref:log4j-slf4j-impl.adoc[]
+* xref:log4j-jul.adoc[]
+* xref:log4j-jpl.adoc[]
+* xref:log4j-to-slf4j.adoc[]
+* xref:log4j-flume-ng.adoc[]
+* xref:log4j-mongodb3.adoc[]
+* xref:log4j-mongodb4.adoc[]
+* xref:log4j-iostreams.adoc[]
+* xref:log4j-docker.adoc[]
+* xref:log4j-kubernetes.adoc[]
+* xref:log4j-spring-cloud-config-client.adoc[]
+
+.Related projects
+* link:/log4j/jakarta[Log4j Jakarta EE]
+* link:/log4j/jmx-gui[Log4j JMX GUI]
+* link:/log4j/kotlin[Log4j Kotlin]
+* link:/log4j/scala[Log4j Scala]
+* link:/log4j/tools[Log4j Tools]
+* link:/log4j/transform[Log4j Transformation Tools]
