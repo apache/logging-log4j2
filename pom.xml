@@ -723,7 +723,7 @@
               <changelogTemplates>
                 <template>
                   <source>.release-notes.adoc.ftl</source>
-                  <target>_release-notes/_%v.adoc</target>
+                  <target>_release-notes/%v.adoc</target>
                 </template>
               </changelogTemplates>
             </configuration>
