@@ -88,13 +88,11 @@ public final class StackLocator {
                 }
             }
         } catch (final Exception | LinkageError e) {
-            if (Constants.JAVA_MAJOR_VERSION > 8) {
-                LOGGER.warn(
-                        "Runtime environment or build system does not support multi-release JARs. This will impact location-based features.");
-            } else {
-                LOGGER.warn(
-                        "`sun.reflect.Reflection.getCallerClass(int)` is not supported. This will impact location-based features.");
-            }
+            // We can not use `Constants` here, since they depend on `PropertiesUtil`.
+            LOGGER.warn(
+                    System.getProperty("java.version", "").startsWith("1.8")
+                            ? "`sun.reflect.Reflection.getCallerClass(int)` is not supported. This will impact location-based features."
+                            : "Runtime environment or build system does not support multi-release JARs. This will impact location-based features.");
             getCallerClassMethod = null;
             java7u25CompensationOffset = -1;
         }
