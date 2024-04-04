@@ -81,10 +81,10 @@ public class TestLogger extends AbstractLogger {
             sb.append(' ');
         }
         sb.append(message.getFormattedMessage());
-        Map<String, ScopedContext.Renderable> contextMap = ScopedContext.getContextMap();
+        Map<String, Object> contextMap = ScopedContext.getContextMap();
         final Map<String, String> mdc = new HashMap<>(ThreadContext.getImmutableContext());
         if (contextMap != null && !contextMap.isEmpty()) {
-            contextMap.forEach((key, value) -> mdc.put(key, value.render()));
+            contextMap.forEach((key, value) -> mdc.put(key, value.toString()));
         }
         if (!mdc.isEmpty()) {
             sb.append(' ');
