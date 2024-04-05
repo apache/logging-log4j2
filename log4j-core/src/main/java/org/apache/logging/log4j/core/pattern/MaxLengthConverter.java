@@ -30,7 +30,9 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * On invalid length the default value 100 is used (and an error message is logged).
  * If max length is greater than 20, an abbreviated text will get ellipsis ("...") appended.
  * Example usage (for email subject):
- * {@code "%maxLen{[AppName, ${hostName}, ${web:contextPath}] %p: %c{1} - %m%notEmpty{ =>%ex{short}}}{160}"}
+ * <pre>{@code
+ * %maxLen{[AppName, ${hostName}, ${web:contextPath}] %p: %c{1} - %m%notEmpty{ =>%ex{short}}}{160}
+ * }</pre>
  *
  * @author Thies Wellpott
  */

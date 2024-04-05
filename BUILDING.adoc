@@ -62,12 +62,7 @@ You can build the website and manual as follows:
 ./mvnw site
 ----
 
-And view it using a simple HTTP server, e.g., the one comes with the Python:
-
-[source,bash]
-----
-python3 -m http.server -d target/site
-----
+You can view the generated website with a browser by pointing it to `target/site` directory.
 
 [#development]
 == Development
