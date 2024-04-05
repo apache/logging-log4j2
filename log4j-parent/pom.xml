@@ -1167,36 +1167,80 @@
       <build>
         <plugins>
 
+          <!-- We will compile sources as usual and make a second pass to process plugins, because...
+               `log4j-core` contains `PluginProcessor`, that is responsible for generating `Log4j2Plugins.dat` from `@Plugin`-annotated members.
+               `log4j-core` also contains `@Plugin`-annotated members too.
+               That is, we need `log4j-core` to build `log4j-core`.
+               To work around this chicken-and-egg problem, we build as follows:
+
+               1. Compile sources using the `default-compile` default compilation execution.
+                  This will generate the `PluginProcessor` class.
+
+               2. Make a second compilation pass using the generated `PluginProcessor`. -->
           <plugin>
+
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <annotationProcessorPaths combine.children="append">
-                <!-- Include `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` that generates `log4j-plugins.xml`.
-                     `DescriptorGenerator` must precede `PluginProcessor`, since the latter *claims* the `@Plugin`.
-                     Once claimed, `javac` doesn't pass those sources to other processors. -->
-                <path>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-docgen</artifactId>
-                  <version>${log4j-docgen.version}</version>
-                </path>
-                <!-- `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` for generating `META-INF/org/apache/.../Log4j2Plugins.dat`: -->
-                <path>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-core</artifactId>
-                  <version>${project.version}</version>
-                </path>
-              </annotationProcessorPaths>
-              <compilerArgs combine.children="append">
-                <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
-                <arg>-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir.phase2}/${project.artifactId}-plugins.xml</arg>
-                <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
-                <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
-                <arg>-Alog4j.docgen.version=${project.version}</arg>
-                <arg>-Alog4j.docgen.description=${project.description}</arg>
-                <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
-              </compilerArgs>
-            </configuration>
+
+            <executions>
+
+              <!-- 1st pass: compile sources as usual.
+                   This needs to be explicitly stated here to set the order of execution. -->
+              <execution>
+                <id>default-compile</id>
+              </execution>
+
+              <!-- 1st pass for tests: compile sources as usual.
+                   This needs to be explicitly stated here to set the order of execution. -->
+              <execution>
+                <id>default-testCompile</id>
+              </execution>
+
+              <!-- 2nd pass: exclusively generate plugin descriptors -->
+              <execution>
+                <id>generate-plugin-descriptors</id>
+                <goals>
+                  <goal>compile</goal>
+                  <goal>testCompile</goal>
+                </goals>
+                <configuration combine.self="override">
+                  <annotationProcessorPaths>
+                    <!-- Include `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` that generates `<artifactId>-plugins.xml` -->
+                    <path>
+                      <groupId>org.apache.logging.log4j</groupId>
+                      <artifactId>log4j-docgen</artifactId>
+                      <version>${log4j-docgen.version}</version>
+                    </path>
+                    <!-- Include `log4j-core` providing `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` that generates `Log4j2Plugins.dat` -->
+                    <path>
+                      <groupId>org.apache.logging.log4j</groupId>
+                      <artifactId>log4j-core</artifactId>
+                      <version>${project.version}</version>
+                    </path>
+                  </annotationProcessorPaths>
+                  <annotationProcessors>
+                    <!-- Process sources using `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` to generate `<artifactId>-plugins.xml`.
+                         `DescriptorGenerator` must precede `PluginProcessor`, since the latter *claims* the `@Plugin`.
+                         Once claimed, `javac` doesn't pass those sources to other processors. -->
+                    <processor>org.apache.logging.log4j.docgen.processor.DescriptorGenerator</processor>
+                    <!-- Process sources using `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` to generate `Log4j2Plugins.dat` -->
+                    <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
+                  </annotationProcessors>
+                  <compilerArgs>
+                    <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
+                    <arg>-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir}/${project.artifactId}-plugins.xml</arg>
+                    <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
+                    <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
+                    <arg>-Alog4j.docgen.version=${project.version}</arg>
+                    <arg>-Alog4j.docgen.description=${project.description}</arg>
+                    <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
+                  </compilerArgs>
+                  <proc>only</proc>
+                </configuration>
+              </execution>
+
+            </executions>
+
           </plugin>
 
         </plugins>
