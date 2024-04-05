@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 
 class DefaultScopedContextProviderTest extends ScopedContextProviderSuite {
 
-    private static DefaultScopedContextProvider createProvider() {
-        return new DefaultScopedContextProvider();
+    private static QueuedScopedContextProvider createProvider() {
+        return new QueuedScopedContextProvider();
     }
 
     @Test

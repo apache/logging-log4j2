@@ -28,7 +28,9 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.ScopedContextProvider;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -57,6 +59,8 @@ public class SimpleLogger extends AbstractLogger {
     private PrintStream stream;
 
     private final String logName;
+    private final ScopedContextProvider scopedContextProvider =
+            ProviderUtil.getProvider().getScopedContextProvider();
 
     public SimpleLogger(
             final String name,
@@ -295,6 +299,7 @@ public class SimpleLogger extends AbstractLogger {
         sb.append(msg.getFormattedMessage());
         if (showContextMap) {
             final Map<String, String> mdc = ThreadContext.getImmutableContext();
+            scopedContextProvider.getContextMap().forEach((key, value) -> mdc.put(key, value.toString()));
             if (mdc.size() > 0) {
                 sb.append(SPACE);
                 sb.append(mdc.toString());

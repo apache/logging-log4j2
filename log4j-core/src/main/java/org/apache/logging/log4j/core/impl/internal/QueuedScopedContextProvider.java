@@ -34,10 +34,10 @@ import org.apache.logging.log4j.spi.ScopedContextProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringMap;
 
-public class DefaultScopedContextProvider implements ScopedContextProvider {
+public class QueuedScopedContextProvider implements ScopedContextProvider {
 
     public static final Logger LOGGER = StatusLogger.getLogger();
-    public static final ScopedContextProvider INSTANCE = new DefaultScopedContextProvider();
+    public static final ScopedContextProvider INSTANCE = new QueuedScopedContextProvider();
 
     private final ThreadLocal<Deque<Instance>> scopedContext = new ThreadLocal<>();
 
@@ -219,13 +219,13 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
 
     private static final class Instance implements ScopedContext.Instance {
 
-        private final DefaultScopedContextProvider provider;
+        private final QueuedScopedContextProvider provider;
         private final Instance parent;
         private final String key;
         private final Object value;
         private final Map<String, ?> contextMap;
 
-        private Instance(final DefaultScopedContextProvider provider) {
+        private Instance(final QueuedScopedContextProvider provider) {
             this.provider = provider;
             parent = null;
             key = null;
@@ -233,7 +233,7 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
             contextMap = null;
         }
 
-        private Instance(final DefaultScopedContextProvider provider, final Map<String, ?> map) {
+        private Instance(final QueuedScopedContextProvider provider, final Map<String, ?> map) {
             this.provider = provider;
             parent = null;
             key = null;
@@ -322,7 +322,7 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
                     new Caller<>(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task));
         }
 
-        private DefaultScopedContextProvider getProvider() {
+        private QueuedScopedContextProvider getProvider() {
             return provider;
         }
     }

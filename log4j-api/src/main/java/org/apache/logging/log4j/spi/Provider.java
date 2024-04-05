@@ -438,7 +438,7 @@ public class Provider {
      * @return An implementation of the {@link ScopedContextProvider} service to use.
      */
     public ScopedContextProvider getScopedContextProvider() {
-        return ScopedContextProvider.noop();
+        return ScopedContextProvider.simple();
     }
 
     /**

@@ -148,6 +148,27 @@ public final class ScopedContext {
     }
 
     /**
+     * Return the object with the specified key from the current context.
+     * @param key the key.
+     * @return the value of the key or null.
+     * @param <T> The type of object expected.
+     * @throws ClassCastException if the specified type does not match the object stored.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(String key) {
+        return (T) provider.getValue(key);
+    }
+
+    /**
+     * Return String value of the key from the current ScopedContext, if there is one and the key exists.
+     * @param key The key.
+     * @return The value of the key in the current ScopedContext.
+     */
+    public static String getString(String key) {
+        return provider.getString(key);
+    }
+
+    /**
      * A holder of scoped context data.
      */
     public interface Instance {

@@ -20,7 +20,7 @@ import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import java.util.ServiceLoader;
-import org.apache.logging.log4j.core.impl.internal.DefaultScopedContextProvider;
+import org.apache.logging.log4j.core.impl.internal.QueuedScopedContextProvider;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ScopedContextProvider;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -43,6 +43,6 @@ public class Log4jProvider extends Provider {
                         ServiceLoader.load(ScopedContextProvider.class),
                         StatusLogger.getLogger())
                 .findFirst()
-                .orElse(DefaultScopedContextProvider.INSTANCE);
+                .orElse(QueuedScopedContextProvider.INSTANCE);
     }
 }
