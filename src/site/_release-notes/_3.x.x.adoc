@@ -40,7 +40,7 @@ This release contains...
 
 * Update `co.elastic.logging:log4j2-ecs-layout` to version `1.6.0` (https://github.com/apache/logging-log4j2/pull/2303[2303])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.17.0` (https://github.com/apache/logging-log4j2/pull/2371[2371])
-* Update `com.github.luben:zstd-jni` to version `1.5.6-1` (https://github.com/apache/logging-log4j2/pull/2423[2423])
+* Update `com.github.luben:zstd-jni` to version `1.5.6-2` (https://github.com/apache/logging-log4j2/pull/2446[2446])
 * Update `com.github.tomakehurst:wiremock-jre8` to version `2.35.2` (https://github.com/apache/logging-log4j2/pull/2305[2305])
 * Update `com.google.guava:guava` to version `33.1.0-jre` (https://github.com/apache/logging-log4j2/pull/2375[2375])
 * Update `commons-io:commons-io` to version `2.16.0` (https://github.com/apache/logging-log4j2/pull/2429[2429])
