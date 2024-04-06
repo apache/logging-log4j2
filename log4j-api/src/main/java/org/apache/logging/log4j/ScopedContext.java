@@ -152,7 +152,7 @@ public final class ScopedContext {
      * @param key the key.
      * @return the value of the key or null.
      */
-    public static Object get(String key) {
+    public static Object get(final String key) {
         return provider.getValue(key);
     }
 
@@ -161,7 +161,7 @@ public final class ScopedContext {
      * @param key The key.
      * @return The value of the key in the current ScopedContext.
      */
-    public static String getString(String key) {
+    public static String getString(final String key) {
         return provider.getString(key);
     }
 
@@ -193,7 +193,9 @@ public final class ScopedContext {
          *
          * @param task the code block to execute.
          */
-        void run(Runnable task);
+        default void run(final Runnable task) {
+            wrap(task).run();
+        }
 
         /**
          * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
@@ -201,7 +203,9 @@ public final class ScopedContext {
          * @param task the code block to execute.
          * @return a Future representing pending completion of the task
          */
-        Future<Void> run(ExecutorService executorService, Runnable task);
+        default Future<Void> run(final ExecutorService executorService, final Runnable task) {
+            return executorService.submit(wrap(task), null);
+        }
 
         /**
          * Executes a code block that includes all the key/value pairs added to the ScopedContext.
@@ -209,7 +213,9 @@ public final class ScopedContext {
          * @param task the code block to execute.
          * @return the return value from the code block.
          */
-        <R> R call(Callable<R> task) throws Exception;
+        default <R> R call(final Callable<? extends R> task) throws Exception {
+            return wrap(task).call();
+        }
 
         /**
          * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
@@ -217,7 +223,9 @@ public final class ScopedContext {
          * @param task the code block to execute.
          * @return a Future representing pending completion of the task
          */
-        <R> Future<R> call(ExecutorService executorService, Callable<R> task);
+        default <R> Future<R> call(final ExecutorService executorService, final Callable<? extends R> task) {
+            return executorService.submit(wrap(task));
+        }
 
         /**
          * Wraps the provided Runnable method with a Runnable method that will instantiate the Scoped and Thread
@@ -233,6 +241,6 @@ public final class ScopedContext {
          * @param task the Callable task to perform.
          * @return a Callable.
          */
-        <R> Callable<R> wrap(Callable<R> task);
+        <R> Callable<R> wrap(Callable<? extends R> task);
     }
 }

@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ScopedContext;
@@ -41,47 +39,20 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
     public static final Logger LOGGER = StatusLogger.getLogger();
     public static final ScopedContextProvider INSTANCE = new DefaultScopedContextProvider();
 
-    private final ThreadLocal<Instance> scopedContext = new ThreadLocal<>();
+    private final ThreadLocal<MapInstance> scopedContext = new ThreadLocal<>();
+    private final MapInstance emptyMap = new MapInstance(this, Collections.emptyMap());
 
     /**
      * Returns an immutable Map containing all the key/value pairs as Object objects.
      * @return The current context Instance.
      */
-    private Optional<Instance> getContext() {
-        return Optional.ofNullable(scopedContext.get());
-    }
-
-    /**
-     * Add the ScopeContext.
-     * @param context The ScopeContext.
-     */
-    private void addScopedContext(final Instance context) {
-        Instance current = scopedContext.get();
-        scopedContext.set(context);
-    }
-
-    /**
-     * Remove the top ScopeContext.
-     */
-    private void removeScopedContext() {
-        final Instance current = scopedContext.get();
-        if (current != null) {
-            if (current.parent != null) {
-                scopedContext.set(current.parent);
-            } else {
-                scopedContext.remove();
-            }
-        }
+    private MapInstance getContext() {
+        return Optional.ofNullable(scopedContext.get()).orElse(emptyMap);
     }
 
     @Override
     public Map<String, ?> getContextMap() {
-        final Optional<Instance> context = getContext();
-        return context.isPresent()
-                        && context.get().contextMap != null
-                        && !context.get().contextMap.isEmpty()
-                ? Collections.unmodifiableMap(context.get().contextMap)
-                : Collections.emptyMap();
+        return getContext().contextMap;
     }
 
     /**
@@ -91,10 +62,7 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
      */
     @Override
     public Object getValue(final String key) {
-        final Optional<Instance> context = getContext();
-        return context.map(instance -> instance.contextMap)
-                .map(map -> map.get(key))
-                .orElse(null);
+        return getContext().contextMap.get(key);
     }
 
     /**
@@ -104,14 +72,8 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
      */
     @Override
     public String getString(final String key) {
-        final Optional<Instance> context = getContext();
-        if (context.isPresent()) {
-            final Object obj = context.get().contextMap.get(key);
-            if (obj != null) {
-                return obj.toString();
-            }
-        }
-        return null;
+        final Object obj = getContext().contextMap.get(key);
+        return obj != null ? obj.toString() : null;
     }
 
     /**
@@ -120,18 +82,12 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
      */
     @Override
     public void addContextMapTo(final StringMap map) {
-        final Optional<Instance> context = getContext();
-        if (context.isPresent()) {
-            final Map<String, ?> contextMap = context.get().contextMap;
-            if (contextMap != null && !contextMap.isEmpty()) {
-                contextMap.forEach((key, value) -> map.putValue(key, value.toString()));
-            }
-        }
+        getContext().contextMap.forEach((key, value) -> map.putValue(key, value.toString()));
     }
 
     @Override
     public ScopedContext.Instance newScopedContext() {
-        return getContext().isPresent() ? getContext().get() : null;
+        return getContext();
     }
 
     /**
@@ -144,21 +100,7 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
      */
     @Override
     public ScopedContext.Instance newScopedContext(final String key, final Object value) {
-        if (value != null) {
-            final Instance parent = getContext().isPresent() ? getContext().get() : null;
-            if (parent != null) {
-                return new Instance(parent, key, value);
-            } else {
-                return new Instance(this, key, value);
-            }
-        } else {
-            if (getContext().isPresent()) {
-                final Map<String, ?> map = getContextMap();
-                map.remove(key);
-                return new Instance(this, map);
-            }
-        }
-        return newScopedContext();
+        return getContext().where(key, value);
     }
 
     /**
@@ -168,95 +110,32 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
      */
     @Override
     public ScopedContext.Instance newScopedContext(final Map<String, ?> map) {
-        if (map != null && !map.isEmpty()) {
-            final Map<String, Object> objectMap = new HashMap<>();
-            if (getContext().isPresent()) {
-                objectMap.putAll(getContext().get().contextMap);
+        final Map<String, Object> objectMap = new HashMap<>(getContext().contextMap);
+        map.forEach((key, value) -> {
+            if (value == null) {
+                objectMap.remove(key);
+            } else {
+                objectMap.put(key, value);
             }
-            map.forEach((key, value) -> {
-                if (value == null || (value instanceof String && ((String) value).isEmpty())) {
-                    objectMap.remove(key);
-                } else {
-                    objectMap.put(key, value);
-                }
-            });
-            return new Instance(this, objectMap);
-        } else {
-            return getContext().isPresent() ? getContext().get() : null;
-        }
+        });
+        return new MapInstance(this, Collections.unmodifiableMap(objectMap));
     }
 
-    private static void setupContext(
-            final Map<String, Object> contextMap,
-            final Map<String, String> threadContextMap,
-            final Collection<String> contextStack,
-            final Instance context) {
-        Instance scopedContext = context;
-        // If the current context has a Map then we can just use it.
-        if (context.contextMap == null) {
-            do {
-                if (scopedContext.contextMap != null) {
-                    // Once we hit a scope with an already populated Map we won't need to go any further.
-                    contextMap.putAll(scopedContext.contextMap);
-                    break;
-                } else if (scopedContext.key != null) {
-                    contextMap.putIfAbsent(scopedContext.key, scopedContext.value);
-                }
-                scopedContext = scopedContext.parent;
-            } while (scopedContext != null);
-            scopedContext = new Instance(context.getProvider(), contextMap);
-        }
-        if (threadContextMap != null && !threadContextMap.isEmpty()) {
-            ThreadContext.putAll(threadContextMap);
-        }
-        if (contextStack != null) {
-            ThreadContext.setStack(contextStack);
-        }
-        context.getProvider().addScopedContext(scopedContext);
-    }
-
-    private static final class Instance implements ScopedContext.Instance {
+    /**
+     * A simple implementation of {@link ScopedContext.Instance} based on an immutable map.
+     */
+    private static final class MapInstance implements ScopedContext.Instance {
 
         private final DefaultScopedContextProvider provider;
-        private final Instance parent;
-        private final String key;
-        private final Object value;
         private final Map<String, ?> contextMap;
 
-        private Instance(final DefaultScopedContextProvider provider) {
+        /**
+         * @param provider An instance of this provider.
+         * @param contextMap An immutable map.
+         */
+        private MapInstance(final DefaultScopedContextProvider provider, final Map<String, ?> contextMap) {
             this.provider = provider;
-            parent = null;
-            key = null;
-            value = null;
-            contextMap = null;
-        }
-
-        private Instance(final DefaultScopedContextProvider provider, final Map<String, ?> map) {
-            this.provider = provider;
-            parent = null;
-            key = null;
-            value = null;
-            contextMap = map;
-        }
-
-        private Instance(final DefaultScopedContextProvider provider, final String key, final Object value) {
-            this.provider = provider;
-            parent = null;
-            this.key = key;
-            this.value = value;
-            contextMap = null;
-        }
-
-        private Instance(final Instance parent, final String key, final Object value) {
-            provider = parent.getProvider();
-            this.parent = parent;
-            this.key = key;
-            this.value = value;
-            contextMap = null;
-        }
-
-        public Instance getParent() {
-            return parent;
+            this.contextMap = contextMap;
         }
 
         /**
@@ -267,8 +146,8 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
          * @return the ScopedContext being constructed.
          */
         @Override
-        public Instance where(final String key, final Object value) {
-            return addObject(key, value);
+        public ScopedContext.Instance where(final String key, final Object value) {
+            return new KeyValueInstance(this, null, key, value);
         }
 
         /**
@@ -279,57 +158,29 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
          * @return the ScopedContext being constructed.
          */
         @Override
-        public Instance where(final String key, final Supplier<Object> supplier) {
-            return addObject(key, supplier.get());
+        public ScopedContext.Instance where(final String key, final Supplier<Object> supplier) {
+            return new KeyValueInstance(this, null, key, supplier.get());
         }
 
-        private Instance addObject(final String key, final Object obj) {
-            return obj != null ? new Instance(this, key, obj) : this;
+        private static void setThreadContext(
+                final Map<String, String> threadContextMap, final Collection<String> threadContextStack) {
+            ThreadContext.clearMap();
+            ThreadContext.putAll(threadContextMap);
+            if (threadContextStack != null) {
+                ThreadContext.setStack(threadContextStack);
+            } else {
+                ThreadContext.clearStack();
+            }
         }
 
-        /**
-         * Executes a code block that includes all the key/value pairs added to the ScopedContext.
-         *
-         * @param task the code block to execute.
-         */
-        @Override
-        public void run(final Runnable task) {
-            new Runner(this, null, null, task).run();
-        }
-
-        /**
-         * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
-         *
-         * @param task the code block to execute.
-         * @return a Future representing pending completion of the task
-         */
-        @Override
-        public Future<Void> run(final ExecutorService executorService, final Runnable task) {
-            return executorService.submit(
-                    new Runner(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task), null);
-        }
-
-        /**
-         * Executes a code block that includes all the key/value pairs added to the ScopedContext.
-         *
-         * @param task the code block to execute.
-         * @return the return value from the code block.
-         */
-        @Override
-        public <R> R call(final Callable<R> task) throws Exception {
-            return new Caller<>(this, null, null, task).call();
-        }
-
-        /**
-         * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
-         *
-         * @param task the code block to execute.
-         * @return a Future representing pending completion of the task
-         */
-        @Override
-        public <R> Future<R> call(final ExecutorService executorService, final Callable<R> task) {
-            return executorService.submit(
-                    new Caller<>(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task));
+        private MapInstance setScopedContext(final MapInstance context) {
+            final MapInstance current = provider.scopedContext.get();
+            if (context != null) {
+                provider.scopedContext.set(context);
+            } else {
+                provider.scopedContext.remove();
+            }
+            return current;
         }
 
         /**
@@ -339,8 +190,19 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
          * @return a Runnable.
          */
         @Override
-        public Runnable wrap(Runnable task) {
-            return new Runner(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task);
+        public Runnable wrap(final Runnable task) {
+            final Map<String, String> contextMap = ThreadContext.getImmutableContext();
+            final ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
+            return () -> {
+                setThreadContext(contextMap, contextStack);
+                final MapInstance oldInstance = setScopedContext(this);
+                try {
+                    task.run();
+                } finally {
+                    setScopedContext(oldInstance);
+                    ThreadContext.clearAll();
+                }
+            };
         }
 
         /**
@@ -350,72 +212,72 @@ public class DefaultScopedContextProvider implements ScopedContextProvider {
          * @return a Callable.
          */
         @Override
-        public <R> Callable<R> wrap(Callable<R> task) {
-            return new Caller<>(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task);
-        }
-
-        private DefaultScopedContextProvider getProvider() {
-            return provider;
-        }
-    }
-
-    private static class Runner implements Runnable {
-        private final Map<String, Object> contextMap = new HashMap<>();
-        private final Map<String, String> threadContextMap;
-        private final ThreadContext.ContextStack contextStack;
-        private final Instance context;
-        private final Runnable op;
-
-        public Runner(
-                final Instance context,
-                final Map<String, String> threadContextMap,
-                final ThreadContext.ContextStack contextStack,
-                final Runnable op) {
-            this.context = context;
-            this.threadContextMap = threadContextMap;
-            this.contextStack = contextStack;
-            this.op = op;
-        }
-
-        @Override
-        public void run() {
-            setupContext(contextMap, threadContextMap, contextStack, context);
-            try {
-                op.run();
-            } finally {
-                context.getProvider().removeScopedContext();
-                ThreadContext.clearAll();
-            }
+        public <R> Callable<R> wrap(final Callable<? extends R> task) {
+            final Map<String, String> contextMap = ThreadContext.getImmutableContext();
+            final ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
+            return () -> {
+                setThreadContext(contextMap, contextStack);
+                final MapInstance oldInstance = setScopedContext(this);
+                try {
+                    return task.call();
+                } finally {
+                    setScopedContext(oldInstance);
+                    ThreadContext.clearAll();
+                }
+            };
         }
     }
 
-    private static class Caller<R> implements Callable<R> {
-        private final Map<String, Object> contextMap = new HashMap<>();
-        private final Instance context;
-        private final Map<String, String> threadContextMap;
-        private final ThreadContext.ContextStack contextStack;
-        private final Callable<R> op;
+    /**
+     * Forms a list of linked instances that registers the differences from a {@link MapInstance}.
+     */
+    private static final class KeyValueInstance implements ScopedContext.Instance {
 
-        public Caller(
-                final Instance context,
-                final Map<String, String> threadContextMap,
-                final ThreadContext.ContextStack contextStack,
-                final Callable<R> op) {
-            this.context = context;
-            this.threadContextMap = threadContextMap;
-            this.contextStack = contextStack;
-            this.op = op;
+        private final MapInstance base;
+        private final KeyValueInstance parent;
+        private final String key;
+        private final Object value;
+
+        private KeyValueInstance(
+                final MapInstance base, final KeyValueInstance parent, final String key, final Object value) {
+            this.base = base;
+            this.parent = parent;
+            this.key = key;
+            this.value = value;
         }
 
         @Override
-        public R call() throws Exception {
-            setupContext(contextMap, threadContextMap, contextStack, context);
-            try {
-                return op.call();
-            } finally {
-                context.getProvider().removeScopedContext();
-                ThreadContext.clearAll();
+        public ScopedContext.Instance where(final String key, final Object value) {
+            return new KeyValueInstance(base, this, key, value);
+        }
+
+        @Override
+        public ScopedContext.Instance where(final String key, final Supplier<Object> supplier) {
+            return new KeyValueInstance(base, this, key, supplier.get());
+        }
+
+        private MapInstance toMapInstance() {
+            final Map<String, Object> objectMap = new HashMap<>(base.contextMap);
+            KeyValueInstance current = this;
+            while (current != null) {
+                if (current.value == null) {
+                    objectMap.remove(current.key);
+                } else {
+                    objectMap.put(current.key, current.value);
+                }
+                current = current.parent;
             }
+            return new MapInstance(base.provider, Collections.unmodifiableMap(objectMap));
+        }
+
+        @Override
+        public Runnable wrap(final Runnable task) {
+            return toMapInstance().wrap(task);
+        }
+
+        @Override
+        public <R> Callable<R> wrap(final Callable<? extends R> task) {
+            return toMapInstance().wrap(task);
         }
     }
 }
