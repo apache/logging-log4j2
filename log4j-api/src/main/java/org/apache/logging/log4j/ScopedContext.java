@@ -151,12 +151,9 @@ public final class ScopedContext {
      * Return the object with the specified key from the current context.
      * @param key the key.
      * @return the value of the key or null.
-     * @param <T> The type of object expected.
-     * @throws ClassCastException if the specified type does not match the object stored.
      */
-    @SuppressWarnings("unchecked")
-    public static <T> T get(String key) {
-        return (T) provider.getValue(key);
+    public static Object get(String key) {
+        return provider.getValue(key);
     }
 
     /**
@@ -221,5 +218,21 @@ public final class ScopedContext {
          * @return a Future representing pending completion of the task
          */
         <R> Future<R> call(ExecutorService executorService, Callable<R> task);
+
+        /**
+         * Wraps the provided Runnable method with a Runnable method that will instantiate the Scoped and Thread
+         * Contexts in the target Thread before the caller's run method is called.
+         * @param task the Runnable task to perform.
+         * @return a Runnable.
+         */
+        Runnable wrap(Runnable task);
+
+        /**
+         * Wraps the provided Callable method with a Callable method that will instantiate the Scoped and Thread
+         * Contexts in the target Thread before the caller's call method is called.
+         * @param task the Callable task to perform.
+         * @return a Callable.
+         */
+        <R> Callable<R> wrap(Callable<R> task);
     }
 }

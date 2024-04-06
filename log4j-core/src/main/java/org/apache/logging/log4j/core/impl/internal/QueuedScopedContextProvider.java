@@ -322,6 +322,28 @@ public class QueuedScopedContextProvider implements ScopedContextProvider {
                     new Caller<>(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task));
         }
 
+        /**
+         * Wraps the provided Runnable method with a Runnable method that will instantiate the Scoped and Thread
+         * Contexts in the target Thread before the caller's run method is called.
+         * @param task the Runnable task to perform.
+         * @return a Runnable.
+         */
+        @Override
+        public Runnable wrap(Runnable task) {
+            return new Runner(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task);
+        }
+
+        /**
+         * Wraps the provided Callable method with a Callable method that will instantiate the Scoped and Thread
+         * Contexts in the target Thread before the caller's call method is called.
+         * @param task the Callable task to perform.
+         * @return a Callable.
+         */
+        @Override
+        public <R> Callable<R> wrap(Callable<R> task) {
+            return new Caller<>(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task);
+        }
+
         private QueuedScopedContextProvider getProvider() {
             return provider;
         }

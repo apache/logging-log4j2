@@ -65,46 +65,54 @@ public class ScopedContextTest {
     public void testRunThreads() throws Exception {
         BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(5);
         ExecutorService executorService = new ThreadPoolExecutor(1, 2, 30, TimeUnit.SECONDS, workQueue);
-        final long id = Thread.currentThread().getId();
-        final AtomicLong counter = new AtomicLong(0);
-        ScopedContext.runWhere("key1", "Log4j2", () -> {
-            assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
-            Future<?> future = ScopedContext.runWhere("key2", "value2", executorService, () -> {
-                assertNotEquals(Thread.currentThread().getId(), id);
+        try {
+            final long id = Thread.currentThread().getId();
+            final AtomicLong counter = new AtomicLong(0);
+            ScopedContext.runWhere("key1", "Log4j2", () -> {
                 assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
-                counter.incrementAndGet();
+                Future<?> future = ScopedContext.runWhere("key2", "value2", executorService, () -> {
+                    assertNotEquals(Thread.currentThread().getId(), id);
+                    assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+                    counter.incrementAndGet();
+                });
+                try {
+                    future.get();
+                    assertTrue(future.isDone());
+                    assertEquals(1, counter.get());
+                } catch (Exception ex) {
+                    fail("Failed with " + ex.getMessage());
+                }
             });
-            try {
-                future.get();
-                assertTrue(future.isDone());
-                assertEquals(1, counter.get());
-            } catch (Exception ex) {
-                fail("Failed with " + ex.getMessage());
-            }
-        });
+        } finally {
+            executorService.shutdown();
+        }
     }
 
     @Test
     public void testThreads() throws Exception {
         BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(5);
         ExecutorService executorService = new ThreadPoolExecutor(1, 2, 30, TimeUnit.SECONDS, workQueue);
-        final long id = Thread.currentThread().getId();
-        final AtomicLong counter = new AtomicLong(0);
-        ScopedContext.where("key1", "Log4j2").run(() -> {
-            assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
-            Future<?> future = ScopedContext.where("key2", "value2").run(executorService, () -> {
-                assertNotEquals(Thread.currentThread().getId(), id);
+        try {
+            final long id = Thread.currentThread().getId();
+            final AtomicLong counter = new AtomicLong(0);
+            ScopedContext.where("key1", "Log4j2").run(() -> {
                 assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
-                counter.incrementAndGet();
+                Future<?> future = ScopedContext.where("key2", "value2").run(executorService, () -> {
+                    assertNotEquals(Thread.currentThread().getId(), id);
+                    assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+                    counter.incrementAndGet();
+                });
+                try {
+                    future.get();
+                    assertTrue(future.isDone());
+                    assertEquals(1, counter.get());
+                } catch (Exception ex) {
+                    fail("Failed with " + ex.getMessage());
+                }
             });
-            try {
-                future.get();
-                assertTrue(future.isDone());
-                assertEquals(1, counter.get());
-            } catch (Exception ex) {
-                fail("Failed with " + ex.getMessage());
-            }
-        });
+        } finally {
+            executorService.shutdown();
+        }
     }
 
     @Test
@@ -112,43 +120,75 @@ public class ScopedContextTest {
         BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(5);
         final AtomicBoolean exceptionCaught = new AtomicBoolean(false);
         ExecutorService executorService = new ThreadPoolExecutor(1, 2, 30, TimeUnit.SECONDS, workQueue);
-        long id = Thread.currentThread().getId();
-        ScopedContext.runWhere("key1", "Log4j2", () -> {
-            assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
-            Future<?> future = ScopedContext.where("key2", "value2").run(executorService, () -> {
-                assertNotEquals(Thread.currentThread().getId(), id);
-                throw new NullPointerException("On purpose NPE");
+        try {
+            long id = Thread.currentThread().getId();
+            ScopedContext.runWhere("key1", "Log4j2", () -> {
+                assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+                Future<?> future = ScopedContext.where("key2", "value2").run(executorService, () -> {
+                    assertNotEquals(Thread.currentThread().getId(), id);
+                    throw new NullPointerException("On purpose NPE");
+                });
+                try {
+                    future.get();
+                } catch (ExecutionException ex) {
+                    assertThat(ex.getMessage(), equalTo("java.lang.NullPointerException: On purpose NPE"));
+                    return;
+                } catch (Exception ex) {
+                    fail("Failed with " + ex.getMessage());
+                }
+                fail("No exception caught");
             });
-            try {
-                future.get();
-            } catch (ExecutionException ex) {
-                assertThat(ex.getMessage(), equalTo("java.lang.NullPointerException: On purpose NPE"));
-                return;
-            } catch (Exception ex) {
-                fail("Failed with " + ex.getMessage());
-            }
-            fail("No exception caught");
-        });
+        } finally {
+            executorService.shutdown();
+        }
     }
 
     @Test
     public void testThreadCall() throws Exception {
         BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(5);
         ExecutorService executorService = new ThreadPoolExecutor(1, 2, 30, TimeUnit.SECONDS, workQueue);
-        final long id = Thread.currentThread().getId();
-        final AtomicInteger counter = new AtomicInteger(0);
-        int returnVal = ScopedContext.callWhere("key1", "Log4j2", () -> {
-            assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
-            Future<Integer> future = ScopedContext.callWhere("key2", "value2", executorService, () -> {
-                assertNotEquals(Thread.currentThread().getId(), id);
+        try {
+            final long id = Thread.currentThread().getId();
+            final AtomicInteger counter = new AtomicInteger(0);
+            int returnVal = ScopedContext.callWhere("key1", "Log4j2", () -> {
                 assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
-                return counter.incrementAndGet();
+                Future<Integer> future = ScopedContext.callWhere("key2", "value2", executorService, () -> {
+                    assertNotEquals(Thread.currentThread().getId(), id);
+                    assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+                    return counter.incrementAndGet();
+                });
+                Integer val = future.get();
+                assertTrue(future.isDone());
+                assertEquals(1, counter.get());
+                return val;
             });
+            assertThat(returnVal, equalTo(1));
+        } finally {
+            executorService.shutdown();
+        }
+    }
+
+    @Test
+    public void testAsyncCall() throws Exception {
+        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(5);
+        ExecutorService executorService = new ThreadPoolExecutor(1, 2, 30, TimeUnit.SECONDS, workQueue);
+        try {
+            final long id = Thread.currentThread().getId();
+            final AtomicInteger counter = new AtomicInteger(0);
+            ScopedContext.Instance instance =
+                    ScopedContext.where("key1", "Log4j2").where("key2", "value2");
+            Future<Integer> future = executorService.submit(instance.wrap(() -> {
+                assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+                assertNotEquals(Thread.currentThread().getId(), id);
+                assertThat(ScopedContext.get("key2"), equalTo("value2"));
+                return counter.incrementAndGet();
+            }));
             Integer val = future.get();
             assertTrue(future.isDone());
             assertEquals(1, counter.get());
-            return val;
-        });
-        assertThat(returnVal, equalTo(1));
+            assertThat(val, equalTo(1));
+        } finally {
+            executorService.shutdown();
+        }
     }
 }
