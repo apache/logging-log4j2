@@ -339,11 +339,21 @@
     <!-- Skipping `maven-site-plugin` globally. -->
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
+    <site-log4j-core.version>3.0.0-beta2</site-log4j-core.version>
+    <site-log4j-layout-template-json.version>3.0.0-beta2</site-log4j-layout-template-json.version>
 
     <!-- ============================================================
          Direct dependency version properties (in alphabetical order)
          ============================================================ -->
     <log4j-docgen.version>0.8.0</log4j-docgen.version>
+    <node.version>21.7.1</node.version>
+    <npm.version>10.5.0</npm.version>
+
+    <!-- =================================================
+         Plugin version properties (in alphabetical order)
+         ================================================= -->
+    <exec-maven-plugin.version>3.2.0</exec-maven-plugin.version>
+    <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
 
     <!-- ==================================
          `log4j-docgen`-specific properties
@@ -638,7 +648,7 @@
            ███████    ██    ██   ██ ██   ██    ██           ███████ ██    ██    ███████
 
            This section consists of plugins responsible for generating the site.
-           Note that only this (i.e., the parent) module is supposed to have a `site` goal, it is skipped for all other modules! -->
+           Note that only this (i.e., the root) module is supposed to have a `site` goal, it is skipped for all other modules! -->
 
       <!-- Define `currentYear` property used while generating the site -->
       <plugin>
@@ -689,34 +699,107 @@
         </executions>
       </plugin>
 
+      <!-- Export release notes -->
+      <plugin>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-changelog-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Execution ID must match the one inherited from `logging-parent` (i.e., `export-changelog`) to override it! -->
+            <id>export-changelog</id>
+            <goals>
+              <goal>export</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <inherited>false</inherited>
+            <configuration>
+              <outputDirectory>${project.build.directory}/generated-site/antora/modules/ROOT/pages</outputDirectory>
+              <indexTemplates>
+                <template>
+                  <source>.index.adoc.ftl</source>
+                  <target>release-notes.adoc</target>
+                </template>
+              </indexTemplates>
+              <changelogTemplates>
+                <template>
+                  <source>.release-notes.adoc.ftl</source>
+                  <target>_release-notes/%v.adoc</target>
+                </template>
+              </changelogTemplates>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <inherited>false</inherited>
         <executions>
 
-          <!-- Copy `src/site/_release-notes` to `src/site/asciidoc/_release-notes`.
-               This is necessary since `logging-parent` version `<=10.1.1` exports changelogs to `src/site/_release-notes`.
-               Though `maven-site-plugin` expects them to be at `src/site/asciidoc/_release-notes`.
-               We could have simply solved the problem using symbolic links.
-               Though they are not supported by Java's `ZipEntry`, and hence, breaking the `distribution` profile while creating `src.zip`. -->
+          <!-- Copy `src/site/antora/antora.tmpl.yml` to `target/antora-yml/antora.yml` -->
           <execution>
-            <id>copy-exported-release-notes</id>
+            <id>copy-antora-yml</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <target>
+                <copy file="${project.basedir}/src/site/antora/antora.tmpl.yml" overwrite="true" tofile="${project.build.directory}/antora-yml/antora.yml" />
+              </target>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
+
+      <plugin>
+
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+
+        <!-- These are dummy dependencies!
+             They are not used anywhere while running `maven-resources-plugin`.
+             `filter-antora-yml` execution above injects these `*.version` properties into `antora.yml`.
+             Later on, we use them in the manual while referencing to Maven artifacts with their versions.
+             We need these `<dependency>` entries to trick `dependabot` to update the version properties automatically.
+             No, we cannot use `${project.version}`, because it is not released yet. -->
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${site-log4j-core.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-layout-template-json</artifactId>
+            <version>${site-log4j-layout-template-json.version}</version>
+          </dependency>
+        </dependencies>
+
+        <executions>
+
+          <!-- Process `target/antora-yml` and output to `target/generated-site/antora` -->
+          <execution>
+            <id>filter-antora-yml</id>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <phase>pre-site</phase>
             <inherited>false</inherited>
             <configuration>
-              <outputDirectory>${project.build.directory}/generated-sources/site/asciidoc/_release-notes</outputDirectory>
+              <outputDirectory>${project.build.directory}/generated-site/antora</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/src/site/_release-notes</directory>
+                  <directory>${project.build.directory}/antora-yml</directory>
+                  <filtering>true</filtering>
                 </resource>
               </resources>
             </configuration>
           </execution>
 
-          <!-- Copy `src/site` to `target/generated-sources/site` -->
+          <!-- Copy `src/site` to `target/generated-site` -->
           <execution>
             <id>copy-site</id>
             <goals>
@@ -725,21 +808,16 @@
             <phase>pre-site</phase>
             <inherited>false</inherited>
             <configuration>
-              <outputDirectory>${project.build.directory}/generated-sources/site</outputDirectory>
+              <outputDirectory>${project.build.directory}/generated-site</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.basedir}/src/site</directory>
-                  <excludes>
-                    <exclude>/_release-notes/*</exclude>
-                    <exclude>/_release-notes.adoc</exclude>
-                    <exclude>/resources/logo/**/*</exclude>
-                  </excludes>
                 </resource>
               </resources>
             </configuration>
           </execution>
 
-          <!-- Copy `target/site/apidocs` to the parent module's `target/site/javadoc/<artifactId>` folder -->
+          <!-- Copy `target/site/apidocs` to the root module's `target/site/javadoc/<artifactId>` folder -->
           <execution>
             <id>copy-javadoc</id>
             <goals>
@@ -758,30 +836,10 @@
                 </resource>
               </resources>
             </configuration>
-
           </execution>
-        </executions>
-      </plugin>
 
-      <!-- copy `src/site/_release-notes.adoc` to `target/site/asciidoc/release-notes.adoc` -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-release-notes-adoc</id>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <inherited>false</inherited>
-            <configuration>
-              <target>
-                <copy file="${project.basedir}/src/site/_release-notes.adoc" overwrite="true" tofile="${project.build.directory}/generated-sources/site/asciidoc/release-notes.adoc" />
-              </target>
-            </configuration>
-          </execution>
         </executions>
+
       </plugin>
 
       <plugin>
@@ -837,14 +895,14 @@
             </goals>
             <phase>pre-site</phase>
             <configuration>
-              <templateDirectory>${project.basedir}/src/template/docgen</templateDirectory>
+              <templateDirectory>${project.basedir}/src/docgen</templateDirectory>
               <indexTemplate>
                 <source>index.adoc.ftl</source>
-                <target>${project.build.directory}/generated-sources/site/asciidoc/plugin-reference.adoc</target>
+                <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/plugin-reference.adoc</target>
               </indexTemplate>
               <typeTemplate>
                 <source>type.adoc.ftl</source>
-                <target>${project.build.directory}/generated-sources/site/asciidoc/_plugin-reference/%g-%a-%c.adoc</target>
+                <target>${project.build.directory}/generated-site/antora/modules/ROOT/pages/_plugin-reference/%g-%a-%c.adoc</target>
               </typeTemplate>
             </configuration>
           </execution>
@@ -855,7 +913,7 @@
             <goals>
               <goal>generate-schema</goal>
             </goals>
-            <phase>pre-site</phase>
+            <phase>site</phase>
             <configuration>
               <schemaVersion>${project.version}</schemaVersion>
               <schemaFile>${project.build.directory}/log4j-config.xsd</schemaFile>
@@ -867,58 +925,82 @@
       </plugin>
 
       <plugin>
-        <groupId>org.asciidoctor</groupId>
-        <artifactId>asciidoctor-maven-plugin</artifactId>
-        <!-- `log4j-docgen` uses `asciidoctorj` version `3.x`.
-             Though `asciidoctor-maven-plugin` version `<3.0.0` doesn't work against `asciidoctorj` version `3.x`.
-             Hence, override the `asciidoctor-maven-plugin` version to `3.x`. -->
-        <version>3.0.0</version>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend-maven-plugin.version}</version>
         <inherited>false</inherited>
-        <dependencies>
-          <dependency>
-            <groupId>io.spring.asciidoctor</groupId>
-            <artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
-            <version>0.6.3</version>
-          </dependency>
-          <!-- `log4j-docgen` uses `asciidoctorj` version `3.x`.
-               Though `asciidoctor-maven-plugin` version `3.x` still uses `asciidoctorj` version `2.x`.
-               Hence, upgrade the `asciidoctorj` used to version `3.x`. -->
-          <dependency>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctorj</artifactId>
-            <version>3.0.0-alpha.2</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-docgen-asciidoctor-extension</artifactId>
-            <version>${log4j-docgen.version}</version>
-          </dependency>
-        </dependencies>
+        <executions>
+
+          <!-- Install Node & NPM -->
+          <execution>
+            <id>install-node-and-npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <nodeVersion>v${node.version}</nodeVersion>
+              <npmVersion>${npm.version}</npmVersion>
+            </configuration>
+          </execution>
+
+          <!-- Install Antora -->
+          <execution>
+            <id>install-antora</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>pre-site</phase>
+          </execution>
+
+        </executions>
+      </plugin>
+
+      <!-- Run Antora -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-maven-plugin.version}</version>
         <executions>
           <execution>
-            <id>export-asciidoc-to-html</id>
-            <configuration combine.self="override">
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}/generated-sources/site/resources</directory>
-                </resource>
-              </resources>
-              <sourceDirectory>${project.build.directory}/generated-sources/site/asciidoc</sourceDirectory>
-              <outputDirectory>target/site</outputDirectory>
-              <preserveDirectories>true</preserveDirectories>
-              <templateDirs>
-                <dir>src/template/asciidoctor</dir>
-              </templateDirs>
-              <attributes>
-                <source-highlighter>rouge</source-highlighter>
-                <toc>left</toc>
-                <log4j-docgen-descriptor-directory>${project.build.directory}/plugin-descriptors</log4j-docgen-descriptor-directory>
-                <log4j-docgen-type-filter-exclude-pattern>${log4j.docgen.typeFilter.excludePattern}</log4j-docgen-type-filter-exclude-pattern>
-                <log4j-docgen-type-target-template><![CDATA[#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${sourcedType.type.className?replace('.', '-')}]]></log4j-docgen-type-target-template>
-              </attributes>
+            <id>run-antora</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>site</phase>
+            <inherited>false</inherited>
+            <configuration>
+              <executable>${project.basedir}/node/node</executable>
+              <arguments>
+                <!-- Running `node/node node_modules/.bin/antora antora-playbook.yaml ...` doesn't work on Windows[1].
+                     I come up with the below solution working on both Linux and Windows.
+                     Pay attention to the following details:
+
+                     1. `@antora/cli` is executed programmatically (this is what `node_modules/.bin/antora` does under the hood)
+                     2. Single-quotes must be used (double-quotes get erased and hence cause syntax errors)
+                     3. Relative paths must be used[2]
+
+                     [1] For some reason, the `node_modules/.bin/antora` script is not properly executed.
+                         The following works though: `cd node_modules/.bin; ../../node/node antora ../../antora-playbook.yaml`.
+                         Motivated by this, tried configuring the `workingDirectory` parameter of the plugin, though it did not help.
+                     [2] `${project.basedir}/antora-playbook.yaml` strangely resolves to `C:\Users\user\logging-log4j2\Usersuserlogging-log4j2/antora-playbook.yaml`.
+                         I tried using `const path = require('path'); ... path.resolve('${project.basedir}', 'antora-playbook.yaml')`, but it failed with the same error too. -->
+                <argument>--eval</argument>
+                <argument>require('@antora/cli')(['generate', '--playbook', 'antora-playbook.yaml', '--to-dir', 'target/site'])</argument>
+              </arguments>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- Skip the `export-asciidoc-to-html` execution inherited from `logging-parent` -->
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <inherited>false</inherited>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
 
       <!-- ███████ ███    ██ ██████         ███████ ██ ████████ ███████

@@ -53,21 +53,20 @@ printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
 ----
 
 [#website]
-== Building the website and manual
+== Building the website
 
-You can build the website and manual as follows:
-
-[source,bash]
-----
-./mvnw site
-----
-
-And view it using a simple HTTP server, e.g., the one comes with the Python:
+You can build the website as follows:
 
 [source,bash]
 ----
-python3 -m http.server -d target/site
+./mvnw compile    # <1>
+./mvnw site       # <2>
 ----
+<1> Generate plugin descriptors that will be used to generate the plugin reference page.
+Descriptors are placed under `target/plugin-descriptors`.
+<2> Generate the website to `target/site`
+
+You can view the generated website with a browser by pointing it to `target/site` directory.
 
 [#development]
 == Development
@@ -81,7 +80,7 @@ You can follow below steps for casual development needs:
 
 You can connect your IDE to a `./mvnw test` run by
 
-. Add `-Dmaven.surefire.debug` to the `./mvnw test` command
+. Run `./mvnw test -pl :log4j-core-test -Dtest=FooBarTest -Dmaven.surefire.debug`
 . Use _"Run > Attach to process"_ in IntelliJ IDEA
 
 [#development-faq]

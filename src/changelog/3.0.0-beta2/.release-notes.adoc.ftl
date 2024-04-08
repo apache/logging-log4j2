@@ -15,7 +15,8 @@
     limitations under the License.
 ////
 
-= ${release.version}<#if release.date?has_content> (${release.date})</#if>
+[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
+== ${release.version}
 
 This release provides a continuation of the modularisation process of Log4j Core.
 The following features were moved to separate artifacts:

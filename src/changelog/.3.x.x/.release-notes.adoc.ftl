@@ -15,7 +15,10 @@
     limitations under the License.
 ////
 
-= ${release.version}<#if release.date?has_content> (${release.date})</#if>
+[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
+== ${release.version}
+
+<#if release.date?has_content>Release date:: ${release.date}</#if>
 
 This release contains...
 

@@ -1,0 +1,124 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to you under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+site:
+  title: Apache Log4j
+  url: "https://logging.apache.org/log4j/3.x"
+  start_page: "ROOT::index.adoc"
+
+content:
+  sources:
+    - url: .
+      branches: HEAD
+      start_paths:
+        - target/generated-site/antora
+      edit_url:
+
+asciidoc:
+  attributes:
+    # JSON Template Layout manual page has a deep sectioning, support it.
+    # The trailing `@` is added so the attribute can still can be overridden in the header of a page.
+    # For instance, we override this value in release notes page.
+    page-toclevels: "4@"
+    log4j-docgen-descriptor-directory: target/plugin-descriptors
+    log4j-docgen-type-filter-exclude-pattern: ^java\..+
+    log4j-docgen-type-target-template: |
+      #{{{replaceAll sourcedType.groupId "." "-"}}}_{{{replaceAll sourcedType.artifactId "." "-"}}}_{{{replaceAll sourcedType.type.className "." "-"}}}
+  extensions:
+    - "@asciidoctor/tabs"
+    - src/docgen/apiref-macro.js
+
+ui:
+
+  bundle:
+    url: "https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable"
+    snapshot: true
+
+  # Template files: https://github.com/asciidoctor/asciidoctor-docs-ui/blob/main/src
+  # Template variables: https://docs.antora.org/antora-ui-default/templates
+  supplemental_files:
+
+    # Add `@asciidoctor/tabs` extension styles
+    - path: css/vendor/tabs.css
+      contents: ./node_modules/@asciidoctor/tabs/dist/css/tabs.css
+
+    # Add `@asciidoctor/tabs` extension scripts
+    - path: js/vendor/tabs.js
+      contents: ./node_modules/@asciidoctor/tabs/dist/js/tabs.js
+
+    - path: partials/footer-scripts.hbs
+      contents: |
+        <script id="site-script" src="{{{uiRootPath}}}/js/site.js" data-ui-root-path="{{{uiRootPath}}}"></script>
+        <script async src="{{{uiRootPath}}}/js/vendor/highlight.js"></script>
+        <!-- `@asciidoctor/tabs` extension scripts -->
+        <script async src="{{{uiRootPath}}}/js/vendor/tabs.js"></script>
+        {{#if env.SITE_SEARCH_PROVIDER}}
+        {{> search-scripts}}
+        {{/if}}
+
+    - path: partials/head-styles.hbs
+      contents: |
+        <link rel="stylesheet" href="{{{uiRootPath}}}/css/site.css">
+        <link rel="icon" href="{{{uiRootPath}}}/../_images/favicon.ico" type="image/x-icon">
+        <!-- `@asciidoctor/tabs` extension styles -->
+        <link rel="stylesheet" href="{{{uiRootPath}}}/css/vendor/tabs.css">
+        <style>
+          /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+          .toc .toc-menu li[data-level="4"] a {
+            padding-left: 2.75rem
+          }
+          /* Replace the default highlight.js color for strings from red to green: */
+          .hljs-string {
+            color: #0f8532;
+          }
+        </style>
+
+    - path: partials/header-content.hbs
+      contents: |
+        <header class="header">
+          <nav class="navbar">
+            <div class="navbar-brand">
+              <div class="navbar-item">
+                <img src="{{{uiRootPath}}}/../_images/logo-small-white.png" alt="Apache Log4j"/>
+              </div>
+            </div>
+          </nav>
+        </header>
+
+    - path: partials/footer-content.hbs
+      contents: |
+        <footer class="footer">
+          <p>
+            Copyright © 1999-{{{year}}} <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+            Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+            Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+          </p>
+          <p>
+            Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+            Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+            Other names may be trademarks of their respective owners.
+          </p>
+        </footer>
+
+    # Disable component version selector
+    - path: partials/nav-explore.hbs
+      contents: ""
+
+    # Fix the `Edit this page` link
+    - path: partials/edit-this-page.hbs
+      contents: |
+        <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/{{page.module}}/pages/{{page.relativeSrcPath}}">Edit this Page</a></div>
