@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ScopedContext;
@@ -278,58 +276,13 @@ public class QueuedScopedContextProvider implements ScopedContextProvider {
         }
 
         /**
-         * Executes a code block that includes all the key/value pairs added to the ScopedContext.
-         *
-         * @param task the code block to execute.
-         */
-        @Override
-        public void run(final Runnable task) {
-            new Runner(this, null, null, task).run();
-        }
-
-        /**
-         * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
-         *
-         * @param task the code block to execute.
-         * @return a Future representing pending completion of the task
-         */
-        @Override
-        public Future<Void> run(final ExecutorService executorService, final Runnable task) {
-            return executorService.submit(
-                    new Runner(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task), null);
-        }
-
-        /**
-         * Executes a code block that includes all the key/value pairs added to the ScopedContext.
-         *
-         * @param task the code block to execute.
-         * @return the return value from the code block.
-         */
-        @Override
-        public <R> R call(final Callable<R> task) throws Exception {
-            return new Caller<>(this, null, null, task).call();
-        }
-
-        /**
-         * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
-         *
-         * @param task the code block to execute.
-         * @return a Future representing pending completion of the task
-         */
-        @Override
-        public <R> Future<R> call(final ExecutorService executorService, final Callable<R> task) {
-            return executorService.submit(
-                    new Caller<>(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task));
-        }
-
-        /**
          * Wraps the provided Runnable method with a Runnable method that will instantiate the Scoped and Thread
          * Contexts in the target Thread before the caller's run method is called.
          * @param task the Runnable task to perform.
          * @return a Runnable.
          */
         @Override
-        public Runnable wrap(Runnable task) {
+        public Runnable wrap(final Runnable task) {
             return new Runner(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task);
         }
 
@@ -340,7 +293,7 @@ public class QueuedScopedContextProvider implements ScopedContextProvider {
          * @return a Callable.
          */
         @Override
-        public <R> Callable<R> wrap(Callable<R> task) {
+        public <R> Callable<R> wrap(final Callable<? extends R> task) {
             return new Caller<>(this, ThreadContext.getContext(), ThreadContext.getImmutableStack(), task);
         }
 
@@ -384,13 +337,13 @@ public class QueuedScopedContextProvider implements ScopedContextProvider {
         private final Instance context;
         private final Map<String, String> threadContextMap;
         private final ThreadContext.ContextStack contextStack;
-        private final Callable<R> op;
+        private final Callable<? extends R> op;
 
         public Caller(
                 final Instance context,
                 final Map<String, String> threadContextMap,
                 final ThreadContext.ContextStack contextStack,
-                final Callable<R> op) {
+                final Callable<? extends R> op) {
             this.context = context;
             this.threadContextMap = threadContextMap;
             this.contextStack = contextStack;
