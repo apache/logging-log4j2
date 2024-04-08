@@ -56,6 +56,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.core.instrumentation.InstrumentationService;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -129,8 +130,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private Node advertiserNode;
     private Object advertisement;
     private String name;
-    private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
-    private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
     private final ConcurrentMap<String, String> propertyMap = new ConcurrentHashMap<>();
     private final Interpolator tempLookup = new Interpolator(propertyMap);
@@ -693,15 +694,22 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     }
                 }
             } else if ("Appenders".equalsIgnoreCase(child.getName())) {
-                appenders = child.getObject();
+                final InstrumentationService instrumentation = InstrumentationService.getInstance();
+                final Map<String, Appender> appenders = child.getObject();
+                appenders.forEach((name, appender) -> {
+                    this.appenders.computeIfAbsent(name, ignored -> instrumentation.instrumentAppender(appender));
+                });
             } else if (child.isInstanceOf(Filter.class)) {
                 addFilter(child.getObject(Filter.class));
             } else if (child.isInstanceOf(Loggers.class)) {
                 final Loggers l = child.getObject();
-                loggerConfigs = l.getMap();
+                final InstrumentationService instrumentation = InstrumentationService.getInstance();
+                l.getMap().forEach((key, value) -> {
+                    loggerConfigs.put(key, instrumentation.instrumentLoggerConfig(value));
+                });
                 setLoggers = true;
                 if (l.getRoot() != null) {
-                    root = l.getRoot();
+                    root = instrumentation.instrumentLoggerConfig(l.getRoot());
                     setRoot = true;
                 }
             } else if (child.isInstanceOf(CustomLevels.class)) {
@@ -842,7 +850,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void addAppender(final Appender appender) {
         if (appender != null) {
-            appenders.putIfAbsent(appender.getName(), appender);
+            appenders.computeIfAbsent(appender.getName(), ignored -> InstrumentationService.getInstance()
+                    .instrumentAppender(appender));
         }
     }
 
@@ -893,15 +902,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             return;
         }
         final String loggerName = logger.getName();
-        appenders.putIfAbsent(appender.getName(), appender);
+        final Appender actualAppender =
+                appenders.computeIfAbsent(appender.getName(), ignored -> InstrumentationService.getInstance()
+                        .instrumentAppender(appender));
         final LoggerConfig lc = getLoggerConfig(loggerName);
         if (lc.getName().equals(loggerName)) {
-            lc.addAppender(appender, null, null);
+            lc.addAppender(actualAppender, null, null);
         } else {
-            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
-            nlc.addAppender(appender, null, null);
-            nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
+            loggerConfigs.computeIfAbsent(loggerName, name -> {
+                final LoggerConfig config = new LoggerConfig(name, lc.getExplicitLevel(), lc.isAdditive());
+                config.addAppender(actualAppender, null, null);
+                config.setParent(lc);
+                return InstrumentationService.getInstance().instrumentLoggerConfig(config);
+            });
             setParents();
             logger.getContext().updateLoggers();
         }
@@ -923,10 +936,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (lc.getName().equals(loggerName)) {
             lc.addFilter(filter);
         } else {
-            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
-            nlc.addFilter(filter);
-            nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
+            loggerConfigs.computeIfAbsent(loggerName, name -> {
+                final LoggerConfig config = new LoggerConfig(name, lc.getExplicitLevel(), lc.isAdditive());
+                config.addFilter(filter);
+                config.setParent(lc);
+                return InstrumentationService.getInstance().instrumentLoggerConfig(config);
+            });
             setParents();
             logger.getContext().updateLoggers();
         }
@@ -949,9 +964,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (lc.getName().equals(loggerName)) {
             lc.setAdditive(additive);
         } else {
-            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), additive);
-            nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
+            loggerConfigs.computeIfAbsent(loggerName, name -> {
+                final LoggerConfig config = new LoggerConfig(name, lc.getExplicitLevel(), additive);
+                config.setParent(lc);
+                return InstrumentationService.getInstance().instrumentLoggerConfig(config);
+            });
             setParents();
             logger.getContext().updateLoggers();
         }
@@ -1052,7 +1069,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public synchronized void addLogger(final String loggerName, final LoggerConfig loggerConfig) {
-        loggerConfigs.putIfAbsent(loggerName, loggerConfig);
+        loggerConfigs.computeIfAbsent(
+                loggerName, ignored -> InstrumentationService.getInstance().instrumentLoggerConfig(loggerConfig));
         setParents();
     }
 

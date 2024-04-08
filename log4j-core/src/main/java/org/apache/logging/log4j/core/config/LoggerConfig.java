@@ -47,6 +47,7 @@ import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
+import org.apache.logging.log4j.core.instrumentation.InstrumentationService;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Constants;
@@ -237,9 +238,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
      * Default constructor.
      */
     public LoggerConfig() {
-        this.logEventFactory = LOG_EVENT_FACTORY;
-        this.level = Level.ERROR;
         this.name = Strings.EMPTY;
+        this.logEventFactory = InstrumentationService.getInstance().instrumentLogEventFactory(name, LOG_EVENT_FACTORY);
+        this.level = Level.ERROR;
         this.properties = null;
         this.propertiesRequireLookup = false;
         this.config = null;
@@ -254,8 +255,8 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
      * @param additive true if the Logger is additive, false otherwise.
      */
     public LoggerConfig(final String name, final Level level, final boolean additive) {
-        this.logEventFactory = LOG_EVENT_FACTORY;
         this.name = name;
+        this.logEventFactory = InstrumentationService.getInstance().instrumentLogEventFactory(name, LOG_EVENT_FACTORY);
         this.level = level;
         this.additive = additive;
         this.properties = null;

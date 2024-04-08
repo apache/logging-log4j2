@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.instrumentation.InstrumentationService;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
@@ -130,7 +131,9 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
                         return result;
                     }
                 };
-        asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
+        asyncQueueFullPolicy = InstrumentationService.getInstance()
+                .instrumentQueueFullPolicy(
+                        InstrumentationService.ASYNC_LOGGER, getContextName(), AsyncQueueFullPolicyFactory.create());
 
         disruptor = new Disruptor<>(
                 RingBufferLogEvent.FACTORY, ringBufferSize, threadFactory, ProducerType.MULTI, waitStrategy);
@@ -219,7 +222,9 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
      */
     public RingBufferAdmin createRingBufferAdmin(final String jmxContextName) {
         final RingBuffer<RingBufferLogEvent> ring = disruptor == null ? null : disruptor.getRingBuffer();
-        return RingBufferAdmin.forAsyncLogger(ring, jmxContextName);
+        final RingBufferAdmin ringBufferAdmin = RingBufferAdmin.forAsyncLogger(ring, jmxContextName);
+        InstrumentationService.getInstance().instrumentRingBuffer(ringBufferAdmin);
+        return ringBufferAdmin;
     }
 
     EventRoute getEventRoute(final Level logLevel) {

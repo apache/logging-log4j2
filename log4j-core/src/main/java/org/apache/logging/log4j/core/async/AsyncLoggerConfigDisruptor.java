@@ -36,6 +36,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
+import org.apache.logging.log4j.core.instrumentation.InstrumentationService;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
@@ -242,7 +243,9 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
                 return result;
             }
         };
-        asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
+        asyncQueueFullPolicy = InstrumentationService.getInstance()
+                .instrumentQueueFullPolicy(
+                        InstrumentationService.ASYNC_LOGGER_CONFIG, "Default", AsyncQueueFullPolicyFactory.create());
 
         translator = mutable ? MUTABLE_TRANSLATOR : TRANSLATOR;
         factory = mutable ? MUTABLE_FACTORY : FACTORY;
@@ -449,6 +452,9 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
      */
     @Override
     public RingBufferAdmin createRingBufferAdmin(final String contextName, final String loggerConfigName) {
-        return RingBufferAdmin.forAsyncLoggerConfig(disruptor.getRingBuffer(), contextName, loggerConfigName);
+        final RingBufferAdmin ringBufferAdmin =
+                RingBufferAdmin.forAsyncLoggerConfig(disruptor.getRingBuffer(), contextName, loggerConfigName);
+        InstrumentationService.getInstance().instrumentRingBuffer(ringBufferAdmin);
+        return ringBufferAdmin;
     }
 }
