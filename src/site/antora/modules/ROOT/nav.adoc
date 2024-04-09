@@ -24,6 +24,7 @@
 
 .Learn
 * xref:manual/index.adoc[]
+** xref:manual/installation.adoc[]
 ** xref:manual/architecture.adoc[]
 ** xref:manual/migration.adoc[]
 ** xref:manual/api.adoc[]
