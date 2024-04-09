@@ -60,7 +60,7 @@ public class JndiLookupTest {
 
     @Test
     public void testLookup() {
-        final StrLookup lookup = new JndiLookup();
+        final StrLookup lookup = JndiLookup.createLookup();
 
         String contextName = lookup.lookup(TEST_CONTEXT_RESOURCE_NAME);
         assertEquals(TEST_CONTEXT_NAME, contextName);
@@ -75,7 +75,7 @@ public class JndiLookupTest {
     @Test
     public void testNonStringLookup() throws Exception {
         // LOG4J2-1310
-        final StrLookup lookup = new JndiLookup();
+        final StrLookup lookup = JndiLookup.createLookup();
         final String integralValue = lookup.lookup(TEST_INTEGRAL_NAME);
         assertEquals(String.valueOf(TEST_INTEGRAL_VALUE), integralValue);
         final String collectionValue = lookup.lookup(TEST_STRINGS_NAME);

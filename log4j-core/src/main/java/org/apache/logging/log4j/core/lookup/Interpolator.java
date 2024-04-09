@@ -136,7 +136,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
                 if (lookup instanceof LoggerContextAware) {
                     ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
                 }
-                value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
+                if (lookup != null) {
+                    value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
+                }
             }
 
             if (value != null) {
