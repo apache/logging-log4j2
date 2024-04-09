@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
-
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,22 +38,11 @@ public final class OptionConverter {
     private static final char DELIM_STOP = '}';
     private static final int DELIM_START_LEN = 2;
     private static final int DELIM_STOP_LEN = 1;
-    private static final int ONE_K = 1024;
 
     /**
      * OptionConverter is a static class.
      */
     private OptionConverter() {}
-
-    public static String[] concatenateArrays(final String[] l, final String[] r) {
-        final int len = l.length + r.length;
-        final String[] a = new String[len];
-
-        System.arraycopy(l, 0, a, 0, l.length);
-        System.arraycopy(r, 0, a, l.length, r.length);
-
-        return a;
-    }
 
     public static String convertSpecialChars(final String s) {
         char c;
@@ -112,49 +99,6 @@ public final class OptionConverter {
         }
         // Trim className to avoid trailing spaces that cause problems.
         return OptionConverter.instantiateByClassName(className.trim(), superClass, defaultValue);
-    }
-
-    /**
-     * If <code>value</code> is "true", then {@code true} is
-     * returned. If <code>value</code> is "false", then
-     * {@code false} is returned. Otherwise, <code>default</code> is
-     * returned.
-     *
-     * <p>Case of value is unimportant.</p>
-     * @param value The value to convert.
-     * @param defaultValue The default value.
-     * @return true or false, depending on the value and/or default.
-     */
-    public static boolean toBoolean(final String value, final boolean defaultValue) {
-        if (value == null) {
-            return defaultValue;
-        }
-        final String trimmedVal = value.trim();
-        if ("true".equalsIgnoreCase(trimmedVal)) {
-            return true;
-        }
-        if ("false".equalsIgnoreCase(trimmedVal)) {
-            return false;
-        }
-        return defaultValue;
-    }
-
-    /**
-     * Convert the String value to an int.
-     * @param value The value as a String.
-     * @param defaultValue The default value.
-     * @return The value as an int.
-     */
-    public static int toInt(final String value, final int defaultValue) {
-        if (value != null) {
-            final String s = value.trim();
-            try {
-                return Integer.parseInt(s);
-            } catch (final NumberFormatException e) {
-                LOGGER.error("[{}] is not in proper int form.", s, e);
-            }
-        }
-        return defaultValue;
     }
 
     public static Level toLevel(String value, Level defaultValue) {
@@ -218,40 +162,6 @@ public final class OptionConverter {
             LOGGER.warn("class [" + clazz + "], level [" + levelName + "] conversion failed.", e);
         }
         return result;
-    }
-
-    /**
-     *
-     * @param value The size of the file as a String.
-     * @param defaultValue The default value.
-     * @return The size of the file as a long.
-     */
-    public static long toFileSize(final String value, final long defaultValue) {
-        if (value == null) {
-            return defaultValue;
-        }
-
-        String str = toRootUpperCase(value.trim());
-        long multiplier = 1;
-        int index;
-
-        if ((index = str.indexOf("KB")) != -1) {
-            multiplier = ONE_K;
-            str = str.substring(0, index);
-        } else if ((index = str.indexOf("MB")) != -1) {
-            multiplier = ONE_K * ONE_K;
-            str = str.substring(0, index);
-        } else if ((index = str.indexOf("GB")) != -1) {
-            multiplier = ONE_K * ONE_K * ONE_K;
-            str = str.substring(0, index);
-        }
-        try {
-            return Long.parseLong(str) * multiplier;
-        } catch (final NumberFormatException e) {
-            LOGGER.error("[{}] is not in proper int form.", str);
-            LOGGER.error("[{}] not in expected format.", value, e);
-        }
-        return defaultValue;
     }
 
     /**
@@ -380,7 +290,7 @@ public final class OptionConverter {
             j += DELIM_START_LEN;
             final String key = val.substring(j, k);
             // first try in System properties
-            String replacement = PropertyEnvironment.getGlobal().getStringProperty(key, null);
+            String replacement = PropertyEnvironment.getGlobal().getProperty(key);
             // then try props parameter
             if (replacement == null && props != null) {
                 replacement = props.getProperty(key);

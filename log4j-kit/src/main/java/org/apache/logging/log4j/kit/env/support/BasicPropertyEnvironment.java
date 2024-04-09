@@ -23,6 +23,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.file.InvalidPathException;
@@ -59,43 +61,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
     }
 
     @Override
-    public Boolean getBooleanProperty(final String name, final Boolean defaultValue) {
-        return getObjectPropertyWithTypedDefault(name, this::toBoolean, defaultValue);
-    }
-
-    @Override
-    public Charset getCharsetProperty(final String name, final Charset defaultValue) {
-        return getObjectPropertyWithTypedDefault(name, this::toCharset, defaultValue);
-    }
-
-    @Override
-    public <T> @Nullable Class<? extends T> getClassProperty(final String name, final Class<T> upperBound) {
-        return getClassProperty(name, null, upperBound);
-    }
-
-    @Override
-    public <T> Class<? extends T> getClassProperty(
-            final String name, final Class<? extends T> defaultValue, final Class<T> upperBound) {
-        return getObjectPropertyWithTypedDefault(name, className -> toClass(className, upperBound), defaultValue);
-    }
-
-    @Override
-    public Duration getDurationProperty(final String name, final Duration defaultValue) {
-        return getObjectPropertyWithTypedDefault(name, this::toDuration, defaultValue);
-    }
-
-    @Override
-    public Integer getIntegerProperty(final String name, final Integer defaultValue) {
-        return getObjectPropertyWithTypedDefault(name, this::toInteger, defaultValue);
-    }
-
-    @Override
-    public Long getLongProperty(final String name, final Long defaultValue) {
-        return getObjectPropertyWithTypedDefault(name, this::toLong, defaultValue);
-    }
-
-    @Override
-    public abstract @Nullable String getStringProperty(String name);
+    public abstract @Nullable String getProperty(final String name);
 
     @Override
     public <T> T getProperty(final Class<T> propertyClass) {
@@ -209,6 +175,15 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
         return zoneId != null ? TimeZone.getTimeZone(zoneId) : null;
     }
 
+    protected @Nullable URI toURI(final String value) {
+        try {
+            return new URI(value);
+        } catch (final URISyntaxException e) {
+            statusLogger.warn("Invalid URI value {}.", value, e);
+        }
+        return null;
+    }
+
     protected @Nullable ZoneId toZoneId(final String value) {
         try {
             return Log4jProperty.SYSTEM.equals(value) ? ZoneId.systemDefault() : ZoneId.of(value);
@@ -308,6 +283,9 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
             if (TimeZone.class.equals(clazz)) {
                 return getObjectPropertyWithStringDefault(name, defaultValue, this::toTimeZone);
             }
+            if (URI.class.equals(clazz)) {
+                return getObjectPropertyWithStringDefault(name, defaultValue, this::toURI);
+            }
             if (ZoneId.class.equals(clazz)) {
                 return getObjectPropertyWithStringDefault(name, defaultValue, this::toZoneId);
             }
@@ -354,7 +332,7 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
 
     private <T> @Nullable Object getObjectPropertyWithStringDefault(
             final String name, final @Nullable String defaultValue, final Function<? super String, ?> converter) {
-        final String prop = getStringProperty(name);
+        final String prop = getProperty(name);
         if (prop != null) {
             final @Nullable Object value = converter.apply(prop);
             if (value != null) {
@@ -362,17 +340,5 @@ public abstract class BasicPropertyEnvironment implements PropertyEnvironment {
             }
         }
         return defaultValue != null ? converter.apply(defaultValue) : null;
-    }
-
-    private <T> T getObjectPropertyWithTypedDefault(
-            final String name, final Function<? super String, ? extends @Nullable T> converter, final T defaultValue) {
-        final String prop = getStringProperty(name);
-        if (prop != null) {
-            final @Nullable T value = converter.apply(prop);
-            if (value != null) {
-                return value;
-            }
-        }
-        return defaultValue;
     }
 }

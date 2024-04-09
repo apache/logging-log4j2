@@ -63,7 +63,7 @@ public class PropertiesUtilPropertyEnvironment extends BasicPropertyEnvironment 
     }
 
     @Override
-    public @Nullable String getStringProperty(final String name) {
+    public @Nullable String getProperty(final String name) {
         String value = propsUtil.getStringProperty(PREFIX + name);
         if (value == null) {
             final List<? extends String> legacyKeys = propertyMapping.getLegacyKeys(name);

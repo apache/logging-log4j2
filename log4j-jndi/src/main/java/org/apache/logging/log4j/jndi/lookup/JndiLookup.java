@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.core.lookup.Lookup;
 import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.validation.constraints.RequiredProperty;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -34,10 +33,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Lookup
 @Plugin("jndi")
-@RequiredProperty(
-        name = "jndi.enableLookup",
-        value = "true",
-        message = "JNDI must be enabled by setting jndi.enableLookup=true")
 public class JndiLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -46,13 +41,13 @@ public class JndiLookup extends AbstractLookup {
     /** JNDI resource path prefix used in a J2EE container */
     static final String CONTAINER_JNDI_RESOURCE_PATH_PREFIX = "java:comp/env/";
 
+    private final boolean disabled;
+
     /**
-     * Constructs a new instance or throw IllegalStateException if this feature is disabled.
+     * Constructs a new instance.
      */
     public JndiLookup() {
-        if (!JndiManager.isJndiLookupEnabled()) {
-            throw new IllegalStateException("JNDI must be enabled by setting log4j2.enableJndiLookup=true");
-        }
+        this.disabled = !JndiManager.isJndiLookupEnabled();
     }
 
     /**
@@ -64,7 +59,7 @@ public class JndiLookup extends AbstractLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
-        if (key == null) {
+        if (disabled || key == null) {
             return null;
         }
         final String jndiName = convertJndiName(key);

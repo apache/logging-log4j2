@@ -35,7 +35,7 @@ public class TestPropertyEnvironment extends BasicPropertyEnvironment {
     }
 
     @Override
-    public String getStringProperty(final String name) {
+    public String getProperty(final String name) {
         return props.get(name);
     }
 }

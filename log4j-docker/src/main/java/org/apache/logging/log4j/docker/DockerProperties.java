@@ -14,25 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.plugins.condition;
+package org.apache.logging.log4j.docker;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.net.URI;
+import org.apache.logging.log4j.kit.env.Log4jProperty;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Checks if a Log4j property is present or matches a specific non-empty value.
+ * Properties for the Docker lookup.
+ * @param uri
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD})
-@Documented
-@Conditional(OnPropertyCondition.class)
-public @interface ConditionalOnProperty {
-    String name();
-
-    String value() default "";
-
-    boolean matchIfMissing() default false;
-}
+@Log4jProperty(name = "docker")
+public record DockerProperties(@Nullable URI uri) {}
