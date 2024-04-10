@@ -130,7 +130,7 @@
       <roles>
         <role>Committer</role>
       </roles>
-      <timezone>Asia/Kolkata</timezone>
+      <timezone>America/New York</timezone>
     </developer>
 
     <developer>
