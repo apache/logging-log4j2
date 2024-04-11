@@ -96,6 +96,11 @@ ui:
                 <img src="{{{uiRootPath}}}/../_images/logo-small-white.png" alt="Apache Log4j"/>
               </div>
             </div>
+            <div id="topbar-nav" class="navbar-menu">
+              <div class="navbar-end">
+                <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+              </div>
+            </div>
           </nav>
         </header>
 
