@@ -20,7 +20,7 @@
  */
 @Export
 /**
- * Bumped to 2.24.0, since FormattedMessage behavior changede.
+ * Bumped to 2.24.0, since FormattedMessage behavior changed.
  */
 @Version("2.24.0")
 package org.apache.logging.log4j.message;
