@@ -85,6 +85,10 @@ public final class ScopedContext {
         return provider.newScopedContext(map);
     }
 
+    public static Instance withThreadContext() {
+        return provider.newScopedContext(true);
+    }
+
     /**
      * Creates a ScopedContext with a single key/value pair and calls a method.
      * @param key the key.
@@ -189,6 +193,13 @@ public final class ScopedContext {
         Instance where(String key, Supplier<Object> supplier);
 
         /**
+         * Creates an Instance to declare the ThreadContext should be included.
+         *
+         * @return the ScopedContext being constructed.
+         */
+        Instance withThreadContext();
+
+        /**
          * Executes a code block that includes all the key/value pairs added to the ScopedContext.
          *
          * @param task the code block to execute.
@@ -198,10 +209,33 @@ public final class ScopedContext {
         /**
          * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
          *
+         * @param executorService The ExecutorService to use.
          * @param task the code block to execute.
          * @return a Future representing pending completion of the task
          */
         Future<Void> run(ExecutorService executorService, Runnable task);
+
+        /**
+         * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
+         *
+         * @param key   the key to add.
+         * @param value the value associated with the key.
+         * @param executorService The ExecutorService to use.
+         * @param task the code block to execute.
+         * @return a Future representing pending completion of the task
+         */
+        Future<Void> runWhere(String key, Object value, ExecutorService executorService, Runnable task);
+
+        /**
+         * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
+         *
+         * @param key   the key to add.
+         * @param supplier the function to generate the value.
+         * @param executorService The ExecutorService to use.
+         * @param task the code block to execute.
+         * @return a Future representing pending completion of the task
+         */
+        Future<Void> runWhere(String key, Supplier<Object> supplier, ExecutorService executorService, Runnable task);
 
         /**
          * Executes a code block that includes all the key/value pairs added to the ScopedContext.
@@ -214,10 +248,34 @@ public final class ScopedContext {
         /**
          * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
          *
+         * @param executorService The ExecutorService to use.
          * @param task the code block to execute.
          * @return a Future representing pending completion of the task
          */
         <R> Future<R> call(ExecutorService executorService, Callable<R> task);
+
+        /**
+         * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
+         *
+         * @param key   the key to add.
+         * @param value the value associated with the key.
+         * @param executorService The ExecutorService to use.
+         * @param task the code block to execute.
+         * @return a Future representing pending completion of the task
+         */
+        <R> Future<R> callWhere(String key, Object value, ExecutorService executorService, Callable<R> task);
+
+        /**
+         * Executes a code block that includes all the key/value pairs added to the ScopedContext on a different Thread.
+         *
+         * @param key   the key to add.
+         * @param supplier the function to generate the value.
+         * @param executorService The ExecutorService to use.
+         * @param task the code block to execute.
+         * @return a Future representing pending completion of the task
+         */
+        <R> Future<R> callWhere(
+                String key, Supplier<Object> supplier, ExecutorService executorService, Callable<R> task);
 
         /**
          * Wraps the provided Runnable method with a Runnable method that will instantiate the Scoped and Thread

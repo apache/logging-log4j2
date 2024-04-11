@@ -78,4 +78,11 @@ public interface ScopedContextProvider {
      * @return A new instance of a scoped context.
      */
     ScopedContext.Instance newScopedContext(Map<String, ?> map);
+
+    /**
+     * Creates a new context indicating that the ThreadContext should be included.
+     * @param withThreadContext true if the ThreadContext should be included.
+     * @return A new instance of a scoped context.
+     */
+    ScopedContext.Instance newScopedContext(boolean withThreadContext);
 }

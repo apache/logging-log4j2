@@ -18,6 +18,7 @@ package org.apache.logging.log4j;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -163,6 +164,54 @@ public class ScopedContextTest {
                 return val;
             });
             assertThat(returnVal, equalTo(1));
+        } finally {
+            executorService.shutdown();
+        }
+    }
+
+    @Test
+    public void testThreadContext() throws Exception {
+        ThreadContext.put("Dog", "Fido");
+        ScopedContext.runWhere("key1", "Log4j2", () -> {
+            assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+            assertThat(ThreadContext.get("Dog"), equalTo("Fido"));
+        });
+
+        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(5);
+        ExecutorService executorService = new ThreadPoolExecutor(1, 2, 30, TimeUnit.SECONDS, workQueue);
+        try {
+            final long id = Thread.currentThread().getId();
+            final AtomicInteger counter = new AtomicInteger(0);
+            int returnVal = ScopedContext.callWhere("key1", "Log4j2", () -> {
+                assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+                Future<Integer> future = ScopedContext.withThreadContext()
+                        .callWhere("key2", "value2", executorService, () -> {
+                            assertNotEquals(Thread.currentThread().getId(), id);
+                            assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+                            assertThat(ThreadContext.get("Dog"), equalTo("Fido"));
+                            return counter.incrementAndGet();
+                        });
+                Integer val = future.get();
+                assertTrue(future.isDone());
+                assertEquals(1, counter.get());
+                return val;
+            });
+            assertThat(returnVal, equalTo(1));
+            ScopedContext.callWhere("key1", "Log4j2", () -> {
+                assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+                Future<Integer> future = ScopedContext.callWhere("key2", "value2", executorService, () -> {
+                    assertNotEquals(Thread.currentThread().getId(), id);
+                    assertThat(ScopedContext.get("key1"), equalTo("Log4j2"));
+                    assertThat(ThreadContext.get("Dog"), nullValue());
+                    return counter.incrementAndGet();
+                });
+                Integer val = future.get();
+                assertTrue(future.isDone());
+                assertEquals(2, counter.get());
+                return val;
+            });
+            assertThat(returnVal, equalTo(1));
+            assertThat(ThreadContext.get("Dog"), equalTo("Fido"));
         } finally {
             executorService.shutdown();
         }
