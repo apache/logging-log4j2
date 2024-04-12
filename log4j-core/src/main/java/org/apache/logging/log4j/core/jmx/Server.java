@@ -127,7 +127,7 @@ public final class Server {
     }
 
     private static boolean isJmxDisabled() {
-        return PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_DISABLE_JMX);
+        return PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_DISABLE_JMX, true);
     }
 
     public static void reregisterMBeansAfterReconfigure() {

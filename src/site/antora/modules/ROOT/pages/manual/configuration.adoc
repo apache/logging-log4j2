@@ -2104,7 +2104,7 @@ The following is a list of available global configuration properties. Note that 
 | [[disableJmx]]log4j2.disableJmx
   ([[log4j2.disable.jmx]]log4j2.disable.jmx)
 | LOG4J_DISABLE_JMX
-| false
+| true
 |
     If `true`, Log4j configuration objects like LoggerContexts, Appenders, Loggers, etc.
     will not be instrumented with MBeans and cannot be remotely monitored and managed.

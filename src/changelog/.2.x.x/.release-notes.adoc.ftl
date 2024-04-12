@@ -22,4 +22,8 @@
 
 This releases contains ...
 
+=== JMX changes
+
+Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the `log4j2.disableJmx=false` system property.
+
 <#include "../.changelog.adoc.ftl">

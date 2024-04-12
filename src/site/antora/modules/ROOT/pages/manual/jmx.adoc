@@ -18,9 +18,9 @@
 Remko Popma <remkop@yahoo.com>
 Volkan Yazıcı <vy@apache.org>
 
-Log4j 2 has built-in support for JMX. The StatusLogger, ContextSelector,
-and all LoggerContexts, LoggerConfigs and Appenders are instrumented
-with MBeans and can be remotely monitored and controlled.
+Log4j 2 has built-in support for JMX.
+
+When JMX support is enabled, the StatusLogger, ContextSelector, and all LoggerContexts, LoggerConfigs, and Appenders are instrumented with MBeans.
 
 Also included is a simple client GUI that can be used to monitor the
 StatusLogger output, as well as to remotely reconfigure Log4j with a
@@ -30,17 +30,19 @@ directly.
 [#Enabling_JMX]
 == Enabling JMX
 
-JMX support is enabled by default. When Log4j initializes, the
-StatusLogger, ContextSelector, and all LoggerContexts, LoggerConfigs and
-Appenders are instrumented with MBeans. To disable JMX completely, and
-prevent these MBeans from being created, specify system property
-`log4j2.disableJmx` to `true` when you start the Java VM.
+JMX support is disabled by default.
+
+NOTE: JMX support was enabled by default in Log4j 2 versions before 2.24.0.
+
+To enable JMX support, set the following system property when starting the Java VM:
+
+`log4j2.disableJmx=false`
 
 [#Local]
 == Local Monitoring and Management
 
-To perform local monitoring you don't need to specify any system
-properties. The JConsole tool that is included in the Java JDK can be
+To perform local monitoring you need to specify the `log4j2.disableJmx=false` system
+property. The JConsole tool that is included in the Java JDK can be
 used to monitor your application. Start JConsole by typing
 `$JAVA_HOME/bin/jconsole` in a command shell. For more details,
 see Oracle's documentation on
@@ -51,7 +53,11 @@ to use JConsole].
 == Remote Monitoring and Management
 
 To enable monitoring and management from remote systems, set the
-following system property when starting the Java VM.
+following two system properties when starting the Java VM:
+
+`log4j2.disableJmx=false`
+
+and
 
 `com.sun.management.jmxremote.port=portNum`
 
