@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Runtime Dependencies :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/runtime-dependencies.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="./_/css/site.css">
+<link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="./_/css/vendor/tabs.css">
+<style>
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="./_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/thread-context.html">Thread Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/scoped-context.html">Scoped Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/resource-logger.html">Resource Logging</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/extending.html">Extending Log4j</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-mongodb3.html">MongoDB 3 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="download.html">Download</a></li>
+    <li><a href="runtime-dependencies.html">Runtime Dependencies</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/runtime-dependencies.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Runtime Dependencies</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some Log4J features depend on external libraries. This page lists the required and optional dependencies.</p>
+</div>
+<div class="paragraph">
+<p>As of version 2.10.0, the Log4j API is a named Java module (with a <code>module-info.java</code>). Since version 2.21.0, all the remaining artifacts are named modules. The characteristics of the modules are:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Artifact Name</th>
+<th class="tableblock halign-left valign-top">Module Name</th>
+<th class="tableblock halign-left valign-top">Module Characteristics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module Directive	Notes
+exports org.apache.logging.log4j
+exports org.apache.logging.log4j.message
+exports org.apache.logging.log4j.simple
+exports org.apache.logging.log4j.spi
+exports org.apache.logging.log4j.spi
+exports org.apache.logging.log4j.util	Some classes in this package are used by the logging implementation and should be considered private. The module info definition may be modified in the future to export these only to the logging implementation.
+uses org.apache.logging.log4j.spi.Provider	Service that must be provided by the logging implementation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-appserver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.appserver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-cassandra</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.cassandra</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module. Most of its dependencies are optional.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-couchdb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.couchdb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-docker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.docker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-1.2-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.log4j</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-flume-ng</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.flume</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-iostreams</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.iostreams</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-jakarta-smtp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.smtp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-jakarta-web</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.web</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module. Uses the same name as <code>log4j-web</code> since it is its Jakarta EE 9 equivalent.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-jcl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.jcl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-jul</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.jul</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-mongodb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.mongodb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-slf4j-impl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.slf4j.impl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-slf4j2-impl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.slf4j2.impl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-taglib</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.taglib</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-to-slf4j</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.to.slf4j</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log4j-web</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.logging.log4j.web</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Named Module. Uses the same name as <code>log4j-jakarta-web</code> since it is its Java EE 8 equivalent.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>As of version 2.9.1, Log4j supports Java 9 but will still work in Java 7 or 8. In this version, log4j-api is packaged as a multi-release jar and supports the use of the StackWalker and Process APIs.</p>
+</div>
+<div class="paragraph">
+<p>As of version 2.4, Log4J requires Java 7.</p>
+</div>
+<div class="paragraph">
+<p>Log4j version 2.3 and older require Java 6.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_api"><a class="anchor" href="#_log4j_api"></a>log4j-api</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4J <a href="log4j-api.html" class="xref page">API</a> module has no external dependencies.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_core"><a class="anchor" href="#_log4j_core"></a>log4j-core</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4J implementation has several optional dependencies.</p>
+</div>
+<div class="paragraph">
+<p>Optional Dependencies per Feature in Log4J Implementation:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XML configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YAML configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/FasterXML/jackson">Jackson databind</a> and <a href="https://github.com/FasterXML/jackson-dataformat-yaml">YAML data format</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV Layout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON Layout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XML Layout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/FasterXML/jackson">Jackson core, databind and dataformat XML</a> and <code>com.fasterxml.woodstox:woodstox-core:5.0.2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YAML Layout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/FasterXML/jackson">Jackson core, databind</a> and <a href="https://github.com/FasterXML/jackson-dataformat-yaml">YAML data format</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Async Loggers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kafka Appender</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kafka.apache.org/">Kafka client library</a>. Note that you need to use a version of the Kafka client library matching the Kafka server used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SMTP Appender</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">an implementation of <code>javax.mail</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JMS Appender</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a JMS broker like <a href="https://activemq.apache.org/">Apache ActiveMQ</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Windows console color support</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://fusesource.github.io/jansi/">Jansi</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDBC Appender</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a JDBC driver for the database you choose to write events to</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JPA Appender</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the Java Persistence API classes, a JPA provider implementation, and a decorated entity that the user implements. It also requires an appropriate JDBC driver</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NoSQL Appender with MongoDB provider</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MongoDB Java Client driver and Log4j MongoDB library</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NoSQL Appender with Apache CouchDB provider</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LightCouch CouchDB client library and Log4j CouchDB library</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cassandra Appender</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datastax Cassandra driver and Log4j Cassandra library</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bzip2, Deflate, Pack200, and XZ compression on rollover</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>. In addition, XZ requires <a href="https://tukaani.org/xz/java.html">xz-java</a> and ZStandard requires <a href="https://github.com/luben/zstd-jni">zstd-jni</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ZeroMQ Appender</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library which is licensed under the terms of the Mozilla Public License Version 2.0 (MPLv2). For details see the file <a href="https://github.com/zeromq/jeromq/blob/master/LICENSE">LICENSE</a> included with the JeroMQ distribution.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_docker"><a class="anchor" href="#_log4j_docker"></a>log4j-docker</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="log4j-docker.html" class="xref page">Log4j Docker Support</a> requires <a href="https://github.com/FasterXML/jackson">Jackson annotations, core, and databind</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_jcl"><a class="anchor" href="#_log4j_jcl"></a>log4j-jcl</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="log4j-jcl.html" class="xref page">Commons Logging Bridge</a> requires <a href="https://commons.apache.org/proper/commons-logging/">Commons Logging</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_1_2_api"><a class="anchor" href="#_log4j_1_2_api"></a>log4j-1.2-api</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="log4j-1.2-api.html" class="xref page">Log4j 1.2 Bridge</a> has no external dependencies. This only requires the Log4j API. Including Log4j Core provides optional, extra functionality.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_slf4j_impl"><a class="anchor" href="#_log4j_slf4j_impl"></a>log4j-slf4j-impl</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4j 2 <a href="log4j-slf4j-impl.html" class="xref page">SLF4J Binding</a> depends on the <a href="https://www.slf4j.org/">SLF4J</a> API.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="title">Do not use this with the log4j-to-slf4j module.</div>
+<div class="paragraph">
+<p>== log4j-jul</p>
+</div>
+<div class="paragraph">
+<p>The Log4j 2 <a href="log4j-jul.html" class="xref page">Java Util Logging Adapter</a> has no external dependencies. It optionally depends on the <a href="log4j-api.html" class="xref page">Log4j Core</a> library. The only required module is the Log4j API.</p>
+</div>
+<div class="paragraph">
+<p>== log4j-to-slf4j</p>
+</div>
+<div class="paragraph">
+<p>The <a href="log4j-to-slf4j.html" class="xref page">Log4j 2 to SLF4J Adapter</a> requires the <a href="https://www.slf4j.org/">SLF4J</a> API and an SLF4J implementation.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_flume_ng"><a class="anchor" href="#_log4j_flume_ng"></a>log4j-flume-ng</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="log4j-flume-ng.html" class="xref page">Flume Appender</a> requires <a href="https://flume.apache.org/">Apache Flume</a> and <a href="https://avro.apache.org/">Apache Avro</a>. The persistent agent uses Berkeley DB.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_spring_cloud_config_client"><a class="anchor" href="#_log4j_spring_cloud_config_client"></a>log4j-spring-cloud-config-client</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="log4j-spring-cloud-config-client.html" class="xref page">Log4j Spring Cloud Config Client</a> requires <a href="https://spring.io/projects/spring-cloud-config">Spring Cloud Config</a>. <a href="https://spring.io/projects/spring-cloud-bus">Spring Cloud Bus</a> is required if notification of logging configuration changes is desired. <a href="https://spring.io/projects/spring-boot">Spring Boot</a> is required but applications do not have to be packaged as a Spring Boot application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_taglib"><a class="anchor" href="#_log4j_taglib"></a>log4j-taglib</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4j <a href="log4j-taglib.html" class="xref page">Log Tag Library</a> requires the <a href="https://jakarta.apache.org/taglibs/log/">Jakarta Commons Log Taglib</a> and the Servlet API.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_web"><a class="anchor" href="#_log4j_web"></a>log4j-web</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4j <a href="log4j-web.html" class="xref page">Web</a> module requires the Servlet API. Note that this works with the Servlet 2.5 API as well as the Servlet 3.x API.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_couchdb"><a class="anchor" href="#_log4j_couchdb"></a>log4j-couchdb</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4J <a href="log4j-couchdb.html" class="xref page">CouchDB</a> module depends on the <a href="https://www.lightcouch.org/">LightCouch</a> CouchDB client library.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_mongodb3"><a class="anchor" href="#_log4j_mongodb3"></a>log4j-mongodb3</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4J <a href="log4j-mongodb3.html" class="xref page">MongoDB 3</a> module depends on the <a href="https://docs.mongodb.org/ecosystem/drivers/java/">MongoDB Java Client driver</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_mongodb4"><a class="anchor" href="#_log4j_mongodb4"></a>log4j-mongodb4</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4J <a href="log4j-mongodb4.html" class="xref page">MongoDB 4</a> module depends on the <a href="https://docs.mongodb.org/ecosystem/drivers/java/">MongoDB Java Client driver</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_cassandra"><a class="anchor" href="#_log4j_cassandra"></a>log4j-cassandra</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4J <a href="log4j-cassandra.html" class="xref page">Cassandra</a> module depends on the <a href="https://docs.datastax.com/en/developer/driver-matrix/doc/javaDrivers.html">Datastax Cassandra driver</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_iostreams"><a class="anchor" href="#_log4j_iostreams"></a>log4j-iostreams</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4j <a href="log4j-iostreams.html" class="xref page">IO Streams</a> module has no external dependencies. This only requires the Log4j API.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_jakarta_smtp"><a class="anchor" href="#_log4j_jakarta_smtp"></a>log4j-jakarta-smtp</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4j Simple Mail Transfer Protocol (SMTP) Appender, version for Jakarta EE 9 module has 2 external runtime dependencies for the jakarta.activation-api and jakarta.mail-api.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>org.eclipse.angus:angus-activation</p>
+</li>
+<li>
+<p>org.eclipse.angus:jakarta.mail</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log4j_jakarta_web"><a class="anchor" href="#_log4j_jakarta_web"></a>log4j-jakarta-web</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Log4j <a href="log4j-jakarta-web.html" class="xref page">Jakarta-Web</a> module for Jakarta EE 9+ web servlet containers requires the Servlet API and <code>log4j-core</code>.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="./_/js/site.js" data-ui-root-path="./_"></script>
+<script async src="./_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="./_/js/vendor/tabs.js"></script>
+  </body>
+</html>

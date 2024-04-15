@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Install Apache Log4j :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/download.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="./_/css/site.css">
+<link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="./_/css/vendor/tabs.css">
+<style>
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="./_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/thread-context.html">Thread Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/scoped-context.html">Scoped Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/resource-logger.html">Resource Logging</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/extending.html">Extending Log4j</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-mongodb3.html">MongoDB 3 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="download.html">Download</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/download.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Install Apache Log4j</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache Log4j is distributed under the
+<a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License, version 2.0</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using-a-build-system"><a class="anchor" href="#using-a-build-system"></a>Using a build system</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The preferred way to use Log4j in your project is to use a build system as Maven.
+Please add the following to your build systems configuration file <code>pom.xml</code> to use Log4j.</p>
+</div>
+<div class="paragraph">
+<p>Log4j needs two dependencies, since it is separated between the API and the Core.</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_1_gradle" class="tab">
+<p>Gradle</p>
+</li>
+<li id="_tabs_1_ivy" class="tab">
+<p>Ivy</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div class="listingblock">
+<div class="title"><code>pom.xml</code> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;
+    &lt;version&gt;2.23.1&lt;/version&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
+    &lt;version&gt;2.23.1&lt;/version&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div class="listingblock">
+<div class="title"><code>build.gradle</code> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">compile 'org.apache.logging.log4j:log4j-api:2.23.1'
+compile 'org.apache.logging.log4j:log4j-core:2.23.1'</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_ivy--panel" class="tabpanel" aria-labelledby="_tabs_1_ivy">
+<div class="listingblock">
+<div class="title"><code>ivy.xml</code> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
+  &lt;dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.23.1" /&gt;
+  &lt;dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.23.1" /&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bill_of_materials"><a class="anchor" href="#_bill_of_materials"></a>Bill of materials</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To keep your Log4j module versions in sync with each other, a BOM (Bill of Material)
+pom.xml file is provided for your convenience. To use this with <a href="https://maven.apache.org/">Maven</a>,
+add the dependency listed below to your <code>pom.xml</code> file.
+When you specify the version identifier in this section, you don&#8217;t have to specify the version in your <code>&lt;dependencies/&gt;</code> section.</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div class="listingblock">
+<div class="title"><code>pom.xml</code> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencyManagement&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+      &lt;artifactId&gt;log4j-bom&lt;/artifactId&gt;
+      &lt;version&gt;2.23.1&lt;/version&gt;
+      &lt;scope&gt;import&lt;/scope&gt;
+      &lt;type&gt;pom&lt;/type&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div class="listingblock">
+<div class="title"><code>build.gradle</code> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">plugins {
+  id 'io.spring.dependency-management' version '1.0.1.RELEASE' <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+dependencyManagement {
+  imports {
+    mavenBom 'org.apache.logging.log4j:log4j-bom:2.23.1'
+  }
+}
+
+dependencies {
+  implementation 'org.apache.logging.log4j:log4j-api'
+  implementation 'org.apache.logging.log4j:log4j-core'
+  // etc.
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The additional <a href="https://github.com/spring-gradle-plugins/dependency-management-plugin">Gradle plugin</a> required for dependency management functionality.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_snapshot_builds"><a class="anchor" href="#_snapshot_builds"></a>Snapshot builds</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can access the latest development snapshot by using the Maven repository
+<code><a href="https://repository.apache.org/snapshots" class="bare">https://repository.apache.org/snapshots</a></code> and the current SNAPSHOT version.
+Generally, the master branch will use the next patch version as its snapshot
+version regardless of what the next actual version of Log4j will be. For example,
+if the latest release were <code>3.0</code>, then master would be using the version
+<code>3.0.1-SNAPSHOT</code>.</p>
+</div>
+<div class="paragraph">
+<p>To enable snapshots you&#8217;ll need to enable Snapshots repositories in your build system.</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_3_gradle" class="tab">
+<p>Gradle</p>
+</li>
+<li id="_tabs_3_sbt" class="tab">
+<p>SBT</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div class="listingblock">
+<div class="title"><code>pom.xml</code> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;repositories&gt;
+  &lt;repository&gt;
+    &lt;id&gt;apache.snapshots&lt;/id&gt;
+    &lt;name&gt;Apache Snapshot Repository&lt;/name&gt;
+    &lt;url&gt;https://repository.apache.org/snapshots&lt;/url&gt;
+    &lt;releases&gt;
+      &lt;enabled&gt;false&lt;/enabled&gt;
+    &lt;/releases&gt;
+  &lt;/repository&gt;
+&lt;/repositories&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div class="listingblock">
+<div class="title"><code>build.gradle</code> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">repositories {
+  mavenCentral()
+  maven { url 'https://repository.apache.org/snapshots' }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_sbt--panel" class="tabpanel" aria-labelledby="_tabs_3_sbt">
+<div class="listingblock">
+<div class="title"><code>build.sbt</code> snippet</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">resolvers += "Apache Snapshot Repository" at "https://repository.apache.org/snapshots"</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manual_download"><a class="anchor" href="#_manual_download"></a>Manual Download</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The link in the Mirrors column should display a list of available
+mirrors with a default selection based on your inferred location. If you
+do not see that page, try a different browser. The checksum and
+signature are links to the originals on the main distribution server.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Distribution</th>
+<th class="tableblock halign-left valign-top">Mirrors</th>
+<th class="tableblock halign-left valign-top">Checksum</th>
+<th class="tableblock halign-left valign-top">Signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Log4j binary (tar.gz)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dyn/closer.lua/logging/log4j/2.23.1/apache-log4j-2.23.1-bin.tar.gz">apache-log4j-2.23.1-bin.tar.gz</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dist/logging/log4j/2.23.1/apache-log4j-2.23.1-bin.tar.gz.sha512">apache-log4j-2.23.1-bin.tar.gz.sha512</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dist/logging/log4j/2.23.1/apache-log4j-2.23.1-bin.tar.gz.asc">apache-log4j-2.23.1-bin.tar.gz.asc</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Log4j binary (zip)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dyn/closer.lua/logging/log4j/2.23.1/apache-log4j-2.23.1-bin.zip">apache-log4j-2.23.1-bin.zip</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dist/logging/log4j/2.23.1/apache-log4j-2.23.1-bin.zip.sha512">apache-log4j-2.23.1-bin.zip.sha512</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dist/logging/log4j/2.23.1/apache-log4j-2.23.1-bin.zip.asc">apache-log4j-2.23.1-bin.zip.asc</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Log4j source (tar.gz)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dyn/closer.lua/logging/log4j/2.23.1/apache-log4j-2.23.1-src.tar.gz">apache-log4j-2.23.1-src.tar.gz</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dist/logging/log4j/2.23.1/apache-log4j-2.23.1-src.tar.gz.sha512">apache-log4j-2.23.1-src.tar.gz.sha512</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dist/logging/log4j/2.23.1/apache-log4j-2.23.1-src.tar.gz.asc">apache-log4j-2.23.1-src.tar.gz.asc</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Log4j source (zip)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dyn/closer.lua/logging/log4j/2.23.1/apache-log4j-2.23.1-src.zip">apache-log4j-2.23.1-src.zip</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dist/logging/log4j/2.23.1/apache-log4j-2.23.1-src.zip.sha512">apache-log4j-2.23.1-src.zip.sha512</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.apache.org/dist/logging/log4j/2.23.1/apache-log4j-2.23.1-src.zip.asc">apache-log4j-2.23.1-src.zip.asc</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>It is essential that you verify the integrity of the downloaded files
+using the PGP or SHA512 signatures. Please read
+<a href="https://httpd.apache.org/dev/verification.html">Verifying Apache HTTP
+Server Releases</a> for more information on why you should verify our
+releases.</p>
+</div>
+<div class="paragraph">
+<p>The PGP signatures can be verified using PGP or GPG. First download the
+<a href="https://downloads.apache.org/logging/KEYS">KEYS</a> as well as the asc
+signature file for the relevant distribution. Make sure you get these
+files from the <a href="https://www.apache.org/dist/logging/">main distribution
+directory</a>, rather than from a mirror. Then verify the signatures using</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">gpg --import KEYS
+gpg --verify apache-log4j-2.23.1-bin.zip.asc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can verify the SHA512 signature on the files. A unix
+program called sha512sum is included in many unix distributions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="requirements"><a class="anchor" href="#requirements"></a>Requirements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Apache Log4j runtime requires a minimum of Java 17.
+See the <a href="http://logging.apache.org/2.x">Log4j 2 website</a> for the latest releases supporting Java 6, 7, and 8.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_previous_releases"><a class="anchor" href="#_previous_releases"></a>Previous Releases</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All previous releases of Apache log4j can be found in the
+<a href="https://archive.apache.org/dist/logging/log4j/">ASF archive repository</a>. Of course, all releases are availble for
+use as dependencies from the <a href="https://search.maven.org/search?q=org.apache.logging.log4j">Maven Central Repository</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_apache_log4j_on_your_classpath"><a class="anchor" href="#_using_apache_log4j_on_your_classpath"></a>Using Apache Log4j on your classpath</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To use Log4j in your application make sure that the API, Plugins, and Core
+jars are in the application’s classpath. Add the dependencies listed
+below to your classpath.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>log4j-api-2.23.1.jar</p>
+</li>
+<li>
+<p>log4j-plugins-2.23.1.jar</p>
+</li>
+<li>
+<p>log4j-core-2.23.1.jar</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can do this from the command line or a manifest file.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="./_/js/site.js" data-ui-root-path="./_"></script>
+<script async src="./_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="./_/js/vendor/tabs.js"></script>
+  </body>
+</html>

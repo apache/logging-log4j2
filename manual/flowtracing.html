@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Flow Tracing :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/flowtracing.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="extending.html">Extending Log4j</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb3.html">MongoDB 3 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li>Learn</li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="api.html">Log4j API</a></li>
+    <li><a href="flowtracing.html">Flow Tracing</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/flowtracing.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Flow Tracing</h1>
+<div class="paragraph">
+<p>The <code>Logger</code> class provides logging methods that are quite useful for
+following the execution path of applications. These methods generate
+logging events that can be filtered separately from other debug logging.
+Liberal use of these methods is encouraged as the output has been found
+to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>aid in problem diagnosis in development without requiring a debug
+session</p>
+</li>
+<li>
+<p>aid in problem diagnosis in production where no debugging is possible</p>
+</li>
+<li>
+<p>help educate new developers in learning the application.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The most used methods are the entry() or traceEntry() and exit() or
+traceExit() methods. entry() or traceEntry() should be placed at the
+beginning of methods, except perhaps for simple getters and setters.
+entry() can be called passing from 0 to 4 parameters. Typically these
+will be parameters passed to the method. traceEntry() can be passed a
+format String and a variable list of parameters, or a Message. The
+entry() and traceEntry() methods log with a level of TRACE and uses a
+Marker with a name of "ENTER" which is also a "FLOW" Marker and all
+message strings will begin with "event", even if a format String or
+Message is used.</p>
+</div>
+<div class="paragraph">
+<p>The main difference between the entry and traceEntry methods is that the
+entry method accepts a variable list of objects where presumably each is
+a method parameter. The traceEntry method accepts a format string
+followed by a variable list of objects, presumably included in the
+format String. It is not possible to have a single method that includes
+both of these as it would be ambiguous whether the first String is a
+parameter or a format String.</p>
+</div>
+<div class="paragraph">
+<p>An exit() or traceExit() method should be placed before any return
+statement or as the last statement of methods without a return. exit()
+and traceExit() can be called with or without a parameter. Typically,
+methods that return void will use exit() or traceExit() while methods
+that return an Object will use exit(Object obj) or traceExit(object, new
+SomeMessage(object)). The exit() and traceExit() methods log with a
+level of TRACE and uses a Marker with a name of "EXIT" which is also a
+"FLOW" Marker and all message strings will begin with "exit", even if a
+format String or Message is used.</p>
+</div>
+<div class="paragraph">
+<p>The throwing() method can be used by an application when it is throwing
+an exception that is unlikely to be handled, such as a RuntimeException.
+This will insure that proper diagnostics are available if needed. The
+logging event generated will have a level of ERROR and will have an
+associated Marker with a name of "THROWING" which is also an "EXCEPTION"
+Marker.</p>
+</div>
+<div class="paragraph">
+<p>The catching() method can be used by an application when it catches an
+Exception that it is not going to rethrow, either explicitly or attached
+to another Exception. The logging event generated will have a level of
+ERROR and will have an associated Marker with a name of "CATCHING" which
+is also an "EXCEPTION" Marker.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows a simple application using these methods in
+a fairly typical manner. The throwing() is not present since no
+Exceptions are explicitly thrown and not handled.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.test;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+import java.util.Random;
+
+public class TestService {
+    private Logger logger = LogManager.getLogger(TestService.class.getName());
+
+    private String[] messages = new String[] {
+        "Hello, World",
+        "Goodbye Cruel World",
+        "You had me at hello"
+    };
+    private Random rand = new Random(1);
+
+    public void setMessages(String[] messages) {
+        logger.traceEntry(new JsonMessage(messages));
+        this.messages = messages;
+        logger.traceExit();
+    }
+
+    public String[] getMessages() {
+        logger.traceEntry();
+        return logger.traceExit(messages, new JsonMessage(messages));
+    }
+
+    public String retrieveMessage() {
+        logger.entry();
+
+        String testMsg = getMessage(getKey());
+
+        return logger.exit(testMsg);
+    }
+
+    public void exampleException() {
+        logger.entry();
+        try {
+            String msg = messages[messages.length];
+            logger.error("An exception should have been thrown");
+        } catch (Exception ex) {
+            logger.catching(ex);
+        }
+        logger.exit();
+    }
+
+    public String getMessage(int key) {
+        logger.entry(key);
+
+        String value = messages[key];
+
+        return logger.exit(value);
+    }
+
+    private int getKey() {
+        logger.entry();
+        int key = rand.nextInt(messages.length);
+        return logger.exit(key);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This test application uses the preceding service to generate logging
+events.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.test;
+
+public class App {
+
+    public static void main( String[] args ) {
+        TestService service = new TestService();
+        service.retrieveMessage();
+        service.retrieveMessage();
+        service.exampleException();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The configuration below will cause all output to be routed to
+target/test.log. The pattern for the FileAppender includes the class
+name, line number and method name. Including these in the pattern are
+critical for the log to be of value.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration status="error"&gt;
+  &lt;Appenders&gt;
+    &lt;Console name="Console" target="SYSTEM_OUT"&gt;
+      &lt;ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/&gt;
+      &lt;!-- Flow tracing is most useful with a pattern that shows location.
+           Below pattern outputs class, line number and method name. --&gt;
+      &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/&gt;
+    &lt;/Console&gt;
+    &lt;File name="log" fileName="target/test.log" append="false"&gt;
+      &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/&gt;
+    &lt;/File&gt;
+  &lt;/Appenders&gt;
+  &lt;Loggers&gt;
+    &lt;Root level="trace"&gt;
+      &lt;AppenderRef ref="log"/&gt;
+    &lt;/Root&gt;
+  &lt;/Loggers&gt;
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is the output that results from the Java classes and configuration
+above.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>19:08:07.056 TRACE com.test.TestService 19 retrieveMessage -  entry
+19:08:07.060 TRACE com.test.TestService 46 getKey -  entry
+19:08:07.060 TRACE com.test.TestService 48 getKey -  exit with (0)
+19:08:07.060 TRACE com.test.TestService 38 getMessage -  entry parms(0)
+19:08:07.060 TRACE com.test.TestService 42 getMessage -  exit with (Hello, World)
+19:08:07.060 TRACE com.test.TestService 23 retrieveMessage -  exit with (Hello, World)
+19:08:07.061 TRACE com.test.TestService 19 retrieveMessage -  entry
+19:08:07.061 TRACE com.test.TestService 46 getKey -  entry
+19:08:07.061 TRACE com.test.TestService 48 getKey -  exit with (1)
+19:08:07.061 TRACE com.test.TestService 38 getMessage -  entry parms(1)
+19:08:07.061 TRACE com.test.TestService 42 getMessage -  exit with (Goodbye Cruel World)
+19:08:07.061 TRACE com.test.TestService 23 retrieveMessage -  exit with (Goodbye Cruel World)
+19:08:07.062 TRACE com.test.TestService 27 exampleException -  entry
+19:08:07.077 DEBUG com.test.TestService 32 exampleException - catching java.lang.ArrayIndexOutOfBoundsException: 3
+        at com.test.TestService.exampleException(TestService.java:29) [classes/:?]
+        at com.test.App.main(App.java:9) [classes/:?]
+        at com.test.AppTest.testApp(AppTest.java:15) [test-classes/:?]
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.6.0_29]
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) ~[?:1.6.0_29]
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25) ~[?:1.6.0_29]
+        at java.lang.reflect.Method.invoke(Method.java:597) ~[?:1.6.0_29]
+        at org.junit.internal.runners.TestMethodRunner.executeMethodBody(TestMethodRunner.java:99) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestMethodRunner.runUnprotected(TestMethodRunner.java:81) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestMethodRunner.runMethod(TestMethodRunner.java:75) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestMethodRunner.run(TestMethodRunner.java:45) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestClassMethodsRunner.invokeTestMethod(TestClassMethodsRunner.java:66) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestClassMethodsRunner.run(TestClassMethodsRunner.java:35) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestClassRunner$1.runUnprotected(TestClassRunner.java:42) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestClassRunner.run(TestClassRunner.java:52) [junit-4.3.1.jar:?]
+        at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:35) [surefire-junit4-2.7.2.jar:2.7.2]
+        at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:115) [surefire-junit4-2.7.2.jar:2.7.2]
+        at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:97) [surefire-junit4-2.7.2.jar:2.7.2]
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.6.0_29]
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) ~[?:1.6.0_29]
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25) ~[?:1.6.0_29]
+        at java.lang.reflect.Method.invoke(Method.java:597) ~[?:1.6.0_29]
+        at org.apache.maven.surefire.booter.ProviderFactory$ClassLoaderProxy.invoke(ProviderFactory.java:103) [surefire-booter-2.7.2.jar:2.7.2]
+        at $Proxy0.invoke(Unknown Source) [?:?]
+        at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:150) [surefire-booter-2.7.2.jar:2.7.2]
+        at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcess(SurefireStarter.java:91) [surefire-booter-2.7.2.jar:2.7.2]
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:69) [surefire-booter-2.7.2.jar:2.7.2]
+19:08:07.087 TRACE com.test.TestService 34 exampleException -  exit</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Simply changing the root logger level to DEBUG in the example above will
+reduce the output considerably.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>19:13:24.963 DEBUG com.test.TestService 32 exampleException - catching java.lang.ArrayIndexOutOfBoundsException: 3
+        at com.test.TestService.exampleException(TestService.java:29) [classes/:?]
+        at com.test.App.main(App.java:9) [classes/:?]
+        at com.test.AppTest.testApp(AppTest.java:15) [test-classes/:?]
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.6.0_29]
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) ~[?:1.6.0_29]
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25) ~[?:1.6.0_29]
+        at java.lang.reflect.Method.invoke(Method.java:597) ~[?:1.6.0_29]
+        at org.junit.internal.runners.TestMethodRunner.executeMethodBody(TestMethodRunner.java:99) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestMethodRunner.runUnprotected(TestMethodRunner.java:81) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestMethodRunner.runMethod(TestMethodRunner.java:75) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestMethodRunner.run(TestMethodRunner.java:45) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestClassMethodsRunner.invokeTestMethod(TestClassMethodsRunner.java:66) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestClassMethodsRunner.run(TestClassMethodsRunner.java:35) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestClassRunner$1.runUnprotected(TestClassRunner.java:42) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34) [junit-4.3.1.jar:?]
+        at org.junit.internal.runners.TestClassRunner.run(TestClassRunner.java:52) [junit-4.3.1.jar:?]
+        at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:35) [surefire-junit4-2.7.2.jar:2.7.2]
+        at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:115) [surefire-junit4-2.7.2.jar:2.7.2]
+        at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:97) [surefire-junit4-2.7.2.jar:2.7.2]
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.6.0_29]
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) ~[?:1.6.0_29]
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25) ~[?:1.6.0_29]
+        at java.lang.reflect.Method.invoke(Method.java:597) ~[?:1.6.0_29]
+        at org.apache.maven.surefire.booter.ProviderFactory$ClassLoaderProxy.invoke(ProviderFactory.java:103) [surefire-booter-2.7.2.jar:2.7.2]
+        at $Proxy0.invoke(Unknown Source) [?:?]
+        at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:150) [surefire-booter-2.7.2.jar:2.7.2]
+        at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcess(SurefireStarter.java:91) [surefire-booter-2.7.2.jar:2.7.2]
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:69) [surefire-booter-2.7.2.jar:2.7.2]</pre>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

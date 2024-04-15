@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Performance :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/performance.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="extending.html">Extending Log4j</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb3.html">MongoDB 3 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li>Learn</li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="performance.html">Performance</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/performance.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Performance</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apart from functional requirements, an important reason for selecting a
+logging library is often how well it fulfills non-functional
+requirements like reliability and performance.</p>
+</div>
+<div class="paragraph">
+<p>This page compares the performance of a number of logging frameworks
+(java.util.logging "JUL", Logback, Log4j 1.2 and Log4j 2.6), and
+documents some performance trade-offs for Log4j 2 functionality.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="benchmarks"><a class="anchor" href="#benchmarks"></a>Benchmarks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Performance can mean different things to different people. Common terms
+in this context are throughput and latency: <em>Throughput</em> is a measure of
+capacity and can be expressed in a single number: how many messages can
+be logged in a certain period of time. <em>Response time latency</em> is how
+long it takes to log a message. This cannot be expressed in a single
+number because each measurement has its own response time and we are
+often most interested in the outliers: how many there were and how large
+they were.</p>
+</div>
+<div class="paragraph">
+<p>When evaluating a logging framework&#8217;s performance these may be useful
+questions to ask:</p>
+</div>
+<div class="qlist qanda">
+<ol>
+<li>
+<p><em>What is its <strong>peak throughput</strong>?</em></p>
+<p>Many systems that react to external
+events need to log bursts of messages followed by periods of relative
+quiet. This number is the maximum throughput measured over a short
+period of time and gives some idea of how well the logging library deals
+with bursts. For systems that need to log a lot at a constant high rate
+(for example, batch jobs) this is less likely to be a useful measure of
+performance.</p>
+</li>
+<li>
+<p><em>What is the <strong>maximum sustained throughput</strong>?</em></p>
+<p>This is the throughput
+averaged over a long time. This is a useful measure of the "upper limit"
+of the capacity of the logging library. It is not recommended that
+reactive applications actually log at this rate since under this load
+they will likely experience jitter and large response time spikes.</p>
+</li>
+<li>
+<p><em>What is its <strong>response time</strong> behaviour under various loads?</em></p>
+<p>This is the
+most important question for applications that need to react to external
+events in a timely manner. Response time is the total amount of time it
+takes to log a message and is the sum of the service time and wait time.
+The <strong>service time</strong> is the time it takes to do the work to log the
+message. As the workload increases, the service time often varies
+little: to do X amount of work it always takes X amount of time. The
+<strong>wait time</strong> is how long the request had to wait in a queue before being
+serviced. <em>As the workload increases, wait time often grows to many
+times the service time.</em></p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="responseTimeVsServiceTime"><a class="anchor" href="#responseTimeVsServiceTime"></a>Why Care About Response Time Latency?</h3>
+<div class="paragraph">
+<p>What is often measured and reported as <em>latency</em> is actually <em>service
+time</em>, and omits that a service time spike adds wait time for many
+subsequent events. This may present results that are more optimistic
+than what users experience.</p>
+</div>
+<div class="paragraph">
+<p>The graph on the right illustrates how much more optimistic service time
+is than response time. The graph shows response time and service time
+for the same system under a load of 100,000 messages per second. Out of
+24 million measurements, only ~50 are more than 250 microseconds, less
+than 0.001%. In a service time-only graph this would hardly be visible.
+However, the depending on the load it will take a while to catch up
+after a spike.</p>
+</div>
+<div class="paragraph">
+<p>The response time graph shows that in reality many more events are
+impacted by these delays than the service time numbers alone would
+suggest.</p>
+</div>
+<div class="paragraph">
+<p>To learn more, watch Gil Tene&#8217;s eye-opening presentation
+<a href="http://www.infoq.com/presentations/latency-response-time">How NOT to
+measure latency</a>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/ResponseTimeVsServiceTimeAsyncLoggers.png" alt="image" width="480" height="288"></span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="loglibComparison"><a class="anchor" href="#loglibComparison"></a>Logging Library Performance Comparison</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="asyncLogging"><a class="anchor" href="#asyncLogging"></a>Asynchronous Logging - Peak Throughput Comparison</h3>
+<div class="paragraph">
+<p>Asynchronous logging is useful to deal with bursts of events. How this
+works is that a minimum amount of work is done by the application thread
+to capture all required information in a log event, and this log event
+is then put on a queue for later processing by a background thread. As
+long as the queue is sized large enough, the application threads should
+be able to spend very little time on the logging call and return to the
+business logic very quickly.</p>
+</div>
+<div class="paragraph">
+<p>It turns out that the choice of queue is extremely important for peak
+throughput. Log4j 2&#8217;s Async Loggers use a
+<a href="https://lmax-exchange.github.io/disruptor/">lock-free data structure</a>,
+whereas Logback, Log4j 1.2 and Log4j 2&#8217;s Asynchronous Appenders use an
+ArrayBlockingQueue. With a blocking queue, multi-threaded applications
+often experience lock contention when trying to enqueue the log event.</p>
+</div>
+<div class="paragraph">
+<p>The graph below illustrates the difference a lock-free data structure
+can make to throughput in multi-threaded scenarios. <em>Log4j 2 scales
+better with the number of threads: an application with more threads can
+log more. The other logging libraries suffer from lock contention and
+total throughput stays constant or drops when more threads are logging.
+This means that with the other logging libraries, each individual thread
+will be able to log less.</em></p>
+</div>
+<div class="paragraph">
+<p>Bear in mind that this is <em>peak</em> throughput: Log4j 2&#8217;s Async Loggers
+give better throughput up to a point, but once the queue is full, the
+appender thread needs to wait until a slot becomes available in the
+queue, and throughput will drop to the maximum sustained throughput of
+the underlying appenders at best.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/async-throughput-comparison.png" alt="Peak throughput comparison"></span></p>
+</div>
+<div class="paragraph">
+<p>For details, see the <a href="async.html" class="xref page">Async Loggers</a> manual page.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="asyncLoggingResponseTime"><a class="anchor" href="#asyncLoggingResponseTime"></a>Asynchronous Logging Response Time</h3>
+<div class="paragraph">
+<p>Response time behaviour varies a lot with the workload and the number of
+threads that log concurrently. The <a href="async.html#Latency" class="xref page">Async
+Loggers</a> manual page and the
+<a href="garbagefree.html#Latency" class="xref page">garbage-free logging</a> manual page
+provide some graphs showing response time behaviour under various loads.</p>
+</div>
+<div class="paragraph">
+<p>This section shows another graph showing response time latency behaviour
+under a modest total workload of 64,000 messages per second, with 4
+threads logging concurrently. At this load and on this hardware/OS/JVM
+configuration, lock contention and context switches play less of a role
+and the pauses are mostly caused by minor garbage collections. Garbage
+collection pause duration and frequency can vary a lot: when testing the
+Log4j 1.2.17 Async Appender a minor GC pause of 7 milliseconds occurred
+while the Log4j 2 Async Appender test only saw a GC pause of a little
+over 2 milliseconds. This does not necessarily mean that one is better
+than the other.</p>
+</div>
+<div class="paragraph">
+<p>Generally, garbage-free async loggers had the best response time
+behaviour in all configurations we tested.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/ResponseTimeAsyncLogging4Threads_16kEach.png" alt="Response time comparison"></span></p>
+</div>
+<div class="paragraph">
+<p>The above result was obtained with the ResponseTimeTest class which can
+be found in the Log4j 2 unit test source directory, running on JDK
+1.8.0_45 on RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with 10-core Xeon
+CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual
+cores).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="asyncLoggingWithParams"><a class="anchor" href="#asyncLoggingWithParams"></a>Asynchronous Logging Parameterized Messages</h3>
+<div class="paragraph">
+<p>Many logging libraries offer an API for logging parameterized messages.
+This enables application code to look something like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.debug("Entry number: {} is {}", i, entry[i]);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the above example, the fully formatted message text is not created
+unless the DEBUG level is enabled for the logger. Without this API, you
+would need three lines of code to accomplish the same:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">if (logger.isDebugEnabled()) {
+    logger.debug("Entry number: " + i + " is " + entry[i].toString());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the DEBUG level <em>is</em> enabled, then at some point the message needs to
+be formatted. When logging asynchronously, the message parameters may be
+changed by the application thread before the background thread had a
+chance to log the message. This would show the wrong values in the log
+file. To prevent this, Log4j 2, Log4j 1.2 and Logback format the message
+text in the application thread <em>before</em> passing off the log event to the
+background thread.</p>
+</div>
+<div class="paragraph">
+<p>This is the safe thing to do, but the formatting has a performance cost.
+The graph below compares the throughput of logging messages with
+parameters using various logging libraries. These are all asynchronous
+logging calls, so these numbers do not include the cost of disk I/O and
+represent <em>peak</em> throughput.</p>
+</div>
+<div class="paragraph">
+<p>JUL (java.util.logging) does not have a built-in asynchronous Handler.
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/MemoryHandler.html"><code>MemoryHandler</code></a>
+is the nearest thing available so we included it here. MemoryHandler
+does <em>not</em> do the safe thing of taking a snapshot of the current
+parameter state (it just keeps a reference to the original parameter
+objects), and as a result it is very fast when single-threaded. However,
+when more application threads are logging concurrently, the cost of lock
+contention outweighs this gain.</p>
+</div>
+<div class="paragraph">
+<p>In absolute numbers, <em>Log4j 2&#8217;s Async Loggers perform well compared to
+the other logging frameworks, but notice that the message formatting
+cost increases sharply with the number of parameters. In this area,
+Log4j 2 still has work to do to improve: we would like to keep this cost
+more constant.</em></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/ParamMsgThrpt1-4T.png" alt="image"></span></p>
+</div>
+<div class="paragraph">
+<p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6,
+Log4j 1.2.17 and Logback 1.1.7, and were obtained with the
+<a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark
+harness. See the AsyncAppenderLog4j1Benchmark,
+AsyncAppenderLog4j2Benchmark, AsyncAppenderLogbackBenchmark,
+AsyncLoggersBenchmark and the MemoryHandlerJULBenchmark source code in
+the log4j-perf-test module.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="asyncLoggingWithLocation"><a class="anchor" href="#asyncLoggingWithLocation"></a>Asynchronous Logging with Caller Location Information</h3>
+<div class="paragraph">
+<p>Some layouts can show the class, method and line number in the
+application where the logging call was made. In Log4j 2, examples of
+such layout options are HTML
+<a href="layouts.html#HtmlLocationInfo" class="xref page">locationInfo</a>, or one of the patterns
+<a href="layouts.html#PatternClass" class="xref page">%C or $class</a>,
+<a href="layouts.html#PatternFile" class="xref page">%F or %file</a>,
+<a href="layouts.html#PatternLocation" class="xref page">%l or %location</a>,
+<a href="layouts.html#PatternLine" class="xref page">%L or %line</a>,
+<a href="layouts.html#PatternMethod" class="xref page">%M or %method</a>. In order to provide
+caller location information, the logging library will take a snapshot of
+the stack, and walk the stack trace to find the location information.</p>
+</div>
+<div class="paragraph">
+<p>The graph below shows the performance impact of capturing caller
+location information when logging asynchronously from a single thread.
+Our tests show that <em>capturing caller location has a similar impact
+across all logging libraries, and slows down asynchronous logging by
+about 30-100x</em>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/AsyncWithLocationThrpt1T-labeled.png" alt="image"></span></p>
+</div>
+<div class="paragraph">
+<p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6,
+Log4j 1.2.17 and Logback 1.1.7, and were obtained with the
+<a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark
+harness. See the AsyncAppenderLog4j1LocationBenchmark,
+AsyncAppenderLog4j2LocationBenchmark,
+AsyncAppenderLogbackLocationBenchmark, AsyncLoggersLocationBenchmark and
+the MemoryHandlerJULLocationBenchmark source code in the log4j-perf-test
+module.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="fileLoggingComparison"><a class="anchor" href="#fileLoggingComparison"></a>Synchronous File Logging - Sustained Throughput Comparison</h3>
+<div class="paragraph">
+<p>This section discusses the maximum sustained throughput of logging to a
+file. In any system, the maximum sustained throughput is determined by
+its slowest component. In the case of logging, this is the appender,
+where the message formatting and disk I/O takes place. For this reason
+we will look at simple <em>synchronous</em> logging to a file, without queues
+or background threads.</p>
+</div>
+<div class="paragraph">
+<p>The graph below compares Log4j 2.6&#8217;s RandomAccessFile appender to the
+respective File appenders of Log4j 1.2.17, Logback 1.1.7 and Java util
+logging (JUL) on Oracle Java 1.8.0_45. ImmediateFlush was set to false
+for all loggers that support this. The JUL results are for the
+XMLFormatter (which in our measurements was about twice as fast as the
+SimpleFormatter).</p>
+</div>
+<div class="paragraph">
+<p><em>Log4j 2&#8217;s sustained throughput drops a little when more threads are
+logging simultaneously, but its fine-grained locking pays off and
+throughput stays relatively high. The other logging frameworks'
+throughput drops dramatically in multi-threaded applications: Log4j 1.2
+has 1/4th of its single-threaded capacity, Logback has 1/10th of its
+single-threaded capacity, and JUL steadily drops from 1/4th to 1/10th of
+its single-threaded throughput as more threads are added.</em></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/SyncThroughputLoggerComparisonLinux.png" alt="image"></span></p>
+</div>
+<div class="paragraph">
+<p>The synchronous logging throughput results above are obtained with the
+<a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark
+harness. See the FileAppenderBenchmark source code in the log4j-perf-test
+module.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_synchronous_file_logging_response_time_comparison"><a class="anchor" href="#_synchronous_file_logging_response_time_comparison"></a>Synchronous File Logging - Response Time Comparison</h3>
+<div class="paragraph">
+<p>Response time for synchronous file logging varies a lot with the
+workload and the number of threads. Below is a sample for a workload of
+32,000 events per second, with 2 threads logging 16,000 events per
+second each.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/SynchronousFileResponseTime2T32k-labeled.png" alt="image"></span></p>
+</div>
+<div class="paragraph">
+<p>The above result was obtained with the ResponseTimeTest class which can
+be found in the Log4j 2 unit test source directory, running on JDK
+1.8.0_45 on RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with 10-core Xeon
+CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual
+cores).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="filtering"><a class="anchor" href="#filtering"></a>Filtering by Level</h3>
+<div class="paragraph">
+<p>The most basic filtering a logging framework provides is filtering by
+log level. When logging is turned off entirely or just for a set of
+Levels, the cost of a log request consists of a number of method
+invocations plus an integer comparison. Unlike Log4j, Log4j 2 Loggers
+don&#8217;t "walk a hierarchy". Loggers point directly to the Logger
+configuration that best matches the Logger&#8217;s name. This incurs extra
+overhead when the Logger is first created but reduces the overhead every
+time the Logger is used.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_advanced_filtering"><a class="anchor" href="#_advanced_filtering"></a>Advanced Filtering</h3>
+<div class="paragraph">
+<p>Both Logback and Log4j 2 support advanced filtering. Logback calls them
+TurboFilters while Log4j 2 has a single Filter object. Advanced
+filtering provides the capability to filter LogEvents using more than
+just the Level before the events are passed to Appenders. However, this
+flexibility does come with some cost. Since multi-threading can also
+have an impact on the performance of advanced filtering, the chart below
+shows the difference in performance of filtering based on a Marker or a
+Marker&#8217;s parent.</p>
+</div>
+<div class="paragraph">
+<p>The "Simple Marker" comparison checks to see if a Marker that has no
+references to other markers matches the requested Marker. The "Parent
+Marker" comparison checks to see if a Marker that does have references
+to other markers matches the requested Marker.</p>
+</div>
+<div class="paragraph">
+<p>It appears that coarse-grained synchronization in SLF4J can impact
+performance in multi-threaded scenarios. See
+<a href="http://jira.qos.ch/browse/SLF4J-240">SLF4J-240</a>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/MarkerFilterCostComparison.png" alt="image"></span></p>
+</div>
+<div class="paragraph">
+<p>Log4j and Logback also support filtering on a value in the Log4j
+ThreadContext vs filtering in Logback on a value in the MDC. The graph
+below shows that the performance difference between Log4j 2 and Logback
+is small for the ThreadContext filter.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/ThreadContextFilterCostComparison.png" alt="image"></span></p>
+</div>
+<div class="paragraph">
+<p>The Filter comparison results above are obtained with the
+<a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark
+harness. See the MarkerFilterBenchmark and MDCFilterBenchmark in the
+log4j-perf-test module for details on these benchmarks.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tradeoffs"><a class="anchor" href="#tradeoffs"></a>Trade-offs</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="whichAppender"><a class="anchor" href="#whichAppender"></a>Which Log4j 2 Appender to Use?</h3>
+<div class="paragraph">
+<p>Assuming that you selected Log4j 2 as your logging framework, next you
+may be interested in learning what the performance trade-offs are for
+selecting a specific Log4j 2 configuration. For example, there are three
+appenders for logging to a file: the File, RandomAccessFile and
+MemoryMappedFile appenders. Which one should you use?</p>
+</div>
+<div class="paragraph">
+<p>If performance is all you care about, the graphs below show your best
+choice is either the MemoryMappedFile appender or the RandomAccessFile
+appender. Some things to bear in mind:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>MemoryMappedFile appender does not have a rolling variant yet.</p>
+</li>
+<li>
+<p>When the log file size exceeds the MemoryMappedFile&#8217;s region length,
+the file needs to be remapped. This can be a very expensive operation,
+taking several seconds if the region is large.</p>
+</li>
+<li>
+<p>MemoryMappedFile appender creates a presized file from the beginning
+and fills it up gradually. This can confuse tools like <code>tail</code>; many such
+tools don&#8217;t work very well with memory mapped files.</p>
+</li>
+<li>
+<p>On Windows, using a tool like <code>tail</code> on a file created by
+RandomAccessFile appender can hold a lock on this file which may prevent
+Log4j from opening the file again when the application is restarted. In
+a development environment where you expect to restart your application
+regularly while using tools like tail to view the log file contents, the
+File appender may be a reasonable trade-off between performance and
+flexibility. For production environments performance may have higher
+priority.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The graph below shows sustained throughput for the console and file
+appenders in Log4j 2.6, and for reference also provides the 2.5
+performance.</p>
+</div>
+<div class="paragraph">
+<p>It turns out that the garbage-free text encoding logic in 2.6 gives
+these appenders a performance boost compared to Log4j 2.5. It used to be
+that the RandomAccessFile appender was significantly faster, especially
+in multi-threaded scenarios, but with the 2.6 release the File appender
+performance has improved and the performance difference between these
+two appender is smaller.</p>
+</div>
+<div class="paragraph">
+<p>Another takeaway is just how much of a performance drag logging to the
+console can be. Considering logging to a file and using a tool like
+<code>tail</code> to watch the file change in real time.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/Log4j2AppenderThroughputComparison-linux.png" alt="image"></span></p>
+</div>
+<div class="paragraph">
+<p>On Windows, the results are similar but the RandomAccessFile and
+MemoryMappedFile appenders outperform the plain File appender in
+multi-threaded scenarios. The absolute numbers are higher on Windows: we
+don&#8217;t know why but it looks like Windows handles lock contention better
+than Linux.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="../_images/Log4j2AppenderThroughputComparison-windows.png" alt="image"></span></p>
+</div>
+<div class="paragraph">
+<p>The Log4j 2 appender comparison results above are obtained with the
+<a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark
+harness. See the Log4j2AppenderComparisonBenchmark source code in the
+log4j-perf-test module.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

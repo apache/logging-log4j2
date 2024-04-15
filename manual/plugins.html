@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Plugins :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/plugins.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="extending.html">Extending Log4j</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb3.html">MongoDB 3 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li>Learn</li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="plugins.html">Plugins</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/manual/plugins.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Plugins</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j 1.x allowed for extension by requiring class attributes on most of the configuration declarations. In the case of some elements, notably the PatternLayout, the only way to add new pattern converters was to extend the PatternLayout class and add them via code. One goal of Log4j 2 is to make extending it extremely easy through the use of plugins.</p>
+</div>
+<div class="paragraph">
+<p>In Log4j 2 a plugin is declared by adding a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> annotation to the class declaration. During initialization the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a> will invoke the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginManager.html"><code>PluginManager</code></a> to load the built-in Log4j plugins as well as any custom plugins. The <code>PluginManager</code> locates plugins by looking in five places:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Serialized plugin listing files on the classpath. These files are generated automatically during the build (more details below).</p>
+</li>
+<li>
+<p>(OSGi only) Serialized plugin listing files in each active OSGi bundle. A <code>BundleListener</code> is added on activation to continue checking new bundles after <code>log4j-core</code> has started.</p>
+</li>
+<li>
+<p><strong>(Deprecated)</strong> A comma-separated list of packages specified by the <code>log4j.plugin.packages</code> system property.</p>
+</li>
+<li>
+<p><strong>(Deprecated)</strong> Packages passed to the static <code>PluginManager.addPackages</code> method (before Log4j configuration occurs).</p>
+</li>
+<li>
+<p><strong>(Deprecated)</strong> The [packages](./configuration.html#ConfigurationSyntax) declared in your log4j2 configuration file.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If multiple Plugins specify the same (case-insensitive) <code>name</code>, then the load order above determines which one will be used. For example, to override the <code>File</code> plugin which is provided by the built-in <code>FileAppender</code> class, you would need to place your plugin in a JAR file in the CLASSPATH ahead of`log4j-core.jar`. This is not recommended; plugin name collisions will cause a warning to be emitted. Note that in an OSGi environment, the order that bundles are scanned for plugins generally follows the same order that bundles were installed into the framework. See <a href="https://www.osgi.org/javadoc/r5/core/org/osgi/framework/BundleContext.html#getBundles()"><code>getBundles()</code></a> and <a href="https://www.osgi.org/javadoc/r5/core/org/osgi/framework/SynchronousBundleListener.html"><code>SynchronousBundleListener</code></a>. In short, name collisions are even more unpredictable in an OSGi environment.</p>
+</div>
+<div class="paragraph">
+<p>Serialized plugin listing files are generated by an annotation processor contained in the log4j-core artifact which will automatically scan your code for Log4j 2 plugins and output a metadata file in your processed classes. There is nothing extra that needs to be done to enable this; the Java compiler will automatically pick up the annotation processor on the class path unless you explicitly disable it. In that case, it would be important to add another compiler pass to your build process that only handles annotation processing using the Log4j 2 annotation processor class, <code>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</code>. To do this using Apache Maven, add the following execution to your <strong>maven-compiler-plugin</strong> (version 2.2 or higher) build plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;plugin&gt;
+  &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+  &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+  &lt;version&gt;3.1&lt;/version&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;id&gt;log4j-plugin-processor&lt;/id&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;compile&lt;/goal&gt;
+      &lt;/goals&gt;
+      &lt;phase&gt;process-classes&lt;/phase&gt;
+      &lt;configuration&gt;
+        &lt;proc&gt;only&lt;/proc&gt;
+        &lt;annotationProcessors&gt;
+          &lt;annotationProcessor&gt;org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor&lt;/annotationProcessor&gt;
+        &lt;/annotationProcessors&gt;
+      &lt;/configuration&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="core"><a class="anchor" href="#core"></a>Core</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Core plugins are those that are directly represented by an element in a configuration file, such as an Appender, Layout, Logger or Filter. Custom plugins that conform to the rules laid out in the next paragraph may simply be referenced in the configuration, provided they are appropriate configured to be loaded by the PluginManager.</p>
+</div>
+<div class="paragraph">
+<p>Every Core plugin must declare a static method annotated with @PluginFactory or @PluginBuilderFactory. The former is used for static factory methods that provide all options as method parameters, and the latter is used to construct a new Builder&lt;T&gt; class whose fields are used for injecting attributes and child nodes. To allow the Configuration to pass the correct parameters to the method, every parameter to the method must be annotated as one of the following attribute types. Each attribute or element annotation must include the name that must be present in the configuration in order to match the configuration item to its respective parameter. For plugin builders, the names of the fields will be used by default if no name is specified in the annotation. There are dozens of plugins in Log4j Core that can be used as examples for more complex scenarios including hierarchical builder classes (e.g., see FileAppender). See <a href="extending.html#Plugin_Builders" class="xref page">Extending Log4j with Plugin Builders</a> for more details.</p>
+</div>
+<div class="sect2">
+<h3 id="attribute-types"><a class="anchor" href="#attribute-types"></a>Attribute types</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>PluginAttribute: The parameter must be convertible from a String using a TypeConverter. Most built-in types are already supported, but custom TypeConverter plugins may also be provided for more type support. Note that PluginBuilderAttribute can be used in builder class fields as an easier way to provide default values.</p>
+</li>
+<li>
+<p>PluginElement: The parameter may represent a complex object that itself has parameters that can be configured. This also supports injecting an array of elements.</p>
+</li>
+<li>
+<p>PluginConfiguration: The current Configuration object will be passed to the plugin as a parameter.</p>
+</li>
+<li>
+<p>PluginNode: The current Node being parsed will be passed to the plugin as a parameter.</p>
+</li>
+<li>
+<p>PluginValue: The value of the current Node or its attribute named value.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="constraint-validators"><a class="anchor" href="#constraint-validators"></a>Constraint validators</h3>
+<div class="paragraph">
+<p>Plugin factory fields and parameters can be automatically validated at runtime using constraint validators inspired by the Bean Validation spec. The following annotations are bundled in Log4j, but custom ConstraintValidators can be created as well.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Required: This annotation validates that a value is non-empty. This covers a check for null as well as several other scenarios: empty CharSequence objects, empty arrays, empty Collection instances, and empty Map instances.</p>
+</li>
+<li>
+<p>ValidHost: This annotation validates that a value corresponds to a valid hostname. This uses the same validation as InetAddress::getByName.</p>
+</li>
+<li>
+<p>ValidPort: This annotation validates that a value corresponds to a valid port number between 0 and 65535.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="converters"><a class="anchor" href="#converters"></a>Converters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Converters are used by PatternLayout to render the elements identified by the conversion pattern. Every converter must specify its category as "Converter" on the @Plugin annotation, have a static newInstance method that accepts an array of Strings as its only parameter and returns an instance of the Converter, and must have a @ConverterKeys annotation present that contains the array of converter patterns that will cause the Converter to be selected. Converters that are meant to handle LogEvents must extend the LogEventPatternConverter class and must implement a format method that accepts a LogEvent and a StringBuilder as arguments. The Converter should append the result of its operation to the StringBuilder.</p>
+</div>
+<div class="paragraph">
+<p>A second type of Converter is the FileConverter - which must have "FileConverter" specified in the category attribute of the @Plugin annotation. While similar to a LogEventPatternConverter, instead of a single format method these Converters will have two variations; one that takes an Object and one that takes an array of Objects instead of the LogEvent. Both append to the provided StringBuilder in the same fashion as a LogEventPatternConverter. These Converters are typically used by the RollingFileAppender to construct the name of the file to log to.</p>
+</div>
+<div class="paragraph">
+<p>If multiple Converters specify the same ConverterKeys, then the load order above determines which one will be used. For example, to override the %date converter which is provided by the built-in DatePatternConverter class, you would need to place your plugin in a JAR file in the CLASSPATH ahead oflog4j-core.jar. This is not recommended; pattern ConverterKeys collisions will cause a warning to be emitted. Try to use unique ConverterKeys for your custom pattern converters.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="key-providers"><a class="anchor" href="#key-providers"></a>Key providers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some components within Log4j may provide the ability to perform data encryption. These components require a secret key to perform the encryption. Applications may provide the key by creating a class that implements the SecretKeyProvider interface.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lookups"><a class="anchor" href="#lookups"></a>Lookups</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lookups are perhaps the simplest plugins of all. They must declare their type as "Lookup" on the plugin annotation and must implement the StrLookup interface. They will have two methods; a lookup method that accepts a String key and returns a String value and a second lookup method that accepts both a LogEvent and a String key and returns a String. Lookups may be referenced by specifying ${name:key} where name is the name specified in the Plugin annotation and key is the name of the item to locate.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="type-converters"><a class="anchor" href="#type-converters"></a>Type converters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TypeConverters are a sort of meta-plugin used for converting strings into other types in a plugin factory method parameter. Other plugins can already be injected via the @PluginElement annotation; now, any type supported by the type conversion system can be used in a @PluginAttribute parameter. Conversion of enum types are supported on demand and do not require custom TypeConverter classes. A large number of built-in Java classes are already supported; see TypeConverters for a more exhaustive listing.</p>
+</div>
+<div class="paragraph">
+<p>Unlike other plugins, the plugin name of a TypeConverter is purely cosmetic. Appropriate type converters are looked up via the Type interface rather than via Class&lt;?&gt; objects only. Do note that TypeConverter plugins must have a default constructor. When multiple converters match for a type, the first will be returned. If any extends from Comparable&lt;TypeConverter&lt;?&gt;&gt;, it will be used for determining the order.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="developer-notes"><a class="anchor" href="#developer-notes"></a>Developer notes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If a plugin class implements Collection or Map, then no factory method is used. Instead, the class is instantiated using the default constructor, and all child configuration nodes are added to the Collection or Map.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>
