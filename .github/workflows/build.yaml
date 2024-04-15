@@ -38,7 +38,7 @@ jobs:
 
   build:
     if: github.actor != 'dependabot[bot]'
-    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@rel/10.6.0
+    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@main
     with:
       java-version: |
         8
@@ -48,11 +48,11 @@ jobs:
   deploy-snapshot:
     needs: build
     if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
-    uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@rel/10.6.0
+    uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@main
     # Secrets for deployments
     secrets:
-      NEXUS_USER: ${{ secrets.NEXUS_USER }}
-      NEXUS_PW: ${{ secrets.NEXUS_PW }}
+      NEXUS_USERNAME: ${{ secrets.NEXUS_USER }}
+      NEXUS_PASSWORD: ${{ secrets.NEXUS_PW }}
     with:
       java-version: |
         8
@@ -61,12 +61,12 @@ jobs:
   deploy-release:
     needs: build
     if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
-    uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@rel/10.6.0
+    uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@main
     # Secrets for deployments
     secrets:
       GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
-      LOGGING_STAGE_DEPLOYER_USER: ${{ secrets.LOGGING_STAGE_DEPLOYER_USER }}
-      LOGGING_STAGE_DEPLOYER_PW: ${{ secrets.LOGGING_STAGE_DEPLOYER_PW }}
+      NEXUS_USERNAME: ${{ secrets.LOGGING_STAGE_DEPLOYER_USER }}
+      NEXUS_PASSWORD: ${{ secrets.LOGGING_STAGE_DEPLOYER_PW }}
       SVN_USERNAME: ${{ secrets.LOGGING_SVN_DEV_USERNAME }}
       SVN_PASSWORD: ${{ secrets.LOGGING_SVN_DEV_PASSWORD }}
     # Write permissions to allow the Maven `revision` property update, changelog release, etc.
@@ -77,4 +77,3 @@ jobs:
         8
         17
       project-id: log4j
-      site-enabled: true
