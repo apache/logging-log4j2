@@ -18,6 +18,8 @@ package org.apache.logging.log4j.spi;
 
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -28,6 +30,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * </p>
  */
 @ProviderType
+@NullMarked
 public interface ThreadContextMap {
 
     /**
@@ -41,7 +44,7 @@ public interface ThreadContextMap {
      *     Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
      *     underlying context data will not be reflected in the returned object.
      * </p>
-     * @return An opaque representation of the context data.
+     * @return An opaque representation of the context data, not {@code null}.
      * @since 2.24.0
      * @see #restore
      */
@@ -51,7 +54,8 @@ public interface ThreadContextMap {
      * Restores the context data of the current thread from a saved version
      * @param contextMap An opaque representation of the context data obtained through a previous call to
      *                   {@link #save} or {@code restore}.
-     * @return An opaque representation of the current context data.
+     * @return An opaque representation of the current context data, not {@code null}.
+     * @throws NullPointerException if the {@code contextMap} parameter is {@code null}.
      * @since 2.24.0
      * @see #save
      */
@@ -59,7 +63,7 @@ public interface ThreadContextMap {
 
     /**
      * Determines if the key is in the context.
-     * @param key The key to locate.
+     * @param key The key to locate, not {@code null}.
      * @return True if the key is in the context, false otherwise.
      */
     boolean containsKey(final String key);
@@ -68,9 +72,10 @@ public interface ThreadContextMap {
      * Gets the context identified by the <code>key</code> parameter.
      *
      * <p>This method has no side effects.</p>
-     * @param key The key to locate.
-     * @return The value associated with the key or null.
+     * @param key The key to locate, not {@code null}.
+     * @return The value associated with the key or {@code null}.
      */
+    @Nullable
     String get(final String key);
 
     /**
@@ -83,6 +88,7 @@ public interface ThreadContextMap {
      * Returns an immutable view on the context Map or {@code null} if the context map is empty.
      * @return an immutable context Map or {@code null}.
      */
+    @Nullable
     Map<String, String> getImmutableMapOrNull();
 
     /**
@@ -98,15 +104,15 @@ public interface ThreadContextMap {
      *
      * <p>If the current thread does not have a context map it is
      * created as a side effect.</p>
-     * @param key The key name.
-     * @param value The key value.
+     * @param key The key name, not {@code null}.
+     * @param value The key value. The way {@code null} is treated depends on the implementation.
      */
-    void put(final String key, final String value);
+    void put(final String key, final @Nullable String value);
 
     /**
      * Removes the context identified by the <code>key</code>
      * parameter.
-     * @param key The key to remove.
+     * @param key The key to remove, not {@code null}.
      */
     void remove(final String key);
 }

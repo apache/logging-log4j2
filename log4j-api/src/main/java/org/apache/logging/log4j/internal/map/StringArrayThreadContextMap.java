@@ -23,6 +23,8 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An equivalent for DefaultThreadContxtMap, except that it's backed by
@@ -34,8 +36,11 @@ import org.apache.logging.log4j.util.TriConsumer;
  * linearly with the current map size, and callers are advised to minimize this
  * work.
  */
+@NullMarked
 public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlyStringMap {
     private static final long serialVersionUID = -2635197170958057849L;
+
+    private static final Object[] EMPTY_STATE = {0};
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
@@ -43,14 +48,14 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
      */
     public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
-    private final ThreadLocal<Object[]> threadLocalMapState;
+    private final ThreadLocal<Object @Nullable []> threadLocalMapState;
 
     public StringArrayThreadContextMap() {
         threadLocalMapState = new ThreadLocal<>();
     }
 
     @Override
-    public void put(final String key, final String value) {
+    public void put(final String key, final @Nullable String value) {
         final Object[] state = threadLocalMapState.get();
         final UnmodifiableArrayBackedMap modifiedMap =
                 UnmodifiableArrayBackedMap.getInstance(state).copyAndPut(key, value);
@@ -65,12 +70,11 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
     }
 
     @Override
-    public String get(final String key) {
+    public @Nullable String get(final String key) {
         final Object[] state = threadLocalMapState.get();
-        if (state == null) {
-            return null;
-        }
-        return UnmodifiableArrayBackedMap.getInstance(state).get(key);
+        return state == null
+                ? null
+                : UnmodifiableArrayBackedMap.getInstance(state).get(key);
     }
 
     @Override
@@ -130,7 +134,7 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
 
     @SuppressWarnings("unchecked")
     @Override
-    public <V> V getValue(final String key) {
+    public <V> @Nullable V getValue(final String key) {
         return (V) get(key);
     }
 
@@ -144,7 +148,7 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
     }
 
     @Override
-    public Map<String, String> getImmutableMapOrNull() {
+    public @Nullable Map<String, String> getImmutableMapOrNull() {
         final Object[] state = threadLocalMapState.get();
         return (state == null ? null : UnmodifiableArrayBackedMap.getInstance(state));
     }
@@ -162,17 +166,19 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
 
     @Override
     public Object save() {
-        return threadLocalMapState.get();
+        final Object[] state = threadLocalMapState.get();
+        return state != null ? state : EMPTY_STATE;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Object restore(final Object contextMap) {
         final Object current = save();
-        if (contextMap == null) {
+        final Object[] state = Objects.requireNonNull((Object[]) contextMap);
+        if (UnmodifiableArrayBackedMap.getInstance(state).isEmpty()) {
             clear();
         } else {
-            threadLocalMapState.set((Object[]) contextMap);
+            threadLocalMapState.set(state);
         }
         return current;
     }

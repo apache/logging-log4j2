@@ -16,18 +16,23 @@
  */
 package org.apache.logging.slf4j;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import org.apache.logging.log4j.spi.CleanableThreadContextMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.MDC;
 import org.slf4j.spi.MDCAdapter;
 
 /**
  * Bind the ThreadContextMap to the SLF4J MDC.
  */
+@NullMarked
 public class MDCContextMap implements CleanableThreadContextMap {
 
     private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
@@ -47,7 +52,7 @@ public class MDCContextMap implements CleanableThreadContextMap {
     }
 
     @Override
-    public void put(final String key, final String value) {
+    public void put(final String key, final @Nullable String value) {
         mdc.put(key, value);
     }
 
@@ -59,7 +64,7 @@ public class MDCContextMap implements CleanableThreadContextMap {
     }
 
     @Override
-    public String get(final String key) {
+    public @Nullable String get(final String key) {
         return mdc.get(key);
     }
 
@@ -82,13 +87,16 @@ public class MDCContextMap implements CleanableThreadContextMap {
 
     @Override
     public Object save() {
-        return mdc.getCopyOfContextMap();
+        final Map<String, String> contextMap = mdc.getCopyOfContextMap();
+        return contextMap != null ? contextMap : Collections.emptyMap();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object restore(final Object contextMap) {
         final Object current = save();
-        if (contextMap == null) {
+        final Map<String, String> map = Objects.requireNonNull((Map<String, String>) contextMap);
+        if (map.isEmpty()) {
             mdc.clear();
         } else {
             mdc.setContextMap((Map<String, String>) contextMap);

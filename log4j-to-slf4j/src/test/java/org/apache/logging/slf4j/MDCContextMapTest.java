@@ -72,7 +72,12 @@ class MDCContextMapTest extends ThreadContextMapSuite {
     }
 
     @Test
-    void restoreAcceptsNull() {
-        assertNullValueClearsTheContextData(createThreadContextMap());
+    void savedValueNotNullIfMapEmpty() {
+        assertSavedValueNotNullIfMapEmpty(createThreadContextMap());
+    }
+
+    @Test
+    void restoreDoesNotAcceptNull() {
+        assertRestoreDoesNotAcceptNull(createThreadContextMap());
     }
 }

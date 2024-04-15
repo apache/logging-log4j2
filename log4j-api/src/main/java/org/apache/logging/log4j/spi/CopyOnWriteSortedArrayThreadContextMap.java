@@ -24,6 +24,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * {@code SortedArrayStringMap}-based implementation of the {@code ThreadContextMap} interface that creates a copy of
@@ -34,6 +36,7 @@ import org.apache.logging.log4j.util.StringMap;
  *
  * @since 2.7
  */
+@NullMarked
 class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ObjectThreadContextMap, CopyOnWrite {
 
     /**
@@ -52,14 +55,14 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
      */
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
-    private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
+    static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
 
     static {
         EMPTY_CONTEXT_DATA.freeze();
     }
 
     private final int initialCapacity;
-    private final ThreadLocal<StringMap> localMap;
+    private final ThreadLocal<@Nullable StringMap> localMap;
 
     public CopyOnWriteSortedArrayThreadContextMap() {
         this(PropertiesUtil.getProperties());
@@ -79,7 +82,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
                         return stringMap;
                     }
                 }
-                : new ThreadLocal<StringMap>();
+                : new ThreadLocal<>();
     }
 
     /**
@@ -107,12 +110,12 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     @Override
-    public void put(final String key, final String value) {
+    public void put(final String key, final @Nullable String value) {
         putValue(key, value);
     }
 
     @Override
-    public void putValue(final String key, final Object value) {
+    public void putValue(final String key, final @Nullable Object value) {
         StringMap map = localMap.get();
         map = map == null ? createStringMap() : createStringMap(map);
         map.putValue(key, value);
@@ -149,12 +152,12 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     @Override
-    public String get(final String key) {
+    public @Nullable String get(final String key) {
         return (String) getValue(key);
     }
 
     @Override
-    public <V> V getValue(final String key) {
+    public <V> @Nullable V getValue(final String key) {
         final StringMap map = localMap.get();
         return map == null ? null : map.<V>getValue(key);
     }
@@ -223,17 +226,19 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public Object save() {
-        return localMap.get();
+        final StringMap map = localMap.get();
+        return map != null ? map : EMPTY_CONTEXT_DATA;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Object restore(final Object contextMap) {
         final Object current = save();
-        if (contextMap == null) {
+        final StringMap map = (StringMap) contextMap;
+        if (map.isEmpty()) {
             clear();
         } else {
-            localMap.set((StringMap) contextMap);
+            localMap.set(map);
         }
         return current;
     }

@@ -94,7 +94,13 @@ class ThreadContextMapTest extends ThreadContextMapSuite {
 
     @ParameterizedTest
     @MethodSource("localMaps")
-    void restoreAcceptsNull(final ThreadContextMap threadContext) {
-        assertNullValueClearsTheContextData(threadContext);
+    void savedValueNotNullIfMapEmpty(final ThreadContextMap threadContext) {
+        assertSavedValueNotNullIfMapEmpty(threadContext);
+    }
+
+    @ParameterizedTest
+    @MethodSource("localMaps")
+    void restoreDoesNotAcceptNull(final ThreadContextMap threadContext) {
+        assertRestoreDoesNotAcceptNull(threadContext);
     }
 }

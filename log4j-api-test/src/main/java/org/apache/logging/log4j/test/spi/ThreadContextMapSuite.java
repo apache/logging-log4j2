@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.test.spi;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
@@ -107,24 +108,19 @@ public abstract class ThreadContextMapSuite {
     }
 
     /**
-     * Ensures the {@code restore(null)} can be used to clear the context data.
-     *
-     * @param threadContext The {@link ThreadContextMap} to test.
+     * Ensures that the saved value is always not {@code null}, even if there are no context data.
+     * <p>
+     *     This requirement allows third-party libraries to store the saved value as value of a map, even if the map
+     *     does not allow nulls.
+     * </p>
      */
-    protected static void assertNullValueClearsTheContextData(final ThreadContextMap threadContext) {
-        final String value = "restoreAcceptsNull";
-        final RuntimeException throwable = new RuntimeException();
-        threadContext.put(KEY, value);
-        final Object saved = threadContext.restore(null);
-        try {
-            assertThat(threadContext.getImmutableMapOrNull()).isNullOrEmpty();
-            throw throwable;
-        } catch (final RuntimeException e) {
-            assertThat(e).isSameAs(throwable);
-            assertThat(threadContext.getImmutableMapOrNull()).isNullOrEmpty();
-        } finally {
-            threadContext.restore(saved);
-        }
-        assertThat(threadContext.get(KEY)).isEqualTo(value);
+    protected static void assertSavedValueNotNullIfMapEmpty(final ThreadContextMap threadContext) {
+        threadContext.clear();
+        final Object saved = threadContext.save();
+        assertThat(saved).as("Saved empty context data.").isNotNull();
+    }
+
+    protected static void assertRestoreDoesNotAcceptNull(final ThreadContextMap threadContext) {
+        assertThrows(NullPointerException.class, () -> threadContext.restore(null));
     }
 }
