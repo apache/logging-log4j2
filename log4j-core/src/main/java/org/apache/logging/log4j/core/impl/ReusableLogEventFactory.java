@@ -100,7 +100,13 @@ public class ReusableLogEventFactory implements LogEventFactory, LocationAwareLo
         result.initTime(CLOCK, Log4jLogEvent.getNanoClock());
         result.setThrown(t);
         result.setSource(location);
-        result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));
+        if (injector != null) {
+            result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));
+        } else {
+            StringMap reusable = (StringMap) result.getContextData();
+            copyProperties(properties, reusable);
+            ContextData.addAll(reusable);
+        }
         result.setContextStack(
                 ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack()); // mutable copy
 
@@ -109,6 +115,21 @@ public class ReusableLogEventFactory implements LogEventFactory, LocationAwareLo
             result.setThreadPriority(Thread.currentThread().getPriority());
         }
         return result;
+    }
+
+    /**
+     * Copies key-value pairs from the specified property list into the specified {@code StringMap}.
+     *
+     * @param properties list of configuration properties, may be {@code null}
+     * @param result the {@code StringMap} object to add the key-values to. Must be non-{@code null}.
+     */
+    private static void copyProperties(final List<Property> properties, final StringMap result) {
+        if (properties != null) {
+            for (int i = 0; i < properties.size(); i++) {
+                final Property prop = properties.get(i);
+                result.putValue(prop.getName(), prop.getValue());
+            }
+        }
     }
 
     private static MutableLogEvent getOrCreateMutableLogEvent() {
