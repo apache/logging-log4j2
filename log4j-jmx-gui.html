@@ -281,6 +281,23 @@
 <p><a href="https://github.com/apache/logging-log4j-jmx-gui">The Apache Log4j JMX GUI</a> is a basic client GUI that can be used to monitor the <code>StatusLogger</code> output and to remotely modify the Log4j configuration.
 The client GUI can be run as a stand-alone application or as a JConsole plug-in.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The Java VM to be monitored has to enable Log4j JMX support, set the following system property when starting the Java VM:</p>
+</div>
+<div class="paragraph">
+<p><code>log4j2.disableJmx=false</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </article>
   </div>
 </main>

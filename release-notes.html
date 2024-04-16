@@ -285,6 +285,12 @@
 <p>This releases contains &#8230;&#8203;</p>
 </div>
 <div class="sect2">
+<h3 id="_jmx_changes"><a class="anchor" href="#_jmx_changes"></a>JMX changes</h3>
+<div class="paragraph">
+<p>Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the <code>log4j2.disableJmx=false</code> system property.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="release-notes-2-x-x-added"><a class="anchor" href="#release-notes-2-x-x-added"></a>Added</h3>
 <div class="ulist">
 <ul>
@@ -318,6 +324,9 @@
 </li>
 <li>
 <p>Remove <code>log4j-kubernetes</code> lookup. User should migrate to <a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md"><code>io.fabric8:kubernetes-log4j</code></a>. (<a href="https://github.com/apache/logging-log4j2/pull/2412">2412</a>)</p>
+</li>
+<li>
+<p>Disable JMX support by default. Require <code>log4j2.disableJmx</code> to be set to <code>false</code> to enable JMX support. (<a href="https://github.com/apache/logging-log4j2/issues/2462">2462</a>)</p>
 </li>
 <li>
 <p>Deprecate <code>org.apache.logging.log4j.core.appender.rolling.action.Duration</code> class for removal.</p>
