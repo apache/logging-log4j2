@@ -29,6 +29,56 @@ If a logging implementation is required by tests, it should be in the appropriat
 
 * **Applications** need Log4j API for their own code, but also an implementation of each of the major Java logging APIs to support log statements from the libraries they use.
 
+[#build-tool]
+== Configuring the build tool
+
+The easiest way to install Log4j is through a build tool such as Maven or Gradle.
+The rest of the instructions in this page assume you use one of these.
+
+[#bom]
+=== Importing the Bill-of-Materials (aka. BOM)
+
+To keep your Log4j module versions in sync with each other, a BOM (Bill of Material) file is provided for your convenience.
+You need to import the BOM in your build tool of preference:
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-bom</artifactId>
+      <version>{log4j-core-version}</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+plugins {
+  id 'io.spring.dependency-management' version '1.1.4' //<1>
+}
+
+dependencyManagement {
+  imports {
+    mavenBom 'org.apache.logging.log4j:log4j-bom:{log4j-core-version}'
+  }
+}
+----
+<1> The additional https://github.com/spring-gradle-plugins/dependency-management-plugin[Gradle plugin] required for dependency management functionality.
+====
+
+Once you import the BOM, you don't need to explicitly provide the versions of the Log4j artifacts managed by it.
+
 [#api]
 == Installing Log4j API
 
@@ -38,20 +88,19 @@ The easiest way to install Log4j API is through a dependency management tool suc
 ====
 Maven::
 +
-[source,xml,subs="+attributes"]
+[source,xml]
 ----
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-api</artifactId>
-    <version>{log4j-api-version}</version>
 </dependency>
 ----
 
 Gradle::
 +
-[source,groovy,subs="+attributes"]
+[source,groovy]
 ----
-implementation 'org.apache.logging.log4j:log4j-api:{log4j-api-version}'
+implementation 'org.apache.logging.log4j:log4j-api'
 ----
 ====
 
@@ -106,25 +155,22 @@ To install Log4j Core as logging implementation, you need to add the following d
 ====
 Maven::
 +
-[source,xml,subs="+attributes"]
+[source,xml]
 ----
 <dependencies>
     <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>{log4j-core-version}</version>
         <scope>runtime</scope>
     </dependency>
     <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jul</artifactId>
-        <version>{log4j-api-version}</version>
         <scope>runtime</scope>
     </dependency>
     <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j2-impl</artifactId>
-        <version>{log4j-api-version}</version>
         <scope>runtime</scope>
     </dependency>
     ...
@@ -133,11 +179,11 @@ Maven::
 
 Gradle::
 +
-[source,groovy,subs="+attributes"]
+[source,groovy]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-core:{log4j-core-version}'
-runtimeOnly 'org.apache.logging.log4j:log4j-jul:{log4j-api-version}'
-runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl:{log4j-api-version}'
+runtimeOnly 'org.apache.logging.log4j:log4j-core'
+runtimeOnly 'org.apache.logging.log4j:log4j-jul'
+runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl'
 ----
 ====
 
@@ -159,7 +205,7 @@ Spring Boot users should use the `spring-boot-starter-log4j2` starter and replac
 ====
 Maven::
 +
-[source,xml,subs="+attributes"]
+[source,xml]
 ----
 <dependencies>
     <dependency>
@@ -183,7 +229,7 @@ Maven::
 
 Gradle::
 +
-[source,groovy,subs="+attributes"]
+[source,groovy]
 ----
 configurations {
     all.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
@@ -307,23 +353,21 @@ No dependency required.
 
 log4j2.yaml::
 +
-[source,xml,subs="+attributes"]
+[source,xml]
 ----
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-config-yaml</artifactId>
-    <version>{log4j-core-version}</version>
 </dependency>
 ----
 
 log4j2.properties::
 +
-[source,xml,subs="+attributes"]
+[source,xml]
 ----
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-config-properties</artifactId>
-    <version>{log4j-core-version}</version>
 </dependency>
 ----
 
@@ -353,16 +397,16 @@ No dependency required.
 
 log4j2.yaml::
 +
-[source,groovy,subs="+attributes"]
+[source,groovy]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml:{log4j-core-version}'
+runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml'
 ----
 
 log4j2.properties::
 +
-[source,groovy,subs="+attributes"]
+[source,groovy]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-properties:{log4j-core-version}'
+runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'
 ----
 
 =====
@@ -384,7 +428,6 @@ Maven::
     <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-to-jul</artifactId>
-        <version>{log4j-api-version}</version>
         <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -401,7 +444,7 @@ Gradle::
 +
 [source,groovy,subs="+attributes"]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-to-jul:{log4j-api-version}'
+runtimeOnly 'org.apache.logging.log4j:log4j-to-jul'
 runtimeOnly 'org.slf4j:slf4j-jdk14:{slf4j-version}'
 ----
 ====
@@ -458,19 +501,17 @@ To install https://logback.qos.ch/[Logback] as the logging implementation, you n
 ====
 Maven::
 +
-[source,xml,subs="+attributes"]
+[source,xml]
 ----
 <dependencies>
     <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jul</artifactId>
-        <version>{log4j-api-version}</version>
         <scope>runtime</scope>
     </dependency>
     <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-to-slf4j</artifactId>
-        <version>{log4j-api-version}</version>
         <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -486,8 +527,8 @@ Gradle::
 +
 [source,groovy,subs="+attributes"]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-jul:{log4j-api-version}'
-runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j:{log4j-api-version}'
+runtimeOnly 'org.apache.logging.log4j:log4j-jul'
+runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j'
 runtimeOnly 'ch.qos.logback:logback-classic:{logback-version}'
 ----
 ====
