@@ -165,15 +165,15 @@ public class StringArrayThreadContextMap implements ThreadContextMap, ReadOnlySt
     }
 
     @Override
-    public Object save() {
+    public Object getContextData() {
         final Object[] state = threadLocalMapState.get();
         return state != null ? state : EMPTY_STATE;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object restore(final Object contextMap) {
-        final Object current = save();
+    public Object setContextData(final Object contextMap) {
+        final Object current = getContextData();
         final Object[] state = Objects.requireNonNull((Object[]) contextMap);
         if (UnmodifiableArrayBackedMap.getInstance(state).isEmpty()) {
             clear();

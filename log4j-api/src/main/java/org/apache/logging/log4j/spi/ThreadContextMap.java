@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.spi;
 
 import java.util.Map;
+import java.util.Objects;
 import org.apache.logging.log4j.ThreadContext;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -44,22 +45,29 @@ public interface ThreadContextMap {
      *     Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
      *     underlying context data will not be reflected in the returned object.
      * </p>
-     * @return An opaque representation of the context data, not {@code null}.
+     * @return An opaque representation of the context data or {@code null} if not supported.
      * @since 2.24.0
-     * @see #restore
+     * @see #setContextData
      */
-    Object save();
+    @Nullable
+    default Object getContextData() {
+        return null;
+    }
 
     /**
      * Restores the context data of the current thread from a saved version
      * @param contextMap An opaque representation of the context data obtained through a previous call to
-     *                   {@link #save} or {@code restore}.
+     *                   {@link #getContextData} or {@code restore}.
      * @return An opaque representation of the current context data, not {@code null}.
      * @throws NullPointerException if the {@code contextMap} parameter is {@code null}.
+     * @throws UnsupportedOperationException if the operation is not supported.
      * @since 2.24.0
-     * @see #save
+     * @see #getContextData
      */
-    Object restore(Object contextMap);
+    default Object setContextData(final Object contextMap) {
+        Objects.requireNonNull(contextMap);
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Determines if the key is in the context.

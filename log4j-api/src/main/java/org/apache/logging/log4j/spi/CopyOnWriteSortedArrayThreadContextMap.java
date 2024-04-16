@@ -225,15 +225,15 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     @Override
-    public Object save() {
+    public Object getContextData() {
         final StringMap map = localMap.get();
         return map != null ? map : EMPTY_CONTEXT_DATA;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object restore(final Object contextMap) {
-        final Object current = save();
+    public Object setContextData(final Object contextMap) {
+        final Object current = getContextData();
         final StringMap map = (StringMap) contextMap;
         if (map.isEmpty()) {
             clear();

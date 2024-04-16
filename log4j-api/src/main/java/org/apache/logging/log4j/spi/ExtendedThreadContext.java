@@ -36,7 +36,7 @@ public final class ExtendedThreadContext {
      * @see #restoreMap
      */
     public static Object saveMap() {
-        return getThreadContextMap().save();
+        return getThreadContextMap().getContextData();
     }
 
     /**
@@ -47,7 +47,7 @@ public final class ExtendedThreadContext {
      * @see #saveMap
      */
     public static Object restoreMap(final Object contextMap) {
-        return getThreadContextMap().restore(contextMap);
+        return getThreadContextMap().setContextData(contextMap);
     }
 
     /**

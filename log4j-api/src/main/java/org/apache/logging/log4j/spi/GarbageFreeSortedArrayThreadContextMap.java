@@ -219,7 +219,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     @Override
-    public Object save() {
+    public Object getContextData() {
         final StringMap map = localMap.get();
         if (map != null && !map.isEmpty()) {
             // We prevent the need for a copy by freezing the map
@@ -232,8 +232,8 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object restore(final Object contextMap) {
-        final Object current = save();
+    public Object setContextData(final Object contextMap) {
+        final Object current = getContextData();
         localMap.set(Objects.requireNonNull((StringMap) contextMap));
         return current;
     }

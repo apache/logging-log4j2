@@ -799,13 +799,13 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     }
 
     @Override
-    public Object save() {
+    public Object getContextData() {
         return getImmutableMapOrNull();
     }
 
     @Override
-    public Object restore(final Object contextMap) {
-        final Object current = save();
+    public Object setContextData(final Object contextMap) {
+        final Object current = getContextData();
         clear();
         if (contextMap instanceof Map) {
             putAll((Map<? extends K, ? extends V>) contextMap);

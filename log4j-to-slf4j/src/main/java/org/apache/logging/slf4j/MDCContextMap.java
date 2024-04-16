@@ -16,11 +16,9 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import org.apache.logging.log4j.spi.CleanableThreadContextMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -83,25 +81,6 @@ public class MDCContextMap implements CleanableThreadContextMap {
     @Override
     public void clear() {
         mdc.clear();
-    }
-
-    @Override
-    public Object save() {
-        final Map<String, String> contextMap = mdc.getCopyOfContextMap();
-        return contextMap != null ? contextMap : Collections.emptyMap();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Object restore(final Object contextMap) {
-        final Object current = save();
-        final Map<String, String> map = Objects.requireNonNull((Map<String, String>) contextMap);
-        if (map.isEmpty()) {
-            mdc.clear();
-        } else {
-            mdc.setContextMap((Map<String, String>) contextMap);
-        }
-        return current;
     }
 
     @Override

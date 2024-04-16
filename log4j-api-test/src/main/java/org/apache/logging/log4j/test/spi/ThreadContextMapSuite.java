@@ -57,7 +57,7 @@ public abstract class ThreadContextMapSuite {
         final String internalValue = "internalValue";
         final RuntimeException throwable = new RuntimeException();
         threadContext.put(KEY, externalValue);
-        final Object saved = threadContext.save();
+        final Object saved = threadContext.getContextData();
         try {
             threadContext.put(KEY, internalValue);
             assertThat(threadContext.get(KEY)).isEqualTo(internalValue);
@@ -66,13 +66,13 @@ public abstract class ThreadContextMapSuite {
             assertThat(e).isSameAs(throwable);
             assertThat(threadContext.get(KEY)).isEqualTo(internalValue);
         } finally {
-            threadContext.restore(saved);
+            threadContext.setContextData(saved);
         }
         assertThat(threadContext.get(KEY)).isEqualTo(externalValue);
     }
 
     /**
-     * Ensures that the context data obtained through {@link ThreadContextMap#save} can be safely transferred to another
+     * Ensures that the context data obtained through {@link ThreadContextMap#getContextData} can be safely transferred to another
      * thread.
      *
      * @param threadContext The {@link ThreadContextMap} to test.
@@ -82,14 +82,14 @@ public abstract class ThreadContextMapSuite {
         final String newThreadValue = "newThreadValue";
         final RuntimeException throwable = new RuntimeException();
         threadContext.put(KEY, mainThreadValue);
-        final Object mainThreadSaved = threadContext.save();
+        final Object mainThreadSaved = threadContext.getContextData();
         threadContext.remove(KEY);
         // Move to new thread
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             assertThat(executorService.submit(() -> {
                         threadContext.put(KEY, newThreadValue);
-                        final Object newThreadSaved = threadContext.restore(mainThreadSaved);
+                        final Object newThreadSaved = threadContext.setContextData(mainThreadSaved);
                         try {
                             assertThat(threadContext.get(KEY)).isEqualTo(mainThreadValue);
                             throw throwable;
@@ -97,7 +97,7 @@ public abstract class ThreadContextMapSuite {
                             assertThat(e).isSameAs(throwable);
                             assertThat(threadContext.get(KEY)).isEqualTo(mainThreadValue);
                         } finally {
-                            threadContext.restore(newThreadSaved);
+                            threadContext.setContextData(newThreadSaved);
                         }
                         assertThat(threadContext.get(KEY)).isEqualTo(newThreadValue);
                     }))
@@ -116,11 +116,11 @@ public abstract class ThreadContextMapSuite {
      */
     protected static void assertSavedValueNotNullIfMapEmpty(final ThreadContextMap threadContext) {
         threadContext.clear();
-        final Object saved = threadContext.save();
+        final Object saved = threadContext.getContextData();
         assertThat(saved).as("Saved empty context data.").isNotNull();
     }
 
     protected static void assertRestoreDoesNotAcceptNull(final ThreadContextMap threadContext) {
-        assertThrows(NullPointerException.class, () -> threadContext.restore(null));
+        assertThrows(NullPointerException.class, () -> threadContext.setContextData(null));
     }
 }
