@@ -136,9 +136,9 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="serialized-class-details" id="org.apache.logging.log4j.ResourceLogger">
-<h3>Class&nbsp;<a href="org/apache/logging/log4j/ResourceLogger.html" title="class in org.apache.logging.log4j">org.apache.logging.log4j.ResourceLogger</a></h3>
-<div class="type-signature">class ResourceLogger extends <a href="org/apache/logging/log4j/spi/ExtendedLoggerWrapper.html" title="class in org.apache.logging.log4j.spi">ExtendedLoggerWrapper</a> implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<section class="serialized-class-details" id="org.apache.logging.log4j.ScopedResourceLogger">
+<h3>Class&nbsp;<a href="org/apache/logging/log4j/ScopedResourceLogger.html" title="class in org.apache.logging.log4j">org.apache.logging.log4j.ScopedResourceLogger</a></h3>
+<div class="type-signature">class ScopedResourceLogger extends <a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger</a> implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
 <dl class="name-value">
 <dt>serialVersionUID:</dt>
 <dd>-5837924138744974513L</dd>
@@ -149,8 +149,8 @@ loadScripts(document, 'script');</script>
 <h4>Serialized Fields</h4>
 <ul class="block-list">
 <li class="block-list">
-<h5>supplier</h5>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&gt; supplier</pre>
+<h5>scopedInstance</h5>
+<pre><a href="org/apache/logging/log4j/ScopedContext.Instance.html" title="interface in org.apache.logging.log4j">ScopedContext.Instance</a> scopedInstance</pre>
 </li>
 </ul>
 </section>
@@ -1114,6 +1114,33 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>name</h5>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> name</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.apache.logging.log4j.spi.AbstractResourceLogger">
+<h3>Class&nbsp;<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html" title="class in org.apache.logging.log4j.spi">org.apache.logging.log4j.spi.AbstractResourceLogger</a></h3>
+<div class="type-signature">class AbstractResourceLogger extends <a href="org/apache/logging/log4j/spi/ExtendedLoggerWrapper.html" title="class in org.apache.logging.log4j.spi">ExtendedLoggerWrapper</a> implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>-2657891242014543083L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>contextMap</h5>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt; contextMap</pre>
+</li>
+<li class="block-list">
+<h5>supplier</h5>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&gt; supplier</pre>
 </li>
 </ul>
 </section>

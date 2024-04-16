@@ -84,20 +84,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Class</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>final class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../ResourceLogger.html" class="type-name-link" title="class in org.apache.logging.log4j">ResourceLogger</a></code></div>
+<div class="col-second even-row-color"><code><a href="../../ScopedResourceLogger.html" class="type-name-link" title="class in org.apache.logging.log4j">ScopedResourceLogger</a></code></div>
 <div class="col-last even-row-color">
 <div class="block">Logger for resources.</div>
-</div>
-</div>
-<div class="caption"><span>Methods in <a href="../../package-summary.html">org.apache.logging.log4j</a> with parameters of type <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Method</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="../../ResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j">ResourceLogger.ResourceLoggerBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ResourceLogger.ResourceLoggerBuilder.</span><code><a href="../../ResourceLogger.ResourceLoggerBuilder.html#withLogger(org.apache.logging.log4j.spi.ExtendedLogger)" class="member-name-link">withLogger</a><wbr>(<a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger)</code></div>
-<div class="col-last even-row-color">
-<div class="block">Add the underlying Logger to use.</div>
 </div>
 </div>
 </section>
@@ -182,8 +171,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Base implementation of a Logger.</div>
 </div>
 <div class="col-first odd-row-color"><code>class&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../ExtendedLoggerWrapper.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">ExtendedLoggerWrapper</a></code></div>
+<div class="col-second odd-row-color"><code><a href="../AbstractResourceLogger.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block">Logger for resources.</div>
+</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../ExtendedLoggerWrapper.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">ExtendedLoggerWrapper</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Wrapper class that exposes the protected AbstractLogger methods to support wrapped loggers.</div>
 </div>
 </div>
@@ -192,9 +186,12 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>protected final <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ExtendedLoggerWrapper.</span><code><a href="../ExtendedLoggerWrapper.html#logger" class="member-name-link">logger</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first even-row-color"><code>protected <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AbstractResourceLogger.ResourceLoggerBuilder.</span><code><a href="../AbstractResourceLogger.ResourceLoggerBuilder.html#logger" class="member-name-link">logger</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected final <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ExtendedLoggerWrapper.</span><code><a href="../ExtendedLoggerWrapper.html#logger" class="member-name-link">logger</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">The wrapped Logger.</div>
 </div>
 </div>
@@ -237,12 +234,27 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Checks that the message factory a logger was created with is the same as the given messageFactory.</div>
 </div>
+<div class="col-first odd-row-color"><code><a href="../AbstractResourceLogger.ResourceLoggerBuilder.html" title="type parameter in AbstractResourceLogger.ResourceLoggerBuilder">B</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AbstractResourceLogger.ResourceLoggerBuilder.</span><code><a href="../AbstractResourceLogger.ResourceLoggerBuilder.html#withLogger(org.apache.logging.log4j.spi.ExtendedLogger)" class="member-name-link">withLogger</a><wbr>(<a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Add the underlying Logger to use.</div>
+</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../package-summary.html">org.apache.logging.log4j.spi</a> with parameters of type <a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier</div>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>protected </code></div>
+<div class="col-second even-row-color"><code><a href="../AbstractResourceLogger.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.util.function.Supplier,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractResourceLogger</a><wbr>(<a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&gt;&nbsp;supplier,
+ <a href="../../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected </code></div>
+<div class="col-second odd-row-color"><code><a href="../AbstractResourceLogger.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.util.Map,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractResourceLogger</a><wbr>(<a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&nbsp;map,
+ <a href="../../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../ExtendedLoggerWrapper.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">ExtendedLoggerWrapper</a><wbr>(<a href="../ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,

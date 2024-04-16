@@ -83,6 +83,18 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/AbstractMessageFactory.html#%3Cinit%3E()" class="member-name-link">AbstractMessageFactory()</a> - Constructor for class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/AbstractMessageFactory.html" title="class in org.apache.logging.log4j.message">AbstractMessageFactory</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger</a> - Class in <a href="org/apache/logging/log4j/spi/package-summary.html">org.apache.logging.log4j.spi</a></dt>
+<dd>
+<div class="block">Logger for resources.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.util.function.Supplier,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractResourceLogger(ExtendedLogger, Supplier&lt;Map&lt;String, ?&gt;&gt;, MessageFactory)</a> - Constructor for class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.util.Map,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractResourceLogger(ExtendedLogger, Map&lt;String, ?&gt;, MessageFactory)</a> - Constructor for class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a>&lt;<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="type parameter in AbstractResourceLogger.ResourceLoggerBuilder">B</a> extends <a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a>&lt;<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="type parameter in AbstractResourceLogger.ResourceLoggerBuilder">B</a>&gt;&gt; - Class in <a href="org/apache/logging/log4j/spi/package-summary.html">org.apache.logging.log4j.spi</a></dt>
+<dd>
+<div class="block">Constructs a ResourceLogger.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractScopedContextProvider.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider</a> - Class in <a href="org/apache/logging/log4j/spi/package-summary.html">org.apache.logging.log4j.spi</a></dt>
 <dd>
 <div class="block">An implementation of <a href="org/apache/logging/log4j/spi/ScopedContextProvider.html" title="interface in org.apache.logging.log4j.spi"><code>ScopedContextProvider</code></a> that uses the simplest implementation.</div>
@@ -193,6 +205,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Appends a text representation of the specified object to the specified StringBuilder,
  if possible without allocating temporary objects.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#asBuilder()" class="member-name-link">asBuilder()</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/message/MapMessage.html#asJava(java.lang.StringBuilder)" class="member-name-link">asJava(StringBuilder)</a> - Method in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/MapMessage.html" title="class in org.apache.logging.log4j.message">MapMessage</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/message/MapMessage.html#asJavaUnquoted(java.lang.StringBuilder)" class="member-name-link">asJavaUnquoted(StringBuilder)</a> - Method in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/MapMessage.html" title="class in org.apache.logging.log4j.message">MapMessage</a></dt>
@@ -344,7 +358,11 @@ loadScripts(document, 'script');</script>
 <div class="block">Extended interface to allow bridges between logging systems to convey the
  correct location information.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html#build()" class="member-name-link">build()</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j">ResourceLogger.ResourceLoggerBuilder</a></dt>
+<dt><a href="org/apache/logging/log4j/ScopedResourceLogger.ScopedResourceLoggerBuilder.html#build()" class="member-name-link">build()</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ScopedResourceLogger.ScopedResourceLoggerBuilder.html" title="class in org.apache.logging.log4j">ScopedResourceLogger.ScopedResourceLoggerBuilder</a></dt>
+<dd>
+<div class="block">Construct the ResourceLogger.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#build()" class="member-name-link">build()</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
 <dd>
 <div class="block">Construct the ResourceLogger.</div>
 </dd>
@@ -593,6 +611,8 @@ loadScripts(document, 'script');</script>
 <div class="block">For PropertySources that cannot iterate over all the potential properties this provides a direct lookup.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/SystemPropertiesPropertySource.html#containsProperty(java.lang.String)" class="member-name-link">containsProperty(String)</a> - Method in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/SystemPropertiesPropertySource.html" title="class in org.apache.logging.log4j.util">SystemPropertiesPropertySource</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html#contextMap" class="member-name-link">contextMap</a> - Variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractLoggerAdapter.html#contextShutdown(org.apache.logging.log4j.spi.LoggerContext)" class="member-name-link">contextShutdown(LoggerContext)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractLoggerAdapter.html" title="class in org.apache.logging.log4j.spi">AbstractLoggerAdapter</a></dt>
 <dd>&nbsp;</dd>
@@ -4662,6 +4682,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Logs events and specify the logging level.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#logger" class="member-name-link">logger</a> - Variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/spi/ExtendedLoggerWrapper.html#logger" class="member-name-link">logger</a> - Variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/ExtendedLoggerWrapper.html" title="class in org.apache.logging.log4j.spi">ExtendedLoggerWrapper</a></dt>
 <dd>
 <div class="block">The wrapped Logger.</div>
@@ -4670,6 +4692,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">This is the central interface in the log4j package.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#LOGGER" class="member-name-link">LOGGER</a> - Static variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractScopedContextProvider.html#LOGGER" class="member-name-link">LOGGER</a> - Static variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractScopedContextProvider.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/spi/Provider.html#LOGGER_CONTEXT_FACTORY" class="member-name-link">LOGGER_CONTEXT_FACTORY</a> - Static variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/Provider.html" title="class in org.apache.logging.log4j.spi">Provider</a></dt>
@@ -4904,7 +4928,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractLogger.html#logMessage(java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,org.apache.logging.log4j.util.Supplier...)" class="member-name-link">logMessage(String, Level, Marker, String, Supplier&lt;?&gt;...)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractLogger.html" title="class in org.apache.logging.log4j.spi">AbstractLogger</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.html#logMessage(java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)" class="member-name-link">logMessage(String, Level, Marker, Message, Throwable)</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ResourceLogger.html" title="class in org.apache.logging.log4j">ResourceLogger</a></dt>
+<dt><a href="org/apache/logging/log4j/ScopedResourceLogger.html#logMessage(java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)" class="member-name-link">logMessage(String, Level, Marker, Message, Throwable)</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ScopedResourceLogger.html" title="class in org.apache.logging.log4j">ScopedResourceLogger</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/simple/SimpleLogger.html#logMessage(java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)" class="member-name-link">logMessage(String, Level, Marker, Message, Throwable)</a> - Method in class org.apache.logging.log4j.simple.<a href="org/apache/logging/log4j/simple/SimpleLogger.html" title="class in org.apache.logging.log4j.simple">SimpleLogger</a></dt>
 <dd>&nbsp;</dd>
@@ -5015,6 +5039,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">A Message that is a collection of Messages.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#messageFactory" class="member-name-link">messageFactory</a> - Variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/message/MessageFactory.html" class="type-name-link" title="interface in org.apache.logging.log4j.message">MessageFactory</a> - Interface in <a href="org/apache/logging/log4j/message/package-summary.html">org.apache.logging.log4j.message</a></dt>
 <dd>
 <div class="block">Creates messages.</div>
@@ -5083,6 +5109,8 @@ loadScripts(document, 'script');</script>
 <dl class="index">
 <dt><a href="org/apache/logging/log4j/spi/AbstractLogger.html#name" class="member-name-link">name</a> - Variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractLogger.html" title="class in org.apache.logging.log4j.spi">AbstractLogger</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#name" class="member-name-link">name</a> - Variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/Level.html#name()" class="member-name-link">name()</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/Level.html" title="class in org.apache.logging.log4j">Level</a></dt>
 <dd>
 <div class="block">Gets the symbolic name of this Level.</div>
@@ -5091,7 +5119,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">All <code>MapFormat</code> names.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ResourceLogger.html" title="class in org.apache.logging.log4j">ResourceLogger</a></dt>
+<dt><a href="org/apache/logging/log4j/ScopedResourceLogger.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ScopedResourceLogger.html" title="class in org.apache.logging.log4j">ScopedResourceLogger</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/util/LoaderUtil.html#newCheckedInstanceOf(java.lang.String,java.lang.Class)" class="member-name-link">newCheckedInstanceOf(String, Class&lt;T&gt;)</a> - Static method in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/LoaderUtil.html" title="class in org.apache.logging.log4j.util">LoaderUtil</a></dt>
 <dd>
@@ -6067,13 +6095,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/util/FilteredObjectInputStream.html#resolveClass(java.io.ObjectStreamClass)" class="member-name-link">resolveClass(ObjectStreamClass)</a> - Method in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/FilteredObjectInputStream.html" title="class in org.apache.logging.log4j.util">FilteredObjectInputStream</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.html" class="type-name-link" title="class in org.apache.logging.log4j">ResourceLogger</a> - Class in <a href="org/apache/logging/log4j/package-summary.html">org.apache.logging.log4j</a></dt>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#%3Cinit%3E()" class="member-name-link">ResourceLoggerBuilder()</a> - Constructor for class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
 <dd>
-<div class="block">Logger for resources.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html" class="type-name-link" title="class in org.apache.logging.log4j">ResourceLogger.ResourceLoggerBuilder</a> - Class in <a href="org/apache/logging/log4j/package-summary.html">org.apache.logging.log4j</a></dt>
-<dd>
-<div class="block">Constructs a ResourceLogger.</div>
+<div class="block">Create the builder.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractScopedContextProvider.AbstractWorker.html#restoreContext()" class="member-name-link">restoreContext()</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractScopedContextProvider.AbstractWorker.html" title="class in org.apache.logging.log4j.spi">AbstractScopedContextProvider.AbstractWorker</a></dt>
 <dd>&nbsp;</dd>
@@ -6183,6 +6207,14 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/spi/ScopedContextProvider.html" class="type-name-link" title="interface in org.apache.logging.log4j.spi">ScopedContextProvider</a> - Interface in <a href="org/apache/logging/log4j/spi/package-summary.html">org.apache.logging.log4j.spi</a></dt>
 <dd>
 <div class="block">The service underlying <a href="org/apache/logging/log4j/ScopedContext.html" title="class in org.apache.logging.log4j"><code>ScopedContext</code></a>.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/ScopedResourceLogger.html" class="type-name-link" title="class in org.apache.logging.log4j">ScopedResourceLogger</a> - Class in <a href="org/apache/logging/log4j/package-summary.html">org.apache.logging.log4j</a></dt>
+<dd>
+<div class="block">Logger for resources.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/ScopedResourceLogger.ScopedResourceLoggerBuilder.html" class="type-name-link" title="class in org.apache.logging.log4j">ScopedResourceLogger.ScopedResourceLoggerBuilder</a> - Class in <a href="org/apache/logging/log4j/package-summary.html">org.apache.logging.log4j</a></dt>
+<dd>
+<div class="block">Constructs a ResourceLogger.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/ServiceLoaderUtil.html" class="type-name-link" title="class in org.apache.logging.log4j.util">ServiceLoaderUtil</a> - Class in <a href="org/apache/logging/log4j/util/package-summary.html">org.apache.logging.log4j.util</a></dt>
 <dd>
@@ -6610,10 +6642,21 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/message/SimpleMessage.html#subSequence(int,int)" class="member-name-link">subSequence(int, int)</a> - Method in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/SimpleMessage.html" title="class in org.apache.logging.log4j.message">SimpleMessage</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#supplier" class="member-name-link">supplier</a> - Variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html#supplier" class="member-name-link">supplier</a> - Variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/util/Supplier.html" class="type-name-link" title="interface in org.apache.logging.log4j.util">Supplier</a>&lt;<a href="org/apache/logging/log4j/util/Supplier.html" title="type parameter in Supplier">T</a>&gt; - Interface in <a href="org/apache/logging/log4j/util/package-summary.html">org.apache.logging.log4j.util</a></dt>
 <dd>
 <div class="block"><em>Consider this class private.</em>
  Classes implementing this interface know how to supply a value.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#supplyOnce" class="member-name-link">supplyOnce</a> - Variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#supplyOnce()" class="member-name-link">supplyOnce()</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
+<dd>
+<div class="block">Instruct the ResourceLogger to invoke the Supplier only once during Logger creation, if the
+ implementation supports it.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/ReusableMessage.html#swapParameters(java.lang.Object%5B%5D)" class="member-name-link">swapParameters(Object[])</a> - Method in interface org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/ReusableMessage.html" title="interface in org.apache.logging.log4j.message">ReusableMessage</a></dt>
 <dd>
@@ -7773,7 +7816,7 @@ the order they are declared.</div>
 <dd>
 <div class="block">Adds an item to the data Map in fluent style.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html#withClass(java.lang.Class)" class="member-name-link">withClass(Class&lt;?&gt;)</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j">ResourceLogger.ResourceLoggerBuilder</a></dt>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#withClass(java.lang.Class)" class="member-name-link">withClass(Class&lt;?&gt;)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
 <dd>
 <div class="block">The resource Class.</div>
 </dd>
@@ -7785,7 +7828,7 @@ the order they are declared.</div>
 <dd>
 <div class="block">Adds the specified stack trace element to the log event.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html#withLogger(org.apache.logging.log4j.spi.ExtendedLogger)" class="member-name-link">withLogger(ExtendedLogger)</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j">ResourceLogger.ResourceLoggerBuilder</a></dt>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#withLogger(org.apache.logging.log4j.spi.ExtendedLogger)" class="member-name-link">withLogger(ExtendedLogger)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
 <dd>
 <div class="block">Add the underlying Logger to use.</div>
 </dd>
@@ -7793,15 +7836,15 @@ the order they are declared.</div>
 <dd>
 <div class="block">Includes a Marker in the log event.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html#withMessageFactory(org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">withMessageFactory(MessageFactory)</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j">ResourceLogger.ResourceLoggerBuilder</a></dt>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#withMessageFactory(org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">withMessageFactory(MessageFactory)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
 <dd>
 <div class="block">Adds a MessageFactory.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html#withName(java.lang.String)" class="member-name-link">withName(String)</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j">ResourceLogger.ResourceLoggerBuilder</a></dt>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#withName(java.lang.String)" class="member-name-link">withName(String)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
 <dd>
 <div class="block">Add the Logger name.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html#withSupplier(java.util.function.Supplier)" class="member-name-link">withSupplier(Supplier&lt;Map&lt;String, ?&gt;&gt;)</a> - Method in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/ResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j">ResourceLogger.ResourceLoggerBuilder</a></dt>
+<dt><a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html#withSupplier(java.util.function.Supplier)" class="member-name-link">withSupplier(Supplier&lt;Map&lt;String, ?&gt;&gt;)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractResourceLogger.ResourceLoggerBuilder.html" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger.ResourceLoggerBuilder</a></dt>
 <dd>
 <div class="block">The Map Supplier.</div>
 </dd>

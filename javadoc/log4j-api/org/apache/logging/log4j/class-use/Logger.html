@@ -88,7 +88,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Class</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>final class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../ResourceLogger.html" class="type-name-link" title="class in org.apache.logging.log4j">ResourceLogger</a></code></div>
+<div class="col-second even-row-color"><code><a href="../ScopedResourceLogger.html" class="type-name-link" title="class in org.apache.logging.log4j">ScopedResourceLogger</a></code></div>
 <div class="col-last even-row-color">
 <div class="block">Logger for resources.</div>
 </div>
@@ -99,7 +99,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../Logger.html" title="interface in org.apache.logging.log4j">Logger</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ResourceLogger.ResourceLoggerBuilder.</span><code><a href="../ResourceLogger.ResourceLoggerBuilder.html#build()" class="member-name-link">build</a>()</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ScopedResourceLogger.ScopedResourceLoggerBuilder.</span><code><a href="../ScopedResourceLogger.ScopedResourceLoggerBuilder.html#build()" class="member-name-link">build</a>()</code></div>
 <div class="col-last even-row-color">
 <div class="block">Construct the ResourceLogger.</div>
 </div>
@@ -221,8 +221,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Base implementation of a Logger.</div>
 </div>
 <div class="col-first odd-row-color"><code>class&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../spi/ExtendedLoggerWrapper.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">ExtendedLoggerWrapper</a></code></div>
+<div class="col-second odd-row-color"><code><a href="../spi/AbstractResourceLogger.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">AbstractResourceLogger</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block">Logger for resources.</div>
+</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../spi/ExtendedLoggerWrapper.html" class="type-name-link" title="class in org.apache.logging.log4j.spi">ExtendedLoggerWrapper</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Wrapper class that exposes the protected AbstractLogger methods to support wrapped loggers.</div>
 </div>
 </div>
@@ -231,9 +236,23 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static final <a href="../Logger.html" title="interface in org.apache.logging.log4j">Logger</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../spi/AbstractScopedContextProvider.html#LOGGER" class="member-name-link">LOGGER</a></code></div>
+<div class="col-first even-row-color"><code>protected static final <a href="../Logger.html" title="interface in org.apache.logging.log4j">Logger</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AbstractResourceLogger.ResourceLoggerBuilder.</span><code><a href="../spi/AbstractResourceLogger.ResourceLoggerBuilder.html#LOGGER" class="member-name-link">LOGGER</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="../Logger.html" title="interface in org.apache.logging.log4j">Logger</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AbstractScopedContextProvider.</span><code><a href="../spi/AbstractScopedContextProvider.html#LOGGER" class="member-name-link">LOGGER</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../spi/package-summary.html">org.apache.logging.log4j.spi</a> that return <a href="../Logger.html" title="interface in org.apache.logging.log4j">Logger</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>abstract <a href="../Logger.html" title="interface in org.apache.logging.log4j">Logger</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AbstractResourceLogger.ResourceLoggerBuilder.</span><code><a href="../spi/AbstractResourceLogger.ResourceLoggerBuilder.html#build()" class="member-name-link">build</a>()</code></div>
+<div class="col-last even-row-color">
+<div class="block">Construct the ResourceLogger.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../spi/package-summary.html">org.apache.logging.log4j.spi</a> that return types with arguments of type <a href="../Logger.html" title="interface in org.apache.logging.log4j">Logger</a></span></div>
 <div class="summary-table three-column-summary">
