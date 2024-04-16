@@ -24,12 +24,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import java.util.function.LongSupplier;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
@@ -62,7 +64,7 @@ public abstract class AbstractAsyncThreadContextTestBase {
         props.setProperty("AsyncLoggerConfig.RingBufferSize", 128); // minimum ringbuffer size
     }
 
-    enum Mode {
+    protected enum Mode {
         ALL_ASYNC,
         MIXED,
         BOTH_ALL_ASYNC_AND_MIXED;
@@ -86,7 +88,7 @@ public abstract class AbstractAsyncThreadContextTestBase {
         }
     }
 
-    enum ContextImpl {
+    protected enum ContextImpl {
         WEBAPP,
         GARBAGE_FREE,
         COPY_ON_WRITE;
@@ -126,6 +128,24 @@ public abstract class AbstractAsyncThreadContextTestBase {
         }
     }
 
+    private LongSupplier remainingCapacity(final LoggerContext loggerContext, final LoggerConfig loggerConfig) {
+        final LongSupplier contextSupplier;
+        if (loggerContext instanceof AsyncLoggerContext) {
+            final RingBufferAdmin ringBufferAdmin = ((AsyncLoggerContext) loggerContext).createRingBufferAdmin();
+            contextSupplier = ringBufferAdmin::getRemainingCapacity;
+        } else {
+            contextSupplier = null;
+        }
+        if (loggerConfig instanceof AsyncLoggerConfig) {
+            final RingBufferAdmin ringBufferAdmin = ((AsyncLoggerConfig) loggerConfig)
+                    .createRingBufferAdmin(((org.apache.logging.log4j.core.LoggerContext) loggerContext).getName());
+            return contextSupplier == null
+                    ? ringBufferAdmin::getRemainingCapacity
+                    : () -> Math.min(contextSupplier.getAsLong(), ringBufferAdmin.getRemainingCapacity());
+        }
+        return contextSupplier != null ? contextSupplier : () -> Long.MAX_VALUE;
+    }
+
     protected void testAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode, final Path loggingPath)
             throws Exception {
         final Path testLoggingPath = loggingPath.resolve(asyncMode.toString());
@@ -142,21 +162,17 @@ public abstract class AbstractAsyncThreadContextTestBase {
         ThreadContext.put("KEY", "mapvalue");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
+        final LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) log).get();
         final LoggerContext loggerContext = LogManager.getContext(false);
         final String loggerContextName = loggerContext.getClass().getSimpleName();
-        RingBufferAdmin ring;
-        if (loggerContext instanceof AsyncLoggerContext) {
-            ring = ((AsyncLoggerContext) loggerContext).createRingBufferAdmin();
-        } else {
-            ring = ((AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) log).get()).createRingBufferAdmin("");
-        }
+        final LongSupplier remainingCapacity = remainingCapacity(loggerContext, loggerConfig);
 
         for (int i = 0; i < LINE_COUNT; i++) {
             // buffer may be full
             if (i >= 128) {
                 waitAtMost(500, TimeUnit.MILLISECONDS)
                         .pollDelay(10, TimeUnit.MILLISECONDS)
-                        .until(() -> ring.getRemainingCapacity() > 0);
+                        .until(() -> remainingCapacity.getAsLong() > 0);
             }
             if ((i & 1) == 1) {
                 ThreadContext.put("count", String.valueOf(i));
