@@ -100,7 +100,10 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         return new SortedArrayStringMap(original);
     }
 
-    private StringMap getThreadLocalMap() {
+    /**
+     * Ensures that the context data of the current thread are a mutable {@link StringMap}.
+     */
+    private StringMap getMutableContextData() {
         StringMap map = localMap.get();
         if (map == null) {
             map = createStringMap();
@@ -114,12 +117,12 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public void put(final String key, final @Nullable String value) {
-        getThreadLocalMap().putValue(key, value);
+        getMutableContextData().putValue(key, value);
     }
 
     @Override
     public void putValue(final String key, final Object value) {
-        getThreadLocalMap().putValue(key, value);
+        getMutableContextData().putValue(key, value);
     }
 
     @Override
@@ -127,7 +130,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         if (values == null || values.isEmpty()) {
             return;
         }
-        final StringMap map = getThreadLocalMap();
+        final StringMap map = getMutableContextData();
         for (final Map.Entry<String, String> entry : values.entrySet()) {
             map.putValue(entry.getKey(), entry.getValue());
         }
@@ -138,7 +141,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         if (values == null || values.isEmpty()) {
             return;
         }
-        final StringMap map = getThreadLocalMap();
+        final StringMap map = getMutableContextData();
         for (final Map.Entry<String, V> entry : values.entrySet()) {
             map.putValue(entry.getKey(), entry.getValue());
         }
@@ -157,27 +160,25 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public void remove(final String key) {
-        final StringMap map = localMap.get();
-        if (map != null) {
+        if (localMap.get() != null) {
+            final StringMap map = getMutableContextData();
             map.remove(key);
         }
     }
 
     @Override
     public void removeAll(final Iterable<String> keys) {
-        final StringMap map = localMap.get();
-        if (map != null) {
-            for (final String key : keys) {
-                map.remove(key);
-            }
+        if (localMap.get() != null) {
+            final StringMap map = getMutableContextData();
+            keys.forEach(map::remove);
         }
     }
 
     @Override
     public void clear() {
         final StringMap map = localMap.get();
-        if (map != null) {
-            map.clear();
+        if (map != null && !map.isEmpty()) {
+            getMutableContextData().clear();
         }
     }
 
@@ -207,7 +208,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     }
 
     @Override
-    public Map<String, String> getImmutableMapOrNull() {
+    public @Nullable Map<String, String> getImmutableMapOrNull() {
         final StringMap map = localMap.get();
         return map == null ? null : Collections.unmodifiableMap(map.toMap());
     }

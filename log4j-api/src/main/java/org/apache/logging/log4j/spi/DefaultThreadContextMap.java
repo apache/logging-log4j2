@@ -237,12 +237,6 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     }
 
     @Override
-    public Object getContextData() {
-        final Map<String, String> map = localMap.get();
-        return map != null ? map : Collections.emptyMap();
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public Object setContextData(final Object contextMap) {
         final Object current = getContextData();

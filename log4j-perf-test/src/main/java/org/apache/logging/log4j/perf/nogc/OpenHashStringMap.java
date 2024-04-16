@@ -799,17 +799,11 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     }
 
     @Override
-    public Object getContextData() {
-        return getImmutableMapOrNull();
-    }
-
-    @Override
     public Object setContextData(final Object contextMap) {
         final Object current = getContextData();
+        final Map<? extends K, ? extends V> map = Objects.requireNonNull((Map<? extends K, ? extends V>) contextMap);
         clear();
-        if (contextMap instanceof Map) {
-            putAll((Map<? extends K, ? extends V>) contextMap);
-        }
+        putAll(map);
         return current;
     }
 

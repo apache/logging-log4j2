@@ -29,10 +29,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.Issue;
+import org.slf4j.helpers.BasicMDCAdapter;
 import org.slf4j.spi.MDCAdapter;
 
 @Execution(ExecutionMode.CONCURRENT)
 class MDCContextMapTest extends ThreadContextMapSuite {
+
+    private static final String KEY = "key";
 
     @Test
     @Issue("https://github.com/apache/logging-log4j2/issues/1426")
@@ -45,5 +48,36 @@ class MDCContextMapTest extends ThreadContextMapSuite {
         assertThat(contextMap.getCopy()).isNotNull();
         verify(mockAdapter, times(2)).getCopyOfContextMap();
         verifyNoMoreInteractions(mockAdapter);
+    }
+
+    private static ThreadContextMap createThreadContextMap() {
+        return new MDCContextMap(new BasicMDCAdapter());
+    }
+
+    @Test
+    void threadLocalInheritable() {
+        final ThreadContextMap threadContext = createThreadContextMap();
+        threadContext.put(KEY, "threadLocalInheritable");
+        assertThreadContextValueOnANewThread(threadContext, KEY, "threadLocalInheritable");
+    }
+
+    @Test
+    void saveAndRestoreMap() {
+        assertContextDataCanBeSavedAndRestored(createThreadContextMap());
+    }
+
+    @Test
+    void saveAndRestoreMapOnAnotherThread() {
+        assertContextDataCanBeTransferred(createThreadContextMap());
+    }
+
+    @Test
+    void savedValueNotNullIfMapEmpty() {
+        assertSavedValueNotNullIfMapEmpty(createThreadContextMap());
+    }
+
+    @Test
+    void restoreDoesNotAcceptNull() {
+        assertRestoreDoesNotAcceptNull(createThreadContextMap());
     }
 }
