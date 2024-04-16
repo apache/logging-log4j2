@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://logging.apache.org/log4j/changelog"
-       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2430" link="https://github.com/apache/logging-log4j2/pull/2430"/>
-  <description format="asciidoc">Update `commons-io:commons-io` to version `2.16.0`</description>
+  <issue id="2459" link="https://github.com/apache/logging-log4j2/pull/2459"/>
+  <description format="asciidoc">Update `commons-io:commons-io` to version `2.16.1`</description>
 </entry>

@@ -33,10 +33,14 @@
 
   <properties>
 
+    <!-- Javadoc needs to be generated for this module -->
     <maven.javadoc.skip>false</maven.javadoc.skip>
 
     <!-- Tests are located elsewhere, no need to do any processing for the `src/test` directory: -->
     <maven.test.skip>true</maven.test.skip>
+
+    <!-- `log4j-core` plugin descriptor needs to be consumed before other modules' descriptors -->
+    <log4j.docgen.pluginDescriptorsDir>${log4j.docgen.pluginDescriptorsDir.phase1}</log4j.docgen.pluginDescriptorsDir>
 
     <!--
       ~ OSGi and JPMS options
@@ -223,71 +227,6 @@
               </sources>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-
-      <!-- We can't use `plugin-processing` Maven profile activated by `.log4j-plugin-processing-activator` file, because...
-           `log4j-core` contains `PluginProcessor`, that is responsible for generating `META-INF/org/apache/.../Log4j2Plugins.dat` from `@Plugin`-annotated members.
-           `log4j-core` also contains `@Plugin`-annotated members too.
-           That is, we need `log4j-core` to build `log4j-core`.
-           To work around this chicken-and-egg problem, we build as follows:
-
-           1. Compile sources using the `default-compile` default compilation execution.
-              This will generate the `PluginProcessor` class.
-
-           2. Make a second compilation pass using the generated `PluginProcessor`. -->
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-
-          <!-- 1st pass: compile sources as usual -->
-          <execution>
-            <id>default-compile</id>
-          </execution>
-
-          <!-- 2nd pass: employ annotation processors -->
-          <execution>
-            <id>process-plugins</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>process-classes</phase>
-            <configuration>
-              <annotationProcessorPaths combine.children="append">
-                <!-- Include `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` that generates `log4j-plugins.xml`.
-                     `DescriptorGenerator` must precede `PluginProcessor`, since the latter *claims* the `@Plugin`.
-                     Once claimed, `javac` doesn't pass those sources to other processors. -->
-                <path>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-docgen</artifactId>
-                  <version>${log4j-docgen.version}</version>
-                </path>
-                <!-- `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` for generating `META-INF/org/apache/.../Log4j2Plugins.dat`: -->
-                <path>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-core</artifactId>
-                  <version>${project.version}</version>
-                </path>
-              </annotationProcessorPaths>
-              <annotationProcessors>
-                <!-- Process sources using `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` to generate `log4j-plugins.xml` -->
-                <processor>org.apache.logging.log4j.docgen.processor.DescriptorGenerator</processor>
-                <!-- Process sources using `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` to generate `META-INF/org/apache/.../Log4j2Plugins.dat` -->
-                <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
-              </annotationProcessors>
-              <compilerArgs combine.self="override">
-                <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
-                <arg>-Alog4j.docgen.descriptorFilePath=${log4j.docgen.pluginDescriptorsDir.phase1}/${project.artifactId}-plugins.xml</arg>
-                <arg>-Alog4j.docgen.groupId=${project.groupId}</arg>
-                <arg>-Alog4j.docgen.artifactId=${project.artifactId}</arg>
-                <arg>-Alog4j.docgen.version=${project.version}</arg>
-                <arg>-Alog4j.docgen.description=${project.description}</arg>
-                <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
-              </compilerArgs>
-              <proc>only</proc>
-            </configuration>
-          </execution>
-
         </executions>
       </plugin>
 

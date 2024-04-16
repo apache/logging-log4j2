@@ -219,7 +219,7 @@ To include any custom field in the output, use following syntax:
 <GelfLayout includeThreadContext="true" threadContextIncludes="loginId,requestId">
     <MessagePattern>%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n</MessagePattern>
     <KeyValuePair key="additionalField1" value="constant value"/>
-    <KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/>
+    <KeyValuePair key="additionalField2" value="$${ctx:key}"/>
 </GelfLayout>
 ----
 
@@ -397,7 +397,7 @@ To include any custom field in the output, use following syntax:
 ----
 <JsonLayout>
   <KeyValuePair key="additionalField1" value="constant value"/>
-  <KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/>
+  <KeyValuePair key="additionalField2" value="$${ctx:key}"/>
 </JsonLayout>
 ----
 
@@ -2046,7 +2046,7 @@ To include any custom field in the output, use the following syntax:
 ----
 <XmlLayout>
   <KeyValuePair key="additionalField1" value="constant value"/>
-  <KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/>
+  <KeyValuePair key="additionalField2" value="$${ctx:key}"/>
 </XmlLayout>
 ----
 
@@ -2122,7 +2122,7 @@ To include any custom field in the output, use the following syntax:
 ----
 <YamlLayout>
   <KeyValuePair key="additionalField1" value="constant value"/>
-  <KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/>
+  <KeyValuePair key="additionalField2" value="$${ctx:key}"/>
 </YamlLayout>
 ----
 

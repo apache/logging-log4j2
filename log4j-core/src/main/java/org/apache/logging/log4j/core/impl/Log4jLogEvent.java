@@ -680,6 +680,11 @@ public class Log4jLogEvent implements LogEvent {
 
     private static StringMap createContextData(final List<Property> properties) {
         final StringMap reusable = ContextDataFactory.createContextData();
+        if (CONTEXT_DATA_INJECTOR == null) {
+            copyProperties(properties, reusable);
+            ContextData.addAll(reusable);
+            return reusable;
+        }
         return CONTEXT_DATA_INJECTOR.injectContextData(properties, reusable);
     }
 
@@ -977,6 +982,21 @@ public class Log4jLogEvent implements LogEvent {
             return result;
         }
         throw new IllegalArgumentException("Event is not a serialized LogEvent: " + event.toString());
+    }
+
+    /**
+     * Copies key-value pairs from the specified property list into the specified {@code StringMap}.
+     *
+     * @param properties list of configuration properties, may be {@code null}
+     * @param result the {@code StringMap} object to add the key-values to. Must be non-{@code null}.
+     */
+    private static void copyProperties(final List<Property> properties, final StringMap result) {
+        if (properties != null) {
+            for (int i = 0; i < properties.size(); i++) {
+                final Property prop = properties.get(i);
+                result.putValue(prop.getName(), prop.getValue());
+            }
+        }
     }
 
     private void readObject(final ObjectInputStream stream) throws InvalidObjectException {

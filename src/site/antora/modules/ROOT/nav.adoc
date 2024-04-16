@@ -15,8 +15,7 @@
     limitations under the License.
 ////
 
-* Get
-** xref:download.adoc[Download]
+* xref:download.adoc[Download]
 ** xref:runtime-dependencies.adoc[]
 ** xref:release-notes.adoc[]
 * xref:support.adoc[]
@@ -28,12 +27,14 @@
 ** xref:manual/architecture.adoc[]
 ** xref:manual/migration.adoc[]
 ** xref:manual/api.adoc[]
-** xref:manual/logbuilder.adoc[]
-** xref:manual/flowtracing.adoc[]
-** xref:manual/markers.adoc[]
-** xref:manual/eventlogging.adoc[]
-** xref:manual/messages.adoc[]
-** xref:manual/thread-context.adoc[]
+*** xref:manual/logbuilder.adoc[]
+*** xref:manual/flowtracing.adoc[]
+*** xref:manual/markers.adoc[]
+*** xref:manual/eventlogging.adoc[]
+*** xref:manual/messages.adoc[]
+*** xref:manual/thread-context.adoc[]
+*** xref:manual/scoped-context.adoc[]
+*** xref:manual/resource-logger.adoc[]
 ** xref:manual/configuration.adoc[]
 ** xref:manual/usage.adoc[]
 ** xref:manual/cloud.adoc[]
@@ -68,7 +69,6 @@
 * xref:log4j-mongodb4.adoc[]
 * xref:log4j-iostreams.adoc[]
 * xref:log4j-docker.adoc[]
-* xref:log4j-kubernetes.adoc[]
 * xref:log4j-spring-cloud-config-client.adoc[]
 
 .Related projects

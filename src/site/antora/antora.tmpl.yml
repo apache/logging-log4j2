@@ -48,4 +48,3 @@ asciidoc:
     java-compiler-version: "${minimalJavaBuildVersion}"
 nav:
   - modules/ROOT/nav.adoc
-  - modules/manual/nav.adoc
