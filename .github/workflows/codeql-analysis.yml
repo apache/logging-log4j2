@@ -16,4 +16,4 @@
 #
 
 name: codeql-analysis (deprecated)
-
+on: workflow-dispatch
