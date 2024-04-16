@@ -16,4 +16,4 @@
 #
 
 name: build (deprecated)
-on: workflow-dispatch
+on: workflow_dispatch
