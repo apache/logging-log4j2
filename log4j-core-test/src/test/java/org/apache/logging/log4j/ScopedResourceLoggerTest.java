@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.message;
+package org.apache.logging.log4j;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.aMapWithSize;
@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ResourceLogger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -42,11 +40,11 @@ import org.junit.jupiter.api.Test;
  * Tests the ParameterizedMapMessageFactory class.
  */
 @LoggerContextSource("log4j-map.xml")
-public class ResourceLoggerTest {
+public class ScopedResourceLoggerTest {
 
     private final ListAppender app;
 
-    public ResourceLoggerTest(@Named("List") final ListAppender list) {
+    public ScopedResourceLoggerTest(@Named("List") final ListAppender list) {
         app = list.clear();
     }
 
@@ -55,7 +53,7 @@ public class ResourceLoggerTest {
         Connection connection = new Connection("Test", "dummy");
         connection.useConnection();
         MapSupplier mapSupplier = new MapSupplier(connection);
-        Logger logger = ResourceLogger.newBuilder()
+        Logger logger = ScopedResourceLogger.newBuilder()
                 .withClass(this.getClass())
                 .withSupplier(mapSupplier)
                 .build();
@@ -86,7 +84,7 @@ public class ResourceLoggerTest {
         connection = new Connection("NewConnection", "fiber");
         connection.useConnection();
         mapSupplier = new MapSupplier(connection);
-        logger = ResourceLogger.newBuilder().withSupplier(mapSupplier).build();
+        logger = ScopedResourceLogger.newBuilder().withSupplier(mapSupplier).build();
         logger.debug("Connection: {}", "NewConnection");
         events = app.getEvents();
         assertThat(events, hasSize(1));

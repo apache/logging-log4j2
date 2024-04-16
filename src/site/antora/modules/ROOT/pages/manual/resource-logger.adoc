@@ -16,10 +16,13 @@
 ////
 
 = Resource Logging
-The link:../log4j-api/apidocs/org/apache/logging/log4j/ResourceLogger.html[`ResourceLogger`]
+
+== ScopedResourceLogger
+
+The link:../log4j-api/apidocs/org/apache/logging/log4j/ScopedResourceLogger.html[`ScopedResourceLogger`]
 is available in Log4j API releases 2.24.0 and greater.
 
-A `ResourceLogger` is a special kind of Logger that:
+A `ScopedResourceLogger` is a special kind of Logger that:
 
  * is a regular class member variable that will be garbage collected along with the class instance.
  * can provide a Map of key/value pairs of data associate with the resource (the class instance)
@@ -85,4 +88,50 @@ and a loginId of testUser and a role of Admin, after a successful login would re
 {LoginId=testUser, Role=Admin, Count=1} Login succeeded
 ----
 
-Every logging call is wrapped in a ScopedContext and populated by the supplier configured on the ResourceLogger, which is called when generating every log event. This allows values, such as counters, to be updated and the log event will contain the actual value at the time the event was logged.
+Every logging call is wrapped in a ScopedContext and populated by the supplier configured on the ScopedResourceLogger, which is called when generating every log event. This allows values, such as counters, to be updated and the log event will contain the actual value at the time the event was logged.
+The ScopedResourceLogger can also be configured to only call the Supplier once when the Logger is
+created instead of on every logging call by specifying the `supplyOnce` method on the builder as
+shown here
+
+[source,java]
+----
+
+     private class User {
+
+        private final String loginId;
+        private final String role;
+        private final ResourceLogger logger;
+
+        public User(final String loginId, final String role) {
+            this.loginId = loginId;
+            this.role = role;
+            logger = ResourceLogger.newBuilder()
+                .withClass(this.getClass())
+                .withSupplier(new UserSupplier())
+                .supplyOnce()
+                .build();
+        }
+
+        public void login() throws Exception {
+            try {
+                authenticator.authenticate(loginId);
+                logger.info("Login succeeded");
+            } catch (Exception ex) {
+                logger.warn("Failed login");
+                throw ex;
+            }
+        }
+
+
+        private class UserSupplier implements Supplier<Map<String, String>> {
+
+            public Map<String, String> get() {
+                Map<String, String> map = new HashMap<>();
+                map.put("LoginId", loginId);
+                map.put("Role", role);
+                return map;
+            }
+        }
+    }
+
+----

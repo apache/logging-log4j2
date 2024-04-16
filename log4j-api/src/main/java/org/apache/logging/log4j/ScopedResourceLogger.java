@@ -21,9 +21,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.spi.AbstractResourceLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -36,28 +35,39 @@ import org.apache.logging.log4j.util.Strings;
  * Unlike regular Loggers ResourceLoggers CANNOT be declared to be static. A ResourceLogger
  * must be declared as a class member that will be garbage collected along with the instance of the resource.
  */
-public final class ResourceLogger extends ExtendedLoggerWrapper {
+public final class ScopedResourceLogger extends AbstractResourceLogger {
     private static final long serialVersionUID = -5837924138744974513L;
-    private final Supplier<Map<String, ?>> supplier;
+    private final ScopedContext.Instance scopedInstance;
 
-    public static ResourceLoggerBuilder newBuilder() {
-        return new ResourceLoggerBuilder();
+    public static ScopedResourceLoggerBuilder newBuilder() {
+        return new ScopedResourceLoggerBuilder();
     }
 
     /*
      * Pass our MessageFactory with its Supplier to AbstractLogger. This will be used to create
      * the Messages prior to them being passed to the "real" Logger.
      */
-    private ResourceLogger(
+    private ScopedResourceLogger(
             final ExtendedLogger logger, final Supplier<Map<String, ?>> supplier, MessageFactory messageFactory) {
-        super(logger, logger.getName(), messageFactory);
-        this.supplier = supplier;
+        super(logger, supplier, messageFactory);
+        scopedInstance = null;
+    }
+
+    /*
+     * Pass our MessageFactory with its Map to AbstractLogger. This will be used to create
+     * the Messages prior to them being passed to the "real" Logger.
+     */
+    private ScopedResourceLogger(final ExtendedLogger logger, final Map<String, ?> map, MessageFactory messageFactory) {
+        super(logger, map, messageFactory);
+        scopedInstance = ScopedContext.where(map);
     }
 
     @Override
     public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
         if (supplier != null) {
             ScopedContext.runWhere(supplier.get(), () -> logger.logMessage(fqcn, level, marker, message, t));
+        } else if (scopedInstance != null) {
+            scopedInstance.run(() -> logger.logMessage(fqcn, level, marker, message, t));
         } else {
             logger.logMessage(fqcn, level, marker, message, t);
         }
@@ -66,70 +76,13 @@ public final class ResourceLogger extends ExtendedLoggerWrapper {
     /**
      * Constructs a ResourceLogger.
      */
-    public static final class ResourceLoggerBuilder {
-        private static final Logger LOGGER = StatusLogger.getLogger();
-        private ExtendedLogger logger;
-        private String name;
-        private Supplier<Map<String, ?>> supplier;
-        private MessageFactory messageFactory;
+    public static final class ScopedResourceLoggerBuilder extends ResourceLoggerBuilder<ScopedResourceLoggerBuilder> {
 
         /**
          * Create the builder.
          */
-        private ResourceLoggerBuilder() {}
-
-        /**
-         * Add the underlying Logger to use. If a Logger, logger name, or class is not required
-         * the name of the calling class wiill be used.
-         * @param logger The Logger to use.
-         * @return The ResourceLoggerBuilder.
-         */
-        public ResourceLoggerBuilder withLogger(ExtendedLogger logger) {
-            this.logger = logger;
-            return this;
-        }
-
-        /**
-         * Add the Logger name. If a Logger, logger name, or class is not required
-         * the name of the calling class wiill be used.
-         * @param name the name to assign to the Logger.
-         * @return The ResourceLoggerBuilder.
-         */
-        public ResourceLoggerBuilder withName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        /**
-         * The resource Class. If a Logger, logger name, or class is not required
-         * the name of the calling class wiill be used.
-         * @param clazz the resource Class.
-         * @return the ResourceLoggerBuilder.
-         */
-        public ResourceLoggerBuilder withClass(Class<?> clazz) {
-            this.name = clazz.getCanonicalName() != null ? clazz.getCanonicalName() : clazz.getName();
-            return this;
-        }
-
-        /**
-         * The Map Supplier.
-         * @param supplier the method that provides the Map of resource data to include in logs.
-         * @return the ResourceLoggerBuilder.
-         */
-        public ResourceLoggerBuilder withSupplier(Supplier<Map<String, ?>> supplier) {
-            this.supplier = supplier;
-            return this;
-        }
-
-        /**
-         * Adds a MessageFactory.
-         * @param messageFactory the MessageFactory to use to build messages. If a MessageFactory
-         * is not specified the default MessageFactory will be used.
-         * @return the ResourceLoggerBuilder.
-         */
-        public ResourceLoggerBuilder withMessageFactory(MessageFactory messageFactory) {
-            this.messageFactory = messageFactory;
-            return this;
+        private ScopedResourceLoggerBuilder() {
+            super();
         }
 
         /**
@@ -144,8 +97,13 @@ public final class ResourceLogger extends ExtendedLoggerWrapper {
                 }
                 this.logger = (ExtendedLogger) LogManager.getLogger(name);
             }
-            Supplier<Map<String, ?>> mapSupplier = this.supplier != null ? this.supplier : Collections::emptyMap;
-            return new ResourceLogger(logger, mapSupplier, messageFactory);
+            if (supplyOnce) {
+                Map<String, ?> map = this.supplier != null ? supplier.get() : Collections.emptyMap();
+                return new ScopedResourceLogger(logger, map, messageFactory);
+            } else {
+                Supplier<Map<String, ?>> mapSupplier = this.supplier != null ? this.supplier : Collections::emptyMap;
+                return new ScopedResourceLogger(logger, mapSupplier, messageFactory);
+            }
         }
     }
 }

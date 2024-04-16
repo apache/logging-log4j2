@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Class Description goes here.
  */
-public class ResourceLoggerTest {
+public class ScopedResourceLoggerTest {
     @BeforeAll
     public static void beforeAll() {
         System.setProperty("log4j2.loggerContextFactory", TestLoggerContextFactory.class.getName());
@@ -50,7 +50,7 @@ public class ResourceLoggerTest {
         Connection connection = new Connection("Test", "dummy");
         connection.useConnection();
         MapSupplier mapSupplier = new MapSupplier(connection);
-        Logger logger = ResourceLogger.newBuilder()
+        Logger logger = ScopedResourceLogger.newBuilder()
                 .withClass(this.getClass())
                 .withSupplier(mapSupplier)
                 .build();
@@ -73,7 +73,7 @@ public class ResourceLoggerTest {
         connection = new Connection("NewConnection", "fiber");
         connection.useConnection();
         mapSupplier = new MapSupplier(connection);
-        logger = ResourceLogger.newBuilder().withSupplier(mapSupplier).build();
+        logger = ScopedResourceLogger.newBuilder().withSupplier(mapSupplier).build();
         logger.debug("Connection: {}", "NewConnection");
         assertThat(events, hasSize(1));
         assertThat(events.get(0), containsString("Name=NewConnection"));

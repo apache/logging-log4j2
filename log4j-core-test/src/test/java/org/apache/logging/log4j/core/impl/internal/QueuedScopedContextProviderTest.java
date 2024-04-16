@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.impl.internal;
 import org.apache.logging.log4j.test.spi.ScopedContextProviderSuite;
 import org.junit.jupiter.api.Test;
 
-class DefaultScopedContextProviderTest extends ScopedContextProviderSuite {
+class QueuedScopedContextProviderTest extends ScopedContextProviderSuite {
 
     private static QueuedScopedContextProvider createProvider() {
         return new QueuedScopedContextProvider();
