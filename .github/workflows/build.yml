@@ -17,3 +17,10 @@
 
 name: build (deprecated)
 on: workflow_dispatch
+
+jobs:
+  echo-warning:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Replaced by 'build'"
