@@ -91,7 +91,7 @@ In this case, you need to install `log4j-core` and `log4j-slf4j2-impl`.
 == Requirements
 
 The Log4j 3 runtime requires a minimum of Java {java-target-version}.
-See link:/log4j/2.x[the Log4j 2 website] for the latest releases supporting Java 6, 7, and 8.
+See {logging-services-url}/log4j/2.x[the Log4j 2 website] for the latest releases supporting Java 6, 7, and 8.
 
 [#build-tool]
 == Configuring the build tool
