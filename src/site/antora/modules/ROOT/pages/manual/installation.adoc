@@ -136,6 +136,50 @@ Once you import the BOM, you don't need to explicitly provide the versions of th
 
 In the rest of the explanations, we will assume that the Log4j BOM is imported.
 
+[#snapshots]
+=== Using snapshots
+
+[%collapsible]
+.Do you want to test the latest (**unstable!**) development version? Click here details.
+====
+
+You can access the latest development snapshots by using the `https://repository.apache.org/snapshots` repository.
+
+[WARNING]
+=====
+Snapshots are published for development and testing purposes; **they should not be used at production!**
+=====
+
+[tabs]
+=====
+Maven::
++
+[source,xml]
+----
+<repositories>
+  <repository>
+    <id>apache.snapshots</id>
+    <name>Apache Snapshot Repository</name>
+    <url>https://repository.apache.org/snapshots</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+  </repository>
+</repositories>
+----
+
+Gradle::
++
+[source,groovy]
+----
+repositories {
+  mavenCentral()
+  maven { url 'https://repository.apache.org/snapshots' }
+}
+----
+=====
+====
+
 [#api]
 == Installing Log4j API
 
