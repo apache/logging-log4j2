@@ -35,7 +35,10 @@ public final class Constants {
 
     /**
      * Property name for the default status (internal log4j logging) level to use if not specified in configuration.
+     * @deprecated since 2.24.0 use
+     * {@link org.apache.logging.log4j.status.StatusLogger#DEFAULT_STATUS_LISTENER_LEVEL} instead.
      */
+    @Deprecated
     public static final String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
 
     /**

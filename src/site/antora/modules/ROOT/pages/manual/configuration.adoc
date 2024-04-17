@@ -1715,13 +1715,10 @@ protected final static Logger logger = StatusLogger.getLogger();
 Since StatusLogger implements the Log4j 2 API's Logger interface, all
 the normal Logger methods may be used.
 
-When configuring Log4j it is sometimes necessary to view the generated
-status events. This can be accomplished by adding the status attribute
-to the configuration element or a default value can be provided by
-setting the "Log4jDefaultStatusLevel" system property. Valid values of
-the status attribute are "trace", "debug", "info", "warn", "error" and
-"fatal". The following configuration has the status attribute set to
-debug.
+When configuring Log4j it is sometimes necessary to view the generated status events.
+This can be accomplished by adding the status attribute to the configuration element or a default value can be provided by setting the xref:statusLoggerLevel["log4j2.statusLoggerLevel"] system property.
+Valid values of the status attribute are "trace", "debug", "info", "warn", "error" and "fatal".
+The following configuration has the status attribute set to debug.
 
 [source,xml]
 ----
@@ -2218,18 +2215,6 @@ The following is a list of available global configuration properties. Note that 
   Note that the StatusLogger level is only used to determine the status log output level
   until a listener is registered. In practice, a listener is registered when a configuration is found,
   and from that point onwards, status messages are only sent to the listeners (depending on their statusLevel).
-
-| [[defaultStatusLevel]]log4j2.defaultStatusLevel
-  ([[Log4jDefaultStatusLevel]]Log4jDefaultStatusLevel)
-| LOG4J_DEFAULT_STATUS_LEVEL
-| ERROR
-|
-  The StatusLogger logs events that occur in the logging system to the console.
-  During configuration, AbstractConfiguration registers a StatusConsoleListener with the StatusLogger that may
-  redirect status log events from the default console output to a file.
-  The listener also supports fine-grained filtering.
-  This system property specifies the default status log level for the listener to use if the configuration does not specify a status level.
-  Note: this property is used by the log4j-core implementation only after a configuration file has been found.
 
 | [[statusLoggerLevel]]log4j2.statusLoggerLevel
   ([[log4j2.StatusLogger.level]]log4j2.StatusLogger.level)

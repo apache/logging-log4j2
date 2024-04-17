@@ -72,9 +72,17 @@ class XmlConfigurationPropsTest {
     }
 
     @Test
+    @SetTestProperty(key = StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL, value = "INFO")
     @SetTestProperty(key = Constants.LOG4J_DEFAULT_STATUS_LEVEL, value = "WARN")
     @LoggerContextSource(value = CONFIG1)
     void testDefaultStatus(final Configuration config) {
+        testConfiguration(config, CONFIG1_NAME, Level.INFO, null);
+    }
+
+    @Test
+    @SetTestProperty(key = Constants.LOG4J_DEFAULT_STATUS_LEVEL, value = "WARN")
+    @LoggerContextSource(value = CONFIG1)
+    void testDeprecatedDefaultStatus(final Configuration config) {
         testConfiguration(config, CONFIG1_NAME, Level.WARN, null);
     }
 
