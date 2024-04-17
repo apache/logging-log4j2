@@ -183,7 +183,7 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
             // noop
         }
 
-        protected String stripLineEndings(String line) {
+        String stripLineEndings(String line) {
             // we still need to remove line endings that are passed on by
             // StreamToLineProcessor...
             return line.replaceAll("[\n\r]+", "");
