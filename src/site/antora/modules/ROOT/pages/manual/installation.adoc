@@ -227,7 +227,7 @@ Maven::
         <artifactId>log4j-core</artifactId>
         <scope>runtime</scope>
     </dependency>
-    <!-- Logging API bridges will follow, if necessary -->
+    <!-- Logging API bridges will follow... -->
 </dependencies>
 ----
 
@@ -236,7 +236,7 @@ Gradle::
 [source,groovy]
 ----
 runtimeOnly 'org.apache.logging.log4j:log4j-core'
-// Logging API bridges will follow, if necessary
+// Logging API bridges will follow...
 ----
 ====
 
@@ -257,6 +257,7 @@ Maven::
 +
 [source,xml]
 ----
+<!-- SLF4J-to-Log4j bridge -->
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-slf4j2-impl</artifactId>
@@ -268,7 +269,7 @@ Gradle::
 +
 [source,groovy]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl'
+runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // SLF4J-to-Log4j bridge
 ----
 ====
 
@@ -283,6 +284,7 @@ Maven::
 +
 [source,xml]
 ----
+<!-- JUL-to-Log4j bridge -->
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-jul</artifactId>
@@ -294,7 +296,7 @@ Gradle::
 +
 [source,groovy]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-jul'
+runtimeOnly 'org.apache.logging.log4j:log4j-jul' // JUL-to-Log4j bridge
 ----
 ====
 
@@ -318,6 +320,7 @@ Maven::
 +
 [source,xml]
 ----
+<!-- JPL-to-Log4j bridge -->
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-jpl</artifactId>
@@ -329,7 +332,7 @@ Gradle::
 +
 [source,groovy]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-jpl'
+runtimeOnly 'org.apache.logging.log4j:log4j-jpl' // JPL-to-Log4j bridge
 ----
 ====
 
@@ -581,8 +584,8 @@ Gradle::
 +
 [source,groovy,subs="+attributes"]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-to-jul'
-runtimeOnly 'org.slf4j:slf4j-jdk14:{slf4j-version}'
+runtimeOnly 'org.apache.logging.log4j:log4j-to-jul' // Log4j-to-JUL bridge
+runtimeOnly 'org.slf4j:slf4j-jdk14:{slf4j-version}' // SLF4J-to-JUL bridge
 ----
 ====
 
@@ -619,9 +622,8 @@ Gradle::
 +
 [source,groovy,subs="+attributes"]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-jul'
-runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j'
 runtimeOnly 'ch.qos.logback:logback-classic:{logback-version}'
+runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge
 ----
 ====
 
