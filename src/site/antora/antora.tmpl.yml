@@ -44,6 +44,7 @@ asciidoc:
     project-id: "log4j"
     java-target-version: "${maven.compiler.target}"
     java-compiler-version: "${minimalJavaBuildVersion}"
+    logging-services-url: "https://logging.apache.org"
     # Dependency versions
     log4j-api-version: "${log4j-api.version}"
     log4j-core-version: "${site-log4j-core.version}"
