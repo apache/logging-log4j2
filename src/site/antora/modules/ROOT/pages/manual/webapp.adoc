@@ -140,6 +140,7 @@ When specifying these context parameters, you must specify them in the deploymen
 </context-param>
 ----
 
+[#use-jndi-context-selector]
 ==== Use the JndiContextSelector
 
 [source,xml]
