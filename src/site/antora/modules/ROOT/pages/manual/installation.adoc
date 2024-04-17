@@ -635,8 +635,11 @@ runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'
 [#impl-jul]
 === Installing JUL
 
-TIP::
-Are you using https://github.com/jboss-logging/jboss-logmanager[JBoss Log Manager] as JUL implementation? You can skip this section and use the https://github.com/jboss-logging/log4j2-jboss-logmanager[log4j2-jboss-logmanager] and https://github.com/jboss-logging/slf4j-jboss-logmanager[slf4j-jboss-logmanager] bridges from the JBoss Logging project instead.
+[TIP]
+====
+Are you using https://github.com/jboss-logging/jboss-logmanager[JBoss Log Manager] as your JUL implementation?
+You can skip this section and use the https://github.com/jboss-logging/log4j2-jboss-logmanager[`log4j2-jboss-logmanager`] and https://github.com/jboss-logging/slf4j-jboss-logmanager[`slf4j-jboss-logmanager`] bridges from the JBoss Logging project instead.
+====
 
 Java Platform contains a very simple logging API and its implementation called {jul-link}.
 Since it is embedded in the platform, it only requires the addition of bridges from Log4j API and SLF4J:

@@ -46,7 +46,7 @@ asciidoc:
     java-compiler-version: "${minimalJavaBuildVersion}"
     logging-services-url: "https://logging.apache.org"
     # Dependency versions
-    commons-logging-version: "${commons-logging.version}"
+    commons-logging-version: "${site-commons-logging.version}"
     log4j-api-version: "${log4j-api.version}"
     log4j-core-version: "${site-log4j-core.version}"
     log4j-layout-template-json-version: "${site-log4j-layout-template-json.version}"
