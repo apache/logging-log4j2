@@ -20,6 +20,7 @@
 :jul-link: https://docs.oracle.com/en/java/javase/{java-target-version}/core/java-logging-overview.html[JUL (Java Logging)]
 :logback-link: https://logback.qos.ch/[Logback]
 :slf4j-link: https://www.slf4j.org/[SLF4J]
+:jboss-logging-link: https://github.com/jboss-logging/jboss-logging[JBoss Logging]
 
 = Installation
 
@@ -55,7 +56,7 @@ It is crucial to understand certain concepts in logging to be able to talk about
 Logging API::
 A logging API is an interface your code or your dependencies directly logs against.
 It is implementation agnostic.
-Log4j API, {slf4j-link}, {jul-link}, {jcl-link}, and {jpl-link} are major logging APIs.
+Log4j API, {slf4j-link}, {jul-link}, {jcl-link}, {jpl-link} and {jboss-logging-link} are major logging APIs.
 
 [#logging-impl]
 Logging implementation::
@@ -71,7 +72,8 @@ In the case of Log4j, the API is called _Log4j API_, and its reference implement
 [#logging-bridge]
 Logging API bridges::
 Logging implementations are generally developed to directly accept input from a primary API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
-Logging API bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API. For instance, `log4j-slf4j2-impl` _bridges_ SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.
+Logging API bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
+For instance, `log4j-slf4j2-impl` _bridges_ SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.
 
 With this in mind, the type of software you are writing determines whether you should be installing a logging API, implementation, or bridge:
 
@@ -353,7 +355,7 @@ In order to activate the bridge from JUL to Log4j API, you also need to add:
 
 to the JVM parameters in your application launcher.
 
-[#impl-core-bridge-jcl]
+[#impl-core-bridge-jpl]
 ===== Installing JPL-to-Log4j bridge
 
 You can translate {jpl-link} calls to Log4j API using the `log4j-jpl` artifact:
@@ -380,6 +382,38 @@ runtimeOnly 'org.apache.logging.log4j:log4j-jpl' // JPL-to-Log4j bridge
 ----
 ====
 
+[#impl-core-bridge-jcl]
+===== Installing JCL-to-Log4j bridge
+
+Since version `1.3.0` https://commons.apache.org/proper/commons-logging/[Apache Commons Logging] natively supports Log4j API.
+
+You can enforce the version of a transitive dependency using the dependency management mechanism appropriate to your
+build tool:
+
+Maven::
+Maven users should add an entry to the `<dependencyManagement>` section of their POM file:
++
+[source,xml,subs="+attributes"]
+----
+<dependencyManagement>
+    <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>{commons-logging-version}</version>
+    </dependency>
+</dependencyManagement>
+----
+
+Gradle::
++
+Gradle users should refer to the https://docs.gradle.org/current/userguide/platforms.html#sub:using-platform-to-control-transitive-deps[Using a platform to control transitive versions] of the Gradle documentation.
+
+[#impl-core-bridge-jboss-logging]
+===== Installing JBoss Logging-to-Log4j bridge
+
+The JBoss Logging API is shipped with an integrated bridge to Log4j API and requires no steps from your part. See
+https://github.com/jboss-logging/jboss-logging?tab=readme-ov-file#supported-log-managers[Supported Log Managers] for more information.
+
 [#impl-core-spring-boot]
 ==== Installing Log4j Core for Spring Boot applications
 
@@ -387,6 +421,7 @@ Spring Boot users should replace the `spring-boot-starter-logging` dependency wi
 
 [tabs]
 ====
+
 Maven::
 +
 [source,xml]
@@ -439,6 +474,7 @@ A basic configuration can be obtained by adding one of these files to your appli
 
 [tabs]
 ====
+
 log4j2.xml::
 +
 [source,xml]
@@ -505,12 +541,14 @@ Configuration.Appenders.Console.name = CONSOLE
 Configuration.Loggers.Root.level = INFO
 Configuration.Loggers.Root.AppenderRef.ref = CONSOLE
 ----
+
 ====
 
 In order to use these formats, the following additional dependencies are required:
 
 [tabs]
 ====
+
 Maven::
 +
 [tabs]
@@ -597,11 +635,15 @@ runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'
 [#impl-jul]
 === Installing JUL
 
+TIP::
+Are you using https://github.com/jboss-logging/jboss-logmanager[JBoss Log Manager] as JUL implementation? You can skip this section and use the https://github.com/jboss-logging/log4j2-jboss-logmanager[log4j2-jboss-logmanager] and https://github.com/jboss-logging/slf4j-jboss-logmanager[slf4j-jboss-logmanager] bridges from the JBoss Logging project instead.
+
 Java Platform contains a very simple logging API and its implementation called {jul-link}.
 Since it is embedded in the platform, it only requires the addition of bridges from Log4j API and SLF4J:
 
 [tabs]
 ====
+
 Maven::
 +
 [source,xml,subs="+attributes"]
@@ -631,6 +673,7 @@ Gradle::
 runtimeOnly 'org.apache.logging.log4j:log4j-to-jul' // Log4j-to-JUL bridge
 runtimeOnly 'org.slf4j:slf4j-jdk14:{slf4j-version}' // SLF4J-to-JUL bridge
 ----
+
 ====
 
 To configure JUL, see https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.logging/java/util/logging/LogManager.html[`java.util.logging.LogManager`].
@@ -642,6 +685,7 @@ To install https://logback.qos.ch/[Logback] as the logging implementation, you o
 
 [tabs]
 ====
+
 Maven::
 +
 [source,xml]
@@ -669,6 +713,7 @@ Gradle::
 runtimeOnly 'ch.qos.logback:logback-classic:{logback-version}'
 runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge
 ----
+
 ====
 
 To configure Logback, see https://logback.qos.ch/manual/configuration.html[Logback's configuration documentation].
