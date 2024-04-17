@@ -38,6 +38,7 @@ import de.flapdoodle.os.OSType;
 import de.flapdoodle.reverse.TransitionWalker.ReachedState;
 import de.flapdoodle.reverse.transitions.Derive;
 import de.flapdoodle.reverse.transitions.Start;
+import java.util.Objects;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.Level;
@@ -64,6 +65,7 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
         if (loggingTarget != null) {
             switch (loggingTarget) {
                 case STATUS_LOGGER:
+                    // @formatter:off
                     return ProcessOutput.builder()
                             .output(Processors.named(
                                     "[" + label + " output]", new StatusLoggerStreamProcessor(Level.INFO)))
@@ -71,12 +73,13 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
                                     "[" + label + " error]", new StatusLoggerStreamProcessor(Level.ERROR)))
                             .commands(new StatusLoggerStreamProcessor(Level.DEBUG))
                             .build();
+                    // @formatter:on
                 case CONSOLE:
                     return ProcessOutput.namedConsole(label);
                 default:
             }
         }
-        throw new NotImplementedException(loggingTarget.toString());
+        throw new NotImplementedException(Objects.toString(loggingTarget));
     }
 
     public MongoDb4Resolver() {
@@ -170,11 +173,15 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
             this.level = level;
         }
 
+        @Override
         public void process(String line) {
             LOGGER.log(level, () -> stripLineEndings(line));
         }
 
-        public void onProcessed() {}
+        @Override
+        public void onProcessed() {
+            // noop
+        }
 
         protected String stripLineEndings(String line) {
             // we still need to remove line endings that are passed on by
