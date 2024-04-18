@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Extending Log4j 3 :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/extending.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Default `h4` and `h5` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; } 
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="extending.html">Extending Log4j 3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li>Learn</li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="extending.html">Extending Log4j 3</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/manual/extending.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Extending Log4j 3</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j 3 provides numerous ways that it can be manipulated and extended.
+This section includes an overview of the various ways that are directly
+supported by the Log4j 3 implementation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="LoggerContextFactory"><a class="anchor" href="#LoggerContextFactory"></a>LoggerContextFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>LoggerContextFactory</code> binds the Log4j API to its implementation.
+The Log4j <code>LogManager</code> locates a <code>LoggerContextFactory</code> by using
+<code>java.util.ServiceLoader</code> to locate all instances of
+<code>org.apache.logging.log4j.spi.Provider</code>. Each implementation must
+provide a class that extends <code>org.apache.logging.log4j.spi.Provider</code> and
+should have a no-arg constructor that delegates to Provider&#8217;s
+constructor passing the Priority, the API versions it is compatible
+with, and the class that implements
+<code>org.apache.logging.log4j.spi.LoggerContextFactory</code>. Log4j will compare
+the current API version and if it is compatible the implementation
+will be added to the list of providers. The API version in
+<code>org.apache.logging.log4j.LogManager</code> is only changed when a feature is
+added to the API that implementations need to be aware of. If more than
+one valid implementation is located the value for the Priority will be
+used to identify the factory with the highest priority. Finally, the
+class that implements
+<code>org.apache.logging.log4j.spi.LoggerContextFactory</code> will be instantiated
+and bound to the LogManager. In Log4j 2 this is provided by
+<code>Log4jContextFactory</code>.</p>
+</div>
+<div class="paragraph">
+<p>Applications may change the LoggerContextFactory that will be used by</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a binding to the logging implementation.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Implement a new <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html"><code>LoggerContextFactory</code></a>.</p>
+</li>
+<li>
+<p>Implement a class that extends <a href="../javadoc/log4j-core/org/apache/logging/spi/Provider.html"><code>org.apache.logging.spi.Provider</code></a>
+with a no-arg constructor that calls super-class&#8217;s constructor with the
+Priority, the API version(s), <code>LoggerContextFactory</code> class, and
+optionally, a <a href="../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a> implementation class.</p>
+</li>
+<li>
+<p>Create a <code>META-INF/services/org.apache.logging.spi.Provider</code> file
+that contains the name of the class that implements
+<code>org.apache.logging.spi.Provider</code>.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Setting the system property "log4j2.loggerContextFactory" to the name
+of the <code>LoggerContextFactory</code> class to use.</p>
+</li>
+<li>
+<p>Setting the property "log4j2.loggerContextFactory" in a properties
+file named "log4j2.LogManager.properties" to the name of the
+LoggerContextFactory class to use. The properties file must be on the
+classpath.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="InjectorCallback"><a class="anchor" href="#InjectorCallback"></a>InjectorCallback</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>InjectorCallback services are called by an <a href="../log4j-plugins/apidocs/org/apache/logging/log4j/plugins/di/Injector.html"><code>Injector</code></a> when its <code>init()</code> method is invoked (see <a href="./dependencyinjection.html">Dependency Injection</a> for further information about <code>Injector</code>).
+These callback services are invoked in order using <code>InjectorCallback::getOrder</code> and the natural integer comparator.
+Callbacks may examine the current state of the invoking <code>Injector</code> as well as make changes to bindings or provide default bindings.
+Backwards compatibility with system property based methods for configuring various extensions are handled through a default callback with order 0 which allows for making customizations before or after the defaults are set up.
+Callback classes must have a no-args constructor and need to be defined in two places:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the fully qualified class name of the callback class to a file named <code>META-INF/services/org.apache.logging.log4j.plugins.di.InjectorCallback</code>.</p>
+</li>
+<li>
+<p>For compatibility with Java modules, add a line to <code>module-info.java</code> containing <code>provides org.apache.logging.log4j.plugins.di.InjectorCallback with my.fully.qualified.ClassName;</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ContextSelector"><a class="anchor" href="#ContextSelector"></a>ContextSelector</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ContextSelectors are called by the
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html">Log4j
+LoggerContext factory</a>. They perform the actual work of locating or
+creating a LoggerContext, which is the anchor for Loggers and their
+configuration. ContextSelectors are free to implement any mechanism they
+desire to manage LoggerContexts. The default Log4jContextFactory checks
+for the presence of an <code>Injector</code> binding for <code>ContextSelector</code>.
+If none are defined, the System Property named "Log4jContextSelector" is checked.
+If found, the property is expected to contain the name of the Class that implements the ContextSelector to be used.
+This class is then used for creating <code>ContextSelector</code> instances.</p>
+</div>
+<div class="paragraph">
+<p>Log4j provides five ContextSelectors:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector.html"><code>BasicContextSelector</code></a></dt>
+<dd>
+<p>Uses either a LoggerContext that has been stored in a ThreadLocal or a
+common LoggerContext.</p>
+</dd>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html"><code>ClassLoaderContextSelector</code></a></dt>
+<dd>
+<p>Associates LoggerContexts with the ClassLoader that created the caller
+of the getLogger(&#8230;&#8203;) call. This is the default ContextSelector.</p>
+</dd>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector.html"><code>JndiContextSelector</code></a></dt>
+<dd>
+<p>Locates the LoggerContext by querying JNDI.</p>
+</dd>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html"><code>AsyncLoggerContextSelector</code></a></dt>
+<dd>
+<p>Creates a LoggerContext that ensures that all loggers are
+AsyncLoggers.</p>
+</dd>
+<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector.html"><code>BundleContextSelector</code></a></dt>
+<dd>
+<p>Associates LoggerContexts with the ClassLoader of the bundle that
+created the caller of the getLogger call. This is enabled by default
+in OSGi environments.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ConfigurationFactory"><a class="anchor" href="#ConfigurationFactory"></a>ConfigurationFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Modifying the way in which logging can be configured is usually one of
+the areas with the most interest. The primary method for doing that is
+by implementing or extending a
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html"><code>ConfigurationFactory</code></a>.
+Log4j provides two ways of adding new ConfigurationFactories. The first
+is by defining the system property named "log4j.configurationFactory" to
+the name of the class that should be searched first for a configuration.
+The second method is by defining the <code>ConfigurationFactory</code> as a <code>Plugin</code>.</p>
+</div>
+<div class="paragraph">
+<p>All the ConfigurationFactories are then processed in order. Each factory
+is called on its <code>getSupportedTypes()</code> method to determine the file
+extensions it supports. If a configuration file is located with one of
+the specified file extensions then control is passed to that
+<code>ConfigurationFactory</code> to load the configuration and create the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html"><code>Configuration</code></a> object.</p>
+</div>
+<div class="paragraph">
+<p>Most <code>Configuration</code> extend the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/AbstractConfiguration.html"><code>AbstractConfiguration</code></a> class. This class expects that the subclass will process the configuration file and create
+a hierarchy of <code>Node</code> objects. Each <code>Node</code> is fairly simple in that it
+consists of the name of the node, the name/value pairs associated with
+the node, The <code>PluginType</code> of the node and a List of all of its child
+Nodes. <code>Configuration</code> will then be passed the <code>Node</code> tree and
+instantiate the configuration objects from that.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Namespace("ConfigurationFactory")
+@Plugin("XMLConfigurationFactory")
+@Order(5)
+public class XMLConfigurationFactory extends ConfigurationFactory {
+
+    /**
+     * Valid file extensions for XML files.
+     */
+    public static final String[] SUFFIXES = new String[] {".xml", "*"};
+
+    /**
+     * Returns the Configuration.
+     * @param loggerContext The logger context.
+     * @param source The InputSource.
+     * @return The Configuration.
+     */
+    @Override
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return new XmlConfiguration(loggerContext, source);
+    }
+
+    /**
+     * Returns the file suffixes for XML files.
+     * @return An array of File extensions.
+     */
+    public String[] getSupportedTypes() {
+        return SUFFIXES;
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="LoggerConfig"><a class="anchor" href="#LoggerConfig"></a>LoggerConfig</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>LoggerConfig</code> objects are where Loggers created by applications tie into
+the configuration. The Log4j implementation requires that all
+LoggerConfigs are based on the LoggerConfig class, so applications
+wishing to make changes must do so by extending the <code>LoggerConfig</code> class.
+To declare the new <code>LoggerConfig</code>, declare it as a Plugin of type "Core"
+and providing the name that applications should specify as the element
+name in the configuration. The <code>LoggerConfig</code> should also define a
+PluginFactory that will create an instance of the <code>LoggerConfig</code>.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows how the root <code>LoggerConfig</code> simply extends a
+generic <code>LoggerConfig</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configurable(printObject = true)
+@Plugin("root")
+public static class RootLogger extends LoggerConfig {
+
+    @PluginFactory
+    public static LoggerConfig createLogger(@PluginAttribute(defaultBooleanValue = true) boolean additivity,
+                                            @PluginAttribute(defaultStringValue = "ERROR") Level level,
+                                            @PluginElement AppenderRef[] refs,
+                                            @PluginElement Filter filter) {
+        List&lt;AppenderRef&gt; appenderRefs = Arrays.asList(refs);
+        return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, level, additivity);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="LogEventFactory"><a class="anchor" href="#LogEventFactory"></a>LogEventFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A <code>LogEventFactory</code> is used to generate LogEvents.
+Applications may replace the standard <code>LogEventFactory</code> by binding a factory for <code>LogEventFactory</code> in <code>Injector</code>.
+If no binding is already present, the value of the system property <code>log4j2.logEventFactory</code> is checked for the name of the custom <code>LogEventFactory</code> class.</p>
+</div>
+<div class="paragraph">
+<p>Note: When log4j is configured to have <a href="async.html#AllAsync" class="xref page">all
+loggers asynchronous</a>, log events are pre-allocated in a ring buffer and
+the <code>LogEventFactory</code> is not used.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="MessageFactory"><a class="anchor" href="#MessageFactory"></a>MessageFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A <code>MessageFactory</code> is used to generate <code>Message</code> objects. Applications may
+replace the standard <code>ReusableMessageFactory</code> by setting the value of the
+system property <code>log4j2.messageFactory</code> to the name of the custom
+<code>MessageFactory</code> class.</p>
+</div>
+<div class="paragraph">
+<p>Flow messages for the <code>Logger.entry()</code> and <code>Logger.exit()</code> methods have
+a separate <code>FlowMessageFactory</code>. Applications may replace the
+<code>DefaultFlowMessageFactory</code> by setting the value of the system property
+<code>log4j2.flowMessageFactory</code> to the name of the custom <code>FlowMessageFactory</code>
+class.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Lookups"><a class="anchor" href="#Lookups"></a>Lookups</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lookups are the means in which parameter substitution is performed.
+During Configuration initialization an "Interpolator" is created that
+locates all the Lookups and registers them for use when a variable needs
+to be resolved. The interpolator matches the "prefix" portion of the
+variable name to a registered Lookup and passes control to it to resolve
+the variable.</p>
+</div>
+<div class="paragraph">
+<p>A Lookup must be declared using a <code>@Plugin @Lookup</code> annotation. The <code>value</code> specified on the <code>@Plugin</code> annotation will be used to
+match the prefix. The example below shows a Lookup that will return
+the value of a System Property.</p>
+</div>
+<div class="paragraph">
+<p>The provided Lookups are documented here: <a href="lookups.html" class="xref page">Lookups</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Lookup
+@Plugin("sys")
+public class SystemPropertiesLookup implements StrLookup {
+
+    /**
+     * Lookup the value for the key.
+     * @param key  the key to be looked up, may be null
+     * @return The value for the key.
+     */
+    public String lookup(String key) {
+        return System.getProperty(key);
+    }
+
+    /**
+     * Lookup the value for the key using the data in the LogEvent.
+     * @param event The current LogEvent.
+     * @param key  the key to be looked up, may be null
+     * @return The value associated with the key.
+     */
+    public String lookup(LogEvent event, String key) {
+        return System.getProperty(key);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Filters"><a class="anchor" href="#Filters"></a>Filters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As might be expected, Filters are used to reject or accept log
+events as they pass through the logging system. A Filter is declared
+using a <code>@Configurable</code> annotation with an <code>elementType</code> of "filter".
+The <code>value</code> attribute on the <code>@Plugin</code> annotation is used to specify the name
+of the element users should use to enable the Filter. Specifying the
+<code>printObject</code> attribute with a value of "true" indicates that a call to
+<code>toString</code> will format the arguments to the filter as the configuration is
+being processed. The Filter must also specify a <code>@PluginFactory</code> method
+or <code>@PluginFactoryBuilder</code> builder class and method
+that will be called to create the Filter.</p>
+</div>
+<div class="paragraph">
+<p>The example below shows a Filter used to reject LogEvents based upon
+their logging level. Notice the typical pattern where all the filter
+methods resolve to a single filter method.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Plugin
+public final class ThresholdFilter extends AbstractFilter {
+
+    private final Level level;
+
+    private ThresholdFilter(Level level, Result onMatch, Result onMismatch) {
+        super(onMatch, onMismatch);
+        this.level = level;
+    }
+
+    public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
+        return filter(level);
+    }
+
+    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+        return filter(level);
+    }
+
+    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(LogEvent event) {
+        return filter(event.getLevel());
+    }
+
+    private Result filter(Level level) {
+        return level.isAtLeastAsSpecificAs(this.level) ? onMatch : onMismatch;
+    }
+
+    @Override
+    public String toString() {
+        return level.toString();
+    }
+
+    /**
+     * Create a ThresholdFilter.
+     * @param level The log Level.
+     * @param onMatch The action to take on a match.
+     * @param onMismatch The action to take on a mismatch.
+     * @return The created ThresholdFilter.
+     */
+    @PluginFactory
+    public static ThresholdFilter createFilter(@PluginAttribute(defaultStringValue = "ERROR") Level level,
+                                               @PluginAttribute(defaultStringValue = "NEUTRAL") Result onMatch,
+                                               @PluginAttribute(defaultStringValue = "DENY") Result onMismatch) {
+        return new ThresholdFilter(level, onMatch, onMismatch);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Appenders"><a class="anchor" href="#Appenders"></a>Appenders</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Appenders are passed an event, (usually) invoke a Layout to format the
+event, and then "publish" the event in whatever manner is desired.
+Appenders are declared as <code>@Configurable</code> with an
+<code>elementType</code> of "appender". The <code>value</code> attribute on the <code>@Plugin</code> annotation
+specifies the name of the element users must provide in their
+configuration to use the Appender. Appenders should specify <code>printObject</code>
+as "true" if the toString method renders the values of the attributes
+passed to the Appender.</p>
+</div>
+<div class="paragraph">
+<p>Appenders must also declare a <code>@PluginFactory</code> method that returns an instance
+of the appender or a builder class used to create the appender. The example below shows
+an Appender named "Stub" that can be used as an initial template.</p>
+</div>
+<div class="paragraph">
+<p>Most Appenders use Managers. A manager actually "owns" the resources,
+such as an <code>OutputStream</code> or socket. When a reconfiguration occurs a new
+Appender will be created. However, if nothing significant in the
+previous Manager has changed, the new Appender will simply reference it
+instead of creating a new one. This insures that events are not lost
+while a reconfiguration is taking place without requiring that logging
+pause while the reconfiguration takes place.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Stub")
+public final class StubAppender extends AbstractOutputStreamAppender&lt;StubManager&gt; {
+
+    private StubAppender(String name,
+                         Layout&lt;?&gt; layout,
+                         Filter filter,
+                         boolean ignoreExceptions,
+                         StubManager  manager) {
+        super(name, layout, filter, ignoreExceptions, true, manager);
+    }
+
+    @PluginFactory
+    public static StubAppender createAppender(@PluginAttribute @Required(message = "No name provided for StubAppender") String name,
+                                              @PluginAttribute boolean ignoreExceptions,
+                                              @PluginElement Layout layout,
+                                              @PluginElement Filter filter) {
+
+        StubManager manager = StubManager.getStubManager(name);
+        if (manager == null) {
+            return null;
+        }
+        if (layout == null) {
+            layout = PatternLayout.createDefaultLayout();
+        }
+        return new StubAppender(name, layout, filter, ignoreExceptions, manager);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Layouts"><a class="anchor" href="#Layouts"></a>Layouts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Layouts perform the formatting of events into the printable text that is
+written by Appenders to some destination. All Layouts must implement the
+<code>Layout</code> interface. Layouts that format the event into a <code>String</code> should
+extend <code>AbstractStringLayout</code>, which will take care of converting the
+<code>String</code> into the required byte array.</p>
+</div>
+<div class="paragraph">
+<p>Every Layout must declare itself as a plugin using the <code>@Plugin</code>
+annotation and a <code>@Configurable</code> annotation with an <code>elementType</code> of "layout". <code>printObject</code> should be set to "true" if the plugin&#8217;s <code>toString</code>
+method will provide a representation of the object and its parameters.
+The name of the plugin must match the value users should use to specify
+it as an element in their Appender configuration. The plugin also must
+provide a static method annotated as a <code>@PluginFactory</code> and with each of
+the methods parameters annotated with <code>@PluginAttribute</code> or <code>@PluginElement</code> as
+appropriate. The plugin can alternatively use the plugin builder notation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
+public class SampleLayout extends AbstractStringLayout {
+
+    protected SampleLayout(boolean locationInfo, boolean properties, boolean complete,
+                           Charset charset) {
+        super(charset);
+        // handle the boolean parameters
+    }
+
+    @PluginFactory
+    public static SampleLayout createLayout(@PluginAttribute boolean locationInfo,
+                                            @PluginAttribute boolean properties,
+                                            @PluginAttribute boolean complete,
+                                            @PluginAttribute(defaultStringValue = "UTF-8") Charset charset) {
+        return new SampleLayout(locationInfo, properties, complete, charset);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="PatternConverters"><a class="anchor" href="#PatternConverters"></a>PatternConverters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>PatternConverters are used by the PatternLayout to format the log event
+into a printable <code>String</code>. Each Converter is responsible for a single kind
+of manipulation, however Converters are free to format the event in
+complex ways. For example, there are several converters that manipulate
+Throwables and format them in various ways.</p>
+</div>
+<div class="paragraph">
+<p>A PatternConverter must first declare itself as a Plugin using the
+standard <code>@Plugin</code> annotation and the <code>@Namespace</code> annotation with the value "Converter". Furthermore, the Converter must also specify the
+<code>@ConverterKeys</code> annotation to define the tokens that can be specified in
+the pattern (preceded by a '%' character) to identify the Converter.</p>
+</div>
+<div class="paragraph">
+<p>Unlike most other Plugins, Converters do not use a <code>@PluginFactory</code>.
+Instead, each Converter is required to provide a static <code>newInstance</code>
+method that accepts an array of <code>String</code> as the only parameter. The
+<code>String[]</code> is the values that are specified within the curly braces
+that can follow the converter key.</p>
+</div>
+<div class="paragraph">
+<p>The following shows the skeleton of a Converter plugin.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Namespace("Converter")
+@Plugin("query")
+@ConverterKeys({"q", "query"})
+public final class QueryConverter extends LogEventPatternConverter {
+
+    public QueryConverter(String[] options) {
+    }
+
+    public static QueryConverter newInstance(final String[] options) {
+      return new QueryConverter(options);
+    }
+
+    @Override
+    public void format(LogEvent event, StringBuilder toAppendTo) {
+        // get the data from 'event', to the work and append the result to 'toAppendTo'.
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A pattern to use this converter could be specified as <code>&#8230;&#8203; %q &#8230;&#8203;</code> or <code>&#8230;&#8203; %q{argument} &#8230;&#8203;</code>.
+The "argument" will be passed as first (and only) value to the <code>options</code> parameter of the
+<code>newInstance(&#8230;&#8203;)</code> method.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Plugin_Builders"><a class="anchor" href="#Plugin_Builders"></a>Plugin Builders</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some plugins take a lot of optional configuration options. When a plugin
+takes many options, it is more maintainable to use a builder class
+rather than a factory method (see <em>Item 2: Consider a builder when faced
+with many constructor parameters</em> in <em>Effective Java</em> by Joshua Bloch).
+There are some other advantages to using an annotated builder class over
+an annotated factory method:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Attribute names don&#8217;t need to be specified if they match the field name or the parameter name.</p>
+</li>
+<li>
+<p>Default values can be specified in code rather than through an
+annotation (also allowing a runtime-calculated default value which isn&#8217;t
+allowed in annotations).</p>
+</li>
+<li>
+<p>Adding new optional parameters doesn&#8217;t require existing programmatic
+configuration to be refactored.</p>
+</li>
+<li>
+<p>Easier to write unit tests using builders rather than factory methods
+with optional parameters.</p>
+</li>
+<li>
+<p>Default values are specified via code rather than relying on
+reflection and injection, so they work programmatically as well as in a
+configuration file.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here is an example of a plugin factory from <code>ListAppender</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@PluginFactory
+public static ListAppender createAppender(
+        @PluginAttribute @Required(message = "No name provided for ListAppender") final String name,
+        @PluginAttribute final boolean entryPerNewLine,
+        @PluginAttribute final boolean raw,
+        @PluginElement final Layout&lt;?&gt; layout,
+        @PluginElement final Filter filter) {
+    return new ListAppender(name, filter, layout, newLine, raw);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is that same factory using a builder pattern instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@PluginFactory
+public static Builder newBuilder() {
+    return new Builder();
+}
+
+public static class Builder implements org.apache.logging.log4j.plugins.util.Builder&lt;ListAppender&gt; {
+
+    private String name;
+    private boolean entryPerNewLine;
+    private boolean raw;
+    private Layout&lt;?&gt; layout;
+    private Filter filter;
+
+
+    public Builder setName(
+            @PluginAttribute
+            @Required(message = "No name provided for ListAppender")
+            final String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Builder setEntryPerNewLine(@PluginAttribute final boolean entryPerNewLine) {
+        this.entryPerNewLine = entryPerNewLine;
+        return this;
+    }
+
+    public Builder setRaw(@PluginAttribute final boolean raw) {
+        this.raw = raw;
+        return this;
+    }
+
+    public Builder setLayout(@PluginElement final Layout&lt;?&gt; layout) {
+        this.layout = layout;
+        return this;
+    }
+
+    public Builder setFilter(@PluginElement final Filter filter) {
+        this.filter = filter;
+        return this;
+    }
+
+    @Override
+    public ListAppender build() {
+        return new ListAppender(name, filter, layout, entryPerNewLine, raw);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When plugins are being constructed after a configuration has been
+parsed, a plugin builder will be used if available, otherwise a plugin
+factory method will be used as a fallback. If a plugin contains neither
+factory, then it cannot be used from a configuration file (it can still
+be used programmatically of course).</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of using a plugin factory versus a plugin builder
+programmatically:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ListAppender list1 = ListAppender.createAppender("List1", true, false, null, null);
+ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLine(true).build();</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Custom_ContextDataProvider"><a class="anchor" href="#Custom_ContextDataProvider"></a>Custom ContextDataProvider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html"><code>ContextDataProvider</code></a>
+(introduced in Log4j 2.13.2) is an interface applications and libraries can use to inject
+additional key-value pairs into the LogEvent&#8217;s context data. Log4j&#8217;s
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ThreadContextDataInjector.html"><code>ThreadContextDataInjector</code></a>
+uses <code>java.util.ServiceLoader</code> to locate and load <code>ContextDataProvider</code> instances.
+Log4j itself adds the ThreadContext data to the LogEvent using
+<code>org.apache.logging.log4j.core.impl.ThreadContextDataProvider</code>. Custom implementations
+should implement the <code>org.apache.logging.log4j.core.util.ContextDataProvider</code> interface and
+declare it as a service by defining the implmentation class in a file named
+<code>META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_custom_threadcontextmap_implementations"><a class="anchor" href="#_custom_threadcontextmap_implementations"></a>Custom ThreadContextMap implementations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A garbage-free <code>StringMap</code>-based context map can be installed by setting
+system property <code>log4j2.garbagefreeThreadContextMap</code> to true.</p>
+</div>
+<div class="paragraph">
+<p>Any custom <a href="../javadoc/log4j-core/org/apache/logging/log4j/spi/ThreadContextMap.html"><code>ThreadContextMap</code></a>
+implementation can be installed by setting system property <code>log4j2.threadContextMap</code>
+to the fully qualified class name of the class implementing the <code>ThreadContextMap</code>
+interface. By also implementing the <code>ReadOnlyThreadContextMap</code> interface, your custom
+<code>ThreadContextMap</code> implementation will be accessible to applications via the
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()"><code>ThreadContext::getThreadContextMap</code></a>
+method.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Custom_Plugins"><a class="anchor" href="#Custom_Plugins"></a>Custom Plugins</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See the <a href="plugins.html" class="xref page">Plugins</a> section of the manual.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

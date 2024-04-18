@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dependency Injection :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/dependencyinjection.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Default `h4` and `h5` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; } 
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="extending.html">Extending Log4j 3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="dependencyinjection.html">Dependency Injection</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/manual/dependencyinjection.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Dependency Injection</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j 3.x extends its plugin system into a more general dependency injection API inspired by <a href="https://javaee.github.io/javaee-spec/javadocs/javax/inject/package-summary.html"><code>javax.inject</code></a> and its open source implementations such as <a href="https://github.com/zsoltherpai/feather">Feather</a> and <a href="https://github.com/google/guice">Guice</a> along with <a href="https://docs.spring.io/spring-framework/reference/core/beans/introduction.html">Spring Framework</a> and <code>BeanFactory</code> API.
+Dependency injection can be thought of as a replacement for calling <code>new</code> or custom factory methods in Java code; alternatively, it can be thought of as a factory for factory instances.
+Classes define <em>injection points</em> which may be fields, method parameters, and constructor parameters, whose values are injected at runtime.
+Classes may define <em>factory methods</em> which provide a way to create instances of their return type while allowing for dependency injection of the factory method&#8217;s arguments.
+Instance factories may be customized through post-processor service classes which is how much of its functionality is defined.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory</code> runtime keeps a registry of bindings between <code>Key&lt;T&gt;</code> and <code>Supplier&lt;T&gt;</code>, where <code>org.apache.logging.log4j.plugins.di.Key&lt;T&gt;</code> describes an instance type <code>T</code>, optional qualifier annotation type, and optional name plus namespace, and  <code>java.util.function.Supplier&lt;T&gt;</code> defines a factory for obtaining instances of <code>T</code> matching the corresponding <code>Key&lt;T&gt;</code>.
+To obtain a factory for a given key, if a binding is not already registered for said key, then the raw class of the key (i.e., the <code>Class&lt;T&gt;</code> instance from <code>Key&lt;T&gt;</code>) is checked for a single constructor annotated with <code>@org.apache.logging.log4j.plugins.Inject</code> or a no-arg constructor if no <code>@Inject</code> constructor is present.
+The injectable constructor is invoked with arguments which are obtained by looking up factories matching the <code>Key&lt;?&gt;</code> of each constructor parameter.
+Then, fields that are annotated with <code>@Inject</code> or annotated with an annotation that is itself annotated with <code>@QualifierType</code> (i.e., a <em>qualifier annotation</em>) are injected from factories matching the <code>Key&lt;?&gt;</code> of the field.
+Next, methods that are annotated with <code>@Inject</code> or have a parameter annotated with a qualifier annotation are invoked using factories matching the <code>Key&lt;?&gt;</code> of each parameter.
+Lastly, no-arg methods annotated with <code>@Inject</code> are invoked which can be useful for post-injection initialization logic.
+Additional strategies for resolving factories for unbound keys may be registered which are consulted first before falling back to this <code>@Inject</code> reflection logic.</p>
+</div>
+<div class="paragraph">
+<p>Bindings may be registered using <code>ConfigurableInstanceFactory::registerBinding</code> or <code>ConfigurableInstanceFactory::registerBindingIfAbsent</code> using explicit <code>Binding&lt;T&gt;</code> instances, or they may be registered using <code>ConfigurableInstanceFactory::registerBundle</code> as <em>bundles</em> which are instances or injectable <code>Class&lt;T&gt;</code> instances that contain one or more annotated factory methods.
+Annotated factory methods are non-abstract methods annotated with an annotation that is itself annotated with <code>@org.apache.logging.log4j.plugins.FactoryType</code>.
+Built-in factory annotations include <code>@org.apache.logging.log4j.plugins.Factory</code> and <code>@org.apache.logging.log4j.plugins.PluginFactory</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>ConfigurableInstanceFactory</code> can create <code>@Configurable</code> namespace plugins from a tree of <code>org.apache.logging.log4j.plugins.Node</code> instances using <code>org.apache.logging.log4j.core.config.ConfigurationProcessor</code>.
+This allows for node attributes and child nodes to be injected into a plugin class along with any other registered bindings.
+To configure a <code>Node</code>, its plugin class is checked for a static method annotated with a factory annotation (such as <code>@PluginFactory</code> or <code>@Factory</code>) first before falling back to checking for an <code>@Inject</code> constructor or a no-args constructor.
+This static factory method or constructor has its parameters injected.
+If the return value of a static plugin factory method implements <code>java.util.function.Supplier</code>, then member injection is performed on the instance and the return value of <code>Supplier::get</code> is returned instead.
+See <a href="./plugins.html">Plugins</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p><code>ConfigurableInstanceFactory</code> can inject members into an arbitrary object instance by using <code>ConfigurableInstanceFactory::injectMembers</code>.
+This can be useful for injecting Log4j-managed instances into external or application code.
+An <code>ConfigurableInstanceFactory</code> can be obtained via <code>LoggerContext::getInstanceFactory</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_injection_points"><a class="anchor" href="#_injection_points"></a>Injection Points</h3>
+<div class="paragraph">
+<p>Injection points are injectable fields or parameters where a dependency should be injected.
+<em>Injectable fields</em> are fields annotated with <code>@Inject</code> or a qualifier annotation.
+<em>Injectable methods</em> are methods annotated with <code>@Inject</code> or are not annotated with a factory annotation and have at least one parameter annotated with a qualifier annotation.
+<em>Injectable constructors</em> are constructors annotated with <code>@Inject</code>; only one such constructor should exist per class.
+When a field or parameter is annotated with a name-providing annotation (i.e., an annotation annotated with <code>@org.apache.logging.log4j.plugins.name.NameProvider</code>), then the provided name or name of the field or parameter are included in the <code>Key&lt;T&gt;</code> for the injection point.
+When these elements are annotated with a <code>@Namespace</code> annotation or meta-annotation, then that namespace name is included in the <code>Key&lt;T&gt;</code> for the injection point.
+Similarly, when a field or parameter is annotated with a qualifier annotation, then that qualifier annotation type is included in the <code>Key&lt;T&gt;</code> for the injection point.</p>
+</div>
+<div class="paragraph">
+<p>An example of each injection point with a no-arg <code>@Inject</code> method to show the post-injected state:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class ExampleBean {
+    @Override
+    public String toString() {
+        return "ExampleBean";
+    }
+}
+
+class FieldInjection {
+    @Inject
+    ExampleBean exampleBean;
+
+    @Inject
+    void init() {
+        System.out.println(exampleBean);
+    }
+}
+
+class ConstructorInjection {
+    final ExampleBean bean;
+
+    @Inject
+    ConstructorInjection(final ExampleBean exampleBean) {
+        bean = exampleBean;
+    }
+
+    @Inject
+    void init() {
+        System.out.println(exampleBean);
+    }
+}
+
+class MethodInjection {
+    ExampleBean bean;
+
+    @Inject
+    void setBean(final ExampleBean exampleBean) {
+        bean = exampleBean;
+    }
+
+    @Inject
+    void init() {
+        System.out.println(exampleBean);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_names_and_qualifiers"><a class="anchor" href="#_names_and_qualifiers"></a>Names and Qualifiers</h3>
+<div class="paragraph">
+<p>Qualifiers are annotations that are annotated with <code>@org.apache.logging.log4j.plugins.QualifierType</code>.
+Qualifiers provide a way to match dependencies and factories based on more than just their type.
+For example, the <code>@org.apache.logging.log4j.plugins.Named</code> qualifier allows for creating different bindings of the same type with different names (along with support for aliases).
+Qualifiers on an injection point request a binding with that qualifier type and name.
+Qualifiers on a factory method register a binding with that qualifier type and name.
+The name for a qualifier is provided via an <code>org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider</code> strategy class given in the <code>@NameProvider</code> annotation declared on the qualifier annotation.
+Aliases are likewise provided via an <code>org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider</code> strategy class given in the <code>@AliasesProvider</code> annotated declared on the qualifier annotation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scopes"><a class="anchor" href="#_scopes"></a>Scopes</h3>
+<div class="paragraph">
+<p>Scopes control the lifecycle of instances returned from a factory.
+Scopes correspond to an annotation that is annotated with <code>@org.apache.logging.log4j.plugins.ScopeType</code>.
+By default, <code>@org.apache.logging.log4j.plugins.Singleton</code> and the default scope are supported.
+The <code>@Singleton</code> scope ensures that only a single instance is returned from factories bound in that scope.
+The default scope returns a new instance every time.
+Additional scopes may be registered via <code>ConfigurableInstanceFactory::registerScope</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_injector_callbacks"><a class="anchor" href="#_injector_callbacks"></a>Injector Callbacks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An <code>ConfigurableInstanceFactory</code> may be initialized with <code>org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor</code> service classes.
+These service classes must be declared in their respective <code>module-info.java</code> files containing <code>provides org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor with my.fully.qualified.ClassName;</code> and should also be declared in a file named <code>META-INF/services/org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor</code> containing the line <code>my.fully.qualified.ClassName</code> for traditional classpath usage.
+Post-processor services are invoked in the order defined by the <code>@Order</code> annotation on the class.
+Each post-processor is given the <code>ConfigurableInstanceFactory</code> being initialized where it can be introspected and modified.</p>
+</div>
+<div class="sect2">
+<h3 id="_configurable_bindings"><a class="anchor" href="#_configurable_bindings"></a>Configurable Bindings</h3>
+<div class="paragraph">
+<p>The default callback sets up bindings for the following keys if none have been registered.
+Some of these bindings were previously configured through various system properties which are supported via the default callback and its default bindings, though they can be directly registered via custom callbacks with a negative order value.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.apache.logging.log4j.core.ContextDataInjector</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.config.ConfigurationFactory</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.config.composite.MergeStrategy</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.impl.LogEventFactory</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.lookup.InterpolatorFactory</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.lookup.StrSubstitutor</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.selector.ContextSelector</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.time.Clock</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.time.NanoClock</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.util.ShutdownCallbackRegistry</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.util.WatchManager</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.config.ConfigurationScheduler</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

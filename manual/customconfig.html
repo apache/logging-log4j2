@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Programmatic Configuration :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/customconfig.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Default `h4` and `h5` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; } 
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="extending.html">Extending Log4j 3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li>Learn</li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="customconfig.html">Programmatic Configuration</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/manual/customconfig.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Programmatic Configuration</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j 2 provides a few ways for applications to create their own
+programmatic configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Specify a custom <code>ConfigurationFactory</code> to start Log4j with a
+programmatic configuration</p>
+</li>
+<li>
+<p>Use the <code>Configurator</code> to replace the configuration after Log4j started</p>
+</li>
+<li>
+<p>Initialize Log4j with a combination of a configuration file and
+programmatic configuration</p>
+</li>
+<li>
+<p>Modify the current <code>Configuration</code> after initialization</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ConfigurationBuilder"><a class="anchor" href="#ConfigurationBuilder"></a>The ConfigurationBuilder API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Starting with release 2.4, Log4j provides a <code>ConfigurationBuilder</code> and a
+set of component builders that allow a <code>Configuration</code> to be created
+fairly easily. Actual configuration objects like <code>LoggerConfig</code> or
+<code>Appender</code> can be unwieldy; they require a lot of knowledge about Log4j
+internals which makes them difficult to work with if all you want is to
+create a <code>Configuration</code>.</p>
+</div>
+<div class="paragraph">
+<p>The new <code>ConfigurationBuilder</code> API (in the
+<code>org.apache.logging.log4j.core.config.builder.api</code> package) allows users
+to create Configurations in code by constructing component
+<em>definitions</em>. There is no need to work directly with actual
+configuration objects. Component definitions are added to the
+<code>ConfigurationBuilder</code>, and once all the definitions have been collected
+all the actual configuration objects (like Loggers and Appenders) are
+constructed.</p>
+</div>
+<div class="paragraph">
+<p><code>ConfigurationBuilder</code> has convenience methods for the base components
+that can be configured such as Loggers, Appenders, Filter, Properties,
+etc. However, Log4j 2&#8217;s plugin mechanism means that users can create any
+number of custom components. As a trade-off, the <code>ConfigurationBuilder</code>
+API provides only a limited number of "strongly typed" convenience
+methods like <code>newLogger()</code>, <code>newLayout()</code> etc. The generic
+<code>builder.newComponent()</code> method can be used if no convenience method
+exists for the component you want to configure.</p>
+</div>
+<div class="paragraph">
+<p>For example, the builder does not know what sub-components can be
+configured on specific components such as the RollingFileAppender vs.
+the RoutingAppender. To specify a triggering policy on a
+RollingFileAppender you would use builder.newComponent().</p>
+</div>
+<div class="paragraph">
+<p>Examples of using the <code>ConfigurationBuilder</code> API are in the sections that
+follow.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ConfigurationFactory"><a class="anchor" href="#ConfigurationFactory"></a>Understanding ConfigurationFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>During initialization, Log4j 2 will search for available
+<a href="extending.html#ConfigurationFactory" class="xref page">ConfigurationFactories</a> and
+then select the one to use. The selected <code>ConfigurationFactory</code> creates
+the <code>Configuration</code> that Log4j will use. Here is how Log4j finds the
+available ConfigurationFactories:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A system property named <code>log4j2.configurationFactory</code> can be set
+with the name of the ConfigurationFactory to be used.</p>
+</li>
+<li>
+<p><code>ConfigurationFactory.setConfigurationFactory(ConfigurationFactory)</code>
+can be called with the instance of the <code>ConfigurationFactory</code> to be used.
+This must be called before any other calls to Log4j.</p>
+</li>
+<li>
+<p>A <code>ConfigurationFactory</code> implementation can be added to the classpath
+and configured as a plugin in the "ConfigurationFactory" category. The
+<code>@Order</code> annotation can be used to specify the relative priority when
+multiple applicable ConfigurationFactories are found.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>ConfigurationFactories have the concept of "supported types", which
+basically maps to the file extension of the configuration file that the
+ConfigurationFactory can handle. If a configuration file location is
+specified, ConfigurationFactories whose supported type does not include
+"*" or the matching file extension will not be used.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Example"><a class="anchor" href="#Example"></a>Initialize Log4j Using ConfigurationBuilder with a Custom ConfigurationFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One way to programmatically configure Log4j 2 is to create a custom
+<code>ConfigurationFactory</code> that uses the
+<a href="#ConfigurationBuilder"><code>ConfigurationBuilder</code></a> to create a
+Configuration. The below example overrides the <code>getConfiguration()</code>
+method to return a <code>Configuration</code> created by the <code>ConfigurationBuilder</code>.
+This will cause the <code>Configuration</code> to automatically be hooked into Log4j
+when the <code>LoggerContext</code> is created. In the example below, because it
+specifies a supported type of "*" it will override any configuration
+files provided.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Namespace(ConfigurationFactory.NAMESPACE)
+@Plugin
+@Order(50)
+public class CustomConfigurationFactory extends ConfigurationFactory {
+
+    static Configuration createConfiguration(final String name, ConfigurationBuilder&lt;BuiltConfiguration&gt; builder) {
+        builder.setConfigurationName(name);
+        builder.setStatusLevel(Level.ERROR);
+        builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL).
+            addAttribute("level", Level.DEBUG));
+        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").
+            addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+        appenderBuilder.add(builder.newLayout("PatternLayout").
+            addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+        appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
+            Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
+        builder.add(appenderBuilder);
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
+            add(builder.newAppenderRef("Stdout")).
+            addAttribute("additivity", false));
+        builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+        return builder.build();
+    }
+
+    @Override
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        return getConfiguration(loggerContext, source.toString(), null);
+    }
+
+    @Override
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+        ConfigurationBuilder&lt;BuiltConfiguration&gt; builder = newConfigurationBuilder();
+        return createConfiguration(name, builder);
+    }
+
+    @Override
+    protected String[] getSupportedTypes() {
+        return new String[] {"*"};
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As of version 2.7, the <code>ConfigurationFactory.getConfiguration()</code> methods
+take an additional <code>LoggerContext</code> parameter.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Configurator"><a class="anchor" href="#Configurator"></a>Reconfigure Log4j Using ConfigurationBuilder with the Configurator</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An alternative to a custom <code>ConfigurationFactory</code> is to configure with the
+<code>Configurator</code>. Once a <code>Configuration</code> object has been constructed, it can
+be passed to one of the <code>Configurator.initialize</code> methods to set up the
+Log4j configuration.</p>
+</div>
+<div class="paragraph">
+<p>Using the <code>Configurator</code> in this manner allows the application control
+over when Log4j is initialized. However, should any logging be attempted
+before <code>Configurator.initialize()</code> is called then the default
+configuration will be used for those log events.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ConfigurationBuilder&lt;BuiltConfiguration&gt; builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+builder.setStatusLevel(Level.ERROR);
+builder.setConfigurationName("BuilderTest");
+builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
+    .addAttribute("level", Level.DEBUG));
+AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+    ConsoleAppender.Target.SYSTEM_OUT);
+appenderBuilder.add(builder.newLayout("PatternLayout")
+    .addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
+    .addAttribute("marker", "FLOW"));
+builder.add(appenderBuilder);
+builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG)
+    .add(builder.newAppenderRef("Stdout")).addAttribute("additivity", false));
+builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+ctx = Configurator.initialize(builder.build());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example shows how to create a configuration that includes a
+RollingFileAppender.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ConfigurationBuilder&lt;BuiltConfiguration&gt; builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+
+builder.setStatusLevel(Level.ERROR);
+builder.setConfigurationName("RollingBuilder");
+// create a console appender
+AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+    ConsoleAppender.Target.SYSTEM_OUT);
+appenderBuilder.add(builder.newLayout("PatternLayout")
+    .addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+builder.add(appenderBuilder);
+// create a rolling file appender
+LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+    .addAttribute("pattern", "%d [%t] %-5level: %msg%n");
+ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
+    .addComponent(builder.newComponent("CronTriggeringPolicy").addAttribute("schedule", "0 0 0 * * ?"))
+    .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "100M"));
+appenderBuilder = builder.newAppender("rolling", "RollingFile")
+    .addAttribute("fileName", "target/rolling.log")
+    .addAttribute("filePattern", "target/archive/rolling-%d{MM-dd-yy}.log.gz")
+    .add(layoutBuilder)
+    .addComponent(triggeringPolicy);
+builder.add(appenderBuilder);
+
+// create the new logger
+builder.add(builder.newLogger("TestLogger", Level.DEBUG)
+    .add(builder.newAppenderRef("rolling"))
+    .addAttribute("additivity", false));
+
+builder.add(builder.newRootLogger(Level.DEBUG)
+    .add(builder.newAppenderRef("rolling")));
+LoggerContext ctx = Configurator.initialize(builder.build());</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Hybrid"><a class="anchor" href="#Hybrid"></a>Initialize Log4j by Combining Configuration File with Programmatic Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sometimes you want to configure with a configuration file but do some
+additional programmatic configuration. A possible use case might be that
+you want to allow for a flexible configuration using XML but at the same
+time make sure there are a few configuration elements that are always
+present that can&#8217;t be removed.</p>
+</div>
+<div class="paragraph">
+<p>The easiest way to achieve this is to extend one of the standard
+<code>Configuration</code> classes (<code>XMLConfiguration</code>, <code>JSONConfiguration</code>) and then
+create a new <code>ConfigurationFactory</code> for the extended class. After the
+standard configuration completes the custom configuration can be added
+to it.</p>
+</div>
+<div class="paragraph">
+<p>The example below shows how to extend <code>XMLConfiguration</code> to manually add
+an <code>Appender</code> and a <code>LoggerConfig</code> to the configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Namespace("ConfigurationFactory")
+@Plugin("MyXMLConfigurationFactory")
+@Order(10)
+public class MyXMLConfigurationFactory extends ConfigurationFactory {
+
+    /**
+     * Valid file extensions for XML files.
+     */
+    public static final String[] SUFFIXES = new String[] {".xml", "*"};
+
+    /**
+     * Return the Configuration.
+     * @param source The InputSource.
+     * @return The Configuration.
+     */
+    public Configuration getConfiguration(InputSource source) {
+        return new MyXMLConfiguration(source, configFile);
+    }
+
+    /**
+     * Returns the file suffixes for XML files.
+     * @return An array of File extensions.
+     */
+    public String[] getSupportedTypes() {
+        return SUFFIXES;
+    }
+}
+
+public class MyXMLConfiguration extends XMLConfiguration {
+    public MyXMLConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
+      super(configSource);
+    }
+
+    @Override
+    protected void doConfigure() {
+        super.doConfigure();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Layout layout = PatternLayout.createDefaultLayout(config);
+        final Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
+              "false", "false", "4000", layout, null, "false", null, config);
+        appender.start();
+        addAppender(appender);
+        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", "info", "org.apache.logging.log4j",
+              "true", refs, null, config, null );
+        loggerConfig.addAppender(appender, null, null);
+        addLogger("org.apache.logging.log4j", loggerConfig);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="AddingToCurrent"><a class="anchor" href="#AddingToCurrent"></a>Programmatically Modifying the Current Configuration after Initialization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Applications sometimes have the need to customize logging separate from
+the actual configuration. Log4j allows this although it suffers from a
+few limitations:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If the configuration file is changed the configuration will be
+reloaded and the manual changes will be lost.</p>
+</li>
+<li>
+<p>Modification to the running configuration requires that all the
+methods being called (addAppender and addLogger) be synchronized.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>As such, the recommended approach for customizing a configuration is to
+extend one of the standard Configuration classes, override the setup
+method to first do super.setup() and then add the custom Appenders,
+Filters and LoggerConfigs to the configuration before it is registered
+for use.</p>
+</div>
+<div class="paragraph">
+<p>The following example adds an Appender and a new LoggerConfig using that
+Appender to the current configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        Layout layout = PatternLayout.createDefaultLayout(config);
+        Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
+            "false", "false", "4000", layout, null, "false", null, config);
+        appender.start();
+        config.addAppender(appender);
+        AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
+        AppenderRef[] refs = new AppenderRef[] {ref};
+        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", "info", "org.apache.logging.log4j",
+            "true", refs, null, config, null );
+        loggerConfig.addAppender(appender, null, null);
+        config.addLogger("org.apache.logging.log4j", loggerConfig);
+        ctx.updateLoggers();
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="AppendingToWritersAndOutputStreams"><a class="anchor" href="#AppendingToWritersAndOutputStreams"></a>Appending Log Events to Writers and OutputStreams Programmatically</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j 2.5 provides facilities to append log events to Writers and
+OutputStreams. For example, this provides simple integration for JDBC
+Driver implementors that use Log4j internally and still want to support
+the JDBC APIs <code>CommonDataSource.setLogWriter(PrintWriter)</code>,
+<code>java.sql.DriverManager.setLogWriter(PrintWriter)</code>, and
+<code>java.sql.DriverManager.setLogStream(PrintStream)</code>.</p>
+</div>
+<div class="paragraph">
+<p>Given any <code>Writer</code>, like a <code>PrintWriter</code>, you tell Log4j to append
+events to that writer by creating a <code>WriterAppender</code> and updating the
+Log4j configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">void addAppender(final Writer writer, final String writerName) {
+    final LoggerContext context = LoggerContext.getContext(false);
+    final Configuration config = context.getConfiguration();
+    final PatternLayout layout = PatternLayout.createDefaultLayout(config);
+    final Appender appender = WriterAppender.createAppender(layout, null, writer, writerName, false, true);
+    appender.start();
+    config.addAppender(appender);
+    updateLoggers(appender, config);
+}
+
+private void updateLoggers(final Appender appender, final Configuration config) {
+    final Level level = null;
+    final Filter filter = null;
+    for (final LoggerConfig loggerConfig : config.getLoggers().values()) {
+        loggerConfig.addAppender(appender, level, filter);
+    }
+    config.getRootLogger().addAppender(appender, level, filter);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can achieve the same effect with an <code>OutputStream</code>, like a
+<code>PrintStream</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">void addAppender(final OutputStream outputStream, final String outputStreamName) {
+    final LoggerContext context = LoggerContext.getContext(false);
+    final Configuration config = context.getConfiguration();
+    final PatternLayout layout = PatternLayout.createDefaultLayout(config);
+    final Appender appender = OutputStreamAppender.createAppender(layout, null, outputStream, outputStreamName, false, true);
+    appender.start();
+    config.addAppender(appender);
+    updateLoggers(appender, config);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The difference is the use of <code>OutputStreamAppender</code> instead of
+<code>WriterAppender</code>.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

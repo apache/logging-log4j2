@@ -1,0 +1,2519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>JSON Template Layout :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/json-template-layout.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Default `h4` and `h5` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; } 
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="extending.html">Extending Log4j 3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li>Learn</li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="layouts.html">Layouts</a></li>
+    <li><a href="json-template-layout.html">JSON Template Layout</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/manual/json-template-layout.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">JSON Template Layout</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>JsonTemplateLayout</code> is a customizable, efficient, and garbage-free JSON
+generating layout. It encodes <code>LogEvent</code>s according to the structure described
+by the JSON template provided. In a nutshell, it shines with its</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Customizable JSON structure (see <code>eventTemplate[Uri]</code> and
+<code>stackTraceElementTemplate[Uri]</code> <a href="#layout-config">layout configuration</a> parameters)</p>
+</li>
+<li>
+<p>Customizable timestamp formatting (see <a href="#event-template-resolver-timestamp"><code>timestamp</code></a>
+event template resolver)</p>
+</li>
+<li>
+<p>Feature rich exception formatting (see <a href="#event-template-resolver-exception"><code>exception</code></a>
+and <a href="#event-template-resolver-exceptionRootCause"><code>exceptionRootCause</code></a> event template resolvers)</p>
+</li>
+<li>
+<p><a href="extending.html" class="xref page">Extensible plugin support</a></p>
+</li>
+<li>
+<p>Customizable object <a href="#recycling-strategy">recycling strategy</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Adding <code>log4j-layout-template-json</code> artifact to your list of dependencies is
+enough to enable access to <code>JsonTemplateLayout</code> in your Log4j configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-layout-template-json&lt;/artifactId&gt;
+    &lt;version&gt;3.0.0-beta2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For instance, given the following JSON template modelling
+<a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the Elastic Common Schema (ECS) specification</a>
+(accessible via <code>classpath:EcsLayout.json</code>)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "@timestamp": {
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      "timeZone": "UTC"
+    }
+  },
+  "ecs.version": "1.2.0",
+  "log.level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "process.thread.name": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "log.logger": {
+    "$resolver": "logger",
+    "field": "name"
+  },
+  "labels": {
+    "$resolver": "mdc",
+    "flatten": true,
+    "stringified": true
+  },
+  "tags": {
+    "$resolver": "ndc"
+  },
+  "error.type": {
+    "$resolver": "exception",
+    "field": "className"
+  },
+  "error.message": {
+    "$resolver": "exception",
+    "field": "message"
+  },
+  "error.stack_trace": {
+    "$resolver": "exception",
+    "field": "stackTrace",
+    "stackTrace": {
+      "stringified": true
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>in combination with the below <code>log4j2.xml</code> configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or with the below <code>log4j2.properties</code> configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.console.layout.type = JsonTemplateLayout
+appender.console.layout.eventTemplateUri = classpath:EcsLayout.json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>JsonTemplateLayout</code> generates JSON as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "@timestamp": "2017-05-25T19:56:23.370Z",
+  "ecs.version": "1.2.0",
+  "log.level": "ERROR",
+  "message": "Hello, error!",
+  "process.thread.name": "main",
+  "log.logger": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
+  "error.type": "java.lang.RuntimeException",
+  "error.message": "test",
+  "error.stack_trace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="layout-config"><a class="anchor" href="#layout-config"></a>Layout Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>JsonTemplateLayout</code> is configured with the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. <code>JsonTemplateLayout</code> parameters</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Parameter Name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Charset</code> used for <code>String</code> encoding</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>locationInfoEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">toggles access to the <code>LogEvent</code> source; file name, line number, etc.
+  (defaults to <code>false</code> set by <code>log4j.layout.jsonTemplate.locationInfoEnabled</code>
+  property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stackTraceEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">toggles access to the stack traces (defaults to <code>true</code> set by
+  <code>log4j.layout.jsonTemplate.stackTraceEnabled</code> property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventTemplate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">inline JSON template for rendering <code>LogEvent</code>s (has priority over
+  <code>eventTemplateUri</code>, defaults to <code>null</code> set by
+  <code>log4j.layout.jsonTemplate.eventTemplate</code> property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventTemplateUri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URI pointing to the JSON template for rendering <code>LogEvent</code>s (defaults to
+  <code>classpath:EcsLayout.json</code> set by <code>log4j.layout.jsonTemplate.eventTemplateUri</code>
+  property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventTemplateRootObjectKey</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">if present, the event template is put into a JSON object composed of a single
+  member with the provided key (defaults to <code>null</code> set by
+  <code>log4j.layout.jsonTemplate.eventTemplateRootObjectKey</code>
+  property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventTemplateAdditionalField</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EventTemplateAdditionalField[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">additional key-value pairs appended to the root of the event template</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stackTraceElementTemplate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">inline JSON template for rendering <code>StackTraceElement</code>s (has priority over
+  <code>stackTraceElementTemplateUri</code>, defaults to <code>null</code> set by
+  <code>log4j.layout.jsonTemplate.stackTraceElementTemplate</code> property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stackTraceElementTemplateUri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URI pointing to the JSON template for rendering <code>StackTraceElement</code>s
+  (defaults to <code>classpath:StackTraceElementLayout.json</code> set by
+  <code>log4j.layout.jsonTemplate.stackTraceElementTemplateUri</code> property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventDelimiter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">delimiter used for separating rendered <code>LogEvent</code>s (defaults to
+  <code>System.lineSeparator()</code> set by <code>log4j.layout.jsonTemplate.eventDelimiter</code>
+  property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nullEventDelimiterEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">append <code>\0</code> (<code>null</code>) character to the end of every <code>eventDelimiter</code>
+  separating rendered <code>LogEvent</code>s (defaults to <code>false</code> set by
+  <code>log4j.layout.jsonTemplate.nullEventDelimiterEnabled</code> property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxStringLength</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">truncate string values longer than the specified limit (defaults to 16384 set
+  by <code>log4j.layout.jsonTemplate.maxStringLength</code> property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>truncatedStringSuffix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">suffix to append to strings truncated due to exceeding <code>maxStringLength</code>
+  (defaults to <code>…</code> set by <code>log4j.layout.jsonTemplate.truncatedStringSuffix</code>
+  property)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recyclerFactory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>RecyclerFactory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">recycling strategy that can either be <code>dummy</code>, <code>threadLocal</code>, or <code>queue</code>
+  (set by <code>log4j.layout.jsonTemplate.recyclerFactory</code> property)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="additional-event-template-fields"><a class="anchor" href="#additional-event-template-fields"></a>Additional event template fields</h3>
+<div class="paragraph">
+<p>Additional event template fields are a convenient short-cut to add custom fields
+to a template or override the existing ones. Following configuration overrides
+the <code>host</code> field of the <code>GelfLayout.json</code> template and adds two new custom
+fields:</p>
+</div>
+<div class="listingblock">
+<div class="title">XML configuration with additional fields</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json"&gt;
+  &lt;EventTemplateAdditionalField key="host" value="www.apache.org"/&gt;
+  &lt;EventTemplateAdditionalField key="_serviceName" value="auth-service"/&gt;
+  &lt;EventTemplateAdditionalField key="_containerId" value="6ede3f0ca7d9"/&gt;
+&lt;/JsonTemplateLayout&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default <code>format</code> for the added new fields are <code>String</code>.
+One can also provide JSON-formatted additional fields:</p>
+</div>
+<div class="listingblock">
+<div class="title">XML-formatted configuration with JSON-formatted additional fields</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json"&gt;
+  &lt;EventTemplateAdditionalField
+       key="marker"
+       format="JSON"
+       value='{"$resolver": "marker", "field": "name"}'/&gt;
+  &lt;EventTemplateAdditionalField
+       key="aNumber"
+       format="JSON"
+       value="1"/&gt;
+  &lt;EventTemplateAdditionalField
+       key="aList"
+       format="JSON"
+       value='[1, 2, "three"]'/&gt;
+&lt;/JsonTemplateLayout&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Additional event template fields can very well be introduced using properties-,
+YAML-, and JSON-formatted configurations:</p>
+</div>
+<div class="listingblock">
+<div class="title">Properties-formatted configuration with JSON-formatted additional fields</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.console.layout.type = JsonTemplateLayout
+appender.console.layout.eventTemplateUri = classpath:GelfLayout.json
+appender.console.layout.eventTemplateAdditionalField[0].type = EventTemplateAdditionalField
+appender.console.layout.eventTemplateAdditionalField[0].key = marker
+appender.console.layout.eventTemplateAdditionalField[0].value = {"$resolver": "marker", "field": "name"}
+appender.console.layout.eventTemplateAdditionalField[0].format = JSON
+appender.console.layout.eventTemplateAdditionalField[1].type = EventTemplateAdditionalField
+appender.console.layout.eventTemplateAdditionalField[1].key = aNumber
+appender.console.layout.eventTemplateAdditionalField[1].value = 1
+appender.console.layout.eventTemplateAdditionalField[1].format = JSON
+appender.console.layout.eventTemplateAdditionalField[2].type = EventTemplateAdditionalField
+appender.console.layout.eventTemplateAdditionalField[2].key = aList
+appender.console.layout.eventTemplateAdditionalField[2].value = [1, 2, "three"]
+appender.console.layout.eventTemplateAdditionalField[2].format = JSON</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">YAML-formatted configuration with JSON-formatted additional fields</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">JsonTemplateLayout:
+  eventTemplateAdditionalField:
+    - key: "marker"
+      value: '{"$resolver": "marker", "field": "name"}'
+      format: "JSON"
+    - key: "aNumber"
+      value: "1"
+      format: "JSON"
+    - key: "aList"
+      value: '[1, 2, "three"]'
+      format: "JSON"</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">JSON-formatted configuration with JSON-formatted additional fields</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "JsonTemplateLayout": {
+    "eventTemplateAdditionalField": [
+      {
+        "key": "marker",
+        "value": "{\"$resolver\": \"marker\", \"field\": \"name\"}",
+        "format": "JSON"
+      },
+      {
+        "key": "aNumber",
+        "value": "1",
+        "format": "JSON"
+      },
+      {
+        "key": "aList",
+        "value": "[1, 2, \"three\"]",
+        "format": "JSON"
+      }
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="template-config"><a class="anchor" href="#template-config"></a>Template Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Templates are configured by means of the following <code>JsonTemplateLayout</code>
+parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>eventTemplate[Uri]</code> (for serializing <code>LogEvent</code>s)</p>
+</li>
+<li>
+<p><code>stackTraceElementTemplate[Uri]</code> (for serializing <code>StackStraceElement</code>s)</p>
+</li>
+<li>
+<p><code>eventTemplateAdditionalField</code> (for extending the used event template)</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="event-templates"><a class="anchor" href="#event-templates"></a>Event Templates</h3>
+<div class="paragraph">
+<p><code>eventTemplate[Uri]</code> describes the JSON structure <code>JsonTemplateLayout</code> uses to
+serialize <code>LogEvent</code>s. The default configuration (accessible by
+<code>log4j.layout.jsonTemplate.eventTemplate[Uri]</code> property) is set to
+<code>classpath:EcsLayout.json</code> provided by the <code>log4j-layout-template-json</code>
+artifact, which contains the following predefined event templates:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/EcsLayout.json"><code>EcsLayout.json</code></a>
+described by <a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the Elastic Common Schema (ECS) specification</a></p>
+</li>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json"><code>LogstashJsonEventLayoutV1.json</code></a>
+described in <a href="https://github.com/logstash/log4j-jsonevent-layout">Logstash
+<code>json_event</code> pattern for log4j</a></p>
+</li>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/GelfLayout.json"><code>GelfLayout.json</code></a>
+described by <a href="https://docs.graylog.org/en/3.1/pages/gelf.html#gelf-payload-specification">the
+Graylog Extended Log Format (GELF) payload specification</a> with additional
+<code>_thread</code> and <code>_logger</code> fields. (Here it is advised to override the obligatory
+<code>host</code> field with a user provided constant via
+<a href="#additional-event-template-fields">additional event template fields</a>
+to avoid <code>hostName</code> property lookup at runtime, which incurs an extra cost.)</p>
+</li>
+<li>
+<p><a href="https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/GcpLayout.json"><code>GcpLayout.json</code></a>
+described by <a href="https://cloud.google.com/logging/docs/structured-logging">Google
+Cloud Platform structured logging</a> with additional
+<code>_thread</code>, <code>_logger</code> and <code>_exception</code> fields. The exception trace, if any,
+is written to the <code>_exception</code> field as well as the <code>message</code> field –
+the former is useful for explicitly searching/analyzing structured exception
+information, while the latter is Google&#8217;s expected place for the exception,
+and integrates with <a href="https://cloud.google.com/error-reporting">Google Error Reporting</a>.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="event-template-resolvers"><a class="anchor" href="#event-template-resolvers"></a>Event Template Resolvers</h4>
+<div class="paragraph">
+<p>Event template resolvers consume a <code>LogEvent</code> and render a certain property of
+it at the point of the JSON where they are declared. For instance, <code>marker</code>
+resolver renders the marker of the event, <code>level</code> resolver renders the level,
+and so on. An event template resolver is denoted with a special object
+containing a`$resolver` key:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example event template demonstrating the usage of <code>level</code> resolver</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "version": "1.0",
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here <code>version</code> field will be rendered as is, while <code>level</code> field will be
+populated by the <code>level</code> resolver. That is, this template will generate JSON
+similar to the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example JSON generated from the demonstrated event template</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "version": "1.0",
+  "level": "INFO"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The complete list of available event template resolvers are provided below in
+detail.</p>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-counter"><a class="anchor" href="#event-template-resolver-counter"></a><code>counter</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config      = [ start ] , [ overflowing ] , [ stringified ]
+start       = "start" -&gt; number
+overflowing = "overflowing" -&gt; boolean
+stringified = "stringified" -&gt; boolean</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves a number from an internal counter.</p>
+</div>
+<div class="paragraph">
+<p>Unless provided, <code>start</code> and <code>overflowing</code> are respectively set to zero and
+<code>true</code> by default.</p>
+</div>
+<div class="paragraph">
+<p>When <code>stringified</code> is enabled, which is set to `false by default, the resolved
+number will be converted to a string.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When <code>overflowing</code> is set to <code>true</code>, the internal counter is created using a
+<code>long</code>, which is subject to overflow while incrementing, though garbage-free.
+Otherwise, a <code>BigInteger</code> is used, which does not overflow, but incurs
+allocation costs.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_examples"><a class="anchor" href="#_examples"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolves a sequence of numbers starting from 0. Once <code>Long.MAX_VALUE</code> is
+reached, counter overflows to <code>Long.MIN_VALUE</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "counter"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves a sequence of numbers starting from 1000. Once <code>Long.MAX_VALUE</code> is
+reached, counter overflows to <code>Long.MIN_VALUE</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "counter",
+  "start": 1000
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves a sequence of numbers starting from 0 and keeps on doing as long as
+JVM heap allows.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "counter",
+  "overflowing": false
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-caseConverter"><a class="anchor" href="#event-template-resolver-caseConverter"></a><code>caseConverter</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config                = case , input , [ locale ] , [ errorHandlingStrategy ]
+input                 = JSON
+case                  = "case" -&gt; ( "upper" | "lower" )
+locale                = "locale" -&gt; (
+                            language                                   |
+                          ( language , "_" , country )                 |
+                          ( language , "_" , country , "_" , variant )
+                        )
+errorHandlingStrategy = "errorHandlingStrategy" -&gt; (
+                          "fail"    |
+                          "pass"    |
+                          "replace"
+                        )
+replacement           = "replacement" -&gt; JSON</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Converts the case of string values.</p>
+</div>
+<div class="paragraph">
+<p><code>input</code> can be any available template value;  e.g., a JSON literal, a lookup
+string, an object pointing to another resolver.</p>
+</div>
+<div class="paragraph">
+<p>Unless provided, <code>locale</code> points to the one returned by
+<code>JsonTemplateLayoutDefaults.getLocale()</code>, which is configured by
+<code>log4j.layout.jsonTemplate.locale</code> system property and by default set to the
+default system locale.</p>
+</div>
+<div class="paragraph">
+<p><code>errorHandlingStrategy</code> determines the behavior when either the input doesn&#8217;t
+resolve to a string value or case conversion throws an exception:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>fail</code> propagates the failure</p>
+</li>
+<li>
+<p><code>pass</code> causes the resolved value to be passed as is</p>
+</li>
+<li>
+<p><code>replace</code> suppresses the failure and replaces it with the <code>replacement</code>,
+which is set to <code>null</code> by default</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>errorHandlingStrategy</code> is set to <code>replace</code> by default.</p>
+</div>
+<div class="paragraph">
+<p>Most of the time JSON logs are persisted to a storage solution (e.g.,
+Elasticsearch) that keeps a statically-typed index on fields. Hence, if a field
+is always expected to be of type string, using non-string <code>replacement</code>s or
+<code>pass</code> in <code>errorHandlingStrategy</code> might result in type incompatibility issues at
+the storage level.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Unless the input value is <code>pass</code>ed intact or <code>replace</code>d, case conversion is
+not garbage-free.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_examples_2"><a class="anchor" href="#_examples_2"></a>Examples</h6>
+<div class="paragraph">
+<p>Convert the resolved log level strings to upper-case:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "caseConverter",
+  "case": "upper",
+  "input": {
+    "$resolver": "level",
+    "field": "name"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Convert the resolved <code>USER</code> environment variable to lower-case using <code>nl_NL</code>
+locale:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "locale": "nl_NL",
+  "input": "${env:USER}"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Convert the resolved <code>sessionId</code> thread context data (MDC) to lower-case:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "input": {
+    "$resolver": "mdc",
+    "key": "sessionId"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Above, if <code>sessionId</code> MDC resolves to a, say, number, case conversion will fail.
+Since <code>errorHandlingStrategy</code> is set to <code>replace</code> and replacement is set to
+<code>null</code> by default, the resolved value will be <code>null</code>. One can suppress this
+behavior  and let the resolved <code>sessionId</code> number be left as is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "input": {
+    "$resolver": "mdc",
+    "key": "sessionId"
+  },
+  "errorHandlingStrategy": "pass"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or replace it with a custom string:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "input": {
+    "$resolver": "mdc",
+    "key": "sessionId"
+  },
+  "errorHandlingStrategy": "replace",
+  "replacement": "unknown"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-endOfBatch"><a class="anchor" href="#event-template-resolver-endOfBatch"></a><code>endOfBatch</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "endOfBatch"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves <code>logEvent.isEndOfBatch()</code> boolean flag.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-exception"><a class="anchor" href="#event-template-resolver-exception"></a><code>exception</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config              = field , [ stringified ] , [ stackTrace ]
+field               = "field" -&gt; ( "className" | "message" | "stackTrace" )
+
+stackTrace          = "stackTrace" -&gt; (
+                        [ stringified ]
+                      , [ elementTemplate ]
+                      )
+
+stringified         = "stringified" -&gt; ( boolean | truncation )
+truncation          = "truncation" -&gt; (
+                        [ suffix ]
+                      , [ pointMatcherStrings ]
+                      , [ pointMatcherRegexes ]
+                      )
+suffix              = "suffix" -&gt; string
+pointMatcherStrings = "pointMatcherStrings" -&gt; string[]
+pointMatcherRegexes = "pointMatcherRegexes" -&gt; string[]
+
+elementTemplate     = "elementTemplate" -&gt; object</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves fields of the <code>Throwable</code> returned by <code>logEvent.getThrown()</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>stringified</code> is set to <code>false</code> by default. <code>stringified</code> at the root level is
+<strong>deprecated</strong> in favor of <code>stackTrace.stringified</code>, which has precedence if both
+are provided.</p>
+</div>
+<div class="paragraph">
+<p><code>pointMatcherStrings</code> and <code>pointMatcherRegexes</code> enable the truncation of
+stringified stack traces after the given matching point. If both parameters are
+provided, <code>pointMatcherStrings</code> will be checked first.</p>
+</div>
+<div class="paragraph">
+<p>If a stringified stack trace truncation takes place, it will be indicated with a
+<code>suffix</code>, which by default is set to the configured <code>truncatedStringSuffix</code> in
+the layout, unless explicitly provided. Every truncation suffix is prefixed with
+a newline.</p>
+</div>
+<div class="paragraph">
+<p>Stringified stack trace truncation operates in <code>Caused by:</code> and <code>Suppressed:</code>
+label blocks. That is, matchers are executed against each label in isolation.</p>
+</div>
+<div class="paragraph">
+<p><code>elementTemplate</code> is an object describing the template to be used while
+resolving the <code>StackTraceElement</code> array. If <code>stringified</code> is set to <code>true</code>,
+<code>elementTemplate</code> will be discarded. By default, <code>elementTemplate</code> is set to
+<code>null</code> and rather populated from the layout configuration. That is, the stack
+trace element template can also be provided using
+<code>stackTraceElementTemplate[Uri]</code> layout configuration parameters. The template
+to be employed is determined in the following order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>elementTemplate</code> provided in the resolver configuration</p>
+</li>
+<li>
+<p><code>stackTraceElementTemplate</code> parameter from layout configuration
+(the default is populated from <code>log4j.layout.jsonTemplate.stackTraceElementTemplate</code>
+system property)</p>
+</li>
+<li>
+<p><code>stackTraceElementTemplateUri</code> parameter from layout configuration
+(the default is populated from <code>log4j.layout.jsonTemplate.stackTraceElementTemplateUri</code>
+system property)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>See <a href="#stack-trace-element-templates">Stack Trace Element Templates</a>
+for the list of available resolvers in a stack trace element template.</p>
+</div>
+<div class="paragraph">
+<p>Note that this resolver is toggled by
+<code>log4j.layout.jsonTemplate.stackTraceEnabled</code> property.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Since <code>Throwable#getStackTrace()</code> clones the original <code>StackTraceElement[]</code>,
+access to (and hence rendering of) stack traces are not garbage-free.</p>
+</div>
+<div class="paragraph">
+<p>Each <code>pointMatcherRegexes</code> item triggers a <code>Pattern#matcher()</code> call, which is
+not garbage-free either.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_examples_3"><a class="anchor" href="#_examples_3"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve <code>logEvent.getThrown().getClass().getCanonicalName()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "exception",
+  "field": "className"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the stack trace into a list of <code>StackTraceElement</code> objects:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "exception",
+  "field": "stackTrace"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the stack trace into a string field:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stackTrace": {
+    "stringified": true
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the stack trace into a string field such that the content will be
+truncated after the given point matcher:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stackTrace": {
+    "stringified": {
+      "truncation": {
+        "suffix": "... [truncated]",
+        "pointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the stack trace into an object described by the provided stack trace
+element template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stackTrace": {
+    "elementTemplate": {
+      "class": {
+       "$resolver": "stackTraceElement",
+       "field": "className"
+      },
+      "method": {
+       "$resolver": "stackTraceElement",
+       "field": "methodName"
+      },
+      "file": {
+       "$resolver": "stackTraceElement",
+       "field": "fileName"
+      },
+      "line": {
+       "$resolver": "stackTraceElement",
+       "field": "lineNumber"
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="#stack-trace-element-templates">Stack Trace Element Templates</a> for further details on resolvers available
+for <code>StackTraceElement</code> templates.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-exceptionRootCause"><a class="anchor" href="#event-template-resolver-exceptionRootCause"></a><code>exceptionRootCause</code></h5>
+<div class="paragraph">
+<p>Resolves the fields of the innermost <code>Throwable</code> returned by
+<code>logEvent.getThrown()</code>. Its syntax and garbage-footprint are identical to the
+<a href="#event-template-resolver-exception"><code>exception</code></a> resolver.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-level"><a class="anchor" href="#event-template-resolver-level"></a><code>level</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config         = field , [ severity ]
+field          = "field" -&gt; ( "name" | "severity" )
+severity       = severity-field
+severity-field = "field" -&gt; ( "keyword" | "code" )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves the fields of the <code>logEvent.getLevel()</code>.</p>
+</div>
+<div class="sect5">
+<h6 id="_examples_4"><a class="anchor" href="#_examples_4"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve the level name:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "level",
+  "field": "name"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the <a href="https://en.wikipedia.org/wiki/Syslog#Severity_levels">Syslog severity</a>
+keyword:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "level",
+  "field": "severity",
+  "severity": {
+    "field": "keyword"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the <a href="https://en.wikipedia.org/wiki/Syslog#Severity_levels">Syslog severity</a>
+code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "level",
+  "field": "severity",
+  "severity": {
+    "field": "code"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-logger"><a class="anchor" href="#event-template-resolver-logger"></a><code>logger</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config = "field" -&gt; ( "name" | "fqcn" )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves <code>logEvent.getLoggerFqcn()</code> and <code>logEvent.getLoggerName()</code>.</p>
+</div>
+<div class="sect5">
+<h6 id="_examples_5"><a class="anchor" href="#_examples_5"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve the logger name:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "logger",
+  "field": "name"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the logger&#8217;s fully qualified class name:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "logger",
+  "field": "fqcn"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-main"><a class="anchor" href="#event-template-resolver-main"></a><code>main</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config = ( index | key )
+index  = "index" -&gt; number
+key    = "key" -&gt; string</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Performs <a href="lookups.html#AppMainArgsLookup" class="xref page">Main Argument Lookup</a> for the
+given <code>index</code> or <code>key</code>.</p>
+</div>
+<div class="sect5">
+<h6 id="_examples_6"><a class="anchor" href="#_examples_6"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve the 1st <code>main()</code> method argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "main",
+  "index": 0
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the argument coming right after <code>--userId</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "main",
+  "key": "--userId"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-map"><a class="anchor" href="#event-template-resolver-map"></a><code>map</code></h5>
+<div class="paragraph">
+<p>Resolves <code>MapMessage</code>s. See <a href="#map-resolver-template">Map Resolver Template</a>
+for details.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-marker"><a class="anchor" href="#event-template-resolver-marker"></a><code>marker</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config = "field" -&gt; ( "name" | "parents" )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves <code>logEvent.getMarker()</code>.</p>
+</div>
+<div class="sect5">
+<h6 id="_examples_7"><a class="anchor" href="#_examples_7"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve the marker name:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "marker",
+  "field": "name"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the names of the marker&#8217;s parents:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "marker",
+  "field": "parents"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-mdc"><a class="anchor" href="#event-template-resolver-mdc"></a><code>mdc</code></h5>
+<div class="paragraph">
+<p>Resolves Mapped Diagnostic Context (MDC), aka. Thread Context Data. See
+<a href="#map-resolver-template">Map Resolver Template</a> for details.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>log4j2.garbagefreeThreadContextMap</code> flag needs to be turned on to iterate
+the map without allocations.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-message"><a class="anchor" href="#event-template-resolver-message"></a><code>message</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config      = [ stringified ] , [ fallbackKey ]
+stringified = "stringified" -&gt; boolean
+fallbackKey = "fallbackKey" -&gt; string</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves <code>logEvent.getMessage()</code>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For simple string messages, the resolution is performed without allocations.
+For <code>ObjectMessage</code>s and <code>MultiformatMessage</code>s, it depends.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_examples_8"><a class="anchor" href="#_examples_8"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve the message into a string:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "message",
+  "stringified": true
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the message such that if it is an <code>ObjectMessage</code> or a
+<code>MultiformatMessage</code> with JSON support, its type (string, list, object, etc.)
+will be retained:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "message"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Given the above configuration, a <code>SimpleMessage</code> will generate a <code>"sample log
+message"</code>, whereas a <code>MapMessage</code> will generate a <code>{"action": "login",
+"sessionId": "87asd97a"}</code>. Certain indexed log storage systems (e.g.,
+<a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>) will not allow both values
+to coexist due to type mismatch: one is a <code>string</code> while the other is an <code>object</code>.
+Here one can use a <code>fallbackKey</code> to work around the problem:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "message",
+  "fallbackKey": "formattedMessage"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using this configuration, a <code>SimpleMessage</code> will generate a
+<code>{"formattedMessage": "sample log message"}</code> and a <code>MapMessage</code> will generate a
+<code>{"action": "login", "sessionId": "87asd97a"}</code>. Note that both emitted JSONs are
+of type <code>object</code> and have no type-conflicting fields.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-messageParameter"><a class="anchor" href="#event-template-resolver-messageParameter"></a><code>messageParameter</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config      = [ stringified ] , [ index ]
+stringified = "stringified" -&gt; boolean
+index       = "index" -&gt; number</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves <code>logEvent.getMessage().getParameters()</code>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Regarding garbage footprint, <code>stringified</code> flag translates to
+<code>String.valueOf(value)</code>, hence mind not-<code>String</code>-typed values. Further,
+<code>logEvent.getMessage()</code> is expected to implement <code>ParameterVisitable</code> interface.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_examples_9"><a class="anchor" href="#_examples_9"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve the message parameters into an array:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "messageParameter"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the string representation of all message parameters into an array:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "messageParameter",
+  "stringified": true
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the first message parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "messageParameter",
+  "index": 0
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the string representation of the first message parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "messageParameter",
+  "index": 0,
+  "stringified": true
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-ndc"><a class="anchor" href="#event-template-resolver-ndc"></a><code>ndc</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config  = [ pattern ]
+pattern = "pattern" -&gt; string</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves the Nested Diagnostic Context (NDC), aka. Thread Context Stack,
+<code>String[]</code> returned by <code>logEvent.getContextStack()</code>.</p>
+</div>
+<div class="sect5">
+<h6 id="_examples_10"><a class="anchor" href="#_examples_10"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve all NDC values into a list:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "ndc"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve all NDC values matching with the <code>pattern</code> regex:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "ndc",
+  "pattern": "user(Role|Rank):\\w+"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-pattern"><a class="anchor" href="#event-template-resolver-pattern"></a><code>pattern</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config            = pattern , [ stackTraceEnabled ]
+pattern           = "pattern" -&gt; string
+stackTraceEnabled = "stackTraceEnabled" -&gt; boolean</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolver delegating to <a href="layouts.html#PatternLayout" class="xref page"><code>PatternLayout</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>The default value of <code>stackTraceEnabled</code> is inherited from the parent
+<code>JsonTemplateLayout</code>.</p>
+</div>
+<div class="sect5">
+<h6 id="_examples_11"><a class="anchor" href="#_examples_11"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve the string produced by <code>%p %c{1.} [%t] %X{userId} %X %m%ex</code> pattern:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "pattern",
+  "pattern": "%p %c{1.} [%t] %X{userId} %X %m%ex"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-source"><a class="anchor" href="#event-template-resolver-source"></a><code>source</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config = "field" -&gt; (
+           "className"  |
+           "fileName"   |
+           "methodName" |
+           "lineNumber" )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves the fields of the <code>StackTraceElement</code> returned by
+<code>logEvent.getSource()</code>.</p>
+</div>
+<div class="paragraph">
+<p>Note that this resolver is toggled by
+<code>log4j.layout.jsonTemplate.locationInfoEnabled</code> property.</p>
+</div>
+<div class="sect5">
+<h6 id="_examples_12"><a class="anchor" href="#_examples_12"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve the line number:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "source",
+  "field": "lineNumber"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-thread"><a class="anchor" href="#event-template-resolver-thread"></a><code>thread</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config = "field" -&gt; ( "name" | "id" | "priority" )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves <code>logEvent.getThreadId()</code>, <code>logEvent.getThreadName()</code>,
+<code>logEvent.getThreadPriority()</code>.</p>
+</div>
+<div class="sect5">
+<h6 id="_examples_13"><a class="anchor" href="#_examples_13"></a>Examples</h6>
+<div class="paragraph">
+<p>Resolve the thread name:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "thread",
+  "field": "name"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="event-template-resolver-timestamp"><a class="anchor" href="#event-template-resolver-timestamp"></a><code>timestamp</code></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config        = [ patternConfig | epochConfig ]
+
+patternConfig = "pattern" -&gt; ( [ format ] , [ timeZone ] , [ locale ] )
+format        = "format" -&gt; string
+timeZone      = "timeZone" -&gt; string
+locale        = "locale" -&gt; (
+                   language                                   |
+                 ( language , "_" , country )                 |
+                 ( language , "_" , country , "_" , variant )
+                )
+
+epochConfig   = "epoch" -&gt; ( unit , [ rounded ] )
+unit          = "unit" -&gt; (
+                   "nanos"         |
+                   "millis"        |
+                   "secs"          |
+                   "millis.nanos"  |
+                   "secs.nanos"    |
+                )
+rounded       = "rounded" -&gt; boolean</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolves <code>logEvent.getInstant()</code> in various forms.</p>
+</div>
+<div class="sect5">
+<h6 id="_examples_14"><a class="anchor" href="#_examples_14"></a>Examples</h6>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. <code>timestamp</code> template resolver examples</caption>
+<colgroup>
+<col style="width: 71.4285%;">
+<col style="width: 28.5715%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Output</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "timestamp"
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2020-02-07T13:38:47.098+02:00</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "timestamp",
+  "pattern": {
+    "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+    "timeZone": "UTC",
+    "locale": "en_US"
+  }
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2020-02-07T13:38:47.098Z</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "secs"
+  }
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1581082727.982123456</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "secs",
+    "rounded": true
+  }
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1581082727</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "secs.nanos"
+  }
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>982123456</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "millis"
+  }
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1581082727982.123456</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "millis",
+    "rounded": true
+  }
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1581082727982</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "millis.nanos"
+  }
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>123456</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "nanos"
+  }
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1581082727982123456</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="map-resolver-template"><a class="anchor" href="#map-resolver-template"></a>Map Resolver Template</h4>
+<div class="paragraph">
+<p><code>ReadOnlyStringMap</code> is Log4j&#8217;s <code>Map&lt;String, Object&gt;</code> equivalent with
+garbage-free accessors and heavily employed throughout the code base. It is the
+data structure backing both Mapped Diagnostic Context (MDC), aka. Thread Context
+Data and <code>MapMessage</code> implementations. Hence template resolvers for both of
+these are provided by a single backend: <code>ReadOnlyStringMapResolver</code>. Put another
+way, both <code>mdc</code> and <code>map</code> resolvers support identical configuration, behaviour,
+and garbage footprint, which are detailed below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config        = singleAccess | multiAccess
+
+singleAccess  = key , [ stringified ]
+key           = "key" -&gt; string
+stringified   = "stringified" -&gt; boolean
+
+multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+pattern       = "pattern" -&gt; string
+replacement   = "replacement" -&gt; string
+flatten       = "flatten" -&gt; ( boolean | flattenConfig )
+flattenConfig = [ flattenPrefix ]
+flattenPrefix = "prefix" -&gt; string</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>singleAccess</code> resolves a single field, whilst <code>multiAccess</code> resolves a
+multitude of fields. If <code>flatten</code> is provided, <code>multiAccess</code> merges the fields
+with the parent, otherwise creates a new JSON object containing the values.</p>
+</div>
+<div class="paragraph">
+<p>Enabling <code>stringified</code> flag converts each value to its string representation.</p>
+</div>
+<div class="paragraph">
+<p>Regex provided in the <code>pattern</code> is used to match against the keys. If provided,
+<code>replacement</code> will be used to replace the matched keys. These two are
+effectively equivalent to <code>Pattern.compile(pattern).matcher(key).matches()</code> and
+<code>Pattern.compile(pattern).matcher(key).replaceAll(replacement)</code> calls.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Regarding garbage footprint, <code>stringified</code> flag translates to
+<code>String.valueOf(value)</code>, hence mind not-<code>String</code>-typed values.</p>
+</div>
+<div class="paragraph">
+<p><code>pattern</code> and <code>replacement</code> incur pattern matcher allocation costs.</p>
+</div>
+<div class="paragraph">
+<p>Writing certain non-primitive values (e.g., <code>BigDecimal</code>, <code>Set</code>, etc.) to JSON
+generates garbage, though most (e.g., <code>int</code>, <code>long</code>, <code>String</code>, <code>List</code>,
+<code>boolean[]</code>, etc.) don&#8217;t.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>"$resolver"</code> is left out in the following examples, since it is to be
+defined by the actual resolver, e.g., <code>map</code>, <code>mdc</code>.</p>
+</div>
+<div class="paragraph">
+<p>Resolve the value of the field keyed with <code>user:role</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…",
+  "key": "user:role"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve the string representation of the <code>user:rank</code> field value:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…",
+  "key": "user:rank",
+  "stringified": true
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve all fields into an object:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve all fields into an object such that values are converted to string:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…",
+  "stringified": true
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve all fields whose keys match with the <code>user:(role|rank)</code> regex into an
+object:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…",
+  "pattern": "user:(role|rank)"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve all fields whose keys match with the <code>user:(role|rank)</code> regex into an
+object after removing the <code>user:</code> prefix in the key:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…",
+  "pattern": "user:(role|rank)",
+  "replacement": "$1"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Merge all fields whose keys are matching with the <code>user:(role|rank)</code> regex into
+the parent:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…",
+  "flatten": true,
+  "pattern": "user:(role|rank)"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After converting the corresponding field values to string, merge all fields to
+parent such that keys are prefixed with <code>_</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…",
+  "stringified": true,
+  "flatten": {
+    "prefix": "_"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="stack-trace-element-templates"><a class="anchor" href="#stack-trace-element-templates"></a>Stack Trace Element Templates</h3>
+<div class="paragraph">
+<p><a href="#event-template-resolver-exception"><code>exception</code></a> and
+<a href="#event-template-resolver-exceptionRootCause"><code>exceptionRootCause</code></a> event template resolvers can
+serialize an exception stack trace (i.e., <code>StackTraceElement[]</code> returned by
+<code>Throwable#getStackTrace()</code>) into a JSON array. While doing so, JSON templating
+infrastructure is used again.</p>
+</div>
+<div class="paragraph">
+<p><code>stackTraceElement[Uri]</code> describes the JSON structure <code>JsonTemplateLayout</code> uses
+to format <code>StackTraceElement</code>s. The default configuration (accessible by
+<code>log4j.layout.jsonTemplate.stackTraceElementTemplate[Uri]</code> property) is set to
+<code>classpath:StackTraceElementLayout.json</code> provided by the
+<code>log4j-layout-template-json</code> artifact:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "class": {
+    "$resolver": "stackTraceElement",
+    "field": "className"
+  },
+  "method": {
+    "$resolver": "stackTraceElement",
+    "field": "methodName"
+  },
+  "file": {
+    "$resolver": "stackTraceElement",
+    "field": "fileName"
+  },
+  "line": {
+    "$resolver": "stackTraceElement",
+    "field": "lineNumber"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The allowed template configuration syntax is as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">config = "field" -&gt; (
+           "className"  |
+           "fileName"   |
+           "methodName" |
+           "lineNumber" )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All above accesses to <code>StackTraceElement</code> is garbage-free.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extending"><a class="anchor" href="#extending"></a>Extending</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>JsonTemplateLayout</code> relies on Log4j <a href="plugins.html" class="xref page">plugin system</a> to build
+up the features it provides. This enables feature customization a breeze for
+users. As of this moment, following features are implemented by means of
+plugins:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Event template resolvers (e.g., <code>exception</code>, <code>message</code>, <code>level</code> event template resolvers)</p>
+</li>
+<li>
+<p>Event template interceptors (e.g., injection of <code>eventTemplateAdditionalField</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Following sections cover these in detail.</p>
+</div>
+<div class="sect2">
+<h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin Preliminaries</h3>
+<div class="paragraph">
+<p>Log4j plugin system is the de facto extension mechanism embraced by various
+Log4j components, including <code>JsonTemplateLayout</code>. Plugins make it possible
+for extensible components <em>receive</em> feature implementations without any explicit
+links in between. It is analogous to a
+<a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a>
+framework, but curated for Log4j-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>In a nutshell, you annotate your classes with <code>@Plugin</code> and their (<code>static</code>)
+creator methods with <code>@PluginFactory</code>. Last, you inform the Log4j plugin system
+to discover these custom classes. This can be done either using <code>packages</code>
+declared in your Log4j configuration or by various other ways described in
+<a href="plugins.html" class="xref page">plugin system documentation</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="extending-event-resolvers"><a class="anchor" href="#extending-event-resolvers"></a>Extending Event Resolvers</h3>
+<div class="paragraph">
+<p>All available <a href="#event-template-resolvers">event template resolvers</a> are simple
+plugins employed by <code>JsonTemplateLayout</code>. To add new ones, one just needs to
+create their own <code>EventResolver</code> and instruct its injection via a
+<code>@Plugin</code>-annotated <code>EventResolverFactory</code> class.</p>
+</div>
+<div class="paragraph">
+<p>For demonstration purposes, below we will create a <code>randomNumber</code> event resolver.
+Let&#8217;s start with the actual resolver:</p>
+</div>
+<div class="listingblock">
+<div class="title">Custom random number event resolver</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.acme.logging.log4j.layout.template.json;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolver;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+
+/**
+ * Resolves a random floating point number.
+ *
+ * &lt;h3&gt;Configuration&lt;/h3&gt;
+ *
+ * &lt;pre&gt;
+ * config = ( [ range ] )
+ * range  = number[]
+ * &lt;/pre&gt;
+ *
+ * {@code range} is a number array with two elements, where the first number
+ * denotes the start (inclusive) and the second denotes the end (exclusive).
+ * {@code range} is optional and by default set to {@code [0, 1]}.
+ *
+ * &lt;h3&gt;Examples&lt;/h3&gt;
+ *
+ * Resolve a random number between 0 and 1:
+ *
+ * &lt;pre&gt;
+ * {
+ *   "$resolver": "randomNumber"
+ * }
+ * &lt;/pre&gt;
+ *
+ * Resolve a random number between -0.123 and 0.123:
+ *
+ * &lt;pre&gt;
+ * {
+ *   "$resolver": "randomNumber",
+ *   "range": [-0.123, 0.123]
+ * }
+ * &lt;/pre&gt;
+ */
+public final class RandomNumberResolver implements EventResolver {
+
+    private final double loIncLimit;
+
+    private final double hiExcLimit;
+
+    RandomNumberResolver(final TemplateResolverConfig config) {
+        final List&lt;Number&gt; rangeArray = config.getList("range", Number.class);
+        if (rangeArray == null) {
+            this.loIncLimit = 0D;
+            this.hiExcLimit = 1D;
+        } else if (rangeArray.size() != 2) {
+            throw new IllegalArgumentException(
+                    "range array must be of size two: " + config);
+        } else {
+            this.loIncLimit = rangeArray.get(0).doubleValue();
+            this.hiExcLimit = rangeArray.get(1).doubleValue();
+            if (loIncLimit &gt; hiExcLimit) {
+                throw new IllegalArgumentException("invalid range: " + config);
+            }
+        }
+    }
+
+    static String getName() {
+        return "randomNumber";
+    }
+
+    @Override
+    public void resolve(
+            final LogEvent value,
+            final JsonWriter jsonWriter) {
+        final double randomNumber =
+                loIncLimit + (hiExcLimit - loIncLimit) * Math.random();
+        jsonWriter.writeNumber(randomNumber);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next create a <code>EventResolverFactory</code> class to register <code>RandomNumberResolver</code>
+into the Log4j plugin system.</p>
+</div>
+<div class="listingblock">
+<div class="title">Resolver factory class to register <code>RandomNumberResolver</code> into the Log4j plugin system</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.acme.logging.log4j.layout.template.json;
+
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverFactory;
+
+/**
+ * {@link RandomNumberResolver} factory.
+ */
+@Category(TemplateResolverFactory.CATEGORY)
+@Plugin("RandomNumberResolverFactory")
+public final class RandomNumberResolverFactory implements EventResolverFactory {
+
+    private static final RandomNumberResolverFactory INSTANCE =
+            new RandomNumberResolverFactory();
+
+    private RandomNumberResolverFactory() {}
+
+    @PluginFactory
+    public static RandomNumberResolverFactory getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public String getName() {
+        return RandomNumberResolver.getName();
+    }
+
+    @Override
+    public RandomNumberResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new RandomNumberResolver(config);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Almost complete. Last, we need to inform the Log4j plugin system to discover
+these custom classes:</p>
+</div>
+<div class="listingblock">
+<div class="title">Log4j configuration employing custom <code>randomNumber</code> resolver</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration&gt;
+  &lt;!-- ... --&gt;
+  &lt;JsonTemplateLayout&gt;
+    &lt;EventTemplateAdditionalField
+        key="id"
+        format="JSON"
+        value='{"$resolver": "randomNumber", "range": [0, 1000000]}'/&gt;
+  &lt;/JsonTemplateLayout&gt;
+  &lt;!-- ... --&gt;
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All available event template resolvers are located in
+<code>org.apache.logging.log4j.layout.template.json.resolver</code> package. It is a fairly
+rich resource for inspiration while implementing new resolvers.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="extending-template-resolver"><a class="anchor" href="#extending-template-resolver"></a>Intercepting the Template Resolver Compiler</h3>
+<div class="paragraph">
+<p><code>JsonTemplateLayout</code> allows interception of the template resolver compilation,
+which is the process converting a template into a Java function performing the
+JSON serialization. This interception mechanism is internally used to implement
+<code>eventTemplateRootObjectKey</code> and <code>eventTemplateAdditionalField</code> features. In a
+nutshell, one needs to create a <code>@Plugin</code>-annotated class extending from
+<code>EventResolverInterceptor</code> interface.</p>
+</div>
+<div class="paragraph">
+<p>To see the interception in action, check out the <code>EventRootObjectKeyInterceptor</code>
+class which is responsible for implementing the <code>eventTemplateRootObjectKey</code>
+feature:</p>
+</div>
+<div class="listingblock">
+<div class="title">Event interceptor to add <code>eventTemplateRootObjectKey</code>, if present</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptor;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverInterceptor;
+
+/**
+ * Interceptor to add a root object key to the event template.
+ */
+@Category(TemplateResolverInterceptor.CATEGORY)
+@Plugin("EventRootObjectKeyInterceptor")
+public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
+
+    private static final EventRootObjectKeyInterceptor INSTANCE =
+            new EventRootObjectKeyInterceptor();
+
+    private EventRootObjectKeyInterceptor() {}
+
+    @PluginFactory
+    public static EventRootObjectKeyInterceptor getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public Object processTemplateBeforeResolverInjection(
+            final EventResolverContext context,
+            final Object node) {
+        String eventTemplateRootObjectKey = context.getEventTemplateRootObjectKey();
+        return eventTemplateRootObjectKey != null
+                ? Collections.singletonMap(eventTemplateRootObjectKey, node)
+                : node;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here, <code>processTemplateBeforeResolverInjection()</code> method checks if the user has
+provided an <code>eventTemplateRootObjectKey</code>. If so, it wraps the root <code>node</code> with a
+new object; otherwise, returns the <code>node</code> as is. Note that <code>node</code> refers to the
+root Java object of the event template read by <code>JsonReader</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="features"><a class="anchor" href="#features"></a>Features</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Below is a feature comparison matrix between <code>JsonTemplateLayout</code> and
+alternatives.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Feature comparison matrix</caption>
+<colgroup>
+<col style="width: 60%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Feature</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JsonTemplateLayout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/elastic/java-ecs-logging/tree/master/log4j2-ecs-layout"><code>EcsLayout</code></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dependencies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Schema customization?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✕</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timestamp customization?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✕</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Almost) garbage-free?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom typed <code>Message</code> serialization?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">?<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom typed <code>MDC</code> value serialization?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✕</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rendering stack traces as array?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stack trace truncation?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✕</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON pretty print?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✕</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✕</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional string fields?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional JSON fields?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✕</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom resolvers?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✕</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="faq"><a class="anchor" href="#faq"></a>F.A.Q.</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="faq-lookups"><a class="anchor" href="#faq-lookups"></a>Are lookups supported in templates?</h3>
+<div class="paragraph">
+<p>Yes, <a href="lookups.html" class="xref page">lookups</a> (e.g., <code>${java:version}</code>,
+<code>${env:USER}</code>, <code>${date:MM-dd-yyyy}</code>) are supported in string
+literals of templates. Though note that they are not garbage-free.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_are_recursive_collections_supported"><a class="anchor" href="#_are_recursive_collections_supported"></a>Are recursive collections supported?</h3>
+<div class="paragraph">
+<p>No. Consider a <code>Message</code> containing a recursive value as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Object[] recursiveCollection = new Object[1];
+recursiveCollection[0] = recursiveCollection;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While the exact exception might vary, you will most like get a
+<code>StackOverflowError</code> for trying to render <code>recursiveCollection</code> into a
+<code>String</code>. Note that this is also the default behaviour for other Java standard
+library methods, e.g., <code>Arrays.toString()</code>. Hence mind self references while
+logging.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="faq-garbage-free"><a class="anchor" href="#faq-garbage-free"></a>Is <code>JsonTemplateLayout</code> garbage-free?</h3>
+<div class="paragraph">
+<p>Yes, if the garbage-free layout behaviour toggling properties
+<code>log4j2.enableDirectEncoders</code> and <code>log4j2.garbagefreeThreadContextMap</code> are
+enabled. Take into account the following caveats:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The configured recycling strategy might not be
+garbage-free.</p>
+</li>
+<li>
+<p>Since <code>Throwable#getStackTrace()</code> clones the original <code>StackTraceElement[]</code>,
+access to (and hence rendering of) stack traces are not garbage-free.</p>
+</li>
+<li>
+<p>Serialization of <code>MapMessage</code>s and <code>ObjectMessage</code>s are mostly
+garbage-free except for certain types (e.g., <code>BigDecimal</code>, <code>BigInteger</code>,
+<code>Collection</code>s, except <code>List</code>).</p>
+</li>
+<li>
+<p><a href="lookups.html" class="xref page">Lookups</a> (that is, <code>${&#8230;&#8203;}</code> variables) are not garbage-free.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Don&#8217;t forget to check out <a href="#event-template-resolvers">the notes on garbage footprint of resolvers</a>
+you employ in templates.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. Only for <code>ObjectMessage</code>s and if Jackson is in the classpath.
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

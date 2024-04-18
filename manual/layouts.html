@@ -1,0 +1,2858 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Layouts :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/layouts.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="../_/css/vendor/tabs.css">
+<style>
+  /* Default `h4` and `h5` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; } 
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="../_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="extending.html">Extending Log4j 3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li>Learn</li>
+    <li><a href="index.html">Manual</a></li>
+    <li><a href="layouts.html">Layouts</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/manual/layouts.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Layouts</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>An Appender uses a Layout to format a LogEvent into a form that meets
+the needs of whatever will be consuming the log event. In Log4j 1.x and
+Logback Layouts were expected to transform an event into a String. In
+Log4j 2 Layouts return a byte array. This allows the result of the
+Layout to be useful in many more types of Appenders. However, this means
+you need to configure most Layouts with a
+<a href="https://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html"><code>Charset</code></a>
+to ensure the byte array contains correct values.</p>
+</div>
+<div class="paragraph">
+<p>The root class for layouts that use a Charset is
+<code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> where the
+default is UTF-8. Each layout that extends <code>AbstractStringLayout</code> can
+provide its own default. See each layout below.</p>
+</div>
+<div class="paragraph">
+<p>A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1
+and US-ASCII charsets, to bring some of the performance improvements
+built-in to Java 8 to Log4j for use on Java 7. For applications that log
+only ISO-8859-1 characters, specifying this charset will improve
+performance significantly.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="CSVLayouts"><a class="anchor" href="#CSVLayouts"></a>CSV Layouts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As of Log4j 2.11.0, CSV support has moved from the existing module
+<code>log4j-core</code> to the new module <code>log4j-csv</code>.</p>
+</div>
+<div class="paragraph">
+<p>This layout creates
+<a href="https://en.wikipedia.org/wiki/Comma-separated_values">Comma Separated
+Value (CSV)</a> records and requires
+<a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a> 1.4.</p>
+</div>
+<div class="paragraph">
+<p>The CSV layout can be used in two ways: First, using
+<code>CsvParameterLayout</code> to log event parameters to create a custom
+database, usually to a logger and file appender uniquely configured for
+this purpose. Second, using <code>CsvLogEventLayout</code> to log events to create
+a database, as an alternative to using a full DBMS or using a JDBC
+driver that supports the CSV format.</p>
+</div>
+<div class="paragraph">
+<p>The <code>CsvParameterLayout</code> converts an event&#8217;s parameters into a CSV
+record, ignoring the message. To log CSV records, you can use the usual
+Logger methods <code>info()</code>, <code>debug()</code>, and so on:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.info("Ignored", value1, value2, value3);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Which will create the CSV record:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>value1, value2, value3</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can use a <code>ObjectArrayMessage</code>, which only carries
+parameters:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.info(new ObjectArrayMessage(value1, value2, value3));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The layouts <code>CsvParameterLayout</code> and <code>CsvLogEventLayout</code> are configured
+with the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. CsvParameterLayout and CsvLogEventLayout</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>format</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One of the predefined formats: <code>Default</code>, <code>Excel</code>,
+<code>MySQL</code>, <code>RFC4180</code>, <code>TDF</code>. See
+<a href="https://commons.apache.org/proper/commons-csv/archives/1.4/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html">CSVFormat.Predefined</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delimiter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Character</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the delimiter of the format to the specified character.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>escape</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Character</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the escape character of the format to the specified character.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quote</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Character</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the quoteChar of the format to the specified
+character.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quoteMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the output quote policy of the format to the
+specified value. One of: <code>ALL</code>, <code>MINIMAL</code>, <code>NON_NUMERIC</code>, <code>NONE</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nullString</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Writes null as the given nullString when writing records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordSeparator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the record separator of the format to the specified String.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Charset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The output Charset.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the header to include when the stream is opened.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Desc.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>footer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the footer to include when the stream is closed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Desc.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Logging as a CSV events looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">logger.debug("one={}, two={}, three={}", 1, 2, 3);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Produces a CSV record with the following fields:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Time Nanos</p>
+</li>
+<li>
+<p>Time Millis</p>
+</li>
+<li>
+<p>Level</p>
+</li>
+<li>
+<p>Thread ID</p>
+</li>
+<li>
+<p>Thread Name</p>
+</li>
+<li>
+<p>Thread Priority</p>
+</li>
+<li>
+<p>Formatted Message</p>
+</li>
+<li>
+<p>Logger FQCN</p>
+</li>
+<li>
+<p>Logger Name</p>
+</li>
+<li>
+<p>Marker</p>
+</li>
+<li>
+<p>Thrown Proxy</p>
+</li>
+<li>
+<p>Source</p>
+</li>
+<li>
+<p>Context Map</p>
+</li>
+<li>
+<p>Context Stack</p>
+</li>
+</ol>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Additional <a href="../runtime-dependencies.html" class="xref page">runtime dependencies</a> are
+required for using CSV layouts.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="HTMLLayout"><a class="anchor" href="#HTMLLayout"></a>HTML Layout</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The HtmlLayout generates an HTML page and adds each LogEvent to a row in
+a table.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. HtmlLayout Parameters</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character set to use when converting the HTML
+String to a byte array. The value must be a valid
+<a href="http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
+If not specified, this layout uses UTF-8.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contentType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The value to assign to the Content-Type header.
+The default is "text/html".</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>locationInfo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div id="HtmlLocationInfo" class="paragraph">
+<p>If true, the filename and line number will be included in the HTML
+output. The default value is false.</p>
+</div>
+<div class="paragraph">
+<p>Generating <a href="#LocationInformation">location information</a> is an
+expensive operation and may impact performance. Use with caution.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A String that will appear as the HTML title.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fontName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>font-family</code> to use. The default is "arial,sans-serif".</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fontSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>font-size</code> to use. The default is "small".</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>datePattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date format of the logging event. The default is "JVM_ELAPSE_TIME", which outputs the milliseconds since JVM started. For other valid values, refer to the <a href="#PatternDate">date pattern</a> of PatternLayout.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>timezone</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The timezone id of the logging event. If not specified, this layout uses the <a href="https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getDefault()">java.util.TimeZone.getDefault</a> as default timezone. Like <a href="#PatternDate">date pattern</a> of PatternLayout, you can use timezone id from
+<a href="https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">java.util.TimeZone.getTimeZone</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Configure as follows to use dataPattern and timezone in HtmlLayout:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
+  &lt;Console name="console"&gt;
+    &lt;HtmlLayout datePattern="ISO8601" timezone="GMT+0"/&gt;
+  &lt;/Console&gt;
+&lt;/Appenders&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="JSONTemplateLayout"><a class="anchor" href="#JSONTemplateLayout"></a>JSON Template Layout</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>JsonTemplateLayout</code> is a customizable, efficient, and garbage-free JSON
+emitting layout. It encodes <code>LogEvent</code>s according to the structure described
+by the JSON template provided. For instance, given the following JSON template
+modelling <a href="https://github.com/logstash/log4j-jsonevent-layout">the official
+Logstash <code>JSONEventLayoutV1</code></a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "mdc": {
+    "$resolver": "mdc"
+  },
+  "exception": {
+    "exception_class": {
+      "$resolver": "exception",
+      "field": "className"
+    },
+    "exception_message": {
+      "$resolver": "exception",
+      "field": "message"
+    },
+    "stacktrace": {
+      "$resolver": "exception",
+      "field": "stackTrace",
+      "stackTrace": {
+        "stringified": true
+      }
+    }
+  },
+  "line_number": {
+    "$resolver": "source",
+    "field": "lineNumber"
+  },
+  "class": {
+    "$resolver": "source",
+    "field": "className"
+  },
+  "@version": 1,
+  "source_host": "${hostName}",
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "thread_name": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "@timestamp": {
+    "$resolver": "timestamp"
+  },
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "file": {
+    "$resolver": "source",
+    "field": "fileName"
+  },
+  "method": {
+    "$resolver": "source",
+    "field": "methodName"
+  },
+  "logger_name": {
+    "$resolver": "logger",
+    "field": "name"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>in combination with the below Log4j configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>JSON Template Layout will render JSON documents as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "exception": {
+    "exception_class": "java.lang.RuntimeException",
+    "exception_message": "test",
+    "stacktrace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
+  },
+  "line_number": 12,
+  "class": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
+  "@version": 1,
+  "source_host": "varlik",
+  "message": "Hello, error!",
+  "thread_name": "main",
+  "@timestamp": "2017-05-25T19:56:23.370+02:00",
+  "level": "ERROR",
+  "file": "JsonTemplateLayoutDemo.java",
+  "method": "main",
+  "logger_name": "org.apache.logging.log4j.JsonTemplateLayoutDemo"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="json-template-layout.html" class="xref page">JSON Template Layout</a> page for the complete
+documentation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="PatternLayout"><a class="anchor" href="#PatternLayout"></a>Pattern Layout</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A flexible layout configurable with pattern string. The goal of this
+class is to format a LogEvent and return the results. The format of the
+result depends on the <em>conversion pattern</em>.</p>
+</div>
+<div class="paragraph">
+<p>The conversion pattern is closely related to the conversion pattern of
+the printf function in C. A conversion pattern is composed of literal
+text and format control expressions called <em>conversion specifiers</em>.</p>
+</div>
+<div class="paragraph">
+<p><em>Note that any literal text, including <strong>Special Characters</strong>, may be
+included in the conversion pattern.</em> Special Characters include <strong>\t</strong>,
+<strong>\n</strong>, <strong>\r</strong>, <strong>\f</strong>. Use <strong>\\</strong> to insert a single backslash into the output.</p>
+</div>
+<div class="paragraph">
+<p>Each conversion specifier starts with a percent sign (%) and is followed
+by optional <em>format modifiers</em> and a <em>conversion character</em>. The
+conversion character specifies the type of data, e.g. category,
+priority, date, thread name. The format modifiers control such things as
+field width, padding, left and right justification. The following is a
+simple example.</p>
+</div>
+<div class="paragraph">
+<p>Let the conversion pattern be <strong>"%-5p [%t]: %m%n"</strong> and assume that the
+Log4j environment was set to use a PatternLayout. Then the statements</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Logger logger = LogManager.getLogger("MyLogger");
+logger.debug("Message 1");
+logger.warn("Message 2");</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>would yield the output</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>DEBUG [main]: Message 1
+WARN  [main]: Message 2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that there is no explicit separator between text and conversion
+specifiers. The pattern parser knows when it has reached the end of a
+conversion specifier when it reads a conversion character. In the
+example above the conversion specifier <code>%-5p</code> means the priority of the
+logging event should be left justified to a width of five characters.</p>
+</div>
+<div class="paragraph">
+<p>If the pattern string does not contain a specifier to handle a Throwable
+being logged, parsing of the pattern will act as if the <code>%xEx</code> specifier
+had be added to the end of the string. To suppress formatting of the
+Throwable completely simply add <code>%ex{0}</code> as a specifier in the pattern
+string.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. PatternLayout Parameters</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character set to use when converting the syslog
+String to a byte array. The String must be a valid
+<a href="http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
+If not specified, this layout uses the platform default character set.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A composite pattern string of one or more conversion
+patterns from the table below. Cannot be specified with a
+PatternSelector.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>patternSelector</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PatternSelector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A component that analyzes information
+in the LogEvent and determines which pattern should be used to format
+the event. The pattern and patternSelector parameters are mutually
+exclusive.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>replace</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RegexReplacement</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows portions of the resulting String to
+be replaced. If configured, the replace element must specify the regular
+expression to match and the substitution. This performs a function
+similar to the RegexReplacement converter but applies to the whole
+message while the converter only applies to the String its pattern
+generates.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>alwaysWriteExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code> (it is by default) exceptions
+are always written even if the pattern contains no exception
+conversions. This means that if you do not include a way to output
+exceptions in your pattern, the default exception formatter will be
+added to the end of the pattern. Setting this to <code>false</code> disables this
+behavior and allows you to exclude exceptions from your pattern output.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional header string to include at the top of
+each log file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>footer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional footer string to include at the bottom of
+each log file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>disableAnsi</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code> (default is false), do not output ANSI
+escape codes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>noConsoleNoAnsi</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code> (default is false) and
+<code>System.console()</code> is null, do not output ANSI escape codes.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. RegexReplacement Parameters</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">regex</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A Java-compliant regular expression to match in the resulting string. See
+<a href="https://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html">Pattern</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">replacement</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The string to replace any matched sub-strings with.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="Patterns"><a class="anchor" href="#Patterns"></a>Patterns</h3>
+<div class="paragraph">
+<p>The conversions that are provided with Log4j are:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Conversion Pattern</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong>c</strong>{precision}<br>
+<strong>logger</strong>{precision}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the name of the logger that published the logging event. The
+logger conversion specifier can be optionally followed by <em>precision
+specifier</em>, which consists of a decimal integer, or a pattern starting
+with a decimal integer.</p>
+</div>
+<div class="paragraph">
+<p>When the precision specifier is an integer value, it reduces the size of
+the logger name. If the number is positive, the layout prints the
+corresponding number of rightmost logger name components. If negative,
+the layout removes the corresponding number of leftmost logger name
+components. If the precision contains periods then the number before the first period
+identifies the length to be printed from items that precede tokens in the rest of the pattern.
+If the number after the first period is followed by an asterisk it indicates how many of the
+rightmost tokens will be printed in full. See the table below for abbreviation examples.</p>
+</div>
+<div class="paragraph">
+<p>If the precision contains any non-integer characters, then the layout
+abbreviates the name based on the pattern. If the precision integer is
+less than one, the layout still prints the right-most token in full. By
+default, the layout prints the logger name in full.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Conversion Pattern</th>
+<th class="tableblock halign-left valign-top">Logger Name</th>
+<th class="tableblock halign-left valign-top">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{1}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{2}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commons.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{10}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{-1}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">apache.commons.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{-2}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commons.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{-10}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{1.}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">o.a.c.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{1.1.~.~}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.test.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">o.a.<sub>.</sub>.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{.}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.test.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8230;&#8203;.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{1.1.1.*}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.test.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">o.a.c.test.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{1.2.*}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.test.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">o.a.c.test.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{1.3.*}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.test.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">o.a.commons.test.Foo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%c{1.8.*}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.test.Foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.commons.test.Foo</p></td>
+</tr>
+</tbody>
+</table></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternClass"></a> <strong>C</strong>{precision}<br>
+<strong>class</strong>{precision}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the fully qualified class name of the caller issuing the logging
+request. This conversion specifier can be optionally followed by
+<em>precision specifier</em>, that follows the same rules as the logger name
+converter.</p>
+</div>
+<div class="paragraph">
+<p>Generating the class name of the caller
+(<a href="#LocationInformation">location information</a>) is an expensive
+operation and may impact performance. Use with caution.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternDate"></a> <strong>d</strong>{pattern}<br>
+<strong>date</strong>{pattern}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the date of the logging event. The date conversion specifier may
+be followed by a set of braces containing a date and time pattern string per
+<a href="https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>The predefined <em>named</em> formats are:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Pattern</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{DEFAULT}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02 14:34:02,123</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{DEFAULT_MICROS}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02 14:34:02,123456</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{DEFAULT_NANOS}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02 14:34:02,123456789</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{ISO8601}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02T14:34:02,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{ISO8601_BASIC}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20121102T143402,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{ISO8601_OFFSET_DATE_TIME_HH}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02&#8217;T'14:34:02,781-07</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{ISO8601_OFFSET_DATE_TIME_HHMM}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02&#8217;T'14:34:02,781-0700</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{ISO8601_OFFSET_DATE_TIME_HHCMM}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2012-11-02&#8217;T'14:34:02,781-07:00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{ABSOLUTE}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14:34:02,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{ABSOLUTE_MICROS}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14:34:02,123456</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{ABSOLUTE_NANOS}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14:34:02,123456789</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{DATE}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">02 Nov 2012 14:34:02,781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{COMPACT}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20121102143402781</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{UNIX}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1351866842</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{UNIX_MILLIS}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1351866842781</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You can also use a set of braces containing a time zone id per
+<a href="https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">java.util.TimeZone.getTimeZone</a>.
+If no date format specifier is given then the DEFAULT format is used.</p>
+</div>
+<div class="paragraph">
+<p>You can define custom date formats:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Pattern</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{HH:mm:ss,SSS}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14:34:02,123</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14:34:02,1234 to 14:34:02,123456789</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{dd MMM yyyy HH:mm:ss,SSS}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">02 Nov 2012 14:34:02,123</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%d{HH:mm:ss}{GMT+0}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">18:34:02</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>%d{UNIX}</code> outputs the UNIX time in seconds. <code>%d{UNIX_MILLIS}</code> outputs the
+UNIX time in milliseconds. The UNIX time is the difference, in seconds
+for UNIX and in milliseconds for UNIX_MILLIS, between the current time
+and midnight, January 1, 1970 UTC. While the time unit is milliseconds,
+the granularity depends on the operating system
+(<a href="http://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx">Windows</a>).
+This is an efficient way to output the event time because only a
+conversion from long to String takes place, there is no Date formatting
+involved.</p>
+</div>
+<div class="paragraph">
+<p>Log4j 2.11 adds limited support for timestamps more precise than
+milliseconds when running on Java 9. Note that not all
+<a href="https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>
+formats are supported. Only timestamps in the formats mentioned in the
+table above may use the "nano-of-second" pattern letter <code>n</code> instead of
+the "fraction-of-second" pattern letter <code>S</code>.</p>
+</div>
+<div class="paragraph">
+<p>Users may revert back to a millisecond-precision clock when running on
+Java 9 by setting system property <code>log4j2.Clock</code> to <code>SystemMillisClock</code>.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong>enc</strong>{pattern}{[HTML|XML|JSON|CRLF]}<br>
+<strong>encode</strong>{pattern}{[HTML|XML|JSON|CRLF]}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Encodes and escapes special characters suitable for output in specific
+markup languages. By default, this encodes for HTML if only one option
+is specified. The second option is used to specify which encoding format
+should be used. This converter is particularly useful for encoding user
+provided data so that the output data is not written improperly or
+insecurely.</p>
+</div>
+<div class="paragraph">
+<p>A typical usage would encode the message <code>%enc{%m}</code> but user input could
+come from other locations as well, such as the MDC <code>%enc{%mdc{key}}</code></p>
+</div>
+<div class="paragraph">
+<p>Using the HTML encoding format, the following characters are replaced:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Character</th>
+<th class="tableblock halign-left valign-top">Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">'\r', '\n'</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Converted into string literals "\r" and "\n" respectively</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&amp;, &lt;, &gt;, ", ', /</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replaced with the corresponding HTML entity</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Using the XML encoding format, this follows the escaping rules specified
+by <a href="https://www.w3.org/TR/xml/">the XML specification</a>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Character</th>
+<th class="tableblock halign-left valign-top">Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&amp;, &lt;, &gt;, ", '</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replaced with the corresponding XML entity</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Using the JSON encoding format, this follows the escaping rules
+specified by <a href="https://www.ietf.org/rfc/rfc4627.txt">RFC 4627 section 2.5</a>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Character</th>
+<th class="tableblock halign-left valign-top">Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">U+0000 - U+001F</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\u0000 - \u001F</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any other control characters</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encoded into its <code>\uABCD</code> equivalent escaped code point</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\\</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>For example, the pattern <code>{"message": "%enc{%m}{JSON}"}</code> could be used
+to output a valid JSON document containing the log message as a string
+value.</p>
+</div>
+<div class="paragraph">
+<p>Using the CRLF encoding format, the following characters are replaced:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Character</th>
+<th class="tableblock halign-left valign-top">Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">'\r', '\n'</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Converted into literal strings "\r" and "\n" respectively</p></td>
+</tr>
+</tbody>
+</table></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong>equals</strong>{pattern}{test}{substitution}<br>
+<strong>equalsIgnoreCase</strong>{pattern}{test}{substitution}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Replaces occurrences of 'test', a string, with its replacement
+'substitution' in the string resulting from evaluation of the pattern.
+For example, "%equals{[%marker]}{[]}\{}" will replace '[]' strings
+produces by events without markers with an empty string.</p>
+</div>
+<div class="paragraph">
+<p>The pattern can be arbitrarily complex and in particular can contain
+multiple conversion keywords.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong>ex</strong>|<strong>exception</strong>|<strong>throwable</strong><br>
+{<br>
+  [ "none"<br>
+   | "full"<br>
+   | depth<br>
+   | "short"<br>
+   | "short.className"<br>
+   | "short.fileName"<br>
+   | "short.lineNumber"<br>
+   | "short.methodName"<br>
+   | "short.message"<br>
+   | "short.localizedMessage"]<br>
+}<br>
+  {filters(package,package,&#8230;&#8203;)}<br>
+  {suffix(<em>pattern</em>)}<br>
+  {separator(<em>separator</em>)}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the Throwable trace bound to the logging event, by default this
+will output the full trace as one would normally find with a call to
+<code>Throwable.printStackTrace()</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can follow the throwable conversion word with an option in the form
+<code>%throwable{option}</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>%throwable{short}</code> outputs the first line of the Throwable.</p>
+</div>
+<div class="paragraph">
+<p><code>%throwable{short.className}</code> outputs the name of the class where the
+exception occurred.</p>
+</div>
+<div class="paragraph">
+<p><code>%throwable{short.methodName}</code> outputs the method name where the
+exception occurred.</p>
+</div>
+<div class="paragraph">
+<p><code>%throwable{short.fileName}</code> outputs the name of the class where the
+exception occurred.</p>
+</div>
+<div class="paragraph">
+<p><code>%throwable{short.lineNumber}</code> outputs the line number where the
+exception occurred.</p>
+</div>
+<div class="paragraph">
+<p><code>%throwable{short.message}</code> outputs the message.</p>
+</div>
+<div class="paragraph">
+<p><code>%throwable{short.localizedMessage}</code> outputs the localized message.</p>
+</div>
+<div class="paragraph">
+<p><code>%throwable{n}</code> outputs the first n lines of the stack trace.</p>
+</div>
+<div class="paragraph">
+<p>Specifying <code>%throwable{none}</code> or <code>%throwable{0}</code> suppresses output of
+the exception.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>{filters(packages)}</code> where <em>packages</em> is a list of package names to
+suppress matching stack frames from stack traces.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>{suffix(pattern)}</code> to add the output of <em>pattern</em> at the end of
+each stack frames.</p>
+</div>
+<div class="paragraph">
+<p>Use a <code>{separator(&#8230;&#8203;)}</code> as the end-of-line string. For example:
+<code>separator(|)</code>. The default value is the <code>line.separator</code> system
+property, which is operating system dependent.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternFile"></a> <strong>F</strong><br>
+<strong>file</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the file name where the logging request was issued.</p>
+</div>
+<div class="paragraph">
+<p>Generating the file information (<a href="#LocationInformation">location
+information</a>) is an expensive operation and may impact performance. Use
+with caution.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong>highlight</strong>{pattern}{style}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Adds ANSI colors to the result of the enclosed pattern based on the
+current event&#8217;s logging level. (See Jansi <a href="#enable-jansi">configuration</a>.)</p>
+</div>
+<div class="paragraph">
+<p>The default colors for each level are:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Level</th>
+<th class="tableblock halign-left valign-top">ANSI color</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FATAL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bright red</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bright red</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WARN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yellow</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INFO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Green</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cyan</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRACE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Black (looks dark grey)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The color names are ANSI names defined in the
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/AnsiEscape.html"><code>AnsiEscape</code></a>
+class.</p>
+</div>
+<div class="paragraph">
+<p>The color and attribute names and are standard, but the exact shade,
+hue, or value.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Color table</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1112%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Intensity Code</th>
+<th class="tableblock halign-left valign-top">0</th>
+<th class="tableblock halign-left valign-top">1</th>
+<th class="tableblock halign-left valign-top">2</th>
+<th class="tableblock halign-left valign-top">3</th>
+<th class="tableblock halign-left valign-top">4</th>
+<th class="tableblock halign-left valign-top">5</th>
+<th class="tableblock halign-left valign-top">6</th>
+<th class="tableblock halign-left valign-top">7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Black</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Red</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Green</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yellow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Magenta</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cyan</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">White</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bright</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Black</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Red</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Green</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yellow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Magenta</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cyan</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">White</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You can use the default colors with:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%highlight{%d [%t] %-5level: %msg%n%throwable}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can override the default colors in the optional <code>{style}</code> option. For
+example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can highlight only the a portion of the log event:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%d [%t] %highlight{%-5level: %msg%n%throwable}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can style one part of the message and highlight the rest the log
+event:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%style{%d [%t]}{black} %highlight{%-5level: %msg%n%throwable}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use the STYLE key to use a predefined group of colors:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{STYLE=Logback}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The STYLE value can be one of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Default: see above</p>
+</li>
+<li>
+<p>Logback:</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Level</th>
+<th class="tableblock halign-left valign-top">ANSI color</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FATAL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blinking bright red</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bright red</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WARN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Red</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INFO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blue</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRACE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+</tr>
+</tbody>
+</table></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternMap"></a> <strong>K</strong>{key}<br>
+<strong>map</strong>{key}<br>
+<strong>MAP</strong>{key}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the entries in a
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
+if one is present in the event. The <code>K</code> conversion character can be
+followed by the key for the map placed between braces, as in
+<code>%K{clientNumber}</code> where <code>clientNumber</code> is the key. The value in the
+Map corresponding to the key will be output. If no additional sub-option
+is specified, then the entire contents of the Map key value pair set is
+output using a format {{key1,val1},{key2,val2}}</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternLocation"></a> <strong>l</strong><br>
+<strong>location</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs location information of the caller which generated the logging event.</p>
+</div>
+<div class="paragraph">
+<p>The location information depends on the JVM implementation but usually
+consists of the fully qualified name of the calling method followed by
+the callers source the file name and line number between parentheses.</p>
+</div>
+<div class="paragraph">
+<p>Generating <a href="#LocationInformation">location information</a> is an
+expensive operation and may impact performance. Use with caution.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternLine"></a> <strong>L</strong><br>
+<strong>line</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the line number from where the logging request was issued.</p>
+</div>
+<div class="paragraph">
+<p>Generating line number information (<a href="#LocationInformation">location
+information</a>) is an expensive operation and may impact performance. Use
+with caution.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternMessage"></a> <strong>m</strong>{lookups}{ansi}<br>
+<strong>msg</strong>{lookups}{ansi}<br>
+*message{lookups}{ansi}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the application supplied message associated with the logging
+event.</p>
+</div>
+<div class="paragraph">
+<p>Add <code>{ansi}</code> to render messages with ANSI escape codes (requires JAnsi,
+see <a href="#enable-jansi">configuration</a>.)</p>
+</div>
+<div class="paragraph">
+<p>The default syntax for embedded ANSI codes is:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>@|code(,code)* text|@</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, to render the message <code>"Hello"</code> in green, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>@|green Hello|@</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To render the message <code>"Hello"</code> in bold and red, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>@|bold,red Warning!|@</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also define custom style names in the configuration with the
+syntax:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The call site can look like this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use <code>{lookups}</code> to log messages like <code>"${date:YYYY-MM-dd}"</code> using lookups.
+using any lookups. This will replace the date template <code>{date:YYYY-MM-dd}</code>
+with an actual date. This can be confusing in many cases, and it&#8217;s often both easier and
+more obvious to handle the lookup in code.
+This feature is disabled by default and the message string is logged untouched.</p>
+</div>
+<div class="paragraph">
+<p><strong>Note:</strong> Users are <strong>STRONGLY</strong> discouraged from using the lookups option. Doing so may allow uncontrolled user input
+containing lookups to take unintended actions. In almost all cases the software developer can accomplish the same tasks
+lookups perform directly in the application code.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternMethod"></a> <strong>M</strong><br>
+<strong>method</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the method name where the logging request was issued.</p>
+</div>
+<div class="paragraph">
+<p>Generating the method name of the caller
+(<a href="#LocationInformation">location information</a>) is an expensive
+operation and may impact performance. Use with caution.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternMarker"></a> <strong>marker</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The full name of the marker, including parents, if one is present.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternMarkerSimpleName"></a> <strong>markerSimpleName</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The simple name of the marker (not including parents), if one is present.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternMaxLength"></a> <strong>maxLen</strong><br>
+<strong>maxLength</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the result of evaluating the pattern and truncating the result.
+If the length is greater than 20, then the output will contain a
+trailing ellipsis. If the provided length is invalid, a default value of
+100 is used.</p>
+</div>
+<div class="paragraph">
+<p>Example syntax: <code>%maxLen{%p: %c{1} - %m%notEmpty{ &#8658;%ex{short}}}{160}</code>
+will be limited to 160 characters with a trailing ellipsis. Another
+example: <code>%maxLen{%m}{20}</code> will be limited to 20 characters and no
+trailing ellipsis.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternNewLine"></a> <strong>n</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the platform dependent line separator character or characters.</p>
+</div>
+<div class="paragraph">
+<p>This conversion character offers practically the same performance as
+using non-portable line separator strings such as "\n", or "\r\n". Thus,
+it is the preferred way of specifying a line separator.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="NanoTime"></a> <strong>N</strong><br>
+<strong>nano</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the result of <code>System.nanoTime()</code> at the time the log
+event was created.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="Process_ID"></a> <strong>pid</strong>{[defaultValue]}<br>
+<strong>processId</strong>{[defaultValue]}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the process ID if supported by the
+underlying platform. An optional default value may be specified to be
+shown if the platform does not support process IDs.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="VariablesNotEmpty"></a> <strong>variablesNotEmpty</strong>{pattern}<br>
+<strong>varsNotEmpty</strong>{pattern}<br>
+<strong>notEmpty</strong>{pattern}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the result of evaluating the pattern if and only if all
+variables in the pattern are not empty.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%notEmpty{[%marker]}</pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternLevel"></a> <strong>p</strong>|<strong>level</strong>{<em>level</em>=<em>label</em>, <em>level</em>=<em>label</em>,
+&#8230;&#8203;} <strong>p</strong>|<strong>level</strong>{length=<em>n</em>}
+<strong>p</strong>|<strong>level</strong>{lowerCase=<em>true</em>|<em>false</em>}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the level of the logging event. You provide a level name map in
+the form "level=value, level=value" where level is the name of the Level
+and value is the value that should be displayed instead of the name of
+the Level.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%level{WARN=Warning, DEBUG=Debug, ERROR=Error, TRACE=Trace, INFO=Info}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, for the compact-minded:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>More succinctly, for the same result as above, you can define the length
+of the level label:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%level{length=1}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the length is greater than a level name length, the layout uses the
+normal level name.</p>
+</div>
+<div class="paragraph">
+<p>You can combine the two kinds of options:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%level{ERROR=Error, length=2}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This give you the <code>Error</code> level name and all other level names of length
+2.</p>
+</div>
+<div class="paragraph">
+<p>Finally, you can output lower-case level names (the default is
+upper-case):</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%level{lowerCase=true}</pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternRelative"></a> <strong>r</strong><br>
+<strong>relative</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the number of milliseconds elapsed since the JVM was
+started until the creation of the logging event.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternRepeat"></a> <strong>R</strong>{string}{count}<br>
+<strong>repeat</strong>{string}{count}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Produces a string containing the requested number of instances of the specified string.
+For example, "%repeat{*}{2}" will result in the string "**".</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternReplace"></a> <strong>replace</strong>{pattern}{regex}{substitution}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Replaces occurrences of 'regex', a regular expression, with its
+replacement 'substitution' in the string resulting from evaluation of
+the pattern. For example, "%replace{%msg}{\s}\{}" will remove all
+spaces contained in the event message.</p>
+</div>
+<div class="paragraph">
+<p>The pattern can be arbitrarily complex and in particular can contain
+multiple conversion keywords. For instance, "%replace{%logger
+%msg}{\.}{/}" will replace all dots in the logger or the message of
+the event with a forward slash.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternException"></a> <strong>rEx</strong>|<strong>rException</strong>|<strong>rThrowable</strong><br>
+  {<br>
+    ["none" | "short" | "full" | depth]<br>
+    [,filters(package,package,&#8230;&#8203;)]<br>
+    [,separator(<em>separator</em>)]<br>
+  }<br>
+  {ansi(<br>
+    Key=Value,Value,&#8230;&#8203;<br>
+    Key=Value,Value,&#8230;&#8203;<br>
+    &#8230;&#8203;)<br>
+  }<br>
+  {suffix(<em>pattern</em>)}<br></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The same as the %throwable conversion word but the stack trace is
+printed starting with the first exception that was thrown followed by
+each subsequent wrapping exception.</p>
+</div>
+<div class="paragraph">
+<p>The throwable conversion word can be followed by an option in the form
+<code>%rEx{short}</code> which will only output the first line of the Throwable or
+<code>%rEx{n}</code> where the first n lines of the stack trace will be printed.</p>
+</div>
+<div class="paragraph">
+<p>Specifying <code>%rEx{none}</code> or <code>%rEx{0}</code> will suppress printing of the
+exception.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>filters(packages)</code> where <em>packages</em> is a list of package names to
+suppress matching stack frames from stack traces.</p>
+</div>
+<div class="paragraph">
+<p>Use a <code>separator</code> string to separate the lines of a stack trace. For
+example: <code>separator(|)</code>. The default value is the <code>line.separator</code>
+system property, which is operating system dependent.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>rEx{suffix(pattern)</code> to add the output of <em>pattern</em> to the output
+only when there is a throwable to print.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternSequenceNumber"></a> <strong>sn</strong><br>
+<strong>sequenceNumber</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Includes a sequence number that will be incremented in
+every event. The counter is a static variable so will only be unique
+within applications that share the same converter Class object.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternStyle"></a> <strong>style</strong>{pattern}{ANSI style}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Uses ANSI escape sequences to style the result of the enclosed pattern.
+The style can consist of a comma separated list of style names from the
+following table. (See Jansi <a href="#enable-jansi">configuration</a>.)</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Style Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal display</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bright</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bold</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dimmed or faint characters</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Underline</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Underlined characters</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blink</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blinking characters</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reverse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reverse video</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hidden</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Black or FG_Black</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set foreground color to black</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Red or FG_Red</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set foreground color to red</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Green or FG_Green</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set foreground color to green</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yellow or FG_Yellow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set foreground color to yellow</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blue or FG_Blue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set foreground color to blue</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Magenta or FG_Magenta</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set foreground color to magenta</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cyan or FG_Cyan</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set foreground color to cyan</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">White or FG_White</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set foreground color to white</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default or FG_Default</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set foreground color to default (white)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BG_Black</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set background color to black</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BG_Red</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set background color to red</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BG_Green</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set background color to green</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BG_Yellow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set background color to yellow</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BG_Blue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set background color to blue</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BG_Magenta</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set background color to magenta</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BG_Cyan</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set background color to cyan</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BG_White</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set background color to white</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%style{%d{ISO8601}}{black} %style{[%t]}{blue} %style{%-5level:}{yellow} %style{%msg%n%throwable}{green}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also combine styles:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%d %highlight{%p} %style{%logger}{bright,cyan} %C{1.} %msg%n</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use <code>%</code> with a color like <code>%black</code>, <code>%blue</code>, <code>%cyan</code>, and
+so on. For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>%black{%d{ISO8601}} %blue{[%t]} %yellow{%-5level:} %green{%msg%n%throwable}</pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternThreadId"></a> <strong>T</strong><br>
+<strong>tid</strong><br>
+<strong>threadId</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the ID of the thread that generated the logging event.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternThreadName"></a> <strong>t</strong><br>
+<strong>tn</strong><br>
+<strong>thread</strong><br>
+<strong>threadName</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the name of the thread that generated the logging event.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternThreadPriority"></a> <strong>tp</strong><br>
+<strong>threadPriority</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the priority of the thread that generated the logging event.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternLoggerFqcn"></a> <strong>fqcn</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the fully qualified class name of the logger.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="EndOfBatch"></a> <strong>endOfBatch</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the EndOfBatch status of the logging event, as "true" or "false".</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternNDC"></a> <strong>x</strong><br>
+<strong>NDC</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the Thread Context Stack (also known as the Nested
+Diagnostic Context or NDC) associated with the thread that generated the
+logging event.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternMDC"></a> <strong>X</strong>{key[,key2&#8230;&#8203;]}<br>
+<strong>mdc</strong>{key[,key2&#8230;&#8203;]}<br>
+<strong>MDC</strong>{key[,key2&#8230;&#8203;]}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Outputs the Thread Context Map (also known as the Mapped Diagnostic
+Context or MDC) associated with the thread that generated the logging
+event. The <strong>X</strong> conversion character can be followed by one or more keys
+for the map placed between braces, as in <strong>%X{clientNumber}</strong> where
+<code>clientNumber</code> is the key. The value in the MDC corresponding to the key
+will be output.</p>
+</div>
+<div class="paragraph">
+<p>If a list of keys are provided, such as <strong>%X{name, number}</strong>, then each
+key that is present in the ThreadContext will be output using the format
+{name=val1, number=val2}. The key/value pairs will be printed in the
+order they appear in the list.</p>
+</div>
+<div class="paragraph">
+<p>If no sub-options are specified then the entire contents of the MDC key
+value pair set is output using a format {key1=val1, key2=val2}. The
+key/value pairs will be printed in sorted order.</p>
+</div>
+<div class="paragraph">
+<p>See the
+<a href="../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
+class for more details.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternUUID"></a> <strong>u</strong>{"RANDOM" | "TIME"}<br>
+<strong>uuid</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Includes either a random or a time-based UUID. The time-based
+UUID is a Type 1 UUID that can generate up to 10,000 unique ids per
+millisecond, will use the MAC address of each host, and to try to insure
+uniqueness across multiple JVMs and/or ClassLoaders on the same host a
+random number between 0 and 16,384 will be associated with each instance
+of the UUID generator Class and included in each time-based UUID
+generated. Because time-based UUIDs contain the MAC address and
+timestamp they should be used with care as they can cause a security
+vulnerability.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternExtendedException"></a> <strong>xEx</strong>|<strong>xException</strong>|<strong>xThrowable</strong><br>
+  {<br>
+    ["none" | "short" | "full" | depth]<br>
+    [,filters(package,package,&#8230;&#8203;)]<br>
+    [,separator(<em>separator</em>)]<br>
+  }<br>
+  {ansi(<br>
+    Key=Value,Value,&#8230;&#8203;<br>
+    Key=Value,Value,&#8230;&#8203;<br>
+    &#8230;&#8203;)<br>
+  }<br>
+  {suffix(<em>pattern</em>)}<br></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The same as the %throwable conversion word but also includes class
+packaging information.</p>
+</div>
+<div class="paragraph">
+<p>At the end of each stack element of the exception, a string containing
+the name of the jar file that contains the class or the directory the
+class is located in and the "Implementation-Version" as found in that
+jar&#8217;s manifest will be added. If the information is uncertain, then the
+class packaging data will be preceded by a tilde, i.e. the '~'
+character.</p>
+</div>
+<div class="paragraph">
+<p>The throwable conversion word can be followed by an option in the form
+<code>%xEx{short}</code> which will only output the first line of the Throwable or
+<code>%xEx{n}</code> where the first n lines of the stack trace will be printed.
+Specifying <code>%xEx{none}</code> or <code>%xEx{0}</code> will suppress printing of the
+exception.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>filters(packages)</code> where <em>packages</em> is a list of package names to
+suppress matching stack frames from stack traces.</p>
+</div>
+<div class="paragraph">
+<p>Use a <code>separator</code> string to separate the lines of a stack trace. For
+example: <code>separator(|)</code>. The default value is the <code>line.separator</code>
+system property, which is operating system dependent.</p>
+</div>
+<div class="paragraph">
+<p>The <code>ansi</code> option renders stack traces with ANSI escapes code using the
+JAnsi library. (See <a href="#enable-jansi">configuration</a>.) Use <code>{ansi}</code> to
+use the default color mapping. You can specify your own mappings with
+<code>key=value</code> pairs. The keys are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix</p>
+</li>
+<li>
+<p>Name</p>
+</li>
+<li>
+<p>NameMessageSeparator</p>
+</li>
+<li>
+<p>Message</p>
+</li>
+<li>
+<p>At</p>
+</li>
+<li>
+<p>CauseLabel</p>
+</li>
+<li>
+<p>Text</p>
+</li>
+<li>
+<p>More</p>
+</li>
+<li>
+<p>Suppressed</p>
+</li>
+<li>
+<p>StackTraceElement.ClassName</p>
+</li>
+<li>
+<p>StackTraceElement.ClassMethodSeparator</p>
+</li>
+<li>
+<p>StackTraceElement.MethodName</p>
+</li>
+<li>
+<p>StackTraceElement.NativeMethod</p>
+</li>
+<li>
+<p>StackTraceElement.FileName</p>
+</li>
+<li>
+<p>StackTraceElement.LineNumber</p>
+</li>
+<li>
+<p>StackTraceElement.Container</p>
+</li>
+<li>
+<p>StackTraceElement.ContainerSeparator</p>
+</li>
+<li>
+<p>StackTraceElement.UnknownSource</p>
+</li>
+<li>
+<p>ExtraClassInfo.Inexact</p>
+</li>
+<li>
+<p>ExtraClassInfo.Container</p>
+</li>
+<li>
+<p>ExtraClassInfo.ContainerSeparator</p>
+</li>
+<li>
+<p>ExtraClassInfo.Location</p>
+</li>
+<li>
+<p>ExtraClassInfo.Version</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The values are names from JAnsi&#8217;s
+<a href="https://fusesource.github.io/jansi/documentation/api/org/fusesource/jansi/AnsiRenderer.Code.html">Code</a>
+class like <code>blue</code>, <code>bg_red</code>, and so on (Log4j ignores case.)</p>
+</div>
+<div class="paragraph">
+<p>The special key <code>StyleMapName</code> can be set to one of the following
+predefined maps: <code>Spock</code>, <code>Kirk</code>.</p>
+</div>
+<div class="paragraph">
+<p>As with %throwable, the <strong>%xEx{suffix(<em>pattern</em>)</strong> conversion will add
+the output of <em>pattern</em> to the output only if there is a throwable to
+print.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="PatternPercentLiteral"></a> <strong>%</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The sequence %% outputs a single percent sign.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>By default the relevant information is output as is. However, with the
+aid of format modifiers it is possible to change the minimum field
+width, the maximum field width and justification.</p>
+</div>
+<div class="paragraph">
+<p>The optional format modifier is placed between the percent sign and the
+conversion character.</p>
+</div>
+<div class="paragraph">
+<p>The first optional format modifier is the <em>left justification flag</em>
+which is just the minus (-) character. Then comes the optional <em>minimum
+field width</em> modifier. This is a decimal constant that represents the
+minimum number of characters to output. If the data item requires fewer
+characters, it is padded on either the left or the right until the
+minimum width is reached. The default is to pad on the left (right
+justify) but you can specify right padding with the left justification
+flag. The padding character is space. If the data item is larger than
+the minimum field width, the field is expanded to accommodate the data.
+The value is never truncated. To use zeros as the padding character prepend
+the <em>minimum field width</em> with a zero.</p>
+</div>
+<div class="paragraph">
+<p>This behavior can be changed using the <em>maximum field width</em> modifier
+which is designated by a period followed by a decimal constant. If the
+data item is longer than the maximum field, then the extra characters
+are removed from the <em>beginning</em> of the data item and not from the end.
+For example, it the maximum field width is eight and the data item is
+ten characters long, then the first two characters of the data item are
+dropped. This behavior deviates from the printf function in C where
+truncation is done from the end.</p>
+</div>
+<div class="paragraph">
+<p>Truncation from the end is possible by appending a minus character right
+after the period. In that case, if the maximum field width is eight and
+the data item is ten characters long, then the last two characters of
+the data item are dropped.</p>
+</div>
+<div class="paragraph">
+<p>Below are various format modifier examples for the category conversion
+specifier.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Pattern Converters</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Format modifier</th>
+<th class="tableblock halign-left valign-top">left justify</th>
+<th class="tableblock halign-left valign-top">minimum width</th>
+<th class="tableblock halign-left valign-top">maximum width</th>
+<th class="tableblock halign-left valign-top">comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%20c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Left pad with spaces if the category name is
+less than 20 characters long.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%-20c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Right pad with spaces if the category name is
+less than 20 characters long.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%.30c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Truncate from the beginning if the category name
+is longer than 30 characters.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%20.30c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Left pad with spaces if the category name is
+shorter than 20 characters. However, if category name is longer than 30
+characters, then truncate from the beginning.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%-20.30c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Right pad with spaces if the category name is
+shorter than 20 characters. However, if category name is longer than 30
+characters, then truncate from the beginning.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%-20.-30c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Right pad with spaces if the category name is
+shorter than 20 characters. However, if category name is longer than 30
+characters, then truncate from the end.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="enable-jansi"><a class="anchor" href="#enable-jansi"></a>ANSI Styling on Windows</h3>
+<div class="paragraph">
+<p>ANSI escape sequences are supported natively on many platforms but are
+not by default on Windows. To enable ANSI support add the
+<a href="http://jansi.fusesource.org/">Jansi</a> jar to your application and set
+property <code>log4j.skipJansi</code> to <code>false</code>. This allows Log4j to use Jansi to
+add ANSI escape codes when writing to the console.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Prior to Log4j 2.10, Jansi was enabled by default. The fact that
+Jansi requires native code means that Jansi can only be loaded by a
+single class loader. For web applications this means the Jansi jar has
+to be in the web container&#8217;s classpath. To avoid causing problems for
+web applications, Log4j will no longer automatically try to load Jansi
+without explicit configuration from Log4j 2.10 onward.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_patterns"><a class="anchor" href="#_example_patterns"></a>Example Patterns</h3>
+<div class="sect3">
+<h4 id="_filtered_throwables"><a class="anchor" href="#_filtered_throwables"></a>Filtered Throwables</h4>
+<div class="paragraph">
+<p>This example shows how to filter out classes from unimportant packages
+in stack traces.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration&gt;
+  &lt;properties&gt;
+    &lt;property name="filters"&gt;org.junit,org.apache.maven,sun.reflect,java.lang.reflect&lt;/property&gt;
+  &lt;/properties&gt;
+  &lt;!-- ... --&gt;
+  &lt;PatternLayout pattern="%m%xEx{filters(${filters})}%n"/&gt;
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The result printed to the console will appear similar to:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Exception java.lang.IllegalArgumentException: IllegalArgument
+at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:72) [test-classes/:?]
+... suppressed 26 lines
+at $Proxy0.invoke(Unknown Source)} [?:?]
+... suppressed 3 lines
+Caused by: java.lang.NullPointerException: null pointer
+at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
+... 30 more</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ansi_styled"><a class="anchor" href="#_ansi_styled"></a>ANSI Styled</h4>
+<div class="paragraph">
+<p>The log level will be highlighted according to the event&#8217;s log level.
+All the content that follows the level will be bright green.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;PatternLayout&gt;
+  &lt;pattern&gt;%d %highlight{%p} %style{%C{1.} [%t] %m}{bold,green}%n&lt;/pattern&gt;
+&lt;/PatternLayout&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="PatternSelectors"><a class="anchor" href="#PatternSelectors"></a>Pattern Selectors</h3>
+<div class="paragraph">
+<p>The PatternLayout can be configured with a PatternSelector to allow it
+to choose a pattern to use based on attributes of the log event or other
+factors. A PatternSelector will normally be configured with a
+defaultPattern attribute, which is used when other criteria don&#8217;t match,
+and a set of PatternMatch elements that identify the various patterns
+that can be selected.</p>
+</div>
+<div class="sect3">
+<h4 id="LevelPatternSelector"><a class="anchor" href="#LevelPatternSelector"></a>LevelPatternSelector</h4>
+<div class="paragraph">
+<p>The LevelPatternSelector selects patterns based on the log level of
+the log event. If the Level in the log event is equal to (ignoring case)
+ the name specified on the PatternMatch key attribute, then
+the pattern specified on that PatternMatch element will be used.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;PatternLayout&gt;
+  &lt;MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n"&gt;
+    &lt;PatternMatch key="FLOW" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/&gt;
+  &lt;/MarkerPatternSelector&gt;
+&lt;/PatternLayout&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MarkerPatternSelector"><a class="anchor" href="#MarkerPatternSelector"></a>MarkerPatternSelector</h4>
+<div class="paragraph">
+<p>The MarkerPatternSelector selects patterns based on the Marker included
+in the log event. If the Marker in the log event is equal to or is an
+ancestor of the name specified on the PatternMatch key attribute, then
+the pattern specified on that PatternMatch element will be used.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;PatternLayout&gt;
+  &lt;MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n"&gt;
+    &lt;PatternMatch key="FLOW" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/&gt;
+  &lt;/MarkerPatternSelector&gt;
+&lt;/PatternLayout&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ScriptPatternSelector"><a class="anchor" href="#ScriptPatternSelector"></a>ScriptPatternSelector</h4>
+<div class="paragraph">
+<p>The ScriptPatternSelector executes a script as descibed in the
+<a href="configuration.html#Scripts" class="xref page">Scripts</a> section of the Configuration
+chapter. The script is passed all the properties configured in the
+Properties section of the configuration, the StrSubstitutor used by the
+Confguration in the "substitutor" variables, and the log event in the
+"logEvent" variable, and is expected to return the value of the
+PatternMatch key that should be used, or null if the default pattern
+should be used.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;PatternLayout&gt;
+  &lt;ScriptPatternSelector defaultPattern="[%-5level] %c{1.} %C{1.}.%M.%L %msg%n"&gt;
+    &lt;Script name="BeanShellSelector" language="bsh"&gt;&lt;![CDATA[
+      if (logEvent.getLoggerName().equals("NoLocation")) {
+        return "NoLocation";
+      } else if (logEvent.getMarker() != null &amp;&amp; logEvent.getMarker().isInstanceOf("FLOW")) {
+        return "Flow";
+      } else {
+        return null;
+      }]]&gt;
+    &lt;/Script&gt;
+    &lt;PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/&gt;
+    &lt;PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/&gt;
+  &lt;/ScriptPatternSelector&gt;
+&lt;/PatternLayout&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="RFC5424Layout"><a class="anchor" href="#RFC5424Layout"></a>RFC5424 Layout</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As the name implies, the Rfc5424Layout formats LogEvents in accordance
+with <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>, the enhanced Syslog
+specification. Although the specification is primarily directed at
+sending messages via Syslog, this format is quite useful for other
+purposes since items are passed in the message as self-describing
+key/value pairs.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Rfc5424Layout Parameters</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>appName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The value to use as the APP-NAME in the RFC 5424
+syslog record.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character set to use when converting the syslog
+String to a byte array. The String must be a valid
+<a href="http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
+If not specified, the default system Charset will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enterpriseNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The IANA enterprise number as described in
+<a href="http://tools.ietf.org/html/rfc5424#section-7.2.2">RFC 5424</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>exceptionPattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One of the conversion specifiers from
+PatternLayout that defines which ThrowablePatternConverter to use to
+format exceptions. Any of the options that are valid for those
+specifiers may be included. The default is to not include the Throwable
+from the event, if any, in the output.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>facility</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The facility is used to try to classify the message.
+The facility option must be set to one of "KERN", "USER", "MAIL",
+"DAEMON", "AUTH", "SYSLOG", "LPR", "NEWS", "UUCP", "CRON", "AUTHPRIV",
+"FTP", "NTP", "AUDIT", "ALERT", "CLOCK", "LOCAL0", "LOCAL1", "LOCAL2",
+"LOCAL3", "LOCAL4", "LOCAL5", "LOCAL6", or "LOCAL7". These values may be
+specified as upper or lower case characters.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>format</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to "RFC5424" the data will be formatted in
+accordance with RFC 5424. Otherwise, it will be formatted as a BSD
+Syslog record. Note that although BSD Syslog records are required to be
+1024 bytes or shorter the SyslogLayout does not truncate them. The
+RFC5424Layout also does not truncate records since the receiver must
+accept records of up to 2048 bytes and may accept records that are
+longer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default structured data id to use when formatting
+according to RFC 5424. If the LogEvent contains a StructuredDataMessage
+the id from the Message will be used instead of this value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMDC</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicates whether data from the ThreadContextMap
+will be included in the RFC 5424 Syslog record. Defaults to true.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>loggerFields</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of KeyValuePairs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows arbitrary PatternLayout
+patterns to be included as specified ThreadContext fields; no default
+specified. To use, include a &lt;LoggerFields&gt; nested element, containing
+one or more &lt;KeyValuePair&gt; elements. Each &lt;KeyValuePair&gt; must have a key
+attribute, which specifies the key name which will be used to identify
+the field within the MDC Structured Data element, and a value attribute,
+which specifies the PatternLayout pattern to use as the value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcExcludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma separated list of mdc keys that should be
+excluded from the LogEvent. This is mutually exclusive with the
+mdcIncludes attribute. This attribute only applies to RFC 5424 syslog
+records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcIncludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma separated list of mdc keys that should be
+included in the FlumeEvent. Any keys in the MDC not found in the list
+will be excluded. This option is mutually exclusive with the mdcExcludes
+attribute. This attribute only applies to RFC 5424 syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcRequired</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma separated list of mdc keys that must be
+present in the MDC. If a key is not present a LoggingException will be
+thrown. This attribute only applies to RFC 5424 syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcPrefix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string that should be prepended to each MDC key in
+order to distinguish it from event attributes. The default string is
+"mdc:". This attribute only applies to RFC 5424 syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A required MDC ID. This attribute only applies to RFC 5424 syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>messageId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default value to be used in the MSGID field of RFC 5424 syslog records.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLine</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, a newline will be appended to the end of the syslog record. The default is false.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLineEscape</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String that should be used to replace newlines within the message text.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="SerializedLayout"><a class="anchor" href="#SerializedLayout"></a>Serialized Layout</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SerializedLayout simply serializes the LogEvent into a byte array
+using Java Serialization. The SerializedLayout accepts no parameters.</p>
+</div>
+<div class="paragraph">
+<p>This layout is deprecated since version 2.9. Java Serialization has
+inherent security weaknesses, using this layout is no longer
+recommended.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="SyslogLayout"><a class="anchor" href="#SyslogLayout"></a>Syslog Layout</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SyslogLayout formats the LogEvent as BSD Syslog records matching the
+same format used by Log4j 1.2.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. SyslogLayout Parameters</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character set to use when converting the syslog
+String to a byte array. The String must be a valid
+<a href="http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
+If not specified, this layout uses UTF-8.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>facility</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The facility is used to try to classify the message.
+The facility option must be set to one of "KERN", "USER", "MAIL",
+"DAEMON", "AUTH", "SYSLOG", "LPR", "NEWS", "UUCP", "CRON", "AUTHPRIV",
+"FTP", "NTP", "AUDIT", "ALERT", "CLOCK", "LOCAL0", "LOCAL1", "LOCAL2",
+"LOCAL3", "LOCAL4", "LOCAL5", "LOCAL6", or "LOCAL7". These values may be
+specified as upper or lower case characters.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLine</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, a newline will be appended to the end of the
+syslog record. The default is false.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLineEscape</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String that should be used to replace newlines
+within the message text.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="LocationInformation"><a class="anchor" href="#LocationInformation"></a>Location Information</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If one of the layouts is configured with a location-related attribute
+like HTML <a href="#HtmlLocationInfo">locationInfo</a>, or one of the patterns
+<a href="#PatternClass">%C or %class</a>, <a href="#PatternFile">%F or %file</a>,
+<a href="#PatternLocation">%l or %location</a>, <a href="#PatternLine">%L or %line</a>,
+<a href="#PatternMethod">%M or %method</a>, Log4j will take a snapshot of the
+stack, and walk the stack trace to find the location information.</p>
+</div>
+<div class="paragraph">
+<p>This is an expensive operation: 1.3 - 5 times slower for synchronous
+loggers. Synchronous loggers wait as long as possible before they take
+this stack snapshot. If no location is required, the snapshot will never
+be taken.</p>
+</div>
+<div class="paragraph">
+<p>However, asynchronous loggers need to make this decision before passing
+the log message to another thread; the location information will be lost
+after that point. The
+<a href="performance.html#asyncLoggingWithLocation" class="xref page">performance impact</a> of
+taking a stack trace snapshot is even higher for asynchronous loggers:
+logging with location is 30-100 times slower than without location. For
+this reason, asynchronous loggers and asynchronous appenders do not
+include location information by default.</p>
+</div>
+<div class="paragraph">
+<p>You can override the default behaviour in your logger or asynchronous
+appender configuration by specifying <code>includeLocation="true"</code>.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="../_/js/vendor/tabs.js"></script>
+  </body>
+</html>

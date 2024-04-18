@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Articles and Tutorials :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/articles.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.4">
+<link rel="stylesheet" href="./_/css/site.css">
+<link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
+<!-- `@asciidoctor/tabs` extension styles -->
+<link rel="stylesheet" href="./_/css/vendor/tabs.css">
+<style>
+  /* Default `h4` and `h5` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; } 
+  /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
+  .toc .toc-menu li[data-level="4"] a {
+    padding-left: 2.75rem
+  }
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
+  .hljs-string {
+    color: #0f8532;
+  }
+</style>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="./_/../_images/logo-small-white.png" alt="Apache Log4j"/>
+      </div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://logging.apache.org">a subproject of&nbsp;<strong>Apache Logging Services</strong></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">Home</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="download.html">Download</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="runtime-dependencies.html">Runtime Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="thanks.html">Thanks</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learn</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/index.html">Manual</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/installation.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/migration.html">Migrating from Log4j 1.x to 2.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/api.html">Log4j API</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/logbuilder.html">Log Builder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/flowtracing.html">Flow Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/markers.html">Markers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/eventlogging.html">Event Logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/messages.html">Messages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/thread-context.html">Thread Context</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/usage.html">Usage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/cloud.html">Using Log4j in Cloud Enabled Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/lookups.html">Lookups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/appenders.html">Appenders</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="manual/layouts.html">Layouts</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/json-template-layout.html">JSON Template Layout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/filters.html">Filters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/garbagefree.html">Garbage-free Steady State Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/extending.html">Extending Log4j 3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/plugins.html">Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/customloglevels.html">Custom Log Levels</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/jmx.html">JMX</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/logsep.html">Logging Separation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/performance.html">Performance</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="plugin-reference.html">Plugin reference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="javadoc.html">Java API reference</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="articles.html">Articles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="faq.html">F.A.Q.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Components</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-api.html">Log4j API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-1.2-api.html">Log4j 1.2 Bridge</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-slf4j-impl.html">Log4j SLF4J Binding</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-jul.html">Log4j JDK Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-jpl.html">Log4j JDK Platform Logging Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-to-slf4j.html">Log4j to SLF4J Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-mongodb4.html">MongoDB 4 appender</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-docker.html">Log4j Docker Support</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Related projects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jakarta">Log4j Jakarta EE</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/jmx-gui">Log4j JMX GUI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/kotlin">Log4j Kotlin</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/scala">Log4j Scala</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/tools">Log4j Tools</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="/log4j/transform">Log4j Transformation Tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li>Learn</li>
+    <li><a href="articles.html">Articles</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/articles.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="4">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Articles and Tutorials</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A collection of external articles and tutorials about Log4j 2.
+The <a href="manual/index.html" class="xref page">Log4j 2 manual</a> is the ultimate guide for up-to-date and detailed information on how to configure and use Log4j 2.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_chinese"><a class="anchor" href="#_chinese"></a>Chinese</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.infoq.cn/news/2016/06/log4j-garbage-free/">Log4j 2.6免垃圾收集</a> (June 12, 2016)</p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/autfish/article/details/51203709">详解log4j2(上) - 从基础到实战</a> (April 20, 2016)</p>
+</li>
+<li>
+<p><a href="https://www.jianshu.com/p/7aec512a003c">Log4j2使用笔记</a> (November 3, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.cn/news/2015/09/interview-log4j-pmc/">过渡到全新Log4j：Log4j项目管理委员会访谈</a> (September 14, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.cn/news/2015/09/log4j-version-1-reaches-eol/">Log4j版本1生命周期终结</a> (September 3, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.cn/news/2014/08/apache-log4j2/">Apache Log4j 2.0值得升级吗</a> (August 5, 2014)</p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/lrenjun/article/details/8178875">log4j2 使用详解</a> (November 13, 2012)</p>
+</li>
+<li>
+<p><a href="https://web.archive.org/web/20211016221310/https://my.oschina.net/xianggao/blog/523401">Log4j2配置文件详解</a> (October 29, 2015)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_english"><a class="anchor" href="#_english"></a>English</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://medium.com/codex/log4j2-create-custom-log-levels-and-how-to-use-them-48685e133fd1">Log4J2 | Create custom log levels and how to use them</a> (April 29, 2021)</p>
+</li>
+<li>
+<p><a href="http://makeseleniumeasy.com/2021/04/26/log4j2-tutorial-7-working-mechanism-of-default-rollover-strategy/">Log4j2 Tutorial 7&#8201;&#8212;&#8201;Working Mechanism Of Default Rollover Strategy</a> (April 26, 2021)</p>
+</li>
+<li>
+<p><a href="http://makeseleniumeasy.com/2021/04/20/log4j2-tutorial-6-introduction-to-rollingfileappender-and-its-triggers-and-strategies/">Log4j2 Tutorial 6&#8201;&#8212;&#8201;Introduction To RollingFileAppender And Its Triggers And Strategies</a> (April 20, 2021)</p>
+</li>
+<li>
+<p><a href="http://makeseleniumeasy.com/2021/04/13/log4j2-tutorial-5-xml-configuration-file-to-log-into-file-and-console-using-log4j2-together/">Log4j2 Tutorial 5&#8201;&#8212;&#8201;XML Configuration File To Log Into File And Console Using Log4j2 Together</a> (April, 13, 2021)</p>
+</li>
+<li>
+<p><a href="http://makeseleniumeasy.com/2021/04/09/log4j2-tutorial-4-print-logs-in-external-file-using-xml-configuration-file-of-log4j2/">Log4j2 Tutorial 4&#8201;&#8212;&#8201;Print Logs In External File Using XML Configuration File Of Log4J2</a> (April 9, 2021)</p>
+</li>
+<li>
+<p><a href="http://makeseleniumeasy.com/2021/03/24/log4j2-tutorial-3-setup-console-appender-using-xml-configuration-file/">Log4j2 Tutorial 3&#8201;&#8212;&#8201;Setup Console Appender Using XML Configuration File</a> (March 24, 2021)</p>
+</li>
+<li>
+<p><a href="http://makeseleniumeasy.com/2021/03/17/log4j2-tutorial-2-creating-log4j2-maven-project-with-default-configuration-file/">Log4j2 Tutorial 2&#8201;&#8212;&#8201;Creating Log4j2 Maven Project With Default Configuration File</a> (March 17, 2021)</p>
+</li>
+<li>
+<p><a href="http://makeseleniumeasy.com/2021/03/11/log4j2-tutorial-1-introduction-to-apache-log4j2/">Log4j2 Tutorial 1&#8201;&#8212;&#8201;Introduction To Apache Log4j2</a> (March 11, 2021)</p>
+</li>
+<li>
+<p><a href="https://petrepopescu.tech/2021/03/how-to-make-a-custom-message-converter-for-log4j2/">How to make a custom message converter for Log4J2</a> (March 4, 2021)</p>
+</li>
+<li>
+<p><a href="http://www.mastertheboss.com/jbossas/jboss-log/how-to-use-log4j2-in-your-wildfly-applications/">How to configure Log4j2 in your WildFly applications</a> (August 16, 2020)</p>
+</li>
+<li>
+<p><a href="http://www.masterspringboot.com/configuration/logging/configuring-log4j2-in-spring-boot-applications">Configuring Log4j2 in a Spring Boot 2 application</a> (August 16, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.ralphgoers.com/post/getting-the-most-out-of-the-log4j-2-api">Getting the most out of the Log4j 2 API</a> (January 1, 2020)</p>
+</li>
+<li>
+<p><a href="https://www.baeldung.com/log4j2-programmatic-config">Programmatic Configuration with Log4j 2</a> (December 31, 2019)</p>
+</li>
+<li>
+<p><a href="https://www.ralphgoers.com/post/log4j-1-compatibility-in-log4j-2">Log4j 1 Compatibility in Log4j 2</a> (December 22, 2019)</p>
+</li>
+<li>
+<p><a href="https://www.ralphgoers.com/post/why-was-log4j-2-created">Why was Log4j 2 created</a> (December 14, 2019)</p>
+</li>
+<li>
+<p><a href="https://www.marcobehler.com/guides/java-logging">A Guide to Logging in Java</a> (June 23, 2019)</p>
+</li>
+<li>
+<p><a href="https://www.alibabacloud.com/blog/exploring-the-secrets-of-java-logs-log4j-2-log-system_594821">Exploring the Secrets of Java Logs: Log4j 2 Log System</a> (May 17, 2019)</p>
+</li>
+<li>
+<p><a href="https://mkyong.com/logging/apache-log4j-2-tutorials/">Apache Log4j 2 Tutorials</a> (March 27, 2019)</p>
+</li>
+<li>
+<p><a href="https://stackify.com/compare-java-logging-frameworks/">Java Logging Frameworks: log4j vs logback vs log4j2</a> (October 30, 2018)</p>
+</li>
+<li>
+<p><a href="https://howtodoinjava.com/log4j2/">Log4j2 Tutorial</a> (June 3, 2018)</p>
+</li>
+<li>
+<p><a href="https://crunchify.com/java-how-to-create-your-own-logging-level-in-log4j-configuring-log4j/">In Java How to Create your own Logging Level using Log4j (Configuring Log4j 2)</a> {May 30, 2018)</p>
+</li>
+<li>
+<p><a href="https://www.baeldung.com/log4j2-programmatic-config">Programmatic Configuration with Log4j 2</a> (May 22, 2018)</p>
+</li>
+<li>
+<p><a href="https://www.javacodegeeks.com/2018/03/tales-from-the-field-migrating-from-log4j-to-log4j2.html">Tales from the Field: Migrating from Log4J to Log4J2</a> (March 12, 2018)</p>
+</li>
+<li>
+<p><a href="https://examples.javacodegeeks.com/enterprise-java/log4j/log4j-2-best-practices-example/">Log4j 2 Best Practices example</a> (November 14, 2017)</p>
+</li>
+<li>
+<p><a href="https://web.archive.org/web/20180308003803/http://musigma.org/logging/2017/11/06/logging.html">Logging Fundamentals</a> (November 6, 2017)</p>
+</li>
+<li>
+<p><a href="http://www.rationaljava.com/2017/10/allocation-free-logging-with-log4j2.html">Allocation free logging with Log4j2</a> (October 27, 2017)</p>
+</li>
+<li>
+<p><a href="https://www.loggly.com/blog/benchmarking-java-logging-frameworks/">Benchmarking Java logging frameworks</a> (October 25, 2017)</p>
+</li>
+<li>
+<p><a href="https://www.baeldung.com/log4j-2-lazy-logging">Log4j 2 and Lambda Expressions</a> (August 22, 2017)</p>
+</li>
+<li>
+<p><a href="https://www.callicoder.com/spring-boot-log4j-2-example/">How to use Log4j 2 with Spring Boot</a> (August 11, 2017)</p>
+</li>
+<li>
+<p><a href="https://www.boraji.com/log4j-2-rollingfileappender-example">Log4j 2 - RollingFileAppender example</a> (July 26, 2017)</p>
+</li>
+<li>
+<p><a href="https://stackify.com/log4j2-java/">How Log4J2 Works: 10 Ways to Get the Most Out Of It</a> (June 14, 2017)</p>
+</li>
+<li>
+<p><a href="https://www.baeldung.com/log4j2-appenders-layouts-filters">Intro to Log4j2&#8201;&#8212;&#8201;Appenders, Layouts and Filters</a> (February 28, 2017)</p>
+</li>
+<li>
+<p><a href="https://dzone.com/articles/getting-own-log4j2-file-for-mule-via-spring">Getting Your Own Log4j2 File for Mule via Spring</a> (December 29, 2016)</p>
+</li>
+<li>
+<p><a href="https://garygregory.wordpress.com/2016/11/27/loading-a-log4j-configuration-for-a-specific-ejb/">Loading a Log4j Configuration for a specific EJB</a> (November 27, 2016)</p>
+</li>
+<li>
+<p><a href="https://anishekagarwal.medium.com/log4j2-logging-a-primer-f10ed18e9de6">Log4j2 Logging: A Primer</a> (October 15, 2016)</p>
+</li>
+<li>
+<p><a href="https://www.digitalocean.com/community/tutorials/log4j2-example-tutorial-configuration-levels-appenders">Log4j2 Example Tutorial&#8201;&#8212;&#8201;Configuration, Levels, Appenders</a> (July 6, 2016)</p>
+</li>
+<li>
+<p><a href="https://howtodoinjava.com/log4j2/log4j2-htmllayout-configuration-example/">Log4j2 HTMLLayout Configuration Example</a> (June 27, 2016)</p>
+</li>
+<li>
+<p><a href="https://javaevangelist.blogspot.com/2016/06/log4j2-javautillogging-jul-adapter.html">Log4j2 java.util.logging (JUL) Adapter Example</a> (June 24, 2016)</p>
+</li>
+<li>
+<p><a href="https://dzone.com/articles/log4j-2-configuration-using-properties-file">Log4J 2 Configuration: Using the Properties File</a> (May 18, 2016)</p>
+</li>
+<li>
+<p><a href="https://springframework.guru/using-log4j-2-spring-boot/">Using Log4j 2 with Sprint Boot</a> (April 7, 2016)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.com/news/2016/05/log4j-garbage-free/">Log4j 2.6 Goes Garbage-Free</a> (May 30, 2016)</p>
+</li>
+<li>
+<p><a href="https://web.archive.org/web/20180306104946/http://musigma.org/java/log4j/2016/05/29/log4j-2.6.html">What&#8217;s New in Log4j 2.6</a> (May 29, 2016)</p>
+</li>
+<li>
+<p><a href="https://springframework.guru/asynchronous-logging-with-log4j-2/">Asynchronous Logging With Log4j 2</a> (March 31, 2016)</p>
+</li>
+<li>
+<p><a href="https://springframework.guru/log4j-2-configuration-using-yaml/">Log4J 2 Configuration: Using YAML</a> (March 26, 2016)</p>
+</li>
+<li>
+<p><a href="https://springframework.guru/log4j-2-configuration-using-json/">Log4J 2 Configuration: Using JSON</a> (March 23, 2016)</p>
+</li>
+<li>
+<p><a href="https://web.archive.org/web/20220315041422/https://qbox.io/blog/getting-logstash-2x-ready-for-log4j2">Getting Logstash 2.x Ready for Log4j2</a> (March 10, 2016)</p>
+</li>
+<li>
+<p><a href="https://springframework.guru/log4j-2-configuration-using-xml/">Log4J 2 Configuration: Using XML</a> (March 10, 2016)</p>
+</li>
+<li>
+<p><a href="https://springframework.guru/log4j-2-configuration-using-properties-file/">Log4J 2 Configuration: Using Properties File</a> (March 8, 2016)</p>
+</li>
+<li>
+<p><a href="https://springframework.guru/introducing-log4j-enterprise-class-logging/">Introducing Log4j 2&#8201;&#8212;&#8201;Enterprise Class Logging</a> (February 8, 2016)</p>
+</li>
+<li>
+<p><a href="https://www.javacodegeeks.com/2015/10/better-performing-non-logging-logger-calls-in-log4j2.html">Better Performing Non-Logging Logger Calls in Log4j2</a> (October 20, 2015)</p>
+</li>
+<li>
+<p><a href="https://marxsoftware.blogspot.com/2015/10/log4j2-non-logging-performance.html">Better Performing Non-Logging Logger Calls in Log4j2</a> (October 15, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.javacodegeeks.com/2015/10/easy-and-consistent-log4j2-logger-naming.html">Easy and Consistent Log4j2 Logger Naming</a> (October 10, 2015)</p>
+</li>
+<li>
+<p><a href="https://garygregory.wordpress.com/2015/09/16/a-gentle-introduction-to-the-log4j-api-and-lambda-basics/">Writing clean logging code using Java 8 lambdas</a> (September 16, 2015)</p>
+</li>
+<li>
+<p><a href="https://garygregory.wordpress.com/2015/09/10/the-art-of-test-driven-development-understanding-logging/">The Art of Test Driven Development: Understanding Logging</a> (September 10, 2015)</p>
+</li>
+<li>
+<p><a href="https://garygregory.wordpress.com/2015/09/08/the-art-of-test-driven-development-per-test-logging/">The Art of Test Driven Development: Per-Test Logging</a> (September 8, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.com/news/2015/09/interview-log4j-pmc/">The Transition to a New Log4j: a Q&amp;A with Log4j&#8217;s Project Management Committee</a> (September 8, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.com/news/2015/08/log4j-version-1-reaches-eol/">Log4j Version 1 Reaches End of Life</a> (August 26, 2015)</p>
+</li>
+<li>
+<p><a href="https://news.apache.org/foundation/entry/apache_logging_services_project_announces">Apache Logging Services Project Announces Log4j 1 End-Of-Life;
+Recommends Upgrade to Log4j 2</a> (August 6, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.innoq.com/en/blog/per-request-debugging-with-log4j2/">Per request debugging with Log4j 2 filters</a> (May 8, 2015)</p>
+</li>
+<li>
+<p><a href="https://blog.oio.de/2015/04/27/log4j-2-configuration-depending-environment/">Log4j 2 configuration depending on environment</a> (April 27, 2015)</p>
+</li>
+<li>
+<p><a href="http://www.journaldev.com/7128/apache-log4j-2-tutorial-configuration-levels-appenders-lookup-layouts-and-filters-example">Apache Log4j 2 Tutorial&#8201;&#8212;&#8201;Configuration, Levels, Appenders, Lookup, Layouts and Filters Example</a> (March 16, 2015)</p>
+</li>
+<li>
+<p><a href="https://blogs.mulesoft.com/dev-guides/how-to-tutorials/mule-3-6-asynchronous-logging/">Disrupting your Asynchronous Loggers</a> (March 5, 2015)</p>
+</li>
+<li>
+<p><a href="https://andrew-flower.com/blog/Create_Custom_Log4j_Plugins">Extending Log4j2 - Creating Custom Log4j2 Plugins</a> (February 20, 2015)</p>
+</li>
+<li>
+<p><a href="https://andrew-flower.com/blog/Basic_Log4j2_Configuration">Log4j2 - a crash course&#8230;&#8203;</a> (February 10, 2015)</p>
+</li>
+<li>
+<p><a href="https://memorynotfound.com/log4j2-with-log4j2-xml-configuration-example/">Log4j2 with log4j2.xml Configuration Example</a> (February 10, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.rapid7.com/blog/post/2015/02/05/logging-from-your-java-application-using-log4j2/">Logging From Your Java Application Using Log4j2</a> (February 5, 2015)</p>
+</li>
+<li>
+<p><a href="https://blogs.mulesoft.com/dev-guides/how-to-tutorials/mule-3-6-asynchronous-logging/">Asynchronous Logging in Mule 3.6</a> (January 20, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.com/news/2014/07/apache-log4j2/">Apache Log4j 2.0 - Worth the Upgrade?</a> (July 31, 2014)</p>
+</li>
+<li>
+<p><a href="https://mycuteblog.com/log4j2-xml-configuration-example/">log4j2 xml configuration example</a> (July 26, 2014)</p>
+</li>
+<li>
+<p><a href="https://tech.finn.no/2014/07/01/log4j2-in-production-making-it-fly/">Log4j 2 in Production&#8201;&#8212;&#8201;Making it Fly</a> (July 2, 2014)</p>
+</li>
+<li>
+<p><a href="https://grobmeier.solutions/log4j-2-performance-close-to-insane-20072013.html">Log4j 2: Performance Close to Insane</a> (July 20, 2013)</p>
+</li>
+<li>
+<p><a href="https://news.ycombinator.com/item?id=5612035">Hacker News: Asynchronous Loggers for Low-Latency Logging</a> (April 26, 2013)</p>
+</li>
+<li>
+<p><a href="https://grobmeier.solutions/the-new-log4j-2-0-05122012.html">The New Log4j 2.0</a> (December 5, 2012)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_english_videos"><a class="anchor" href="#_english_videos"></a>English (Videos)</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.youtube.com/watch?v=sdOiA1Xql0o">Log4J2 and Java configuration with properties file</a> (February 18, 2018)</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=BbcSNOtEGWs">Apache Log4j 2 Configuration| Log4j2 with JDK 9.0</a> (January 8, 2018)</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=KKO5wGi_vEc">Spring Boot - log4j 2 configuration example</a> (December 30,2017)</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=-XNvCNHjIKw">Understanding and working with Log4j2 for logging in Selenium framework (Part B)</a> (December 20, 2016)</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=RWZ0gsfkkc4">Understanding and working with Log4j2 for logging in Selenium framework (Part A)</a> (December 18, 2016)</p>
+</li>
+<li>
+<p><a href="https://vimeo.com/169542136">Matt Sicker - Asynchronous Logging in Log4j 2.6 (CJUG Lightning Talk)</a> (June 2, 2016)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Errata: "ThresholdFilter" should be "BurstFilter"</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=Yv0n-4AsOiI">Nancy M Schorr - Log4j2 with Java and Maven for Logging</a> (October 14, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=EWftNoRhS_M">Ramesh Rajaram - Log4j Key Features</a> (April 10, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=ZzVSs_JEhgs">Matt Sicker - Introducing Log4j 2.0</a> (May 6, 2014)</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=HB0r5DuxGPI">Nicholas Williams - Log4j 2 in Web Applications: A Deeper Look at Effective Java EE Logging</a> (May 6, 2014)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_german"><a class="anchor" href="#_german"></a>German</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://entwickler.de/java/apache-log4j-26-lauft-nun-auch-ohne-mull/">Apache Log4j 2.6 läuft nun auch ohne Müll</a> (May 31, 2016)</p>
+</li>
+<li>
+<p><a href="https://www.innoq.com/en/articles/2015/01/logging-konsolidieren-log4j2/">Logging konsolidieren und Performance gewinnen</a> (January 23, 2015)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_japanese"><a class="anchor" href="#_japanese"></a>Japanese</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://tm-b.hatenablog.com/entry/2016/08/18/200715">中年プログラマーの息抜き</a> (August 18, 2016)</p>
+</li>
+<li>
+<p><a href="https://minor.hatenablog.com/entry/2016/05/22/193556">【log4j2】ThreadContextを利用してすべてのログに追加情報を出力する</a> (May 22, 2016)</p>
+</li>
+<li>
+<p><a href="https://qiita.com/kazurof/items/abbd42f11bfc125f3190">Log4j 2でログ出力をテストするサンプルソース</a> (February 22, 2016)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.com/jp/news/2015/09/interview-log4j-pmc/">新Log4jへの移行: Log4jプロジェクト管理グループとのQ&amp;A</a> (September 27, 2015)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.com/jp/news/2015/09/log4j-version-1-reaches-eol/">Log4jバージョン1のサポートが終了</a> (September 23, 2015)</p>
+</li>
+<li>
+<p><a href="https://qiita.com/pica/items/f801c74848f748f76b58">log4j2の設定ファイル(XML)</a> (July 27, 2015)</p>
+</li>
+<li>
+<p><a href="https://yamashiro0110.hatenadiary.jp/entry/2014/08/24/093336">Log4j2の使い方めも</a> (August 24, 2014)</p>
+</li>
+<li>
+<p><a href="https://www.infoq.com/jp/news/2014/08/apache-log4j2/">Apache Log4j 2.0 - アップグレードする価値はあるか？</a> (August 17, 2014)</p>
+</li>
+<li>
+<p><a href="https://kazuhira-r.hatenablog.com/entry/20140628/1403959552">Log4j2を試してみる</a> (June 28, 2014)</p>
+</li>
+<li>
+<p><a href="https://nabedge.blogspot.com/2013/10/log4j2.html">log4j2にログを集める</a> (October 26, 2013)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_korean"><a class="anchor" href="#_korean"></a>Korean</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://dveamer.github.io/java/Log4j2.html">Log4j 2 설정하기</a> (January 24, 2016)</p>
+</li>
+<li>
+<p><a href="https://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte3:fdl:%EC%84%A4%EC%A0%95_%ED%8C%8C%EC%9D%BC%EC%9D%84_%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94_%EB%B0%A9%EB%B2%95">Log4j 2 환경설정 [설정 파일 사용 시]</a> (May 14, 2014)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>
+    Copyright © 1999-2024 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
+  </p>
+  <p>
+    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+    Other names may be trademarks of their respective owners.
+  </p>
+</footer>
+<script id="site-script" src="./_/js/site.js" data-ui-root-path="./_"></script>
+<script async src="./_/js/vendor/highlight.js"></script>
+<!-- `@asciidoctor/tabs` extension scripts -->
+<script async src="./_/js/vendor/tabs.js"></script>
+  </body>
+</html>
