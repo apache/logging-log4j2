@@ -19,15 +19,15 @@
 
 Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
 Log4j is https://security.googleblog.com/2021/12/apache-log4j-vulnerability.html[used by 8% of the Maven ecosystem] and listed as one of https://docs.google.com/spreadsheets/d/1ONZ4qeMq8xmeCHX03lIgIYE4MEXVfVL6oj05lbuXTDM/edit#gid=1024997528[the top 100 critical open source software projects].
-The project is actively maintained by a {logging-services-url}/team-list.html[team] of several volunteers and xref:support.adoc[support]ed by a big community.
+The project is actively maintained by a {logging-services-url}/team-list.html[team] of several volunteers and {logging-services-url}/support[support]ed by a big community.
 
 [#shortcuts]
 == Shortcuts
-- xref:download.adoc#using-a-build-system[How can I add Log4j artifacts to my Maven/Ivy/Gradle project?]
+- xref:manual/installation.adoc[How can I add Log4j artifacts to my Maven/Ivy/Gradle project?]
 - xref:manual/usage.adoc[How can I use the Log4j API?]
 - xref:manual/configuration.adoc[How can I configure my `log4j2.xml`?]
 - xref:release-notes.adoc[Where are the release notes?]
-- xref:support.adoc[**I need help!**]
+- {logging-services-url}/support[**I need help!**]
 
 [#simple-to-use]
 == Simple to use
@@ -87,25 +87,22 @@ Check out the xref:manual/extending.adoc[Extending Log4j] page.
 [#requirements]
 == Requirements
 
-Log4j 3 runtime requires a minimum of Java 17.
-For support for older versions of Java see the {logging-services-url}/log4j/2.x[Log4j 2 site].
+Log4j 2 runtime requires a minimum of Java 8.
+Older versions of Java are supported by previous releases.
 
 [#older-releases]
 == Older releases
 
-Are looking for old versions of Log4j? While we recommend ot always use the latest versions, you can find the older versions here:
+Are looking for old versions of Log4j? While we recommend to always use the latest versions, you can find the older
+versions here:
 
-* {logging-services-url}/1.2/[Log4j 1.2 (End of Life)]
-* {logging-services-url}/log4j-2.3/[Log4j 2.3 (Java 6)]
-* {logging-services-url}/log4j-2.12.1/[Log4j 2.12.1 (Java 7)]
-* {logging-services-url}/2.x/[Log4j 2 (Java 8)]
+* {logging-services-url}/1.x/[Log4j 1.x (End of Life, Java 1.4)]
+* {logging-services-url}/2.3.x/[Log4j 2.3.x (Java 6)]
+* {logging-services-url}/2.12.x/[Log4j 2.12.x (Java 7)]
 
 [#compat]
 == Compatibility
 
-Application code written using the Log4j 2 API should be binary compatible with Log4j 3.
-Custom plugins written for Log4j 2 may need minor changes when compiling with Log4j 3 as some package names have changed.
-
 The `log4j-1.2-api` module provides compatibility for applications using the Log4j 1 logging methods.
-Log4j 3, just like Log4j 2, also provides experimental support for Log4j 1 configuration files.
-See xref:manual/log4j1-compat.adoc[Log4j 3 compatibility with Log4j 1] for more information.
+Log4j 2 also provides support for Log4j 1 configuration files.
+See xref:manual/migration.adoc#ConfigurationCompatibility[Log4j 2 compatibility with Log4j 1] for more information.

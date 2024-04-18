@@ -91,8 +91,8 @@ In this case, you need to install `log4j-core` and `log4j-slf4j2-impl`.
 [#requirements]
 == Requirements
 
-The Log4j 3 runtime requires a minimum of Java {java-target-version}.
-See {logging-services-url}/log4j/2.x[the Log4j 2 website] for the latest releases supporting Java 6, 7, and 8.
+The Log4j 2 runtime requires a minimum of Java {java-target-version}.
+See xref:index.adoc#older-releases[older releases] for the latest releases supporting Java 6 and 7.
 
 [#build-tool]
 == Configuring the build tool
@@ -538,9 +538,10 @@ log4j2.properties::
 +
 [source,properties]
 ----
-Configuration.Appenders.Console.name = CONSOLE
-Configuration.Loggers.Root.level = INFO
-Configuration.Loggers.Root.AppenderRef.ref = CONSOLE
+appender.0.type = Console
+appender.0.name = CONSOLE
+rootLogger.level = INFO
+rootLogger.appenderRef.0.ref = CONSOLE
 ----
 
 ====
@@ -557,40 +558,35 @@ Maven::
 
 log4j2.xml::
 +
-JPMS users need to add:
-+
-[source,java]
-----
-module foo.bar {
-    requires java.xml;
-}
-----
-+
-to their `module-info.java` descriptor.
+No dependency required.
 
 log4j2.json::
 +
-No dependency required.
+[source,xml,subs="+attributes"]
+----
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>{jackson-version}</version>
+    <scope>runtime</scope>
+</dependency>
+----
 
 log4j2.yaml::
 +
-[source,xml]
+[source,xml,subs="+attributes"]
 ----
 <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-config-yaml</artifactId>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-yaml</artifactId>
+    <version>{jackson-version}</version>
+    <scope>runtime</scope>
 </dependency>
 ----
 
 log4j2.properties::
 +
-[source,xml]
-----
-<dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-config-properties</artifactId>
-</dependency>
-----
+No dependency required.
 
 =====
 
@@ -601,34 +597,25 @@ Gradle::
 
 log4j2.xml::
 +
-JPMS users need to add:
-+
-[source,java]
-----
-module foo.bar {
-    requires java.xml;
-}
-----
-+
-to their `module-info.java` descriptor.
+No dependency required.
 
 log4j2.json::
 +
-No dependency required.
+[source,groovy,subs="+attributes"]
+----
+runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:{jackson-version}'
+----
 
 log4j2.yaml::
 +
-[source,groovy]
+[source,groovy,subs="+attributes"]
 ----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml'
+runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:{jackson-version}'
 ----
 
 log4j2.properties::
 +
-[source,groovy]
-----
-runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'
-----
+No dependency required.
 
 =====
 ====
