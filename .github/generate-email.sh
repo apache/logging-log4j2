@@ -41,7 +41,7 @@ PROJECT_VERSION="$2"
 COMMIT_ID="$3"
 
 # Check release notes file
-RELEASE_NOTES_FILE="$SCRIPT_DIR/../src/site/_release-notes/_$PROJECT_VERSION.adoc"
+RELEASE_NOTES_FILE="$SCRIPT_DIR/../target/generated-site/antora/modules/ROOT/pages/_release-notes/$PROJECT_VERSION.adoc"
 [ -f "$RELEASE_NOTES_FILE" ] || {
     stderr "Couldn't find release notes file: $RELEASE_NOTES_FILE"
     exit 1
@@ -56,7 +56,8 @@ dump_review_kit() {
 
 dump_release_notes() {
     awk "f{print} /^Release date::/{f=1}" "$RELEASE_NOTES_FILE" \
-        | sed -r 's!'$PROJECT_REPO'/(issues|pull)/[0-9]+\[([0-9]+)\]!#\2!g'
+        | sed -r 's!'$PROJECT_REPO'/(issues|pull)/[0-9]+\[([0-9]+)\]!#\2!g' \
+        | sed -r 's!https://github.com/([^/]+)/([^/]+)/(pull|issues)/([0-9]+)\[(\1/\2#\4)\]!\5!g'
 }
 
 case $1 in
@@ -64,11 +65,11 @@ case $1 in
 vote)
     cat <<EOF
 To: dev@logging.apache.org
-Title: [VOTE] Release $PROJECT_NAME $PROJECT_VERSION
+Title: [VOTE] Release $PROJECT_NAME \`$PROJECT_VERSION\`
 
-This is a vote to release the $PROJECT_NAME $PROJECT_VERSION.
+This is a vote to release the $PROJECT_NAME \`$PROJECT_VERSION\`.
 
-Website: $PROJECT_STAGING_SITE
+Website: $PROJECT_STAGING_SITE-$PROJECT_VERSION
 GitHub: $PROJECT_REPO
 Commit: $COMMIT_ID
 Distribution: $PROJECT_DIST_DIR
@@ -101,9 +102,9 @@ EOF
 announce)
     cat <<EOF
 To: log4j-user@logging.apache.org, dev@logging.apache.org
-Title: [ANNOUNCE] $PROJECT_NAME $PROJECT_VERSION released
+Title: [ANNOUNCE] $PROJECT_NAME \`$PROJECT_VERSION\` released
 
-${PROJECT_NAME} team is pleased to announce the $PROJECT_VERSION
+${PROJECT_NAME} team is pleased to announce the \`$PROJECT_VERSION\`
 release. ${PROJECT_NAME} is a versatile, industrial-strength
 Java logging framework composed of an API, its implementation,
 and components to assist the deployment for various use cases.
