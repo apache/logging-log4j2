@@ -2219,7 +2219,7 @@ The following is a list of available global configuration properties. Note that 
 | [[statusLoggerLevel]]log4j2.statusLoggerLevel
   ([[log4j2.StatusLogger.level]]log4j2.StatusLogger.level)
 | LOG4J_STATUS_LOGGER_LEVEL
-| WARN
+| ERROR
 |
   The initial "listenersLevel" of the StatusLogger. If StatusLogger listeners are added, the "listenerLevel"
   is changed to that of the most verbose listener. If any listeners are registered, the listenerLevel is
