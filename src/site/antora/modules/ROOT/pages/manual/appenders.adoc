@@ -1919,20 +1919,20 @@ databases if represented in a JSON format:
 }
 ----
 
-[#NoSQLAppenderMongoDB]
-== NoSQLAppenderMongoDB
+[#NoSQLAppenderMongoDBMain]
+== NoSQL Appenders for MongoDB
 
 Starting with Log4 2.11.0, we provide the following MongoDB modules:
 
-* Added in v2.11.0, dropped in v2.14.0: `log4j-mongodb2` defines the configuration element MongoDb2 matching the MongoDB Driver version 2.
-* Added in v2.11.0: `log4j-mongodb3` defines the configuration element MongoDb3 matching the MongoDB Driver version 3.
-* Added in 2.14.0: `log4j-mongodb4` defines the configuration element
+* Added in 2.11.0, dropped in 2.14.0: `log4j-mongodb2` defines the configuration element MongoDb2 matching the MongoDB Driver version 2.
+* Added in 2.11.0: `log4j-mongodb3` defines the configuration element MongoDb3 matching the MongoDB Driver version 3.
+* Added in 2.14.0, deprecated in 2.24.0: `log4j-mongodb4` defines the configuration element
 link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver version 4.
 * Added in 2.24.0: `log4j-mongodb` defines the configuration element
-link:#NoSQLAppenderMongoDB[`MongoDb`] matching the current MongoDB Driver (version 5). This module tracks the current MongoDB Driver.
+link:#NoSQLAppenderMongoDBCurrent[`MongoDb`] matching the current MongoDB Driver (version 5). This module tracks the current MongoDB Driver.
 
-[#NoSQLAppenderMongoDB]
-== NoSQLAppenderMongoDB for MongoDB
+[#NoSQLAppenderMongoDBCurrent]
+== NoSQL Appender for MongoDB
 
 This section details specializations of the
 link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
@@ -2023,7 +2023,7 @@ You can define additional fields to log using KeyValuePair elements, for example
 ----
 
 [[NoSQLAppenderMongoDB3]]
-== NoSQLAppender for MongoDB 3
+== NoSQL Appender for MongoDB 3
 
 This section details specializations of the link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the MongoDB driver version 3. The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.
 
@@ -2145,7 +2145,9 @@ You can define additional fields to log using `KeyValuePair` elements, for examp
 ----
 
 [#NoSQLAppenderMongoDB4]
-== NoSQLAppender for MongoDB 4
+== (Deprecated) No SQLAppender for MongoDB 4
+
+The `log4j-mongodb4` module is deprecated in favor of link:#NoSQLAppenderMongoDBCurrent[NoSQLAppender for MongoDB].
 
 This section details specializations of the
 link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the

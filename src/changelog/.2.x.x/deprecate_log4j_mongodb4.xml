@@ -3,5 +3,5 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <description format="asciidoc">Add module log4j-mongodb to track the current MongoDB driver (currently version 5).</description>
+  <description format="asciidoc">Deprecate the log4j-mongodb4 module in favor of log4j-mongodb.</description>
 </entry>
