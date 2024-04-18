@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>11.0.0-SNAPSHOT</version>
+    <version>11.0.0</version>
     <relativePath />
   </parent>
 
@@ -533,19 +533,6 @@
 
     </dependencies>
   </dependencyManagement>
-
-  <!-- Added for assisting the `org.apache.logging:logging-parent:11.0.0-SNAPSHOT` testing.
-       Remove this block when `11.0.0` is released. -->
-  <repositories>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/snapshots</url>
-    </repository>
-  </repositories>
 
   <build>
 
