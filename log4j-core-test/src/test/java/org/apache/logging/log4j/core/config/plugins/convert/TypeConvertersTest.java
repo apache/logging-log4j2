@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.plugins.convert;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -214,16 +213,9 @@ public class TypeConvertersTest {
     }
 
     @Test
-    public void testConvert() throws Exception {
+    public void testConvert() {
         final Object actual =
                 DI.createInitializedFactory().getTypeConverter(clazz).convert(value, defaultValue);
-        final String assertionMessage = "\nGiven: " + value + "\nDefault: " + defaultValue;
-        if (expected != null && expected instanceof char[]) {
-            assertArrayEquals(assertionMessage, (char[]) expected, (char[]) actual);
-        } else if (expected != null && expected instanceof byte[]) {
-            assertArrayEquals(assertionMessage, (byte[]) expected, (byte[]) actual);
-        } else {
-            assertEquals(assertionMessage, expected, actual);
-        }
+        assertThat(actual).as("Given: `%s`, Default: `%s`", value, defaultValue).isEqualTo(expected);
     }
 }
