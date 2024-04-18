@@ -22,7 +22,7 @@ on:
     branches:
       - "2.x"
       - "2.x-site-pro"
-      - "release/*"
+      - "release/2*"
     paths-ignore:
       - "**.md"
       - "**.txt"
@@ -68,7 +68,7 @@ jobs:
       target-branch: ${{ github.ref_name }}-out
 
   export-version:
-    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
+    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/2')
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.export-version.outputs.version }}
