@@ -40,7 +40,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 @Plugin(name = MongoDb4Provider.PLUGIN_NAME, category = Core.CATEGORY_NAME, printObject = true)
 public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection> {
 
-    private static final String PLUGIN_NAME = "MongoDb4";
+    static final String PLUGIN_NAME = "MongoDb4";
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<MongoDb4Provider> {
