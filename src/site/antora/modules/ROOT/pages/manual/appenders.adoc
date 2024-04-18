@@ -1927,12 +1927,100 @@ Starting with Log4 2.11.0, we provide the following MongoDB modules:
 * Added in v2.11.0, dropped in v2.14.0: `log4j-mongodb2` defines the configuration element MongoDb2 matching the MongoDB Driver version 2.
 * Added in v2.11.0: `log4j-mongodb3` defines the configuration element MongoDb3 matching the MongoDB Driver version 3.
 * Added in 2.14.0: `log4j-mongodb4` defines the configuration element
-link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver
-version 4.
+link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver version 4.
+* Added in 2.24.0: `log4j-mongodb` defines the configuration element
+link:#NoSQLAppenderMongoDB[`MongoDb`] matching the current MongoDB Driver (version 5). This module tracks the current MongoDB Driver.
 
-We no longer provide the modules `log4j-mongodb`.
+[#NoSQLAppenderMongoDB]
+== NoSQLAppenderMongoDB for MongoDB
 
-The module `log4j-mongodb2` aliases the old configuration element `MongoDb` to `MongoDb2`.
+This section details specializations of the
+link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
+current MongoDB driver (version 5). The NoSQLAppender Appender writes log events
+to a NoSQL database using an internal lightweight provider interface.
+
+.MongoDB Provider Parameters
+[cols="20%,20%,60%",options="header",]
+|=======================================================================
+|Parameter Name |Type |Description
+|connection |String |_Required._ The MongoDB 
+http://mongodb.github.io/mongo-java-driver/5.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"[connection string] 
+in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]`.
+
+|capped |boolean |Enable support for
+https://docs.mongodb.com/manual/core/capped-collections/[capped
+collections]
+
+|collectionSize |long |Specify the size in bytes of the capped collection
+to use if enabled. The minimum size is 4096 bytes, and larger sizes will
+be increased to the nearest integer multiple of 256. See the capped
+collection documentation linked above for more information.
+|=======================================================================
+
+This appender is xref:manual/messages.adoc#MapMessage[MapMessage]-aware.
+
+Here are a few sample configurations for the NoSQLAppender and MongoDB4
+provider:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <NoSql name="MongoDbAppender">
+      <MongoDb connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
+    </NoSql>
+  </Appenders>
+  <Loggers>
+    <Root level="ALL">
+      <AppenderRef ref="MongoDbAppender" />
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <NoSql name="MongoDbAppender">
+      <MongoDb 
+        connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" 
+        capped="true" 
+        collectionSize="1073741824"/>
+    </NoSql>
+  </Appenders>
+  <Loggers>
+    <Root level="ALL">
+      <AppenderRef ref="MongoDbAppender" />
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+You can define additional fields to log using KeyValuePair elements, for example:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <NoSql name="MongoDbAppender">
+            <MongoDb connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
+            <KeyValuePair key="A" value="1" />
+            <KeyValuePair key="B" value="2" />
+            <KeyValuePair key="env1" value="${env:PATH}" />
+            <KeyValuePair key="env2" value="$${env:PATH}" />
+        </NoSql>
+    </Appenders>
+    <Loggers>
+        <Root level="ALL">
+            <AppenderRef ref="MongoDbAppender" />
+        </Root>
+    </Loggers>
+</Configuration>
+----
 
 [[NoSQLAppenderMongoDB3]]
 == NoSQLAppender for MongoDB 3
@@ -2057,7 +2145,7 @@ You can define additional fields to log using `KeyValuePair` elements, for examp
 ----
 
 [#NoSQLAppenderMongoDB4]
-== NoSQLAppenderMongoDB4
+== NoSQLAppender for MongoDB 4
 
 This section details specializations of the
 link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
