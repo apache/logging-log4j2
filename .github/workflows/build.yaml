@@ -21,7 +21,7 @@ on:
   push:
     branches:
       - "main"
-      - "release/*"
+      - "release/3*"
     paths-ignore:
       - "**.adoc"
       - "**.md"
@@ -53,7 +53,7 @@ jobs:
 
   deploy-release:
     needs: build
-    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
+    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/3')
     uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@rel/11.0.0
     # Secrets for deployments
     secrets:

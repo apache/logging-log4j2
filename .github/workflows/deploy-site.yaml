@@ -22,6 +22,7 @@ on:
     branches:
       - "main"
       - "main-site-pro"
+      - "release/3*"
     paths-ignore:
       - "**.md"
       - "**.txt"
@@ -49,7 +50,7 @@ jobs:
       target-branch: ${{ github.ref_name }}-site-stg-out
 
   deploy-site-pro:
-    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '3.x-site-pro'
+    if: github.repository == 'apache/logging-log4j2' && github.ref_name == 'main-site-pro'
     uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@rel/11.0.0
     # Secrets for committing the generated site
     secrets:
@@ -65,3 +66,33 @@ jobs:
           subdir: content/log4j/3.x
       install-required: true
       target-branch: ${{ github.ref_name }}-out
+
+  export-version:
+    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/3')
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.export-version.outputs.version }}
+    steps:
+      - name: Export version
+        id: export-version
+        run: |
+          version=$(echo "${{ github.ref_name }}" | sed 's/^release\///')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+  deploy-site-rel:
+    needs: export-version
+    uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@rel/11.0.0
+    # Secrets for committing the generated site
+    secrets:
+      GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+    # Write permissions for committing the generated site
+    permissions:
+      contents: write
+    with:
+      asf-yaml-content: |
+        staging:
+          profile: ~
+          whoami: ${{ github.ref_name }}-site-stg-out
+          subdir: content/log4j/${{ needs.export-version.outputs.version }}
+      install-required: true
+      target-branch: ${{ github.ref_name }}-site-stg-out
