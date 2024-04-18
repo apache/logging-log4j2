@@ -342,12 +342,6 @@
     <node.version>21.7.1</node.version>
     <npm.version>10.5.0</npm.version>
 
-    <!-- =================================================
-         Plugin version properties (in alphabetical order)
-         ================================================= -->
-    <exec-maven-plugin.version>3.2.0</exec-maven-plugin.version>
-    <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
-
     <!-- ==================================
          `log4j-docgen`-specific properties
          ================================== -->
