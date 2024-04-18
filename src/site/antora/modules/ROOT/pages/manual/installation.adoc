@@ -70,9 +70,10 @@ In the case of Log4j, the API is called _Log4j API_, and its reference implement
 ====
 
 [#logging-bridge]
-Logging API bridges::
-Logging implementations are generally developed to directly accept input from a primary API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
-Logging API bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
+Logging bridge::
+Logging implementations accept input from a single logging API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
+A logging bridge is a simple logging implementation of a logging API that forward all messages to a foreign logging API.
+Logging bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
 For instance, `log4j-slf4j2-impl` _bridges_ SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.
 
 With this in mind, the type of software you are writing determines whether you should be installing a logging API, implementation, or bridge:
@@ -273,7 +274,7 @@ Maven::
         <artifactId>log4j-core</artifactId>
         <scope>runtime</scope>
     </dependency>
-    <!-- Logging API bridges will follow... -->
+    <!-- Logging bridges will follow... -->
 </dependencies>
 ----
 
@@ -282,7 +283,7 @@ Gradle::
 [source,groovy]
 ----
 runtimeOnly 'org.apache.logging.log4j:log4j-core'
-// Logging API bridges will follow...
+// Logging bridges will follow...
 ----
 ====
 
