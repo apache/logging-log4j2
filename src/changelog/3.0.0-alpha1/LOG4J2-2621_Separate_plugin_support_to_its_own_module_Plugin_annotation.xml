@@ -16,11 +16,10 @@
   ~ limitations under the License.
   -->
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://logging.apache.org/log4j/changelog"
-       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
   <issue id="LOG4J2-2621" link="https://issues.apache.org/jira/browse/LOG4J2-2621"/>
-  <author id="rgoers"/>
   <description format="asciidoc">Separate plugin support to its own module. Plugin annotation processor will now generate a Java source
         file compatible with java.util.ServiceLoader instead of a binary file.</description>
 </entry>

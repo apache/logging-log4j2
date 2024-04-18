@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<release xmlns="http://logging.apache.org/log4j/changelog"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.3.xsd"
+<release xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="https://logging.apache.org/xml/ns"
+         xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
          date="2024-02-17" version="3.0.0-beta2"/>
