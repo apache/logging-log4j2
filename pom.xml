@@ -578,12 +578,34 @@
         <version>${flatten-maven-plugin.version}</version>
         <executions>
           <execution>
+            <id>flatten-revision</id>
+            <configuration>
+              <!--
+                ~ Flatten Maven Plugin removes the `child.project.url.inherit.append.path` attribute on this POM.
+                ~
+                ~ This causes a difference between the effective model of children built on this POM
+                ~ and those built on the flattened version.
+                ~
+                ~ Until https://github.com/mojohaus/flatten-maven-plugin/issues/412 we must expand &lt;url&gt;
+                -->
+              <pomElements>
+                <url>expand</url>
+              </pomElements>
+            </configuration>
+          </execution>
+          <execution>
             <id>flatten-bom</id>
             <goals>
               <goal>flatten</goal>
             </goals>
             <phase>process-resources</phase>
             <inherited>false</inherited>
+            <configuration>
+              <pomElements>
+                <!-- CycloneDX Maven Plugin uses this data -->
+                <distributionManagement>keep</distributionManagement>
+              </pomElements>
+            </configuration>
           </execution>
         </executions>
       </plugin>
