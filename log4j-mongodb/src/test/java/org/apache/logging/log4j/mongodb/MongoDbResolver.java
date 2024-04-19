@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.mongodb4;
+package org.apache.logging.log4j.mongodb;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -54,7 +54,7 @@ import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 
-public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> implements BeforeAllCallback {
+public class MongoDbResolver extends TypeBasedParameterResolver<MongoClient> implements BeforeAllCallback {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String LOGGING_TARGET_PROPERTY = "log4j2.mongoDbLoggingTarget";
@@ -65,7 +65,6 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
         if (loggingTarget != null) {
             switch (loggingTarget) {
                 case STATUS_LOGGER:
-                    // @formatter:off
                     return ProcessOutput.builder()
                             .output(Processors.named(
                                     "[" + label + " output]", new StatusLoggerStreamProcessor(Level.INFO)))
@@ -73,7 +72,6 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
                                     "[" + label + " error]", new StatusLoggerStreamProcessor(Level.ERROR)))
                             .commands(new StatusLoggerStreamProcessor(Level.DEBUG))
                             .build();
-                    // @formatter:on
                 case CONSOLE:
                     return ProcessOutput.namedConsole(label);
                 default:
@@ -82,7 +80,7 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
         throw new NotImplementedException(Objects.toString(loggingTarget));
     }
 
-    public MongoDb4Resolver() {
+    public MongoDbResolver() {
         super(MongoClient.class);
     }
 
@@ -150,7 +148,7 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
             final RunningMongodProcess mongodProcess = state.current();
             final ServerAddress addr = mongodProcess.getServerAddress();
             mongoClient = MongoClients.create(String.format("mongodb://%s:%d", addr.getHost(), addr.getPort()));
-            props.setProperty(MongoDb4TestConstants.PROP_NAME_PORT, addr.getPort());
+            props.setProperty(MongoDbTestConstants.PROP_NAME_PORT, addr.getPort());
         }
 
         @Override

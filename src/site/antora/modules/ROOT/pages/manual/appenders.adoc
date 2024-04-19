@@ -1919,120 +1919,48 @@ databases if represented in a JSON format:
 }
 ----
 
-[#NoSQLAppenderMongoDB]
-== NoSQLAppenderMongoDB
+[#NoSQLAppenderMongoDBMain]
+== NoSQL Appenders for MongoDB
 
 Starting with Log4 2.11.0, we provide the following MongoDB modules:
 
-* Added in v2.11.0, dropped in v2.14.0: `log4j-mongodb2` defines the configuration element MongoDb2 matching the MongoDB Driver version 2.
-* Added in v2.11.0: `log4j-mongodb3` defines the configuration element MongoDb3 matching the MongoDB Driver version 3.
-* Added in 2.14.0: `log4j-mongodb4` defines the configuration element
-link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver
-version 4.
+* Added in 2.11.0, removed in 2.14.0: `log4j-mongodb2` defines the configuration element MongoDb2 matching the MongoDB Driver version 2.
+* Added in 2.11.0, removed in 2.24.0: `log4j-mongodb3` defines the configuration element MongoDb3 matching the MongoDB Driver version 3.
+* Added in 2.14.0, deprecated in 2.24.0: `log4j-mongodb4` defines the configuration element
+link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver version 4.
+* Added in 2.24.0: `log4j-mongodb` defines the configuration element
+link:#NoSQLAppenderMongoDBCurrent[`MongoDb`] matching the current MongoDB Driver (version 5). This module tracks the current MongoDB Driver.
 
-We no longer provide the modules `log4j-mongodb`.
+[#NoSQLAppenderMongoDBCurrent]
+== NoSQL Appender for MongoDB
 
-The module `log4j-mongodb2` aliases the old configuration element `MongoDb` to `MongoDb2`.
+This section details specializations of the
+link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
+current MongoDB driver (version 5). The NoSQLAppender Appender writes log events
+to a NoSQL database using an internal lightweight provider interface.
 
-[[NoSQLAppenderMongoDB3]]
-== NoSQLAppender for MongoDB 3
-
-This section details specializations of the link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the MongoDB driver version 3. The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.
-
-[width="100%",options="header"]
-|===
+.MongoDB Provider Parameters
+[cols="20%,20%,60%",options="header",]
+|=======================================================================
 |Parameter Name |Type |Description
+|connection |String |_Required._ The MongoDB 
+http://mongodb.github.io/mongo-java-driver/5.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"[connection string] 
+in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]`.
 
-|collectionName
-|String
-|_Required._ The name of the MongoDB collection to insert the events into.
+|capped |boolean |Enable support for
+https://docs.mongodb.com/manual/core/capped-collections/[capped
+collections]
 
-|writeConcernConstant
-|Field
-|By default, the MongoDB provider inserts records with the instructions `com.mongodb.WriteConcern.ACKNOWLEDGED`. Use this optional attribute to specify the name of a constant other than `ACKNOWLEDGED`.
-
-|writeConcernConstantClass
-|Class
-|If you specify `writeConcernConstant`, you can use this attribute to specify a class other than `com.mongodb.WriteConcern` to find the constant on (to create your own custom instructions).
-
-|factoryClassName
-|Class
-|To provide a connection to the MongoDB database, you can use this attribute and `factoryMethodName` to specify a class and static method to get the connection from. The method must return a `com.mongodb.client.MongoDatabase` or a `com.mongodb.MongoClient`. If the `com.mongodb.client.MongoDatabase` is not authenticated, you must also specify a `username` and `password`. If you use the factory method for providing a connection, you must not specify the `databaseName`, `server`, or `port` attributes.
-
-|factoryMethodName
-|Method
-|See the documentation for attribute `factoryClassName`.
-
-|databaseName
-|String
-|If you do not specify a `factoryClassName` and `factoryMethodName` for providing a MongoDB connection, you must specify a MongoDB database name using this attribute. You must also specify a `username` and `password`. You can optionally also specify a `server` (defaults to localhost), and a `port` (defaults to the default MongoDB port).
-
-|server
-|String
-|See the documentation for attribute `databaseName`.
-
-|port
-|int
-|See the documentation for attribute `databaseName`.
-
-|username
-|String
-|See the documentation for attributes `databaseName` and `factoryClassName`.
-
-|password
-|String
-|See the documentation for attributes `databaseName` and `factoryClassName`.
-
-|capped
-|boolean
-|Enable support for https://docs.mongodb.com/manual/core/capped-collections/[capped collections].
-
-|collectionSize
-|int
-|Specify the size in bytes of the capped collection to use if enabled. The minimum size is 4096 bytes, and larger sizes will be increased to the nearest integer multiple of 256. See the capped collection documentation linked above for more information.
-|===
+|collectionSize |long |Specify the size in bytes of the capped collection
+to use if enabled. The minimum size is 4096 bytes, and larger sizes will
+be increased to the nearest integer multiple of 256. See the capped
+collection documentation linked above for more information.
+|=======================================================================
 
 This appender is xref:manual/messages.adoc#MapMessage[MapMessage]-aware.
 
-Here are a few sample configurations for the NoSQLAppender and MongoDB3 provider:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <MongoDb3 databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
-               username="loggingUser" password="abc123" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <MongoDb3 collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
-               factoryMethodName="getNewMongoClient" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-You can define additional fields to log using `KeyValuePair` elements, for example:
+Here are a few sample configurations for the NoSQLAppender and MongoDB4
+provider:
 
 [source,xml]
 ----
@@ -2040,12 +1968,7 @@ You can define additional fields to log using `KeyValuePair` elements, for examp
 <Configuration status="WARN">
   <Appenders>
     <NoSql name="MongoDbAppender">
-      <MongoDb3 databaseName="testDb" collectionName="testCollection" server="localhost"
-        port="${sys:MongoDBTestPort:-27017}" />
-      <KeyValuePair key="A" value="1" />
-      <KeyValuePair key="B" value="2" />
-      <KeyValuePair key="env1" value="${env:PATH}" />
-      <KeyValuePair key="env2" value="$${env:PATH}" />
+      <MongoDb connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
     </NoSql>
   </Appenders>
   <Loggers>
@@ -2056,8 +1979,53 @@ You can define additional fields to log using `KeyValuePair` elements, for examp
 </Configuration>
 ----
 
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <NoSql name="MongoDbAppender">
+      <MongoDb 
+        connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" 
+        capped="true" 
+        collectionSize="1073741824"/>
+    </NoSql>
+  </Appenders>
+  <Loggers>
+    <Root level="ALL">
+      <AppenderRef ref="MongoDbAppender" />
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+You can define additional fields to log using KeyValuePair elements, for example:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <NoSql name="MongoDbAppender">
+            <MongoDb connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
+            <KeyValuePair key="A" value="1" />
+            <KeyValuePair key="B" value="2" />
+            <KeyValuePair key="env1" value="${env:PATH}" />
+            <KeyValuePair key="env2" value="$${env:PATH}" />
+        </NoSql>
+    </Appenders>
+    <Loggers>
+        <Root level="ALL">
+            <AppenderRef ref="MongoDbAppender" />
+        </Root>
+    </Loggers>
+</Configuration>
+----
+
 [#NoSQLAppenderMongoDB4]
-== NoSQLAppenderMongoDB4
+== (Deprecated) No SQLAppender for MongoDB 4
+
+The `log4j-mongodb4` module is deprecated in favor of link:#NoSQLAppenderMongoDBCurrent[NoSQLAppender for MongoDB].
 
 This section details specializations of the
 link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
