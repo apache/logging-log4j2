@@ -257,8 +257,8 @@
     <module>log4j-jul</module>
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-test</module>
-    <module>log4j-mongodb4</module>
     <module>log4j-mongodb</module>
+    <module>log4j-mongodb4</module>
     <module>log4j-osgi-test</module>
     <module>log4j-perf-test</module>
     <module>log4j-slf4j-impl</module>
