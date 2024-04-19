@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2398" link="https://github.com/apache/logging-log4j2/pull/2398"/>
-  <description format="asciidoc">Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.4`</description>
+  <issue id="2489" link="https://github.com/apache/logging-log4j2/pull/2489"/>
+  <description format="asciidoc">Update `org.springframework.boot:spring-boot-autoconfigure` to version `3.2.5`</description>
 </entry>
