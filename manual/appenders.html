@@ -3014,7 +3014,7 @@ databases if represented in a JSON format:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="NoSQLAppenderMongoDB"><a class="anchor" href="#NoSQLAppenderMongoDB"></a>NoSQLAppenderMongoDB</h2>
+<h2 id="NoSQLAppenderMongoDBMain"><a class="anchor" href="#NoSQLAppenderMongoDBMain"></a>NoSQL Appenders for MongoDB</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Starting with Log4 2.11.0, we provide the following MongoDB modules:</p>
@@ -3022,37 +3022,38 @@ databases if represented in a JSON format:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Added in v2.11.0, dropped in v2.14.0: <code>log4j-mongodb2</code> defines the configuration element MongoDb2 matching the MongoDB Driver version 2.</p>
+<p>Added in 2.11.0, removed in 2.14.0: <code>log4j-mongodb2</code> defines the configuration element MongoDb2 matching the MongoDB Driver version 2.</p>
 </li>
 <li>
-<p>Added in v2.11.0: <code>log4j-mongodb3</code> defines the configuration element MongoDb3 matching the MongoDB Driver version 3.</p>
+<p>Added in 2.11.0, removed in 2.24.0: <code>log4j-mongodb3</code> defines the configuration element MongoDb3 matching the MongoDB Driver version 3.</p>
 </li>
 <li>
-<p>Added in 2.14.0: <code>log4j-mongodb4</code> defines the configuration element
-<a href="#NoSQLAppenderMongoDB4"><code>MongoDb4</code></a> matching the MongoDB Driver
-version 4.</p>
+<p>Added in 2.14.0, deprecated in 2.24.0: <code>log4j-mongodb4</code> defines the configuration element
+<a href="#NoSQLAppenderMongoDB4"><code>MongoDb4</code></a> matching the MongoDB Driver version 4.</p>
+</li>
+<li>
+<p>Added in 2.24.0: <code>log4j-mongodb</code> defines the configuration element
+<a href="#NoSQLAppenderMongoDBCurrent"><code>MongoDb</code></a> matching the current MongoDB Driver (version 5). This module tracks the current MongoDB Driver.</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>We no longer provide the modules <code>log4j-mongodb</code>.</p>
-</div>
-<div class="paragraph">
-<p>The module <code>log4j-mongodb2</code> aliases the old configuration element <code>MongoDb</code> to <code>MongoDb2</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="NoSQLAppenderMongoDB3"><a class="anchor" href="#NoSQLAppenderMongoDB3"></a>NoSQLAppender for MongoDB 3</h2>
+<h2 id="NoSQLAppenderMongoDBCurrent"><a class="anchor" href="#NoSQLAppenderMongoDBCurrent"></a>NoSQL Appender for MongoDB</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the MongoDB driver version 3. The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.</p>
+<p>This section details specializations of the
+<a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the
+current MongoDB driver (version 5). The NoSQLAppender Appender writes log events
+to a NoSQL database using an internal lightweight provider interface.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 20. MongoDB Provider Parameters</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
 </colgroup>
 <thead>
 <tr>
@@ -3063,64 +3064,26 @@ version 4.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">collectionName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">connection</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> The name of the MongoDB collection to insert the events into.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">writeConcernConstant</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Field</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">By default, the MongoDB provider inserts records with the instructions <code>com.mongodb.WriteConcern.ACKNOWLEDGED</code>. Use this optional attribute to specify the name of a constant other than <code>ACKNOWLEDGED</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">writeConcernConstantClass</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Class</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If you specify <code>writeConcernConstant</code>, you can use this attribute to specify a class other than <code>com.mongodb.WriteConcern</code> to find the constant on (to create your own custom instructions).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">factoryClassName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Class</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">To provide a connection to the MongoDB database, you can use this attribute and <code>factoryMethodName</code> to specify a class and static method to get the connection from. The method must return a <code>com.mongodb.client.MongoDatabase</code> or a <code>com.mongodb.MongoClient</code>. If the <code>com.mongodb.client.MongoDatabase</code> is not authenticated, you must also specify a <code>username</code> and <code>password</code>. If you use the factory method for providing a connection, you must not specify the <code>databaseName</code>, <code>server</code>, or <code>port</code> attributes.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">factoryMethodName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attribute <code>factoryClassName</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">databaseName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If you do not specify a <code>factoryClassName</code> and <code>factoryMethodName</code> for providing a MongoDB connection, you must specify a MongoDB database name using this attribute. You must also specify a <code>username</code> and <code>password</code>. You can optionally also specify a <code>server</code> (defaults to localhost), and a <code>port</code> (defaults to the default MongoDB port).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attribute <code>databaseName</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">port</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attribute <code>databaseName</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attributes <code>databaseName</code> and <code>factoryClassName</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">See the documentation for attributes <code>databaseName</code> and <code>factoryClassName</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Required.</em> The MongoDB
+<a href="http://mongodb.github.io/mongo-java-driver/5.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"">connection string</a>
+in the format <code>mongodb://[username:password@]host1[:port1][,host2[:port2],&#8230;&#8203;[,hostN[:portN]]][/[database.collection][?options]]</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">capped</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable support for <a href="https://docs.mongodb.com/manual/core/capped-collections/">capped collections</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable support for
+<a href="https://docs.mongodb.com/manual/core/capped-collections/">capped
+collections</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">collectionSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the size in bytes of the capped collection to use if enabled. The minimum size is 4096 bytes, and larger sizes will be increased to the nearest integer multiple of 256. See the capped collection documentation linked above for more information.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the size in bytes of the capped collection
+to use if enabled. The minimum size is 4096 bytes, and larger sizes will
+be increased to the nearest integer multiple of 256. See the capped
+collection documentation linked above for more information.</p></td>
 </tr>
 </tbody>
 </table>
@@ -3128,46 +3091,8 @@ version 4.</p>
 <p>This appender is <a href="messages.html#MapMessage" class="xref page">MapMessage</a>-aware.</p>
 </div>
 <div class="paragraph">
-<p>Here are a few sample configurations for the NoSQLAppender and MongoDB3 provider:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="error"&gt;
-  &lt;Appenders&gt;
-    &lt;NoSql name="databaseAppender"&gt;
-      &lt;MongoDb3 databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
-               username="loggingUser" password="abc123" /&gt;
-    &lt;/NoSql&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="warn"&gt;
-      &lt;AppenderRef ref="databaseAppender"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="error"&gt;
-  &lt;Appenders&gt;
-    &lt;NoSql name="databaseAppender"&gt;
-      &lt;MongoDb3 collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
-               factoryMethodName="getNewMongoClient" /&gt;
-    &lt;/NoSql&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="warn"&gt;
-      &lt;AppenderRef ref="databaseAppender"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
-&lt;/Configuration&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can define additional fields to log using <code>KeyValuePair</code> elements, for example:</p>
+<p>Here are a few sample configurations for the NoSQLAppender and MongoDB4
+provider:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3175,12 +3100,7 @@ version 4.</p>
 &lt;Configuration status="WARN"&gt;
   &lt;Appenders&gt;
     &lt;NoSql name="MongoDbAppender"&gt;
-      &lt;MongoDb3 databaseName="testDb" collectionName="testCollection" server="localhost"
-        port="${sys:MongoDBTestPort:-27017}" /&gt;
-      &lt;KeyValuePair key="A" value="1" /&gt;
-      &lt;KeyValuePair key="B" value="2" /&gt;
-      &lt;KeyValuePair key="env1" value="${env:PATH}" /&gt;
-      &lt;KeyValuePair key="env2" value="$${env:PATH}" /&gt;
+      &lt;MongoDb connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" /&gt;
     &lt;/NoSql&gt;
   &lt;/Appenders&gt;
   &lt;Loggers&gt;
@@ -3191,11 +3111,58 @@ version 4.</p>
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration status="WARN"&gt;
+  &lt;Appenders&gt;
+    &lt;NoSql name="MongoDbAppender"&gt;
+      &lt;MongoDb
+        connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection"
+        capped="true"
+        collectionSize="1073741824"/&gt;
+    &lt;/NoSql&gt;
+  &lt;/Appenders&gt;
+  &lt;Loggers&gt;
+    &lt;Root level="ALL"&gt;
+      &lt;AppenderRef ref="MongoDbAppender" /&gt;
+    &lt;/Root&gt;
+  &lt;/Loggers&gt;
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can define additional fields to log using KeyValuePair elements, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration status="WARN"&gt;
+    &lt;Appenders&gt;
+        &lt;NoSql name="MongoDbAppender"&gt;
+            &lt;MongoDb connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" /&gt;
+            &lt;KeyValuePair key="A" value="1" /&gt;
+            &lt;KeyValuePair key="B" value="2" /&gt;
+            &lt;KeyValuePair key="env1" value="${env:PATH}" /&gt;
+            &lt;KeyValuePair key="env2" value="$${env:PATH}" /&gt;
+        &lt;/NoSql&gt;
+    &lt;/Appenders&gt;
+    &lt;Loggers&gt;
+        &lt;Root level="ALL"&gt;
+            &lt;AppenderRef ref="MongoDbAppender" /&gt;
+        &lt;/Root&gt;
+    &lt;/Loggers&gt;
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="NoSQLAppenderMongoDB4"><a class="anchor" href="#NoSQLAppenderMongoDB4"></a>NoSQLAppenderMongoDB4</h2>
+<h2 id="NoSQLAppenderMongoDB4"><a class="anchor" href="#NoSQLAppenderMongoDB4"></a>(Deprecated) No SQLAppender for MongoDB 4</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The <code>log4j-mongodb4</code> module is deprecated in favor of <a href="#NoSQLAppenderMongoDBCurrent">NoSQLAppender for MongoDB</a>.</p>
+</div>
 <div class="paragraph">
 <p>This section details specializations of the
 <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the
@@ -3203,7 +3170,7 @@ MongoDB driver version 4. The NoSQLAppender Appender writes log events
 to a NoSQL database using an internal lightweight provider interface.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. MongoDB Provider Parameters</caption>
+<caption class="title">Table 21. MongoDB Provider Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3430,7 +3397,7 @@ to the same file if Log4j is in a ClassLoader that is common to both of
 them.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. RandomAccessFileAppender Parameters</caption>
+<caption class="title">Table 22. RandomAccessFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3552,7 +3519,7 @@ RewriteAppender should be configured after any Appenders it references
 to allow it to shut down properly.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. RewriteAppender Parameters</caption>
+<caption class="title">Table 23. RewriteAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -3838,7 +3805,7 @@ RollingFileAppender will be applied.</p>
 <p>File locking is not supported by the RollingFileAppender.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. RollingFileAppender Parameters</caption>
+<caption class="title">Table 24. RollingFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4055,7 +4022,7 @@ The filePattern attribute of the Appender should contain a timestamp otherwise t
 overwritten on each rollover.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. CronTriggeringPolicy Parameters</caption>
+<caption class="title">Table 25. CronTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4096,7 +4063,7 @@ is older than the current JVM&#8217;s start time and the minimum file size is
 met or exceeded.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. OnStartupTriggeringPolicy Parameters</caption>
+<caption class="title">Table 26. OnStartupTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4151,7 +4118,7 @@ pattern no longer applies to the active file. This policy accepts an
 occur based on the time pattern and a <code>modulate</code> boolean attribute.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. TimeBasedTriggeringPolicy Parameters</caption>
+<caption class="title">Table 27. TimeBasedTriggeringPolicy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4352,7 +4319,7 @@ increment by 1 and each rollover will have an incrementally higher value
 with no maximum number of files.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. DefaultRolloverStrategy Parameters</caption>
+<caption class="title">Table 28. DefaultRolloverStrategy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4423,7 +4390,7 @@ pattern no longer matches the current file it will not be compressed at
 startup either.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. DirectWriteRolloverStrategy Parameters</caption>
+<caption class="title">Table 29. DirectWriteRolloverStrategy Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4628,7 +4595,7 @@ can test your configuration without accidentally deleting the wrong
 files.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. Delete Parameters</caption>
+<caption class="title">Table 30. Delete Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4766,7 +4733,7 @@ and must return a list with the paths to delete.</p>
 <h2 id="DeleteIfFileName"><a class="anchor" href="#DeleteIfFileName"></a>DeleteIfFileName</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. IfFileName Condition Parameters</caption>
+<caption class="title">Table 31. IfFileName Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4815,7 +4782,7 @@ the path name matches).</p></td>
 <h2 id="DeleteIfLastModified"><a class="anchor" href="#DeleteIfLastModified"></a>DeleteIfLastModified</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. IfLastModified Condition Parameters</caption>
+<caption class="title">Table 32. IfLastModified Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4854,7 +4821,7 @@ the file is old enough).</p></td>
 <h2 id="DeleteIfAccumulatedFileCount"><a class="anchor" href="#DeleteIfAccumulatedFileCount"></a>DeleteIfAccumulatedFileCount</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. IfAccumulatedFileCount Condition Parameters</caption>
+<caption class="title">Table 33. IfAccumulatedFileCount Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -4891,7 +4858,7 @@ the threshold count has been exceeded).</p></td>
 <h2 id="DeleteIfAccumulatedFileSize"><a class="anchor" href="#DeleteIfAccumulatedFileSize"></a>DeleteIfAccumulatedFileSize</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. IfAccumulatedFileSize Condition Parameters</caption>
+<caption class="title">Table 34. IfAccumulatedFileSize Condition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5015,7 +4982,7 @@ comes first.</p>
 <h2 id="ScriptCondition"><a class="anchor" href="#ScriptCondition"></a>ScriptCondition</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. ScriptCondition Parameters</caption>
+<caption class="title">Table 35. ScriptCondition Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5047,7 +5014,7 @@ how ScriptFiles and ScriptRefs can be configured.</p></td>
 <h2 id="ScriptParameters"><a class="anchor" href="#ScriptParameters"></a>ScriptParameters</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Script Parameters</caption>
+<caption class="title">Table 36. Script Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5182,7 +5149,7 @@ applied. The PosixViewAttribute action lets users configure one or more
 conditions that select the eligible files relative to a base directory.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. PosixViewAttribute Parameters</caption>
+<caption class="title">Table 37. PosixViewAttribute Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5347,7 +5314,7 @@ in the DefaultRolloverStrategy to run at rollover.</p>
 <p>File locking is not supported by the RollingRandomAccessFileAppender.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. RollingRandomAccessFileAppender Parameters</caption>
+<caption class="title">Table 38. RollingRandomAccessFileAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5620,7 +5587,7 @@ script when the appender starts and when a route is chosen for an log
 event.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. RoutingAppender Parameters</caption>
+<caption class="title">Table 39. RoutingAppender Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -5762,7 +5729,7 @@ a Route.</p>
 <p>This script is passed the following variables:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. RoutingAppender Routes Script Parameters</caption>
+<caption class="title">Table 40. RoutingAppender Routes Script Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6098,7 +6065,7 @@ is raised, causing those events to be lost. If guaranteed delivery is
 required a protocol that requires acknowledgements must be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. <code>SocketAppender</code> Parameters</caption>
+<caption class="title">Table 41. <code>SocketAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6264,7 +6231,7 @@ connection or a Secure Socket Layer (SSL) connection. This section
 documents the parameters available for SSL configuration.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. SSL Configuration Parameters</caption>
+<caption class="title">Table 42. SSL Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6308,7 +6275,7 @@ counterparty. Determines whether the remote authentication credentials
 determines which authentication credentials to send to the remote host.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. KeyStore Configuration Parameters</caption>
+<caption class="title">Table 43. KeyStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6380,7 +6347,7 @@ better practice to use distinct stores (especially when they are
 file-based).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. TrustStore Configuration Parameters</caption>
+<caption class="title">Table 44. TrustStore Configuration Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6461,7 +6428,7 @@ conforms with either the BSD Syslog format or the RFC 5424 format. The
 data can be sent over either TCP or UDP.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. <code>SyslogAppender</code> Parameters</caption>
+<caption class="title">Table 45. <code>SyslogAppender</code> Parameters</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">

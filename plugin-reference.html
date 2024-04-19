@@ -7257,7 +7257,7 @@ However, configurations set up for the 2.0 version of the JMS appenders will sti
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Sets the provider.</p>
 </div></div></td>
@@ -23765,79 +23765,39 @@ Minimum is 1000.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="org-apache-logging-log4j_log4j-mongodb3"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb3"></a><code>org.apache.logging.log4j:log4j-mongodb3</code></h3>
+<h3 id="org-apache-logging-log4j_log4j-mongodb"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb"></a><code>org.apache.logging.log4j:log4j-mongodb</code></h3>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></h4>
+<h4 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider"></a>MongoDb</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
 <dd>
-<p><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></p>
+<p><code>org.apache.logging.log4j.mongodb.MongoDbProvider</code></p>
 </dd>
 <dt class="hdlist1">Provider</dt>
 <dd>
-<p><code>org.apache.logging.log4j:log4j-mongodb3</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider">CouchDbProvider</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-mongodb3-MongoDbProvider">MongoDbProvider</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-mongodb3-MongoDbProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-mongodb3-MongoDbProvider"></a>MongoDb3</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.mongodb3.MongoDbProvider</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-mongodb3</code></p>
+<p><code>org.apache.logging.log4j:log4j-mongodb</code></p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>The MongoDB implementation of <a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>.using the MongoDB driver version 3 API.</p>
+<p>Delegates to <a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a> under the name <code>MongoDb</code>.</p>
 </div>
 <div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-mongodb3-MongoDbProvider_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-mongodb3-MongoDbProvider_XML-snippet"></a>XML snippet</h5>
+<h5 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MongoDb3 capped=""
-          collectionName=""
-          collectionSize=""
-          databaseName=""
-          factoryClassName=""
-          factoryMethodName=""
-          password=""
-          port=""
-          server=""
-          userName=""
-          writeConcernConstant=""
-          writeConcernConstantClassName=""&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MongoDb capped=""
+         collectionSize=""
+         connection=""&gt;
     &lt;a-Filter-implementation/&gt;
     &lt;property/&gt;&lt;!-- multiple occurrences allowed --&gt;
-&lt;/MongoDb3&gt;</code></pre>
+&lt;/MongoDb&gt;</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-mongodb3-MongoDbProvider-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-mongodb3-MongoDbProvider-attributes"></a>Attributes</h5>
+<h5 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider-attributes"></a>Attributes</h5>
 <div class="paragraph">
 <p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
 </div>
@@ -23864,68 +23824,14 @@ Minimum is 1000.</p>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>collectionName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>collectionSize</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>databaseName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>connection</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>factoryClassName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>factoryMethodName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>port</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>server</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>writeConcernConstant</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>writeConcernConstantClassName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -23933,7 +23839,7 @@ Minimum is 1000.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-mongodb3-MongoDbProvider_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb3_org-apache-logging-log4j-mongodb3-MongoDbProvider_components"></a>Nested components</h5>
+<h5 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider_components"></a>Nested components</h5>
 <div class="paragraph">
 <p>Optional components are denoted by <code>?</code>-suffixed types.</p>
 </div>
@@ -23968,6 +23874,37 @@ Minimum is 1000.</p>
 </div>
 <div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-mongodb4"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4"></a><code>org.apache.logging.log4j:log4j-mongodb4</code></h3>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-mongodb4</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider">CouchDbProvider</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider">MongoDbProvider</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider"></a>MongoDb4</h4>
 <div class="dlist">
