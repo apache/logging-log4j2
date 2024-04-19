@@ -146,7 +146,7 @@ public class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> im
         private final MongoClient mongoClient;
 
         public MongoClientHolder(final Mongod mongod, final TestProperties props) {
-            state = mongod.start(Version.Main.V4_4);
+            state = mongod.start(Version.Main.V7_0);
             final RunningMongodProcess mongodProcess = state.current();
             final ServerAddress addr = mongodProcess.getServerAddress();
             mongoClient = MongoClients.create(String.format("mongodb://%s:%d", addr.getHost(), addr.getPort()));
