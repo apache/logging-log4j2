@@ -1402,18 +1402,13 @@ databases if represented in a JSON format:
 ----
 
 [#NoSQLAppenderMongoDB]
-== NoSQLAppenderMongoDB
+== NoSQLAppender for MongoDB
 
-We provide the following MongoDB modules:
+In 3.0.0, we provide one MongoDB module: `log4j-mongodb`, based on the current MongoDB Client Driver.
 
-* Added in 2.14.0: `log4j-mongodb4` defines the configuration element
-link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver
-version 4.
+We renamed the `log4j-mongodb4`, module, package, and classes in favor of `log4j-mongodb`, in other words, drop the `4`. 
 
-We no longer provide the modules `log4j-mongodb`, `log4j-mongodb2`, `log4j-mongodb3`.
-
-[#NoSQLAppenderMongoDB4]
-== NoSQLAppenderMongoDB4
+We no longer provide the modules `log4j-mongodb2`, `log4j-mongodb3`, `log4j-mongodb4`.
 
 This section details specializations of the
 link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
@@ -1440,7 +1435,7 @@ collection documentation linked above for more information.
 
 This appender is xref:manual/messages.adoc#MapMessage[MapMessage]-aware.
 
-Here are a few sample configurations for the NoSQLAppender and MongoDB4
+Here are a few sample configurations for the NoSQLAppender and MongoDB
 provider:
 
 [source,xml]
@@ -1449,7 +1444,7 @@ provider:
 <Configuration status="WARN">
   <Appenders>
     <NoSql name="MongoDbAppender">
-      <MongoDb4 connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
+      <MongoDb connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
     </NoSql>
   </Appenders>
   <Loggers>
@@ -1466,7 +1461,7 @@ provider:
 <Configuration status="WARN">
   <Appenders>
     <NoSql name="MongoDbAppender">
-      <MongoDb4 
+      <MongoDb 
         connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" 
         capped="true" 
         collectionSize="1073741824"/>
@@ -1488,7 +1483,7 @@ You can define additional fields to log using KeyValuePair elements, for example
 <Configuration status="WARN">
     <Appenders>
         <NoSql name="MongoDbAppender">
-            <MongoDb4 connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
+            <MongoDb connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
             <KeyValuePair key="A" value="1" />
             <KeyValuePair key="B" value="2" />
             <KeyValuePair key="env1" value="${env:PATH}" />

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="updated">
+  <description format="asciidoc">Rename the log4j-mongodb4, module, package, and classes in favor of log4j-mongodb, in other words, drop the `4`; tracks the current MongoDB client driver.</description>
+</entry>
