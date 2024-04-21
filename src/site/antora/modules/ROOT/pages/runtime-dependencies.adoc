@@ -226,9 +226,9 @@ The xref:log4j-flume-ng.adoc[Flume Appender] requires https://flume.apache.org/[
 
 xref:log4j-spring-cloud-config-client.adoc[Log4j Spring Cloud Config Client] requires https://spring.io/projects/spring-cloud-config[Spring Cloud Config]. https://spring.io/projects/spring-cloud-bus[Spring Cloud Bus] is required if notification of logging configuration changes is desired. https://spring.io/projects/spring-boot[Spring Boot] is required but applications do not have to be packaged as a Spring Boot application.
 
-== log4j-mongodb4
+== log4j-mongodb
 
-The Log4J xref:log4j-mongodb4.adoc[MongoDB 4] module depends on the https://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client driver].
+The Log4J xref:log4j-mongodb.adoc[MongoDB] module depends on the https://docs.mongodb.org/ecosystem/drivers/java/[MongoDB Java Client driver].
 
 == log4j-iostreams
 
