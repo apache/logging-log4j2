@@ -764,13 +764,6 @@ must have a default constructor.
 |Prints a stacktrace to the status logger at DEBUG level when the
 LoggerContext is started. For debug purposes.
 
-|ThreadContext
-|contextDataInjector
-|log4j2.contextDataInjector, LOG4J_CONTEXT_DATA_INJECTOR
-|System/Application
-|
-|Fully specified class name of a custom `ContextDataInjector` implementation class.
-
 |TransportSecurity
 |keyStoreLocation
 |log4j2.keyStoreLocation, LOG4J_KEY_STORE_LOCATION

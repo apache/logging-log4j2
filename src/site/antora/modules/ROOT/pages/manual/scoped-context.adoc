@@ -1,0 +1,116 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Scoped Context
+The link:../log4j-api/apidocs/org/apache/logging/log4j/ScopedContext.html[`ScopedContext`]
+is available in Log4j API releases 2.24.0 and greater.
+
+The `ScopedContext` is similar to the ThreadContextMap in that it allows key/value pairs to be included
+in many log events. However, the pairs in a `ScopedContext` are only available to
+application code and log events running within the scope of the `ScopeContext` object.
+
+The `ScopeContext` is essentially a builder that allows key/value pairs to be added to it
+prior to invoking a method. The key/value pairs are available to any code running within
+that method and will be included in all logging events as if they were part of the `ThreadContextMap`.
+
+ScopedContext is immutable. Each invocation of the `where` method returns a new ScopedContext.Instance
+with the specified key/value pair added to those defined in previous ScopedContexts.
+
+[source,java]
+----
+ScopedContext.where("id", UUID.randomUUID())
+    .where("ipAddress", request.getRemoteAddr())
+    .where("loginId", session.getAttribute("loginId"))
+    .where("hostName", request.getServerName())
+    .run(new Worker());
+
+private class Worker implements Runnable {
+    private static final Logger LOGGER = LogManager.getLogger(Worker.class);
+
+    public void run() {
+        LOGGER.debug("Performing work");
+        String loginId = ScopedContext.get("loginId");
+    }
+}
+
+----
+
+The values in the ScopedContext can be any Java object. However, objects stored in the
+context Map will be converted to Strings when stored in a LogEvent. To aid in
+this Objects may implement the Renderable interface which provides a `render` method
+to format the object. By default, objects will have their toString() method called
+if they do not implement the Renderable interface.
+
+Note that in the example above `UUID.randomUUID()` returns a UUID. By default, when it is
+included in LogEvents its toString() method will be used.
+
+== Thread Support
+
+ScopedContext provides support for passing the ScopedContext and the ThreadContext to
+child threads by way of an ExecutorService. For example, the following will create a
+ScopedContext and pass it to a child thread.
+
+[source,java]
+----
+BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(5);
+ExecutorService executorService = new ThreadPoolExecutor(1, 2, 30, TimeUnit.SECONDS, workQueue);
+Future<?> future = ScopedContext.where("id", UUID.randomUUID())
+    .where("ipAddress", request.getRemoteAddr())
+    .where("loginId", session.getAttribute("loginId"))
+    .where("hostName", request.getServerName())
+    .run(executorService, new Worker());
+try {
+    future.get();
+} catch (ExecutionException ex) {
+    logger.warn("Exception in worker thread: {}", ex.getMessage());
+}
+
+private class Worker implements Runnable {
+    private static final Logger LOGGER = LogManager.getLogger(Worker.class);
+
+    public void run() {
+        LOGGER.debug("Performing work");
+        String loginId = ScopedContext.get("loginId");
+    }
+}
+
+----
+
+ScopeContext also supports call methods in addition to run methods so the called functions can
+directly return values.
+
+== Nested ScopedContexts
+
+ScopedContexts may be nested. Becuase ScopedContexts are immutable the `where` method may
+be called on the current ScopedContext from within the run or call methods to append new
+key/value pairs. In addition, when passing a single key/value pair the run or call method
+may be combined with a where method as shown below.
+
+
+[source,java]
+----
+        ScopedContext.runWhere("key1", "value1", () -> {
+            assertThat(ScopedContext.get("key1"), equalTo("value1"));
+            ScopedContext.where("key2", "value2").run(() -> {
+                assertThat(ScopedContext.get("key1"), equalTo("value1"));
+                assertThat(ScopedContext.get("key2"), equalTo("value2"));
+            });
+        });
+
+----
+
+ScopedContexts ALWAYS inherit the key/value pairs from their parent scope. key/value pairs may be removed from the context by passing a null value with the key. Note that where methods that accept a Map MUST NOT include null keys or values in the map.

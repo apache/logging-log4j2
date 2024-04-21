@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.impl;
 import java.net.URI;
 import java.nio.file.Path;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
@@ -165,10 +164,8 @@ public final class CoreProperties {
 
     /**
      * @param type The {@link StringMap} class to use for context data.
-     * @param injector The {@link ContextDataInjector} to use to retrieve context data.
      */
-    public record ContextDataProperties(
-            @Nullable Class<? extends StringMap> type, @Nullable Class<? extends ContextDataInjector> injector) {}
+    public record ContextDataProperties(@Nullable Class<? extends StringMap> type) {}
 
     @Log4jProperty(name = "loggerContext")
     public record LoggerContextProperties(

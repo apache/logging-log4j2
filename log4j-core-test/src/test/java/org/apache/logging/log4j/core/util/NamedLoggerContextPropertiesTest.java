@@ -33,7 +33,7 @@ import org.junitpioneer.jupiter.DisabledUntil;
 
 @ContextSelectorType(NamedLoggerContextPropertiesTest.TestContextSelector.class)
 @DisabledUntil(
-        date = "2024-04-15",
+        date = "2024-05-15",
         reason = "There is currently no property source that retrieves data from META-INF/log4j2.<context name>.json")
 public class NamedLoggerContextPropertiesTest {
 

@@ -33,6 +33,8 @@
 *** xref:manual/eventlogging.adoc[]
 *** xref:manual/messages.adoc[]
 *** xref:manual/thread-context.adoc[]
+*** xref:manual/scoped-context.adoc[]
+*** xref:manual/resource-logger.adoc[]
 ** xref:manual/configuration.adoc[]
 ** xref:manual/usage.adoc[]
 ** xref:manual/cloud.adoc[]

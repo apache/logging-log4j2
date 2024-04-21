@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
@@ -31,7 +32,7 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.junit.TestBinding;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -53,12 +54,6 @@ public class LogEventFactoryTest {
     }
 
     public static class TestLogEventFactory implements LogEventFactory {
-        private final ContextDataInjector injector;
-
-        @Inject
-        public TestLogEventFactory(final ContextDataInjector injector) {
-            this.injector = injector;
-        }
 
         @Override
         public LogEvent createEvent(
@@ -69,14 +64,20 @@ public class LogEventFactoryTest {
                 final Message data,
                 final List<Property> properties,
                 final Throwable t) {
+            StringMap contextData = ContextDataFactory.createContextData();
+            if (properties != null && !properties.isEmpty()) {
+                for (Property property : properties) {
+                    contextData.putValue(property.getName(), property.getValue());
+                }
+            }
+            ContextData.addAll(contextData);
             return Log4jLogEvent.newBuilder()
                     .setLoggerName("Test")
                     .setMarker(marker)
                     .setLoggerFqcn(fqcn)
                     .setLevel(level)
                     .setMessage(data)
-                    .setContextDataInjector(injector)
-                    .setContextData(injector.injectContextData(properties, ContextDataFactory.createContextData()))
+                    .setContextData(contextData)
                     .setThrown(t)
                     .build();
         }
