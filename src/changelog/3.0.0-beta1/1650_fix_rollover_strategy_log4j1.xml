@@ -16,13 +16,10 @@
   ~ limitations under the License.
   -->
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://logging.apache.org/log4j/changelog"
-       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.0.xsd"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="1650" link="https://github.com/apache/logging-log4j2/issues/1650"/>
-  <author name="Krzysztof Krasoń" id="github:krzyk"/>
-  <!-- Committer -->
-  <author id="github:ppkarwasz"/>
+  <issue id="1650" link="https://github.com/apache/logging-log4j2/issues/1650"/>  <!-- Committer -->
   <description format="asciidoc">
     Fixed rollover strategy in the Log4j 1.x compatibility layer.
   </description>

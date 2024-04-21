@@ -31,6 +31,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.ThreadContextTestAccess;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -141,6 +142,20 @@ public class AsyncThreadContextTest {
         runTest(context, contextImpl, asyncMode, testLoggingPath);
     }
 
+    private static LongSupplier remainingCapacity(final LoggerContext loggerContext, final LoggerConfig loggerConfig) {
+        final LongSupplier contextSupplier = loggerContext instanceof final AsyncLoggerContext asyncLoggerContext
+                ? asyncLoggerContext.getAsyncLoggerDisruptor().getRingBuffer()::remainingCapacity
+                : null;
+        if (loggerConfig instanceof final AsyncLoggerConfig asyncLoggerConfig) {
+            final LongSupplier configSupplier =
+                    asyncLoggerConfig.getAsyncLoggerConfigDisruptor().getRingBuffer()::remainingCapacity;
+            return contextSupplier == null
+                    ? configSupplier
+                    : () -> Math.min(contextSupplier.getAsLong(), configSupplier.getAsLong());
+        }
+        return contextSupplier != null ? contextSupplier : () -> Long.MAX_VALUE;
+    }
+
     private static void runTest(
             final LoggerContext context, final ContextImpl contextImpl, final Mode asyncMode, final Path loggingPath)
             throws Exception {
@@ -154,16 +169,9 @@ public class AsyncThreadContextTest {
         ThreadContext.put("KEY", "mapvalue");
 
         final Logger log = context.getLogger("com.foo.Bar");
+        final LoggerConfig loggerConfig = log.get();
         final String loggerContextName = context.getClass().getSimpleName();
-        final LongSupplier remainingCapacity;
-        if (context instanceof AsyncLoggerContext) {
-            remainingCapacity =
-                    ((AsyncLoggerContext) context).getAsyncLoggerDisruptor().getRingBuffer()::remainingCapacity;
-        } else {
-            remainingCapacity =
-                    ((AsyncLoggerConfigDisruptor) ((AsyncLoggerConfig) log.get()).getAsyncLoggerConfigDisruptor())
-                            .getRingBuffer()::remainingCapacity;
-        }
+        final LongSupplier remainingCapacity = remainingCapacity(context, loggerConfig);
 
         for (int i = 0; i < LINE_COUNT; i++) {
             // buffer may be full

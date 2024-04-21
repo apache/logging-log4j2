@@ -16,12 +16,9 @@
   ~ limitations under the License.
   -->
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://logging.apache.org/log4j/changelog"
-       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
-  <issue id="LOG4J2-2523" link="https://issues.apache.org/jira/browse/LOG4J2-2523"/>
-  <author name="Romain Manni-Bucau"/>
-  <!-- Committer -->
-  <author id="rgoers"/>
+  <issue id="LOG4J2-2523" link="https://issues.apache.org/jira/browse/LOG4J2-2523"/>  <!-- Committer -->
   <description format="asciidoc">Allow web lookup to access more information.</description>
 </entry>

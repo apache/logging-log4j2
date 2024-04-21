@@ -38,14 +38,19 @@ version: ~
 start_page: index.adoc
 asciidoc:
   attributes:
-    log4j-api-version: "${log4j-api.version}"
-    log4j-core-version: "${site-log4j-core.version}"
-    log4j-layout-template-json-version: "${site-log4j-layout-template-json.version}"
+    # Commons
     project-github-url: "${scm.url}"
     project-name: "Log4j"
     project-id: "log4j"
     java-target-version: "${maven.compiler.target}"
     java-compiler-version: "${minimalJavaBuildVersion}"
+    logging-services-url: "https://logging.apache.org"
+    # Dependency versions
+    commons-logging-version: "${site-commons-logging.version}"
+    log4j-api-version: "${log4j-api.version}"
+    log4j-core-version: "${site-log4j-core.version}"
+    log4j-layout-template-json-version: "${site-log4j-layout-template-json.version}"
+    logback-version: "${site-logback.version}"
+    slf4j-version: "${site-slf4j.version}"
 nav:
   - modules/ROOT/nav.adoc
-  - modules/manual/nav.adoc

@@ -16,10 +16,9 @@
   ~ limitations under the License.
   -->
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://logging.apache.org/log4j/changelog"
-       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="removed">
-  <author id="mattsicker"/>
   <description format="asciidoc">
     Remove Jackson-based JSON configuration support. JSON configuration files are now handled through
     a built-in JSON parser.
