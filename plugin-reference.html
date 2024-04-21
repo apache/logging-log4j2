@@ -218,7 +218,7 @@
     <a class="nav-link" href="log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-mongodb4.html">MongoDB 4 appender</a>
+    <a class="nav-link" href="#log4j-mongodb.adoc">log4j-mongodb.adoc</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
@@ -3933,12 +3933,7 @@ This attribute is ignored if <code>immediateFlush</code> is set to <code>true</c
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A generic list of key/value properties</p>
-</div>
-<div class="paragraph">
-<p>The meaning of these properties depends on the component.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
@@ -5460,7 +5455,7 @@ If the type is compatible with <code>java.util.Date</code>, then the event times
 <p>This Appender writes logging events to a NoSQL database using a configured NoSQL provider.</p>
 </div>
 <div class="paragraph">
-<p>It requires implementations of <code>org.apache.logging.log4j.core.appender.nosql.NoSqlObject</code>, <code>org.apache.logging.log4j.core.appender.nosql.NoSqlConnection</code>, and <a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a> to "know" how to write events to the chosen NoSQL database.</p>
+<p>It requires implementations of <code>org.apache.logging.log4j.core.appender.nosql.NoSqlObject</code>, <code>org.apache.logging.log4j.core.appender.nosql.NoSqlConnection</code>, and <a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a> to "know" how to write events to the chosen NoSQL database.</p>
 </div>
 <div class="paragraph">
 <p>For examples on how to write your own NoSQL provider, see the simple source code for the MongoDB providers.</p>
@@ -5556,7 +5551,7 @@ If the type is compatible with <code>java.util.Date</code>, then the event times
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Sets the provider.</p>
 </div></div></td>
@@ -19967,9 +19962,9 @@ This appender can be reconfigured at run time.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="org-apache-logging-log4j_log4j-mongodb4"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4"></a><code>org.apache.logging.log4j:log4j-mongodb4</code></h3>
+<h3 id="org-apache-logging-log4j_log4j-mongodb"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb"></a><code>org.apache.logging.log4j:log4j-mongodb</code></h3>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></h4>
+<h4 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -19978,53 +19973,53 @@ This appender can be reconfigured at run time.</p>
 </dd>
 <dt class="hdlist1">Provider</dt>
 <dd>
-<p><code>org.apache.logging.log4j:log4j-mongodb4</code></p>
+<p><code>org.apache.logging.log4j:log4j-mongodb</code></p>
 </dd>
 </dl>
 </div>
 <div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
+<h5 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider">MongoDbProvider</a></p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider"></a>MongoDb4</h4>
+<h4 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider"></a>MongoDb</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
 <dd>
-<p><code>org.apache.logging.log4j.mongodb4.MongoDb4Provider</code></p>
+<p><code>org.apache.logging.log4j.mongodb.MongoDbProvider</code></p>
 </dd>
 <dt class="hdlist1">Provider</dt>
 <dd>
-<p><code>org.apache.logging.log4j:log4j-mongodb4</code></p>
+<p><code>org.apache.logging.log4j:log4j-mongodb</code></p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>The MongoDB implementation of <a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a> using the MongoDB driver version 4 API.</p>
+<p>The MongoDB implementation of <a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a> using the MongoDB driver version 5 API.</p>
 </div>
 <div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider_XML-snippet"></a>XML snippet</h5>
+<h5 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MongoDb4 capped=""
-          collectionSize=""
-          connection=""&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MongoDb capped=""
+         collectionSize=""
+         connection=""&gt;
     &lt;a-Filter-implementation/&gt;
     &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
-&lt;/MongoDb4&gt;</code></pre>
+&lt;/MongoDb&gt;</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider-attributes"></a>Attributes</h5>
+<h5 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider-attributes"></a>Attributes</h5>
 <div class="paragraph">
 <p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
 </div>
@@ -20066,7 +20061,7 @@ This appender can be reconfigured at run time.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider_components"></a>Nested components</h5>
+<h5 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider_components"></a>Nested components</h5>
 <div class="paragraph">
 <p>Optional components are denoted by <code>?</code>-suffixed types.</p>
 </div>

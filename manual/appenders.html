@@ -218,7 +218,7 @@
     <a class="nav-link" href="../log4j-flume-ng.html">Flume Appender</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-mongodb4.html">MongoDB 4 appender</a>
+    <a class="nav-link" href="#log4j-mongodb.adoc">log4j-mongodb.adoc</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-iostreams.html">Log4j IOStreams</a>
@@ -2385,28 +2385,17 @@ databases if represented in a JSON format:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="NoSQLAppenderMongoDB"><a class="anchor" href="#NoSQLAppenderMongoDB"></a>NoSQLAppenderMongoDB</h2>
+<h2 id="NoSQLAppenderMongoDB"><a class="anchor" href="#NoSQLAppenderMongoDB"></a>NoSQLAppender for MongoDB</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>We provide the following MongoDB modules:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Added in 2.14.0: <code>log4j-mongodb4</code> defines the configuration element
-<a href="#NoSQLAppenderMongoDB4"><code>MongoDb4</code></a> matching the MongoDB Driver
-version 4.</p>
-</li>
-</ul>
+<p>In 3.0.0, we provide one MongoDB module: <code>log4j-mongodb</code>, based on the current MongoDB Client Driver.</p>
 </div>
 <div class="paragraph">
-<p>We no longer provide the modules <code>log4j-mongodb</code>, <code>log4j-mongodb2</code>, <code>log4j-mongodb3</code>.</p>
+<p>We renamed the <code>log4j-mongodb4</code>, module, package, and classes in favor of <code>log4j-mongodb</code>, in other words, drop the <code>4</code>.</p>
 </div>
+<div class="paragraph">
+<p>We no longer provide the modules <code>log4j-mongodb2</code>, <code>log4j-mongodb3</code>, <code>log4j-mongodb4</code>.</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="NoSQLAppenderMongoDB4"><a class="anchor" href="#NoSQLAppenderMongoDB4"></a>NoSQLAppenderMongoDB4</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>This section details specializations of the
 <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using the
@@ -2456,7 +2445,7 @@ collection documentation linked above for more information.</p></td>
 <p>This appender is <a href="messages.html#MapMessage" class="xref page">MapMessage</a>-aware.</p>
 </div>
 <div class="paragraph">
-<p>Here are a few sample configurations for the NoSQLAppender and MongoDB4
+<p>Here are a few sample configurations for the NoSQLAppender and MongoDB
 provider:</p>
 </div>
 <div class="listingblock">
@@ -2465,7 +2454,7 @@ provider:</p>
 &lt;Configuration status="WARN"&gt;
   &lt;Appenders&gt;
     &lt;NoSql name="MongoDbAppender"&gt;
-      &lt;MongoDb4 connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" /&gt;
+      &lt;MongoDb connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" /&gt;
     &lt;/NoSql&gt;
   &lt;/Appenders&gt;
   &lt;Loggers&gt;
@@ -2482,7 +2471,7 @@ provider:</p>
 &lt;Configuration status="WARN"&gt;
   &lt;Appenders&gt;
     &lt;NoSql name="MongoDbAppender"&gt;
-      &lt;MongoDb4
+      &lt;MongoDb
         connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection"
         capped="true"
         collectionSize="1073741824"/&gt;
@@ -2505,7 +2494,7 @@ provider:</p>
 &lt;Configuration status="WARN"&gt;
     &lt;Appenders&gt;
         &lt;NoSql name="MongoDbAppender"&gt;
-            &lt;MongoDb4 connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" /&gt;
+            &lt;MongoDb connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" /&gt;
             &lt;KeyValuePair key="A" value="1" /&gt;
             &lt;KeyValuePair key="B" value="2" /&gt;
             &lt;KeyValuePair key="env1" value="${env:PATH}" /&gt;
