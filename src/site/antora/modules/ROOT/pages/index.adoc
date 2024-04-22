@@ -70,8 +70,8 @@ Older versions of Java are supported by previous releases.
 [#older-releases]
 == Older releases
 
-Are looking for old versions of Log4j? While we recommend to always use the latest versions, you can find the older
-versions here:
+Are you looking for old versions of Log4j?
+While we recommend to always use the latest version, you can find the older versions here:
 
 * {logging-services-url}/1.x/[Log4j 1.x (End of Life, Java 1.4)]
 * {logging-services-url}/2.3.x/[Log4j 2.3.x (Java 6)]
