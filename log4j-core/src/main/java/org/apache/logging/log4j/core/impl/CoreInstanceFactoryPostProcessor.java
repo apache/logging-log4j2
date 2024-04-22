@@ -20,7 +20,6 @@ import static org.apache.logging.log4j.plugins.di.Key.forClass;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
-import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -70,8 +69,6 @@ public class CoreInstanceFactoryPostProcessor implements ConfigurableInstanceFac
             final ConfigurableInstanceFactory factory, final PropertyEnvironment env) {
         final LogEventProperties logEvent = env.getProperty(LogEventProperties.class);
         registerIfPresent(factory, LogEventFactory.class, logEvent.factory());
-        registerIfPresent(
-                factory, ContextDataInjector.class, logEvent.contextData().injector());
 
         final StatusLoggerProperties statusLogger = env.getProperty(StatusLoggerProperties.class);
         factory.registerBinding(Constants.STATUS_LOGGER_LEVEL_KEY, statusLogger::level);

@@ -17,13 +17,21 @@
 package org.apache.logging.log4j.core.util;
 
 import java.util.Map;
-import org.apache.logging.log4j.core.impl.JdkMapAdapterStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Source of context data to be added to each log event.
  */
 public interface ContextDataProvider {
+
+    /**
+     * Returns the key for a value from the context data.
+     * @param key the key to locate.
+     * @return the value or null if it is not found.
+     */
+    default String get(String key) {
+        return null;
+    }
 
     /**
      * Returns a Map containing context data to be injected into the event or null if no context data is to be added.
@@ -36,14 +44,33 @@ public interface ContextDataProvider {
     Map<String, String> supplyContextData();
 
     /**
-     * Returns the context data as a StringMap.
-     * <p>
-     *     Thread-safety note: The returned object can safely be passed off to another thread: future changes in the
-     *     underlying context data will not be reflected in the returned object.
-     * </p>
-     * @return the context data in a StringMap.
+     * Returns the number of items in this context.
+     * @return the number of items in the context.
      */
-    default StringMap supplyStringMap() {
-        return new JdkMapAdapterStringMap(supplyContextData(), true);
+    default int size() {
+        Map<String, String> contextMap = supplyContextData();
+        return contextMap != null ? contextMap.size() : 0;
+    }
+
+    /**
+     * Add all the keys in the current context to the provided Map.
+     * @param map the StringMap to add the keys and values to.
+     */
+    default void addAll(Map<String, String> map) {
+        Map<String, String> contextMap = supplyContextData();
+        if (contextMap != null) {
+            map.putAll(contextMap);
+        }
+    }
+
+    /**
+     * Add all the keys in the current context to the provided StringMap.
+     * @param map the StringMap to add the keys and values to.
+     */
+    default void addAll(StringMap map) {
+        Map<String, String> contextMap = supplyContextData();
+        if (contextMap != null) {
+            contextMap.forEach(map::putValue);
+        }
     }
 }

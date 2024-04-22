@@ -20,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +30,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -39,15 +42,27 @@ public class ContextDataProviderTest {
 
     private static Logger logger;
     private static ListAppender appender;
+    private static final String serviceDefn = TestContextDataProvider.class.getName();
+    private static final String serviceFile =
+            "target/test-classes/META-INF/services/" + ContextDataProvider.class.getName();
 
     @BeforeAll
-    public static void beforeClass() {
-        ThreadContextDataInjector.contextDataProviders.add(new TestContextDataProvider());
+    public static void beforeClass() throws Exception {
+
+        Path path = Paths.get(serviceFile);
+        byte[] strToBytes = serviceDefn.getBytes();
+        Files.write(path, strToBytes);
         System.setProperty(TestConstants.CONFIGURATION_FILE, "log4j-contextData.xml");
         final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
         logger = loggerContext.getLogger(ContextDataProviderTest.class.getName());
         appender = loggerContext.getConfiguration().getAppender("List");
         assertNotNull(appender, "No List appender");
+    }
+
+    @AfterAll
+    public static void afterClass() throws Exception {
+        Path path = Paths.get(serviceFile);
+        Files.delete(path);
     }
 
     @Test
@@ -59,7 +74,7 @@ public class ContextDataProviderTest {
         assertTrue(messages.get(0).contains("testKey=testValue"), "Context data missing");
     }
 
-    private static class TestContextDataProvider implements ContextDataProvider {
+    public static class TestContextDataProvider implements ContextDataProvider {
 
         @Override
         public Map<String, String> supplyContextData() {

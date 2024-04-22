@@ -31,7 +31,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -346,7 +345,6 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                                 .setOperator("or")
                                 .setOnMatch(getOnMatch())
                                 .setOnMismatch(getOnMismatch())
-                                .setContextDataInjector(configuration.getComponent(ContextDataInjector.KEY))
                                 .get();
                     } else {
                         filter = new NoOpFilter();
@@ -382,7 +380,6 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                         .setOperator("or")
                         .setOnMatch(getOnMatch())
                         .setOnMismatch(getOnMismatch())
-                        .setContextDataInjector(configuration.getComponent(ContextDataInjector.KEY))
                         .get();
                 LOGGER.info("Filter configuration was updated: {}", filter.toString());
                 for (FilterConfigUpdateListener listener : listeners) {

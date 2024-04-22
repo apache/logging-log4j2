@@ -20,7 +20,7 @@ import com.lmax.disruptor.EventTranslator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
@@ -38,7 +38,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public class RingBufferLogEventTranslator implements EventTranslator<RingBufferLogEvent> {
 
-    private ContextDataInjector contextDataInjector;
     private AsyncLogger asyncLogger;
     String loggerName;
     protected @Nullable Marker marker;
@@ -61,6 +60,9 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
     public void translateTo(final RingBufferLogEvent event, final long sequence) {
         try {
             final StringMap contextData = event.getContextData();
+            if (contextData != null) {
+                ContextData.addAll(contextData);
+            }
             // Compute location if necessary
             event.setValues(
                     asyncLogger,
@@ -70,9 +72,7 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
                     level,
                     message,
                     thrown,
-                    // config properties are taken care of in the EventHandler thread
-                    // in the AsyncLogger#actualAsyncLog method
-                    contextDataInjector.injectContextData(null, contextData),
+                    null,
                     contextStack,
                     threadId,
                     threadName,
@@ -90,7 +90,7 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
      * Release references held by this object to allow objects to be garbage-collected.
      */
     void clear() {
-        setBasicValues(null, null, null, null, null, null, null, null, null, null, null, null, false);
+        setBasicValues(null, null, null, null, null, null, null, null, null, null, null, false);
     }
 
     public void setBasicValues(
@@ -105,7 +105,6 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
             final @Nullable StackTraceElement location,
             final Clock clock,
             final NanoClock nanoClock,
-            final ContextDataInjector contextDataInjector,
             final boolean includeLocation) {
         this.asyncLogger = asyncLogger;
         this.loggerName = loggerName;
@@ -118,7 +117,6 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
         this.location = location;
         this.clock = clock;
         this.nanoClock = nanoClock;
-        this.contextDataInjector = contextDataInjector;
         this.requiresLocation = location == null && includeLocation;
     }
 

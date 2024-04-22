@@ -25,9 +25,8 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
-import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.test.TestConstants;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
@@ -99,7 +98,6 @@ public class ThreadContextBenchmark {
     private String[] values;
     private List<Property> propertyList;
 
-    private ContextDataInjector injector;
     private StringMap reusableContextData;
 
     @Setup
@@ -108,9 +106,6 @@ public class ThreadContextBenchmark {
                 TestConstants.THREAD_CONTEXT_MAP_TYPE,
                 IMPLEMENTATIONS.get(threadContextMapAlias).getName());
         ThreadContextBenchmarkAccess.init();
-
-        injector = ContextDataInjectorFactory.createInjector();
-        System.out.println(threadContextMapAlias + ": Injector = " + injector);
 
         reusableContextData =
                 threadContextMapAlias.contains("Array") ? new SortedArrayStringMap() : new OpenHashStringMap<>();
@@ -166,13 +161,18 @@ public class ThreadContextBenchmark {
     @Benchmark
     public StringMap injectWithoutProperties() {
         reusableContextData.clear();
-        return injector.injectContextData(null, reusableContextData);
+        ContextData.addAll(reusableContextData);
+        return reusableContextData;
     }
 
     @Benchmark
     public StringMap injectWithProperties() {
         reusableContextData.clear();
-        return injector.injectContextData(propertyList, reusableContextData);
+        for (Property property : propertyList) {
+            reusableContextData.putValue(property.getName(), property.getValue());
+        }
+        ContextData.addAll(reusableContextData);
+        return reusableContextData;
     }
 
     @Benchmark

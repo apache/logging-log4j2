@@ -138,7 +138,6 @@ Each post-processor is given the `ConfigurableInstanceFactory` being initialized
 The default callback sets up bindings for the following keys if none have been registered.
 Some of these bindings were previously configured through various system properties which are supported via the default callback and its default bindings, though they can be directly registered via custom callbacks with a negative order value.
 
-* `org.apache.logging.log4j.core.ContextDataInjector`
 * `org.apache.logging.log4j.core.config.ConfigurationFactory`
 * `org.apache.logging.log4j.core.config.composite.MergeStrategy`
 * `org.apache.logging.log4j.core.impl.LogEventFactory`

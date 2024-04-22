@@ -19,9 +19,9 @@ package org.apache.logging.log4j.core.impl;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.CoreProperties.LogEventProperties;
+import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -29,7 +29,7 @@ import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Factory for creating the StringMap instances used to initialize LogEvents' {@linkplain LogEvent#getContextData()
- * context data}. When context data is {@linkplain ContextDataInjector injected} into the log event, these StringMap
+ * context data}. When context data is {@linkplain ContextDataProvider injected} into the log event, these StringMap
  * instances may be either populated with key-value pairs from the context, or completely replaced altogether.
  * <p>
  *     By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
@@ -39,7 +39,6 @@ import org.apache.logging.log4j.util.StringMap;
  * </p>
  *
  * @see LogEvent#getContextData()
- * @see ContextDataInjector
  * @see SortedArrayStringMap
  * @since 2.7
  */
