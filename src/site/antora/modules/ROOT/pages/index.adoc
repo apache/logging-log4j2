@@ -29,29 +29,6 @@ The project is actively maintained by a {logging-services-url}/team-list.html[te
 - xref:release-notes.adoc[Where are the release notes?]
 - {logging-services-url}/support[**I need help!**]
 
-[#simple-to-use]
-== Simple to use
-
-Apache Log4j is easy to use. The example below shows you how to create a Logger instance, that
-you can use to log messages to the console. As soon as you can understand this little bit of code, you can start using
-Log4j in your applications.
-
-[source,java]
-----
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
-class Application {
-    private static final Logger LOGGER = LogManager.getLogger(); <1>
-
-    public void action() {
-        LOGGER.info("Hello, World!"); <2>
-    }
-}
-----
-<1> Get a Logger instance
-<2> Log a message on info level
-
 [#features]
 == Features
 
