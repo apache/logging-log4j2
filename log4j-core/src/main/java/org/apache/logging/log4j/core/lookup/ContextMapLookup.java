@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.lookup;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextData;
+import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**

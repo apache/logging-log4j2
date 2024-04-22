@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.impl.ContextData;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.JdkMapAdapterStringMap;
+import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;

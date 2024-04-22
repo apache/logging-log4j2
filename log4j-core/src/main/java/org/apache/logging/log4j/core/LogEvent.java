@@ -22,6 +22,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.MementoLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.jspecify.annotations.Nullable;

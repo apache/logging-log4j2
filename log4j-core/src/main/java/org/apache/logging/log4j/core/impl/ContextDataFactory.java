@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.CoreProperties.LogEventProperties;
+import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
