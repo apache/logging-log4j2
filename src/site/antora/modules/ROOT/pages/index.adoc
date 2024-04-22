@@ -19,15 +19,15 @@
 
 Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
 Log4j is https://security.googleblog.com/2021/12/apache-log4j-vulnerability.html[used by 8% of the Maven ecosystem] and listed as one of https://docs.google.com/spreadsheets/d/1ONZ4qeMq8xmeCHX03lIgIYE4MEXVfVL6oj05lbuXTDM/edit#gid=1024997528[the top 100 critical open source software projects].
-The project is actively maintained by a link:/team-list.html[team] of several volunteers and xref:support.adoc[support]ed by a big community.
+The project is actively maintained by a {logging-services-url}/team-list.html[team] of several volunteers and {logging-services-url}/support[support]ed by a big community.
 
 [#shortcuts]
 == Shortcuts
-- xref:download.adoc#using-a-build-system[How can I add Log4j artifacts to my Maven/Ivy/Gradle project?]
+- xref:manual/installation.adoc[How can I add Log4j artifacts to my Maven/Ivy/Gradle project?]
 - xref:manual/usage.adoc[How can I use the Log4j API?]
 - xref:manual/configuration.adoc[How can I configure my `log4j2.xml`?]
 - xref:release-notes.adoc[Where are the release notes?]
-- xref:support.adoc[**I need help!**]
+- {logging-services-url}/support[**I need help!**]
 
 [#features]
 == Features
@@ -45,7 +45,7 @@ API separation::
 The API for Log4j (i.e., `log4j-api`) is separate from the implementation (i.e., `log4j-core`) making it clear for application developers which classes and methods they can use while ensuring forward compatibility.
 (See xref:manual/api-separation.adoc[API Separation] for details.)
 The Log4j API also provides the most feature rich logging facade in the market; support for various `Message` types (`Object`, `Map`, etc.) besides plain `String`, lambda expressions, parametrized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
-Check out the xref:manual/api.adoc[Java API], link:/log4j/kotlin[Kotlin API], and link:/log4j/scala[Scala API] pages for further information.
+Check out the xref:manual/api.adoc[Java API], {logging-services-url}/log4j/kotlin[Kotlin API], and {logging-services-url}/log4j/scala[Scala API] pages for further information.
 
 No vendor lock-in::
 Even though the Log4j API is implemented by the Log4j at its fullest, users can choose to use another logging backend.
@@ -60,3 +60,26 @@ Extensibility::
 Log4j contains a fully-fledged xref:manual/plugins.adoc[plugin support] that users can leverage to extend its functionality.
 You can easily add your own components (layouts, appenders, filters, etc.) or customizing existing ones (e.g., adding new directives to the xref:manual/layouts.adoc#PatternLayout[Pattern] or xref:manual/json-template-layout.adoc#extending[JSON Template Layout]).
 Check out the xref:manual/extending.adoc[Extending Log4j] page.
+
+[#requirements]
+== Requirements
+
+Log4j 2 runtime requires a minimum of Java 8.
+Older versions of Java are supported by previous releases.
+
+[#older-releases]
+== Older releases
+
+Are you looking for old versions of Log4j?
+While we recommend to always use the latest version, you can find the older versions here:
+
+* {logging-services-url}/1.x/[Log4j 1.x (End of Life, Java 1.4)]
+* {logging-services-url}/2.3.x/[Log4j 2.3.x (Java 6)]
+* {logging-services-url}/2.12.x/[Log4j 2.12.x (Java 7)]
+
+[#compat]
+== Compatibility
+
+The `log4j-1.2-api` module provides compatibility for applications using the Log4j 1 logging methods.
+Log4j 2 also provides support for Log4j 1 configuration files.
+See xref:manual/migration.adoc#ConfigurationCompatibility[Log4j 2 compatibility with Log4j 1] for more information.
