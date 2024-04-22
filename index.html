@@ -11,11 +11,19 @@
 <!-- `@asciidoctor/tabs` extension styles -->
 <link rel="stylesheet" href="./_/css/vendor/tabs.css">
 <style>
+  /* Default `h4` and `h5` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; } 
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
   .toc .toc-menu li[data-level="4"] a {
     padding-left: 2.75rem
   }
-  /* Replace the default highlight.js color for strings from red to green: */
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
   .hljs-string {
     color: #0f8532;
   }
@@ -61,10 +69,10 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="support.html">Support</a>
+    <a class="nav-link" href="https://logging.apache.org/support">Support</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="security.html">Security</a>
+    <a class="nav-link" href="https://logging.apache.org/security">Security</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="thanks.html">Thanks</a>
@@ -81,6 +89,9 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="manual/index.html">Manual</a>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="manual/installation.html">Installation</a>
+  </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="manual/architecture.html">Architecture</a>
   </li>
@@ -282,7 +293,7 @@
 <div class="paragraph">
 <p>Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
 Log4j is <a href="https://security.googleblog.com/2021/12/apache-log4j-vulnerability.html">used by 8% of the Maven ecosystem</a> and listed as one of <a href="https://docs.google.com/spreadsheets/d/1ONZ4qeMq8xmeCHX03lIgIYE4MEXVfVL6oj05lbuXTDM/edit#gid=1024997528">the top 100 critical open source software projects</a>.
-The project is actively maintained by a <a href="/team-list.html">team</a> of several volunteers and <a href="support.html" class="xref page">support</a>ed by a big community.</p>
+The project is actively maintained by a <a href="https://logging.apache.org/team-list.html">team</a> of several volunteers and <a href="https://logging.apache.org/support">support</a>ed by a big community.</p>
 </div>
 </div>
 </div>
@@ -292,7 +303,7 @@ The project is actively maintained by a <a href="/team-list.html">team</a> of se
 <div class="ulist">
 <ul>
 <li>
-<p><a href="download.html#using-a-build-system" class="xref page">How can I add Log4j artifacts to my Maven/Ivy/Gradle project?</a></p>
+<p><a href="manual/installation.html" class="xref page">How can I add Log4j artifacts to my Maven/Ivy/Gradle project?</a></p>
 </li>
 <li>
 <p><a href="manual/usage.html" class="xref page">How can I use the Log4j API?</a></p>
@@ -304,7 +315,7 @@ The project is actively maintained by a <a href="/team-list.html">team</a> of se
 <p><a href="release-notes.html" class="xref page">Where are the release notes?</a></p>
 </li>
 <li>
-<p><a href="support.html" class="xref page"><strong>I need help!</strong></a></p>
+<p><a href="https://logging.apache.org/support"><strong>I need help!</strong></a></p>
 </li>
 </ul>
 </div>
@@ -343,7 +354,7 @@ The project is actively maintained by a <a href="/team-list.html">team</a> of se
 <p>The API for Log4j (i.e., <code>log4j-api</code>) is separate from the implementation (i.e., <code>log4j-core</code>) making it clear for application developers which classes and methods they can use while ensuring forward compatibility.
 (See <a href="manual/api-separation.html" class="xref page">API Separation</a> for details.)
 The Log4j API also provides the most feature rich logging facade in the market; support for various <code>Message</code> types (<code>Object</code>, <code>Map</code>, etc.) besides plain <code>String</code>, lambda expressions, parametrized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
-Check out the <a href="manual/api.html" class="xref page">Java API</a>, <a href="/log4j/kotlin">Kotlin API</a>, and <a href="/log4j/scala">Scala API</a> pages for further information.</p>
+Check out the <a href="manual/api.html" class="xref page">Java API</a>, <a href="https://logging.apache.org/log4j/kotlin">Kotlin API</a>, and <a href="https://logging.apache.org/log4j/scala">Scala API</a> pages for further information.</p>
 </dd>
 <dt class="hdlist1">No vendor lock-in</dt>
 <dd>
@@ -363,6 +374,47 @@ You can easily add your own components (layouts, appenders, filters, etc.) or cu
 Check out the <a href="manual/extending.html" class="xref page">Extending Log4j</a> page.</p>
 </dd>
 </dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="requirements"><a class="anchor" href="#requirements"></a>Requirements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j 2 runtime requires a minimum of Java 8.
+Older versions of Java are supported by previous releases.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="older-releases"><a class="anchor" href="#older-releases"></a>Older releases</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Are you looking for old versions of Log4j?
+While we recommend to always use the latest version, you can find the older versions here:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://logging.apache.org/1.x/">Log4j 1.x (End of Life, Java 1.4)</a></p>
+</li>
+<li>
+<p><a href="https://logging.apache.org/2.3.x/">Log4j 2.3.x (Java 6)</a></p>
+</li>
+<li>
+<p><a href="https://logging.apache.org/2.12.x/">Log4j 2.12.x (Java 7)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="compat"><a class="anchor" href="#compat"></a>Compatibility</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>log4j-1.2-api</code> module provides compatibility for applications using the Log4j 1 logging methods.
+Log4j 2 also provides support for Log4j 1 configuration files.
+See <a href="manual/migration.html#ConfigurationCompatibility" class="xref page">Log4j 2 compatibility with Log4j 1</a> for more information.</p>
 </div>
 </div>
 </div>

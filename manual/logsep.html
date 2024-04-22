@@ -11,11 +11,19 @@
 <!-- `@asciidoctor/tabs` extension styles -->
 <link rel="stylesheet" href="../_/css/vendor/tabs.css">
 <style>
+  /* Default `h4` and `h5` are smaller than the normal text, fix header font sizing: */
+  .doc h1 { font-size: 1.9rem; }
+  .doc h2 { font-size: 1.7rem; }
+  .doc h3 { font-size: 1.5rem; font-weight: 400; }
+  .doc h4 { font-size: 1.3rem; font-weight: 500; }
+  .doc h5 { font-size: 1.1rem; font-weight: 500; text-decoration: underline; }
+  /* Tab header fonts aren't rendered good, adjusting the font weight: */
+  .tablist > ul li { font-weight: 500; } 
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
   .toc .toc-menu li[data-level="4"] a {
     padding-left: 2.75rem
   }
-  /* Replace the default highlight.js color for strings from red to green: */
+  /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
   .hljs-string {
     color: #0f8532;
   }
@@ -61,10 +69,10 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../support.html">Support</a>
+    <a class="nav-link" href="https://logging.apache.org/support">Support</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../security.html">Security</a>
+    <a class="nav-link" href="https://logging.apache.org/security">Security</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../thanks.html">Thanks</a>
@@ -81,6 +89,9 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="index.html">Manual</a>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html">Installation</a>
+  </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="architecture.html">Architecture</a>
   </li>
@@ -387,9 +398,9 @@ shared across all applications.</p>
 </li>
 <li>
 <p>Place the logging jars in the container&#8217;s classpath and use the
-default ClassLoaderContextSelector. Follow the
-<a href="webapp.html" class="xref page">instructions to initialize Log4j 2 in a web
-application</a>. Each application can be configured to share the same
+default ClassLoaderContextSelector.
+See the instructions shared in <a href="webapp.html" class="xref page">Log4j Web</a>.
+Each application can be configured to share the same
 configuration used at the container or can be individually configured.
 If status logging is set to debug in the configuration there will be
 output from when logging is initialized in the container and then again
