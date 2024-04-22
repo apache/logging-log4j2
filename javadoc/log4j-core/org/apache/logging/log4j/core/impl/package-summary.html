@@ -82,6 +82,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Implementation of Log4j 2.</div>
 </div>
+<div class="col-first odd-row-color"><a href="internal/package-summary.html">org.apache.logging.log4j.core.impl.internal</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Log4j 2 private implementation classes.</div>
+</div>
 </div>
 </div>
 </li>
@@ -96,13 +100,13 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Anchor for the ThreadContext.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ContextDataFactory.html" title="class in org.apache.logging.log4j.core.impl">ContextDataFactory</a></div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ContextData.html" title="class in org.apache.logging.log4j.core.impl">ContextData</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Factory for creating the StringMap instances used to initialize LogEvents' <a href="../LogEvent.html#getContextData()">context data</a>.</div>
+<div class="block">General purpose utility class for accessing data accessible through ContextDataProviders.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ContextDataInjectorFactory.html" title="class in org.apache.logging.log4j.core.impl">ContextDataInjectorFactory</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ContextDataFactory.html" title="class in org.apache.logging.log4j.core.impl">ContextDataFactory</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">Factory for ContextDataInjectors.</div>
+<div class="block">Factory for creating the StringMap instances used to initialize LogEvents' <a href="../LogEvent.html#getContextData()">context data</a>.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CoreDefaultBundle.html" title="class in org.apache.logging.log4j.core.impl">CoreDefaultBundle</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
@@ -223,36 +227,20 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Garbage-free LogEventFactory that recycles mutable <a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a> instances.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ThreadContextDataInjector.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector</a></div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ScopedContextDataProvider.html" title="class in org.apache.logging.log4j.core.impl">ScopedContextDataProvider</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block"><code>ThreadContextDataInjector</code> contains a number of strategies for copying key-value pairs from the various
- <code>ThreadContext</code> map implementations into a <code>StringMap</code>.</div>
+<div class="block">ContextDataProvider for <code>Map&lt;String, String&gt;</code> data.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ThreadContextDataProvider.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataProvider</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">The <code>ContextDataInjector</code> used when the ThreadContextMap implementation is a copy-on-write
- StringMap-based data structure.</div>
-</div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ThreadContextDataInjector.ForDefaultThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForDefaultThreadContextMap</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Default <code>ContextDataInjector</code> for the legacy <code>Map&lt;String, String&gt;</code>-based ThreadContext (which is
- also the ThreadContext implementation used for web applications).</div>
-</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ThreadContextDataInjector.ForGarbageFreeThreadContextMap.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForGarbageFreeThreadContextMap</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">The <code>ContextDataInjector</code> used when the ThreadContextMap implementation is a garbage-free
- StringMap-based data structure.</div>
-</div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ThreadContextDataProvider.html" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataProvider</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">ContextDataProvider for ThreadContext data.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ThrowableFormatOptions.html" title="class in org.apache.logging.log4j.core.impl">ThrowableFormatOptions</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ThrowableFormatOptions.html" title="class in org.apache.logging.log4j.core.impl">ThrowableFormatOptions</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Contains options which control how a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a> pattern is formatted.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ThrowableProxy.html" title="class in org.apache.logging.log4j.core.impl">ThrowableProxy</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ThrowableProxy.html" title="class in org.apache.logging.log4j.core.impl">ThrowableProxy</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Wraps a Throwable to add packaging information about each stack trace element.</div>
 </div>
 </div>

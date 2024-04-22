@@ -90,7 +90,6 @@ loadScripts(document, 'script');</script>
 <li><a href="../config/ConfigurationFactory.html" title="class in org.apache.logging.log4j.core.config"><code>ConfigurationFactory</code></a></li>
 <li><a href="../config/composite/MergeStrategy.html" title="interface in org.apache.logging.log4j.core.config.composite"><code>MergeStrategy</code></a></li>
 <li><a href="../lookup/InterpolatorFactory.html" title="interface in org.apache.logging.log4j.core.lookup"><code>InterpolatorFactory</code></a></li>
-<li><a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core"><code>ContextDataInjector</code></a></li>
 <li><a href="LogEventFactory.html" title="interface in org.apache.logging.log4j.core.impl"><code>LogEventFactory</code></a></li>
 <li><a href="../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup"><code>StrSubstitutor</code></a></li>
 </ul>
@@ -138,60 +137,56 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../lookup/ConfigurationStrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">ConfigurationStrSubstitutor</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#configurationStrSubstitutor(org.apache.logging.log4j.core.lookup.InterpolatorFactory)" class="member-name-link">configurationStrSubstitutor</a><wbr>(<a href="../lookup/InterpolatorFactory.html" title="interface in org.apache.logging.log4j.core.lookup">InterpolatorFactory</a>&nbsp;factory)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultContextDataInjector()" class="member-name-link">defaultContextDataInjector</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../selector/ContextSelector.html" title="interface in org.apache.logging.log4j.core.selector">ContextSelector</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultContextSelector(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)" class="member-name-link">defaultContextSelector</a><wbr>(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory&nbsp;instanceFactory)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../selector/ContextSelector.html" title="interface in org.apache.logging.log4j.core.selector">ContextSelector</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultContextSelector(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)" class="member-name-link">defaultContextSelector</a><wbr>(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory&nbsp;instanceFactory)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.message.FlowMessageFactory</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultFlowMessageFactory()" class="member-name-link">defaultFlowMessageFactory</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.message.FlowMessageFactory</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultFlowMessageFactory()" class="member-name-link">defaultFlowMessageFactory</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../config/composite/MergeStrategy.html" title="interface in org.apache.logging.log4j.core.config.composite">MergeStrategy</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultMergeStrategy()" class="member-name-link">defaultMergeStrategy</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../config/composite/MergeStrategy.html" title="interface in org.apache.logging.log4j.core.config.composite">MergeStrategy</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultMergeStrategy()" class="member-name-link">defaultMergeStrategy</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.message.MessageFactory</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultMessageFactory(org.apache.logging.log4j.kit.recycler.RecyclerFactory)" class="member-name-link">defaultMessageFactory</a><wbr>(org.apache.logging.log4j.kit.recycler.RecyclerFactory&nbsp;recyclerFactory)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.message.MessageFactory</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultMessageFactory(org.apache.logging.log4j.kit.recycler.RecyclerFactory)" class="member-name-link">defaultMessageFactory</a><wbr>(org.apache.logging.log4j.kit.recycler.RecyclerFactory&nbsp;recyclerFactory)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../time/NanoClock.html" title="interface in org.apache.logging.log4j.core.time">NanoClock</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultNanoClock()" class="member-name-link">defaultNanoClock</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../time/NanoClock.html" title="interface in org.apache.logging.log4j.core.time">NanoClock</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultNanoClock()" class="member-name-link">defaultNanoClock</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.kit.recycler.RecyclerFactory</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultRecyclerFactory(org.apache.logging.log4j.kit.env.PropertyEnvironment,org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider)" class="member-name-link">defaultRecyclerFactory</a><wbr>(org.apache.logging.log4j.kit.env.PropertyEnvironment&nbsp;environment,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.kit.recycler.RecyclerFactory</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultRecyclerFactory(org.apache.logging.log4j.kit.env.PropertyEnvironment,org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider)" class="member-name-link">defaultRecyclerFactory</a><wbr>(org.apache.logging.log4j.kit.env.PropertyEnvironment&nbsp;environment,
  org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider&nbsp;provider)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultRecyclerFactoryProvider(org.apache.logging.log4j.kit.env.PropertyEnvironment,java.lang.ClassLoader,org.apache.logging.log4j.Logger)" class="member-name-link">defaultRecyclerFactoryProvider</a><wbr>(org.apache.logging.log4j.kit.env.PropertyEnvironment&nbsp;environment,
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultRecyclerFactoryProvider(org.apache.logging.log4j.kit.env.PropertyEnvironment,java.lang.ClassLoader,org.apache.logging.log4j.Logger)" class="member-name-link">defaultRecyclerFactoryProvider</a><wbr>(org.apache.logging.log4j.kit.env.PropertyEnvironment&nbsp;environment,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  org.apache.logging.log4j.Logger&nbsp;statusLogger)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../util/ShutdownCallbackRegistry.html" title="interface in org.apache.logging.log4j.core.util">ShutdownCallbackRegistry</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultShutdownCallbackRegistry()" class="member-name-link">defaultShutdownCallbackRegistry</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Named("StatusLogger") org.apache.logging.log4j.Level</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultStatusLevel()" class="member-name-link">defaultStatusLevel</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../util/ShutdownCallbackRegistry.html" title="interface in org.apache.logging.log4j.core.util">ShutdownCallbackRegistry</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultShutdownCallbackRegistry()" class="member-name-link">defaultShutdownCallbackRegistry</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Named("StatusLogger") org.apache.logging.log4j.Logger</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultStatusLogger()" class="member-name-link">defaultStatusLogger</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Named("StatusLogger") org.apache.logging.log4j.Level</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultStatusLevel()" class="member-name-link">defaultStatusLevel</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../lookup/InterpolatorFactory.html" title="interface in org.apache.logging.log4j.core.lookup">InterpolatorFactory</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#interpolatorFactory(java.util.Map)" class="member-name-link">interpolatorFactory</a><wbr>(@Namespace("Lookup") <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../lookup/StrLookup.html" title="interface in org.apache.logging.log4j.core.lookup">StrLookup</a>&gt;&gt;&nbsp;strLookupPlugins)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Named("StatusLogger") org.apache.logging.log4j.Logger</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultStatusLogger()" class="member-name-link">defaultStatusLogger</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.spi.LoggerContextFactory</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loggerContextFactory(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)" class="member-name-link">loggerContextFactory</a><wbr>(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory&nbsp;instanceFactory)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../lookup/InterpolatorFactory.html" title="interface in org.apache.logging.log4j.core.lookup">InterpolatorFactory</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#interpolatorFactory(java.util.Map)" class="member-name-link">interpolatorFactory</a><wbr>(@Namespace("Lookup") <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../lookup/StrLookup.html" title="interface in org.apache.logging.log4j.core.lookup">StrLookup</a>&gt;&gt;&nbsp;strLookupPlugins)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.spi.Provider</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#provider(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)" class="member-name-link">provider</a><wbr>(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory&nbsp;instanceFactory)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.spi.LoggerContextFactory</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loggerContextFactory(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)" class="member-name-link">loggerContextFactory</a><wbr>(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory&nbsp;instanceFactory)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LogEventFactory.html" title="interface in org.apache.logging.log4j.core.impl">LogEventFactory</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reusableLogEventFactory(org.apache.logging.log4j.core.ContextDataInjector,org.apache.logging.log4j.core.time.Clock,org.apache.logging.log4j.core.time.NanoClock,org.apache.logging.log4j.kit.recycler.RecyclerFactory)" class="member-name-link">reusableLogEventFactory</a><wbr>(<a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>&nbsp;injector,
- <a href="../time/Clock.html" title="interface in org.apache.logging.log4j.core.time">Clock</a>&nbsp;clock,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.logging.log4j.spi.Provider</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#provider(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory)" class="member-name-link">provider</a><wbr>(org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory&nbsp;instanceFactory)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LogEventFactory.html" title="interface in org.apache.logging.log4j.core.impl">LogEventFactory</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reusableLogEventFactory(org.apache.logging.log4j.core.time.Clock,org.apache.logging.log4j.core.time.NanoClock,org.apache.logging.log4j.kit.recycler.RecyclerFactory)" class="member-name-link">reusableLogEventFactory</a><wbr>(<a href="../time/Clock.html" title="interface in org.apache.logging.log4j.core.time">Clock</a>&nbsp;clock,
  <a href="../time/NanoClock.html" title="interface in org.apache.logging.log4j.core.time">NanoClock</a>&nbsp;nanoClock,
  org.apache.logging.log4j.kit.recycler.RecyclerFactory&nbsp;recyclerFactory)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../lookup/RuntimeStrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">RuntimeStrSubstitutor</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#runtimeStrSubstitutor(org.apache.logging.log4j.core.lookup.InterpolatorFactory)" class="member-name-link">runtimeStrSubstitutor</a><wbr>(<a href="../lookup/InterpolatorFactory.html" title="interface in org.apache.logging.log4j.core.lookup">InterpolatorFactory</a>&nbsp;factory)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../lookup/RuntimeStrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">RuntimeStrSubstitutor</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#runtimeStrSubstitutor(org.apache.logging.log4j.core.lookup.InterpolatorFactory)" class="member-name-link">runtimeStrSubstitutor</a><wbr>(<a href="../lookup/InterpolatorFactory.html" title="interface in org.apache.logging.log4j.core.lookup">InterpolatorFactory</a>&nbsp;factory)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -300,20 +295,11 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="defaultContextDataInjector()">
-<h3>defaultContextDataInjector</h3>
-<div class="member-signature"><span class="annotations">@SingletonFactory
-@ConditionalOnMissingBinding
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></span>&nbsp;<span class="element-name">defaultContextDataInjector</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="reusableLogEventFactory(org.apache.logging.log4j.core.ContextDataInjector,org.apache.logging.log4j.core.time.Clock,org.apache.logging.log4j.core.time.NanoClock,org.apache.logging.log4j.kit.recycler.RecyclerFactory)">
+<section class="detail" id="reusableLogEventFactory(org.apache.logging.log4j.core.time.Clock,org.apache.logging.log4j.core.time.NanoClock,org.apache.logging.log4j.kit.recycler.RecyclerFactory)">
 <h3>reusableLogEventFactory</h3>
 <div class="member-signature"><span class="annotations">@SingletonFactory
 @ConditionalOnMissingBinding
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="LogEventFactory.html" title="interface in org.apache.logging.log4j.core.impl">LogEventFactory</a></span>&nbsp;<span class="element-name">reusableLogEventFactory</span><wbr><span class="parameters">(<a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>&nbsp;injector,
- <a href="../time/Clock.html" title="interface in org.apache.logging.log4j.core.time">Clock</a>&nbsp;clock,
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="LogEventFactory.html" title="interface in org.apache.logging.log4j.core.impl">LogEventFactory</a></span>&nbsp;<span class="element-name">reusableLogEventFactory</span><wbr><span class="parameters">(<a href="../time/Clock.html" title="interface in org.apache.logging.log4j.core.time">Clock</a>&nbsp;clock,
  <a href="../time/NanoClock.html" title="interface in org.apache.logging.log4j.core.time">NanoClock</a>&nbsp;nanoClock,
  org.apache.logging.log4j.kit.recycler.RecyclerFactory&nbsp;recyclerFactory)</span></div>
 </section>

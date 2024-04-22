@@ -71,8 +71,13 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Class</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../impl/ThreadContextDataProvider.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataProvider</a></code></div>
+<div class="col-second even-row-color"><code><a href="../../impl/ScopedContextDataProvider.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ScopedContextDataProvider</a></code></div>
 <div class="col-last even-row-color">
+<div class="block">ContextDataProvider for <code>Map&lt;String, String&gt;</code> data.</div>
+</div>
+<div class="col-first odd-row-color"><code>class&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../../impl/ThreadContextDataProvider.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataProvider</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">ContextDataProvider for ThreadContext data.</div>
 </div>
 </div>
@@ -82,10 +87,19 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ThreadContextDataInjector.</span><code><a href="../../impl/ThreadContextDataInjector.html#contextDataProviders" class="member-name-link">contextDataProviders</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ContextData.</span><code><a href="../../impl/ContextData.html#contextDataProviders" class="member-name-link">contextDataProviders</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">ContextDataProviders loaded externally.</div>
+<div class="block">ContextDataProviders loaded via OSGi.</div>
 </div>
+</div>
+<div class="caption"><span>Methods in <a href="../../impl/package-summary.html">org.apache.logging.log4j.core.impl</a> with parameters of type <a href="../ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ContextData.</span><code><a href="../../impl/ContextData.html#addProvider(org.apache.logging.log4j.core.util.ContextDataProvider)" class="member-name-link">addProvider</a><wbr>(<a href="../ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a>&nbsp;provider)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

@@ -79,7 +79,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">ContextDataFactory</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Factory for creating the StringMap instances used to initialize LogEvents' <a href="../LogEvent.html#getContextData()">context data</a>. When context data is <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">injected</a> into the log event, these StringMap
+<div class="block">Factory for creating the StringMap instances used to initialize LogEvents' <a href="../LogEvent.html#getContextData()">context data</a>. When context data is <a href="../util/ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">injected</a> into the log event, these StringMap
  instances may be either populated with key-value pairs from the context, or completely replaced altogether.
  <p>
      By default returns <code>SortedArrayStringMap</code> objects. Can be configured by setting system property
@@ -94,7 +94,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <ul class="see-list">
 <li><a href="../LogEvent.html#getContextData()"><code>LogEvent.getContextData()</code></a></li>
-<li><a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core"><code>ContextDataInjector</code></a></li>
 <li><code>SortedArrayStringMap</code></li>
 </ul>
 </dd>

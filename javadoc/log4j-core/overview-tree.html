@@ -75,6 +75,7 @@ loadScripts(document, 'script');</script>
 <li><a href="org/apache/logging/log4j/core/filter/package-tree.html">org.apache.logging.log4j.core.filter</a>, </li>
 <li><a href="org/apache/logging/log4j/core/filter/mutable/package-tree.html">org.apache.logging.log4j.core.filter.mutable</a>, </li>
 <li><a href="org/apache/logging/log4j/core/impl/package-tree.html">org.apache.logging.log4j.core.impl</a>, </li>
+<li><a href="org/apache/logging/log4j/core/impl/internal/package-tree.html">org.apache.logging.log4j.core.impl.internal</a>, </li>
 <li><a href="org/apache/logging/log4j/core/layout/package-tree.html">org.apache.logging.log4j.core.layout</a>, </li>
 <li><a href="org/apache/logging/log4j/core/lookup/package-tree.html">org.apache.logging.log4j.core.lookup</a>, </li>
 <li><a href="org/apache/logging/log4j/core/net/package-tree.html">org.apache.logging.log4j.core.net</a>, </li>
@@ -434,6 +435,11 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy</a> (implements org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DirectFileRolloverStrategy.html" title="interface in org.apache.logging.log4j.core.appender.rolling">DirectFileRolloverStrategy</a>)</li>
 </ul>
 </li>
+<li class="circle">org.apache.logging.log4j.spi.AbstractScopedContextProvider (implements org.apache.logging.log4j.spi.ScopedContextProvider)
+<ul>
+<li class="circle">org.apache.logging.log4j.core.impl.internal.<a href="org/apache/logging/log4j/core/impl/internal/QueuedScopedContextProvider.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl.internal">QueuedScopedContextProvider</a></li>
+</ul>
+</li>
 <li class="circle">org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/AbstractWatcher.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">AbstractWatcher</a> (implements org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Watcher.html" title="interface in org.apache.logging.log4j.core.util">Watcher</a>)
 <ul>
 <li class="circle">org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/ConfigurationFileWatcher.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config">ConfigurationFileWatcher</a> (implements org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/FileWatcher.html" title="interface in org.apache.logging.log4j.core.util">FileWatcher</a>)</li>
@@ -481,8 +487,8 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/Configurator.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config">Configurator</a></li>
 <li class="circle">org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Constants.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">Constants</a></li>
 <li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ContextAnchor.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ContextAnchor</a></li>
+<li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ContextData.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ContextData</a></li>
 <li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ContextDataFactory.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ContextDataFactory</a></li>
-<li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ContextDataInjectorFactory.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ContextDataInjectorFactory</a></li>
 <li class="circle">org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/ContextMapLookup.html" class="type-name-link" title="class in org.apache.logging.log4j.core.lookup">ContextMapLookup</a> (implements org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/StrLookup.html" title="interface in org.apache.logging.log4j.core.lookup">StrLookup</a>)</li>
 <li class="circle">org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/Core.html" class="type-name-link" title="class in org.apache.logging.log4j.core">Core</a></li>
 <li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreDefaultBundle.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">CoreDefaultBundle</a></li>
@@ -663,6 +669,11 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jProvider.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">Log4jProvider</a></li>
 </ul>
 </li>
+<li class="circle">org.apache.logging.log4j.util.ProviderActivator (implements org.osgi.framework.BundleActivator)
+<ul>
+<li class="circle">org.apache.logging.log4j.core.impl.internal.<a href="org/apache/logging/log4j/core/impl/internal/Activator.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl.internal">Activator</a></li>
+</ul>
+</li>
 <li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Record.html" class="type-name-link external-link" title="class or interface in java.lang">Record</a>
 <ul>
 <li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/CoreProperties.AsyncProperties.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">CoreProperties.AsyncProperties</a></li>
@@ -690,11 +701,13 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/RegexReplacement.html" class="type-name-link" title="class in org.apache.logging.log4j.core.pattern">RegexReplacement</a></li>
 <li class="circle">org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/ReliabilityStrategyFactory.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config">ReliabilityStrategyFactory</a></li>
 <li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ReusableLogEventFactory.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ReusableLogEventFactory</a> (implements org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/LogEventFactory.html" title="interface in org.apache.logging.log4j.core.impl">LogEventFactory</a>)</li>
+<li class="circle">org.apache.logging.log4j.core.impl.internal.<a href="org/apache/logging/log4j/core/impl/internal/ReusableMessageFactory.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl.internal">ReusableMessageFactory</a> (implements org.apache.logging.log4j.kit.message.RecyclingMessageFactory)</li>
 <li class="circle">org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></li>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/RolloverDescriptionImpl.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling">RolloverDescriptionImpl</a> (implements org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/RolloverDescription.html" title="interface in org.apache.logging.log4j.core.appender.rolling">RolloverDescription</a>)</li>
 <li class="circle">org.apache.logging.log4j.core.appender.routing.<a href="org/apache/logging/log4j/core/appender/routing/Route.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.routing">Route</a></li>
 <li class="circle">org.apache.logging.log4j.core.appender.routing.<a href="org/apache/logging/log4j/core/appender/routing/Routes.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.routing">Routes</a></li>
 <li class="circle">org.apache.logging.log4j.core.appender.routing.<a href="org/apache/logging/log4j/core/appender/routing/Routes.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.routing">Routes.Builder</a> (implements org.apache.logging.log4j.plugins.util.Builder&lt;T&gt;)</li>
+<li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ScopedContextDataProvider.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ScopedContextDataProvider</a> (implements org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a>)</li>
 <li class="circle">org.apache.logging.log4j.core.config.arbiters.<a href="org/apache/logging/log4j/core/config/arbiters/SelectArbiter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config.arbiters">SelectArbiter</a></li>
 <li class="circle">org.apache.logging.log4j.core.config.arbiters.<a href="org/apache/logging/log4j/core/config/arbiters/SelectArbiter.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config.arbiters">SelectArbiter.Builder</a> (implements org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Builder.html" title="interface in org.apache.logging.log4j.core.util">Builder</a>&lt;T&gt;)</li>
 <li class="circle">java.nio.file.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/SimpleFileVisitor.html" class="type-name-link external-link" title="class or interface in java.nio.file">SimpleFileVisitor</a>&lt;T&gt; (implements java.nio.file.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/FileVisitor.html" title="class or interface in java.nio.file" class="external-link">FileVisitor</a>&lt;T&gt;)
@@ -742,10 +755,6 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Log4jThread.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">Log4jThread</a></li>
 </ul>
 </li>
-<li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector</a></li>
-<li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForCopyOnWriteThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForCopyOnWriteThreadContextMap</a> (implements org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>)</li>
-<li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForDefaultThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForDefaultThreadContextMap</a> (implements org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>)</li>
-<li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataInjector.ForGarbageFreeThreadContextMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataInjector.ForGarbageFreeThreadContextMap</a> (implements org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>)</li>
 <li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/ThreadContextDataProvider.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">ThreadContextDataProvider</a> (implements org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a>)</li>
 <li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" class="type-name-link external-link" title="class or interface in java.lang">Throwable</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)
 <ul>
@@ -834,7 +843,6 @@ loadScripts(document, 'script');</script>
 </li>
 <li class="circle">org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/ConfigurationAware.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config">ConfigurationAware</a></li>
 <li class="circle">org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/ConfigurationExtension.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config">ConfigurationExtension</a></li>
-<li class="circle">org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ContextDataInjector.html" class="type-name-link" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a></li>
 <li class="circle">org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ContextDataProvider.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.util">ContextDataProvider</a></li>
 <li class="circle">org.apache.logging.log4j.core.selector.<a href="org/apache/logging/log4j/core/selector/ContextSelector.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.selector">ContextSelector</a>
 <ul>

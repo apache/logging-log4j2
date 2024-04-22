@@ -267,7 +267,7 @@ loadScripts(document, 'script');</script>
  Context data (also known as Mapped Diagnostic Context or MDC) is data that is set by the application to be
  included in all subsequent log events. The default source for context data is the <code>ThreadContext</code> (and
  <a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#PropertySubstitution">properties</a>
- configured on the Logger that logged the event), but users can configure a custom <a href="ContextDataInjector.html" title="interface in org.apache.logging.log4j.core"><code>ContextDataInjector</code></a>
+ configured on the Logger that logged the event), but users can configure a custom <a href="util/ContextDataProvider.html" title="interface in org.apache.logging.log4j.core.util"><code>ContextDataProvider</code></a>
  to inject key-value pairs from any arbitrary source.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -277,7 +277,6 @@ loadScripts(document, 'script');</script>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
-<li><a href="ContextDataInjector.html" title="interface in org.apache.logging.log4j.core"><code>ContextDataInjector</code></a></li>
 <li><code>ThreadContext</code></li>
 </ul>
 </dd>

@@ -120,6 +120,12 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="manual/thread-context.html">Thread Context</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/scoped-context.html">Scoped Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="manual/resource-logger.html">Resource Logging</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
@@ -1406,7 +1412,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -10626,7 +10632,7 @@ DENY.</p>
 <p>Compares against a log level that is associated with a context value.</p>
 </div>
 <div class="paragraph">
-<p>By default the context is the <code>org.apache.logging.log4j.ThreadContext</code>, but users may <em>configure</em> a custom <code>org.apache.logging.log4j.core.ContextDataInjector</code> which obtains context data from some other source.</p>
+<p>By default the context is the <code>org.apache.logging.log4j.ThreadContext</code>, but users may <em>configure</em> a custom <code>org.apache.logging.log4j.core.util.ContextDataProvider</code> which obtains context data from some other source.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-DynamicThresholdFilter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-DynamicThresholdFilter_XML-snippet"></a>XML snippet</h5>
@@ -13179,7 +13185,7 @@ The default is false.</p>
 <p>Looks up keys from the context.</p>
 </div>
 <div class="paragraph">
-<p>By default this is the <code>org.apache.logging.log4j.ThreadContext</code>, but users may <em>configure</em> a custom <code>org.apache.logging.log4j.core.ContextDataInjector</code> which obtains context data from some other source.</p>
+<p>By default this is the <code>org.apache.logging.log4j.ThreadContext</code>, but users may <em>configure</em> a custom <code>org.apache.logging.log4j.core.util.ContextDataProvider</code> which obtains context data from some other source.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-ContextMapLookup_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-ContextMapLookup_XML-snippet"></a>XML snippet</h5>

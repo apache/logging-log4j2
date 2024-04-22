@@ -120,6 +120,12 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="thread-context.html">Thread Context</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scoped-context.html">Scoped Context</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="resource-logger.html">Resource Logging</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
@@ -972,8 +978,7 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
 <div class="paragraph">
 <p>The <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider.html"><code>ContextDataProvider</code></a>
 (introduced in Log4j 2.13.2) is an interface applications and libraries can use to inject
-additional key-value pairs into the LogEvent&#8217;s context data. Log4j&#8217;s
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ThreadContextDataInjector.html"><code>ThreadContextDataInjector</code></a>
+additional key-value pairs into the LogEvent&#8217;s context data. Log4j
 uses <code>java.util.ServiceLoader</code> to locate and load <code>ContextDataProvider</code> instances.
 Log4j itself adds the ThreadContext data to the LogEvent using
 <code>org.apache.logging.log4j.core.impl.ThreadContextDataProvider</code>. Custom implementations

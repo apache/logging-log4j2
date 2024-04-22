@@ -81,14 +81,13 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Record Components:</dt>
 <dd><code><span id="param-type">type</span></code> - The <code>StringMap</code> class to use for context data.</dd>
-<dd><code><span id="param-injector">injector</span></code> - The <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core"><code>ContextDataInjector</code></a> to use to retrieve context data.</dd>
 </dl>
 <dl class="notes">
 <dt>Enclosing class:</dt>
 <dd><a href="CoreProperties.html" title="class in org.apache.logging.log4j.core.impl">CoreProperties</a></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public static record </span><span class="element-name type-name-label">CoreProperties.ContextDataProperties</span>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.apache.logging.log4j.util.StringMap&gt;&nbsp;type, @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>&gt;&nbsp;injector)
+<div class="type-signature"><span class="modifiers">public static record </span><span class="element-name type-name-label">CoreProperties.ContextDataProperties</span>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.apache.logging.log4j.util.StringMap&gt;&nbsp;type)
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Record.html" title="class or interface in java.lang" class="external-link">Record</a></span></div>
 </section>
 <section class="summary">
@@ -101,8 +100,7 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.Class,java.lang.Class)" class="member-name-link">ContextDataProperties</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.apache.logging.log4j.util.StringMap&gt;&nbsp;type,
- @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>&gt;&nbsp;injector)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.Class)" class="member-name-link">ContextDataProperties</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.apache.logging.log4j.util.StringMap&gt;&nbsp;type)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Creates an instance of a <code>ContextDataProperties</code> record class.</div>
 </div>
@@ -130,19 +128,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns a hash code value for this object.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#injector()" class="member-name-link">injector</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the value of the <a href="#param-injector"><code>injector</code></a> record component.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns a string representation of this record class.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.apache.logging.log4j.util.StringMap&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#type()" class="member-name-link">type</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.apache.logging.log4j.util.StringMap&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#type()" class="member-name-link">type</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <a href="#param-type"><code>type</code></a> record component.</div>
 </div>
 </div>
@@ -163,15 +156,13 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.lang.Class,java.lang.Class)">
+<section class="detail" id="&lt;init&gt;(java.lang.Class)">
 <h3>ContextDataProperties</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ContextDataProperties</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.apache.logging.log4j.util.StringMap&gt;&nbsp;type,
- @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>&gt;&nbsp;injector)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ContextDataProperties</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.apache.logging.log4j.util.StringMap&gt;&nbsp;type)</span></div>
 <div class="block">Creates an instance of a <code>ContextDataProperties</code> record class.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>type</code> - the value for the <a href="#param-type"><code>type</code></a> record component</dd>
-<dd><code>injector</code> - the value for the <a href="#param-injector"><code>injector</code></a> record component</dd>
 </dl>
 </section>
 </li>
@@ -232,17 +223,6 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the value of the <a href="#param-type"><code>type</code></a> record component</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="injector()">
-<h3>injector</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../ContextDataInjector.html" title="interface in org.apache.logging.log4j.core">ContextDataInjector</a>&gt;</span>&nbsp;<span class="element-name">injector</span>()</div>
-<div class="block">Returns the value of the <a href="#param-injector"><code>injector</code></a> record component.</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>the value of the <a href="#param-injector"><code>injector</code></a> record component</dd>
 </dl>
 </section>
 </li>

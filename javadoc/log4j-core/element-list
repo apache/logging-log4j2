@@ -21,6 +21,7 @@ org.apache.logging.log4j.core.config.xml
 org.apache.logging.log4j.core.filter
 org.apache.logging.log4j.core.filter.mutable
 org.apache.logging.log4j.core.impl
+org.apache.logging.log4j.core.impl.internal
 org.apache.logging.log4j.core.layout
 org.apache.logging.log4j.core.lookup
 org.apache.logging.log4j.core.net
