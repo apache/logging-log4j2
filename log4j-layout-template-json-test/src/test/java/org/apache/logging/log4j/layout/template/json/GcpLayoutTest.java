@@ -27,6 +27,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.Test;
 
 class GcpLayoutTest {
@@ -51,6 +54,29 @@ class GcpLayoutTest {
     @Test
     void test_full_log_events() {
         LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT).forEach(GcpLayoutTest::verifySerialization);
+    }
+
+    @Test
+    void test_trace_context() {
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("trace_id", "4bf92f3577b34da6a3ce929d0e0e4736");
+        contextData.putValue("span_id", "00f067aa0ba902b7");
+
+        LogEvent logEvent =
+                Log4jLogEvent.newBuilder().setContextData(contextData).build();
+
+        usingSerializedLogEventAccessor(LAYOUT, logEvent, accessor -> {
+            // Verify trace id
+            assertThat(accessor.getString("logging.googleapis.com/trace"))
+                    .isEqualTo("4bf92f3577b34da6a3ce929d0e0e4736");
+
+            // Verify span ID
+            assertThat(accessor.getString("logging.googleapis.com/spanId")).isEqualTo("00f067aa0ba902b7");
+
+            // Verify trace sampled
+            assertThat(accessor.getBoolean("logging.googleapis.com/trace_sampled"))
+                    .isTrue();
+        });
     }
 
     private static void verifySerialization(final LogEvent logEvent) {
