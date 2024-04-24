@@ -32,6 +32,7 @@ jobs:
         with:
           # Labels need to match with the ones in `labeler.yaml`!
           only-labels: waiting-for-user
+          days-before-stale: 7
           stale-issue-message: >
             This issue is stale because it has been waiting for your feedback for more than 60 days.
             The Apache Logging Services community values every submitted issue, but without additional information from you,
