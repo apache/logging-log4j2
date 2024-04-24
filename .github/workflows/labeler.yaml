@@ -42,4 +42,3 @@ jobs:
          GH_TOKEN: ${{ github.token }}
        run: |
          gh issue edit $ISSUE --add-label 'waiting-for-maintainer' --remove-label 'waiting-for-user'
-
