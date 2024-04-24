@@ -42,9 +42,7 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
@@ -139,20 +137,13 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         if (providedInstance != null) {
             return providedInstance;
         }
-        final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
-        if (Strings.isNotBlank(className)) {
-            try {
-                return LoaderUtil.newCheckedInstanceOf(className, instanceType);
-            } catch (final Throwable error) {
-                StatusLogger.getLogger()
-                        .error(
-                                "failed instantiating the `{}` class obtained from the `{}` property",
-                                className,
-                                propertyName,
-                                error);
-            }
+        try {
+            return LoaderUtil.newCheckedInstanceOfProperty(propertyName, instanceType, fallbackInstanceSupplier);
+        } catch (final Exception error) {
+            final String message =
+                    String.format("failed instantiating the class pointed by the `%s` property", propertyName);
+            throw new RuntimeException(message, error);
         }
-        return fallbackInstanceSupplier.get();
     }
 
     protected Object writeReplace() throws ObjectStreamException {
