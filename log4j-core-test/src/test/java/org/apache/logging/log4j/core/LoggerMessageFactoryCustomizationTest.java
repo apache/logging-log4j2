@@ -23,42 +23,18 @@ import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-class LoggerMessageFactoryTest {
-
-    @Test
-    @SetSystemProperty(key = "log4j2.is.webapp", value = "false")
-    @SetSystemProperty(key = "log4j2.enableThreadLocals", value = "true")
-    @ClearSystemProperty(key = "log4j2.messageFactory")
-    @ClearSystemProperty(key = "log4j2.flowMessageFactory")
-    void defaults_should_match_when_thread_locals_enabled() {
-        assertDefaultsMatch(ReusableMessageFactory.INSTANCE);
-    }
-
-    @Test
-    @SetSystemProperty(key = "log4j2.enableThreadLocals", value = "false")
-    @ClearSystemProperty(key = "log4j2.messageFactory")
-    @ClearSystemProperty(key = "log4j2.flowMessageFactory")
-    void defaults_should_match_when_thread_locals_disabled() {
-        assertDefaultsMatch(ParameterizedMessageFactory.INSTANCE);
-    }
-
-    private static void assertDefaultsMatch(final MessageFactory expectedMessageFactory) {
-        final LoggerContext loggerContext = new LoggerContext(LoggerMessageFactoryTest.class.getSimpleName());
-        final Logger logger = new Logger(loggerContext, "assertDefaultsMatch", null, null);
-        assertThat((MessageFactory) logger.getMessageFactory()).isSameAs(expectedMessageFactory);
-        assertThat(logger.getFlowMessageFactory()).isSameAs(DefaultFlowMessageFactory.INSTANCE);
-    }
+class LoggerMessageFactoryCustomizationTest {
 
     @Test
     @ClearSystemProperty(key = "log4j2.messageFactory")
     @ClearSystemProperty(key = "log4j2.flowMessageFactory")
     void arguments_should_be_honored() {
-        final LoggerContext loggerContext = new LoggerContext(LoggerMessageFactoryTest.class.getSimpleName());
+        final LoggerContext loggerContext =
+                new LoggerContext(LoggerMessageFactoryCustomizationTest.class.getSimpleName());
         final Logger logger = new Logger(
                 loggerContext, "arguments_should_be_honored", new TestMessageFactory(), new TestFlowMessageFactory());
         assertTestMessageFactories(logger);
@@ -67,12 +43,13 @@ class LoggerMessageFactoryTest {
     @Test
     @SetSystemProperty(
             key = "log4j2.messageFactory",
-            value = "org.apache.logging.log4j.core.LoggerMessageFactoryTest$TestMessageFactory")
+            value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$TestMessageFactory")
     @SetSystemProperty(
             key = "log4j2.flowMessageFactory",
-            value = "org.apache.logging.log4j.core.LoggerMessageFactoryTest$TestFlowMessageFactory")
+            value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$TestFlowMessageFactory")
     void properties_should_be_honored() {
-        final LoggerContext loggerContext = new LoggerContext(LoggerMessageFactoryTest.class.getSimpleName());
+        final LoggerContext loggerContext =
+                new LoggerContext(LoggerMessageFactoryCustomizationTest.class.getSimpleName());
         final Logger logger = new Logger(loggerContext, "properties_should_be_honored", null, null);
         assertTestMessageFactories(logger);
     }
