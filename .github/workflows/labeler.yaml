@@ -35,6 +35,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+     # The `waiting-for-maintainer` label needs to match with the one in `close-stale.yaml`!
      - name: Add `waiting-for-maintainer` label
        if: env.user_type == 'user'
        env:

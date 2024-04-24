@@ -30,6 +30,7 @@ jobs:
     steps:
       - uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e    # v9.0.0
         with:
+          # Labels need to match with the ones in `labeler.yaml`!
           only-labels: waiting-for-user
           stale-issue-message: >
             This issue is stale because it has been waiting for your feedback for more than 60 days.
