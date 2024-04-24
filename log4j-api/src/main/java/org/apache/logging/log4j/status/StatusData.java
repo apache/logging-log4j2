@@ -167,9 +167,9 @@ public class StatusData implements Serializable {
     @SuppressWarnings("DefaultCharset")
     public String getFormattedStatus() {
         final StringBuilder sb = new StringBuilder();
-        final String formattedInstant =
-                instantFormatter != null ? instantFormatter.format(instant) : instant.toString();
-        sb.append(formattedInstant);
+        // DateTimeFormatter.ISO_INSTANT is the default used in instant.toString()
+        DateTimeFormatter formatterToUse = instantFormatter != null ? instantFormatter : DateTimeFormatter.ISO_INSTANT;
+        formatterToUse.formatTo(instant, sb);
         sb.append(SPACE);
         sb.append(getThreadName());
         sb.append(SPACE);
