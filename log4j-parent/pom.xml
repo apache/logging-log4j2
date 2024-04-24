@@ -153,7 +153,7 @@
     <plexus-utils.version>3.5.1</plexus-utils.version>
     <slf4j2.version>2.0.13</slf4j2.version>
     <system-stubs.version>2.1.6</system-stubs.version>
-    <tomcat-juli.version>10.1.20</tomcat-juli.version>
+    <tomcat-juli.version>10.1.23</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
     <xmlunit.version>2.9.1</xmlunit.version>
