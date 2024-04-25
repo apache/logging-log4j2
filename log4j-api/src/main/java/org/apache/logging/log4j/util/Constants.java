@@ -30,7 +30,7 @@ public final class Constants {
      *     If {@code true} Log4j disables the features, which are incompatible with a typical servlet application:
      * </p>
      * <ol>
-     *     <li>It disables the usage of {@link ThreadLocal}s for object pooling (see {@link #ENABLE_THREADLOCALS},</li>
+     *     <li>It disables the usage of {@link ThreadLocal}s for object pooling (unless the user has explicitly provided a {@link #ENABLE_THREADLOCALS} property)</li>
      *     <li>It uses a web-application safe implementation of {@link org.apache.logging.log4j.spi.ThreadContextMap}
      *     (see {@link Provider#getThreadContextMap()}),</li>
      *     <li>It disables the shutdown hook,</li>
