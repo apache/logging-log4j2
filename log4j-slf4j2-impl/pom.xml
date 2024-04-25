@@ -16,7 +16,9 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
@@ -25,9 +27,13 @@
   </parent>
 
   <artifactId>log4j-slf4j2-impl</artifactId>
-  <packaging>jar</packaging>
-  <name>Apache Log4j SLF4J 2.0 Binding</name>
-  <description>The Apache Log4j SLF4J 2.0 API binding to Log4j 2 Core</description>
+
+  <name>SLF4J 2 Provider for Log4j API</name>
+
+  <description>SLF4J 2 provider (binding) for the Apache Log4j API.
+    It forwards SLF4J 2 calls to the Log4j API.
+    This effectively allows using Log4j as an implementation of SLF4J 2.
+    (Refer to the `log4j-to-slf4j` artifact for forwarding the Log4j API to SLF4J.)</description>
 
   <properties>
     <slf4j2.version>2.0.9</slf4j2.version>
