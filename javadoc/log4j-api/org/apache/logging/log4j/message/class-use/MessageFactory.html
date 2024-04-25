@@ -393,28 +393,35 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><code><a href="../../spi/AbstractLogger.html#%3Cinit%3E(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Creates a new named logger with a particular <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message"><code>MessageFactory</code></a>.</div>
+<div class="block">Constructs an instance using the provided name and <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message"><code>MessageFactory</code></a>.</div>
 </div>
 <div class="col-first odd-row-color"><code>protected </code></div>
-<div class="col-second odd-row-color"><code><a href="../../spi/AbstractResourceLogger.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.util.function.Supplier,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractResourceLogger</a><wbr>(<a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
+<div class="col-second odd-row-color"><code><a href="../../spi/AbstractLogger.html#%3Cinit%3E(java.lang.String,org.apache.logging.log4j.message.MessageFactory,org.apache.logging.log4j.message.FlowMessageFactory)" class="member-name-link">AbstractLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory,
+ <a href="../FlowMessageFactory.html" title="interface in org.apache.logging.log4j.message">FlowMessageFactory</a>&nbsp;flowMessageFactory)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">The canonical constructor.</div>
+</div>
+<div class="col-first even-row-color"><code>protected </code></div>
+<div class="col-second even-row-color"><code><a href="../../spi/AbstractResourceLogger.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.util.function.Supplier,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractResourceLogger</a><wbr>(<a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&gt;&nbsp;supplier,
  <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-second even-row-color"><code><a href="../../spi/AbstractResourceLogger.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.util.Map,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractResourceLogger</a><wbr>(<a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected </code></div>
+<div class="col-second odd-row-color"><code><a href="../../spi/AbstractResourceLogger.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.util.Map,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractResourceLogger</a><wbr>(<a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>?&gt;&nbsp;map,
  <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../../spi/ExtendedLoggerWrapper.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">ExtendedLoggerWrapper</a><wbr>(<a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../spi/ExtendedLoggerWrapper.html#%3Cinit%3E(org.apache.logging.log4j.spi.ExtendedLogger,java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">ExtendedLoggerWrapper</a><wbr>(<a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a>&nbsp;logger,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Constructor that wraps and existing Logger.</div>
 </div>
-<div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../spi/MessageFactory2Adapter.html#%3Cinit%3E(org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">MessageFactory2Adapter</a><wbr>(<a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;wrapped)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../../spi/MessageFactory2Adapter.html#%3Cinit%3E(org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">MessageFactory2Adapter</a><wbr>(<a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;wrapped)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

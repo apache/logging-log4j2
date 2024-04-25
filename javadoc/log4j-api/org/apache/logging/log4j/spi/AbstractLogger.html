@@ -160,21 +160,32 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <section class="constructor-summary" id="constructor-summary">
 <h2>Constructor Summary</h2>
 <div class="caption"><span>Constructors</span></div>
-<div class="summary-table two-column-summary">
-<div class="table-header col-first">Constructor</div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier</div>
+<div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">AbstractLogger</a>()</code></div>
 <div class="col-last even-row-color">
-<div class="block">Creates a new logger named after this class (or subclass).</div>
+<div class="block">Constructs an instance named after this class.</div>
 </div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
 <div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String)" class="member-name-link">AbstractLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Creates a new named logger.</div>
+<div class="block">Constructs an instance using the provided name.</div>
 </div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">AbstractLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Creates a new named logger with a particular <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message"><code>MessageFactory</code></a>.</div>
+<div class="block">Constructs an instance using the provided name and <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message"><code>MessageFactory</code></a>.</div>
+</div>
+<div class="col-first odd-row-color"><code>protected </code></div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,org.apache.logging.log4j.message.MessageFactory,org.apache.logging.log4j.message.FlowMessageFactory)" class="member-name-link">AbstractLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory,
+ <a href="../message/FlowMessageFactory.html" title="interface in org.apache.logging.log4j.message">FlowMessageFactory</a>&nbsp;flowMessageFactory)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">The canonical constructor.</div>
 </div>
 </div>
 </section>
@@ -3903,17 +3914,17 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <section class="detail" id="&lt;init&gt;()">
 <h3>AbstractLogger</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">AbstractLogger</span>()</div>
-<div class="block">Creates a new logger named after this class (or subclass).</div>
+<div class="block">Constructs an instance named after this class.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="&lt;init&gt;(java.lang.String)">
 <h3>AbstractLogger</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">AbstractLogger</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
-<div class="block">Creates a new named logger.</div>
+<div class="block">Constructs an instance using the provided name.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>name</code> - the logger name</dd>
+<dd><code>name</code> - the logger name (if null, will be derived from this class or subclass)</dd>
 </dl>
 </section>
 </li>
@@ -3922,11 +3933,26 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <h3>AbstractLogger</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">AbstractLogger</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</span></div>
-<div class="block">Creates a new named logger with a particular <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message"><code>MessageFactory</code></a>.</div>
+<div class="block">Constructs an instance using the provided name and <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message"><code>MessageFactory</code></a>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>name</code> - the logger name</dd>
-<dd><code>messageFactory</code> - the message factory, if null then use the default message factory.</dd>
+<dd><code>name</code> - the logger name (if null, will be derived from this class)</dd>
+<dd><code>messageFactory</code> - the <a href="../message/Message.html" title="interface in org.apache.logging.log4j.message"><code>Message</code></a> factory (if null, <a href="../message/ParameterizedMessageFactory.html" title="class in org.apache.logging.log4j.message"><code>ParameterizedMessageFactory</code></a> will be used)</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(java.lang.String,org.apache.logging.log4j.message.MessageFactory,org.apache.logging.log4j.message.FlowMessageFactory)">
+<h3>AbstractLogger</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">AbstractLogger</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory,
+ <a href="../message/FlowMessageFactory.html" title="interface in org.apache.logging.log4j.message">FlowMessageFactory</a>&nbsp;flowMessageFactory)</span></div>
+<div class="block">The canonical constructor.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>name</code> - the logger name (if null, will be derived from this class)</dd>
+<dd><code>messageFactory</code> - the <a href="../message/Message.html" title="interface in org.apache.logging.log4j.message"><code>Message</code></a> factory (if null, <a href="../message/ParameterizedMessageFactory.html" title="class in org.apache.logging.log4j.message"><code>ParameterizedMessageFactory</code></a> will be used)</dd>
+<dd><code>flowMessageFactory</code> - the <a href="../message/FlowMessage.html" title="interface in org.apache.logging.log4j.message"><code>FlowMessage</code></a> factory (if null, <a href="../message/DefaultFlowMessageFactory.html" title="class in org.apache.logging.log4j.message"><code>DefaultFlowMessageFactory</code></a> will be used)</dd>
 </dl>
 </section>
 </li>
