@@ -326,10 +326,10 @@ public class Provider {
             return threadContextMapClass;
         }
         // Default based on properties
-        if (props.getBooleanProperty(GC_FREE_THREAD_CONTEXT_PROPERTY, !Constants.IS_WEB_APP)) {
+        if (props.getBooleanProperty(GC_FREE_THREAD_CONTEXT_PROPERTY)) {
             return GARBAGE_FREE_CONTEXT_MAP;
         }
-        return Constants.IS_WEB_APP ? WEB_APP_CONTEXT_MAP : COPY_ON_WRITE_CONTEXT_MAP;
+        return Constants.ENABLE_THREADLOCALS ? COPY_ON_WRITE_CONTEXT_MAP : WEB_APP_CONTEXT_MAP;
     }
 
     /**
