@@ -16,17 +16,23 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-to-slf4j</artifactId>
-  <packaging>jar</packaging>
-  <name>Apache Log4j to SLF4J Adapter</name>
-  <description>The Apache Log4j binding between Log4j 2 API and SLF4J.</description>
+
+  <name>Log4j API to SLF4J Adapter</name>
+
+  <description>Forwards the Log4j API calls to SLF4J.
+    (Refer to the `log4j-slf4j[2]-impl` artifacts for forwarding SLF4J to the Log4j API.)</description>
+
   <properties>
 
     <!--
