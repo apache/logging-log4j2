@@ -47,7 +47,7 @@ public final class Constants {
                     isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet"));
 
     /**
-     * Kill switch to disable the usage of {@link ThreadLocal}s for object pooling
+     * Specifies whether Log4j can bind non-JRE types to {@link ThreadLocal}s
      * <p>
      *     The value of this constant is {@code true}, unless Log4j is running in a servlet container (cf.
      *     {@link #IS_WEB_APP}). Use the {@code "log4j2.enableThreadlocals} system property to override its value.
@@ -58,11 +58,9 @@ public final class Constants {
      *     true}.
      * </p>
      * <p>
-     *     <strong>Warning:</strong> This setting does <strong>not</strong> disable the usage of {@code ThreadLocal}s
-     *     for other purposes than object pooling. For example the {@link org.apache.logging.log4j.ThreadContext}
-     *     API, will user {@code ThreadLocal}s even if this constant is set to {@code false}.
+     *     <strong>Warning:</strong> This setting does <strong>not</strong> disable all thread locals. It only
+     *     disables those thread locals that can cause a classloader memory leak.
      * </p>
-     * @see Provider#getThreadContextMap()
      */
     public static final boolean ENABLE_THREADLOCALS =
             PropertiesUtil.getProperties().getBooleanProperty("log4j2.enable.threadlocals", !IS_WEB_APP);
