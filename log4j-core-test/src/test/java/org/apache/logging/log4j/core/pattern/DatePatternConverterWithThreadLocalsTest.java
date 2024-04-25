@@ -19,8 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
 
-@SetTestProperty(key = "log4j2.is.webapp", value = "false")
-@SetTestProperty(key = "log4j2.enable.threadlocals", value = "true")
+@SetTestProperty(key = "log4j2.enableThreadlocals", value = "true")
 @UsingTestProperties
 class DatePatternConverterWithThreadLocalsTest extends DatePatternConverterTestBase {
 

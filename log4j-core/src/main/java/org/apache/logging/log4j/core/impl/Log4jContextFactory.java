@@ -46,9 +46,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallbackRegistry {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private static final boolean SHUTDOWN_HOOK_ENABLED =
-            PropertiesUtil.getProperties().getBooleanProperty(ShutdownCallbackRegistry.SHUTDOWN_HOOK_ENABLED, true)
-                    && !Constants.IS_WEB_APP;
+    private static final boolean SHUTDOWN_HOOK_ENABLED = PropertiesUtil.getProperties()
+            .getBooleanProperty(ShutdownCallbackRegistry.SHUTDOWN_HOOK_ENABLED, !Constants.IS_WEB_APP);
 
     private final ContextSelector selector;
     private final ShutdownCallbackRegistry shutdownCallbackRegistry;

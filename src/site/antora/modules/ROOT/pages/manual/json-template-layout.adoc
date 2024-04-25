@@ -1085,7 +1085,7 @@ Resolves `logEvent.getMessage().getParameters()`.
 Regarding garbage footprint, `stringified` flag translates to
 `String.valueOf(value)`, hence mind not-`String`-typed values. Further,
 `logEvent.getMessage()` is expected to implement `ParameterVisitable` interface,
-which is the case if `log4j2.enableThreadLocals` property set to true.
+which is the case if `log4j2.enableThreadlocals` property set to true.
 ====
 
 ====== Examples

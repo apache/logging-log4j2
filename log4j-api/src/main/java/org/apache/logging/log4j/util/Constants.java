@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.spi.Provider;
+
 /**
  * Log4j API Constants.
  *
@@ -23,9 +25,21 @@ package org.apache.logging.log4j.util;
  */
 public final class Constants {
     /**
-     * {@code true} if we think we are running in a web container, based on the boolean value of system property
-     * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
-     * is present in the classpath.
+     * Specifies whether Log4j is used in a servlet container
+     * <p>
+     *     If {@code true} Log4j disables the features, which are incompatible with a typical servlet application:
+     * </p>
+     * <ol>
+     *     <li>It disables the usage of {@link ThreadLocal}s for object pooling (see {@link #ENABLE_THREADLOCALS},</li>
+     *     <li>It uses a web-application safe implementation of {@link org.apache.logging.log4j.spi.ThreadContextMap}
+     *     (see {@link Provider#getThreadContextMap()}),</li>
+     *     <li>It disables the shutdown hook,</li>
+     *     <li>It uses the caller thread to send JMX notifications.</li>
+     * </ol>
+     * <p>
+     *     The value of this constant depends upon the presence of the Servlet API on the classpath and can be
+     *     overridden using the {@code "log4j2.isWebapp"} system property.
+     * </p>
      */
     public static final boolean IS_WEB_APP = PropertiesUtil.getProperties()
             .getBooleanProperty(
@@ -33,14 +47,25 @@ public final class Constants {
                     isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet"));
 
     /**
-     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
+     * Kill switch to disable the usage of {@link ThreadLocal}s for object pooling
      * <p>
-     * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
-     * "log4j2.enable.threadlocals" to "false".
+     *     The value of this constant is {@code true}, unless Log4j is running in a servlet container (cf.
+     *     {@link #IS_WEB_APP}). Use the {@code "log4j2.enableThreadlocals} system property to override its value.
      * </p>
+     * <p>
+     *     In order to enable the garbage-free behavior described in
+     *     <a href="https://issues.apache.org/jira/browse/LOG4J2-1270">LOG4J2-1270</a>, this constant must be {@code
+     *     true}.
+     * </p>
+     * <p>
+     *     <strong>Warning:</strong> This setting does <strong>not</strong> disable the usage of {@code ThreadLocal}s
+     *     for other purposes than object pooling. For example the {@link org.apache.logging.log4j.ThreadContext}
+     *     API, will user {@code ThreadLocal}s even if this constant is set to {@code false}.
+     * </p>
+     * @see Provider#getThreadContextMap()
      */
     public static final boolean ENABLE_THREADLOCALS =
-            !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty("log4j2.enable.threadlocals", true);
+            PropertiesUtil.getProperties().getBooleanProperty("log4j2.enable.threadlocals", !IS_WEB_APP);
 
     /**
      * Java major version.

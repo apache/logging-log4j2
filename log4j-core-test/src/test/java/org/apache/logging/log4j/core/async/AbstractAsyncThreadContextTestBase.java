@@ -59,9 +59,9 @@ public abstract class AbstractAsyncThreadContextTestBase {
 
     @BeforeAll
     public static void beforeClass() {
-        props.setProperty("log4j2.is.webapp", false);
-        props.setProperty("AsyncLogger.RingBufferSize", 128); // minimum ringbuffer size
-        props.setProperty("AsyncLoggerConfig.RingBufferSize", 128); // minimum ringbuffer size
+        props.setProperty("log4j2.enableThreadlocals", true);
+        props.setProperty("log4j2.asyncLoggerRingBufferSize", 128); // minimum ringbuffer size
+        props.setProperty("log4j2.asyncLoggerConfigRingBufferSize", 128); // minimum ringbuffer size
     }
 
     protected enum Mode {

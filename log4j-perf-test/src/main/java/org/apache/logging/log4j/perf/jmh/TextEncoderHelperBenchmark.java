@@ -45,9 +45,9 @@ import org.openjdk.jmh.annotations.State;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -Dfile.encoding=ISO-8859-1 -Dlog4j2.is.webapp=false -Dlog4j2.enable.threadlocals=true -jar
+// java -Dfile.encoding=ISO-8859-1 -Dlog4j2.enableThreadlocals=true -jar
 // log4j-perf/target/benchmarks.jar ".*StringBuilderEncoder.*" -f 1 -wi 5 -i 10
-// java -Dfile.encoding=UTF8 -Dlog4j2.is.webapp=false -Dlog4j2.enable.threadlocals=true -jar
+// java -Dfile.encoding=UTF8 -Dlog4j2.enableThreadlocals=true -jar
 // log4j-perf/target/benchmarks.jar ".*StringBuilderEncoder.*" -f 1 -wi 5 -i 10
 //
 // Usage help:
