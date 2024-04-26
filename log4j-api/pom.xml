@@ -30,12 +30,10 @@
 
   <name>Apache Log4j API</name>
 
-  <description>
-    The logging API of the Log4j project.
+  <description>The logging API of the Log4j project.
     Library and application code can log against this API.
     It contains a simple built-in implementation (`SimpleLogger`) for trivial use cases.
-    Production applications are recommended to use it in combination with a fully-fledged implementation, such as Log4j Core.
-  </description>
+    Production applications are recommended to use it in combination with a fully-fledged implementation, such as Log4j Core.</description>
 
   <properties>
     <maven.javadoc.skip>false</maven.javadoc.skip>
