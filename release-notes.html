@@ -346,6 +346,9 @@
 <p>Replace some usages of <code>DateTimeFormatter#toString()</code> with <code>DateTimeFormatter#formatTo(StringBuilder)</code> to cut down on allocations (<a href="https://github.com/apache/logging-log4j2/pull/2515">2515</a>)</p>
 </li>
 <li>
+<p>Prioritize user-defined values of <code>log4j2.enableThreadLocals</code>, <code>log4j2.garbagefreeThreadContextMap</code> and <code>log4j2.shutdownHookEnabled</code> over the value of <code>log4j.isWebapp</code>.</p>
+</li>
+<li>
 <p>Deprecate <code>org.apache.logging.log4j.core.appender.rolling.action.Duration</code> class for removal.</p>
 </li>
 <li>

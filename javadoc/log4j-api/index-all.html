@@ -1089,7 +1089,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/Constants.html#ENABLE_THREADLOCALS" class="member-name-link">ENABLE_THREADLOCALS</a> - Static variable in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/Constants.html" title="class in org.apache.logging.log4j.util">Constants</a></dt>
 <dd>
-<div class="block">Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.</div>
+<div class="block">Specifies whether Log4j can bind non-JRE types to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html" title="class or interface in java.lang" class="external-link"><code>ThreadLocal</code></a>s</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/Base64Util.html#encode(java.lang.String)" class="member-name-link">encode(String)</a> - Static method in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/Base64Util.html" title="class in org.apache.logging.log4j.util">Base64Util</a></dt>
 <dd>
@@ -3741,9 +3741,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/Constants.html#IS_WEB_APP" class="member-name-link">IS_WEB_APP</a> - Static variable in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/Constants.html" title="class in org.apache.logging.log4j.util">Constants</a></dt>
 <dd>
-<div class="block"><code>true</code> if we think we are running in a web container, based on the boolean value of system property
- "log4j2.is.webapp", or (if this system property is not set) whether the  <code>javax.servlet.Servlet</code> class
- is present in the classpath.</div>
+<div class="block">Specifies whether Log4j is used in a servlet container</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/OsgiServiceLocator.html#isAvailable()" class="member-name-link">isAvailable()</a> - Static method in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/OsgiServiceLocator.html" title="class in org.apache.logging.log4j.util">OsgiServiceLocator</a></dt>
 <dd>&nbsp;</dd>

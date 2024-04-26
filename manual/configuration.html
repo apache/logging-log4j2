@@ -3046,11 +3046,9 @@ or as if it is not part of a web application (when false).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a id="enableThreadlocals"></a>log4j2.enableThreadlocals
   (<a id="log4j2.enable.threadlocals"></a>log4j2.enable.threadlocals)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_ENABLE_THREADLOCALS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This system property can be used to switch off the use of threadlocals, which will partly disable
-  Log4j&#8217;s garbage-free behaviour: to be fully garbage-free, Log4j stores
-  objects in ThreadLocal fields to reuse them, otherwise new objects are created for each log event.
-  Note that this property is not effective when Log4j detects it is running in a web application.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">!log4j2.isWebapp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This system property can be used to switch off the use of those thread locals, which can cause classloader leaks in a web application.
+This will partly disable Log4j&#8217;s garbage-free behaviour: to be fully garbage-free, Log4j stores objects in ThreadLocal fields to reuse them, instead of creating new objects for each log event.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a id="enableDirectEncoders"></a>log4j2.enableDirectEncoders

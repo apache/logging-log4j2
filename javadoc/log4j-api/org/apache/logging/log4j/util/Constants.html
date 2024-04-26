@@ -105,14 +105,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static final boolean</code></div>
 <div class="col-second even-row-color"><code><a href="#ENABLE_THREADLOCALS" class="member-name-link">ENABLE_THREADLOCALS</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.</div>
+<div class="block">Specifies whether Log4j can bind non-JRE types to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html" title="class or interface in java.lang" class="external-link"><code>ThreadLocal</code></a>s</div>
 </div>
 <div class="col-first odd-row-color"><code>static final boolean</code></div>
 <div class="col-second odd-row-color"><code><a href="#IS_WEB_APP" class="member-name-link">IS_WEB_APP</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block"><code>true</code> if we think we are running in a web container, based on the boolean value of system property
- "log4j2.is.webapp", or (if this system property is not set) whether the  <code>javax.servlet.Servlet</code> class
- is present in the classpath.</div>
+<div class="block">Specifies whether Log4j is used in a servlet container</div>
 </div>
 <div class="col-first even-row-color"><code>static final int</code></div>
 <div class="col-second even-row-color"><code><a href="#JAVA_MAJOR_VERSION" class="member-name-link">JAVA_MAJOR_VERSION</a></code></div>
@@ -154,19 +152,40 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="IS_WEB_APP">
 <h3>IS_WEB_APP</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">IS_WEB_APP</span></div>
-<div class="block"><code>true</code> if we think we are running in a web container, based on the boolean value of system property
- "log4j2.is.webapp", or (if this system property is not set) whether the  <code>javax.servlet.Servlet</code> class
- is present in the classpath.</div>
+<div class="block">Specifies whether Log4j is used in a servlet container
+ <p>
+     If <code>true</code> Log4j disables the features, which are incompatible with a typical servlet application:
+ </p>
+ <ol>
+     <li>It disables the usage of <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html" title="class or interface in java.lang" class="external-link"><code>ThreadLocal</code></a>s for object pooling (unless the user has explicitly provided a <a href="#ENABLE_THREADLOCALS"><code>ENABLE_THREADLOCALS</code></a> property)</li>
+     <li>It uses a web-application safe implementation of <a href="../spi/ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>
+     (see <a href="../spi/Provider.html#getThreadContextMap()"><code>Provider.getThreadContextMap()</code></a>),</li>
+     <li>It disables the shutdown hook,</li>
+     <li>It uses the caller thread to send JMX notifications.</li>
+ </ol>
+ <p>
+     The value of this constant depends upon the presence of the Servlet API on the classpath and can be
+     overridden using the <code>"log4j2.isWebapp"</code> system property.
+ </p></div>
 </section>
 </li>
 <li>
 <section class="detail" id="ENABLE_THREADLOCALS">
 <h3>ENABLE_THREADLOCALS</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">ENABLE_THREADLOCALS</span></div>
-<div class="block">Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
+<div class="block">Specifies whether Log4j can bind non-JRE types to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html" title="class or interface in java.lang" class="external-link"><code>ThreadLocal</code></a>s
  <p>
- <code>True</code> for non-<a href="#IS_WEB_APP"><code>web apps</code></a>, disable by setting system property
- "log4j2.enable.threadlocals" to "false".
+     The value of this constant is <code>true</code>, unless Log4j is running in a servlet container (cf.
+     <a href="#IS_WEB_APP"><code>IS_WEB_APP</code></a>). Use the <code>"log4j2.enableThreadlocals</code> system property to override its value.
+ </p>
+ <p>
+     In order to enable the garbage-free behavior described in
+     <a href="https://issues.apache.org/jira/browse/LOG4J2-1270">LOG4J2-1270</a>, this constant must be <code>
+     true</code>.
+ </p>
+ <p>
+     <strong>Warning:</strong> This setting does <strong>not</strong> disable all thread locals. It only
+     disables those thread locals that can cause a classloader memory leak.
  </p></div>
 </section>
 </li>

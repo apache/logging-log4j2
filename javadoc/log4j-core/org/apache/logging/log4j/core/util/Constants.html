@@ -131,7 +131,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color"><code><a href="#IS_WEB_APP" class="member-name-link">IS_WEB_APP</a></code></div>
 <div class="col-last odd-row-color">
 <div class="block"><code>true</code> if we think we are running in a web container, based on the boolean value of system property
- "log4j2.is.webapp", or (if this system property is not set) whether the  <code>javax.servlet.Servlet</code> class
+ "log4j2.isWebapp", or (if this system property is not set) whether the  <code>javax.servlet.Servlet</code> class
  is present in the classpath.</div>
 </div>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
@@ -318,7 +318,7 @@ loadScripts(document, 'script');</script>
 <h3>IS_WEB_APP</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">IS_WEB_APP</span></div>
 <div class="block"><code>true</code> if we think we are running in a web container, based on the boolean value of system property
- "log4j2.is.webapp", or (if this system property is not set) whether the  <code>javax.servlet.Servlet</code> class
+ "log4j2.isWebapp", or (if this system property is not set) whether the  <code>javax.servlet.Servlet</code> class
  is present in the classpath.</div>
 </section>
 </li>
@@ -344,9 +344,9 @@ loadScripts(document, 'script');</script>
  <a href="../layout/ByteBufferDestination.html" title="interface in org.apache.logging.log4j.core.layout"><code>ByteBufferDestination</code></a>s without creating intermediate temporary
  Objects.
  <p>
- <code>True</code> by default iff all loggers are asynchronous because system property
- <code>Log4jContextSelector</code> is set to <code>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</code>.
- Disable by setting system property "log4j2.enable.direct.encoders" to "false".</div>
+     This constant is <code>true</code> by default, but can be disabled using the
+     <code>"log4j2.enableDirectEncoders"</code> system property.
+ </p></div>
 <dl class="notes">
 <dt>Since:</dt>
 <dd>2.6</dd>
