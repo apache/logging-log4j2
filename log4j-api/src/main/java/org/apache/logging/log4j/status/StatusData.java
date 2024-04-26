@@ -38,7 +38,6 @@ public class StatusData implements Serializable {
 
     private final Instant instant;
 
-    @Nullable
     private final DateTimeFormatter instantFormatter;
 
     @Nullable
@@ -79,7 +78,8 @@ public class StatusData implements Serializable {
             @Nullable final String threadName,
             @Nullable final DateTimeFormatter instantFormatter,
             final Instant instant) {
-        this.instantFormatter = instantFormatter;
+        // DateTimeFormatter.ISO_INSTANT is the default used in instant.toString()
+        this.instantFormatter = instantFormatter != null ? instantFormatter : DateTimeFormatter.ISO_INSTANT;
         this.instant = instant;
         this.caller = caller;
         this.level = requireNonNull(level, "level");
@@ -167,9 +167,7 @@ public class StatusData implements Serializable {
     @SuppressWarnings("DefaultCharset")
     public String getFormattedStatus() {
         final StringBuilder sb = new StringBuilder();
-        final String formattedInstant =
-                instantFormatter != null ? instantFormatter.format(instant) : instant.toString();
-        sb.append(formattedInstant);
+        instantFormatter.formatTo(instant, sb);
         sb.append(SPACE);
         sb.append(getThreadName());
         sb.append(SPACE);
