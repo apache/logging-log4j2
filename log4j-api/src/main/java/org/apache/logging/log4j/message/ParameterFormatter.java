@@ -459,7 +459,7 @@ final class ParameterFormatter {
         if (!(o instanceof Date)) {
             return false;
         }
-        str.append(DATE_FORMATTER.format(((Date) o).toInstant()));
+        DATE_FORMATTER.formatTo(((Date) o).toInstant(), str);
         return true;
     }
 
