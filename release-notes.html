@@ -343,6 +343,9 @@
 <p>Disable JMX support by default. Require <code>log4j2.disableJmx</code> to be set to <code>false</code> to enable JMX support. (<a href="https://github.com/apache/logging-log4j2/issues/2462">2462</a>)</p>
 </li>
 <li>
+<p>Replace some usages of <code>DateTimeFormatter#toString()</code> with <code>DateTimeFormatter#formatTo(StringBuilder)</code> to cut down on allocations (<a href="https://github.com/apache/logging-log4j2/pull/2515">2515</a>)</p>
+</li>
+<li>
 <p>Deprecate <code>org.apache.logging.log4j.core.appender.rolling.action.Duration</code> class for removal.</p>
 </li>
 </ul>
