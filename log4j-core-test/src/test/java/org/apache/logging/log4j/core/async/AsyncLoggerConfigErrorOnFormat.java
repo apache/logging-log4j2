@@ -42,7 +42,7 @@ public class AsyncLoggerConfigErrorOnFormat {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.is.webapp", "false");
+        System.setProperty("log4j2.enableThreadlocals", "true");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigErrorOnFormat.xml");
         // Log4jLogEvent.toString invokes message.toString
         System.setProperty("log4j2.logEventFactory", DefaultLogEventFactory.class.getName());
@@ -50,7 +50,7 @@ public class AsyncLoggerConfigErrorOnFormat {
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty("log4j2.is.webapp");
+        System.clearProperty("log4j2.enableThreadlocals");
         System.clearProperty("log4j2.logEventFactory");
     }
 

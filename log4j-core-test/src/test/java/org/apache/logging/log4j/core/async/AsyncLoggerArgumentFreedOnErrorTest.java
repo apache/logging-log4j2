@@ -37,10 +37,9 @@ public class AsyncLoggerArgumentFreedOnErrorTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enable.threadlocals", "true");
-        System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty("log4j2.is.webapp", "false");
-        System.setProperty("log4j.format.msg.async", "true");
+        System.setProperty("log4j2.enableThreadlocals", "true");
+        System.setProperty("log4j2.enableDirectEncoders", "true");
+        System.setProperty("log4j2.formatMsgAsync", "true");
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
     }
 

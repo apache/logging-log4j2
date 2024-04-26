@@ -38,16 +38,16 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.is.webapp", "false");
-        System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getCanonicalName());
+        System.setProperty("log4j2.enableThreadlocals", "true");
+        System.setProperty("log4j2.contextSelector", AsyncLoggerContextSelector.class.getCanonicalName());
         // Reuse the configuration from AsyncLoggerConfigTest4
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest4.xml");
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty("log4j2.is.webapp");
-        System.clearProperty("Log4jContextSelector");
+        System.clearProperty("log4j2.enableThreadlocals");
+        System.clearProperty("log4j2.contextSelector");
     }
 
     @Test

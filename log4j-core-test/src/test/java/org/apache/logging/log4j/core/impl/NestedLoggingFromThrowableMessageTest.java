@@ -47,7 +47,7 @@ public class NestedLoggingFromThrowableMessageTest {
     public static void beforeClass() {
         file1.delete();
         file2.delete();
-        System.setProperty("log4j2.is.webapp", "false");
+        System.setProperty("log4j2.enableThreadlocals", "true");
     }
 
     @Rule

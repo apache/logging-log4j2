@@ -2380,11 +2380,9 @@ or as if it is not part of a web application (when false).
 | [[enableThreadlocals]]log4j2.enableThreadlocals
   ([[log4j2.enable.threadlocals]]log4j2.enable.threadlocals)
 | LOG4J_ENABLE_THREADLOCALS
-| true
-| This system property can be used to switch off the use of threadlocals, which will partly disable
-  Log4j's garbage-free behaviour: to be fully garbage-free, Log4j stores
-  objects in ThreadLocal fields to reuse them, otherwise new objects are created for each log event.
-  Note that this property is not effective when Log4j detects it is running in a web application.
+| !log4j2.isWebapp
+| This system property can be used to switch off the use of those thread locals, which can cause classloader leaks in a web application.
+This will partly disable Log4j's garbage-free behaviour: to be fully garbage-free, Log4j stores objects in ThreadLocal fields to reuse them, instead of creating new objects for each log event.
 
 | [[enableDirectEncoders]]log4j2.enableDirectEncoders
   ([[log4j2.enable.direct.encoders]]log4j2.enable.direct.encoders)
