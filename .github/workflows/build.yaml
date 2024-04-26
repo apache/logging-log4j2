@@ -38,7 +38,9 @@ jobs:
 
   build:
     if: github.actor != 'dependabot[bot]'
-    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@rel/11.0.0
+    # Temporarily switch to `main`, while waiting for 11.0.1 release.
+    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@main
+    #uses: apache/logging-parent/.github/workflows/build-reusable.yaml@rel/11.0.0
     with:
       site-enabled: true
 
