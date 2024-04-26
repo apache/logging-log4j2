@@ -147,7 +147,10 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#LOG4J_DEFAULT_STATUS_LEVEL" class="member-name-link">LOG4J_DEFAULT_STATUS_LEVEL</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Property name for the default status (internal log4j logging) level to use if not specified in configuration.</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.24.0 use
+ <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html#DEFAULT_STATUS_LISTENER_LEVEL" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL</code></a> instead.</div>
+</div>
 </div>
 <div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#LOG4J_LOG_EVENT_FACTORY" class="member-name-link">LOG4J_LOG_EVENT_FACTORY</a></code></div>
@@ -223,7 +226,12 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="LOG4J_DEFAULT_STATUS_LEVEL">
 <h3>LOG4J_DEFAULT_STATUS_LEVEL</h3>
-<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">LOG4J_DEFAULT_STATUS_LEVEL</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">LOG4J_DEFAULT_STATUS_LEVEL</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.24.0 use
+ <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html#DEFAULT_STATUS_LISTENER_LEVEL" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL</code></a> instead.</div>
+</div>
 <div class="block">Property name for the default status (internal log4j logging) level to use if not specified in configuration.</div>
 <dl class="notes">
 <dt>See Also:</dt>

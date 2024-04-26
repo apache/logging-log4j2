@@ -2291,13 +2291,10 @@ Components declare an instance of the StatusLogger similar to:</p>
 the normal Logger methods may be used.</p>
 </div>
 <div class="paragraph">
-<p>When configuring Log4j it is sometimes necessary to view the generated
-status events. This can be accomplished by adding the status attribute
-to the configuration element or a default value can be provided by
-setting the "Log4jDefaultStatusLevel" system property. Valid values of
-the status attribute are "trace", "debug", "info", "warn", "error" and
-"fatal". The following configuration has the status attribute set to
-debug.</p>
+<p>When configuring Log4j it is sometimes necessary to view the generated status events.
+This can be accomplished by adding the status attribute to the configuration element or a default value can be provided by setting the <a href="#statusLoggerLevel">"log4j2.statusLoggerLevel"</a> system property.
+Valid values of the status attribute are "trace", "debug", "info", "warn", "error" and "fatal".
+The following configuration has the status attribute set to debug.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2871,22 +2868,10 @@ convenience methods for testing. This requires adding the <code>log4j-core</code
   and from that point onwards, status messages are only sent to the listeners (depending on their statusLevel).</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="defaultStatusLevel"></a>log4j2.defaultStatusLevel
-  (<a id="Log4jDefaultStatusLevel"></a>Log4jDefaultStatusLevel)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_DEFAULT_STATUS_LEVEL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The StatusLogger logs events that occur in the logging system to the console.
-  During configuration, AbstractConfiguration registers a StatusConsoleListener with the StatusLogger that may
-  redirect status log events from the default console output to a file.
-  The listener also supports fine-grained filtering.
-  This system property specifies the default status log level for the listener to use if the configuration does not specify a status level.
-  Note: this property is used by the log4j-core implementation only after a configuration file has been found.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a id="statusLoggerLevel"></a>log4j2.statusLoggerLevel
   (<a id="log4j2.StatusLogger.level"></a>log4j2.StatusLogger.level)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_STATUS_LOGGER_LEVEL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WARN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The initial "listenersLevel" of the StatusLogger. If StatusLogger listeners are added, the "listenerLevel"
   is changed to that of the most verbose listener. If any listeners are registered, the listenerLevel is
   used to quickly determine if an interested listener exists.</p>
