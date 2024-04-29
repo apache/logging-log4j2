@@ -34,7 +34,7 @@
     It bundles a rich set of components to assist various use cases:
     Appenders targeting files, network sockets, databases, SMTP servers;
     Layouts that can render CSV, HTML, JSON, Syslog, etc. formatted outputs;
-    Filters that can be configured using log event rates, regular expressions, scripts, time; etc.
+    Filters that can be configured using log event rates, regular expressions, scripts, time, etc.
     It contains several extension points to introduce custom components, if needed.</description>
 
   <properties>
