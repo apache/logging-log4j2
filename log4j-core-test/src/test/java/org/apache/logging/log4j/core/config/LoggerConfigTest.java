@@ -126,7 +126,7 @@ public class LoggerConfigTest {
                 .withLoggerName(FQCN)
                 .withConfig(configuration)
                 .withLevel(Level.INFO)
-                .withtFilter(filter)
+                .withFilter(filter)
                 .build();
         final Appender appender = mock(Appender.class);
         when(appender.isStarted()).thenReturn(true);
