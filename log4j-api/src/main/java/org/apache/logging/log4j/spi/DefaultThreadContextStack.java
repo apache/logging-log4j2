@@ -35,7 +35,7 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
 
     private static final long serialVersionUID = 5050501L;
 
-    private static final ThreadLocal<MutableThreadContextStack> STACK = new ThreadLocal<>();
+    private final ThreadLocal<MutableThreadContextStack> STACK = new ThreadLocal<>();
 
     private final boolean useStack;
 
@@ -197,8 +197,12 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
         }
         final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final String result = copy.pop();
-        copy.freeze();
-        STACK.set(copy);
+        if (copy.isEmpty()) {
+            STACK.remove();
+        } else {
+            copy.freeze();
+            STACK.set(copy);
+        }
         return result;
     }
 
@@ -221,8 +225,12 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
         }
         final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final boolean result = copy.remove(o);
-        copy.freeze();
-        STACK.set(copy);
+        if (copy.isEmpty()) {
+            STACK.remove();
+        } else {
+            copy.freeze();
+            STACK.set(copy);
+        }
         return result;
     }
 
@@ -237,8 +245,12 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
         }
         final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final boolean result = copy.removeAll(objects);
-        copy.freeze();
-        STACK.set(copy);
+        if (copy.isEmpty()) {
+            STACK.remove();
+        } else {
+            copy.freeze();
+            STACK.set(copy);
+        }
         return result;
     }
 

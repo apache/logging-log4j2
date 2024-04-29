@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.apache.logging.log4j.test.ThreadLocalUtil.assertThreadLocalCount;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.test.ThreadLocalUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -72,5 +75,38 @@ class ThreadContextMapTest {
         } finally {
             executorService.shutdown();
         }
+    }
+
+    static Stream<ThreadContextMap> threadLocalsRemovedWhenMapEmpty() {
+        return Stream.of(new DefaultThreadContextMap(), new CopyOnWriteSortedArrayThreadContextMap());
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void threadLocalsRemovedWhenMapEmpty(final ThreadContextMap contextMap) {
+        // JUnit calls contextMap#toString() and sets the `ThreadLocal`.
+        contextMap.clear();
+        final int threadLocalCount = ThreadLocalUtil.getThreadLocalCount();
+
+        contextMap.put(KEY, "threadLocalsRemovedWhenMapEmpty");
+        assertThreadLocalCount(threadLocalCount + 1);
+        contextMap.remove(KEY);
+        assertThreadLocalCount(threadLocalCount);
+
+        contextMap.put("key1", "value1");
+        contextMap.put("key2", "value2");
+        assertThreadLocalCount(threadLocalCount + 1);
+        if (contextMap instanceof DefaultThreadContextMap) {
+            ((DefaultThreadContextMap) contextMap).removeAll(Arrays.asList("key1", "key2"));
+        }
+        if (contextMap instanceof CleanableThreadContextMap) {
+            ((CleanableThreadContextMap) contextMap).removeAll(Arrays.asList("key1", "key2"));
+        }
+        assertThreadLocalCount(threadLocalCount);
+
+        contextMap.put(KEY, "threadLocalsRemovedWhenMapEmpty");
+        assertThreadLocalCount(threadLocalCount + 1);
+        contextMap.clear();
+        assertThreadLocalCount(threadLocalCount);
     }
 }

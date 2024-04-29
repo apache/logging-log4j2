@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.jul;
 
+import static org.apache.logging.log4j.util.Constants.ENABLE_THREADLOCALS;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -94,6 +96,9 @@ public class LogManager extends java.util.logging.LogManager {
                 return loggerAdapter.getLogger(name);
             } finally {
                 activeRequests.remove(name);
+                if (!ENABLE_THREADLOCALS && activeRequests.isEmpty()) {
+                    recursive.remove();
+                }
             }
         }
         LOGGER.warn("Recursive call to getLogger for {} ignored.", name);

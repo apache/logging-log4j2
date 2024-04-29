@@ -38,15 +38,10 @@ public class Timer implements Serializable, StringBuilderFormattable {
     private Status status; // The timer's status
     private long elapsedTime; // The elapsed time
     private final int iterations;
-    private static long NANO_PER_SECOND = 1000000000L;
-    private static long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
-    private static long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
-    private ThreadLocal<Long> startTime = new ThreadLocal<Long>() {
-        @Override
-        protected Long initialValue() {
-            return 0L;
-        }
-    };
+    private static final long NANO_PER_SECOND = 1000000000L;
+    private static final long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
+    private static final long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
+    private final ThreadLocal<Long> startTime = ThreadLocal.withInitial(() -> 0L);
 
     /**
      * Constructor.
@@ -64,7 +59,7 @@ public class Timer implements Serializable, StringBuilderFormattable {
     public Timer(final String name, final int iterations) {
         this.name = name;
         status = Status.Stopped;
-        this.iterations = (iterations > 0) ? iterations : 0;
+        this.iterations = Math.max(iterations, 0);
     }
 
     /**
@@ -89,7 +84,7 @@ public class Timer implements Serializable, StringBuilderFormattable {
      */
     public synchronized String stop() {
         elapsedTime += System.nanoTime() - startTime.get();
-        startTime.set(0L);
+        startTime.remove();
         status = Status.Stopped;
         return toString();
     }
@@ -99,7 +94,7 @@ public class Timer implements Serializable, StringBuilderFormattable {
      */
     public synchronized void pause() {
         elapsedTime += System.nanoTime() - startTime.get();
-        startTime.set(0L);
+        startTime.remove();
         status = Status.Paused;
     }
 

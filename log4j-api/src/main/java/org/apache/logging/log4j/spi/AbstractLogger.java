@@ -102,7 +102,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     protected final String name;
     private final MessageFactory2 messageFactory;
     private final FlowMessageFactory flowMessageFactory;
-    private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
+    /**
+     * See <a href="https://issues.apache.org/jira/browse/LOG4J2-1518">LOG4J2-1518</a>,
+     * <a href="https://issues.apache.org/jira/browse/LOG4J2-2031">LOG4J2-2031</a>.
+     */
+    private static final ThreadLocal<Integer> recursionDepthHolder = new ThreadLocal<>();
+
     private static final ThreadLocal<DefaultLogBuilder> logBuilder = ThreadLocal.withInitial(DefaultLogBuilder::new);
 
     /**
@@ -2860,23 +2865,16 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         }
     }
 
-    private static int[] getRecursionDepthHolder() {
-        int[] result = recursionDepthHolder.get();
-        if (result == null) {
-            result = new int[1];
-            recursionDepthHolder.set(result);
-        }
-        return result;
-    }
-
     private static void incrementRecursionDepth() {
-        getRecursionDepthHolder()[0]++;
+        recursionDepthHolder.set(getRecursionDepth() + 1);
     }
 
     private static void decrementRecursionDepth() {
-        final int newDepth = --getRecursionDepthHolder()[0];
-        if (newDepth < 0) {
-            throw new IllegalStateException("Recursion depth became negative: " + newDepth);
+        final int newDepth = getRecursionDepth() - 1;
+        if (newDepth == 0) {
+            recursionDepthHolder.remove();
+        } else {
+            recursionDepthHolder.set(newDepth);
         }
     }
 
@@ -2887,7 +2885,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @return the depth of the nested logging calls in the current Thread
      */
     public static int getRecursionDepth() {
-        return getRecursionDepthHolder()[0];
+        final Integer recursionDepth = recursionDepthHolder.get();
+        return recursionDepth != null ? recursionDepth : 0;
     }
 
     @PerformanceSensitive
