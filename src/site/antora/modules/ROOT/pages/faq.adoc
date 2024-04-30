@@ -54,8 +54,10 @@ You can reconfigure Log4j programmatically using link:../javadoc/log4j-core/org/
 
 [source,java]
 ----
+import org.apache.logging.log4j.core.config.Configurator;
+
 URI configSourceUri = new File("/path/to/a/different/log4j2.xml").toURI();
-org.apache.logging.log4j.core.config.Configurator.reconfigure(configSourceUri);
+Configurator.reconfigure(configSourceUri);
 ----
 
 [#shutdown]
@@ -74,7 +76,7 @@ You can set the level of a logger using link:../javadoc/log4j-core/org/apache/lo
 
 [source,java]
 ----
-import org.apache.logging.log4j.core.config.Configurator; // <1>
+import org.apache.logging.log4j.core.config.Configurator;
 
 // Set the level of particular logger associated with a class
 Configurator.setLevel("com.example.Foo", Level.DEBUG);
@@ -82,8 +84,6 @@ Configurator.setLevel("com.example.Foo", Level.DEBUG);
 // Set the level of the root logger
 Configurator.setRootLevel(Level.DEBUG);
 ----
-<1> Be aware that `Configurator` is not part of the public API.
-Your code may break with any minor release.
 
 [#config_sep_appender_level]
 == How do I send log messages with different levels to different appenders?
