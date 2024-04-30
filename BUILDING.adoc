@@ -82,7 +82,7 @@ You either need to have a user-level configuration in `~/.m2/toolchains.xml` or 
 +
 [source,bash]
 ----
-./mvnw verify -Pjava8-tests
+./mvnw verify -Pjava8-tests,!java8-incompat-fixes
 ----
 
 [#website]
