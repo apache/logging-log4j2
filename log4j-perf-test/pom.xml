@@ -43,6 +43,7 @@
     <spotbugs.skip>true</spotbugs.skip>
 
     <!-- Dependency versions -->
+    <log4j-transform.version>0.1.0</log4j-transform.version>
     <slf4j2.version>2.0.9</slf4j2.version>
   </properties>
 
@@ -174,14 +175,29 @@
         </executions>
       </plugin>
 
+      <!-- Add JMH processor -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.openjdk.jmh</groupId>
+              <artifactId>jmh-generator-annprocess</artifactId>
+              <version>${jmh.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <dependencies>
           <dependency>
-            <groupId>com.github.edwgiz</groupId>
-            <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
-            <version>${log4j2-cachefile-transformer.version}</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-transform-maven-shade-plugin-extensions</artifactId>
+            <version>${log4j-transform.version}</version>
           </dependency>
         </dependencies>
         <executions>
@@ -203,7 +219,7 @@
                   </manifestEntries>
                 </transformer>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                <transformer implementation="com.github.edwgiz.maven_shade_plugin.log4j2_cache_transformer.PluginsCacheFileTransformer" />
+                <transformer implementation="org.apache.logging.log4j.maven.plugins.shade.transformer.Log4j2PluginCacheFileTransformer" />
               </transformers>
               <filters>
                 <filter>
