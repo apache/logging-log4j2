@@ -50,18 +50,13 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/Conf
 [#reconfig_from_code]
 == How do I reconfigure Log4j programmatically?
 
-You can reconfigure Log4j programmatically as follows:
+You can reconfigure Log4j programmatically using link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html[the `Configurator` API] as follows:
 
 [source,java]
 ----
-LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false); // <1>
-File file = new File("/path/to/a/different/log4j2.xml");
-
-// This will force a reconfiguration
-context.setConfigLocation(file.toURI());
+URI configSourceUri = new File("/path/to/a/different/log4j2.xml").toURI();
+org.apache.logging.log4j.core.config.Configurator.reconfigure(configSourceUri);
 ----
-<1> Be aware that this `LoggerContext` class is not part of the public API.
-Your code may break with any minor release.
 
 [#shutdown]
 == How do I shut down Log4j programmatically?
