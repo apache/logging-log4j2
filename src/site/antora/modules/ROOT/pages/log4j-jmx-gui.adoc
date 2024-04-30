@@ -23,5 +23,5 @@ The client GUI can be run as a stand-alone application or as a JConsole plug-in.
 ====
 The Java VM to be monitored has to enable Log4j JMX support, set the following system property when starting the Java VM:
 
-`log4j2.disableJmx=false`
+`xref:manual/configuration.adoc#log4j2.disableJmx[log4j2.disableJmx]=false`
 ====

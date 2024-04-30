@@ -220,11 +220,8 @@ highest to lowest. As delivered, Log4j contains four
 ConfigurationFactory implementations: one for JSON, one for YAML, one
 for properties, and one for XML.
 
-1.  Log4j will inspect the `"log4j2.configurationFile"` system property
-and, if set, will attempt to load the configuration using the
-`ConfigurationFactory` that matches the file extension. Note that this
-is not restricted to a location on the local file system and may contain
-a URL.
+1.  Log4j will inspect the <<log4j2.configurationFile>> system property and, if set, will attempt to load the configuration using the `ConfigurationFactory` that matches the file extension.
+Note that this is not restricted to a location on the local file system and may contain a URL.
 2.  If no system property is set the properties ConfigurationFactory
 will look for `log4j2-test.properties` in the classpath.
 3.  If no such file is found the YAML ConfigurationFactory will look for
@@ -362,7 +359,7 @@ used.
 When `log4j2.configurationFile` references a URL, Log4j will first determine if the URL reference
 a file using the file protocol. If it does Log4j will validate that the file URL is valid and continue
 processing as previously described. If it contains a protocol other than file then Log4j will inspect
-the value of the `log4j2.Configuration.allowedProtocols` system property. If the provided list
+the value of the <<log4j2.configurationAllowedProtocols>> system property. If the provided list
 contains the protocol specified then Log4j will use the URI to locate the specified configuration file. If
 not an exception will be thrown and an error message will be logged. If no value is provided for the
 system property it will default to "https". Use of any protocol other than "file" can be prevented by
@@ -373,9 +370,9 @@ Log4j supports access to remote URLs that require authentication. Log4j supports
 out of the box. If the `log4j2.Configuration.username` and `log4j2.Configuration.password`
 are specified those values will be used to perform the authentication. If the password is encrypted a custom
 password decryptor may be supplied by specifying the fully qualified class name in the
-`log4j2.Configuration.passwordDecryptor` system property. A custom
+<<log4j2.configurationPasswordDecryptor>> system property. A custom
 `AuthenticationProvider` may be used by setting the
-`log4j2.Configuration.authenticationProvider` system property to the fully qualified class name
+`<<log4j2.configurationAuthorizationProvider>> system property to the fully qualified class name
 of the provider.
 
 [#Additivity]
@@ -630,7 +627,7 @@ rollover and other internal actions to the status logger. Setting
 `status="trace"` is one of the first tools available to you if you need
 to troubleshoot log4j.
 
-(Alternatively, setting system property `log4j2.debug` will also print
+(Alternatively, setting system property <<log4j2.debug>> will also print
 internal Log4j2 logging to the console, including internal logging that
 took place before the configuration file was found.)
 

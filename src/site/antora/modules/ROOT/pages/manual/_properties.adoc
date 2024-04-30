@@ -496,7 +496,7 @@ h| Default Value
 h| Description
 
 
-| [[log4j2enableDirectEncoders]]`log4j2.enableDirectEncoders`
+| [[log4j2.enableDirectEncoders]]`log4j2.enableDirectEncoders`
 
 (`LOG4J_ENABLE_DIRECT_ENCODERS`)
 | `true`
@@ -910,7 +910,7 @@ The names specified must correspond to those returned by https://docs.oracle.com
 
 == JUL-to-Log4j API bridge
 
-The JUL-to-Log4j API bridge provides a single configuration property:
+The JUL-to-Log4j API bridge provides the following configuration properties:
 
 .JUL configuration properties
 [cols="1,1,5"]
@@ -920,6 +920,15 @@ h| Java Property
 (Environment Variable)
 h| Default Value
 h| Description
+
+| [[log4j2.julLevelConverter]]`log4j2.julLevelConverter`
+
+(`LOG4J_JUL_LEVEL_CONVERTER`)
+|
+|
+Fully qualified name of an alternative `org.apache.logging.log4j.jul.LevelConverter` implementation.
+
+See xref:log4j-jul.adoc#default-level-conversions[Default Level Conversions] for the default implementation.
 
 | [[log4j2.julLoggerAdapter]]`log4j2.julLoggerAdapter`
 

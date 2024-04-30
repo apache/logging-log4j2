@@ -116,11 +116,8 @@ NOTE: _Log4j-2.9 and higher require disruptor-3.3.4.jar or higher on the
 classpath. Prior to Log4j-2.9, disruptor-3.0.0.jar or higher was
 required._
 
-This is simplest to configure and gives the best performance. To make
-all loggers asynchronous, add the disruptor jar to the classpath and set
-the system property `log4j2.contextSelector` to
-`org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` or
-`org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`.
+This is simplest to configure and gives the best performance.
+To make all loggers asynchronous, add the disruptor jar to the classpath and set the system property xref:manual/configuration.adoc#log4j2.contextSelector[log4j2.contextSelector] to `org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` or `org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`.
 
 By default, link:#Location[location] is not passed to the I/O thread by
 asynchronous loggers. If one of your layouts or custom filters needs
@@ -176,10 +173,6 @@ logging performance.
 The below properties can also be specified by creating a file named
 `log4j2.component.properties` and including this file in the classpath
 of the application.
-
-NOTE: System properties were renamed into a more consistent style in
-Log4j 2.10.0. All old property names are still supported which are
-documented xref:manual/configuration.adoc#SystemProperties[here].
 
 [[SysPropsAllAsync]]
 
@@ -354,10 +347,6 @@ logging performance.
 The below properties can also be specified by creating a file named
 `log4j2.component.properties` and including this file in the classpath
 of the application.
-
-NOTE: All system properties were renamed into a more consistent style in
-Log4j 2.10. All old property names are still supported which are
-documented xref:manual/configuration.adoc#SystemProperties[here].
 
 [[SysPropsMixedSync-Async]]
 
