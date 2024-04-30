@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Log4j Docker Support :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/log4j-docker.html">
+    <title>Development :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/3.x/development.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
@@ -196,7 +196,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="faq.html">F.A.Q.</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="development.html">Development</a>
   </li>
 </ul>
@@ -232,7 +232,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-docker.html">Log4j Docker Support</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -277,75 +277,199 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Home</a></li>
-    <li>Components</li>
-    <li><a href="log4j-docker.html">Log4j Docker Support</a></li>
+    <li>Learn</li>
+    <li><a href="development.html">Development</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/log4j-docker.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/development.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Log4j Docker Support</h1>
+<h1 class="page">Development</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j supports Docker by providing a Lookup to retrieve container information.</p>
+<p>This page shares information related to the development of Log4j.
+Content is aimed for users who want to contribute source code patches and maintainers.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Do you need help for setting up or configuring Log4j?
+Please refer to <a href="https://logging.apache.org/support.html">the Support page</a> instead.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_accessing_docker"><a class="anchor" href="#_accessing_docker"></a>Accessing Docker</h2>
+<h2 id="github"><a class="anchor" href="#github"></a>GitHub setup</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Log4j Docker support requires access to the Docker REST interface.
-In practical terms this means the application either needs access to unix:///var/run/docker.sock through a volume mount (not recommended), bind Docker to another host/port or unix socket.
-or use a proxy application to provide access.
-The <a href="https://github.com/apache/logging-log4j2/tree/main/log4j-spring-cloud-config/log4j-spring-cloud-config-samples/log4j-spring-cloud-config-sample-application">Log4j Spring Cloud sample application</a> uses a socat proxy to access Docker.</p>
+<p>Log4j uses GitHub extensively:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Source code repository</dt>
+<dd>
+<p><a href="https://github.com/apache/logging-log4j2" class="bare">https://github.com/apache/logging-log4j2</a></p>
+</dd>
+<dt class="hdlist1">Issue tracker</dt>
+<dd>
+<p><a href="https://github.com/apache/logging-log4j2/issues" class="bare">https://github.com/apache/logging-log4j2/issues</a></p>
+</dd>
+<dt class="hdlist1">Discussions</dt>
+<dd>
+<p><a href="https://github.com/apache/logging-log4j2/discussions" class="bare">https://github.com/apache/logging-log4j2/discussions</a></p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Maintainer discussions mostly take place in mailing lists.
+Please refer to <a href="https://logging.apache.org/support.html">the Support page</a> for the complete list of communication channels.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+</dl>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lookup_attributes"><a class="anchor" href="#_lookup_attributes"></a>Lookup Attributes</h2>
+<h2 id="branching"><a class="anchor" href="#branching"></a>Branching scheme</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j Docker provides access to the following container attributes:</p>
+<p>The following branching scheme is followed:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>containerId - The full id assigned to the container.</p>
-</li>
-<li>
-<p>containerName - The name assigned to the container.</p>
-</li>
-<li>
-<p>imageId - The id assigned to the image.</p>
-</li>
-<li>
-<p>imageName - The name assigned to the image.</p>
-</li>
-<li>
-<p>shortContainerId - The first 12 characters of the container id.</p>
-</li>
-<li>
-<p>shortImageId - The first 12 characters of the image id.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Attributes may be accessed by adding <code>${docker:containerId}</code> to the configuration.
-Note that docker variables are only resolved once during logging initialization so they shouldn&#8217;t be referenced with more than one <code>$</code> character.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>2.x</code></dt>
+<dd>
+<p>The most recent Log4j 2 code</p>
+</dd>
+<dt class="hdlist1"><code>main</code></dt>
+<dd>
+<p>The most recent Log4j 3 code</p>
+</dd>
+<dt class="hdlist1"><code>&lt;sourceBranch&gt;-site-&lt;environment&gt;</code></dt>
+<dt class="hdlist1"><code>&lt;sourceBranch&gt;-site-&lt;environment&gt;-out</code></dt>
+<dd>
+<p>Branches used to serve the staging and production websites.
+<code>out</code>-suffixed ones are automatically populated by CI, you are not supposed to touch them.
+See <a href="https://logging.apache.org/logging-parent/usage.html#website">the Logging Parent website</a> for details.</p>
+</dd>
+<dt class="hdlist1"><code>release/&lt;version&gt;</code></dt>
+<dd>
+<p>Branch triggering the CI logic to start <a href="https://logging.apache.org/logging-parent/release-instructions-project.html">the release process</a></p>
+</dd>
+</dl>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_requirements_log4j_docker_requires_log4j_core_log4j_api_and_a_minimum_of_java_8"><a class="anchor" href="#_requirements_log4j_docker_requires_log4j_core_log4j_api_and_a_minimum_of_java_8"></a>Requirements Log4j Docker requires Log4j Core, Log4j API and a minimum of Java 8.</h2>
+<h2 id="building"><a class="anchor" href="#building"></a>How can I build Log4j from sources?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For more information, see <a href="runtime-dependencies.html" class="xref page">Runtime Dependencies</a>.</p>
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/2.x/BUILDING.adoc">the build instructions</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="contributor"><a class="anchor" href="#contributor"></a>I am <strong>not</strong> a committer. How shall I submit a patch?</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Is this a <em>trivial fix</em> such as code or documentation typo?
+Simply submit a pull request.
+Changelog entry is not needed and make sure <code>./mvnw verify site</code> succeeds.</p>
+</li>
+<li>
+<p>Is this a <em>non-trivial fix</em> or a <em>new feature</em>?
+Pitch it in a <a href="https://logging.apache.org/support.html#discussions-maintainer">maintainer discussion channel</a> and ask for assistance.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="committer"><a class="anchor" href="#committer"></a>I am a committer. How shall I push my changes?</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Is it something trivial?
+Go ahead and push it.</p>
+</li>
+<li>
+<p>Otherwise, submit a pull request.
+Make sure a changelog entry is attached and <code>./mvnw verify site</code> succeeds.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are strongly advised to spar with another maintainer first (see <a href="https://logging.apache.org/support.html#discussions-maintainer">maintainer discussion channels</a>) before starting to code.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="release-project"><a class="anchor" href="#release-project"></a>I am a PMC member. How do I make a new release?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All Maven-based Logging Services projects are parented by <a href="https://logging.apache.org/logging-parent">Logging Parent</a>, which streamlines several project-wide processes, including making a new release.
+See <a href="https://logging.apache.org/logging-parent/release-instructions-project.html">its release instructions for projects</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="release-xml-schema"><a class="anchor" href="#release-xml-schema"></a>I am a PMC member. How do I publish a new XML schema?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All Maven-based Logging Services projects are parented by <a href="https://logging.apache.org/logging-parent">Logging Parent</a>, which streamlines several project-wide processes, including publishing XML schemas.
+See <a href="https://logging.apache.org/logging-parent/release-instructions-xml-schema.html">its release instructions for XML schemas</a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Projects and XML schemas have different lifecycles!</strong>
+A new release of a project does not necessarily mean a new release of its XML schemas.
+XML schemas might have been untouched, or they might contain minor changes while the project itself contains breaking changes, etc.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
