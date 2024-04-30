@@ -286,165 +286,11 @@
 </aside>
 <article class="doc">
 <h1 class="page">F.A.Q.</h1>
-<div class="sect1">
-<h2 id="missing_core"><a class="anchor" href="#missing_core"></a>I&#8217;m seeing this error "Unable to locate a logging implementation, using SimpleLogger". What is wrong?</h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>You have the log4j-api-2.x jar file in your classpath but you still need to add the log4j-core-2.x jar to the classpath.
-(Also, it looks like you are using an old version of Log4j 2.
-You may want to upgrade.)</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="which_jars"><a class="anchor" href="#which_jars"></a>Which JAR files do I need?</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You need at least the log4j-api-2.x and the log4j-core-2.x jar files.</p>
-</div>
-<div class="paragraph">
-<p>The other jars are necessary if your application calls the API of another logging framework and you want to route logging calls to the Log4j 2 implementation.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/whichjar-2.x.png" alt="Diagram showing which JARs correspond to which systems"></span></p>
-</div>
-<div class="paragraph">
-<p>[#which_jars_log4j-to-slf4j] You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2 API and you want to route logging calls to a SLF4J implementation.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/whichjar-slf4j-2.x.png" alt="Diagram showing the dependency flow to use Log4j 2 API with SLF4J"></span></p>
-</div>
-<div class="paragraph">
-<p>Some of the Log4j components have features with optional dependencies.
-See <a href="runtime-dependencies.html" class="xref page">the runtime dependencies page</a> for more information.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="exclusions"><a class="anchor" href="#exclusions"></a>How do I exclude conflicting dependencies?</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>There are several scenarios where you may end up with conflicting dependencies, especially transitively included ones.
-The following table shows for each Log4j dependency on the left (implicit groupId of <code>org.apache.logging.log4j</code>), the following dependencies on the right can be safely excluded (given in the format <code>groupId:artifactId</code>).</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Log4j dependency</th>
-<th class="tableblock halign-left valign-top">Dependencies to exclude</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-1.2-api</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j:log4j<br>
-org.slf4j:log4j-over-slf4j</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-core</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j:log4j<br>
-ch.qos.logback:logback-core<br>
-org.apache.logging.log4j:log4j-to-slf4j</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-jcl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.slf4j:jcl-over-slf4j</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-jul</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.slf4j:jul-to-slf4j</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>log4j-slf4j-impl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j:log4j-to-slf4j<br>
-ch.qos.logback:logback-core</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Using Apache Maven, dependencies can be globally excluded in your project like so:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
-  &lt;dependency&gt;
-    &lt;groupId&gt;log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j&lt;/artifactId&gt;
-    &lt;version&gt;1.2.17&lt;/version&gt;
-    &lt;scope&gt;provided&lt;/scope&gt;
-  &lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Dependencies can be explicitly excluded for specific dependencies as well.
-For example, to use a project with Log4j 2 instead of Log4j 1.x:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
-  &lt;dependency&gt;
-    &lt;groupId&gt;com.example&lt;/groupId&gt;
-    &lt;artifactId&gt;example-project&lt;/artifactId&gt;
-    &lt;version&gt;1.0&lt;/version&gt;
-    &lt;exclusions&gt;
-      &lt;exclusion&gt;
-        &lt;groupId&gt;log4j&lt;/groupId&gt;
-        &lt;artifactId&gt;log4j&lt;/artifactId&gt;
-      &lt;/exclusion&gt;
-      &lt;exclusion&gt;
-        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-        &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
-      &lt;/exclusion&gt;
-    &lt;/exclusions&gt;
-  &lt;/dependency&gt;
-  &lt;dependency&gt;
-    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
-    &lt;version&gt;${Log4jReleaseVersion}&lt;/version&gt;
-  &lt;/dependency&gt;
-  &lt;dependency&gt;
-    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j-slf4j-impl&lt;/artifactId&gt;
-    &lt;version&gt;${Log4jReleaseVersion}&lt;/version&gt;
-  &lt;/dependency&gt;
-  &lt;dependency&gt;
-    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j-1.2-api&lt;/artifactId&gt;
-    &lt;version&gt;${Log4jReleaseVersion}&lt;/version&gt;
-  &lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Dependencies can be globally excluded in Gradle like so:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">configurations {
-  all*.exclude group: 'log4j', module: 'log4j'
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The equivalent Gradle config for the above Maven exclusion would look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
-  compile('com.example:example-project:1.0') {
-    exclude group: 'log4j', module: 'log4j'
-    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-  }
-  compile('org.apache.logging.log4j:log4j-core:${Log4jReleaseVersion}')
-  compile('org.apache.logging.log4j:log4j-slf4j-impl:${Log4jReleaseVersion}')
-  compile('org.apache.logging.log4j:log4j-1.2-api:${Log4jReleaseVersion}')
-}</code></pre>
-</div>
+<p>This page compiles a list of frequently asked questions.
+If you don&#8217;t find the answer to your question, please consult to <a href="https://logging.apache.org/support.html">the support page</a>.</p>
 </div>
 </div>
 </div>
@@ -452,67 +298,91 @@ For example, to use a project with Log4j 2 instead of Log4j 1.x:</p>
 <h2 id="config_location"><a class="anchor" href="#config_location"></a>How do I specify the configuration file location?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By default, Log4j looks for a configuration file named <strong>log4j2.xml</strong> (not log4j.xml) in the classpath.</p>
+<p>By default, Log4j looks for a configuration file named <code>log4j2.xml</code>, <code>log4j2.properties</code>, etc. in the classpath.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Log4j 1 (which has reached its end-of-life in 2015!) uses <code>log4j.xml</code>.
+Log4j 2 and onwards use <code>log4j2.xml</code>.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>You can also specify the full path of the configuration file with this system property: <code>-Dlog4j.configurationFile=path/to/log4j2.xml</code></p>
+<p>You can also specify the full path of the configuration file using a system property:<br>
+<code>-Dlog4j2.configurationFile=/path/to/log4j2.xml</code></p>
 </div>
 <div class="paragraph">
 <p>That property can also be included in a classpath resource file named <code>log4j2.component.properties</code>.</p>
 </div>
 <div class="paragraph">
 <p>Web applications can specify the Log4j configuration file location with a servlet context parameter.
-See <a href="http://logging.apache.org/log4j/2.x/manual/webapp.html#ContextParams">this section</a> of the Using Log4j 2 in Web Applications manual page.</p>
+See <a href="#manual/webapp.adoc#ContextParams" class="xref unresolved">the related page on web applications</a>.</p>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="manual/configuration.html" class="xref page">the Configuration page</a> for further details.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="config_from_code"><a class="anchor" href="#config_from_code"></a>How do I configure log4j2 in code without a configuration file?</h2>
+<h2 id="config_from_code"><a class="anchor" href="#config_from_code"></a>How do I configure Log4j programmatically?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Starting with version 2.4, Log4j 2 provides an <a href="manual/customconfig.html" class="xref page">API for programmatic configuration</a> The new <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html"><code>ConfigurationBuilder</code> API</a> allows you to create Configurations in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.</p>
+<p>Starting with version <code>2.4</code>, Log4j provides <a href="manual/customconfig.html" class="xref page">an API for programmatic configuration</a>.
+<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html">The new <code>ConfigurationBuilder</code> API</a> allows you to create <code>Configuration</code>s in code by constructing component definitions without requiring you to know about the internals of actual configuration objects like loggers and appenders.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="reconfig_from_code"><a class="anchor" href="#reconfig_from_code"></a>How do I reconfigure log4j2 in code with a specific configuration file?</h2>
+<h2 id="reconfig_from_code"><a class="anchor" href="#reconfig_from_code"></a>How do I reconfigure Log4j programmatically?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>See the below example.
-Be aware that this LoggerContext class is not part of the public API so your code may break with any minor release.</p>
+<p>You can reconfigure Log4j programmatically using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html">the <code>Configurator</code> API</a> as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// import org.apache.logging.log4j.core.LoggerContext;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.core.config.Configurator;
 
-LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-File file = new File("path/to/a/different/log4j2.xml");
-
-// this will force a reconfiguration
-context.setConfigLocation(file.toURI());</code></pre>
+URI configSourceUri = new File("/path/to/a/different/log4j2.xml").toURI();
+Configurator.reconfigure(configSourceUri);</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="shutdown"><a class="anchor" href="#shutdown"></a>How do I shut down log4j2 in code?</h2>
+<h2 id="shutdown"><a class="anchor" href="#shutdown"></a>How do I shut down Log4j programmatically?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Normally there is no need to do this manually.
-Each <code>LoggerContext</code> registers a shutdown hook that takes care of releasing resources when the JVM exits (unless system property <code>log4j.shutdownHookEnabled</code> is set to <code>false</code>).
-Web applications should include the log4j-web module in their classpath which disables the shutdown hook but instead cleans up log4j resources when the web application is stopped.</p>
+Each <code>LoggerContext</code> registers a shutdown hook that takes care of releasing resources when the JVM exits, unless the <code>log4j.shutdownHookEnabled</code> system property is set to <code>false</code>.
+Likewise, <a href="#manual/webapp.adoc" class="xref unresolved">Web applications</a> replace the shutdown hook with their own resource management mechanisms.
+That is, they clean up necessary resources when the web application is stopped.
+However, if you need to manually shut down Log4j, you can use one of the <code>shutdown()</code> methods of <a href="../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()"><code>LogManager</code></a>.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="reconfig_level_from_code"><a class="anchor" href="#reconfig_level_from_code"></a>How do I set a logger level programmatically?</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>However, if you need to manually shut down Log4j, you can do so as in the below example.
-Note that there is an optional parameter for specifying which <code>LoggerContext</code> to shut down.</p>
+<p>You can set the level of a logger using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html"><code>Configurator</code></a> from Log4j Core:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.LogManager;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.core.config.Configurator;
 
-// ...
+// Set the level of particular logger associated with a class
+Configurator.setLevel("com.example.Foo", Level.DEBUG);
 
-LogManager.shutdown();</code></pre>
+// Set the level of the root logger
+Configurator.setRootLevel(Level.DEBUG);</code></pre>
 </div>
 </div>
 </div>
@@ -527,23 +397,25 @@ You can set the logging level on the <code>AppenderRef</code> element.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Configuration status="WARN"&gt;
-  &lt;Appenders&gt;
+&lt;Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns="https://logging.apache.org/xml/ns"
+               xsi:schemaLocation="
+                       https://logging.apache.org/xml/ns
+                       https://logging.apache.org/xml/ns/log4j-config-3.xsd"&gt;
+  &lt;appenders&gt;
     &lt;File name="file" fileName="app.log"&gt;
-      &lt;PatternLayout&gt;
-        &lt;Pattern&gt;%d %p %c{1.} [%t] %m %ex%n&lt;/Pattern&gt;
-      &lt;/PatternLayout&gt;
+      &lt;PatternLayout pattern="%d %p %c{1.} [%t] %m %ex%n"/&gt;
     &lt;/File&gt;
-    &lt;Console name="STDOUT" target="SYSTEM_OUT"&gt;
+    &lt;Console name="stdout" target="SYSTEM_OUT"&gt;
       &lt;PatternLayout pattern="%m%n"/&gt;
     &lt;/Console&gt;
-  &lt;/Appenders&gt;
-  &lt;Loggers&gt;
-    &lt;Root level="trace"&gt;
+  &lt;/appenders&gt;
+  &lt;loggers&gt;
+    &lt;root level="WARN"&gt;
       &lt;AppenderRef ref="file" level="DEBUG"/&gt;
-      &lt;AppenderRef ref="STDOUT" level="INFO"/&gt;
-    &lt;/Root&gt;
-  &lt;/Loggers&gt;
+      &lt;AppenderRef ref="stdout" level="INFO"/&gt;
+    &lt;/root&gt;
+  &lt;/loggers&gt;
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
@@ -552,36 +424,26 @@ You can set the logging level on the <code>AppenderRef</code> element.</p>
 <div class="sect1">
 <h2 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a>How do I debug my configuration?</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>First, make sure you have <a href="#which_jars">the right jar files</a> on your classpath.
-You need at least log4j-api and log4j-core.</p>
-</div>
-<div class="paragraph">
-<p>Next, check the name of your configuration file.
-By default, log4j2 will look for a configuration file named <code>log4j2.xml</code> on the classpath.
-Note the "2" in the file name!
-(See the <a href="manual/configuration.html#AutomaticConfiguration" class="xref page">configuration manual page</a> for more details.)</p>
-</div>
-<div class="paragraph">
-<p><strong>From log4j-2.9 onward</strong></p>
-</div>
-<div class="paragraph">
-<p>From log4j-2.9 onward, log4j2 will print all internal logging to the console if system property <code>log4j2.debug</code> is either defined empty or its value equals to <code>true</code> (ignoring case).</p>
-</div>
-<div class="paragraph">
-<p><strong>Prior to log4j-2.9</strong></p>
-</div>
-<div class="paragraph">
-<p>Prior to log4j-2.9, there are two places where internal logging can be controlled:</p>
-</div>
-<div class="paragraph">
-<p>If the configuration file is found correctly, log4j2 internal status logging can be controlled by setting <code>&lt;Configuration status="trace"&gt;</code> in the configuration file.
-This will display detailed log4j2-internal log statements on the console about what happens during the configuration process.
-This may be useful to trouble-shoot configuration issues.
-By default the status logger level is WARN, so you only see notifications when there is a problem.</p>
-</div>
-<div class="paragraph">
-<p>If the configuration file is not found correctly, you can still enable log4j2 internal status logging by setting system property <code>-Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE</code>.</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Make sure you have <a href="manual/installation.html" class="xref page">the right JAR files</a> on your classpath.</p>
+</li>
+<li>
+<p>Check the name of your configuration file.
+By default, Log4j looks for a configuration file named <code>log4j2.xml</code> on the classpath.
+Note the <code>2</code> in the file name!
+(See <a href="manual/configuration.html" class="xref page">the Configuration page</a> for more details.)</p>
+</li>
+<li>
+<p>Increase the logging verbosity of the internal status logger:<br>
+<code>-Dlog4j2.statusLoggerLevel=TRACE</code></p>
+</li>
+<li>
+<p>Enable all internal debug logging: <code>-Dlog4j2.debug</code>.
+This disables level-based status logger filtering and effectively allows all status logs.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -589,158 +451,73 @@ By default the status logger level is WARN, so you only see notifications when t
 <h2 id="separate_log_files"><a class="anchor" href="#separate_log_files"></a>How do I dynamically write to separate log files?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Look at the <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#RoutingAppender">RoutingAppender</a>.
-You can define multiple routes in the configuration, and put values in the <code>ThreadContext</code> map that determine which log file subsequent events in this thread get logged to.</p>
-</div>
-<div class="paragraph">
-<p>You can use the <code>ThreadContext</code> map value to determine the log file name.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Routing name="Routing"&gt;
-  &lt;Routes pattern="$${ctx:ROUTINGKEY}"&gt;
-
-    &lt;!-- This route is chosen if ThreadContext has value 'special' for key ROUTINGKEY. --&gt;
-    &lt;Route key="special"&gt;
-      &lt;RollingFile name="Rolling-${ctx:ROUTINGKEY}" fileName="logs/special-${ctx:ROUTINGKEY}.log"
-	filePattern="./logs/${date:yyyy-MM}/${ctx:ROUTINGKEY}-special-%d{yyyy-MM-dd}-%i.log.gz"&gt;
-	&lt;PatternLayout&gt;
-	  &lt;pattern&gt;%d{ISO8601} [%t] %p %c{3} - %m%n&lt;/pattern&gt;
-	&lt;/PatternLayout&gt;
-	&lt;Policies&gt;
-	  &lt;TimeBasedTriggeringPolicy interval="6" modulate="true" /&gt;
-          &lt;SizeBasedTriggeringPolicy size="10 MB" /&gt;
-	&lt;/Policies&gt;
-      &lt;/RollingFile&gt;
-    &lt;/Route&gt;
-
-    &lt;!-- This route is chosen if ThreadContext has no value for key ROUTINGKEY. --&gt;
-    &lt;Route key="$${ctx:ROUTINGKEY}"&gt;
-      &lt;RollingFile name="Rolling-default" fileName="logs/default.log"
-	filePattern="./logs/${date:yyyy-MM}/default-%d{yyyy-MM-dd}-%i.log.gz"&gt;
-        &lt;PatternLayout&gt;
-	  &lt;pattern&gt;%d{ISO8601} [%t] %p %c{3} - %m%n&lt;/pattern&gt;
-        &lt;/PatternLayout&gt;
-        &lt;Policies&gt;
-          &lt;TimeBasedTriggeringPolicy interval="6" modulate="true" /&gt;
-          &lt;SizeBasedTriggeringPolicy size="10 MB" /&gt;
-        &lt;/Policies&gt;
-      &lt;/RollingFile&gt;
-    &lt;/Route&gt;
-
-    &lt;!-- This route is chosen if ThreadContext has a value for ROUTINGKEY
-         (other than the value 'special' which had its own route above).
-         The value dynamically determines the name of the log file. --&gt;
-    &lt;Route&gt;
-      &lt;RollingFile name="Rolling-${ctx:ROUTINGKEY}" fileName="logs/other-${ctx:ROUTINGKEY}.log"
-	filePattern="./logs/${date:yyyy-MM}/${ctx:ROUTINGKEY}-other-%d{yyyy-MM-dd}-%i.log.gz"&gt;
-	&lt;PatternLayout&gt;
-	  &lt;pattern&gt;%d{ISO8601} [%t] %p %c{3} - %m%n&lt;/pattern&gt;
-	&lt;/PatternLayout&gt;
-	&lt;Policies&gt;
-	  &lt;TimeBasedTriggeringPolicy interval="6" modulate="true" /&gt;
-	  &lt;SizeBasedTriggeringPolicy size="10 MB" /&gt;
-	&lt;/Policies&gt;
-      &lt;/RollingFile&gt;
-    &lt;/Route&gt;
-  &lt;/Routes&gt;
-&lt;/Routing&gt;</code></pre>
-</div>
+<p>You can use <a href="manual/appenders.html#RoutingAppender" class="xref page">the routing appender</a> to evaluate a log message and forward it to a particular appender.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="reconfig_level_from_code"><a class="anchor" href="#reconfig_level_from_code"></a>How do I set a logger&#8217;s level programmatically?</h2>
+<h2 id="api-tradeoffs"><a class="anchor" href="#api-tradeoffs"></a>What are the trade-offs of using Log4j API versus SLF4J?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can set a logger&#8217;s level with the class <a href="javadoc/log4j-core/org/apache/logging/log4j/core/config/Configurator.html"><code>Configurator</code></a> from Log4j Core.
-Be aware that the <code>Configurator</code> class is not part of the public API.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// org.apache.logging.log4j.core.config.Configurator;
-
-Configurator.setLevel("com.example.Foo", Level.DEBUG);
-
-// You can also set the root logger:
-Configurator.setRootLevel(Level.DEBUG);</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="retention"><a class="anchor" href="#retention"></a>How do I set my log archive retention policy?</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>How do I delete old log archives?</p>
-</div>
-<div class="paragraph">
-<p>The <code>DefaultRolloverStrategy</code> of the Rolling File appender (and Rolling Random Access File appender) supports a <a href="manual/appenders.html#CustomDeleteOnRollover" class="xref page">Delete</a> element.</p>
-</div>
-<div class="paragraph">
-<p>Starting at a specified base directory, you can delete all files for which some condition holds true, for example all files that match a given file name pattern and are older than some number of days.
-More complex conditions are possible, and if the built-in conditions are not sufficient, users can provide custom conditions by creating <a href="manual/appenders.html#DeletePathCondition" class="xref page">plugin conditions</a> or by writing a <a href="manual/appenders.html#ScriptCondition" class="xref page">script condition</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="api-tradeoffs"><a class="anchor" href="#api-tradeoffs"></a>What are the trade-offs of using the Log4j 2 API versus the SLF4J API?</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The Log4j 2 API and SLF4J have a lot in common.
+<p>Log4j API and SLF4J have a lot in common.
 They both share the objective of cleanly separating the logging API from the implementation.
-We believe that the Log4j 2 API can help make your application more performant while offering more functionality and more flexibility.</p>
+We believe that Log4j API can help make your application more performant while offering more functionality and more flexibility.</p>
 </div>
 <div class="paragraph">
-<p>There may be a concern that using the Log4j 2 API will tightly couple your application to Log4j 2.
-This is not the case: applications coded to the Log4j 2 API always have the option to use any SLF4J-compliant library as their logging implementation with the log4j-to-slf4j adapter.
-See the <a href="#which_jars_log4j-to-slf4j">which jars</a> FAQ entry for details.</p>
+<p>There may be a concern that using the Log4j API will tightly couple your application to Log4j.
+This is not the case: applications coded to Log4j API always have the option to use any SLF4J-compliant logging implementation with the <code>log4j-to-slf4j</code> bridge.
+See <a href="manual/installation.html" class="xref page">the Installation page</a> for details.</p>
 </div>
 <div class="paragraph">
-<p>There are several advantages to using the Log4j 2 API:</p>
+<p>There are several advantages to using Log4j API:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>SLF4J forces your application to log Strings.
-The Log4j 2 API supports logging any CharSequence if you want to log text, but also supports logging any Object as is.
-It is the responsibility of the logging <em>implementation</em> to handle this object, and we consider it a design mistake to limit applications to logging Strings.</p>
+<p>SLF4J forces your application to log <code>String</code>s.
+Log4j API supports logging any <code>CharSequence</code> if you want to log text, but also supports logging any <code>Object</code> as is.
+It is the responsibility of the logging <em>implementation</em> to handle this object, and we consider it a design mistake to limit applications to logging <code>String</code>s.</p>
 </li>
 <li>
-<p>The Log4j 2 API offers support for logging <a href="manual/messages.html" class="xref page">Message objects</a>.
+<p>Log4j API offers support for logging <a href="manual/messages.html" class="xref page"><code>Message</code> objects</a>.
 Messages allow support for interesting and complex constructs to be passed through the logging system and be efficiently manipulated.
-Users are free to create their own Message types and write custom Layouts, Filters and Lookups to manipulate them.</p>
+Users are free to create their own message types and write custom layouts, filters and lookups to manipulate them.</p>
 </li>
 <li>
-<p>The Log4j 2 API has support for Java 8 <a href="manual/api.html#LambdaSupport" class="xref page">lambda expressions</a>.</p>
+<p>Log4j API supports <a href="manual/api.html#LambdaSupport" class="xref page">lambda expressions</a> both in its plain and fluent API.</p>
 </li>
 <li>
-<p>The Log4j 2 API has better support for <a href="manual/garbagefree.html" class="xref page">garbage-free logging</a>: it avoids creating vararg arrays and avoids creating Strings when logging CharSequence objects.</p>
+<p>Log4j API has better support for <a href="manual/garbagefree.html" class="xref page">garbage-free logging</a>: it avoids creating <code>vararg</code> arrays and avoids creating <code>String</code>s when logging <code>CharSequence</code>s.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="gc-free-slf4j"><a class="anchor" href="#gc-free-slf4j"></a>Is Log4j 2 still garbage-free when I use the SLF4J API?</h2>
+<h2 id="gc-free-slf4j"><a class="anchor" href="#gc-free-slf4j"></a>Is Log4j still garbage-free when I use SLF4J?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Yes, the log4j-slf4j-impl binding (together with log4j-core) implements the <code>org.slf4j.Logger</code> methods to be GC-free.
+<p>If you use SLF4J as your logging API and Log4j Core as the logging implementation, yes.
+The <code>log4j-slf4j-impl</code> and <code>log4j-slf4j2-impl</code> bridges (together with <code>log4j-core</code>) implement the <code>org.slf4j.Logger</code> methods to be garbage-free.
 However, bear in mind that there are some limitations:</p>
 </div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>The SLF4J API only offers up to two parameters for a parameterized message.
-More than that uses varargs which creates a temporary object for the parameter array.
-The Log4j 2.6 API has methods for up to ten unrolled parameters.</p>
-</div>
-<div class="paragraph">
-<p>Another consideration is that the SLF4J API forces your application to log Strings.
-Log4j 2 API lets you log any java.lang.CharSequence, and even any Objects.
-Log4j can log any Object that implements <code>java.lang.CharSequence</code> or <code>org.apache.logging.log4j.util.StringBuilderFormattable</code> without creating garbage.</p>
-</div>
-<div class="paragraph">
-<p>The <a href="https://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log-org.slf4j.Marker-java.lang.String-int-java.lang.String-java.lang.Object:A-java.lang.Throwable-"><code>org.slf4j.spi.LocationAwareLogger::log</code></a> method is not yet implemented in a garbage-free manner in the log4j-slf4j-impl binding.
+More than that uses <code>vararg</code>s, which create a temporary object for the parameter array.
+In contrast, Log4j API has methods for up to ten unrolled parameters.</p>
+</li>
+<li>
+<p>SLF4J forces your application to log <code>String</code>s.
+Log4j API lets you log any <code>CharSequence</code> or <code>Object</code>.
+Log4j Core can log any <code>Object</code> that implements <code>CharSequence</code> or <code>org.apache.logging.log4j.util.StringBuilderFormattable</code> without creating garbage.</p>
+</li>
+<li>
+<p>The <a href="https://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker,java.lang.String,int,java.lang.String,java.lang.Object%5B%5D,java.lang.Throwable)"><code>org.slf4j.spi.LocationAwareLogger::log</code></a> method is not yet implemented in a garbage-free manner in the <code>log4j-slf4j-impl</code> and <code>log4j-slf4j2-impl</code> bridges.
 It creates a new message object for each call.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -748,35 +525,34 @@ It creates a new message object for each call.</p>
 <h2 id="gc-free-domain-object"><a class="anchor" href="#gc-free-domain-object"></a>How do I log my domain object without creating garbage?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>One option is to let the domain object implement java.lang.CharSequence.
+<p>One option is to let the domain object implement <code>CharSequence</code>.
 However, for many domain objects it may not be trivial to implement this without allocating temporary objects.</p>
 </div>
 <div class="paragraph">
 <p>An alternative is to implement the <code>org.apache.logging.log4j.util.StringBuilderFormattable</code> interface.
-If an object is logged that implements this interface, its <code>formatTo</code> method is called instead of <code>toString()</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package org.apache.logging.log4j.util;
-public interface StringBuilderFormattable {
-    /**
-     * Writes a text representation of this object into the specified {@code StringBuilder},
-     * ideally without allocating temporary objects.
-     *
-     * @param buffer the StringBuilder to write into
-     */
-     void formatTo(StringBuilder buffer);
-}</code></pre>
-</div>
+If an object is logged that implements this interface, its <code>formatTo(StringBuilder)</code> method is called instead of <code>toString()</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="logger-wrapper"><a class="anchor" href="#logger-wrapper"></a>How do I create a custom logger wrapper that shows the correct class, method and line number?</h2>
+<h2 id="logger-wrapper"><a class="anchor" href="#logger-wrapper"></a>How do I create a custom logger wrapper that shows the correct class, method, and line number?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j remembers the fully qualified class name (FQCN) of the logger and uses this to walk the stack trace for every log event when configured to print location.
-(Be aware that logging with location is slow and may impact the performance of your application.)</p>
+<p>Log4j remembers the fully qualified class name (FQCN) of the logger and uses this to walk the stack trace for every log event when configured to print location.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Be aware that logging with location is slow and may impact the performance of your application.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The problem with custom logger wrappers is that they have a different FQCN than the actual logger, so Log4j can&#8217;t find the place where your custom logger was called.</p>
@@ -785,10 +561,8 @@ public interface StringBuilderFormattable {
 <p>The solution is to provide the correct FQCN.
 The easiest way to do this is to let Log4j generate the logger wrapper for you.
 Log4j comes with a Logger wrapper generator tool.
-This tool was originally meant to support custom log levels and is documented <a href="https://logging.apache.org/log4j/2.x/manual/customloglevels.html#CustomLoggers">here</a>.</p>
-</div>
-<div class="paragraph">
-<p>The generated logger code will take care of the FQCN.</p>
+This tool was originally meant to support custom log levels and is documented <a href="manual/customloglevels.html#CustomLoggers" class="xref page">here</a>.
+The generated logger code will take care of the FQCN.</p>
 </div>
 </div>
 </div>
