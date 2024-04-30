@@ -512,8 +512,8 @@ JSON Template Layout will render JSON documents as follows:
 See xref:manual/json-template-layout.adoc[JSON Template Layout] page for the complete
 documentation.
 
-[#PatternLayout]
-== Pattern Layout
+[id=pattern-layout]
+== [[PatternLayout]] Pattern Layout
 
 A flexible layout configurable with pattern string. The goal of this
 class is to format a LogEvent and return the results. The format of the

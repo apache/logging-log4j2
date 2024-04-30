@@ -634,77 +634,7 @@ rootLogger.appenderRef.0.ref = CONSOLE
 
 In order to use these formats, the following additional dependencies are required:
 
-[tabs]
-====
-
-Maven::
-+
-[tabs]
-=====
-
-log4j2.xml::
-+
-No dependency required.
-
-log4j2.json::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>com.fasterxml.jackson.core</groupId>
-  <artifactId>jackson-databind</artifactId>
-  <version>{jackson-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-log4j2.yaml::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>com.fasterxml.jackson.dataformat</groupId>
-  <artifactId>jackson-dataformat-yaml</artifactId>
-  <version>{jackson-version}</version>
-  <scope>runtime</scope>
-</dependency>
-----
-
-log4j2.properties::
-+
-No dependency required.
-
-=====
-
-Gradle::
-+
-[tabs]
-=====
-
-log4j2.xml::
-+
-No dependency required.
-
-log4j2.json::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:{jackson-version}'
-----
-
-log4j2.yaml::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:{jackson-version}'
-----
-
-log4j2.properties::
-+
-No dependency required.
-
-=====
-====
+include::partial$configuration-file-format-deps.adoc[]
 
 [#impl-jul]
 === Installing JUL

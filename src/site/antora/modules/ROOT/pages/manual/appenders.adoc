@@ -339,8 +339,8 @@ CREATE TABLE logs (
 );
 ----
 
-[#ConsoleAppender]
-== ConsoleAppender
+[id=consoleappender]
+== [[ConsoleAppender]] ConsoleAppender
 
 As one might expect, the ConsoleAppender writes its output to either
 System.out or System.err with System.out being the default target. A
@@ -466,8 +466,8 @@ A Failover configuration might look like:
 </Configuration>
 ----
 
-[#FileAppender]
-== FileAppender
+[id=fileappender]
+== [[FileAppender]] FileAppender
 
 The FileAppender is an OutputStreamAppender that writes to the File
 named in the fileName parameter. The FileAppender uses a FileManager
