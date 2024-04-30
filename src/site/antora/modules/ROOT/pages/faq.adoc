@@ -32,7 +32,7 @@ Log4j 2 and onwards use `log4j2.xml`.
 ====
 
 You can also specify the full path of the configuration file using a system property: +
-`-Dlog4j.configurationFile=/path/to/log4j2.xml`
+`-Dlog4j2.configurationFile=/path/to/log4j2.xml`
 
 That property can also be included in a classpath resource file named `log4j2.component.properties`.
 
