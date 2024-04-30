@@ -73,15 +73,48 @@ You can view the generated website with a browser by pointing it to `target/site
 
 You can follow below steps for casual development needs:
 
-. Make sure you installed everything: `./mvnw install -DskipTests`
-. After making a change to, say, `log4j-core`, install your changes: `./mvnw install -pl :log4j-core -DskipTests`
-. Run all tests associated with `log4j-core`: `./mvnw test -pl :log4j-core-test`
-. Run a particular test: `./mvnw test -pl :log4j-core-test -Dtest=FooBarTest`
+. Make sure you installed everything:
++
+[source,bash]
+----
+./mvnw install -DskipTests
+----
 
+. After making a change to, say, `log4j-core`, install your changes:
++
+[source,bash]
+----
+./mvnw install -pl :log4j-core -DskipTests
+----
+
+. Run all tests associated with `log4j-core`:
++
+[source,bash]
+----
+./mvnw test -pl :log4j-core-test
+----
+
+. Run a particular test:
++
+[source,bash]
+----
+./mvnw test -pl :log4j-core-test -Dtest=FooBarTest
+----
+
+. Make sure all build checks (Spotless, Spotbugs, BND, RAT, etc.) succeed:
++
+[source,bash]
+----
+./mvnw verify -DskipTests -pl :log4j-core,:log4j-core-test
+----
+
+[TIP]
+====
 You can connect your IDE to a `./mvnw test` run by
 
 . Run `./mvnw test -pl :log4j-core-test -Dtest=FooBarTest -Dmaven.surefire.debug`
 . Use _"Run > Attach to process"_ in IntelliJ IDEA
+====
 
 [#development-faq]
 === F.A.Q
