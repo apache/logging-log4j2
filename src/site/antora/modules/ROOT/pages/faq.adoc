@@ -127,7 +127,7 @@ Note the `2` in the file name!
 (See xref:manual/configuration.adoc[the Configuration page] for more details.)
 
 . Increase the logging verbosity of the internal status logger: +
-`-Dlog4j2.StatusLogger.level=TRACE`
+`-Dlog4j2.statusLoggerLevel=TRACE`
 
 . Enable all internal debug logging: `-Dlog4j2.debug`.
 This disables level-based status logger filtering and effectively allows all status logs.
