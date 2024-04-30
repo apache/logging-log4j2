@@ -55,19 +55,13 @@ printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
 [#java8-tests]
 === Java 8 tests
 
-To test the library against the target JRE (JRE 8), you need to configure a JDK 8 toolchains as explained below and run Maven with the `java8-tests` profile:
-
-[source,bash]
-----
-./mvnw verify -Pjava8-tests
-----
+You can run tests using the target JRE (i.e., JRE 8) as follows:
 
 [#toolchains]
-=== Configuring Maven Toolchains
-
-Maven Toolchains is used to employ additional JDKs required for tests.
+. Maven Toolchains is used to employ additional JDKs required for tests.
 You either need to have a user-level configuration in `~/.m2/toolchains.xml` or explicitly provide one to the Maven: `./mvnw --global-toolchains /path/to/toolchains.xml`.
-
++
+.An example `toolchains.xml` containing a JDK 8 toolchain
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF8"?>
@@ -82,6 +76,13 @@ You either need to have a user-level configuration in `~/.m2/toolchains.xml` or 
     </configuration>
   </toolchain>
 </toolchains>
+----
+
+. Run Maven tests with the `java8-tests` profile:
++
+[source,bash]
+----
+./mvnw verify -Pjava8-tests
 ----
 
 [#website]
@@ -105,15 +106,48 @@ You can view the generated website with a browser by pointing it to `target/site
 
 You can follow below steps for casual development needs:
 
-. Make sure you installed everything: `./mvnw install -DskipTests`
-. After making a change to, say, `log4j-core`, install your changes: `./mvnw install -pl :log4j-core -DskipTests`
-. Run all tests associated with `log4j-core`: `./mvnw test -pl :log4j-core-test`
-. Run a particular test: `./mvnw test -pl :log4j-core-test -Dtest=FooBarTest`
+. Make sure you installed everything:
++
+[source,bash]
+----
+./mvnw install -DskipTests
+----
 
+. After making a change to, say, `log4j-core`, install your changes:
++
+[source,bash]
+----
+./mvnw install -pl :log4j-core -DskipTests
+----
+
+. Run all tests associated with `log4j-core`:
++
+[source,bash]
+----
+./mvnw test -pl :log4j-core-test
+----
+
+. Run a particular test:
++
+[source,bash]
+----
+./mvnw test -pl :log4j-core-test -Dtest=FooBarTest
+----
+
+. Make sure all build checks (Spotless, Spotbugs, BND, RAT, etc.) succeed:
++
+[source,bash]
+----
+./mvnw verify -DskipTests -pl :log4j-core,:log4j-core-test
+----
+
+[TIP]
+====
 You can connect your IDE to a `./mvnw test` run by
 
 . Run `./mvnw test -pl :log4j-core-test -Dtest=FooBarTest -Dmaven.surefire.debug`
 . Use _"Run > Attach to process"_ in IntelliJ IDEA
+====
 
 [#development-faq]
 === F.A.Q
