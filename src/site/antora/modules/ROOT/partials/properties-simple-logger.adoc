@@ -1,0 +1,62 @@
+.Simple logger configuration
+[cols="1,1,5"]
+|===
+h| Java Property
+
+(Environment Variable)
+h| Default Value
+h| Description
+
+| [[log4j2.simplelogLevel]]`log4j2.simplelogLevel`
+
+(`LOG4J_SIMPLELOG_LEVEL`)
+| ERROR
+| Default level for new logger instances.
+
+| [[log4j2.simplelog.loggerName.level]]`log4j2.simplelog.&lt;loggerName&gt;.level`
+
+(`LOG4J_SIMPLELOG_&lt;LOGGER_NAME&gt;_LEVEL`)
+| value of <<log4j2.simplelogLevel>>
+| Log level for a logger instance named `<loggerName>`.
+
+| [[log4j2.simplelogShowContextMap]]`log4j2.simplelogShowContextMap`
+
+(`LOG4J_SIMPLELOG_SHOW_CONTEXT_MAP`)
+| false
+| If `true`, the full thread context map is included in each log message.
+
+| [[log4j2.simplelogShowlogname]]`log4j2.simplelogShowlogname`
+
+(`LOG4J_SIMPLELOG_SHOWLOGNAME`)
+| false
+| If `true`, the logger name is included in each log message.
+
+| [[log4j2.simplelogShowShortLogname]]`log4j2.simplelogShowShortLogname`
+
+(`LOG4J_SIMPLELOG_SHOW_SHORT_LOGNAME`)
+| true
+| If `true`, only the last component of a logger name is included in each log message.
+
+| [[log4j2.simplelogShowdatetime]]`log4j2.simplelogShowdatetime`
+
+(`LOG4J_SIMPLELOG_SHOWDATETIME`)
+| false
+| If `true`, a timestamp is included in each log message.
+
+| [[log4j2.simplelogDateTimeFormat]]`log4j2.simplelogDateTimeFormat`
+
+(`LOG4J_SIMPLELOG_DATE_TIME_FORMAT`)
+| `yyyy/MM/dd HH:mm:ss:SSS zzz`
+| Date-time format to use. Ignored if <<log4j2.simplelogShowdatetime>> is `false`.
+
+| [[log4j2.simplelogLogFile]]`log4j2.simplelogLogFile`
+
+(`LOG4J_SIMPLELOG_LOG_FILE`)
+| System.err
+a| Specifies the output stream used by all loggers:
+
+* `System.err` logs to the standard error output stream,
+* `System.out` logs to the standard output stream,
+* any other value is interpreted as a file name.
+
+|===

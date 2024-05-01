@@ -1,0 +1,27 @@
+.JMX properties
+[cols="1,1,5"]
+|===
+h| Java Property
+
+(Environment Variable)
+h| Default Value
+h| Description
+
+| [[log4j2.disableJmx]]`log4j2.disableJmx`
+
+(`LOG4J_DISABLE_JMX`)
+| `true`
+|
+If `false`, Log4j configuration objects like ``LoggerContext``s, ``Appender``s, ``Logger``s, etc.
+will be instrumented with ``MBean``s and can be remotely monitored and managed.
+
+| [[log4j2.jmxNotifyAsync]]`log4j2.jmxNotifyAsync`
+
+(`LOG4J_JMX_NOTIFY_ASYNC`)
+| `true`
+
+(Web-app mode: `false`)
+|
+If `true`, Log4j's JMX notifications are sent from a separate background thread, otherwise they are sent from the caller thread.
+
+|===

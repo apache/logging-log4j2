@@ -1,0 +1,36 @@
+.JNDI properties
+[cols="1,1,5"]
+|===
+h| Java Property
+
+(Environment Variable)
+h| Default Value
+h| Description
+
+| [[log4j2.enableJndiContextSelector]]`log4j2.enableJndiContextSelector`
+
+(`LOG4J_ENABLE_JNDI_CONTEXT_SELECTOR`)
+| `false`
+|
+When `true` the `JndiContextSelector` is enabled for the `java:` protocol.
+See xref:manual/webapp.adoc#use-jndi-context-selector[Web application] for more details.
+
+| [[log4j2.enableJndiJdbc]]`log4j2.enableJndiJdbc`
+
+(`LOG4J_ENABLE_JNDI_JDBC`)
+| `false`
+| When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html[DataSource] using the `java:` protocol.
+
+| [[log4j2.enableJndiJms]]`log4j2.enableJndiJms`
+
+(`LOG4J_ENABLE_JNDI_JMS`)
+| `false`
+| When `true`, a Log4j JMS Appender can use JNDI to retrieve the necessary components using the `java:` protocol.
+
+| [[log4j2.enableJndiLookup]]`log4j2.enableJndiLookup`
+
+(`LOG4J_ENABLE_JNDI_LOOKUP`)
+| `false`
+| When `true`, the Log4j JNDI Lookup can use the `java:` protocol.
+
+|===

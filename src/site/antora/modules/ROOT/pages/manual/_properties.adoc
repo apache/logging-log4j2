@@ -62,36 +62,7 @@ and that all the properties names that start with `log4j` use the normalized for
 
 In order to rapidly optimize Log4j Core for a particular usage, you can use the following properties:
 
-.Meta configuration properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.isWebapp]]`log4j2.isWebapp`
-
-(`LOG4J_IS_WEBAPP`)
-| `true` if the https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/servlet[Servlet] class on classpath
-| Setting this property to `true` switches Log4j Core into  "Web application mode" (_"Web-app mode"_).
-
-In this mode Log4j is optimized to work in a Servlet container.
-
-This mode is incompatible with <<log4j2.enableThreadlocals>>.
-
-| [[log4j2.enableThreadlocals]]`log4j2.enableThreadlocals`
-
-(`LOG4J_ENABLE_THREADLOCALS`)
-| `!log4j2.isWebapp`
-| Setting this property to `true` switches Log4j Core into  "garbage-free mode" (_"GC-free mode"_).
-
-In this mode Log4j uses ``ThreadLocal``s for object pooling to prevent object allocations.
-
-This mode is incompatible with <<log4j2.isWebapp>>.
-
-|===
+include::partial$properties-meta.adoc[]
 
 == Log4j API properties
 
@@ -104,25 +75,7 @@ Therefore, its configuration influences all other services.
 
 It has only one configuration property:
 
-.LoaderUtil configuration properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.ignoreTcl]]`log4j2.ignoreTcl`
-
-(`LOG4J_IGNORE_TCL`)
-| `false`
-|
-If `true`, classes are only loaded using the same classloader that loaded Log4j.
-
-Otherwise, an attempt is made to load classes with the current thread's context class loader before falling back to the default class loader.
-
-|===
+include::partial$properties-loader-util.adoc[]
 
 === Provider
 
@@ -140,115 +93,13 @@ For backward compatibility users can specify the link:../javadoc/log4j-api/org/a
 Log4j contains an internal logging mechanism called `StatusLogger` that is used by all Log4j components.
 By default, the status logger only reports errors on the standard error stream, but you can configure it using the following properties.
 
-.Status logger configuration
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.debug]]`log4j2.debug`
-
-(`LOG4J_DEBUG`)
-| false
-| If set to a value different from `false`, sets the level of the status logger to `TRACE` overriding any other system property.
-
-| [[log4j2.statusEntries]]`log4j2.statusEntries`
-
-(`LOG4J_STATUS_ENTRIES`)
-| 0
-| Specifies the number of status logger entries to cache.
-Once the limit is reached newer entries will overwrite the oldest ones.
-
-| [[log4j2.statusLoggerLevel]]`log4j2.statusLoggerLevel`
-
-(`LOG4J_STATUS_LOGGER_LEVEL`)
-| ERROR
-| Specifies the level of the status logger.
-Can be overridden by <<log4j2.debug>>.
-
-| [[log4j2.statusLoggerDateFormat]]`log4j2.statusLoggerDateFormat`
-
-(`LOG4J_STATUS_LOGGER_DATE_FORMAT`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html#ISO_INSTANT[DateTimeFormatter.ISO_INSTANT]
-| Sets the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[DateTimeFormatter] pattern used by status logger to format dates.
-
-| [[log4j2.statusLoggerDateFormatZone]]`log4j2.statusLoggerDateFormatZone`
-
-(`LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html#systemDefault()[ZoneId.systemDefault()]
-| Sets the timezone id used by status logger. See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html[ZoneId] for the accepted formats.
-
-|===
+include::partial$properties-status-logger.adoc[]
 
 === Simple logger
 
 The simple logger implementation contained in `log4j-api` can be configured using these properties:
 
-.Simple logger configuration
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.simplelogLevel]]`log4j2.simplelogLevel`
-
-(`LOG4J_SIMPLELOG_LEVEL`)
-| ERROR
-| Default level for new logger instances.
-
-| [[log4j2.simplelog.loggerName.level]]`log4j2.simplelog.&lt;loggerName&gt;.level`
-
-(`LOG4J_SIMPLELOG_&lt;LOGGER_NAME&gt;_LEVEL`)
-| value of <<log4j2.simplelogLevel>>
-| Log level for a logger instance named `<loggerName>`.
-
-| [[log4j2.simplelogShowContextMap]]`log4j2.simplelogShowContextMap`
-
-(`LOG4J_SIMPLELOG_SHOW_CONTEXT_MAP`)
-| false
-| If `true`, the full thread context map is included in each log message.
-
-| [[log4j2.simplelogShowlogname]]`log4j2.simplelogShowlogname`
-
-(`LOG4J_SIMPLELOG_SHOWLOGNAME`)
-| false
-| If `true`, the logger name is included in each log message.
-
-| [[log4j2.simplelogShowShortLogname]]`log4j2.simplelogShowShortLogname`
-
-(`LOG4J_SIMPLELOG_SHOW_SHORT_LOGNAME`)
-| true
-| If `true`, only the last component of a logger name is included in each log message.
-
-| [[log4j2.simplelogShowdatetime]]`log4j2.simplelogShowdatetime`
-
-(`LOG4J_SIMPLELOG_SHOWDATETIME`)
-| false
-| If `true`, a timestamp is included in each log message.
-
-| [[log4j2.simplelogDateTimeFormat]]`log4j2.simplelogDateTimeFormat`
-
-(`LOG4J_SIMPLELOG_DATE_TIME_FORMAT`)
-| `yyyy/MM/dd HH:mm:ss:SSS zzz`
-| Date-time format to use. Ignored if <<log4j2.simplelogShowdatetime>> is `false`.
-
-| [[log4j2.simplelogLogFile]]`log4j2.simplelogLogFile`
-
-(`LOG4J_SIMPLELOG_LOG_FILE`)
-| System.err
-a| Specifies the output stream used by all loggers:
-
-* `System.err` logs to the standard error output stream,
-* `System.out` logs to the standard output stream,
-* any other value is interpreted as a file name.
-
-|===
+include::partial$properties-simple-logger.adoc[]
 
 [#simple-logger-thread-context]
 === Thread context (Simple Logger)
@@ -264,117 +115,29 @@ The `log4j-to-slf4j` logging bridge delegates `ThreadContext` calls to the SLF4J
 The `log4j-to-jul` logging bridge ignores all `ThreadContext` method calls.
 ====
 
-.Thread context configuration
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.disableThreadContext]]`log4j2.disableThreadContext`
-
-(`LOG4J_DISABLE_THREAD_CONTEXT`)
-| false
-| If `true`, the `ThreadContext` stack and map are disabled.
-
-| [[log4j2.disableThreadContextStack]]`log4j2.disableThreadContextStack`
-
-(`LOG4J_DISABLE_THREAD_CONTEXT_STACK`)
-| false
-| If `true`, the `ThreadContext` stack is disabled.
-
-| [[log4j2.disableThreadContextMap]]`log4j2.disableThreadContextMap`
-
-(`LOG4J_DISABLE_THREAD_CONTEXT_MAP`)
-| false
-| If `true`, the `ThreadContext` map is disabled.
-
-| [[log4j2.threadContextMap]]`log4j2.threadContextMap`
-
-(`LOG4J_THREAD_CONTEXT_MAP`)
-| `WebApp`
-
-(GC-free mode: `CopyOnWrite`)
-a| Fully specified class name of a custom `ThreadContextMap` implementation class or one of the predefined constants:
-
-* `NoOp`: to disable the thread context,
-* `WebApp`: a web application-safe implementation, that only binds JRE classes to `ThreadLocal` to prevent memory leaks,
-* `CopyOnWrite`: a copy-on-write implementation,
-* `GarbageFree`: a garbage-free implementation.
-
-| [[isThreadContextMapInheritable]]`log4j2.isThreadContextMapInheritable`
-
-(`LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE`)
-| false
-| If `true` uses an `InheritableThreadLocal` to copy the thread context map to newly created threads.
-
-| [[log4j2.garbagefreeThreadContextMap]]`log4j2.garbagefreeThreadContextMap`
-
-(`LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP`)
-| false
-| If set to `true` selects a garbage-free thread context map implementation.
-Requires <<log4j2.enableThreadlocals>> to be also `true`.
-
-|===
+include::partial$properties-thread-context.adoc[]
 
 == Log4j Core
 
-While the only required configuration of the `log4j-core` library is provided by the xref:manual/configurationw.adoc#configuration-file[configuration file], the library offers many configuration properties that can be used to finely tune the way it works.
+While the only required configuration of the `log4j-core` library is provided by the xref:manual/configuration.adoc[configuration file], the library offers many configuration properties that can be used to finely tune the way it works.
 
 === Async components
 
 The behavior of all three async components (`AsyncLogger`, `AsyncLoggerConfig` and `AsyncAppender`) can be tuned using these properties:
 
-.Common async component configuration
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.formatMsgAsync]]`log4j2.formatMsgAsync`
-
-(`LOG4J_FORMAT_MSG_ASYNC`)
-| false
-| If `false`, Log4j will make sure the message is formatted in the caller thread, otherwise the formatting will occur on the asynchronous thread.
-
-**Remark**: messages annotated with link:../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable[AsynchronouslyFormattable] will be formatted on the async thread regardless of this setting.
-
-| [[log4j2.asyncQueueFullPolicy]]`log4j2.asyncQueueFullPolicy`
-
-(`LOG4J_ASYNC_QUEUE_FULL_POLICY`)
-| `Default`
-a| Determines the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy[AsyncQueueFullPolicy] to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.
-
-It accepts the following values:
-
-* `Default`: blocks the calling thread until the event can be added to the queue.
-
-* `Discard`: when the queue is full, it drops the events whose level is equal or less than the threshold level (see <<log4j2.discardThreshold>>).
-
-* the fully qualified class name of a custom implementation
-
-| [[log4j2.discardThreshold]]`log4j2.discardThreshold`
-
-(`LOG4J_DISCARD_THRESHOLD`)
-| `INFO`
-| Determines the threshold level used by a `Discard` queue full policy.
-Log events whose level is equal or less specific than the threshold level will be discarded during a queue full event.
-See also <<log4j2.asyncQueueFullPolicy>>.
-
-|===
+include::partial$properties-async.adoc[]
 
 ==== `AsyncLogger`
 
-Additional properties supported by `AsyncLogger` are documented in the xref:manual/async.adoc#SysPropsAllAsync[System Properties to configure all asynchronous loggers] table.
+The `AsyncLogger` component supports the following additional properties:
+
+include::partial$properties-async-logger.adoc[]
 
 ==== `AsyncLoggerConfig`
 
-Additional properties supported by `AsyncLoggerConfig` are documented in the xref:manual/async.adoc#SysPropsMixedSync-Async[System Properties to configure mixed asynchronous and normal loggers] table.
+The `AsyncLoggerConfig` component supports the following additional properties:
+
+include::partial$properties-async-logger-config.adoc[]
 
 === Context selector
 
@@ -387,44 +150,7 @@ See xref:manual/logsep.adoc[Log Separation] for details.
 * the `Logger` implementation used by Log4j Core.
 See xref:manual/async.adoc[Async Logging] as an example of this usage.
 
-.Context selector configuration properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.contextSelector]]`log4j2.contextSelector`
-
-(`LOG4J_CONTEXT_SELECTOR`)
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector[ClassLoaderContextSelector]
-a|
-Specifies the fully qualified class name of the `ContextSelector` implementation to use.
-
-The implementations available by default are:
-
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector[BasicContextSelector]::
-Creates a single logger context and synchronous loggers
-
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector[BasicAsyncLoggerContextSelector]::
-Creates a single logger context and xref:manual/async.adoc[asynchronous loggers]
-
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector[ClassLoaderContextSelector]::
-Creates a separate logger context per classloader and synchronous loggers
-
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector[AsyncLoggerContextSelector]::
-Creates a separate logger context per classloader and xref:manual/async.adoc[asynchronous loggers]
-
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector[BundleContextSelector]::
-Creates a separate logger context per OSGi bundle and synchronous loggers
-
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector[JndiContextSelector]::
-Creates loggers contexts based on a JNDI lookup and synchronous loggers
-See xref:manual/webapp.adoc#use-jndi-context-selector[Web application]] for details.
-
-|===
+include::partial$properties-context-selector.adoc[]
 
 === Configuration factory
 
@@ -437,136 +163,21 @@ If a remote configuration file is used, its transport must be secured.
 See <<transport-security>> for details.
 ====
 
-.Configuration factory properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.configurationFactory]]`log4j2.configurationFactory`
-
-(`LOG4J_CONFIGURATION_FACTORY`)
-|
-|
-Specifies the fully qualified class name of the **preferred** link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory[ConfigurationFactory] to use.
-
-Log4j will attempt to use the provided configuration factory before any other factory implementation.
-
-| [[log4j2.configurationFile]]`log4j2.configurationFile`
-
-(`LOG4J_CONFIGURATION_FILE`)
-| xref:manual/configuration.adoc#AutomaticConfiguration[automatically detected]
-a|
-Specifies a comma-separated list of URIs or file paths to Log4j 2 configuration files.
-
-If a relative URL is provided, it is interpreted as:
-
-* path to a file, if the file exists,
-* a classpath resource otherwise.
-
-See also xref:manual/configuration.adoc#AutomaticConfiguration[Automatic Configuration].
-
-| [[log4j2.level]]`log4j2.level`
-
-(`LOG4J_LEVEL`)
-| `ERROR`
-a|
-Specifies the level of the root logger if:
-
-* the default configuration is used,
-
-* or the configuration file does not specify a level for the root logger.
-
-| [[log4j2.mergeStrategy]]`log4j2.mergeStrategy`
-
-(`LOG4J_MERGE_STRATEGY`)
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy[DefaultMergeStrategy]
-|
-Specifies the fully qualified class name of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy[MergeStrategy] implementation used to merge multiple configuration files into one.
-
-|===
+include::partial$properties-configuration-factory.adoc[]
 
 === Garbage Collection
 
-.GC properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-
-| [[log4j2.enableDirectEncoders]]`log4j2.enableDirectEncoders`
-
-(`LOG4J_ENABLE_DIRECT_ENCODERS`)
-| `true`
-|
-If `true`, garbage-aware layouts will directly encode log events into https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s provided by appenders.
-
-This prevents allocating temporary `String` and `char[]` instances.
-
-| [[log4j2.initialReusableMsgSize]]`log4j2.initialReusableMsgSize`
-
-(`LOG4J_INITIAL_REUSABLE_MSG_SIZE`)
-| 128
-| In GC-free mode, this property determines the initial size of the reusable ``StringBuilder``s used by link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage[ReusableMessages] for formatting purposes.
-
-| [[log4j2.maxReusableMsgSize]]`log4j2.maxReusableMsgSize`
-
-(`LOG4J_MAX_REUSABLE_MSG_SIZE`)
-| 518
-| In GC-free mode, this property determines the maximum size of the reusable ``StringBuilder``s used by link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage[ReusableMessages] for formatting purposes.
-
-The default value allows is equal to `2 &times; (2 &times; log4j.initialReusableMsgSize + 2) + 2` and allows the
-``StringBuilder`` to be resized twice by the current JVM resize algorithm.
-
-| [[log4j2.layoutStringBuilderMaxSize]]`log4j2.layout{zwsp}StringBuilderMaxSize`
-
-(`LOG4J_LAYOUT_{zwsp}STRING_BUILDER_MAX_SIZE`)
-| 2048
-| This property determines the maximum size of the reusable ``StringBuilder``sused to format link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent[LogEvents].
-
-| [[log4j2.unboxRingbufferSize]]`log4j2.unboxRingbufferSize`
-
-(`LOG4J_UNBOX_RINGBUFFER_SIZE`)
-| 32
-|
-The link:../javadoc/log4j-api/org/apache/logging/log4j/util/Unbox[Unbox] utility class can be used by users to format primitive values without incurring in the boxing allocation cost.
-
-This property specifies the maximum number of primitive arguments to a log message that will be cached and usually does not need to be changed.
-
-|===
+include::partial$properties-garbage-collection.adoc[]
 
 === JANSI
 
 If the https://fusesource.github.io/jansi/[JANSI] library is on the runtime classpath of the application, the following property can be used to control its usage:
 
-.JANSI properties
-[cols="1,1,5"]
-|===
-h| Java Property
+include::partial$properties-jansi.adoc[]
 
-(Environment Variable)
-h| Default Value
-h| Description
+=== JMX
 
-| [[log4j2.skipJansi]]`log4j2.skipJansi`
-
-(`LOG4J_SKIP_JANSI`)
-| `true`
-a| If the following conditions are satisfied:
-
-* Log4j runs on Windows,
-* this property is set to `false`,
-
-Log4j will use the JANSI library to color the output of the console appender.
-
-|===
+include::partial$properties-jmx.adoc[]
 
 === JNDI
 
@@ -574,72 +185,7 @@ Due to the inherent security problems of https://docs.oracle.com/javase/tutorial
 
 Moreover, each JNDI usage must be **explicitly** enabled by the user through the following configuration properties.
 
-.JMX properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.enableJndiContextSelector]]`log4j2.enableJndiContextSelector`
-
-(`LOG4J_ENABLE_JNDI_CONTEXT_SELECTOR`)
-| `false`
-|
-When `true` the `JndiContextSelector` is enabled for the `java:` protocol.
-See xref:manual/webapp.adoc#use-jndi-context-selector[Web application] for more details.
-
-| [[log4j2.enableJndiJdbc]]`log4j2.enableJndiJdbc`
-
-(`LOG4J_ENABLE_JNDI_JDBC`)
-| `false`
-| When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html[DataSource] using the `java:` protocol.
-
-| [[log4j2.enableJndiJms]]`log4j2.enableJndiJms`
-
-(`LOG4J_ENABLE_JNDI_JMS`)
-| `false`
-| When `true`, a Log4j JMS Appender can use JNDI to retrieve the necessary components using the `java:` protocol.
-
-| [[log4j2.enableJndiLookup]]`log4j2.enableJndiLookup`
-
-(`LOG4J_ENABLE_JNDI_LOOKUP`)
-| `false`
-| When `true`, the Log4j JNDI Lookup can use the `java:` protocol.
-
-|===
-
-=== JMX
-
-.JMX properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.disableJmx]]`log4j2.disableJmx`
-
-(`LOG4J_DISABLE_JMX`)
-| `true`
-|
-If `false`, Log4j configuration objects like ``LoggerContext``s, ``Appender``s, ``Logger``s, etc.
-will be instrumented with ``MBean``s and can be remotely monitored and managed.
-
-| [[log4j2.jmxNotifyAsync]]`log4j2.jmxNotifyAsync`
-
-(`LOG4J_JMX_NOTIFY_ASYNC`)
-| `true`
-
-(Web-app mode: `false`)
-|
-If `true`, Log4j's JMX notifications are sent from a separate background thread, otherwise they are sent from the caller thread.
-
-|===
+include::partial$properties-jndi.adoc[]
 
 [#log4j-core-thread-context]
 === Thread context (Log4j Core)
@@ -654,322 +200,23 @@ Since configuration files can be used to load arbitrary classes into a Log4j Cor
 
 In order to protect the user Log4j disables the `http` URI scheme by default and provides several configuration options to ensure secure transport of configuration files:
 
-:jsse-default-keystores: https://docs.oracle.com/en/java/javase/21/security/java-secure-socket-extension-jsse-reference-guide.html#GUID-7D9F43B8-AABF-4C5B-93E6-3AFB18B66150
-
-.Transport security properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.configurationAllowedProtocols]]`log4j2.configuration{zwsp}AllowedProtocols`
-
-(`LOG4J_CONFIGURATION_{zwsp}ALLOWED_PROTOCOLS`)
-| file, https, jar
-|
-A comma separated list of URL protocols that may be used to load any kind of configuration source.
-
-To completely prevent accessing the configuration via the Java https://docs.oracle.com/javase/8/docs/api/java/net/URL.html[URL class] specify a value of `_none`.
-
-// TODO: What about 'jar:http:'?
-
-| [[log4j2.configurationAuthorizationProvider]]`log4j2.configuration{zwsp}AuthorizationProvider`
-
-(`LOG4J_CONFIGURATION_{zwsp}AUTHORIZATION_PROVIDER`)
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/BasicAuthorizationProvider[BasicAuthorizationProvider]
-| The fully qualified class name of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/AuthorizationProvider[AuthorizationProvider] implementation to use with `http` and `https` URL protocols.
-
-3+h| HTTP Basic authentication
-
-| [[log4j2.configurationAuthorizationEncoding]]`log4j2.configuration{zwsp}AuthorizationEncoding`
-
-(`LOG4J_CONFIGURATION_{zwsp}AUTHORIZATION_ENCODING`)
-| UTF-8
-| The encoding used in Basic Authentication (cf. https://datatracker.ietf.org/doc/html/rfc7617[RFC 7617]).
-
-| [[log4j2.configurationPassword]]`log4j2.configurationPassword`
-
-(`LOG4J_CONFIGURATION_PASSWORD`)
-|
-| The password to use in HTTP Basic authentication.
-
-If used in conjunction with <<log4j2.configurationPasswordDecryptor>> the contents of this variable are
-interpreted by the decryptor.
-
-| [[log4j2.configurationPasswordDecryptor]]`log4j2.configuration{zwsp}PasswordDecryptor`
-
-(`LOG4J_CONFIGURATION_{zwsp}PASSWORD_DECRYPTOR`)
-|
-| Fully qualified class name of an implementation of link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/PasswordDecryptor[PasswordDecryptor] to use for the value of the <<log4j2.configurationPassword>> property.
-
-By default, the literal value of the password is used.
-
-| [[log4j2.configurationUsername]]`log4j2.configurationUsername`
-
-(`LOG4J_CONFIGURATION_USERNAME`)
-|
-| The username used in HTTP Basic authentication.
-
-3+h| TLS server authentication properties
-
-| [[log4j2.trustStoreLocation]]`log4j2.trustStoreLocation`
-
-(`LOG4J_TRUST_STORE_LOCATION`)
-| see link:{jsse-default-keystores}[Default Java trust store]
-| The location of the trust store.
-
-| [[log4j2.trustStorePassword]]`log4j2.trustStorePassword`
-
-(`LOG4J_TRUST_STORE_PASSWORD`)
-|
-| The password for the trust store.
-
-| [[log4j2.trustStorePasswordFile]]`log4j2.trustStore{zwsp}PasswordFile`
-
-(`LOG4J_TRUST_STORE_{zwsp}PASSWORD_FILE`)
-|
-| The name of a file that contains the password for the trust store.
-
-| [[log4j2.trustStorePasswordEnvironmentVariable]]`log4j2.trustStore{zwsp}PasswordEnvironmentVariable`
-
-(`LOG4J_TRUST_STORE_{zwsp}PASSWORD_ENVIRONMENT_VARIABLE`)
-|
-| The name of the environment variable that contains password for the trust store.
-
-| [[log4j2.trustStoreType]]`log4j2.trustStoreType`
-
-(`LOG4J_TRUST_STORE_TYPE`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/security/KeyStore.html#getDefaultType--[Default Java `KeyStore` type]
-| The type of trust store.
-See https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore[KeyStore types].
-
-| [[log4j2.trustStoreKeyManagerFactoryAlgorithm]]`log4j2.trustStore{zwsp}KeyManagerFactoryAlgorithm`
-
-(`LOG4J_TRUST_STORE_{zwsp}KEY_MANAGER_FACTORY_ALGORITHM`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--[Default Java `KeyManagerFactory` algorithm]
-| Name of the https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html[KeyManagerFactory] implementation to use for the trust store.
-See https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[KeyManagerFactory types].
-
-| [[log4j2.sslVerifyHostName]]`log4j2.sslVerifyHostName`
-
-(`LOG4J_SSL_VERIFY_HOST_NAME`)
-| false
-| If `true` enables verification of the name of the TLS server.
-
-3+h| TLS client authentication properties
-
-| [[log4j2.keyStoreLocation]]`log4j2.keyStoreLocation`
-
-(`LOG4J_KEY_STORE_LOCATION`)
-| see link:{jsse-default-keystores}[Default Java key store]
-| The location of the private key store.
-
-| [[log4j2.keyStorePassword]]`log4j2.keyStorePassword`
-
-(`LOG4J_KEY_STORE_PASSWORD`)
-|
-| The password for the private key store.
-
-| [[log4j2.keyStorePasswordFile]]`log4j2.keyStore{zwsp}PasswordFile`
-
-(`LOG4J_KEY_STORE_{zwsp}PASSWORD_FILE`)
-|
-| The name of a file that contains the password for the private key store.
-
-| [[log4j2.keyStorePasswordEnvironmentVariable]]`log4j2.keyStore{zwsp}PasswordEnvironmentVariable`
-
-(`LOG4J_KEY_STORE_{zwsp}PASSWORD_ENVIRONMENT_VARIABLE`)
-|
-| The name of the environment variable that contains the password for the private key store.
-
-| [[log4j2.keyStoreType]]`log4j2.keyStoreType`
-
-(`LOG4J_KEY_STORE_TYPE`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/security/KeyStore.html#getDefaultType--[Default Java `KeyStore` type]
-| The type of private key store.
-See https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyStore[KeyStore types].
-
-| [[log4j2.keyStoreKeyManagerFactoryAlgorithm]]`log4j2.keyStore{zwsp}KeyManagerFactoryAlgorithm`
-
-(`LOG4J_KEY_STORE_{zwsp}KEY_MANAGER_FACTORY_ALGORITHM`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm--[Default Java `KeyManagerFactory` algorithm]
-| Name of the https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/net/ssl/KeyManagerFactory.html[KeyManagerFactory] implementation to use for the private key store.
-See https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory[KeyManagerFactory types].
-
-|===
+include::partial$properties-transport-security.adoc[]
 
 === Miscellaneous properties
 
-.Miscellaneous configuration properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.clock]]`log4j2.clock`
-
-(`LOG4J_CLOCK`)
-| `SystemClock`
-a|
-Specifies the link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock[Clock] implementation used to timestamp log events.
-
-The built-in implementations are:
-
-`SystemClock`:: uses the best available system clock as time source.
-See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/Clock.html#systemDefaultZone--[Clock#systemDefaultZone] for details.
-
-`SystemMillisClock`:: same as `SystemClock`, but truncates the result to a millisecond.
-
-`CachedClock`:: uses a separate thread to update the timestamp value.
-See link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock[JavaDoc] for details.
-
-`CoarseCachedClock`:: alternative implementation of `CachedClock` with a slightly lower precision.
-See link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock[JavaDoc] for details.
-
-| [[log4j2.contextDataInjector]]`log4j2.contextDataInjector`
-
-(`LOG4J_CONTEXT_DATA_INJECTOR`)
-| depends on the `ThreadContextMap` implementation
-| Fully specified class name of a link:../javadoc/log4j-core/org/apache/logging/log4j/core/ContextDataInjector[ContextDataInjector] implementation.
-
-The default implementation uses all implementations of link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ContextDataProvider[ContextDataProvider] registered with `ServiceLoader`.
-
-| [[log4j2.logEventFactory]]`log4j2.logEventFactory`
-
-(`LOG4J_LOG_EVENT_FACTORY`)
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/DefaultLogEventFactory[DefaultLogEventFactory]
-
-(GC-free mode: link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/ReusableLogEventFactory[ReusableLogEventFactory])
-|
-Specifies the link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory[LogEventFactory]
-implementation to use to create log events.
-
-| [[log4j2.shutdownHookEnabled]]`log4j2.shutdownHookEnabled`
-
-(`LOG4J_SHUTDOWN_HOOK_ENABLED`)
-| `true`
-
-(Web-app mode: `false`)
-|
-If `true` a shutdown hook will be installed to stop all logger contexts when the system stops.
-
-| [[log4j2.shutdownCallbackRegistry]]`log4j2.shutdownCallbackRegistry`
-
-(`LOG4J_SHUTDOWN_CALLBACK_REGISTRY`)
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/DefaultShutdownCallbackRegistry[DefaultShutdownCallbackRegistry]
-|
-The fully qualified class name of a link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry[ShutdownCallbackRegistry] implementation.
-Integrators can use this to customize the shutdown order of the JVM.
-
-The default implementation executes all shutdown actions in a separate `Thread` registered through https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#addShutdownHook-java.lang.Thread-[Runtime#addShutdownHook()].
-
-
-| [[log4j2.uuidSequence]]`log4j2.uuidSequence`
-
-(`LOG4J_UUID_SEQUENCE`)
-| 0
-|
-Provides a `long` see to the UUID generator used by the `%uuid` pattern converter.
-
-Can be used to assure uniqueness of UUIDs generated by multiple JVMs on the same machine.
-
-| [[log4j2.messageFactory]]`log4j2.messageFactory`
-
-(`LOG4J_MESSAGE_FACTORY`)
-| link:../javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessageFactory[ParameterizeMessageFactory]
-
-(GC-free mode: link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessageFactory[ReusableMessageFactory])
-| Default message factory used by loggers if no factory was specified.
-
-| [[log4j2.flowMessageFactory]]`log4j2.flowMessageFactory`
-
-(`LOG4J_FLOW_MESSAGE_FACTORY`)
-| link:../javadoc/log4j-api/org/apache/logging/log4j/message/DefaultFlowMessageFactory[DefaultFlowMessageFactory]
-| Default flow message factory used by Loggers.
-
-| [[log4j2.loggerContextStacktraceOnStart]]`log4j2.loggerContext{zwsp}StacktraceOnStart`
-
-(`LOG4J_LOGGER_CONTEXT_{zwsp}STACKTRACE_ON_START`)
-| `false`
-| Prints a stacktrace to the xref:manual/configuration.adoc#StatusMessages[status logger] at `DEBUG` level when the LoggerContext is started.
-
-For debug purposes only.
-
-| [[log4j2.scriptEnableLanguages]]`log4j2.scriptEnableLanguages`
-
-(`LOG4J_SCRIPT_ENABLE_LANGUAGES`)
-|
-| The list of script languages that are allowed to execute.
-
-The names specified must correspond to those returned by https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/ScriptEngineFactory.html#getNames--[ScriptEngineFactory#getNames()].
-
-|===
+include::partial$properties-log4j-core-misc.adoc[]
 
 == JUL-to-Log4j API bridge
 
 The JUL-to-Log4j API bridge provides the following configuration properties:
 
-.JUL configuration properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.julLevelConverter]]`log4j2.julLevelConverter`
-
-(`LOG4J_JUL_LEVEL_CONVERTER`)
-|
-|
-Fully qualified name of an alternative `org.apache.logging.log4j.jul.LevelConverter` implementation.
-
-See xref:log4j-jul.adoc#default-level-conversions[Default Level Conversions] for the default implementation.
-
-| [[log4j2.julLoggerAdapter]]`log4j2.julLoggerAdapter`
-
-(`LOG4J_JUL_LOGGER_ADAPTER`)
-| depends on classpath
-a|
-This property allows users to choose between two implementation of the logging bridge:
-
-`org.apache.logging.log4j.jul.CoreLoggerAdapter`::
-The default if `log4j-core` is found in the class path.
-It allows users to modify the Log4j Core configuration through the JUL https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[Logger] interface.
-
-`org.apache.logging.log4j.jul.ApiLoggerAdapter`::
-The default if `log4j-core` cannot be found in the class path.
-It disables the level mutators in the JUL `Logger` interface.
-
-|===
+include::partial$properties-log4j-jul.adoc[]
 
 == Log4j Spring Boot
 
 The Log4j Spring Boot module supports the following configuration properties:
 
-.Spring Boot configuration properties
-[cols="1,1,5"]
-|===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.disableCloudConfigLoggingSystem]]`log4j2.disable{zwsp}CloudConfigLoggingSystem`
-
-(`LOG4J_DISABLE_{zwsp}CLOUD_CONFIG_LOGGING_SYSTEM`)
-| `false`
-| Disables the usage of the Spring Boot `Log4j2CloudConfigLoggingSystem`.
-
-|===
+include::partial$properties-log4j-spring-boot.adoc[]
 
 [#property-sources]
 == Property sources

@@ -1,0 +1,19 @@
+.LoaderUtil configuration properties
+[cols="1,1,5"]
+|===
+h| Java Property
+
+(Environment Variable)
+h| Default Value
+h| Description
+
+| [[log4j2.ignoreTcl]]`log4j2.ignoreTcl`
+
+(`LOG4J_IGNORE_TCL`)
+| `false`
+|
+If `true`, classes are only loaded using the same classloader that loaded Log4j.
+
+Otherwise, an attempt is made to load classes with the current thread's context class loader before falling back to the default class loader.
+
+|===
