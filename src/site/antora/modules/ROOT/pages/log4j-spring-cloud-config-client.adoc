@@ -24,11 +24,7 @@ Spring Boot applications initialize logging 3 times.
 
 . SpringApplication declares a Logger.
 This Logger will be initialized using Log4j's "normal" mechanisms.
-Thus a system property named xref:manual/configuration.adoc#log4j2.configurationFile[log4j2.configurationFile] will be
-checked
-to see if a
-specific configuration
-file has been provided, otherwise it will search for a configuration file on the classpath.
+Thus the xref:manual/configuration.adoc#log4j2.configurationFile[`log4j2.configurationFile`] system property will be checked to see if a specific configuration file has been provided, otherwise it will search for a configuration file on the classpath.
 The property may also be declare  in log4j2.component.properties.
 
 == Usage
@@ -128,7 +124,7 @@ However, Log4j does use Spring's  standard APIs to access properties in the Spri
 
 If more extensive authentication is required an `AuthorizationProvider` can be implemented and the fully qualified class name in the xref:manual/configuration.adoc#log4j2.configurationAuthorizationProvider[log4j2.configurationAuthorizationProvider] system property, in `log4j2.component.properties` or in Spring's `bootstrap.yml` using either the `log4j2.authorizationProvider` key or with the key `logging.auth.authorizationProvider`.
 
-For the properties required by TLS configuration see xref:manual/configuration.adoc#transport-security[Transport Security].
+For the properties required by TLS configuration see xref:manual/configuration.adoc#transport-security[the Transport Security configuration].
 
 == Requirements
 

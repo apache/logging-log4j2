@@ -87,7 +87,7 @@ This mode is incompatible with <<log4j2.enableThreadlocals>>.
 | `!log4j2.isWebapp`
 | Setting this property to `true` switches Log4j Core into  "garbage-free mode" (_"GC-free mode"_).
 
-In this mode Log4j uses `ThreadLocal`s for object pooling to prevent object allocations.
+In this mode Log4j uses ``ThreadLocal``s for object pooling to prevent object allocations.
 
 This mode is incompatible with <<log4j2.isWebapp>>.
 
@@ -167,18 +167,18 @@ Once the limit is reached newer entries will overwrite the oldest ones.
 (`LOG4J_STATUS_LOGGER_LEVEL`)
 | ERROR
 | Specifies the level of the status logger.
-Can be overridden by <<log4j2.debug>> or the `status` property of the current configuration file.
+Can be overridden by <<log4j2.debug>>.
 
 | [[log4j2.statusLoggerDateFormat]]`log4j2.statusLoggerDateFormat`
 
 (`LOG4J_STATUS_LOGGER_DATE_FORMAT`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html#ISO_INSTANT[DateTimeFormatter#ISO_INSTANT]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html#ISO_INSTANT[DateTimeFormatter.ISO_INSTANT]
 | Sets the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[DateTimeFormatter] pattern used by status logger to format dates.
 
 | [[log4j2.statusLoggerDateFormatZone]]`log4j2.statusLoggerDateFormatZone`
 
 (`LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html#systemDefault()[ZoneId#systemDefault()]
+| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html#systemDefault()[ZoneId.systemDefault()]
 | Sets the timezone id used by status logger. See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html[ZoneId] for the accepted formats.
 
 |===
@@ -321,7 +321,7 @@ Requires <<log4j2.enableThreadlocals>> to be also `true`.
 
 == Log4j Core
 
-While the only required configuration of the `log4j-core` library is provided by the xref:manual/configuration_new.adoc#configuration-file[configuration file], the library offers many configuration properties that can be used to finely tune the way it works.
+While the only required configuration of the `log4j-core` library is provided by the xref:manual/configurationw.adoc#configuration-file[configuration file], the library offers many configuration properties that can be used to finely tune the way it works.
 
 === Async components
 
@@ -405,18 +405,23 @@ Specifies the fully qualified class name of the `ContextSelector` implementation
 
 The implementations available by default are:
 
-* link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector[org.apache.logging.log4j
-.core.selector.BasicContextSelector]: creates a single logger context and synchronous loggers,
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector[BasicContextSelector]::
+Creates a single logger context and synchronous loggers
 
-* link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector[org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector]: creates a single logger context and xref:manual/async.adoc[asynchronous loggers],
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BasicAsyncLoggerContextSelector[BasicAsyncLoggerContextSelector]::
+Creates a single logger context and xref:manual/async.adoc[asynchronous loggers]
 
-* link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector[org.apache.logging.log4j.core.selector.ClassLoaderContextSelector]: creates a separate logger context per classloader and synchronous loggers,
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector[ClassLoaderContextSelector]::
+Creates a separate logger context per classloader and synchronous loggers
 
-* link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector[org.apache.logging.log4j.core.async.AsyncLoggerContextSelector]: creates a separate logger context per classloader and xref:manual/async.adoc[asynchronous loggers],
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector[AsyncLoggerContextSelector]::
+Creates a separate logger context per classloader and xref:manual/async.adoc[asynchronous loggers]
 
-* link:../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector[org.apache.logging.log4j.core.osgi.BundleContextSelector]: creates a separate logger context per OSGi bundle and synchronous loggers,
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector[BundleContextSelector]::
+Creates a separate logger context per OSGi bundle and synchronous loggers
 
-* link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector[org.apache.logging.log4j.core.selector.JndiContextSelector]: creates loggers contexts based on a JNDI lookup and synchronous loggers.
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector[JndiContextSelector]::
+Creates loggers contexts based on a JNDI lookup and synchronous loggers
 See xref:manual/webapp.adoc#use-jndi-context-selector[Web application]] for details.
 
 |===
@@ -501,9 +506,9 @@ h| Description
 (`LOG4J_ENABLE_DIRECT_ENCODERS`)
 | `true`
 |
-If `true`, garbage-aware layouts will directly encode log events into https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffers] provided by appenders.
+If `true`, garbage-aware layouts will directly encode log events into https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s provided by appenders.
 
-This prevents the creation temporary multiple `String` and `char[]` temporary objects.
+This prevents allocating temporary `String` and `char[]` instances.
 
 | [[log4j2.initialReusableMsgSize]]`log4j2.initialReusableMsgSize`
 
@@ -814,20 +819,18 @@ h| Description
 a|
 Specifies the link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock[Clock] implementation used to timestamp log events.
 
-The possible values are:
+The built-in implementations are:
 
-* `SystemClock`: uses the best available system clock as time source.
+`SystemClock`:: uses the best available system clock as time source.
 See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/Clock.html#systemDefaultZone--[Clock#systemDefaultZone] for details.
 
-* `SystemMillisClock`: same as `SystemClock`, but truncates the result to a millisecond.
+`SystemMillisClock`:: same as `SystemClock`, but truncates the result to a millisecond.
 
-* `CachedClock`: uses a separate thread to update the timestamp value.
+`CachedClock`:: uses a separate thread to update the timestamp value.
 See link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock[JavaDoc] for details.
 
-* `CoarseCachedClock`: alternative implementation of `CachedClock` with a slightly lower precision.
-See link:..//javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock[JavaDoc] for details.
-
-* the fully qualified name of a custom implementation.
+`CoarseCachedClock`:: alternative implementation of `CachedClock` with a slightly lower precision.
+See link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock[JavaDoc] for details.
 
 | [[log4j2.contextDataInjector]]`log4j2.contextDataInjector`
 
@@ -937,9 +940,13 @@ See xref:log4j-jul.adoc#default-level-conversions[Default Level Conversions] for
 a|
 This property allows users to choose between two implementation of the logging bridge:
 
-* `org.apache.logging.log4j.jul.CoreLoggerAdapter` (default if `log4j-core` present) allows users to modify the Log4j Core configuration through the JUL https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[Logger] interface,
+`org.apache.logging.log4j.jul.CoreLoggerAdapter`::
+The default if `log4j-core` is found in the class path.
+It allows users to modify the Log4j Core configuration through the JUL https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[Logger] interface.
 
-* `org.apache.logging.log4j.jul.ApiLoggerAdapter` (default if `log4j-core` absent) disables the level mutators in the JUL `Logger` interface.
+`org.apache.logging.log4j.jul.ApiLoggerAdapter`::
+The default if `log4j-core` cannot be found in the class path.
+It disables the level mutators in the JUL `Logger` interface.
 
 |===
 
@@ -972,7 +979,7 @@ The Log4j configuration properties sub-system merges the content of multiple pro
 Additional property source classes can be added through:
 
 * the standard Java SE https://docs.oracle.com/en/java/javase/{java-target-version}/docs/api/java.base/java/util/ServiceLoader.html[ServiceLoader] mechanism,
-* programmatically using `PropertiesUtil#addPropertySource` and `PropertiesUtil#removePropertySource`.
+* programmatically using `addPropertySource()` and `removePropertySource()` static methods of `PropertiesUtil`.
 
 Each property source can define its own naming convention for property names, although most of them support the standard:
 
