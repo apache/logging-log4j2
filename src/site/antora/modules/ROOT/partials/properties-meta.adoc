@@ -1,30 +1,29 @@
-.Meta configuration properties
-[cols="1,1,5"]
+[[log4j2.isWebapp]]
+== `log4j2.isWebapp`
+
+[cols="1h,5"]
 |===
-h| Java Property
+| Env. variable | LOG4J_IS_WEBAPP
+| Default value | ``true` if the https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/servlet[Servlet] class on classpath`
+|===
 
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.isWebapp]]`log4j2.isWebapp`
-
-(`LOG4J_IS_WEBAPP`)
-| `true` if the https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/servlet[Servlet] class on classpath
-| Setting this property to `true` switches Log4j Core into  "Web application mode" (_"Web-app mode"_).
+Setting this property to `true` switches Log4j Core into "Web application mode" (_"Web-app mode"_).
 
 In this mode Log4j is optimized to work in a Servlet container.
 
 This mode is incompatible with <<log4j2.enableThreadlocals>>.
 
-| [[log4j2.enableThreadlocals]]`log4j2.enableThreadlocals`
+[[log4j2.enableThreadlocals]]
+== `log4j2.enableThreadlocals`
 
-(`LOG4J_ENABLE_THREADLOCALS`)
-| `!log4j2.isWebapp`
-| Setting this property to `true` switches Log4j Core into  "garbage-free mode" (_"GC-free mode"_).
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ENABLE_THREADLOCALS
+| Default value | ``!log4j2.isWebapp``
+|===
+
+Setting this property to `true` switches Log4j Core into "garbage-free mode" (_"GC-free mode"_).
 
 In this mode Log4j uses ``ThreadLocal``s for object pooling to prevent object allocations.
 
 This mode is incompatible with <<log4j2.isWebapp>>.
-
-|===

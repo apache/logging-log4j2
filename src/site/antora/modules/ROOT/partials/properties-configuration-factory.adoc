@@ -1,26 +1,25 @@
-.Configuration factory properties
-[cols="1,1,5"]
+[[log4j2.configurationFactory]]
+== `log4j2.configurationFactory`
+
+[cols="1h,5"]
 |===
-h| Java Property
+| Env. variable | LOG4J_CONFIGURATION_FACTORY
+| Default value | ``
+|===
 
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.configurationFactory]]`log4j2.configurationFactory`
-
-(`LOG4J_CONFIGURATION_FACTORY`)
-|
-|
 Specifies the fully qualified class name of the **preferred** link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory[ConfigurationFactory] to use.
 
 Log4j will attempt to use the provided configuration factory before any other factory implementation.
 
-| [[log4j2.configurationFile]]`log4j2.configurationFile`
+[[log4j2.configurationFile]]
+== `log4j2.configurationFile`
 
-(`LOG4J_CONFIGURATION_FILE`)
-| xref:manual/configuration.adoc#AutomaticConfiguration[automatically detected]
-a|
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_CONFIGURATION_FILE
+| Default value | `xref:manual/configuration.adoc#AutomaticConfiguration[automatically detected]`
+|===
+
 Specifies a comma-separated list of URIs or file paths to Log4j 2 configuration files.
 
 If a relative URL is provided, it is interpreted as:
@@ -30,22 +29,28 @@ If a relative URL is provided, it is interpreted as:
 
 See also xref:manual/configuration.adoc#AutomaticConfiguration[Automatic Configuration].
 
-| [[log4j2.level]]`log4j2.level`
+[[log4j2.level]]
+== `log4j2.level`
 
-(`LOG4J_LEVEL`)
-| `ERROR`
-a|
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_LEVEL
+| Default value | ``ERROR``
+|===
+
 Specifies the level of the root logger if:
 
 * the default configuration is used,
 
 * or the configuration file does not specify a level for the root logger.
 
-| [[log4j2.mergeStrategy]]`log4j2.mergeStrategy`
+[[log4j2.mergeStrategy]]
+== `log4j2.mergeStrategy`
 
-(`LOG4J_MERGE_STRATEGY`)
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy[DefaultMergeStrategy]
-|
-Specifies the fully qualified class name of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy[MergeStrategy] implementation used to merge multiple configuration files into one.
-
+[cols="1h,5"]
 |===
+| Env. variable | LOG4J_MERGE_STRATEGY
+| Default value | `link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/DefaultMergeStrategy[DefaultMergeStrategy]`
+|===
+
+Specifies the fully qualified class name of the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/MergeStrategy[MergeStrategy] implementation used to merge multiple configuration files into one.

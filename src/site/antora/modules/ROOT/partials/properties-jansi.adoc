@@ -1,21 +1,15 @@
-.JANSI properties
-[cols="1,1,5"]
+[[log4j2.skipJansi]]
+== `log4j2.skipJansi`
+
+[cols="1h,5"]
 |===
-h| Java Property
+| Env. variable | LOG4J_SKIP_JANSI
+| Default value | ``true``
+|===
 
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.skipJansi]]`log4j2.skipJansi`
-
-(`LOG4J_SKIP_JANSI`)
-| `true`
-a| If the following conditions are satisfied:
+If the following conditions are satisfied:
 
 * Log4j runs on Windows,
 * this property is set to `false`,
 
 Log4j will use the JANSI library to color the output of the console appender.
-
-|===

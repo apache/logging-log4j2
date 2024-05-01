@@ -1,17 +1,12 @@
-.Context selector configuration properties
-[cols="1,1,5"]
+[[log4j2.contextSelector]]
+== `log4j2.contextSelector`
+
+[cols="1h,5"]
 |===
-h| Java Property
+| Env. variable | LOG4J_CONTEXT_SELECTOR
+| Default value | `link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector[ClassLoaderContextSelector]`
+|===
 
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.contextSelector]]`log4j2.contextSelector`
-
-(`LOG4J_CONTEXT_SELECTOR`)
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector[ClassLoaderContextSelector]
-a|
 Specifies the fully qualified class name of the `ContextSelector` implementation to use.
 
 The implementations available by default are:
@@ -32,7 +27,4 @@ link:../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelec
 Creates a separate logger context per OSGi bundle and synchronous loggers
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector[JndiContextSelector]::
-Creates loggers contexts based on a JNDI lookup and synchronous loggers
-See xref:manual/webapp.adoc#use-jndi-context-selector[Web application]] for details.
-
-|===
+Creates loggers contexts based on a JNDI lookup and synchronous loggers See xref:manual/webapp.adoc#use-jndi-context-selector[Web application] for details.

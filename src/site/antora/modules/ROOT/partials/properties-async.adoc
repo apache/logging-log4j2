@@ -1,25 +1,26 @@
-.Common async component configuration
-[cols="1,1,5"]
+[[log4j2.formatMsgAsync]]
+== `log4j2.formatMsgAsync`
+
+[cols="1h,5"]
 |===
-h| Java Property
+| Env. variable | LOG4J_FORMAT_MSG_ASYNC
+| Default value | `false`
+|===
 
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.formatMsgAsync]]`log4j2.formatMsgAsync`
-
-(`LOG4J_FORMAT_MSG_ASYNC`)
-| false
-| If `false`, Log4j will make sure the message is formatted in the caller thread, otherwise the formatting will occur on the asynchronous thread.
+If `false`, Log4j will make sure the message is formatted in the caller thread, otherwise the formatting will occur on the asynchronous thread.
 
 **Remark**: messages annotated with link:../javadoc/log4j-api/org/apache/logging/log4j/message/AsynchronouslyFormattable[AsynchronouslyFormattable] will be formatted on the async thread regardless of this setting.
 
-| [[log4j2.asyncQueueFullPolicy]]`log4j2.asyncQueueFullPolicy`
+[[log4j2.asyncQueueFullPolicy]]
+== `log4j2.asyncQueueFullPolicy`
 
-(`LOG4J_ASYNC_QUEUE_FULL_POLICY`)
-| `Default`
-a| Determines the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy[AsyncQueueFullPolicy] to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ASYNC_QUEUE_FULL_POLICY
+| Default value | ``Default``
+|===
+
+Determines the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy[AsyncQueueFullPolicy] to use when the underlying async component cannot keep up with the logging rate and the queue is filling up.
 
 It accepts the following values:
 
@@ -29,12 +30,15 @@ It accepts the following values:
 
 * the fully qualified class name of a custom implementation
 
-| [[log4j2.discardThreshold]]`log4j2.discardThreshold`
+[[log4j2.discardThreshold]]
+== `log4j2.discardThreshold`
 
-(`LOG4J_DISCARD_THRESHOLD`)
-| `INFO`
-| Determines the threshold level used by a `Discard` queue full policy.
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_DISCARD_THRESHOLD
+| Default value | ``INFO``
+|===
+
+Determines the threshold level used by a `Discard` queue full policy.
 Log events whose level is equal or less specific than the threshold level will be discarded during a queue full event.
 See also <<log4j2.asyncQueueFullPolicy>>.
-
-|===

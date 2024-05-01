@@ -1,42 +1,57 @@
-.Status logger configuration
-[cols="1,1,5"]
+[[log4j2.debug]]
+== `log4j2.debug`
+
+[cols="1h,5"]
 |===
-h| Java Property
+| Env. variable | LOG4J_DEBUG
+| Default value | `false`
+|===
 
-(Environment Variable)
-h| Default Value
-h| Description
+If set to a value different from `false`, sets the level of the status logger to `TRACE` overriding any other system property.
 
-| [[log4j2.debug]]`log4j2.debug`
+[[log4j2.statusEntries]]
+== `log4j2.statusEntries`
 
-(`LOG4J_DEBUG`)
-| false
-| If set to a value different from `false`, sets the level of the status logger to `TRACE` overriding any other system property.
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_STATUS_ENTRIES
+| Default value | `0`
+|===
 
-| [[log4j2.statusEntries]]`log4j2.statusEntries`
-
-(`LOG4J_STATUS_ENTRIES`)
-| 0
-| Specifies the number of status logger entries to cache.
+Specifies the number of status logger entries to cache.
 Once the limit is reached newer entries will overwrite the oldest ones.
 
-| [[log4j2.statusLoggerLevel]]`log4j2.statusLoggerLevel`
+[[log4j2.statusLoggerLevel]]
+== `log4j2.statusLoggerLevel`
 
-(`LOG4J_STATUS_LOGGER_LEVEL`)
-| ERROR
-| Specifies the level of the status logger.
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_STATUS_LOGGER_LEVEL
+| Default value | `ERROR`
+|===
+
+Specifies the level of the status logger.
 Can be overridden by <<log4j2.debug>>.
 
-| [[log4j2.statusLoggerDateFormat]]`log4j2.statusLoggerDateFormat`
+[[log4j2.statusLoggerDateFormat]]
+== `log4j2.statusLoggerDateFormat`
 
-(`LOG4J_STATUS_LOGGER_DATE_FORMAT`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html#ISO_INSTANT[DateTimeFormatter.ISO_INSTANT]
-| Sets the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[DateTimeFormatter] pattern used by status logger to format dates.
-
-| [[log4j2.statusLoggerDateFormatZone]]`log4j2.statusLoggerDateFormatZone`
-
-(`LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE`)
-| https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html#systemDefault()[ZoneId.systemDefault()]
-| Sets the timezone id used by status logger. See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html[ZoneId] for the accepted formats.
-
+[cols="1h,5"]
 |===
+| Env. variable | LOG4J_STATUS_LOGGER_DATE_FORMAT
+| Default value | `https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html#ISO_INSTANT[DateTimeFormatter.ISO_INSTANT]`
+|===
+
+Sets the https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[DateTimeFormatter] pattern used by status logger to format dates.
+
+[[log4j2.statusLoggerDateFormatZone]]
+== `log4j2.statusLoggerDateFormatZone`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE
+| Default value | `https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html#systemDefault()[ZoneId.systemDefault()]`
+|===
+
+Sets the timezone id used by status logger.
+See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/ZoneId.html[ZoneId] for the accepted formats.

@@ -1,26 +1,27 @@
-.JUL configuration properties
-[cols="1,1,5"]
+[[log4j2.julLevelConverter]]
+== `log4j2.julLevelConverter`
+
+[cols="1h,5"]
 |===
-h| Java Property
+| Env. variable | LOG4J_JUL_LEVEL_CONVERTER
+| Default value | `org.apache.logging.log4j.jul.DefaultLevelConverter`
+|===
 
-(Environment Variable)
-h| Default Value
-h| Description
 
-| [[log4j2.julLevelConverter]]`log4j2.julLevelConverter`
-
-(`LOG4J_JUL_LEVEL_CONVERTER`)
-|
-|
 Fully qualified name of an alternative `org.apache.logging.log4j.jul.LevelConverter` implementation.
 
 See xref:log4j-jul.adoc#default-level-conversions[Default Level Conversions] for the default implementation.
 
-| [[log4j2.julLoggerAdapter]]`log4j2.julLoggerAdapter`
+[[log4j2.julLoggerAdapter]]
+== `log4j2.julLoggerAdapter`
 
-(`LOG4J_JUL_LOGGER_ADAPTER`)
-| depends on classpath
-a|
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_JUL_LOGGER_ADAPTER
+| Default value | `depends on classpath`
+|===
+
+
 This property allows users to choose between two implementation of the logging bridge:
 
 `org.apache.logging.log4j.jul.CoreLoggerAdapter`::
@@ -30,5 +31,3 @@ It allows users to modify the Log4j Core configuration through the JUL https://d
 `org.apache.logging.log4j.jul.ApiLoggerAdapter`::
 The default if `log4j-core` cannot be found in the class path.
 It disables the level mutators in the JUL `Logger` interface.
-
-|===

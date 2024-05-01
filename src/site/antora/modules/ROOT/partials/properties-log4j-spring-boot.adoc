@@ -1,16 +1,10 @@
-.Spring Boot configuration properties
-[cols="1,1,5"]
+[[log4j2.disableCloudConfigLoggingSystem]]
+== `log4j2.disableCloudConfigLoggingSystem`
+
+[cols="1h,5"]
 |===
-h| Java Property
-
-(Environment Variable)
-h| Default Value
-h| Description
-
-| [[log4j2.disableCloudConfigLoggingSystem]]`log4j2.disable{zwsp}CloudConfigLoggingSystem`
-
-(`LOG4J_DISABLE_{zwsp}CLOUD_CONFIG_LOGGING_SYSTEM`)
-| `false`
-| Disables the usage of the Spring Boot `Log4j2CloudConfigLoggingSystem`.
-
+| Env. variable | LOG4J_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM
+| Default value | `false`
 |===
+
+Disables the usage of the Spring Boot `Log4j2CloudConfigLoggingSystem`.

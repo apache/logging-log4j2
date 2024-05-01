@@ -1,37 +1,41 @@
-.Thread context configuration
-[cols="1,1,5"]
+[[log4j2.disableThreadContext]]
+== `log4j2.disableThreadContext`
+
+[cols="1h,5"]
 |===
-h| Java Property
+| Env. variable | LOG4J_DISABLE_THREAD_CONTEXT
+| Default value | `false`
+|===
 
-(Environment Variable)
-h| Default Value
-h| Description
+If `true`, the `ThreadContext` stack and map are disabled.
 
-| [[log4j2.disableThreadContext]]`log4j2.disableThreadContext`
+[[log4j2.disableThreadContextStack]]
+== `log4j2.disableThreadContextStack`
 
-(`LOG4J_DISABLE_THREAD_CONTEXT`)
-| false
-| If `true`, the `ThreadContext` stack and map are disabled.
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_DISABLE_THREAD_CONTEXT_STACK
+| Default value | `false`
+|===
 
-| [[log4j2.disableThreadContextStack]]`log4j2.disableThreadContextStack`
+If `true`, the `ThreadContext` stack is disabled.
 
-(`LOG4J_DISABLE_THREAD_CONTEXT_STACK`)
-| false
-| If `true`, the `ThreadContext` stack is disabled.
+[[log4j2.disableThreadContextMap]]
+== `log4j2.disableThreadContextMap`
 
-| [[log4j2.disableThreadContextMap]]`log4j2.disableThreadContextMap`
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_DISABLE_THREAD_CONTEXT_MAP
+| Default value | `false`
+|===
 
-(`LOG4J_DISABLE_THREAD_CONTEXT_MAP`)
-| false
-| If `true`, the `ThreadContext` map is disabled.
+If `true`, the `ThreadContext` map is disabled.
 
 | [[log4j2.threadContextMap]]`log4j2.threadContextMap`
 
-(`LOG4J_THREAD_CONTEXT_MAP`)
-| `WebApp`
+(`LOG4J_THREAD_CONTEXT_MAP`) | `WebApp`
 
-(GC-free mode: `CopyOnWrite`)
-a| Fully specified class name of a custom `ThreadContextMap` implementation class or one of the predefined constants:
+(GC-free mode: `CopyOnWrite`) a| Fully specified class name of a custom `ThreadContextMap` implementation class or one of the predefined constants:
 
 * `NoOp`: to disable the thread context,
 * `WebApp`: a web application-safe implementation, that only binds JRE classes to `ThreadLocal` to prevent memory leaks,
@@ -40,15 +44,16 @@ a| Fully specified class name of a custom `ThreadContextMap` implementation clas
 
 | [[isThreadContextMapInheritable]]`log4j2.isThreadContextMapInheritable`
 
-(`LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE`)
-| false
-| If `true` uses an `InheritableThreadLocal` to copy the thread context map to newly created threads.
+(`LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE`) | false | If `true` uses an `InheritableThreadLocal` to copy the thread context map to newly created threads.
 
-| [[log4j2.garbagefreeThreadContextMap]]`log4j2.garbagefreeThreadContextMap`
+[[log4j2.garbagefreeThreadContextMap]]
+== `log4j2.garbagefreeThreadContextMap`
 
-(`LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP`)
-| false
-| If set to `true` selects a garbage-free thread context map implementation.
-Requires <<log4j2.enableThreadlocals>> to be also `true`.
-
+[cols="1h,5"]
 |===
+| Env. variable | LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP
+| Default value | `false`
+|===
+
+If set to `true` selects a garbage-free thread context map implementation.
+Requires <<log4j2.enableThreadlocals>> to be also `true`.

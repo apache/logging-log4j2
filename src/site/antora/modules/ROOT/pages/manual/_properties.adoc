@@ -62,7 +62,7 @@ and that all the properties names that start with `log4j` use the normalized for
 
 In order to rapidly optimize Log4j Core for a particular usage, you can use the following properties:
 
-include::partial$properties-meta.adoc[]
+include::partial$properties-meta.adoc[leveloffset=+1]
 
 == Log4j API properties
 
@@ -75,7 +75,7 @@ Therefore, its configuration influences all other services.
 
 It has only one configuration property:
 
-include::partial$properties-loader-util.adoc[]
+include::partial$properties-loader-util.adoc[leveloffset=+2]
 
 === Provider
 
@@ -93,13 +93,13 @@ For backward compatibility users can specify the link:../javadoc/log4j-api/org/a
 Log4j contains an internal logging mechanism called `StatusLogger` that is used by all Log4j components.
 By default, the status logger only reports errors on the standard error stream, but you can configure it using the following properties.
 
-include::partial$properties-status-logger.adoc[]
+include::partial$properties-status-logger.adoc[leveloffset=+2]
 
 === Simple logger
 
 The simple logger implementation contained in `log4j-api` can be configured using these properties:
 
-include::partial$properties-simple-logger.adoc[]
+include::partial$properties-simple-logger.adoc[leveloffset=+2]
 
 [#simple-logger-thread-context]
 === Thread context (Simple Logger)
@@ -115,7 +115,7 @@ The `log4j-to-slf4j` logging bridge delegates `ThreadContext` calls to the SLF4J
 The `log4j-to-jul` logging bridge ignores all `ThreadContext` method calls.
 ====
 
-include::partial$properties-thread-context.adoc[]
+include::partial$properties-thread-context.adoc[leveloffset=+2]
 
 == Log4j Core
 
@@ -125,19 +125,19 @@ While the only required configuration of the `log4j-core` library is provided by
 
 The behavior of all three async components (`AsyncLogger`, `AsyncLoggerConfig` and `AsyncAppender`) can be tuned using these properties:
 
-include::partial$properties-async.adoc[]
+include::partial$properties-async.adoc[leveloffset=+2]
 
-==== `AsyncLogger`
+=== Full asynchronous logger
 
 The `AsyncLogger` component supports the following additional properties:
 
-include::partial$properties-async-logger.adoc[]
+include::partial$properties-async-logger.adoc[leveloffset=+2]
 
-==== `AsyncLoggerConfig`
+=== Mixed asynchronous logger
 
 The `AsyncLoggerConfig` component supports the following additional properties:
 
-include::partial$properties-async-logger-config.adoc[]
+include::partial$properties-async-logger-config.adoc[leveloffset=+2]
 
 === Context selector
 
@@ -150,7 +150,7 @@ See xref:manual/logsep.adoc[Log Separation] for details.
 * the `Logger` implementation used by Log4j Core.
 See xref:manual/async.adoc[Async Logging] as an example of this usage.
 
-include::partial$properties-context-selector.adoc[]
+include::partial$properties-context-selector.adoc[leveloffset=+2]
 
 === Configuration factory
 
@@ -163,21 +163,21 @@ If a remote configuration file is used, its transport must be secured.
 See <<transport-security>> for details.
 ====
 
-include::partial$properties-configuration-factory.adoc[]
+include::partial$properties-configuration-factory.adoc[leveloffset=+2]
 
 === Garbage Collection
 
-include::partial$properties-garbage-collection.adoc[]
+include::partial$properties-garbage-collection.adoc[leveloffset=+2]
 
 === JANSI
 
 If the https://fusesource.github.io/jansi/[JANSI] library is on the runtime classpath of the application, the following property can be used to control its usage:
 
-include::partial$properties-jansi.adoc[]
+include::partial$properties-jansi.adoc[leveloffset=+2]
 
 === JMX
 
-include::partial$properties-jmx.adoc[]
+include::partial$properties-jmx.adoc[leveloffset=+2]
 
 === JNDI
 
@@ -185,7 +185,7 @@ Due to the inherent security problems of https://docs.oracle.com/javase/tutorial
 
 Moreover, each JNDI usage must be **explicitly** enabled by the user through the following configuration properties.
 
-include::partial$properties-jndi.adoc[]
+include::partial$properties-jndi.adoc[leveloffset=+2]
 
 [#log4j-core-thread-context]
 === Thread context (Log4j Core)
@@ -200,23 +200,23 @@ Since configuration files can be used to load arbitrary classes into a Log4j Cor
 
 In order to protect the user Log4j disables the `http` URI scheme by default and provides several configuration options to ensure secure transport of configuration files:
 
-include::partial$properties-transport-security.adoc[]
+include::partial$properties-transport-security.adoc[leveloffset=+2]
 
 === Miscellaneous properties
 
-include::partial$properties-log4j-core-misc.adoc[]
+include::partial$properties-log4j-core-misc.adoc[leveloffset=+2]
 
 == JUL-to-Log4j API bridge
 
 The JUL-to-Log4j API bridge provides the following configuration properties:
 
-include::partial$properties-log4j-jul.adoc[]
+include::partial$properties-log4j-jul.adoc[leveloffset=+1]
 
 == Log4j Spring Boot
 
 The Log4j Spring Boot module supports the following configuration properties:
 
-include::partial$properties-log4j-spring-boot.adoc[]
+include::partial$properties-log4j-spring-boot.adoc[leveloffset=+1]
 
 [#property-sources]
 == Property sources

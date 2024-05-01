@@ -1,30 +1,28 @@
-.System Properties to configure mixed asynchronous and normal loggers
-[cols="1,1,5"]
+[[log4j2.asyncLoggerConfigExceptionHandler]]
+== `log4j2.asyncLoggerConfigExceptionHandler`
+
+[cols="1h,5"]
 |===
-h| Java Property
+| Env. variable | LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER
+| Default value | `link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler[AsyncLoggerConfigDefaultExceptionHandler]`
+|===
 
-(Environment Variable)
-h| Default Value
-h| Description
 
-| [[log4j2.asyncLoggerConfigExceptionHandler]]`log4j2.asyncLoggerConfig{zwsp}ExceptionHandler`
-
-(`LOG4J_ASYNC_LOGGER_CONFIG_{zwsp}EXCEPTION_HANDLER`)
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler[AsyncLoggerConfig{zwsp}DefaultExceptionHandler]
-|
 Fully qualified name of a class that implements the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/ExceptionHandler.html[ExceptionHandler] interface, which will be notified when an exception occurs while logging messages.
 The class needs to have a public zero-argument constructor.
 
 The default exception handler will print a message and
 stack trace to the standard error output stream.
 
-| [[log4j2.asyncLoggerConfigRingBufferSize]]`log4j2.asyncLoggerConfig{zwsp}RingBufferSize`
+[[log4j2.asyncLoggerConfigRingBufferSize]]
+== `log4j2.asyncLoggerRingConfigBufferSize`
 
-(`LOG4J_ASYNC_LOGGER_CONFIG_{zwsp}RING_BUFFER_SIZE`)
-| `256 &times; 1024`
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE
+| Default value | `256 &times; 1024` (GC-free mode: `4 &times; 1024`)
+|===
 
-`4 &times; 1024` (GC mode)
-|
 Size (number of slots) in the RingBuffer used by the asynchronous
 logging subsystem.
 Make this value large enough to deal with bursts of
@@ -35,11 +33,16 @@ The RingBuffer will be pre-allocated at first use and will never grow or shrink 
 When the application is logging faster than the underlying appender can keep up with for a long enough time to fill
 up the queue, the behaviour is determined by the link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
 
-| [[log4j2.asyncLoggerConfigWaitStrategy]]`log4j2.asyncLoggerConfig{zwsp}WaitStrategy`
+[[log4j2.asyncLoggerConfigWaitStrategy]]
+== `log4j2.asyncLoggerConfigWaitStrategy`
 
-(`LOG4J_ASYNC_LOGGER_CONFIG_{zwsp}WAIT_STRATEGY`)
-| `Timeout`
-a| Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[WaitStrategy] used by the LMAX Disruptor.
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY
+| Default value | ``Timeout``
+|===
+
+Specifies the https://lmax-exchange.github.io/disruptor/javadoc/com.lmax.disruptor/com/lmax/disruptor/WaitStrategy.html[WaitStrategy] used by the LMAX Disruptor.
 
 Valid values:
 
@@ -59,31 +62,49 @@ Yield is a good compromise between performance and CPU resource, but may use mor
 
 * a <<Custom WaitStrategy>>.
 
-|[[log4j2.asyncLoggerConfigTimeout]]`log4j2.asyncLoggerConfig{zwsp}Timeout`
+|[[log4j2.asyncLoggerConfigTimeout]]
+== `log4j2.asyncLoggerConfigTimeout`
 
-(`LOG4J_ASYNC_LOGGER_CONFIG_{zwsp}TIMEOUT`)
-| `10`
-| Timeout in milliseconds of `Timeout` wait strategy (see <<log4j2.asyncLoggerConfigWaitStrategy>>).
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT
+| Default value | `10`
+|===
 
-| [[log4j2.asyncLoggerConfigSleepTimeNs]]`log4j2.asyncLoggerConfig{zwsp}SleepTimeNs`
+Timeout in milliseconds of `Timeout` wait strategy (see <<log4j2.asyncLoggerConfigWaitStrategy>>).
 
-(`LOG4J_ASYNC_LOGGER_CONFIG_{zwsp}SLEEP_TIME_NS`)
-| `100`
-| Sleep time in nanoseconds of `Sleep` wait strategy (see <<log4j2.asyncLoggerConfigWaitStrategy>>)).
+[[log4j2.asyncLoggerConfigSleepTimeNs]]
+== `log4j2.asyncLoggerConfigSleepTimeNs`
 
-| [[log4j2.asyncLoggerConfigRetries]]`log4j2.asyncLoggerConfig{zwsp}Retries`
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS
+| Default value | ``100``
+|===
 
-(`LOG4J_ASYNC_LOGGER_CONFIG_{zwsp}RETRIES`)
-| `200`
-| Total number of spin cycles and `Thread.yield()` cycles of `Sleep` (see <<log4j2.asyncLoggerConfigWaitStrategy>>)).
+Sleep time in nanoseconds of `Sleep` wait strategy (see <<log4j2.asyncLoggerConfigWaitStrategy>>)).
 
-| [[log4j2.asyncLoggerConfigSynchronizeEnqueueWhenQueueFull]]`log4j2.asyncLoggerConfig{zwsp}SynchronizeEnqueueWhenQueueFull`
+[[log4j2.asyncLoggerConfigRetries]]
+== `log4j2.asyncLoggerConfigRetries`
 
-(`LOG4J_ASYNC_LOGGER_CONFIG_{zwsp}SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL`)
-| `true`
-|Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ASYNC_LOGGER_CONFIG_RETRIES
+| Default value | ``200``
+|===
+
+Total number of spin cycles and `Thread.yield()` cycles of `Sleep` (see <<log4j2.asyncLoggerConfigWaitStrategy>>)).
+
+[[log4j2.asyncLoggerConfigSynchronizeEnqueueWhenQueueFull]]
+== `log4j2.asyncLoggerConfigSynchronizeEnqueueWhenQueueFull`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+| Default value | ``true``
+|===
+
+Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
 Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application was logging more than the underlying appender could keep up with and the ring buffer became full, especially when the number of application threads vastly outnumbered the number of cores.
 CPU utilization is significantly reduced by restricting access to the enqueue operation.
 Setting this value to `false` may lead to very high CPU utilization when the async logging queue is full.
-
-|===
