@@ -67,6 +67,44 @@ The default implementation uses all implementations of link:../javadoc/log4j-cor
 
 Specifies the link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory[LogEventFactory] implementation to use to create log events.
 
+[id=log4j2.reliabilityStrategy]
+== `log4j2.reliabilityStrategy`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_RELIABILITY_STRATEGY
+| Type          | link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy[Class<? extends
+ ReliabilityStrategy>] or predefined constant
+| Default value | `AwaitCompletion`
+|===
+
+Specifies the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy[ReliabilityStrategy] to adopt in order to prevent loss of log events during a reconfiguration.
+
+The value must be the fully qualified class name of a `ReliabilityStrategy` implementation or one of these predefined constants:
+
+AwaitCompletion::
+Counts the number of threads that have started to log an event but have not completed yet and waits for these threads to finish before stopping the appenders.
+
+AwaitUnconditionally::
+Waits for a configured amount of time before stopping the appenders.
+See <<log4j2.waitMillisBeforeStopOldConfig>>.
+
+Locking::
+Uses read/write locks to prevent appenders from stopping while some threads are still logging events.
+
+[id=log4j2.waitMillisBeforeStopOldConfig]
+== `log4j2.waitMillisBeforeStopOldConfig`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_WAIT_MILLIS_BEFORE_STOP_OLD_CONFIG
+| Type          | `long`
+| Default value | `5000`
+|===
+
+Number of milliseconds to wait before stopping the old configuration if the `AwaitUnconditionally` reliability strategy is used.
+See <<log4j2.reliabilityStrategy>>.
+
 [id=log4j2.shutdownHookEnabled]
 == `log4j2.shutdownHookEnabled`
 

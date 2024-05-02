@@ -28,6 +28,34 @@ If `true`, garbage-aware layouts will directly encode log events into https://do
 
 This prevents allocating temporary `String` and `char[]` instances.
 
+[id=log4j2.encoderByteBufferSize]
+== `log4j2.encoderByteBufferSize`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ENCODER_BYTE_BUFFER_SIZE
+| Type          | `int`
+| Default value | `8192`
+|===
+
+The size in bytes of the link:../https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s stored in `ThreadLocal` fields by layouts and link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder[StringBuilderEncoder]s.
+
+This setting is only used if <<log4j2.enableDirectEncoders>> is set to `true`.
+
+[id=log4j2.encoderCharBufferSize]
+== `log4j2.encoderCharBufferSize`
+
+[cols="1h,5"]
+|===
+| Env. variable | LOG4J_ENCODER_CHAR_BUFFER_SIZE
+| Type          | `int`
+| Default value | `4096`
+|===
+
+The size in ``char``s of the link:../https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s stored in `ThreadLocal` fields link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/StringBuilderEncoder[StringBuilderEncoder]s.
+
+This setting is only used if <<log4j2.enableDirectEncoders>> is set to `true`.
+
 [id=log4j2.initialReusableMsgSize]
 == `log4j2.initialReusableMsgSize`
 
