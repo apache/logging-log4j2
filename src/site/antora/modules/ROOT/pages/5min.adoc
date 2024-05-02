@@ -152,14 +152,14 @@ Let's try to walk through the most common ones.
 [#pitfal-toString]
 ==== Don't use `toString()`
 
-* [ ] `Object#toString()` is redundant in arguments
+* [ ] Don't use `Object#toString()` in arguments, it is redundant!
 +
 [source,java]
 ----
 /* BAD! */ LOGGER.info("userId: {}", userId.toString());
 ----
 
-* [x] Underlying message type and layout will deal with arguments
+* [x] Underlying message type and layout will deal with arguments:
 +
 [source,java]
 ----
@@ -169,10 +169,7 @@ Let's try to walk through the most common ones.
 [#pitfall-exception]
 ==== Pass exception as the last extra argument
 
-Using `Throwable#printStackTrace()` or `Throwable#getMessage()` while logging?
-Please, don't!
-
-* [ ] Don't call `Throwable#printStackTrace()`.
+* [ ] Don't call `Throwable#printStackTrace()`!
 This not only circumvents the logging, but can also leak sensitive information!
 +
 [source,java]
@@ -180,7 +177,7 @@ This not only circumvents the logging, but can also leak sensitive information!
 /* BAD! */ exception.printStackTrace();
 ----
 
-* [ ] Don't use `Throwable#getMessage()`.
+* [ ] Don't use `Throwable#getMessage()`!
 This prevents the log event from getting enriched with the exception.
 +
 [source,java]
@@ -189,14 +186,15 @@ This prevents the log event from getting enriched with the exception.
 /* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage());
 ----
 
-* [ ] This bloats the log message with duplicate exception message
+* [ ] Don't provide both `Throwable#getMessage()` and `Throwable` itself!
+This bloats the log message with duplicate exception message.
 +
 [source,java]
 ----
 /* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage(), exception);
 ----
 
-* [x] Pass exception as the last extra argument
+* [x] Pass exception as the last extra argument:
 +
 [source,java]
 ----
@@ -209,8 +207,9 @@ This prevents the log event from getting enriched with the exception.
 
 If you are using `String` concatenation while logging, you are doing something very wrong and dangerous!
 
-* [ ] Circumvents the handling of arguments by message type and layout.
-More importantly, this code is prone to attacks!
+* [ ] Don't use `String` concatenation to format arguments!
+This circumvents the handling of arguments by message type and layout.
+More importantly, **this approach is prone to attacks!**
 Imagine `userId` being provided by user with the following content:
 `placeholders for non-existing args to trigger failure: {} {} \{dangerousLookup}`
 +
@@ -253,7 +252,7 @@ Maven::
 
   <dependency>
 
-    <!-- The logging implementation (i.e., Log4j Core) -->
+    <!-- Logging implementation (Log4j Core) -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
@@ -449,7 +448,7 @@ Save the following XML document to `src/**test**/resources/log4j2-test.xml`:
 == What is next?
 
 Installation::
-While shared dependency management snippets should get you going, it can also be challenging depending on your use case.
+While shared dependency management snippets should get you going, your case might necessitate a more intricate setup.
 Are you dealing with a Spring Boot application?
 Is it running in a Java EE container?
 Do you need to take into account other logging APIs such as JUL, JPL, JCL, etc.?
