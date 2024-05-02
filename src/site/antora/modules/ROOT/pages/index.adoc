@@ -23,11 +23,12 @@ The project is actively maintained by a {logging-services-url}/team-list.html[te
 
 [#shortcuts]
 == Shortcuts
-- xref:manual/installation.adoc[How can I add Log4j artifacts to my Maven/Ivy/Gradle project?]
-- xref:manual/usage.adoc[How can I use the Log4j API?]
+
+- xref:5min.adoc[]
+- xref:manual/installation.adoc[How can I install Log4j? Which dependencies are needed?]
 - xref:manual/configuration.adoc[How can I configure my `log4j2.xml`?]
 - xref:release-notes.adoc[Where are the release notes?]
-- {logging-services-url}/support[**I need help!**]
+- {logging-services-url}/support.html[**I need help!**]
 
 [#features]
 == Features
@@ -60,26 +61,3 @@ Extensibility::
 Log4j contains a fully-fledged xref:manual/plugins.adoc[plugin support] that users can leverage to extend its functionality.
 You can easily add your own components (layouts, appenders, filters, etc.) or customizing existing ones (e.g., adding new directives to the xref:manual/layouts.adoc#PatternLayout[Pattern] or xref:manual/json-template-layout.adoc#extending[JSON Template Layout]).
 Check out the xref:manual/extending.adoc[Extending Log4j] page.
-
-[#requirements]
-== Requirements
-
-Log4j 2 runtime requires a minimum of Java 8.
-Older versions of Java are supported by previous releases.
-
-[#older-releases]
-== Older releases
-
-Are you looking for old versions of Log4j?
-While we recommend to always use the latest version, you can find the older versions here:
-
-* {logging-services-url}/1.x/[Log4j 1.x (End of Life, Java 1.4)]
-* {logging-services-url}/2.3.x/[Log4j 2.3.x (Java 6)]
-* {logging-services-url}/2.12.x/[Log4j 2.12.x (Java 7)]
-
-[#compat]
-== Compatibility
-
-The `log4j-1.2-api` module provides compatibility for applications using the Log4j 1 logging methods.
-Log4j 2 also provides support for Log4j 1 configuration files.
-See xref:manual/migration.adoc#ConfigurationCompatibility[Log4j 2 compatibility with Log4j 1] for more information.
