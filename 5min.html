@@ -499,7 +499,7 @@ Let&#8217;s try to walk through the most common ones.</p>
 <div class="ulist checklist">
 <ul class="checklist">
 <li>
-<p><i class="fa fa-square-o"></i> <code>Object#toString()</code> is redundant in arguments</p>
+<p><i class="fa fa-square-o"></i> Don&#8217;t use <code>Object#toString()</code> in arguments, it is redundant!</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ LOGGER.info("userId: {}", userId.toString());</code></pre>
@@ -507,7 +507,7 @@ Let&#8217;s try to walk through the most common ones.</p>
 </div>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> Underlying message type and layout will deal with arguments</p>
+<p><i class="fa fa-check-square-o"></i> Underlying message type and layout will deal with arguments:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* GOOD */ LOGGER.info("userId: {}", userId);</code></pre>
@@ -519,14 +519,10 @@ Let&#8217;s try to walk through the most common ones.</p>
 </div>
 <div class="sect3">
 <h4 id="pitfall-exception"><a class="anchor" href="#pitfall-exception"></a>Pass exception as the last extra argument</h4>
-<div class="paragraph">
-<p>Using <code>Throwable#printStackTrace()</code> or <code>Throwable#getMessage()</code> while logging?
-Please, don&#8217;t!</p>
-</div>
 <div class="ulist checklist">
 <ul class="checklist">
 <li>
-<p><i class="fa fa-square-o"></i> Don&#8217;t call <code>Throwable#printStackTrace()</code>.
+<p><i class="fa fa-square-o"></i> Don&#8217;t call <code>Throwable#printStackTrace()</code>!
 This not only circumvents the logging, but can also leak sensitive information!</p>
 <div class="listingblock">
 <div class="content">
@@ -535,7 +531,7 @@ This not only circumvents the logging, but can also leak sensitive information!<
 </div>
 </li>
 <li>
-<p><i class="fa fa-square-o"></i> Don&#8217;t use <code>Throwable#getMessage()</code>.
+<p><i class="fa fa-square-o"></i> Don&#8217;t use <code>Throwable#getMessage()</code>!
 This prevents the log event from getting enriched with the exception.</p>
 <div class="listingblock">
 <div class="content">
@@ -545,7 +541,8 @@ This prevents the log event from getting enriched with the exception.</p>
 </div>
 </li>
 <li>
-<p><i class="fa fa-square-o"></i> This bloats the log message with duplicate exception message</p>
+<p><i class="fa fa-square-o"></i> Don&#8217;t provide both <code>Throwable#getMessage()</code> and <code>Throwable</code> itself!
+This bloats the log message with duplicate exception message.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage(), exception);</code></pre>
@@ -553,7 +550,7 @@ This prevents the log event from getting enriched with the exception.</p>
 </div>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> Pass exception as the last extra argument</p>
+<p><i class="fa fa-check-square-o"></i> Pass exception as the last extra argument:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* GOOD */ LOGGER.error("failed", exception);
@@ -572,8 +569,9 @@ This prevents the log event from getting enriched with the exception.</p>
 <div class="ulist checklist">
 <ul class="checklist">
 <li>
-<p><i class="fa fa-square-o"></i> Circumvents the handling of arguments by message type and layout.
-More importantly, this code is prone to attacks!
+<p><i class="fa fa-square-o"></i> Don&#8217;t use <code>String</code> concatenation to format arguments!
+This circumvents the handling of arguments by message type and layout.
+More importantly, <strong>this approach is prone to attacks!</strong>
 Imagine <code>userId</code> being provided by user with the following content:
 <code>placeholders for non-existing args to trigger failure: {} {} {dangerousLookup}</code></p>
 <div class="listingblock">
@@ -643,7 +641,7 @@ Please skip to the <a href="#config-lib">How do I configure Log4j for my <strong
 
   &lt;dependency&gt;
 
-    &lt;!-- The logging implementation (i.e., Log4j Core) --&gt;
+    &lt;!-- Logging implementation (Log4j Core) --&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
       &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
@@ -928,7 +926,7 @@ Save the following XML document to <code>src/<strong>test</strong>/resources/log
 <dl>
 <dt class="hdlist1">Installation</dt>
 <dd>
-<p>While shared dependency management snippets should get you going, it can also be challenging depending on your use case.
+<p>While shared dependency management snippets should get you going, your case might necessitate a more intricate setup.
 Are you dealing with a Spring Boot application?
 Is it running in a Java EE container?
 Do you need to take into account other logging APIs such as JUL, JPL, JCL, etc.?
