@@ -408,16 +408,16 @@ dependencies {
 <2> SLF4J is another widely used logging API.
 `log4j-slf4j2-impl` forwards SLF4J calls to Log4j API, which effectively gets processed by Log4j Core too.
 
-Next, you need a `src/**test**/resources/log4j2.xml`.
+Next, you need a `src/**test**/resources/log4j2-test.xml`.
 See xref:#config-test[]
 
 [#config-test]
 == How do I configure Log4j for tests?
 
 For tests, prefer a human-readable layout with increased verbosity.
-Save the following XML document to `src/**test**/resources/log4j2.xml`:
+Save the following XML document to `src/**test**/resources/log4j2-test.xml`:
 
-.An example `src/**test**/resources/log4j2.xml`
+.An example `src/**test**/resources/log4j2-test.xml`
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
