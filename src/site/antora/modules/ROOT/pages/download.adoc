@@ -21,3 +21,14 @@ You can manually download all published Log4j distributions, verify them, and se
 
 * Are you looking for **the Log4j installation instructions**? Proceed to xref:manual/installation.adoc[].
 * Are you looking for the list of changes associated with a particular release? Proceed to xref:release-notes.adoc[].
+
+[#older]
+== Older releases
+
+Are you looking for old versions of Log4j?
+While we recommend to always use the latest version, you can find the older versions here:
+
+* {logging-services-url}/1.x/[Log4j 1.x (End of Life, Java 1.4)]
+* {logging-services-url}/2.3.x/[Log4j 2.3.x (Java 6)]
+* {logging-services-url}/2.12.x/[Log4j 2.12.x (Java 7)]
+* {logging-services-url}/2.x/[Log4j 2.x (Java 8)]
