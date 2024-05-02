@@ -152,13 +152,18 @@ Let's try to walk through the most common ones.
 [#pitfal-toString]
 ==== Don't use `toString()`
 
+* [ ] `Object#toString()` is redundant in arguments
++
 [source,java]
 ----
-// [✗] `Object#toString()` is redundant in arguments
-LOGGER.info("userId: {}", userId.toString());
+/* BAD! */ LOGGER.info("userId: {}", userId.toString());
+----
 
-// [✓] Underlying message type and layout will deal with arguments
-LOGGER.info("userId: {}", userId);
+* [x] Underlying message type and layout will deal with arguments
++
+[source,java]
+----
+/* GOOD */ LOGGER.info("userId: {}", userId);
 ----
 
 [#pitfall-exception]
@@ -167,23 +172,36 @@ LOGGER.info("userId: {}", userId);
 Using `Throwable#printStackTrace()` or `Throwable#getMessage()` while logging?
 Please, don't!
 
+* [ ] Don't call `Throwable#printStackTrace()`.
+This not only circumvents the logging, but can also leak sensitive information!
++
 [source,java]
 ----
-// [✗] Don't call `Throwable#printStackTrace()`.
-//     This not only circumvents the logging, but can also leak sensitive information!
-exception.printStackTrace();
+/* BAD! */ exception.printStackTrace();
+----
 
-// [✗] Don't use `Throwable#getMessage()`.
-//     This prevents the log event from getting enriched with the exception.
-LOGGER.info("failed", exception.getMessage());
-LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage());
+* [ ] Don't use `Throwable#getMessage()`.
+This prevents the log event from getting enriched with the exception.
++
+[source,java]
+----
+/* BAD! */ LOGGER.info("failed", exception.getMessage());
+/* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage());
+----
 
-// [✗] This bloats the log message with duplicate exception message
-LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage(), exception);
+* [ ] This bloats the log message with duplicate exception message
++
+[source,java]
+----
+/* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage(), exception);
+----
 
-// [✓] Pass exception as the last extra argument
-LOGGER.error("failed", exception);
-LOGGER.error("failed for user ID `{}`", userId, exception);
+* [x] Pass exception as the last extra argument
++
+[source,java]
+----
+/* GOOD */ LOGGER.error("failed", exception);
+/* GOOD */ LOGGER.error("failed for user ID `{}`", userId, exception);
 ----
 
 [#pitfal-concat]
@@ -191,16 +209,21 @@ LOGGER.error("failed for user ID `{}`", userId, exception);
 
 If you are using `String` concatenation while logging, you are doing something very wrong and dangerous!
 
+* [ ] Circumvents the handling of arguments by message type and layout.
+More importantly, this code is prone to attacks!
+Imagine `userId` being provided by user with the following content:
+`placeholders for non-existing args to trigger failure: {} {} \{dangerousLookup}`
++
 [source,java]
 ----
-// [✗] Circumvents the handling of arguments by message type and layout.
-//     More importantly, this code is prone to attacks!
-//     Imagine `userId` being provided by user with the following content:
-//     `placeholders for non-existing args to trigger failure: {} {} {dangerousLookup}`
-LOGGER.info("failed for user ID: " + userId);
+/* BAD! */ LOGGER.info("failed for user ID: " + userId);
+----
 
-// [✓] Use message parameters
-LOGGER.info("failed for user ID `{}`", userId);
+* [x] Use message parameters
++
+[source,java]
+----
+/* GOOD */ LOGGER.info("failed for user ID `{}`", userId);
 ----
 
 [#config-app]
