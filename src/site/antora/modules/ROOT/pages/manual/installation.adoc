@@ -72,21 +72,72 @@ In the case of Log4j, the API is called _Log4j API_, and its reference implement
 [#logging-bridge]
 Logging bridge::
 Logging implementations accept input from a single logging API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
-A logging bridge is a simple logging implementation of a logging API that forward all messages to a foreign logging API.
+A logging bridge is a simple logging implementation of a logging API that forwards all messages to a foreign logging API.
 Logging bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
 For instance, `log4j-slf4j2-impl` _bridges_ SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.
 
 With this in mind, the type of software you are writing determines whether you should be installing a logging API, implementation, or bridge:
 
 Libraries::
-only require a logging API and delegate the choice of the implementation to applications.
+They only require a logging API and delegate the choice of the implementation to applications.
 If a logging implementation is required by tests of the library, it should be in the appropriate test scope.
 
 Applications::
-need a logging implementation, but also bridges of each of the major logging APIs to support log statements from the libraries they use.
+They need a logging implementation, but also bridges of each of the major logging APIs to support log statements from the libraries they use.
 For instance, your application might be logging against Log4j API and one of its dependencies against SLF4J.
 In this case, you need to install `log4j-core` and `log4j-slf4j2-impl`.
 (This is an example, we will elaborate on this case more in <<impl-core>>.)
+
+To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:
+
+.Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.
+[ditaa]
+....
+/-----------------------------------------------------------------------------------\
+|                                                                                   |
+|       +------------+                       +----------+          +----------+     |
+|       |            |                       |          |          |          |     |
+|       |            v                       |          v          |          v     |
+| +-----+-----+ +---------+ +---------+ +----+----+ +-------+ +----+----+ +-------+ |
+| |           | |{d}c1FF  | |         | |         | |{d}c1FF| |         | |{d}c1FF| |
+| |Application| |Log4j API| |Library 1| |Library 2| | SLF4J | |Library 3| |  JUL  | |
+| |           | |         | |         | |         | |       | |         | |       | |
+| +-----------+ +--+------+ +----+----+ +---------+ +---+---+ +---------+ +---+---+ |
+|                  :   ^         |                      :                     :     |
+|                  |   |         |                      |                     |     |
+| Compile time     |   |         |                      |                     |     |
+\------------------|---|---------|----------------------|---------------------|-----/
+                   |   |         |                      |                     |
+                   |   |         |                /-----/         /-----------/
+                   |   |         |                |               |
+        /----------/   \------+--|----------+-----|---------\     |
+        |                     |  |          |     |         |     |
+/-------|---------------------|--|----------|-----|---------|-----|-----------------\
+|       |                     |  |          |     |         |     |         Runtime |
+|       v                     :  |          :     v         :     v                 |
+| +----------+          +-----+------+ +----+---------+ +---+--------+              |
+| |cGRE      |          |cYEL        | |cYEL          | |cYEL        |              |
+| |Log4j Core|          |JPL to Log4j| |SLF4J to Log4j| |JUL to Log4j|              |
+| |          |          |            | |              | |            |              |
+| +----------+          +------------+ +--------------+ +------------+              |
+| |log4j2.xml|                ^  |                                                  |
+| +----------+                |  |                                                  |
+|                             |  |                                                  |
+|                             |  |                                                  |
+|            /-------------+--|--/                                                  |
+|            |             |  |                                                     |
+| +----------+-------------|--|---------------------------------------------------+ |
+| |JRE                     v  :                                                   | |
+| |                      +----+--+                                                | |
+| |                      |{d}c1FF|                                                | |
+| |                      |  JPL  |                                                | |
+| |                      |       |                                                | |
+| |                      +-------+                                                | |
+| |                                                                               | |
+| +-------------------------------------------------------------------------------+ |
+|                                                                                   |
+\-----------------------------------------------------------------------------------/
+....
 
 [#requirements]
 == Requirements
@@ -195,8 +246,8 @@ Maven::
 [source,xml]
 ----
 <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-api</artifactId>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-api</artifactId>
 </dependency>
 ----
 
@@ -215,6 +266,7 @@ Log4j provides several modules to facilitate deployment of different logging imp
 
 `log4j-core`::
 The reference implementation.
+Log4 Core primarily accepts input from Log4j API.
 Refer to <<impl-core>> for the installation instructions.
 
 `log4j-to-jul`::
@@ -269,12 +321,16 @@ Maven::
 [source,xml]
 ----
 <dependencies>
-    <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <scope>runtime</scope>
-    </dependency>
-    <!-- Logging bridges will follow... -->
+
+  <!-- Logging implementation (Log4j Core) -->
+  <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>runtime</scope>
+  </dependency>
+
+  <!-- Logging bridges will follow... -->
+
 </dependencies>
 ----
 
@@ -291,6 +347,17 @@ runtimeOnly 'org.apache.logging.log4j:log4j-core'
 ==== Installing bridges
 
 If either your application or one if its dependencies logs against a logging API that is different from Log4j API, you need to xref:#logging-bridge[bridge] that API to Log4j API.
+
+[TIP]
+====
+**Do you need bridges?
+And if so, which ones?**
+
+* If you have any direct or transitive dependency on `org.slf4j:slf4j-api`, you need xref:#impl-core-bridge-slf4j[the SLF4J-to-Log4j bridge].
+* If you have any direct or transitive dependency on `commons-logging:commons-logging`, you need xref:#impl-core-bridge-jcl[the JCL-to-Log4j bridge].
+* If it is a standalone application (i.e., not running in a Java EE container), you will probably need xref:#impl-core-bridge-jul[JUL-to-Log4j] and xref:#impl-core-bridge-jpl[JPL-to-Log4j] bridges.
+====
+
 Following sections explain installation of Log4j-provided bridges.
 
 [#impl-core-bridge-slf4j]
@@ -306,9 +373,9 @@ Maven::
 ----
 <!-- SLF4J-to-Log4j bridge -->
 <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-slf4j2-impl</artifactId>
-    <scope>runtime</scope>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-slf4j2-impl</artifactId>
+  <scope>runtime</scope>
 </dependency>
 ----
 
@@ -333,9 +400,9 @@ Maven::
 ----
 <!-- JUL-to-Log4j bridge -->
 <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-jul</artifactId>
-    <scope>runtime</scope>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jul</artifactId>
+  <scope>runtime</scope>
 </dependency>
 ----
 
@@ -369,9 +436,9 @@ Maven::
 ----
 <!-- JPL-to-Log4j bridge -->
 <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-jpl</artifactId>
-    <scope>runtime</scope>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jpl</artifactId>
+  <scope>runtime</scope>
 </dependency>
 ----
 
@@ -399,11 +466,11 @@ Maven users should add an entry to the `<dependencyManagement>` section of their
 [source,xml,subs="+attributes"]
 ----
 <dependencyManagement>
-    <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>{commons-logging-version}</version>
-    </dependency>
+  <dependency>
+    <groupId>commons-logging</groupId>
+    <artifactId>commons-logging</artifactId>
+    <version>{commons-logging-version}</version>
+  </dependency>
 </dependencyManagement>
 ----
 
@@ -431,21 +498,24 @@ Maven::
 [source,xml]
 ----
 <dependencies>
-    <dependency>
+
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <exclusions>
+      <exclusion>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter</artifactId>
-        <exclusions>
-            <exclusion>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-logging</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-log4j2</artifactId>
-        <scope>runtime</scope>
-    </dependency>
+        <artifactId>spring-boot-starter-logging</artifactId>
+      </exclusion>
+    </exclusions>
+  </dependency>
+
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-log4j2</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+
 </dependencies>
 ----
 
@@ -454,11 +524,11 @@ Gradle::
 [source,groovy]
 ----
 configurations {
-    all.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+  all.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
 
 dependencies {
-    runtimeOnly group: 'org.springframework.boot', module: 'spring-boot-starter-log4j2'
+  runtimeOnly group: 'org.springframework.boot', module: 'spring-boot-starter-log4j2'
 }
 ----
 
@@ -488,16 +558,19 @@ log4j2.xml::
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="https://logging.apache.org/xml/ns
                                    https://logging.apache.org/xml/ns/log4j-config-3.xsd">
+
   <appenders>
     <Console name="CONSOLE">
       <PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/><!--1-->
     </Console>
   </appenders>
+
   <loggers>
     <root level="INFO">
       <AppenderRef ref="CONSOLE"/>
     </root>
-  </Loggers>
+  </loggers>
+
 </Configuration>
 ----
 
@@ -667,20 +740,24 @@ Maven::
 [source,xml,subs="+attributes"]
 ----
 <dependencies>
+
     <!-- Log4j-to-JUL bridge -->
-    <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-to-jul</artifactId>
-        <scope>runtime</scope>
-    </dependency>
-    <!-- SLF4J-to-JUL bridge -->
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-jdk14</artifactId>
-        <version>{slf4j-version}</version>
-        <scope>runtime</scope>
-    </dependency>
-    <!-- ... -->
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-to-jul</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+
+  <!-- SLF4J-to-JUL bridge -->
+  <dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-jdk14</artifactId>
+    <version>{slf4j-version}</version>
+    <scope>runtime</scope>
+  </dependency>
+
+  <!-- ... -->
+
 </dependencies>
 ----
 
@@ -709,18 +786,22 @@ Maven::
 [source,xml]
 ----
 <dependencies>
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>{logback-version}</version>
-        <scope>runtime</scope>
-    </dependency>
-    <!-- Log4j-to-SLF4J bridge -->
-    <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-to-slf4j</artifactId>
-        <scope>runtime</scope>
-    </dependency>
+
+  <!-- Logging implementation (Logback) -->
+  <dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>{logback-version}</version>
+    <scope>runtime</scope>
+  </dependency>
+
+  <!-- Log4j-to-SLF4J bridge -->
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-to-slf4j</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+
 </dependencies>
 ----
 
