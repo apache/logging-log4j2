@@ -396,10 +396,10 @@ dependencies {
   // Assuming you already have the `implementation platform(...)` entry for `log4j-bom`
 
   // The logging implementation (i.e., Log4j Core)
-  testOnly 'org.apache.logging.log4j:log4j-core' // <1>
+  testRuntimeOnly 'org.apache.logging.log4j:log4j-core' // <1>
 
   // SLF4J-to-Log4j bridge // <2>
-  testOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // <1>
+  testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // <1>
 
 }
 ----
