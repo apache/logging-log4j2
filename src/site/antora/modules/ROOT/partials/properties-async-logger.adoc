@@ -146,4 +146,4 @@ This setting allows to cache the result of `Thread.getName()` calls and has two 
 CACHED:: stores the name of the current thread in a `ThreadLocal` field,
 UNCACHED:: disables caching.
 
-**Remark**: Since JRE 8u102 the `Thread.getName()` method does not allocate a new object.
+NOTE: Since JRE 8u102 the `Thread.getName()` method does **not** allocate a new object.
