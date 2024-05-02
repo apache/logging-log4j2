@@ -106,7 +106,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * See <a href="https://issues.apache.org/jira/browse/LOG4J2-1518">LOG4J2-1518</a>,
      * <a href="https://issues.apache.org/jira/browse/LOG4J2-2031">LOG4J2-2031</a>.
      */
-    private static final ThreadLocal<Integer> recursionDepthHolder = new ThreadLocal<>();
+    private static final ThreadLocal<Integer> recursionDepthHolder = ThreadLocal.withInitial(() -> 0);
 
     private static final ThreadLocal<DefaultLogBuilder> logBuilder = ThreadLocal.withInitial(DefaultLogBuilder::new);
 
@@ -2866,16 +2866,11 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     private static void incrementRecursionDepth() {
-        recursionDepthHolder.set(getRecursionDepth() + 1);
+        recursionDepthHolder.set(recursionDepthHolder.get() + 1);
     }
 
     private static void decrementRecursionDepth() {
-        final int newDepth = getRecursionDepth() - 1;
-        if (newDepth == 0) {
-            recursionDepthHolder.remove();
-        } else {
-            recursionDepthHolder.set(newDepth);
-        }
+        recursionDepthHolder.set(recursionDepthHolder.get() - 1);
     }
 
     /**
@@ -2885,8 +2880,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @return the depth of the nested logging calls in the current Thread
      */
     public static int getRecursionDepth() {
-        final Integer recursionDepth = recursionDepthHolder.get();
-        return recursionDepth != null ? recursionDepth : 0;
+        return recursionDepthHolder.get();
     }
 
     @PerformanceSensitive
