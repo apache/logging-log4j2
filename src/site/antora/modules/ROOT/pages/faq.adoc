@@ -32,7 +32,7 @@ Log4j 2 and onwards use `log4j2.xml`.
 ====
 
 You can also specify the full path of the configuration file using a system property: +
-`-Dxref:manual/configuration.adoc#log4j2.configurationFile[log4j2.configurationFile]=/path/to/log4j2.xml`
+`-Dlog4j2.configurationFile=/path/to/log4j2.xml`
 
 That property can also be included in a classpath resource file named `log4j2.component.properties`.
 
@@ -127,9 +127,9 @@ Note the `2` in the file name!
 (See xref:manual/configuration.adoc[the Configuration page] for more details.)
 
 . Increase the logging verbosity of the internal status logger: +
-`-Dxref:manual/configuration.adoc#log4j2.statusLoggerLevel[log4j2.statusLoggerLevel]=TRACE`
+`-Dlog4j2.statusLoggerLevel=TRACE`
 
-. Enable all internal debug logging: `-Dxref:manual/configuration.adoc#log4j2.debug[log4j2.debug]`.
+. Enable all internal debug logging: `-Dlog4j2.debug`.
 This disables level-based status logger filtering and effectively allows all status logs.
 
 [#separate_log_files]
