@@ -394,7 +394,7 @@ In the case of Log4j, the API is called <em>Log4j API</em>, and its reference im
 <dt class="hdlist1">Logging bridge</dt>
 <dd>
 <p>Logging implementations accept input from a single logging API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
-A logging bridge is a simple logging implementation of a logging API that forward all messages to a foreign logging API.
+A logging bridge is a simple logging implementation of a logging API that forwards all messages to a foreign logging API.
 Logging bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
 For instance, <code>log4j-slf4j2-impl</code> <em>bridges</em> SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.</p>
 </dd>
@@ -407,17 +407,26 @@ For instance, <code>log4j-slf4j2-impl</code> <em>bridges</em> SLF4J calls to Log
 <dl>
 <dt class="hdlist1">Libraries</dt>
 <dd>
-<p>only require a logging API and delegate the choice of the implementation to applications.
+<p>They only require a logging API and delegate the choice of the implementation to applications.
 If a logging implementation is required by tests of the library, it should be in the appropriate test scope.</p>
 </dd>
 <dt class="hdlist1">Applications</dt>
 <dd>
-<p>need a logging implementation, but also bridges of each of the major logging APIs to support log statements from the libraries they use.
+<p>They need a logging implementation, but also bridges of each of the major logging APIs to support log statements from the libraries they use.
 For instance, your application might be logging against Log4j API and one of its dependencies against SLF4J.
 In this case, you need to install <code>log4j-core</code> and <code>log4j-slf4j2-impl</code>.
 (This is an example, we will elaborate on this case more in <a href="#impl-core">Installing Log4j Core</a>.)</p>
 </dd>
 </dl>
+</div>
+<div class="paragraph">
+<p>To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:</p>
+</div>
+<div class="imageblock kroki">
+<div class="content">
+<img src="../_images/diag-1fd758c2554d79996565796f77cf0f8dc6b3bca2.svg" alt="Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.">
+</div>
+<div class="title">Figure 1. Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.</div>
 </div>
 </div>
 </div>
@@ -426,7 +435,7 @@ In this case, you need to install <code>log4j-core</code> and <code>log4j-slf4j2
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Log4j 2 runtime requires a minimum of Java 8.
-See <a href="../index.html#older-releases" class="xref page">older releases</a> for the latest releases supporting Java 6 and 7.</p>
+See <a href="../download.html#older" class="xref page">the Download page</a> for older releases supporting Java 6 and 7.</p>
 </div>
 </div>
 </div>
@@ -579,8 +588,8 @@ You can import the BOM in your build tool of preference:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -607,6 +616,7 @@ You can import the BOM in your build tool of preference:</p>
 <dt class="hdlist1"><code>log4j-core</code></dt>
 <dd>
 <p>The reference implementation.
+Log4 Core primarily accepts input from Log4j API.
 Refer to <a href="#impl-core">Installing Log4j Core</a> for the installation instructions.</p>
 </dd>
 <dt class="hdlist1"><code>log4j-to-jul</code></dt>
@@ -703,12 +713,16 @@ You can directly skip to <a href="#impl-core-spring-boot">Installing Log4j Core 
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-        &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
-        &lt;scope&gt;runtime&lt;/scope&gt;
-    &lt;/dependency&gt;
-    &lt;!-- Logging bridges will follow... --&gt;
+
+  &lt;!-- Logging implementation (Log4j Core) --&gt;
+  &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+      &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
+      &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+
+  &lt;!-- Logging bridges will follow... --&gt;
+
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
@@ -726,8 +740,38 @@ You can directly skip to <a href="#impl-core-spring-boot">Installing Log4j Core 
 <div class="sect3">
 <h4 id="impl-core-bridges"><a class="anchor" href="#impl-core-bridges"></a>Installing bridges</h4>
 <div class="paragraph">
-<p>If either your application or one if its dependencies logs against a logging API that is different from Log4j API, you need to <a href="#logging-bridge">bridge</a> that API to Log4j API.
-Following sections explain installation of Log4j-provided bridges.</p>
+<p>If either your application or one if its dependencies logs against a logging API that is different from Log4j API, you need to <a href="#logging-bridge">bridge</a> that API to Log4j API.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Do you need bridges?
+And if so, which ones?</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you have any direct or transitive dependency on <code>org.slf4j:slf4j-api</code>, you need <a href="#impl-core-bridge-slf4j">the SLF4J-to-Log4j bridge</a>.</p>
+</li>
+<li>
+<p>If you have any direct or transitive dependency on <code>commons-logging:commons-logging</code>, you need <a href="#impl-core-bridge-jcl">the JCL-to-Log4j bridge</a>.</p>
+</li>
+<li>
+<p>If it is a standalone application (i.e., not running in a Java EE container), you will probably need <a href="#impl-core-bridge-jul">JUL-to-Log4j</a> and <a href="#impl-core-bridge-jpl">JPL-to-Log4j</a> bridges.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Following sections explain installation of Log4j-provided bridges.</p>
 </div>
 <div class="sect4">
 <h5 id="impl-core-bridge-slf4j"><a class="anchor" href="#impl-core-bridge-slf4j"></a>Installing SLF4J-to-Log4j bridge</h5>
@@ -751,9 +795,9 @@ Following sections explain installation of Log4j-provided bridges.</p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- SLF4J-to-Log4j bridge --&gt;
 &lt;dependency&gt;
-    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j-slf4j2-impl&lt;/artifactId&gt;
-    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-slf4j2-impl&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -790,9 +834,9 @@ Following sections explain installation of Log4j-provided bridges.</p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- JUL-to-Log4j bridge --&gt;
 &lt;dependency&gt;
-    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j-jul&lt;/artifactId&gt;
-    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-jul&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -840,9 +884,9 @@ Following sections explain installation of Log4j-provided bridges.</p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;!-- JPL-to-Log4j bridge --&gt;
 &lt;dependency&gt;
-    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-    &lt;artifactId&gt;log4j-jpl&lt;/artifactId&gt;
-    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-jpl&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -885,11 +929,11 @@ build tool:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencyManagement&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;commons-logging&lt;/groupId&gt;
-        &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
-        &lt;version&gt;1.3.1&lt;/version&gt;
-    &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+    &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+    &lt;version&gt;1.3.1&lt;/version&gt;
+  &lt;/dependency&gt;
 &lt;/dependencyManagement&gt;</code></pre>
 </div>
 </div>
@@ -931,21 +975,24 @@ build tool:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
-    &lt;dependency&gt;
+
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
+    &lt;exclusions&gt;
+      &lt;exclusion&gt;
         &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
-        &lt;exclusions&gt;
-            &lt;exclusion&gt;
-                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-                &lt;artifactId&gt;spring-boot-starter-logging&lt;/artifactId&gt;
-            &lt;/exclusion&gt;
-        &lt;/exclusions&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-log4j2&lt;/artifactId&gt;
-        &lt;scope&gt;runtime&lt;/scope&gt;
-    &lt;/dependency&gt;
+        &lt;artifactId&gt;spring-boot-starter-logging&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+  &lt;/dependency&gt;
+
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-log4j2&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
@@ -954,11 +1001,11 @@ build tool:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">configurations {
-    all.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+  all.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
 
 dependencies {
-    runtimeOnly group: 'org.springframework.boot', module: 'spring-boot-starter-log4j2'
+  runtimeOnly group: 'org.springframework.boot', module: 'spring-boot-starter-log4j2'
 }</code></pre>
 </div>
 </div>
@@ -1005,16 +1052,19 @@ A basic configuration can be obtained by adding one of these files to your appli
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="https://logging.apache.org/xml/ns
                                    https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
+
   &lt;appenders&gt;
     &lt;Console name="CONSOLE"&gt;
       &lt;PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
     &lt;/Console&gt;
   &lt;/appenders&gt;
+
   &lt;loggers&gt;
     &lt;root level="INFO"&gt;
       &lt;AppenderRef ref="CONSOLE"/&gt;
     &lt;/root&gt;
-  &lt;/Loggers&gt;
+  &lt;/loggers&gt;
+
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
@@ -1127,10 +1177,10 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
-    &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
-    &lt;version&gt;2.17.0&lt;/version&gt;
-    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+  &lt;version&gt;2.17.0&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1139,10 +1189,10 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
-    &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
-    &lt;version&gt;2.17.0&lt;/version&gt;
-    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
+  &lt;version&gt;2.17.0&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1242,20 +1292,24 @@ Since it is embedded in the platform, it only requires the addition of bridges f
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
+
     &lt;!-- Log4j-to-JUL bridge --&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-        &lt;artifactId&gt;log4j-to-jul&lt;/artifactId&gt;
-        &lt;scope&gt;runtime&lt;/scope&gt;
-    &lt;/dependency&gt;
-    &lt;!-- SLF4J-to-JUL bridge --&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-        &lt;artifactId&gt;slf4j-jdk14&lt;/artifactId&gt;
-        &lt;version&gt;2.0.13&lt;/version&gt;
-        &lt;scope&gt;runtime&lt;/scope&gt;
-    &lt;/dependency&gt;
-    &lt;!-- ... --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-to-jul&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+
+  &lt;!-- SLF4J-to-JUL bridge --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+    &lt;artifactId&gt;slf4j-jdk14&lt;/artifactId&gt;
+    &lt;version&gt;2.0.13&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+
+  &lt;!-- ... --&gt;
+
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
@@ -1295,18 +1349,22 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.13' // SLF4J-to-JUL bridge</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
-        &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
-        &lt;version&gt;{logback-version}&lt;/version&gt;
-        &lt;scope&gt;runtime&lt;/scope&gt;
-    &lt;/dependency&gt;
-    &lt;!-- Log4j-to-SLF4J bridge --&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-        &lt;artifactId&gt;log4j-to-slf4j&lt;/artifactId&gt;
-        &lt;scope&gt;runtime&lt;/scope&gt;
-    &lt;/dependency&gt;
+
+  &lt;!-- Logging implementation (Logback) --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+    &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
+    &lt;version&gt;{logback-version}&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+
+  &lt;!-- Log4j-to-SLF4J bridge --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-to-slf4j&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
