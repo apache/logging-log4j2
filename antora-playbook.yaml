@@ -38,8 +38,11 @@ asciidoc:
     log4j-docgen-type-filter-exclude-pattern: ^java\..+
     log4j-docgen-type-target-template: |
       #{{{replaceAll sourcedType.groupId "." "-"}}}_{{{replaceAll sourcedType.artifactId "." "-"}}}_{{{replaceAll sourcedType.type.className "." "-"}}}
+    # Force Kroki to download images at build time
+    kroki-fetch-diagram: true
   extensions:
     - "@asciidoctor/tabs"
+    - asciidoctor-kroki
     - src/docgen/apiref-macro.js
 
 ui:
