@@ -256,7 +256,7 @@ system properties
 xref:manual/configuration.adoc#log4j2.asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
 and `log4j2.discardThreshold`].
 
-[#WaitStrategy]
+[#custom-waitstrategy]
 == Custom WaitStrategy
 The system properties mentioned above allow only choice from among a fixed set of predefined WaitStrategies.
 There may be cases where you want to configure a custom WaitStrategy that is not in this list.

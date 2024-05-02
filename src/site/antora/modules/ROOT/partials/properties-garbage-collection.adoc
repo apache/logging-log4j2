@@ -1,33 +1,52 @@
-[[log4j2.enableDirectEncoders]]
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=log4j2.enableDirectEncoders]
 == `log4j2.enableDirectEncoders`
 
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_ENABLE_DIRECT_ENCODERS
-| Default value | ``true``
+| Type          | `boolean`
+| Default value | `true`
 |===
 
 If `true`, garbage-aware layouts will directly encode log events into https://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html[ByteBuffer]s provided by appenders.
 
 This prevents allocating temporary `String` and `char[]` instances.
 
-[[log4j2.initialReusableMsgSize]]
+[id=log4j2.initialReusableMsgSize]
 == `log4j2.initialReusableMsgSize`
 
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_INITIAL_REUSABLE_MSG_SIZE
+| Type          | `int`
 | Default value | `128`
 |===
 
 In GC-free mode, this property determines the initial size of the reusable ``StringBuilder``s used by link:../javadoc/log4j-api/org/apache/logging/log4j/message/ReusableMessage[ReusableMessages] for formatting purposes.
 
-[[log4j2.maxReusableMsgSize]]
+[id=log4j2.maxReusableMsgSize]
 == `log4j2.maxReusableMsgSize`
 
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_MAX_REUSABLE_MSG_SIZE
+| Type          | `int`
 | Default value | `518`
 |===
 
@@ -36,23 +55,25 @@ In GC-free mode, this property determines the maximum size of the reusable ``Str
 The default value allows is equal to `2 &times; (2 &times; log4j.initialReusableMsgSize + 2) + 2` and allows the
 ``StringBuilder`` to be resized twice by the current JVM resize algorithm.
 
-[[log4j2.layoutStringBuilderMaxSize]]
+[id=log4j2.layoutStringBuilderMaxSize]
 == `log4j2.layoutStringBuilderMaxSize`
 
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_LAYOUT_STRING_BUILDER_MAX_SIZE
+| Type          | `int`
 | Default value | `2048`
 |===
 
 This property determines the maximum size of the reusable ``StringBuilder``s used to format link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent[LogEvents].
 
-[[log4j2.unboxRingbufferSize]]
+[id=log4j2.unboxRingbufferSize]
 == `log4j2.unboxRingbufferSize`
 
 [cols="1h,5"]
 |===
 | Env. variable | LOG4J_UNBOX_RINGBUFFER_SIZE
+| Type          | `int`
 | Default value | `32`
 |===
 
