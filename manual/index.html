@@ -22,10 +22,10 @@
   .doc pre { font-size: 0.7rem; }
   .doc .colist { font-size: 0.75rem; }
   /* Tab header fonts aren't rendered good, adjusting the font weight: */
-  .tablist > ul li { font-weight: 500; } 
+  .tablist > ul li { font-weight: 500; }
   /* `page-toclevels` greater than 4 are not supported by Antora UI, patching it: */
   .toc .toc-menu li[data-level="4"] a {
-    padding-left: 2.75rem
+    padding-left: 2.75rem;
   }
   /* Replace the default highlight.js color for strings from red (unnecessarily signaling something negative) to green: */
   .hljs-string {
@@ -87,121 +87,127 @@
   </li>
   <li class="nav-item" data-depth="0">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">Learn</span>
+    <span class="nav-text">Resources</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">F.A.Q.</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../5min.html">Learn Log4j in 5 minutes!</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="0">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="index.html">Manual</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="installation.html">Installation</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="architecture.html">Architecture</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="migration.html">Migrating from Log4j 1.x to 2.x</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="api.html">Log4j API</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="logbuilder.html">Log Builder</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="flowtracing.html">Flow Tracing</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="markers.html">Markers</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="eventlogging.html">Event Logging</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="messages.html">Messages</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="thread-context.html">Thread Context</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="scoped-context.html">Scoped Context</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="resource-logger.html">Resource Logging</a>
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="configuration.html">Configuration</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="usage.html">Usage</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="cloud.html">Using Log4j in Cloud Enabled Applications</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="lookups.html">Lookups</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="appenders.html">Appenders</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="layouts.html">Layouts</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="json-template-layout.html">JSON Template Layout</a>
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="filters.html">Filters</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="async.html">Lock-free Asynchronous Loggers for Low-Latency Logging</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="garbagefree.html">Garbage-free Steady State Logging</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="extending.html">Extending Log4j 3</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="plugins.html">Plugins</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="customloglevels.html">Custom Log Levels</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="jmx.html">JMX</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="logsep.html">Logging Separation</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="performance.html">Performance</a>
   </li>
 </ul>
   </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../plugin-reference.html">Plugin reference</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../javadoc.html">Java API reference</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../articles.html">Articles</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../faq.html">F.A.Q.</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../development.html">Development</a>
   </li>
 </ul>
   </li>
@@ -281,7 +287,6 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Home</a></li>
-    <li>Learn</li>
     <li><a href="index.html">Manual</a></li>
   </ul>
 </nav>
