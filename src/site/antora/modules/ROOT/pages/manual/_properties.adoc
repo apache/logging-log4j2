@@ -80,13 +80,9 @@ include::partial$properties-loader-util.adoc[leveloffset=+2]
 === Provider
 
 The runtime classpath of an application **should** contain only a single implementation of the Log4j API.
-In the particular case, when multiple implementations are present, you can select a specific implementation by setting the value of `log4j2.provider` (or environment variable `LOG4J_PROVIDER`) to the fully qualified name of the chosen provider.
-See link:../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider[Provider] for details.
+In the particular case, when multiple implementations are present, you can select a specific implementation using these properties:
 
-[NOTE]
-====
-For backward compatibility users can specify the link:../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory[LoggerContextFactory] and link:../javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap[ThreadContextMap] services independently using the `log4j2.loggerContextFactory` and <<log4j2.threadContextMap>> properties respectively.
-====
+include::partial$properties-provider.adoc[leveloffset=+2]
 
 === Status Logger
 
