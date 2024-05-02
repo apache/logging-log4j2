@@ -57,6 +57,7 @@
 * xref:javadoc.adoc[Java API reference]
 * xref:articles.adoc[Articles]
 * xref:faq.adoc[F.A.Q.]
+* xref:development.adoc[]
 
 .Components
 * xref:log4j-api.adoc[]
