@@ -119,7 +119,7 @@ public class DbTableService {
 ----
 <1> This is a thread-safe, reusable `Logger` instance.
 The associated class will be captured at initialization – no need for a `getLogger(DbTableService.class)`.
-<2> The generated **log event** will be automatically parameter formatted (note the parameter placeholder, i.e., `{}`) and enriched with **level** (i.e., `WARN`), timestamp, class & method name, line number, and several other information.
+<2> The parameter placeholders `{}` in the message will be automatically replaced with the value of `tableName` and the generated **log event** will be enriched with **level** (i.e., `WARN`), timestamp, class & method name, line number, and several other information.
 
 Make sure to log exceptions that have diagnostics value:
 
