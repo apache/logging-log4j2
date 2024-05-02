@@ -117,7 +117,7 @@ The `log4j-to-jul` logging bridge ignores all `ThreadContext` method calls.
 
 include::partial$properties-thread-context.adoc[leveloffset=+2]
 
-== Log4j Core
+== Log4j Core properties
 
 While the only required configuration of the `log4j-core` library is provided by the xref:manual/configuration.adoc[configuration file], the library offers many configuration properties that can be used to finely tune the way it works.
 
@@ -206,17 +206,19 @@ include::partial$properties-transport-security.adoc[leveloffset=+2]
 
 include::partial$properties-log4j-core-misc.adoc[leveloffset=+2]
 
-== JUL-to-Log4j API bridge
+== Other components
+
+=== JUL-to-Log4j API bridge properties
 
 The JUL-to-Log4j API bridge provides the following configuration properties:
 
-include::partial$properties-log4j-jul.adoc[leveloffset=+1]
+include::partial$properties-log4j-jul.adoc[leveloffset=+2]
 
-== Log4j Spring Boot
+=== Log4j Spring Boot properties
 
 The Log4j Spring Boot module supports the following configuration properties:
 
-include::partial$properties-log4j-spring-boot.adoc[leveloffset=+1]
+include::partial$properties-log4j-spring-boot.adoc[leveloffset=+2]
 
 [#property-sources]
 == Property sources
