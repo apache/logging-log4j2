@@ -175,7 +175,9 @@ The below properties can also be specified by creating a file named
 of the application.
 
 [[SysPropsAllAsync]]
-include::partial$properties-async-logger.adoc[leveloffset=+1]
+=== Configuration Properties
+
+include::partial$properties-async-logger.adoc[leveloffset=+2]
 
 There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
@@ -247,7 +249,9 @@ The below properties can also be specified by creating a file named
 of the application.
 
 [[SysPropsMixedSync-Async]]
-include::partial$properties-async-logger-config.adoc[leveloffset=+1]
+=== Configuration Properties
+
+include::partial$properties-async-logger-config.adoc[leveloffset=+2]
 
 There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
