@@ -37,10 +37,10 @@ This provides observability into an application's runtime. (See {logging-service
 
 But we can do way better than a `printf()` statement!
 
-* Enhance the output with additional information (timestamp, class & method name, line number, host, severity, etc.)
-* Use different **layouts** (CSV, JSON, etc.)
-* Forward to different **appenders** (file, socket, database, queue, etc.)
-* **Filter** on demand (e.g., increase verbosity dynamically for troubleshooting purposes)
+* Enhance the message with additional information (timestamp, class & method name, line number, host, severity, etc.)
+* Write the message in a different way, using a different **layout** (CSV, JSON, etc.)
+* Write the message to a different medium, using a different **appender** (file, socket, database, queue, etc.)
+* Write only some of the messages, using a **filter** (e.g. filter by severity, content, etc.)
 
 Log4j is versatile, industrial-grade Java logging framework delivering all these and more in one product.
 It is essentially composed of a **logging API** and its **implementation**:
