@@ -844,10 +844,10 @@ Please skip to the <a href="#config-app">How do I configure Log4j to run my <str
   // Assuming you already have the `implementation platform(...)` entry for `log4j-bom`
 
   // The logging implementation (i.e., Log4j Core)
-  testOnly 'org.apache.logging.log4j:log4j-core' <i class="conum" data-value="1"></i><b>(1)</b>
+  testRuntimeOnly 'org.apache.logging.log4j:log4j-core' <i class="conum" data-value="1"></i><b>(1)</b>
 
   // SLF4J-to-Log4j bridge <i class="conum" data-value="2"></i><b>(2)</b>
-  testOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' <i class="conum" data-value="1"></i><b>(1)</b>
+  testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' <i class="conum" data-value="1"></i><b>(1)</b>
 
 }</code></pre>
 </div>
