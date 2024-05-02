@@ -86,12 +86,16 @@ include::partial$properties-provider.adoc[leveloffset=+2]
 
 === Status Logger
 
+NOTE: To configure status logger you can also place its configuration in a file named `log4j2.StatusLogger.properties`.
+
 Log4j contains an internal logging mechanism called `StatusLogger` that is used by all Log4j components.
 By default, the status logger only reports errors on the standard error stream, but you can configure it using the following properties.
 
 include::partial$properties-status-logger.adoc[leveloffset=+2]
 
 === Simple logger
+
+NOTE: To configure simple logger you can also place its configuration in a file named `log4j2.simplelog.properties`.
 
 The simple logger implementation contained in `log4j-api` can be configured using these properties:
 
