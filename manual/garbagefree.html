@@ -373,7 +373,7 @@ reference these fields after the web application is undeployed. To avoid
 causing memory leaks, Log4j will not use these ThreadLocals when it
 detects that it is used in a web application (when the
 <code>javax.servlet.Servlet</code> class is in the classpath, or when system
-property <code>log4j2.isWebapp</code> is set to "true").</p>
+property <a href="configuration.html#log4j2.isWebapp" class="xref page">log4j2.isWebapp</a> is set to <code>true</code>).</p>
 </div>
 <div class="paragraph">
 <p>Some garbage-reducing functionality does not rely on ThreadLocals and is
@@ -428,10 +428,11 @@ mechanisms Log4j uses to avoid creating temporary objects:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>log4j2.enableThreadlocals - if "true" (the default for non-web applications) objects are stored in ThreadLocal fields and reused, otherwise new objects are created for each log event.</p>
+<p><a href="configuration.html#log4j2.enableThreadlocals" class="xref page">log4j2.enableThreadlocals</a> - if "true" (the default for non-web applications) objects are stored in ThreadLocal fields and reused, otherwise new objects are created for each log event.</p>
 </li>
 <li>
-<p><code>log4j2.enableDirectEncoders</code> - if "true" (the default) log events are
+<p><a href="configuration.html#log4j2.enableDirectEncoders" class="xref page">log4j2.enableDirectEncoders</a> - if "true" (the default)
+log events are
 converted to text and this text is converted to bytes without creating
 temporary objects. Note: <em>synchronous</em> logging performance may be worse
 for multi-threaded applications in this mode due to synchronization on
@@ -441,7 +442,7 @@ performance is important, consider using Async Loggers.</p>
 <li>
 <p>The ThreadContext map is <em>not</em> garbage-free by default, but from Log4j
 2.7 it can be configured to be garbage-free by setting system property
-<code>log4j2.garbagefreeThreadContextMap</code> to "true".</p>
+<a href="configuration.html#log4j2.garbagefreeThreadContextMap" class="xref page">log4j2.garbagefreeThreadContextMap</a> to "true".</p>
 </li>
 </ul>
 </div>
