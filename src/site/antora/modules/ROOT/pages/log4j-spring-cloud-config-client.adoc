@@ -24,7 +24,7 @@ Spring Boot applications initialize logging 3 times.
 
 . SpringApplication declares a Logger.
 This Logger will be initialized using Log4j's "normal" mechanisms.
-Thus  a system property named log4j2.configurationFile will be checked to see if a specific configuration file has been provided, otherwise it will search for a configuration file on the classpath.
+Thus the xref:manual/configuration.adoc#log4j2.configurationFile[`log4j2.configurationFile`] system property will be checked to see if a specific configuration file has been provided, otherwise it will search for a configuration file on the classpath.
 The property may also be declare  in log4j2.component.properties.
 
 == Usage
@@ -122,67 +122,9 @@ logging:
 Note that Log4j currently does not directly support encrypting the password.
 However, Log4j does use Spring's  standard APIs to access properties in the Spring configuration so any customizations made to Spring's property handling would apply to the properties Log4j uses as well.
 
-If more extensive authentication is required an `AuthorizationProvider` can be implemented and the fully qualified class name in the `log4j2.authorizationProvider` system property, in log4j2.component.properties or in Spring's bootstrap.yml using either the `log4j2.authorizationProvider` key or with the key `logging.auth.authorizationProvider`.
+If more extensive authentication is required an `AuthorizationProvider` can be implemented and its fully qualified class name should be specified in the xref:manual/configuration.adoc#log4j2.configurationAuthorizationProvider[log4j2.configurationAuthorizationProvider] system property, in log4j2.component.properties or in Spring's `bootstrap.yml` using either the `log4j2.authorizationProvider` or `logging.auth.authorizationProvider` key.
 
-TLS can be enabled by adding the following system properties or defining them in log4j2.component.properties
-
-|===
-| Property | Optional or Default Value | Description
-
-| log4j2.trustStoreLocation
-| Optional
-| The location of the trust store.
-If not provided the default trust store will be used.
-
-| log4j2.trustStorePassword
-| Optional
-| Password needed to access the trust store.
-
-| log4j2.trustStorePasswordFile
-| Optional
-| The location of a file that contains the password for the trust store.
-
-| log4j2.trustStorePasswordEnvironmentVariable
-| Optional
-| The name of the environment variable that contains the trust store password.
-
-| log4j2.trustStoreKeyStoreType
-| Required if keystore location provided
-| The type of key store.
-
-| log4j2.trustStoreKeyManagerFactoryAlgorithm
-| Optional
-| Java cryptographic algorithm.
-
-| log4j2.keyStoreLocation
-| Optional
-| The location of the key store.
-If not provided the default key store will be used.
-
-| log4j2.keyStorePassword
-| Optional
-| Password needed to access the key store.
-
-| log4j2.keyStorePasswordFile
-| Optional
-| The location of a file that contains the password for the key store.
-
-| log4j2.keyStorePasswordEnvironmentVariable
-| Optional
-| The name of the environment variable that contains the key store password.
-
-| log4j2.keyStoreType
-| Required if trust store location provided.
-| The type of key store.
-
-| log4j2.keyStoreKeyManagerFactoryAlgorithm
-| Optional
-| Java cryptographic algorithm.
-
-| log4j2.sslVerifyHostName
-| false
-| true or false
-|===
+For the properties required by TLS configuration see xref:manual/configuration.adoc#transport-security[the Transport Security configuration].
 
 == Requirements
 
