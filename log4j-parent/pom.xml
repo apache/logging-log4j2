@@ -98,7 +98,7 @@
     <bsh.version>2.0b6</bsh.version>
     <commons-codec.version>1.17.0</commons-codec.version>
     <commons-compress.version>1.26.1</commons-compress.version>
-    <commons-csv.version>1.10.0</commons-csv.version>
+    <commons-csv.version>1.11.0</commons-csv.version>
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
     <commons-io.version>2.16.1</commons-io.version>
     <commons-lang3.version>3.14.0</commons-lang3.version>
