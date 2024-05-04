@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2377" link="https://github.com/apache/logging-log4j2/pull/2377"/>
-  <description format="asciidoc">Update `com.google.guava:guava` to version `33.1.0-jre`</description>
+  <issue id="2564" link="https://github.com/apache/logging-log4j2/pull/2564"/>
+  <description format="asciidoc">Update `com.google.guava:guava` to version `33.2.0-jre`</description>
 </entry>
