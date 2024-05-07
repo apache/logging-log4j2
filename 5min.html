@@ -305,8 +305,9 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a crash course on Log4j?
-You are at the right place!</p>
+<p>Do you need a crash course on Log4j?
+You have come to the right place!
+If you are looking for a more detailed read, please see <a href="https://logging.apache.org/what-is-logging.html">What is logging?</a>.</p>
 </div>
 </div>
 </div>
@@ -325,7 +326,7 @@ You are at the right place!</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This provides observability into an application&#8217;s runtime. (See <a href="https://logging.apache.org/what-is-logging.html">What is logging?</a> page for a longer read.)</p>
+<p>This provides observability into an application&#8217;s runtime.</p>
 </div>
 <div class="paragraph">
 <p>But we can do way better than a <code>printf()</code> statement!</p>
@@ -336,7 +337,7 @@ You are at the right place!</p>
 <p>Enhance the message with additional information (timestamp, class &amp; method name, line number, host, severity, etc.)</p>
 </li>
 <li>
-<p>Write the message in a different way, using a different <strong>layout</strong> (CSV, JSON, etc.)</p>
+<p>Write the message differently, using a different <strong>layout</strong> (CSV, JSON, etc.)</p>
 </li>
 <li>
 <p>Write the message to a different medium, using a different <strong>appender</strong> (file, socket, database, queue, etc.)</p>
@@ -347,7 +348,7 @@ You are at the right place!</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Log4j is versatile, industrial-grade Java logging framework delivering all these and more in one product.
+<p>Log4j is a versatile, industrial-grade Java logging framework delivering all these and more in one product.
 It is essentially composed of a <strong>logging API</strong> and its <strong>implementation</strong>:</p>
 </div>
 <div class="dlist">
@@ -359,7 +360,7 @@ This needs to be available at compile-time and no configuration is needed.</p>
 </dd>
 <dt class="hdlist1">Log4j Core</dt>
 <dd>
-<p>The logging implementation which is responsible for filtering, routing, encoding, and appending log events.
+<p>The logging implementation is responsible for filtering, routing, encoding, and appending log events.
 This needs to be available at runtime and configured by the user.</p>
 </dd>
 </dl>
@@ -367,7 +368,7 @@ This needs to be available at runtime and configured by the user.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="logging"><a class="anchor" href="#logging"></a>How do I log using Log4j?</h2>
+<h2 id="logging"><a class="anchor" href="#logging"></a>How do I write logs using Log4j?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Add the <code>log4j-api</code> dependency to your application:</p>
@@ -523,7 +524,7 @@ Let&#8217;s try to walk through the most common ones.</p>
 <ul class="checklist">
 <li>
 <p><i class="fa fa-square-o"></i> Don&#8217;t call <code>Throwable#printStackTrace()</code>!
-This not only circumvents the logging, but can also leak sensitive information!</p>
+This not only circumvents the logging but can also leak sensitive information!</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ exception.printStackTrace();</code></pre>
@@ -542,7 +543,7 @@ This prevents the log event from getting enriched with the exception.</p>
 </li>
 <li>
 <p><i class="fa fa-square-o"></i> Don&#8217;t provide both <code>Throwable#getMessage()</code> and <code>Throwable</code> itself!
-This bloats the log message with duplicate exception message.</p>
+This bloats the log message with a duplicate exception message.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/* BAD! */ LOGGER.info("failed for user ID `{}`: {}", userId, exception.getMessage(), exception);</code></pre>
@@ -572,7 +573,7 @@ This bloats the log message with duplicate exception message.</p>
 <p><i class="fa fa-square-o"></i> Don&#8217;t use <code>String</code> concatenation to format arguments!
 This circumvents the handling of arguments by message type and layout.
 More importantly, <strong>this approach is prone to attacks!</strong>
-Imagine <code>userId</code> being provided by user with the following content:
+Imagine <code>userId</code> being provided by the user with the following content:
 <code>placeholders for non-existing args to trigger failure: {} {} {dangerousLookup}</code></p>
 <div class="listingblock">
 <div class="content">
@@ -737,7 +738,7 @@ Save the following XML document to <code>src/<strong>main</strong>/resources/log
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><a href="manual/appenders.html" class="xref page">Appenders</a> are responsible for writing log events to console, file, socket, database, etc.</td>
+<td><a href="manual/appenders.html" class="xref page">Appenders</a> are responsible for writing log events to the console, file, socket, database, etc.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -749,11 +750,11 @@ Save the following XML document to <code>src/<strong>main</strong>/resources/log
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Log events generated by classes in the <code>com.mycompany</code> package (incl. its subpackages) and that are of level <code>INFO</code> and higher (i.e., <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>) will be consumed.</td>
+<td>Log events generated by classes in the <code>com.mycompany</code> package (incl. its sub packages) and that are of level <code>INFO</code> and higher (i.e., <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>) will be consumed.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Unless specified otherwise, log events of level <code>WARN</code> and and higher will be consumed.</td>
+<td>Unless specified otherwise, log events of level <code>WARN</code> and higher will be consumed.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
@@ -954,7 +955,7 @@ See the <a href="manual/architecture.html" class="xref page">Architecture</a> pa
 <dt class="hdlist1">Support</dt>
 <dd>
 <p>Confused?
-Having problem while setting up Log4j?
+Having a problem while setting up Log4j?
 See the <a href="https://logging.apache.org/support.html">Support</a> page.</p>
 </dd>
 </dl>
