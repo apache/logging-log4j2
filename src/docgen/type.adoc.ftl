@@ -21,7 +21,7 @@
 <#-- @ftlvariable name="lookup" type="org.apache.logging.log4j.docgen.generator.TypeLookup" -->
 
 [#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}_${type.className?replace('.', '-')}]
-= ${type.name!('`' + type.className + '`')}
+= ${type.name!('`' + type.className?keep_after_last('.') + '`')}
 
 Class:: `${type.className}`
 Provider:: `${sourcedType.groupId}:${sourcedType.artifactId}`

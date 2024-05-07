@@ -15,6 +15,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+
+// ToC does not look nice with a deep sectioning, override it:
+:page-toclevels: 3
+
 <#-- @ftlvariable name="lookup" type="org.apache.logging.log4j.docgen.generator.TypeLookup" -->
 
 = Plugin reference
@@ -52,7 +56,7 @@ Below is a list of all types reachable by plugins grouped by the Maven coordinat
         <#assign lastArtifactId = sourcedType.artifactId/>
 
 [#${sourcedType.groupId?replace('.', '-')}_${sourcedType.artifactId?replace('.', '-')}]
-=== `${sourcedType.groupId}:${sourcedType.artifactId}`
+=== `${sourcedType.artifactId}`
     </#if>
 
 include::_plugin-reference/${sourcedType.groupId}-${sourcedType.artifactId}-${sourcedType.type.className}.adoc[leveloffset=+3]
