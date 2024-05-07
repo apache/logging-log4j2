@@ -15,36 +15,72 @@
     limitations under the License.
 ////
 
-= Learn Log4j in 5 minutes!
+= Log4j explained in 5 minutes
 
-Do you need a crash course on Log4j?
-You have come to the right place!
+This document aims to guide you through the most important aspects of logging with Log4j.
+It is not a comprehensive guide, but it should give you a good starting point.
 If you are looking for a more detailed read, please see {logging-services-url}/what-is-logging.html[What is logging?].
 
 [#what]
-== What is logging and Log4j?
+== What is logging?
 
-Logging is the action of publishing diagnostics information at certain points of a program execution:
+Logging is the action of publishing diagnostics information at certain points of a program execution. 
+It means you can write messages to a log file or console to help you understand what your application is doing.
 
-[source,java]
+The simplest way to log in Java is to use `System.out.println()`, like this:
+
+[source, java]
 ----
 private void truncateTable(String tableName) {
-    System.out.format("[WARN] Truncating table `%s`!%n", tableName);
+  System.out.println("Truncating table"); <1>
+  db.truncate(tableName);
+}
+----
+<1> The information that a table is being truncated is written to the console.
+
+This is already useful, but the reader of this message does not know what table is being truncated. 
+Usually, we would like to include the table name in the message, which quickly leads
+developers to use the `System.out.format` (or similar) methods. 
+Log4j helps with formatting strings as we will see later, but for now, let's see how to work without it.
+
+The following code shows how this method could be used to provide more context information.
+`%s` will be replaced with the value of `tableName`, and `%n` will be replaced with a new line.
+
+[source, java]
+----
+private void truncateTable(String tableName) {
+    System.out.format("[WARN] Truncating table `%s`%n", tableName); <1>
     db.truncate(tableName);
 }
 ----
+<1> `format` writes the message to the console, replacing `%s` with the value of `tableName`.
 
-This provides observability into an application's runtime.
+If the developer decides the truncate the table "fruits", the output of this code will look like this:
 
-But we can do way better than a `printf()` statement!
+[source]
+----
+[WARN] Truncating table `fruits`
+----
+
+This provides observability into an application's runtime and we can follow the execution flow.
+
+However, there are several drawbacks with the above approach and this is where Log4j comes in.
+Log4j will help you to write logs in a more structured way, with more information, and with more flexibility.
+
+[#why]
+== Why should I use Log4j?
+
+Log4j is a versatile, industrial-grade Java logging framework, maintained by many contributors.
+It can help us with common logging tasks and lets us focus on the application logic.
+
+It will: 
 
 * Enhance the message with additional information (timestamp, class & method name, line number, host, severity, etc.)
 * Write the message differently, using a different **layout** (CSV, JSON, etc.)
 * Write the message to a different medium, using a different **appender** (file, socket, database, queue, etc.)
 * Write only some of the messages, using a **filter** (e.g. filter by severity, content, etc.)
 
-Log4j is a versatile, industrial-grade Java logging framework delivering all these and more in one product.
-It is essentially composed of a **logging API** and its **implementation**:
+Log4j is essentially composed of a **logging API** and its **implementation**:
 
 Log4j API::
 The logging API your code (programmatically) logs through.
