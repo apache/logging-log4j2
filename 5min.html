@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Learn Log4j in 5 minutes! :: Apache Log4j</title>
+    <title>Log4j explained in 5 minutes :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/5min.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
 <link rel="stylesheet" href="./_/css/site.css">
@@ -93,7 +93,7 @@
     <a class="nav-link" href="faq.html">F.A.Q.</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="5min.html">Learn Log4j in 5 minutes!</a>
+    <a class="nav-link" href="5min.html">Log4j explained in 5 minutes</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="development.html">Development</a>
@@ -291,7 +291,7 @@
   <ul>
     <li><a href="index.html">Home</a></li>
     <li>Resources</li>
-    <li><a href="5min.html">Learn Log4j in 5 minutes!</a></li>
+    <li><a href="5min.html">Log4j explained in 5 minutes</a></li>
   </ul>
 </nav>
 <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/5min.adoc">Edit this Page</a></div>
@@ -301,35 +301,94 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Learn Log4j in 5 minutes!</h1>
+<h1 class="page">Log4j explained in 5 minutes</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Do you need a crash course on Log4j?
-You have come to the right place!
+<p>This document aims to guide you through the most important aspects of logging with Log4j.
+It is not a comprehensive guide, but it should give you a good starting point.
 If you are looking for a more detailed read, please see <a href="https://logging.apache.org/what-is-logging.html">What is logging?</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="what"><a class="anchor" href="#what"></a>What is logging and Log4j?</h2>
+<h2 id="what"><a class="anchor" href="#what"></a>What is logging?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Logging is the action of publishing diagnostics information at certain points of a program execution:</p>
+<p>Logging is the action of publishing diagnostics information at certain points of a program execution.
+It means you can write messages to a log file or console to help you understand what your application is doing.</p>
+</div>
+<div class="paragraph">
+<p>The simplest way to log in Java is to use <code>System.out.println()</code>, like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private void truncateTable(String tableName) {
-    System.out.format("[WARN] Truncating table `%s`!%n", tableName);
+  System.out.println("Truncating table"); <i class="conum" data-value="1"></i><b>(1)</b>
+  db.truncate(tableName);
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The information that a table is being truncated is written to the console.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This is already useful, but the reader of this message does not know what table is being truncated.
+Usually, we would like to include the table name in the message, which quickly leads
+developers to use the <code>System.out.format</code> (or similar) methods.
+Log4j helps with formatting strings as we will see later, but for now, let&#8217;s see how to work without it.</p>
+</div>
+<div class="paragraph">
+<p>The following code shows how this method could be used to provide more context information.
+<code>%s</code> will be replaced with the value of <code>tableName</code>, and <code>%n</code> will be replaced with a new line.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private void truncateTable(String tableName) {
+    System.out.format("[WARN] Truncating table `%s`%n", tableName); <i class="conum" data-value="1"></i><b>(1)</b>
     db.truncate(tableName);
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>This provides observability into an application&#8217;s runtime.</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>format</code> writes the message to the console, replacing <code>%s</code> with the value of <code>tableName</code>.</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>But we can do way better than a <code>printf()</code> statement!</p>
+<p>If the developer decides the truncate the table "fruits", the output of this code will look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[WARN] Truncating table `fruits`</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This provides observability into an application&#8217;s runtime and we can follow the execution flow.</p>
+</div>
+<div class="paragraph">
+<p>However, there are several drawbacks with the above approach and this is where Log4j comes in.
+Log4j will help you to write logs in a more structured way, with more information, and with more flexibility.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="why"><a class="anchor" href="#why"></a>Why should I use Log4j?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j is a versatile, industrial-grade Java logging framework, maintained by many contributors.
+It can help us with common logging tasks and lets us focus on the application logic.</p>
+</div>
+<div class="paragraph">
+<p>It will:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -348,8 +407,7 @@ If you are looking for a more detailed read, please see <a href="https://logging
 </ul>
 </div>
 <div class="paragraph">
-<p>Log4j is a versatile, industrial-grade Java logging framework delivering all these and more in one product.
-It is essentially composed of a <strong>logging API</strong> and its <strong>implementation</strong>:</p>
+<p>Log4j is essentially composed of a <strong>logging API</strong> and its <strong>implementation</strong>:</p>
 </div>
 <div class="dlist">
 <dl>
