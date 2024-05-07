@@ -15,4 +15,4 @@
     limitations under the License.
 ////
 
-See https://logging.apache.org/log4j/2.x/security.html[the Security page].
+See https://logging.apache.org/security.html[the Security page].
