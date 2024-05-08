@@ -19,7 +19,6 @@
 
 This document aims to guide you through the most important aspects of logging with Log4j.
 It is not a comprehensive guide, but it should give you a good starting point.
-If you are looking for a more detailed read, please see {logging-services-url}/what-is-logging.html[What is logging?].
 
 [#what]
 == What is logging?
@@ -80,20 +79,12 @@ It will:
 * Write the message to a different medium, using a different **appender** (file, socket, database, queue, etc.)
 * Write only some of the messages, using a **filter** (e.g. filter by severity, content, etc.)
 
-Log4j is essentially composed of a **logging API** and its **implementation**:
+[#install]
+== How do to install Log4j?
 
-Log4j API::
-The logging API your code (programmatically) logs through.
-This needs to be available at compile-time and no configuration is needed.
-
-Log4j Core::
-The logging implementation is responsible for filtering, routing, encoding, and appending log events.
-This needs to be available at runtime and configured by the user.
-
-[#logging]
-== How do I write logs using Log4j?
-
-Add the `log4j-api` dependency to your application:
+Add the necessary `log4j-api` dependencies to your application. We will need
+a **BOM** (Bill of Materials) to manage the versions of the dependencies.
+In addition, we will need the `log4j-api` dependency itself.
 
 [tabs]
 ====
@@ -136,7 +127,15 @@ dependencies {
 ----
 ====
 
-And start logging:
+[#logging]
+== How do I write logs using Log4j?
+
+To write logs, you need a `Logger` instance which you will retrieve from the `LogManager`. 
+The `Logger` instance is thread-safe and reusable.
+
+Second, you can use the `Logger` instance to write logs by using methods like `info`, `warn`, `error`, etc.
+We will come to them in a moment.
+The string can also contain placeholders written as `{}` that will be replaced by the arguments passed to the method.
 
 [source,java]
 ----
@@ -155,10 +154,20 @@ public class DbTableService {
 }
 ----
 <1> This is a thread-safe, reusable `Logger` instance.
-The associated class will be captured at initialization – no need for a `getLogger(DbTableService.class)`.
-<2> The parameter placeholders `{}` in the message will be automatically replaced with the value of `tableName` and the generated **log event** will be enriched with **level** (i.e., `WARN`), timestamp, class & method name, line number, and several other information.
+<2> The placeholder `{}` in the message will be replaced with the value of `tableName`
 
-Make sure to log exceptions that have diagnostics value:
+The generated **log event** will be enriched with the **log level** (i.e., `WARN`),
+but also timestamp, class & method name, line number, and several other information.
+
+Log levels are used to categorize log events by severity and control the verbosity of the logs.  
+Log4j knows various levels, but the most common are `DEBUG`, `WARN`, and `ERROR`.
+With them, you can filter out less important logs and focus on the most critical ones.
+Previously we used `LOGGER.warn` to log a warning message, which could mean that something is not right, but the application can continue.
+Log levels have a priority, and `WARN` is less severe than `ERROR`.
+
+Exceptions are often also errors. 
+In this case, we might use the `ERROR` log level.
+Make sure to log exceptions that have diagnostics value - we can simply pass the exception as the last argument to the log method.
 
 [source,java]
 ----
@@ -170,15 +179,10 @@ try {
     throw new IOException("failed truncating table: " + tableName, exception);
 }
 ----
-<1> Notice the `error()` method?
-Yup, the level is set to `ERROR`.
-+
-What about the `exception` in the last argument?
-Wait a second!
-There is one placeholder in the format (i.e., `{}`), but there are two parameters passed in arguments: `tableName` and `exception`!
-What the heck?
-Yep, you guessed it right!
-Log4j API will attach the last extra argument of type `Throwable` in a separate field to the generated log event.
+<1> By using `error()` instead of `warn()`, we signal that the operation failed.
+
+While there is only one placeholder in the message, we pass two arguments: `tableName` and `exception`.
+Log4j will attach the last extra argument of type `Throwable` in a separate field to the generated log event.
 
 [#pitfalls]
 === Common pitfalls
@@ -262,12 +266,30 @@ Imagine `userId` being provided by the user with the following content:
 /* GOOD */ LOGGER.info("failed for user ID `{}`", userId);
 ----
 
+[#integrating-log4j]
+== Integrating Log4j 
+
+Log4j is composed of two main parts, the API and the Core. 
+With this distinction, you can log through the API and route the log events through the Core.
+If you prefer, you can also route the log events through other logging frameworks like SLF4J.
+
+[#log4j-api]
+Log4j API::
+The logging API your code (programmatically) logs through.
+This needs to be available at compile-time and no configuration is needed.
+
+Log4j Core::
+The logging implementation is responsible for filtering, routing, encoding, and appending log events.
+This needs to be available at runtime and configured by the user.
+So your dependencies and their dependencies too.
+While deploying your application, you need to provide a **logging implementation** along with its configuration to consume all generated log events.
+
 [#config-app]
 == How do I configure Log4j to run my **application**?
 
-Your code logs through a logging API.
-So your dependencies and their dependencies too.
-While deploying your application, you need to provide a **logging implementation** along with its configuration to consume all generated log events.
+The following section describes, how an application can be configured to use Log4j.
+It will add a configuration and some other artifacts to your application.
+The configuration shown here enhances the security and usability of your application.
 
 [IMPORTANT]
 ====
@@ -275,7 +297,10 @@ Are you implementing not an **application**, but a **library**?
 Please skip to the xref:#config-lib[] instead.
 ====
 
-Add the `log4j-core` **runtime** dependency to your application:
+As mentioned, Log4j is using a logging API. 
+First of all, add the `log4j-core` **runtime** dependency to our application.
+Second, it is highly recommended to add the `log4j-layout-template-json` **runtime** dependency to encode log events in JSON.
+This is the most secure way to format log events and should preferred over the default `PatternLayout`.
 
 [tabs]
 ====
@@ -284,8 +309,7 @@ Maven::
 [source,xml,subs="+attributes"]
 ----
 <project>
-
-  <!-- Assuming you already have the `dependencyManagement > dependencies > dependency` entry for `log4j-bom` -->
+  <!-- Assuming `log4j-bom` is already added -->
 
   <dependency>
 
@@ -302,14 +326,6 @@ Maven::
       <artifactId>log4j-layout-template-json</artifactId>
       <scope>runtime</scope><!--1-->
     </dependency>
-
-    <!-- SLF4J-to-Log4j bridge --><!--2-->
-    <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j2-impl</artifactId>
-        <scope>runtime</scope><!--1-->
-    </dependency>
-
   </dependency>
 
 </project>
@@ -321,26 +337,26 @@ Gradle::
 ----
 dependencies {
 
-  // Assuming you already have the `implementation platform(...)` entry for `log4j-bom`
+  // Assuming `log4j-bom` is already added 
 
   // The logging implementation (i.e., Log4j Core)
   runtimeOnly 'org.apache.logging.log4j:log4j-core' // <1>
 
   // Log4j JSON-encoding support
   runtimeOnly 'org.apache.logging.log4j:log4j-layout-template-json' // <1>
-
-  // SLF4J-to-Log4j bridge // <2>
-  runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // <1>
-
 }
 ----
 ====
-<1> Note that the logging implementation and bridges are only needed at runtime!
-<2> SLF4J is another widely used logging API.
-`log4j-slf4j2-impl` forwards SLF4J calls to Log4j API, which effectively gets processed by Log4j Core too.
+<1> Note that the logging implementation and bridges are only needed at runtime.
 
 Now it is time to configure Log4j and instruct how the log events should be routed.
-Save the following XML document to `src/**main**/resources/log4j2.xml`:
+Save the following XML document to `src/**main**/resources/log4j2.xml`.
+
+The xref:manual/json-template-layout.adoc[JSON Template Layout] is used to encode log events in JSON.
+Once encoded xref:manual/appenders.adoc[Appenders] are responsible for writing log events to the console, file, socket, database, etc.
+
+The `<logger>` defines, that log events generated by classes in the `com.mycompany` package (incl. its sub-packages) and that are of level `INFO` and higher (i.e., `WARN`, `ERROR`, `FATAL`) will be consumed.
+Finally, the `<root>` logger defines that log events of level `WARN` and higher will be consumed unless specified otherwise. It serves as a default configuration.
 
 .An example `src/**main**/resources/log4j2.xml`
 [source,xml]
@@ -367,15 +383,61 @@ Save the following XML document to `src/**main**/resources/log4j2.xml`:
 
 </Configuration>
 ----
-<1> xref:manual/appenders.adoc[Appenders] are responsible for writing log events to the console, file, socket, database, etc.
-<2> xref:manual/appenders.adoc#ConsoleAppender[Console Appender] is used to write logs to the console.
-<3> xref:manual/json-template-layout.adoc[JSON Template Layout] is used to encode log events in JSON.
-<4> Log events generated by classes in the `com.mycompany` package (incl. its sub packages) and that are of level `INFO` and higher (i.e., `WARN`, `ERROR`, `FATAL`) will be consumed.
+<1> xref:manual/appenders.adoc[Appenders] are responsible for writing log events to their target
+<2> xref:manual/appenders.adoc#ConsoleAppender[Console Appender] writes logs to the console.
+<3> xref:manual/json-template-layout.adoc[JSON Template Layout] encodes log events in JSON.
+<4> Log events generated by classes in the `com.mycompany` package (incl. its sub-packages) that are of level `INFO` and higher will be consumed.
 <5> Unless specified otherwise, log events of level `WARN` and higher will be consumed.
 <6> Unless specified otherwise, log events will be forwarded to the `console` appender defined earlier.
 
-You are strongly advised to use a different Log4j configuration for tests.
+If you want to configure Log4j for tests, you are strongly advised to use a different Log4j configuration.
 Continue to xref:#config-test[]
+
+In many cases, you might have a library that logs through SLF4J. 
+Due to the separation of Log4js API and Core, you can add a bridge to forward SLF4J calls to the Log4j API.
+This way, SLF4J calls will be processed by Log4j Core too.
+
+It is similarly easy: just add the new dependency `log4j-slf4j2-impl to your application.
+
+[tabs]
+====
+Maven::
++
+[source,xml,subs="+attributes"]
+----
+<project>
+  <!-- Other dependencies -->
+
+  <dependency>
+    <!-- SLF4J-to-Log4j bridge --><!--2-->
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
+        <scope>runtime</scope><!--1-->
+    </dependency>
+
+  </dependency>
+
+</project>
+----
+
+Gradle::
++
+[source,groovy,subs="+attributes"]
+----
+dependencies {
+  // Other dependencies
+
+  // SLF4J-to-Log4j bridge // <2>
+  runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // <1>
+
+}
+----
+====
+<1> Again, we only need a runtime dependency.
+<2> This dependency will forward SLF4J calls to the Log4j API.
+
+`log4j-slf4j2-impl` forwards SLF4J calls to Log4j API, which effectively gets processed by Log4j Core too.
 
 [#config-lib]
 == How do I configure Log4j for my **library**?
@@ -390,7 +452,9 @@ Are you implementing not a **library**, but an **application**?
 Please skip to the xref:#config-app[] instead.
 ====
 
-Add the `log4j-core` **test** dependency to your library:
+Add the `log4j-core` dependency in **test** scope to your library. 
+Very similar to the previous section, in most cases it is useful to also add the `log4j-slf4j2-impl` dependency. 
+SLF4J is a widely used logging API and this way, SLF4J calls will be processed by Log4j Core too.
 
 [tabs]
 ====
@@ -399,8 +463,7 @@ Maven::
 [source,xml,subs="+attributes"]
 ----
 <project>
-
-  <!-- Assuming you already have the `dependencyManagement > dependencies > dependency` entry for `log4j-bom` -->
+  <!-- Assuming `log4j-bom` is already added  -->
 
   <dependency>
 
@@ -429,7 +492,7 @@ Gradle::
 ----
 dependencies {
 
-  // Assuming you already have the `implementation platform(...)` entry for `log4j-bom`
+  // Assuming `log4j-bom` is already added 
 
   // The logging implementation (i.e., Log4j Core)
   testRuntimeOnly 'org.apache.logging.log4j:log4j-core' // <1>
@@ -451,7 +514,14 @@ See xref:#config-test[]
 == How do I configure Log4j for tests?
 
 For tests, prefer a human-readable layout with increased verbosity.
-Save the following XML document to `src/**test**/resources/log4j2-test.xml`:
+While it is not recommended to use the `PatternLayout` in production for security reasons, it is a good choice for tests.
+Save the following XML document to `src/**test**/resources/log4j2-test.xml`.
+
+The xref:manual/layouts.adoc#PatternLayout[Pattern Layout] is used for formatting strings in a specific way.
+In the below case, it will include the timestamp, thread name, log level, class name, and the message and
+print it to the Console.
+Very similar to the earlier configuration, the `<logger>` defines what should be logged on
+which level and the `<root>` logger serves as a default configuration.
 
 .An example `src/**test**/resources/log4j2-test.xml`
 [source,xml]
@@ -483,6 +553,9 @@ Save the following XML document to `src/**test**/resources/log4j2-test.xml`:
 
 [#next]
 == What is next?
+
+More details::
+If you are looking for a more detailed read, please see {logging-services-url}/what-is-logging.html[What is logging?].
 
 Installation::
 While shared dependency management snippets should get you going, your case might necessitate a more intricate setup.
