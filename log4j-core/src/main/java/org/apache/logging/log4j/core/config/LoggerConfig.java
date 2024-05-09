@@ -837,7 +837,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
     /**
      * The root Logger.
      */
-    @Plugin(name = ROOT, category = Core.CATEGORY_NAME, printObject = true)
+    @Plugin(name = "Root", category = Core.CATEGORY_NAME, printObject = true)
     public static class RootLogger extends LoggerConfig {
 
         @PluginBuilderFactory
