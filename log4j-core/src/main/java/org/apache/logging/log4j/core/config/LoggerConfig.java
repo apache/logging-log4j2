@@ -52,7 +52,7 @@ import org.jspecify.annotations.Nullable;
  * Logger object that is created via configuration.
  */
 @Configurable(printObject = true)
-@Plugin("logger")
+@Plugin("Logger")
 public class LoggerConfig extends AbstractFilterable {
 
     public static final String ROOT = "root";
@@ -650,7 +650,7 @@ public class LoggerConfig extends AbstractFilterable {
      * The root Logger.
      */
     @Configurable(printObject = true)
-    @Plugin(ROOT)
+    @Plugin("Root")
     public static final class RootLogger extends LoggerConfig {
 
         @PluginFactory

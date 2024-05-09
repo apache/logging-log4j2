@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 
 @Configurable(elementType = "advertiser")
-@Plugin("memory")
+@Plugin("Memory")
 public class InMemoryAdvertiser implements Advertiser {
     private static final Map<Object, Map<String, String>> PROPERTIES = new HashMap<>();
 

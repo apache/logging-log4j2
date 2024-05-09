@@ -40,7 +40,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Composes and invokes one or more filters.
  */
 @Configurable(printObject = true)
-@Plugin("filters")
+@Plugin("Filters")
 @PerformanceSensitive("allocation")
 public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 

@@ -63,7 +63,7 @@ import org.apache.logging.log4j.util.Strings;
  * all log events will all be written to disk in a very efficient manner.
  */
 @Configurable(printObject = true)
-@Plugin("asyncLogger")
+@Plugin("AsyncLogger")
 public final class AsyncLoggerConfig extends LoggerConfig {
 
     private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = ThreadLocal.withInitial(() -> Boolean.FALSE);
@@ -231,7 +231,7 @@ public final class AsyncLoggerConfig extends LoggerConfig {
      * An asynchronous root Logger.
      */
     @Configurable(printObject = true)
-    @Plugin("asyncRoot")
+    @Plugin("AsyncRoot")
     public static final class RootLogger extends LoggerConfig {
 
         @PluginFactory

@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.Plugin;
  * The default advertiser does not do anything.
  */
 @Configurable(elementType = "advertiser")
-@Plugin("default")
+@Plugin("Default")
 public class DefaultAdvertiser implements Advertiser {
 
     /**

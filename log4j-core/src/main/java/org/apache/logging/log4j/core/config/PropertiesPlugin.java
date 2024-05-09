@@ -32,7 +32,7 @@ import org.apache.logging.log4j.plugins.di.Key;
  * Handles properties defined in the configuration.
  */
 @Configurable(printObject = true)
-@Plugin("properties")
+@Plugin("Properties")
 public final class PropertiesPlugin {
 
     private PropertiesPlugin() {}

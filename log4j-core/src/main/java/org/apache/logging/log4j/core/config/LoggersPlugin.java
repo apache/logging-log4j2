@@ -27,7 +27,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  * Container of Logger objects.
  */
 @Configurable
-@Plugin("loggers")
+@Plugin("Loggers")
 public final class LoggersPlugin {
 
     private LoggersPlugin() {}

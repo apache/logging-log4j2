@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  * A  container of Scripts.
  */
 @Configurable
-@Plugin("scripts")
+@Plugin("Scripts")
 public final class ScriptsPlugin {
 
     private ScriptsPlugin() {}
