@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.net.Advertiser;
 
-@Plugin(name = "memory", category = Core.CATEGORY_NAME, elementType = "advertiser", printObject = false)
+@Plugin(name = "Memory", category = Core.CATEGORY_NAME, elementType = "advertiser", printObject = false)
 public class InMemoryAdvertiser implements Advertiser {
     private static Map<Object, Map<String, String>> properties = new HashMap<>();
 

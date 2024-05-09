@@ -27,7 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Replace tokens in the LogEvent message.
  */
-@Plugin(name = "replace", category = Core.CATEGORY_NAME, printObject = true)
+@Plugin(name = "Replace", category = Core.CATEGORY_NAME, printObject = true)
 public final class RegexReplacement {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

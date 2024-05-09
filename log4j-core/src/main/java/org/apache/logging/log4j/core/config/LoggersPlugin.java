@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Container of Logger objects.
  */
-@Plugin(name = "loggers", category = Node.CATEGORY)
+@Plugin(name = "Loggers", category = Node.CATEGORY)
 public final class LoggersPlugin {
 
     private LoggersPlugin() {}

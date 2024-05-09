@@ -59,7 +59,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Logger object that is created via configuration.
  */
-@Plugin(name = "logger", category = Node.CATEGORY, printObject = true)
+@Plugin(name = "Logger", category = Node.CATEGORY, printObject = true)
 public class LoggerConfig extends AbstractFilterable implements LocationAware {
 
     public static final String ROOT = "root";

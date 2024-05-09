@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 /**
  * Handles properties defined in the configuration.
  */
-@Plugin(name = "properties", category = Node.CATEGORY, printObject = true)
+@Plugin(name = "Properties", category = Node.CATEGORY, printObject = true)
 public final class PropertiesPlugin {
 
     private static final StrSubstitutor UNESCAPING_SUBSTITUTOR = createUnescapingSubstitutor();
