@@ -1425,7 +1425,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -1640,7 +1640,7 @@ Originally developed by Ceki Glc, Mathias Bogaert.</p>
 <div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-async-logger"><a class="anchor" href="#org-apache-logging-log4j_log4j-async-logger"></a><code>org.apache.logging.log4j:log4j-async-logger</code></h3>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig"><a class="anchor" href="#org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig"></a>asyncLogger</h4>
+<h4 id="org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig"><a class="anchor" href="#org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig"></a>AsyncLogger</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -1679,7 +1679,7 @@ This means that even with immediateFlush=false, there will never be any items le
 <h5 id="org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;asyncLogger additivity=""
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;AsyncLogger additivity=""
              includeLocation=""
              level=""
              levelAndRefs=""
@@ -1687,7 +1687,7 @@ This means that even with immediateFlush=false, there will never be any items le
     &lt;a-Filter-implementation/&gt;
     &lt;AppenderRef/&gt;&lt;!-- multiple occurrences allowed --&gt;
     &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
-&lt;/asyncLogger&gt;</code></pre>
+&lt;/AsyncLogger&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -1784,7 +1784,7 @@ This means that even with immediateFlush=false, there will never be any items le
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig-RootLogger"><a class="anchor" href="#org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig-RootLogger"></a>asyncRoot</h4>
+<h4 id="org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig-RootLogger"><a class="anchor" href="#org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig-RootLogger"></a>AsyncRoot</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -1804,13 +1804,13 @@ This means that even with immediateFlush=false, there will never be any items le
 <h5 id="org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig-RootLogger_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-async-logger_org-apache-logging-log4j-async-logger-AsyncLoggerConfig-RootLogger_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;asyncRoot includeLocation=""
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;AsyncRoot includeLocation=""
            level=""
            levelAndRefs=""&gt;
     &lt;a-Filter-implementation/&gt;
     &lt;AppenderRef/&gt;&lt;!-- multiple occurrences allowed --&gt;
     &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
-&lt;/asyncRoot&gt;</code></pre>
+&lt;/AsyncRoot&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -3541,7 +3541,7 @@ This attribute is ignored if <code>immediateFlush</code> is set to <code>true</c
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoversPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoversPlugin"></a>failovers</h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoversPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoversPlugin"></a>Failovers</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -3561,7 +3561,7 @@ This attribute is ignored if <code>immediateFlush</code> is set to <code>true</c
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoversPlugin_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-FailoversPlugin_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;failovers/&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Failovers/&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -8475,7 +8475,7 @@ The pattern should contain one or more substitution patterns of the form "$${[ke
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin"></a>appenders</h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin"></a>Appenders</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -8495,7 +8495,7 @@ The pattern should contain one or more substitution patterns of the form "$${[ke
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;appenders/&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders/&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -8558,10 +8558,10 @@ The pattern should contain one or more substitution patterns of the form "$${[ke
                shutdownTimeout=""
                status="ERROR"
                strict="false"&gt;
-    &lt;properties/&gt;
-    &lt;appenders/&gt;
+    &lt;Properties/&gt;
+    &lt;Appenders/&gt;
     &lt;CustomLevels/&gt;
-    &lt;loggers/&gt;
+    &lt;Loggers/&gt;
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
@@ -8693,7 +8693,7 @@ The shutdown hook is enabled by default, unless Log4j detects the presence of th
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>appenders</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Appenders</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-AppendersPlugin">AppendersPlugin</a></code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Wrapper element for a list of appenders</p>
@@ -8707,14 +8707,14 @@ The shutdown hook is enabled by default, unless Log4j detects the presence of th
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>loggers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Loggers</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin">LoggersPlugin</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Wrapper element for a list of logger configurations</p>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Properties</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin">PropertiesPlugin</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Wrapper element for a list of properties</p>
@@ -8942,7 +8942,7 @@ DefaultConfiguration is always called last if no configuration has been returned
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-DefaultAdvertiser"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-DefaultAdvertiser"></a>default</h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-DefaultAdvertiser"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-DefaultAdvertiser"></a>Default</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -8962,7 +8962,7 @@ DefaultConfiguration is always called last if no configuration has been returned
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-DefaultAdvertiser_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-DefaultAdvertiser_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;default/&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Default/&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -9025,7 +9025,7 @@ DefaultConfiguration is always called last if no configuration has been returned
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger"></a>root</h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger"></a>Root</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -9045,13 +9045,13 @@ DefaultConfiguration is always called last if no configuration has been returned
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;root includeLocation=""
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Root includeLocation=""
       level=""
       levelAndRefs=""&gt;
     &lt;a-Filter-implementation/&gt;
     &lt;AppenderRef/&gt;&lt;!-- multiple occurrences allowed --&gt;
     &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
-&lt;/root&gt;</code></pre>
+&lt;/Root&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -9136,7 +9136,7 @@ DefaultConfiguration is always called last if no configuration has been returned
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin"></a>loggers</h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin"></a>Loggers</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -9156,7 +9156,7 @@ DefaultConfiguration is always called last if no configuration has been returned
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggersPlugin_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;loggers/&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Loggers/&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -9191,7 +9191,7 @@ DefaultConfiguration is always called last if no configuration has been returned
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin"></a>properties</h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin"></a>Properties</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -9211,7 +9211,7 @@ DefaultConfiguration is always called last if no configuration has been returned
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-PropertiesPlugin_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;properties/&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Properties/&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -10503,7 +10503,7 @@ DENY.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter"></a>filters</h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter"></a>Filters</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -10523,7 +10523,7 @@ DENY.</p>
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-CompositeFilter_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;filters/&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Filters/&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -12552,7 +12552,7 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
                noConsoleNoAnsi=""
                pattern=""&gt;
     &lt;a-PatternSelector-implementation/&gt;
-    &lt;replace/&gt;
+    &lt;Replace/&gt;
 &lt;/PatternLayout&gt;</code></pre>
 </div>
 </div>
@@ -12648,7 +12648,7 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>replace</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Replace</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacement">RegexReplacement</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -16293,7 +16293,7 @@ toString(), or to output the value of a specific key within the property bundle 
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacement"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacement"></a>replace</h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacement"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacement"></a>Replace</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -16313,7 +16313,7 @@ toString(), or to output the value of a specific key within the property bundle 
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacement_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacement_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;replace regex=""
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Replace regex=""
          replacement=""/&gt;</code></pre>
 </div>
 </div>
@@ -20916,7 +20916,7 @@ This appender can be reconfigured at run time.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-script_org-apache-logging-log4j-script-ScriptsPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-script_org-apache-logging-log4j-script-ScriptsPlugin"></a>scripts</h4>
+<h4 id="org-apache-logging-log4j_log4j-script_org-apache-logging-log4j-script-ScriptsPlugin"><a class="anchor" href="#org-apache-logging-log4j_log4j-script_org-apache-logging-log4j-script-ScriptsPlugin"></a>Scripts</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -20936,7 +20936,7 @@ This appender can be reconfigured at run time.</p>
 <h5 id="org-apache-logging-log4j_log4j-script_org-apache-logging-log4j-script-ScriptsPlugin_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-script_org-apache-logging-log4j-script-ScriptsPlugin_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;scripts/&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Scripts/&gt;</code></pre>
 </div>
 </div>
 </div>
