@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2557" link="https://github.com/apache/logging-log4j2/pull/2557"/>
-  <description format="asciidoc">Update `co.elastic.clients:elasticsearch-java` to version `8.13.3`</description>
+  <issue id="2573" link="https://github.com/apache/logging-log4j2/pull/2573"/>
+  <description format="asciidoc">Update `co.elastic.clients:elasticsearch-java` to version `8.13.4`</description>
 </entry>
