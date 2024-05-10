@@ -408,11 +408,10 @@ It can help us with common logging tasks and lets us focus on the application lo
 </div>
 </div>
 <div class="sect1">
-<h2 id="install"><a class="anchor" href="#install"></a>How do to install Log4j?</h2>
+<h2 id="install"><a class="anchor" href="#install"></a>Prerequisites</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Add the necessary <code>log4j-api</code> dependencies to your application. We will need
-a <strong>BOM</strong> (Bill of Materials) to manage the versions of the dependencies.
+<p>We will need a <strong>BOM</strong> (Bill of Materials) to manage the versions of the dependencies.
 In addition, we will need the <code>log4j-api</code> dependency itself.</p>
 </div>
 <div id="_tabs_1" class="openblock tabs is-loading">
@@ -477,9 +476,9 @@ In addition, we will need the <code>log4j-api</code> dependency itself.</p>
 The <code>Logger</code> instance is thread-safe and reusable.</p>
 </div>
 <div class="paragraph">
-<p>Second, you can use the <code>Logger</code> instance to write logs by using methods like <code>info</code>, <code>warn</code>, <code>error</code>, etc.
-We will come to them in a moment.
-The string can also contain placeholders written as <code>{}</code> that will be replaced by the arguments passed to the method.</p>
+<p>Second, you can use the <code>Logger</code> instance to write logs by using methods like <code>info()</code>, <code>warn()</code>, <code>error()</code>, etc.
+These methods are named after the log levels they represent, a way to categorize log events by severity.
+The log message can also contain placeholders written as <code>{}</code> that will be replaced by the arguments passed to the method.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -515,10 +514,10 @@ public class DbTableService {
 but also timestamp, class &amp; method name, line number, and several other information.</p>
 </div>
 <div class="paragraph">
-<p>Log levels are used to categorize log events by severity and control the verbosity of the logs.
-Log4j knows various levels, but the most common are <code>DEBUG</code>, <code>WARN</code>, and <code>ERROR</code>.
+<p>As already mentioned Log levels are used to categorize log events by severity and control the verbosity of the logs.
+Log4j knows various levels, but the most common are <code>DEBUG</code>, <code>INFO</code>, <code>WARN</code>, and <code>ERROR</code>.
 With them, you can filter out less important logs and focus on the most critical ones.
-Previously we used <code>LOGGER.warn</code> to log a warning message, which could mean that something is not right, but the application can continue.
+Previously we used <code>LOGGER.warn()</code> to log a warning message, which could mean that something is not right, but the application can continue.
 Log levels have a priority, and <code>WARN</code> is less severe than <code>ERROR</code>.</p>
 </div>
 <div class="paragraph">
@@ -656,28 +655,40 @@ Imagine <code>userId</code> being provided by the user with the following conten
 </div>
 </div>
 <div class="sect1">
-<h2 id="integrating-log4j"><a class="anchor" href="#integrating-log4j"></a>Integrating Log4j</h2>
+<h2 id="basic-log4j-architecture"><a class="anchor" href="#basic-log4j-architecture"></a>Basic Log4j Architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j is composed of two main parts, the API and the Core.
-With this distinction, you can log through the API and route the log events through the Core.
-If you prefer, you can also route the log events through other logging frameworks like SLF4J.</p>
+<p>In a nutshell, Log4j operates with two main parts: the API and the Core.
+With this structure, Log4j allows you to log events using the API and route them through the Core.</p>
+</div>
+<div class="paragraph">
+<p>Optionally you can also route the log events through other logging frameworks
+like SLF4J or JUL (Java Util Logging) by adding a bridge.</p>
 </div>
 <div id="log4j-api" class="dlist">
 <dl>
 <dt class="hdlist1">Log4j API</dt>
 <dd>
-<p>The logging API your code (programmatically) logs through.
-This needs to be available at compile-time and no configuration is needed.</p>
-</dd>
-<dt class="hdlist1">Log4j Core</dt>
-<dd>
-<p>The logging implementation is responsible for filtering, routing, encoding, and appending log events.
-This needs to be available at runtime and configured by the user.
-So your dependencies and their dependencies too.
-While deploying your application, you need to provide a <strong>logging implementation</strong> along with its configuration to consume all generated log events.</p>
+<p>This is the interface that you use in your application to log events.
+It needs to be available at compile-time and no configuration is needed.
+By using it, you ensure that your application can write logs but is not tied to a specific logging implementation.</p>
 </dd>
 </dl>
+</div>
+<div id="log4j-core" class="dlist">
+<dl>
+<dt class="hdlist1">Log4j Core</dt>
+<dd>
+<p>The Log4j Core is a logging implementation that processes log events.
+It is responsible for filtering, routing, encoding, and appending log events.
+This needs to be available at runtime and requires configuration by the user.
+When you deploy your application, you must also deploy the Log4j Core or any
+other logging implementation along with its configuration to consume all generated log events</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The following sections show you examples of how you can get started quickly with Log4j.</p>
 </div>
 </div>
 </div>
@@ -708,7 +719,7 @@ Please skip to the <a href="#config-lib">How do I configure Log4j for my <strong
 <p>As mentioned, Log4j is using a logging API.
 First of all, add the <code>log4j-core</code> <strong>runtime</strong> dependency to our application.
 Second, it is highly recommended to add the <code>log4j-layout-template-json</code> <strong>runtime</strong> dependency to encode log events in JSON.
-This is the most secure way to format log events and should preferred over the default <code>PatternLayout</code>.</p>
+This is the most secure way to format log events and should preferred over the default <code>PatternLayout</code>, at least for production deployments.</p>
 </div>
 <div id="_tabs_2" class="openblock tabs is-loading">
 <div class="content">
@@ -776,8 +787,7 @@ This is the most secure way to format log events and should preferred over the d
 </table>
 </div>
 <div class="paragraph">
-<p>Now it is time to configure Log4j and instruct how the log events should be routed.
-Save the following XML document to <code>src/<strong>main</strong>/resources/log4j2.xml</code>.</p>
+<p>Now it is time to configure Log4j and instruct how the log events should be routed.</p>
 </div>
 <div class="paragraph">
 <p>The <a href="manual/json-template-layout.html" class="xref page">JSON Template Layout</a> is used to encode log events in JSON.
@@ -786,6 +796,9 @@ Once encoded <a href="manual/appenders.html" class="xref page">Appenders</a> are
 <div class="paragraph">
 <p>The <code>&lt;logger&gt;</code> defines, that log events generated by classes in the <code>com.mycompany</code> package (incl. its sub-packages) and that are of level <code>INFO</code> and higher (i.e., <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>) will be consumed.
 Finally, the <code>&lt;root&gt;</code> logger defines that log events of level <code>WARN</code> and higher will be consumed unless specified otherwise. It serves as a default configuration.</p>
+</div>
+<div class="paragraph">
+<p>Save the following XML document to <code>src/<strong>main</strong>/resources/log4j2.xml</code>.</p>
 </div>
 <div class="listingblock">
 <div class="title">An example <code>src/<strong>main</strong>/resources/log4j2.xml</code></div>
@@ -829,7 +842,7 @@ Finally, the <code>&lt;root&gt;</code> logger defines that log events of level <
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Log events generated by classes in the <code>com.mycompany</code> package (incl. its sub-packages) that are of level <code>INFO</code> and higher will be consumed.</td>
+<td>Log events from <code>com.mycompany</code> and its sub-packages, at <code>INFO</code> level or higher, are consumed.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -845,6 +858,11 @@ Finally, the <code>&lt;root&gt;</code> logger defines that log events of level <
 <p>If you want to configure Log4j for tests, you are strongly advised to use a different Log4j configuration.
 Continue to <a href="#config-test">How do I configure Log4j for tests?</a></p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="integrating-log4j"><a class="anchor" href="#integrating-log4j"></a>Integrating Log4j with SLF4J</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>In many cases, you might have a library that logs through SLF4J.
 Due to the separation of Log4js API and Core, you can add a bridge to forward SLF4J calls to the Log4j API.
@@ -1008,12 +1026,11 @@ SLF4J is a widely used logging API and this way, SLF4J calls will be processed b
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Note that the logging implementation and bridges are only needed for tests!</td>
+<td>Note that the logging implementation and bridges are only needed for tests.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>SLF4J is another widely used logging API.
-<code>log4j-slf4j2-impl</code> forwards SLF4J calls to Log4j API, which effectively gets processed by Log4j Core too.</td>
+<td><code>log4j-slf4j2-impl</code> forwards SLF4J calls to the Log4j API.</td>
 </tr>
 </table>
 </div>
@@ -1028,8 +1045,7 @@ See <a href="#config-test">How do I configure Log4j for tests?</a></p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>For tests, prefer a human-readable layout with increased verbosity.
-While it is not recommended to use the <code>PatternLayout</code> in production for security reasons, it is a good choice for tests.
-Save the following XML document to <code>src/<strong>test</strong>/resources/log4j2-test.xml</code>.</p>
+While it is not recommended to use the <code>PatternLayout</code> in production for security reasons, it is a good choice for tests.</p>
 </div>
 <div class="paragraph">
 <p>The <a href="manual/layouts.html#PatternLayout" class="xref page">Pattern Layout</a> is used for formatting strings in a specific way.
@@ -1037,6 +1053,9 @@ In the below case, it will include the timestamp, thread name, log level, class 
 print it to the Console.
 Very similar to the earlier configuration, the <code>&lt;logger&gt;</code> defines what should be logged on
 which level and the <code>&lt;root&gt;</code> logger serves as a default configuration.</p>
+</div>
+<div class="paragraph">
+<p>Save the following XML document to <code>src/<strong>test</strong>/resources/log4j2-test.xml</code>.</p>
 </div>
 <div class="listingblock">
 <div class="title">An example <code>src/<strong>test</strong>/resources/log4j2-test.xml</code></div>
