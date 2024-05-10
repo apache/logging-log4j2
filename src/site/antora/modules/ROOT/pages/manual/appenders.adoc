@@ -2445,8 +2445,8 @@ with `com.foo.bar`.
 </Configuration>
 ----
 
-[#RollingFileAppender]
-== RollingFileAppender
+[id=rollingfileappender]
+== [[RollingFileAppender]] RollingFileAppender
 
 The RollingFileAppender is an OutputStreamAppender that writes to the
 File named in the fileName parameter and rolls the file over according

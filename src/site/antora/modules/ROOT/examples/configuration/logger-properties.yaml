@@ -1,0 +1,18 @@
+Configuration:
+  Appenders: {}
+  Loggers:
+    # tag::loggers[]
+    Root:
+      Property:
+        name: "client.address"
+        value: "$${web:request.remoteAddress}"
+    Logger:
+      - name: "org.hibernate"
+        Property:
+          name: "subsystem"
+          value: "Database"
+      - name: "io.netty"
+        Property:
+          name: "subsystem"
+          value: "Networking"
+    # end::loggers[]

@@ -1,0 +1,26 @@
+Configuration:
+  Appenders:
+    Console:
+      name: "CONSOLE"
+      ThresholdFilter: # <6>
+        level: "WARN"
+  Loggers:
+    Root:
+      level: "INFO"
+      ThreadsholdFilter: # <3>
+        level: "DEBUG"
+      AppenderRef:
+        ref: "CONSOLE"
+        level: "WARN" # <5>
+        MarkerFilter: # <4>
+          marker: "ALERT"
+          onMatch: "NEUTRAL"
+          onMismatch: "DENY"
+      Logger:
+        name: "org.example"
+        level: "TRACE" # <2>
+        ThresholdFilter:
+          level: "TRACE" # <3>
+  MarkerFilter: # <1>
+    marker: "PRIVATE"
+    onMismatch: "NEUTRAL"

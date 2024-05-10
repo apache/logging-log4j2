@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+  <Appenders/>
+  <Loggers>
+    <!-- tag::loggers[] -->
+    <Root>
+      <Property name="client.address" value="$${web:request.remoteAddress}"/>
+    </Root>
+    <Logger name="org.hibernate">
+      <Property name="subsystem" value="Database"/>
+    </Logger>
+    <Logger name="io.netty">
+      <Property name="subsystem" value="Networking"/>
+    </Logger>
+    <!-- end::loggers[] -->
+  </Loggers>
+</Configuration>

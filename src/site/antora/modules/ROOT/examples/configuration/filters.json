@@ -1,0 +1,37 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "Console": {
+        "name": "CONSOLE",
+        "ThresholdFilter": {
+          "level": "WARN" // <6>
+        }
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "ThresholdFilter": { // <3>
+          "level": "DEBUG"
+        },
+        "AppenderRef": {
+          "ref": "CONSOLE",
+          "level": "WARN", // <5>
+          "MarkerFilter": { // <4>
+            "marker": "ALERT",
+            "onMatch": "NEUTRAL",
+            "onMismatch": "DENY"
+          }
+        }
+      },
+      "Logger": {
+        "name": "org.example",
+        "level": "TRACE" // <2>
+      }
+    }
+  },
+  "MarkerFilter": { // <1>
+    "marker": "PRIVATE",
+    "onMismatch": "NEUTRAL"
+  }
+}
