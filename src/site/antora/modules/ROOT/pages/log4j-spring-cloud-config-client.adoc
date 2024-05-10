@@ -24,7 +24,9 @@ Spring Boot applications initialize logging 3 times.
 
 . SpringApplication declares a Logger.
 This Logger will be initialized using Log4j's "normal" mechanisms.
-Thus the xref:manual/configuration.adoc#log4j2.configurationFile[`log4j2.configurationFile`] system property will be checked to see if a specific configuration file has been provided, otherwise it will search for a configuration file on the classpath.
+Thus, the
+xref:manual/configuration/properties.adoc#log4j2.configurationFile[`log4j2.configurationFile`]
+system property will be checked to see if a specific configuration file has been provided, otherwise it will search for a configuration file on the classpath.
 The property may also be declare  in log4j2.component.properties.
 
 == Usage
@@ -122,7 +124,9 @@ logging:
 Note that Log4j currently does not directly support encrypting the password.
 However, Log4j does use Spring's  standard APIs to access properties in the Spring configuration so any customizations made to Spring's property handling would apply to the properties Log4j uses as well.
 
-If more extensive authentication is required an `AuthorizationProvider` can be implemented and its fully qualified class name should be specified in the xref:manual/configuration.adoc#log4j2.configurationAuthorizationProvider[log4j2.configurationAuthorizationProvider] system property, in log4j2.component.properties or in Spring's `bootstrap.yml` using either the `log4j2.authorizationProvider` or `logging.auth.authorizationProvider` key.
+If more extensive authentication is required an `AuthorizationProvider` can be implemented and its fully qualified class name should be specified in the
+xref:manual/configuration/properties.adoc#log4j2.configurationAuthorizationProvider[log4j2.configurationAuthorizationProvider]
+system property, in log4j2.component.properties or in Spring's `bootstrap.yml` using either the `log4j2.authorizationProvider` or `logging.auth.authorizationProvider` key.
 
 For the properties required by TLS configuration see xref:manual/configuration.adoc#transport-security[the Transport Security configuration].
 

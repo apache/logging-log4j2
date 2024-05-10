@@ -29,7 +29,7 @@ Since version 2.0 the configuration file format is considered as part of the pub
 
 [NOTE]
 ====
-To prevent a chicken-and-egg problem some configuration options, such as the location of the configuration file can be supplied only through <<system-properties>>.
+To prevent a chicken-and-egg problem some configuration options, such as the location of the configuration file can be supplied only through xref:manual/configuration/properties.adoc[System properties].
 ====
 
 [#log4j-core-configuration-file]
@@ -62,7 +62,9 @@ Upon initialization of a new logger context, Log4j assigns it a context name and
 . Files named `log4j2<contextName>.<extension>`
 . Files named `log4j2.<extension>`,
 . If no configuration file could be located a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration[DefaultConfiguration] is used and a warning is printed by the status logger.
-The default configuration prints all messages less specific than <<log4j2.level>> to the console.
+The default configuration prints all messages less specific than
+xref:manual/configuration/properties.adoc#log4j2.level[log4j2.level]
+to the console.
 
 [CAUTION]
 ====
@@ -104,11 +106,12 @@ See xref:manual/webapp.adoc#configuration[Log4j
 
 [NOTE]
 ====
-It is also possible to override the location of the configuration file using the <<log4j2.configurationFile>>
+It is also possible to override the location of the configuration file using the
+xref:./configuration/properties.adoc#log4j2.configurationFile[log4j2.configurationFile]
 configuration property.
 
 In this case Log4j will guess the configuration file format from the extension of the provided configuration file or will use the default configuration factory if the extension is unknown.
-See <<log4j2.configurationFactory>> for details.
+See xref:./configuration/properties.adoc#log4j2.configurationFile[log4j2.configurationFile] for details.
 ====
 
 === Syntax
@@ -398,14 +401,15 @@ Unless the new configuration file removes an appender, the old one continues to 
 |===
 | Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[LEVEL]
 | Status | **DEPRECATED**
-| Default value (since 2.24.0) | <<log4j2.statusLoggerLevel>>
+| Default value (since 2.24.0) | xref:./configuration/properties.adoc#log4j2.statusLoggerLevel[log4j2.statusLoggerLevel]
 | Default value (before 2.24.0) | value of `log4j2.defaultStatusLevel`
 |===
 
 Overrides the logging level of the status logger.
 
-WARNING: Since 2.24.0 this attribute is deprecated and should be replaced with the <<log4j2.statusLoggerLevel>>
-variable.
+WARNING: Since 2.24.0 this attribute is deprecated and will be replaced with the
+xref:./configuration/properties.adoc#log4j2.statusLoggerLevel[log4j2.statusLoggerLevel]
+configuration property.
 
 [id=configuration-attribute-schema]
 ==== `schema`
@@ -490,7 +494,8 @@ If `true` (default), all the messages received by this logger will also be trans
 | Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
 | Default value
 a|
-* <<log4j2.level>>, for `Root` and `AsyncRoot`,
+* xref:./configuration/properties.adoc#log4j2.level[log4j2.level],
+for `Root` and `AsyncRoot`,
 * inherited from the parent logger, for `Logger` and `AsyncLogger`.
 |===
 
@@ -507,12 +512,14 @@ See also xref:manual/filters.adoc#filters[Filters] if you require additional fil
 | Type          | `boolean`
 | Default value
 a|
-* `false`, if an asynchrounous `ContextSelector` is used.
+* `false`, if an asynchronous `ContextSelector` is used.
 * Otherwise,
 ** `true` for `Root` and `Logger`,
 ** `false` for `AsyncRoot` and `AsyncLogger`.
 
-See <<log4j2.contextSelector>> for more details.
+See
+xref:./configuration/properties.adoc#log4j2.contextSelector[log4j2.contextSelector]
+for more details.
 |===
 
 Specifies whether Log4j is allowed to compute location information.
@@ -632,7 +639,7 @@ If `name` contains a `:` character, it is expanded as in the rule below.
 ====
 
 `${lookup:name}`::
-If both these considitions hold:
+If both these conditions hold:
 +
 --
 * `lookup` is a prefix assigned to a xref:manual/lookups.adoc[Lookup],
@@ -663,7 +670,7 @@ If `name` contains a `:` character, it is expanded as in the rule below.
 
 `${lookup:name:-default}`::
 +
-If both these considitions hold:
+If both these conditions hold:
 +
 --
 * `lookup` is a prefix assigned to a xref:manual/lookups.adoc[Lookup],
@@ -732,10 +739,10 @@ Java properties::
 include::example$configuration/routing.properties[tag=appender]
 ----
 ====
-<1> The `pattern` attribute is evaluated at configuration time and also each time a log event is routed. Therefore, the dollar `$` sign needs to be escaped.
+
+<1> The `pattern` attribute is evaluated at configuration time and also each time a log event is routed.
+Therefore, the dollar `$` sign needs to be escaped.
 <2> All the attributes inside the `File` element have a **deferred** evaluation, therefore they need only one `$` sign.
 
 [#log4j-core-programmatic-configuration]
 == Programmatic configuration
-
-include::_properties.adoc[leveloffset=+1]
