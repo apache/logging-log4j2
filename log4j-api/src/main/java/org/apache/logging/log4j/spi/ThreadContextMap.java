@@ -18,6 +18,9 @@ package org.apache.logging.log4j.spi;
 
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Service provider interface to implement custom MDC behavior for {@link org.apache.logging.log4j.ThreadContext}.
@@ -26,6 +29,8 @@ import org.apache.logging.log4j.ThreadContext;
  * are accessible to applications via the {@link ThreadContext#getThreadContextMap()} method.
  * </p>
  */
+@ProviderType
+@NullMarked
 public interface ThreadContextMap {
 
     /**
@@ -35,18 +40,20 @@ public interface ThreadContextMap {
 
     /**
      * Determines if the key is in the context.
-     * @param key The key to locate.
+     * @param key The key to locate, not {@code null}.
      * @return True if the key is in the context, false otherwise.
      */
     boolean containsKey(final String key);
 
     /**
-     * Gets the context identified by the <code>key</code> parameter.
-     *
-     * <p>This method has no side effects.</p>
-     * @param key The key to locate.
-     * @return The value associated with the key or null.
+     * Gets the {@link String} value for the specified key if it exists or {@code null}.
+     * <p>
+     *     This method has no side effects.
+     * </p>
+     * @param key The key to locate, not {@code null}.
+     * @return The value associated with the key or {@code null}.
      */
+    @Nullable
     String get(final String key);
 
     /**
@@ -59,6 +66,7 @@ public interface ThreadContextMap {
      * Returns an immutable view on the context Map or {@code null} if the context map is empty.
      * @return an immutable context Map or {@code null}.
      */
+    @Nullable
     Map<String, String> getImmutableMapOrNull();
 
     /**
@@ -68,21 +76,43 @@ public interface ThreadContextMap {
     boolean isEmpty();
 
     /**
-     * Puts a context value (the <code>o</code> parameter) as identified
-     * with the <code>key</code> parameter into the current thread's
-     * context map.
-     *
-     * <p>If the current thread does not have a context map it is
-     * created as a side effect.</p>
-     * @param key The key name.
-     * @param value The key value.
+     * Sets the context value for the given key in the current thread's context map.
+     * <p>
+     *     If the current thread does not have a context map it is created as a side effect.
+     * </p>
+     * @param key The key to add, not {@code null}.
+     * @param value The value to add, not {@code null}.
      */
     void put(final String key, final String value);
 
     /**
-     * Removes the context identified by the <code>key</code>
-     * parameter.
-     * @param key The key to remove.
+     * Puts all given context map entries into the current thread's context map.
+     * <p>
+     *     If the current thread does not have a context map it is created as a side effect.
+     * </p>
+     * @param map The map to add, not {@code null}.
+     * @since 2.24.0
+     */
+    default void putAll(final Map<String, String> map) {
+        map.forEach(this::put);
+    }
+
+    /**
+     * Removes the context entry corresponding to the given key.
+     * @param key The key to remove, not {@code null}.
      */
     void remove(final String key);
+
+    /**
+     * Removes all given context map keys from the current thread's context map.
+     * <p>
+     *     If the current thread does not have a context map it is created as a side effect.
+     * </p>
+     *
+     * @param keys The keys, {@code null}.
+     * @since 2.24.0
+     */
+    default void removeAll(final Iterable<String> keys) {
+        keys.forEach(this::remove);
+    }
 }

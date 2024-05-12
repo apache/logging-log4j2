@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.internal.map;
+package org.apache.logging.log4j.core.context;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.core.context.internal.UnmodifiableArrayBackedMap;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.Test;
@@ -35,23 +36,6 @@ import org.junit.jupiter.api.Test;
  */
 @UsingThreadContextMap
 public class StringArrayThreadContextMapTest {
-
-    @Test
-    public void testEqualsVsSameKind() {
-        final StringArrayThreadContextMap map1 = createMap();
-        final StringArrayThreadContextMap map2 = createMap();
-        assertEquals(map1, map1);
-        assertEquals(map2, map2);
-        assertEquals(map1, map2);
-        assertEquals(map2, map1);
-    }
-
-    @Test
-    public void testHashCodeVsSameKind() {
-        final StringArrayThreadContextMap map1 = createMap();
-        final StringArrayThreadContextMap map2 = createMap();
-        assertEquals(map1.hashCode(), map2.hashCode());
-    }
 
     @Test
     public void testGet() {
@@ -99,7 +83,7 @@ public class StringArrayThreadContextMapTest {
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.internal.map.StringArrayThreadContextMap#remove(java.lang.String)}
+     * {@link StringArrayThreadContextMap#remove(java.lang.String)}
      * .
      */
     @Test

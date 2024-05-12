@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.internal.map;
+package org.apache.logging.log4j.core.context.internal;
 
 import java.io.Serializable;
 import java.util.AbstractMap;
@@ -57,7 +57,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * </ul>
  *
  */
-class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements Serializable, ReadOnlyStringMap {
+public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements Serializable, ReadOnlyStringMap {
     /**
      * Implementation of Map.Entry. The implementation is simple since each instance
      * contains an index in the array, then getKey() and getValue() retrieve from
@@ -160,7 +160,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         return 2 * entryIndex + 1 + NUM_FIXED_ARRAY_ENTRIES;
     }
 
-    static UnmodifiableArrayBackedMap getInstance(Object[] backingArray) {
+    public static UnmodifiableArrayBackedMap getInstance(Object[] backingArray) {
         if (backingArray == null || backingArray.length == 1) {
             return EMPTY_MAP;
         } else {
@@ -224,7 +224,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
         return false;
     }
 
-    Object[] getBackingArray() {
+    public Object[] getBackingArray() {
         return backingArray;
     }
 
@@ -255,7 +255,7 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
      * @param value
      * @return
      */
-    UnmodifiableArrayBackedMap copyAndPut(String key, String value) {
+    public UnmodifiableArrayBackedMap copyAndPut(String key, String value) {
         UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries + 1);
         // include the numEntries value (array index 0)
         if (this.numEntries > 0) {
@@ -270,12 +270,8 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
     /**
      * Creates a new instance that contains the same entries as this map, plus the
      * new entries or updated values passed in the parameters.
-     *
-     * @param key
-     * @param value
-     * @return
      */
-    UnmodifiableArrayBackedMap copyAndPutAll(Map<String, String> entriesToAdd) {
+    public UnmodifiableArrayBackedMap copyAndPutAll(Map<String, String> entriesToAdd) {
         // create a new array that can hold the maximum output size
         UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries + entriesToAdd.size());
 
@@ -304,12 +300,8 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
     /**
      * Creates a new instance that contains the same entries as this map, minus the
      * entry with the specified key (if such an entry exists).
-     *
-     * @param key
-     * @param value
-     * @return
      */
-    UnmodifiableArrayBackedMap copyAndRemove(String key) {
+    public UnmodifiableArrayBackedMap copyAndRemove(String key) {
         int indexToRemove = -1;
         for (int oldIndex = 0; oldIndex < numEntries; oldIndex++) {
             if (backingArray[getArrayIndexForKey(oldIndex)].hashCode() == key.hashCode()
@@ -351,12 +343,8 @@ class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements 
     /**
      * Creates a new instance that contains the same entries as this map, minus all
      * of the keys passed in the arguments.
-     *
-     * @param key
-     * @param value
-     * @return
      */
-    UnmodifiableArrayBackedMap copyAndRemoveAll(Iterable<String> keysToRemoveIterable) {
+    public UnmodifiableArrayBackedMap copyAndRemoveAll(Iterable<String> keysToRemoveIterable) {
         if (isEmpty()) {
             // shortcut: if this map is empty, the result will continue to be empty
             return EMPTY_MAP;

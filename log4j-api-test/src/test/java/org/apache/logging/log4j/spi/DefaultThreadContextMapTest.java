@@ -24,31 +24,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.apache.logging.log4j.test.spi.AbstractThreadContextMapTest;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.
  */
 @UsingThreadContextMap
-public class DefaultThreadContextMapTest {
-
-    @Test
-    public void testEqualsVsSameKind() {
-        final DefaultThreadContextMap map1 = createMap();
-        final DefaultThreadContextMap map2 = createMap();
-        assertEquals(map1, map1);
-        assertEquals(map2, map2);
-        assertEquals(map1, map2);
-        assertEquals(map2, map1);
-    }
-
-    @Test
-    public void testHashCodeVsSameKind() {
-        final DefaultThreadContextMap map1 = createMap();
-        final DefaultThreadContextMap map2 = createMap();
-        assertEquals(map1.hashCode(), map2.hashCode());
-    }
+class DefaultThreadContextMapTest extends AbstractThreadContextMapTest {
 
     @Test
     public void testDoesNothingIfConstructedWithUseMapIsFalse() {
@@ -213,5 +199,18 @@ public class DefaultThreadContextMapTest {
         map.remove("key1");
         map.put("key2", "value2");
         assertEquals("{key2=value2}", map.toString());
+    }
+
+    @Test
+    void threadLocalNotInheritableByDefault() {
+        assertThreadLocalNotInheritable(new DefaultThreadContextMap());
+    }
+
+    @Test
+    void threadLocalInheritableIfConfigured() {
+        final Properties props = new Properties();
+        props.setProperty("log4j2.isThreadContextMapInheritable", "true");
+        final PropertiesUtil util = new PropertiesUtil(props);
+        assertThreadLocalInheritable(new DefaultThreadContextMap(true, util));
     }
 }

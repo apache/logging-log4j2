@@ -4,5 +4,5 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
   <issue id="2330" link="https://github.com/apache/logging-log4j2/pull/2330"/>
-  <description format="asciidoc">Add a faster `ThreadContextMap` for web app users: `org.apache.logging.log4j.internal.map.StringArrayThreadContextMap`.</description>
+  <description format="asciidoc">Add a faster `ThreadContextMap` for web app users: `org.apache.logging.log4j.core.context.StringArrayThreadContextMap`.</description>
 </entry>

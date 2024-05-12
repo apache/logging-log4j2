@@ -14,50 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spi;
+package org.apache.logging.log4j.test.spi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Stream;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 
-class ThreadContextMapTest {
+/**
+ * Provides a set of utility methods to test implementations of {@link ThreadContextMap}.
+ */
+public abstract class AbstractThreadContextMapTest {
 
     private static final String KEY = "key";
 
-    static Stream<ThreadContextMap> defaultMaps() {
-        return Stream.of(
-                new DefaultThreadContextMap(),
-                new CopyOnWriteSortedArrayThreadContextMap(),
-                new GarbageFreeSortedArrayThreadContextMap());
-    }
-
-    static Stream<ThreadContextMap> inheritableMaps() {
-        final Properties props = new Properties();
-        props.setProperty("log4j2.isThreadContextMapInheritable", "true");
-        final PropertiesUtil util = new PropertiesUtil(props);
-        return Stream.of(
-                new DefaultThreadContextMap(true, util),
-                new CopyOnWriteSortedArrayThreadContextMap(util),
-                new GarbageFreeSortedArrayThreadContextMap(util));
-    }
-
-    @ParameterizedTest
-    @MethodSource("defaultMaps")
-    void threadLocalNotInheritableByDefault(final ThreadContextMap contextMap) {
+    /**
+     * Implementations SHOULD not propagate the context to newly created threads by default.
+     *
+     * @param contextMap A {@link ThreadContextMap implementation}.
+     */
+    protected static void assertThreadLocalNotInheritable(final ThreadContextMap contextMap) {
         contextMap.put(KEY, "threadLocalNotInheritableByDefault");
         verifyThreadContextValueFromANewThread(contextMap, null);
     }
 
-    @ParameterizedTest
-    @MethodSource("inheritableMaps")
-    void threadLocalInheritableIfConfigured(final ThreadContextMap contextMap) {
+    /**
+     * Implementations MAY offer a configuration that propagates the context to newly created threads.
+     *
+     * @param contextMap A {@link ThreadContextMap implementation}.
+     */
+    protected static void assertThreadLocalInheritable(final ThreadContextMap contextMap) {
         contextMap.put(KEY, "threadLocalInheritableIfConfigured");
         verifyThreadContextValueFromANewThread(contextMap, "threadLocalInheritableIfConfigured");
     }

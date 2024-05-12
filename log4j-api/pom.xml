@@ -46,7 +46,9 @@
     <bnd-module-name>org.apache.logging.log4j</bnd-module-name>
     <bnd-extra-package-options>
       <!-- Not exported by most OSGi system bundles, hence we use the system classloader to load `sun.reflect.Reflection` -->
-      !sun.reflect
+      !sun.reflect,
+      <!-- Annotations only -->
+      org.jspecify.*;resolution:=optional
     </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- Used in StringBuilders through reflection -->
@@ -57,6 +59,13 @@
 
   </properties>
   <dependencies>
+
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>

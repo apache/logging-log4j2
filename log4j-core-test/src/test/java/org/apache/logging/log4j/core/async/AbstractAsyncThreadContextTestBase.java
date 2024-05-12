@@ -29,15 +29,16 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.context.CopyOnWriteSortedArrayThreadContextMap;
+import org.apache.logging.log4j.core.context.GarbageFreeSortedArrayThreadContextMap;
+import org.apache.logging.log4j.core.context.StringArrayThreadContextMap;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.TestProperties;
@@ -89,26 +90,24 @@ public abstract class AbstractAsyncThreadContextTestBase {
     }
 
     protected enum ContextImpl {
-        WEBAPP,
-        GARBAGE_FREE,
-        COPY_ON_WRITE;
+        WEBAPP("WebApp", StringArrayThreadContextMap.class),
+        GARBAGE_FREE("GarbageFree", GarbageFreeSortedArrayThreadContextMap.class),
+        COPY_ON_WRITE("CopyOnWrite", CopyOnWriteSortedArrayThreadContextMap.class);
 
-        void init() {
-            final String PACKAGE = "org.apache.logging.log4j.spi.";
-            props.setProperty("log4j2.threadContextMap", PACKAGE + implClassSimpleName());
-            ThreadContextTestAccess.init();
+        private final String threadContextMap;
+        private final Class<?> implClass;
+
+        ContextImpl(final String threadContextMap, final Class<?> implClass) {
+            this.threadContextMap = threadContextMap;
+            this.implClass = implClass;
         }
 
-        public String implClassSimpleName() {
-            switch (this) {
-                case WEBAPP:
-                    return DefaultThreadContextMap.class.getSimpleName();
-                case GARBAGE_FREE:
-                    return "GarbageFreeSortedArrayThreadContextMap";
-                case COPY_ON_WRITE:
-                    return "CopyOnWriteSortedArrayThreadContextMap";
-            }
-            throw new IllegalStateException("Unknown state " + this);
+        void init() {
+            props.setProperty("log4j2.threadContextMap", threadContextMap);
+        }
+
+        public String getImplClassSimpleName() {
+            return implClass.getSimpleName();
         }
     }
 
@@ -123,8 +122,8 @@ public abstract class AbstractAsyncThreadContextTestBase {
         } else {
             assertThat(ThreadContext.getThreadContextMap())
                     .isNotNull()
-                    .extracting(o -> o.getClass().getSimpleName())
-                    .isEqualTo(contextImpl.implClassSimpleName());
+                    .extracting(Object::getClass)
+                    .isEqualTo(contextImpl.implClass);
         }
     }
 
@@ -197,25 +196,25 @@ public abstract class AbstractAsyncThreadContextTestBase {
     private static String contextMap() {
         final ReadOnlyThreadContextMap impl = ThreadContext.getThreadContextMap();
         return impl == null
-                ? ContextImpl.WEBAPP.implClassSimpleName()
+                ? ContextImpl.WEBAPP.getImplClassSimpleName()
                 : impl.getClass().getSimpleName();
     }
 
     private void checkResult(final Path file, final String loggerContextName, final ContextImpl contextImpl)
             throws IOException {
-        final String contextDesc = contextImpl + " " + contextImpl.implClassSimpleName() + " " + loggerContextName;
+        final String contextDesc = contextImpl + " " + contextImpl.getImplClassSimpleName() + " " + loggerContextName;
         try (final BufferedReader reader = Files.newBufferedReader(file)) {
             String expect;
             for (int i = 0; i < LINE_COUNT; i++) {
                 final String line = reader.readLine();
                 if ((i & 1) == 1) {
-                    expect =
-                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2, count="
-                                    + i + "} " + contextDesc + " i=" + i;
+                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue,"
+                            + " configProp2=configValue2, count="
+                            + i + "} " + contextDesc + " i=" + i;
                 } else {
-                    expect =
-                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} "
-                                    + contextDesc + " i=" + i;
+                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue,"
+                            + " configProp2=configValue2} "
+                            + contextDesc + " i=" + i;
                 }
                 assertThat(line).as("Log file '%s'", file.getFileName()).isEqualTo(expect);
             }

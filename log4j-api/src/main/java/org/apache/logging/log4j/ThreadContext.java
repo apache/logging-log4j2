@@ -23,15 +23,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.internal.map.StringArrayThreadContextMap;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.spi.CleanableThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextMap2;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -268,21 +265,11 @@ public final class ThreadContext {
      *
      * <p>If the current thread does not have a context map it is
      * created as a side effect.</p>
-     * @param m The map.
+     * @param map The map.
      * @since 2.7
      */
-    public static void putAll(final Map<String, String> m) {
-        if (contextMap instanceof ThreadContextMap2) {
-            ((ThreadContextMap2) contextMap).putAll(m);
-        } else if (contextMap instanceof DefaultThreadContextMap) {
-            ((DefaultThreadContextMap) contextMap).putAll(m);
-        } else if (contextMap instanceof StringArrayThreadContextMap) {
-            ((StringArrayThreadContextMap) contextMap).putAll(m);
-        } else {
-            for (final Map.Entry<String, String> entry : m.entrySet()) {
-                contextMap.put(entry.getKey(), entry.getValue());
-            }
-        }
+    public static void putAll(final Map<String, String> map) {
+        contextMap.putAll(map);
     }
 
     /**
@@ -316,17 +303,7 @@ public final class ThreadContext {
      * @since 2.8
      */
     public static void removeAll(final Iterable<String> keys) {
-        if (contextMap instanceof CleanableThreadContextMap) {
-            ((CleanableThreadContextMap) contextMap).removeAll(keys);
-        } else if (contextMap instanceof DefaultThreadContextMap) {
-            ((DefaultThreadContextMap) contextMap).removeAll(keys);
-        } else if (contextMap instanceof StringArrayThreadContextMap) {
-            ((StringArrayThreadContextMap) contextMap).removeAll(keys);
-        } else {
-            for (final String key : keys) {
-                contextMap.remove(key);
-            }
-        }
+        contextMap.removeAll(keys);
     }
 
     /**

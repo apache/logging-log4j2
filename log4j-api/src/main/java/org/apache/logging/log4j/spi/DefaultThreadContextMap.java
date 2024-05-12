@@ -24,6 +24,8 @@ import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored is always
@@ -31,6 +33,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * expected that the Map will be passed to many more log events than the number of keys it contains the performance
  * should be much better than if the Map was copied for each event.
  */
+@NullMarked
 public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyStringMap {
     private static final long serialVersionUID = 8218007901108944053L;
 
@@ -40,8 +43,13 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
      */
     public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
+    /**
+     * @since 2.24.0
+     */
+    public static final ThreadContextMap INSTANCE = new DefaultThreadContextMap();
+
     private final boolean useMap;
-    private final ThreadLocal<Map<String, String>> localMap;
+    private final ThreadLocal<@Nullable Map<String, String>> localMap;
 
     public DefaultThreadContextMap() {
         this(true);
@@ -60,7 +68,8 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         localMap = properties.getBooleanProperty(INHERITABLE_MAP)
                 ? new InheritableThreadLocal<Map<String, String>>() {
                     @Override
-                    protected Map<String, String> childValue(final Map<String, String> parentValue) {
+                    protected @Nullable Map<String, String> childValue(
+                            final @Nullable Map<String, String> parentValue) {
                         return parentValue != null && useMap
                                 ? Collections.unmodifiableMap(new HashMap<>(parentValue))
                                 : null;
@@ -80,20 +89,19 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         localMap.set(Collections.unmodifiableMap(map));
     }
 
+    @Override
     public void putAll(final Map<String, String> m) {
         if (!useMap) {
             return;
         }
         Map<String, String> map = localMap.get();
         map = map == null ? new HashMap<>(m.size()) : new HashMap<>(map);
-        for (final Map.Entry<String, String> e : m.entrySet()) {
-            map.put(e.getKey(), e.getValue());
-        }
+        map.putAll(m);
         localMap.set(Collections.unmodifiableMap(map));
     }
 
     @Override
-    public String get(final String key) {
+    public @Nullable String get(final String key) {
         final Map<String, String> map = localMap.get();
         return map == null ? null : map.get(key);
     }
@@ -108,13 +116,12 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
     }
 
+    @Override
     public void removeAll(final Iterable<String> keys) {
         final Map<String, String> map = localMap.get();
         if (map != null) {
             final Map<String, String> copy = new HashMap<>(map);
-            for (final String key : keys) {
-                copy.remove(key);
-            }
+            keys.forEach(copy::remove);
             localMap.set(Collections.unmodifiableMap(copy));
         }
     }
@@ -166,8 +173,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     @SuppressWarnings("unchecked")
     @Override
     public <V> V getValue(final String key) {
-        final Map<String, String> map = localMap.get();
-        return (V) (map == null ? null : map.get(key));
+        return (V) get(key);
     }
 
     @Override
@@ -177,7 +183,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     }
 
     @Override
-    public Map<String, String> getImmutableMapOrNull() {
+    public @Nullable Map<String, String> getImmutableMapOrNull() {
         return localMap.get();
     }
 
@@ -203,9 +209,9 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        final Map<String, String> map = this.localMap.get();
+        final Map<String, String> map = localMap.get();
         result = prime * result + ((map == null) ? 0 : map.hashCode());
-        result = prime * result + Boolean.valueOf(this.useMap).hashCode();
+        result = prime * result + Boolean.valueOf(useMap).hashCode();
         return result;
     }
 
@@ -219,7 +225,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
         if (obj instanceof DefaultThreadContextMap) {
             final DefaultThreadContextMap other = (DefaultThreadContextMap) obj;
-            if (this.useMap != other.useMap) {
+            if (useMap != other.useMap) {
                 return false;
             }
         }
@@ -227,7 +233,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             return false;
         }
         final ThreadContextMap other = (ThreadContextMap) obj;
-        final Map<String, String> map = this.localMap.get();
+        final Map<String, String> map = localMap.get();
         final Map<String, String> otherMap = other.getImmutableMapOrNull();
         return Objects.equals(map, otherMap);
     }

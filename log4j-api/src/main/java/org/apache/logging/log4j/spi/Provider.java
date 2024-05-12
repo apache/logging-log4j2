@@ -23,10 +23,10 @@ import java.util.Properties;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Service class used to bind the Log4j API with an implementation.
@@ -39,6 +39,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  *     be dropped in a future version.
  * </p>
  */
+@NullMarked
 public class Provider {
     /**
      * Constant inlined by the compiler
@@ -72,75 +73,27 @@ public class Provider {
      */
     public static final String PROVIDER_PROPERTY_NAME = "log4j.provider";
 
-    /**
-     * Constant used to disable the {@link ThreadContextMap}.
-     * <p>
-     *     <strong>Warning:</strong> the value of this constant does not point to a concrete class name.
-     * </p>
-     * @see #getThreadContextMap
-     */
-    protected static final String NO_OP_CONTEXT_MAP = "NoOp";
-
-    /**
-     * Constant used to select a web application-safe implementation of {@link ThreadContextMap}.
-     * <p>
-     *     This implementation only binds JRE classes to {@link ThreadLocal} variables.
-     * </p>
-     * <p>
-     *     <strong>Warning:</strong> the value of this constant does not point to a concrete class name.
-     * </p>
-     * @see #getThreadContextMap
-     */
-    protected static final String WEB_APP_CONTEXT_MAP = "WebApp";
-
-    /**
-     * Constant used to select a copy-on-write implementation of {@link ThreadContextMap}.
-     * <p>
-     *     <strong>Warning:</strong> the value of this constant does not point to a concrete class name.
-     * </p>
-     * @see #getThreadContextMap
-     */
-    protected static final String COPY_ON_WRITE_CONTEXT_MAP = "CopyOnWrite";
-
-    /**
-     * Constant used to select a garbage-free implementation of {@link ThreadContextMap}.
-     * <p>
-     *     This implementation must ensure that common operations don't create new object instances. The drawback is
-     *     the necessity to bind custom classes to {@link ThreadLocal} variables.
-     * </p>
-     * <p>
-     *     <strong>Warning:</strong> the value of this constant does not point to a concrete class name.
-     * </p>
-     * @see #getThreadContextMap
-     */
-    protected static final String GARBAGE_FREE_CONTEXT_MAP = "GarbageFree";
-
-    // Property keys relevant for context map selection
     private static final String DISABLE_CONTEXT_MAP = "log4j2.disableThreadContextMap";
     private static final String DISABLE_THREAD_CONTEXT = "log4j2.disableThreadContext";
-    private static final String THREAD_CONTEXT_MAP_PROPERTY = "log4j2.threadContextMap";
-    private static final String GC_FREE_THREAD_CONTEXT_PROPERTY = "log4j2.garbagefree.threadContextMap";
 
-    private static final Integer DEFAULT_PRIORITY = -1;
+    private static final int DEFAULT_PRIORITY = -1;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final Integer priority;
+    private final int priority;
     // LoggerContextFactory
     @Deprecated
-    private final String className;
+    private final @Nullable String className;
 
-    private final Class<? extends LoggerContextFactory> loggerContextFactoryClass;
-    private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = Lazy.lazy(this::createLoggerContextFactory);
+    private final @Nullable Class<? extends LoggerContextFactory> loggerContextFactoryClass;
     // ThreadContextMap
     @Deprecated
-    private final String threadContextMap;
+    private final @Nullable String threadContextMap;
 
-    private final Class<? extends ThreadContextMap> threadContextMapClass;
-    private final Lazy<ThreadContextMap> threadContextMapLazy = Lazy.lazy(this::createThreadContextMap);
-    private final String versions;
+    private final @Nullable Class<? extends ThreadContextMap> threadContextMapClass;
+    private final @Nullable String versions;
 
     @Deprecated
-    private final URL url;
+    private final @Nullable URL url;
 
     @Deprecated
     private final WeakReference<ClassLoader> classLoader;
@@ -154,7 +107,7 @@ public class Provider {
         this.url = url;
         this.classLoader = new WeakReference<>(classLoader);
         final String weight = props.getProperty(FACTORY_PRIORITY);
-        priority = weight == null ? DEFAULT_PRIORITY : Integer.valueOf(weight);
+        priority = weight == null ? DEFAULT_PRIORITY : Integer.parseInt(weight);
         className = props.getProperty(LOGGER_CONTEXT_FACTORY);
         threadContextMap = props.getProperty(THREAD_CONTEXT_MAP);
         loggerContextFactoryClass = null;
@@ -167,7 +120,7 @@ public class Provider {
      * @param versions Minimal API version required, should be set to {@link #CURRENT_VERSION}.
      * @since 2.24.0
      */
-    public Provider(final Integer priority, final String versions) {
+    public Provider(final @Nullable Integer priority, final String versions) {
         this(priority, versions, null, null);
     }
 
@@ -175,12 +128,12 @@ public class Provider {
      * @param priority A positive number specifying the provider's priority or {@code null} if default,
      * @param versions Minimal API version required, should be set to {@link #CURRENT_VERSION},
      * @param loggerContextFactoryClass A public exported implementation of {@link LoggerContextFactory} or {@code
-     * null} if {@link #createLoggerContextFactory()} is also implemented.
+     * null} if {@link #getLoggerContextFactory()} is also implemented.
      */
     public Provider(
-            final Integer priority,
+            final @Nullable Integer priority,
             final String versions,
-            final Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
+            final @Nullable Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
         this(priority, versions, loggerContextFactoryClass, null);
     }
 
@@ -188,15 +141,15 @@ public class Provider {
      * @param priority A positive number specifying the provider's priority or {@code null} if default,
      * @param versions Minimal API version required, should be set to {@link #CURRENT_VERSION},
      * @param loggerContextFactoryClass A public exported implementation of {@link LoggerContextFactory} or {@code
-     * null} if {@link #createLoggerContextFactory()} is also implemented,
+     * null} if {@link #getLoggerContextFactory()} is also implemented,
      * @param threadContextMapClass A public exported implementation of {@link ThreadContextMap} or {@code null} if
-     * {@link #createThreadContextMap()} is implemented.
+     * {@link #getThreadContextMapInstance()} is implemented.
      */
     public Provider(
-            final Integer priority,
+            final @Nullable Integer priority,
             final String versions,
-            final Class<? extends LoggerContextFactory> loggerContextFactoryClass,
-            final Class<? extends ThreadContextMap> threadContextMapClass) {
+            final @Nullable Class<? extends LoggerContextFactory> loggerContextFactoryClass,
+            final @Nullable Class<? extends ThreadContextMap> threadContextMapClass) {
         this.priority = priority != null ? priority : DEFAULT_PRIORITY;
         this.versions = versions;
         this.loggerContextFactoryClass = loggerContextFactoryClass;
@@ -213,7 +166,7 @@ public class Provider {
      * @return A String containing the Log4j versions supported.
      */
     public String getVersions() {
-        return versions;
+        return versions != null ? versions : "";
     }
 
     /**
@@ -233,7 +186,7 @@ public class Provider {
      * @return the class name of a LoggerContextFactory implementation or {@code null} if unspecified.
      * @see #loadLoggerContextFactory()
      */
-    public String getClassName() {
+    public @Nullable String getClassName() {
         return loggerContextFactoryClass != null ? loggerContextFactoryClass.getName() : className;
     }
 
@@ -241,9 +194,8 @@ public class Provider {
      * Loads the {@link LoggerContextFactory} class specified by this Provider.
      *
      * @return the LoggerContextFactory implementation class or {@code null} if unspecified or a loader error occurred.
-     * @see #createLoggerContextFactory()
      */
-    public Class<? extends LoggerContextFactory> loadLoggerContextFactory() {
+    public @Nullable Class<? extends LoggerContextFactory> loadLoggerContextFactory() {
         if (loggerContextFactoryClass != null) {
             return loggerContextFactoryClass;
         }
@@ -271,65 +223,30 @@ public class Provider {
         return null;
     }
 
-    private LoggerContextFactory createLoggerContextFactory() {
-        final Class<? extends LoggerContextFactory> factoryClass = loadLoggerContextFactory();
-        if (factoryClass != null) {
-            try {
-                return LoaderUtil.newInstanceOf(factoryClass);
-            } catch (final Exception e) {
-                LOGGER.error(
-                        "Unable to create instance of class {} specified in {}", factoryClass.getName(), getUrl(), e);
-            }
-        }
-        LOGGER.warn("Falling back to {}", SimpleLoggerContextFactory.INSTANCE);
-        return SimpleLoggerContextFactory.INSTANCE;
-    }
-
     /**
      * @return The logger context factory to be used by {@link org.apache.logging.log4j.LogManager}.
      * @since 2.24.0
      */
     public LoggerContextFactory getLoggerContextFactory() {
-        return loggerContextFactoryLazy.get();
+        final Class<?> implementation = loadLoggerContextFactory();
+        if (implementation != null) {
+            try {
+                return LoaderUtil.newInstanceOf(implementation.asSubclass(LoggerContextFactory.class));
+            } catch (final ReflectiveOperationException e) {
+                LOGGER.error("Failed to instantiate logger context factory {}.", implementation.getName(), e);
+            }
+        }
+        LOGGER.error("Falling back to simple logger context factory: {}", SimpleLoggerContextFactory.class.getName());
+        return SimpleLoggerContextFactory.INSTANCE;
     }
 
     /**
-     * Gets the class name of the {@link ThreadContextMap} implementation of this Provider.
-     * <p>
-     *     This method should return one of the internal implementations:
-     *     <ol>
-     *         <li>{@code null} if {@link #loadThreadContextMap} is implemented,</li>
-     *         <li>{@link #NO_OP_CONTEXT_MAP},</li>
-     *         <li>{@link #WEB_APP_CONTEXT_MAP},</li>
-     *         <li>{@link #COPY_ON_WRITE_CONTEXT_MAP},</li>
-     *         <li>{@link #GARBAGE_FREE_CONTEXT_MAP}.</li>
-     *     </ol>
-     * </p>
+     * Gets the class name of the {@link org.apache.logging.log4j.spi.ThreadContextMap} implementation of this Provider.
+     *
      * @return the class name of a ThreadContextMap implementation
-     * @see #loadThreadContextMap()
      */
-    public String getThreadContextMap() {
-        if (threadContextMapClass != null) {
-            return threadContextMapClass.getName();
-        }
-        // Field value
-        if (threadContextMap != null) {
-            return threadContextMap;
-        }
-        // Properties
-        final PropertiesUtil props = PropertiesUtil.getProperties();
-        if (props.getBooleanProperty(DISABLE_CONTEXT_MAP) || props.getBooleanProperty(DISABLE_THREAD_CONTEXT)) {
-            return NO_OP_CONTEXT_MAP;
-        }
-        final String threadContextMapClass = props.getStringProperty(THREAD_CONTEXT_MAP_PROPERTY);
-        if (threadContextMapClass != null) {
-            return threadContextMapClass;
-        }
-        // Default based on properties
-        if (props.getBooleanProperty(GC_FREE_THREAD_CONTEXT_PROPERTY)) {
-            return GARBAGE_FREE_CONTEXT_MAP;
-        }
-        return Constants.ENABLE_THREADLOCALS ? COPY_ON_WRITE_CONTEXT_MAP : WEB_APP_CONTEXT_MAP;
+    public @Nullable String getThreadContextMap() {
+        return threadContextMapClass != null ? threadContextMapClass.getName() : threadContextMap;
     }
 
     /**
@@ -337,17 +254,18 @@ public class Provider {
      *
      * @return the {@code ThreadContextMap} implementation class or {@code null} if unspecified or a loading error
      * occurred.
-     * @see #createThreadContextMap()
      */
-    public Class<? extends ThreadContextMap> loadThreadContextMap() {
+    public @Nullable Class<? extends ThreadContextMap> loadThreadContextMap() {
         if (threadContextMapClass != null) {
             return threadContextMapClass;
         }
-        final String threadContextMap = getThreadContextMap();
+        if (threadContextMap == null) {
+            return null;
+        }
         final ClassLoader loader = classLoader.get();
         // Support for deprecated {@code META-INF/log4j-provider.properties} format.
         // In the remaining cases {@code loader == null}.
-        if (loader == null || threadContextMap == null) {
+        if (loader == null) {
             return null;
         }
         try {
@@ -358,70 +276,13 @@ public class Provider {
                 LOGGER.error(
                         "Class {} specified in {} does not extend {}",
                         threadContextMap,
-                        getUrl(),
+                        url,
                         ThreadContextMap.class.getName());
             }
         } catch (final Exception e) {
-            LOGGER.error("Unable to load class {} specified in {}", threadContextMap, url.toString(), e);
+            LOGGER.error("Unable to load class {} specified in {}", threadContextMap, url, e);
         }
         return null;
-    }
-
-    /**
-     * Creates a {@link ThreadContextMap} using the legacy {@link #loadThreadContextMap()} and
-     * {@link #getThreadContextMap()} methods:
-     * <ol>
-     *     <li>calls {@link #loadThreadContextMap},</li>
-     *     <li>if the previous call returns {@code null}, it calls {@link #getThreadContextMap} to instantiate one of
-     *     the internal implementations,</li>
-     *     <li>it returns a no-op map otherwise.</li>
-     * </ol>
-     */
-    @SuppressWarnings("deprecation")
-    ThreadContextMap createThreadContextMap() {
-        final Class<? extends ThreadContextMap> threadContextMapClass = loadThreadContextMap();
-        if (threadContextMapClass != null) {
-            try {
-                return LoaderUtil.newInstanceOf(threadContextMapClass);
-            } catch (final Exception e) {
-                LOGGER.error(
-                        "Unable to create instance of class {} specified in {}",
-                        threadContextMapClass.getName(),
-                        getUrl(),
-                        e);
-            }
-        }
-        // Standard Log4j API implementations are internal and can be only specified by name:
-        final String threadContextMap = getThreadContextMap();
-        if (threadContextMap != null) {
-            /*
-             * The constructors are called explicitly to improve GraalVM support.
-             *
-             * The class names of the package-private implementations from version 2.23.1 must be recognized even
-             * if the class is moved.
-             */
-            switch (threadContextMap) {
-                case NO_OP_CONTEXT_MAP:
-                case "org.apache.logging.log4j.spi.NoOpThreadContextMap":
-                    return new NoOpThreadContextMap();
-                case WEB_APP_CONTEXT_MAP:
-                case "org.apache.logging.log4j.spi.DefaultThreadContextMap":
-                    return new DefaultThreadContextMap();
-                case GARBAGE_FREE_CONTEXT_MAP:
-                case "org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap":
-                    return new GarbageFreeSortedArrayThreadContextMap();
-                case COPY_ON_WRITE_CONTEXT_MAP:
-                case "org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap":
-                    return new CopyOnWriteSortedArrayThreadContextMap();
-            }
-        }
-        LOGGER.warn("Falling back to {}", NoOpThreadContextMap.class.getName());
-        return new NoOpThreadContextMap();
-    }
-
-    // Used for testing
-    void resetThreadContextMap() {
-        threadContextMapLazy.set(null);
     }
 
     /**
@@ -429,7 +290,10 @@ public class Provider {
      * @since 2.24.0
      */
     public ThreadContextMap getThreadContextMapInstance() {
-        return threadContextMapLazy.get();
+        final PropertiesUtil props = PropertiesUtil.getProperties();
+        return props.getBooleanProperty(DISABLE_CONTEXT_MAP) || props.getBooleanProperty(DISABLE_THREAD_CONTEXT)
+                ? NoOpThreadContextMap.INSTANCE
+                : DefaultThreadContextMap.INSTANCE;
     }
 
     /**
@@ -447,7 +311,7 @@ public class Provider {
      * @deprecated since 2.24.0, without replacement.
      */
     @Deprecated
-    public URL getUrl() {
+    public @Nullable URL getUrl() {
         return url;
     }
 
@@ -455,7 +319,7 @@ public class Provider {
     public String toString() {
         final StringBuilder result =
                 new StringBuilder("Provider '").append(getClass().getName()).append("'");
-        if (!DEFAULT_PRIORITY.equals(priority)) {
+        if (priority != DEFAULT_PRIORITY) {
             result.append("\n\tpriority = ").append(priority);
         }
         final String threadContextMap = getThreadContextMap();
@@ -485,24 +349,18 @@ public class Provider {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Provider)) {
-            return false;
+        if (o instanceof Provider) {
+            final Provider provider = (Provider) o;
+            return Objects.equals(priority, provider.priority)
+                    && Objects.equals(className, provider.className)
+                    && Objects.equals(loggerContextFactoryClass, provider.loggerContextFactoryClass)
+                    && Objects.equals(versions, provider.versions);
         }
-
-        final Provider provider = (Provider) o;
-
-        return Objects.equals(priority, provider.priority)
-                && Objects.equals(className, provider.className)
-                && Objects.equals(loggerContextFactoryClass, provider.loggerContextFactoryClass)
-                && Objects.equals(versions, provider.versions);
+        return false;
     }
 
     @Override
     public int hashCode() {
-        int result = priority != null ? priority.hashCode() : 0;
-        result = 31 * result + (className != null ? className.hashCode() : 0);
-        result = 31 * result + (loggerContextFactoryClass != null ? loggerContextFactoryClass.hashCode() : 0);
-        result = 31 * result + (versions != null ? versions.hashCode() : 0);
-        return result;
+        return Objects.hash(priority, className, loggerContextFactoryClass, versions);
     }
 }
