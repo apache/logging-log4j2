@@ -40,7 +40,7 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/filters.xml[]
+include::example$configuration/filters.xml[lines=1;18..-1]
 ----
 
 JSON::
@@ -54,14 +54,14 @@ YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/filters.yaml[]
+include::example$configuration/filters.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/filters.properties[]
+include::example$configuration/filters.properties[lines=17..-1]
 ----
 ====
 <1> First the context-wide filter is consulted.

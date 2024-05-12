@@ -285,7 +285,7 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/main-elements.xml[]
+include::example$configuration/main-elements.xml[lines=1;18..-1]
 ----
 
 JSON::
@@ -299,14 +299,14 @@ YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/main-elements.yaml[]
+include::example$configuration/main-elements.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/main-elements.properties[]
+include::example$configuration/main-elements.properties[lines=17..-1]
 ----
 ====
 
@@ -637,7 +637,7 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/properties.xml[tag=!empty]
+include::example$configuration/properties.xml[lines=1;18..24;26]
 ----
 
 JSON::
@@ -651,14 +651,14 @@ YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/properties.yaml[]
+include::example$configuration/properties.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/properties.properties[]
+include::example$configuration/properties.properties[lines=17..-1]
 ----
 ====
 
@@ -810,7 +810,7 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/arbiters.xml[]
+include::example$configuration/arbiters.xml[lines=1;18..-1]
 ----
 
 JSON::
@@ -824,14 +824,14 @@ YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/arbiters.yaml[]
+include::example$configuration/arbiters.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/arbiters.properties[]
+include::example$configuration/arbiters.properties[lines=17..-1]
 ----
 ====
 
@@ -850,7 +850,7 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/arbiters-select.xml[]
+include::example$configuration/arbiters-select.xml[lines=1;18..-1]
 ----
 
 JSON::
@@ -864,14 +864,14 @@ YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/arbiters-select.yaml[]
+include::example$configuration/arbiters-select.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/arbiters-select.properties[]
+include::example$configuration/arbiters-select.properties[lines=17..-1]
 ----
 ====
 
@@ -964,19 +964,19 @@ Here is an example log4j2.xml file that includes two other files:
 .log4j2.xml
 [source,xml]
 ----
-include::example$configuration/xinclude-main.xml[]
+include::example$configuration/xinclude-main.xml[lines=1;18..-1]
 ----
 
 .xinclude-appenders.xml
 [source,xml]
 ----
-include::example$configuration/xinclude-appenders.xml[]
+include::example$configuration/xinclude-appenders.xml[lines=1;18..-1]
 ----
 
 .xinclude-loggers.xml
 [source,xml]
 ----
-include::example$configuration/xinclude-loggers.xml[]
+include::example$configuration/xinclude-loggers.xml[lines=1;18..-1]
 ----
 
 [id=java-properties-features]

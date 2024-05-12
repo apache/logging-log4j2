@@ -587,7 +587,6 @@
             <exclude>**/MANIFEST.MF</exclude>
             <exclude>.surefire-*</exclude>
             <exclude>**/.log4j-*</exclude>
-            <exclude>src/site/antora/modules/ROOT/examples/**</exclude>
           </excludes>
         </configuration>
       </plugin>

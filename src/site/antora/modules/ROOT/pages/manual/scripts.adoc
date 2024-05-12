@@ -80,7 +80,7 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/scripts.xml[]
+include::example$configuration/scripts.xml[lines=1;18..-1]
 ----
 
 JSON::
@@ -94,14 +94,14 @@ YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/scripts.yaml[]
+include::example$configuration/scripts.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/scripts.properties[]
+include::example$configuration/scripts.properties[lines=17..-1]
 ----
 ====
 
