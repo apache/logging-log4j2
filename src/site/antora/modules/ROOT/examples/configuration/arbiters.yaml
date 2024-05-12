@@ -1,0 +1,18 @@
+Configuration:
+  Appenders:
+    File:
+      name: "MAIN"
+      fileName: "logs/app.log"
+      SystemPropertyArbiter:
+        - propertyName: "env" # <1>
+          propertyValue: "dev"
+          PatternLayout:
+            pattern: "%d [%t] %p %c - %m%n"
+        - propertyName: "env" # <2>
+          propertyValue: "prod"
+          JsonTemplateLayout: { }
+  Loggers:
+    Root:
+      level: "INFO"
+      AppenderRef:
+        ref: "MAIN"

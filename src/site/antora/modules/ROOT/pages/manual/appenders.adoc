@@ -120,7 +120,7 @@ There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
 with the logging rate and the queue is filling up. See the details for
 system properties
-xref:manual/configuration/properties.adoc#log4j2.asyncQueueFullPolicy[`log4j2.AsyncQueueFullPolicy`
+xref:manual/systemproperties.adoc#log4j2.asyncQueueFullPolicy[`log4j2.AsyncQueueFullPolicy`
 and `log4j2.DiscardThreshold`].
 
 A typical AsyncAppender configuration might look like:

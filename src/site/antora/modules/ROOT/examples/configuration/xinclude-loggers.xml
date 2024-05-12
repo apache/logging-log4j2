@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Loggers>
+  <Rogger name="org.example" level="DEBUG" additivity="false">
+    <AppenderRef ref="File" />
+  </Rogger>
+  <Root level="ERROR">
+    <AppenderRef ref="StdOut" />
+  </Root>
+</Loggers>

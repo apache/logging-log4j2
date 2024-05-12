@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+  <Appenders>
+    <File name="MAIN" fileName="logs/app.log">
+      <SystemPropertyArbiter propertyName="env" propertyValue="dev"> <!--1-->
+        <PatternLayout pattern="%d [%t] %p %c - %m%n"/>
+      </SystemPropertyArbiter>
+      <SystemPropertyArbiter propertyName="env" propertyValue="prod"> <!--2-->
+        <JsonTemplateLayout/>
+      </SystemPropertyArbiter>
+    </File>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
+      <AppenderRef ref="MAIN"/>
+    </Root>
+  </Loggers>
+</Configuration>

@@ -82,7 +82,7 @@ reference these fields after the web application is undeployed. To avoid
 causing memory leaks, Log4j will not use these ThreadLocals when it
 detects that it is used in a web application (when the
 `javax.servlet.Servlet` class is in the classpath, or when system
-property xref:manual/configuration/properties.adoc#log4j2.isWebapp[log4j2.isWebapp] is set to `true`).
+property xref:manual/systemproperties.adoc#log4j2.isWebapp[log4j2.isWebapp] is set to `true`).
 
 Some garbage-reducing functionality does not rely on ThreadLocals and is
 enabled by default for all applications: in Log4j 2.6, converting log
@@ -112,8 +112,8 @@ you may also configure a xref:manual/async.adoc#WaitStrategy[custom wait strateg
 There are separate system properties for manually controlling the
 mechanisms Log4j uses to avoid creating temporary objects:
 
-* xref:manual/configuration/properties.adoc#log4j2.enableThreadlocals[log4j2.enableThreadlocals] - if "true" (the default for non-web applications) objects are stored in ThreadLocal fields and reused, otherwise new objects are created for each log event.
-* xref:manual/configuration/properties.adoc#log4j2.enableDirectEncoders[log4j2.enableDirectEncoders] - if "true" (the default)
+* xref:manual/systemproperties.adoc#log4j2.enableThreadlocals[log4j2.enableThreadlocals] - if "true" (the default for non-web applications) objects are stored in ThreadLocal fields and reused, otherwise new objects are created for each log event.
+* xref:manual/systemproperties.adoc#log4j2.enableDirectEncoders[log4j2.enableDirectEncoders] - if "true" (the default)
 log events are
 converted to text and this text is converted to bytes without creating
 temporary objects. Note: _synchronous_ logging performance may be worse
@@ -122,7 +122,7 @@ the shared buffer. If your application is multi-threaded and logging
 performance is important, consider using Async Loggers.
 * The ThreadContext map is _not_ garbage-free by default, but from Log4j
 2.7 it can be configured to be garbage-free by setting system property
-xref:manual/configuration/properties.adoc#log4j2.garbagefreeThreadContextMap[log4j2.garbagefreeThreadContextMap] to "true".
+xref:manual/systemproperties.adoc#log4j2.garbagefreeThreadContextMap[log4j2.garbagefreeThreadContextMap] to "true".
 
 Instead of system properties, the above properties can also be specified
 in a file named `log4j2.component.properties` by including this file in
