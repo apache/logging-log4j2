@@ -16,6 +16,7 @@
 ////
 [id=configuration]
 = Configuration
+
 Ralph Goers <rgoers@apache.org>; Piotr Karwasz <pkarwasz@apache.org>
 
 Since logging is a common way to monitor the health of an application and diagnose problems that occur in it, even moderately sized applications can contain thousands of logging statements.
@@ -264,7 +265,7 @@ See <<configuring-loggers>> for details.
 +
 Appenders are the exit point of the logging pipeline.
 They decide to which resource (console, file, database, etc.) the log event is sent.
-In the examples of this chapter we will only use the xref:manual/appenders.adoc#consoleappender[console appender] and the xref:manual/appenders.adoc#fileappender[file appender] in the examples.
+In the examples of this chapter we will only use the xref:manual/appenders.adoc#consoleappender[console appender] and the xref:manual/appenders.adoc#fileappender[file appender].
 +
 See xref:manual/appenders.adoc[Appender configuration] for details.
 
@@ -273,7 +274,7 @@ Layouts::
 Layouts tell appenders how they should format the log event: text, JSON, XML, etc.
 In the examples of this chapter we will only use the xref:manual/layouts.adoc#pattern-layout[textual pattern layout]
 and
-xref:manual/json-template-layout.adoc[JSON template layout] in the examples.
+xref:manual/json-template-layout.adoc[JSON template layout].
 +
 See xref:manual/layouts.adoc[Layout configuration] for details.
 
@@ -317,6 +318,8 @@ include::example$configuration/main-elements.properties[lines=17..-1]
 The `CONSOLE` appender will only log messages less specific than `WARN`.
 <5> Configures a logger named `"org.example"` at level `DEBUG` and connects it to the `DEBUG_LOG` appender.
 The logger is configured to forward messages to its parent (the root appender).
+
+Using the above configuration, the list of appenders that will be used for each log event depends only on the level of the event and the name of the logger, as in the table below:
 
 [cols="2m,2m,5"]
 |===
@@ -373,6 +376,8 @@ See <<property-substitution>> for details.
 
 Scripts::
 +
+A container for JSR 223 scripts that can be used in other Log4j components.
++
 See xref:manual/scripts.adoc[Scripts configuration] for details.
 
 [id=global-configuration-attributes]
@@ -404,8 +409,10 @@ Unlike other logging backends Log4j Core is designed with **audit** logging in m
 During a reconfiguration process, no messages are lost.
 
 Unless the new configuration file removes an appender, the old one continues to work without interruption.
-This behavior also implies that changes to appenders that modify the options of the resource used by the appender (e.g. a change in the `append` attribute of a file appender) will be **ignored**.
-In order to modify these options during a reconfiguration you also need to change the resource used by the appender (e .g. the file name used by a file appender).
+
+Since some appender options (like the append mode used to open a file) can not be changed without closing the resource used by an appender, some attribute changes will be **ignored** during a reconfiguration.
+
+In order to modify these options during a reconfiguration you also need to change the resource used by the appender (e.g. the file name used by a file appender).
 ====
 
 [id=configuration-attribute-status]
@@ -421,7 +428,7 @@ In order to modify these options during a reconfiguration you also need to chang
 
 Overrides the logging level of the status logger.
 
-WARNING: Since 2.24.0 this attribute is deprecated and will be replaced with the
+WARNING: Since 2.24.0 this attribute is deprecated and should be replaced with the
 xref:manual/systemproperties.adoc#log4j2.statusLoggerLevel[log4j2.statusLoggerLevel]
 configuration property.
 
@@ -443,7 +450,7 @@ See also xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apac
 +
 See also xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncLoggerConfig-RootLogger[Plugin reference].
 
-`Logger`:: the most common logger kind, which collects log events from itself and all its children loggers, which do not have an explicit configuration (see xref:manual/architecture.adoc#logger-hierarchy[logger hierarchy]).
+`Logger`:: the most common logger kind, which collects log events from itself and all the children loggers, which do not have an explicit configuration (see xref:manual/architecture.adoc#logger-hierarchy[logger hierarchy]).
 +
 See also xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig[Plugin Reference].
 
@@ -520,7 +527,7 @@ for more details.
 Specifies whether Log4j is allowed to compute location information.
 
 Computing the location information of a logging statement is an expensive operation (a couple of microseconds).
-While Log4j makes every effort to only compute it if it was requested by a configured layout (cf. xref:manual/layouts.adoc[Layouts]), this setting provide a kill switch to disable it.
+While Log4j makes every effort to only compute it if it was requested by a configured layout (cf. xref:manual/layouts.adoc[Layouts]), this setting provides a kill switch to disable it.
 
 [TIP]
 ====
@@ -616,8 +623,6 @@ Specifies the name of the appender to use.
 
 Specifies the level threshold that a log event must have to be logged.
 Log events more specific than this setting will be filtered out.
-
-See also xref:manual/filters.adoc#filters[Filters] if you require additional filtering.
 
 [id=appenderrefs-elements-filters]
 ==== Filters
@@ -717,7 +722,7 @@ If both these conditions hold:
 --
 +
 the value for the lookup is a substituted.
-Otherwise, the expansion of `$\{name:-default}` is substituted.
+Otherwise, the expansion of `${name:-default}` is substituted.
 
 [NOTE]
 ====
@@ -729,7 +734,7 @@ The same rule applies to the `name` parameter: if it contains a `${` sequence, t
 [id=lazy-property-substitution]
 ==== Lazy property substitution
 
-While property substitution is performed once at **configuration time** for most attributes, there are two exceptions to this rule:
+For most attributes property substitution is performed only once at **configuration time**, but there are two categories of exceptions to this rule:
 
 * Some attributes are **also** evaluated when a component specific event occurs.
 For example
