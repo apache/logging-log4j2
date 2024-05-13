@@ -2132,28 +2132,6 @@ NOTE: Additional xref:runtime-dependencies.adoc[runtime dependencies] are requir
 
 
 [#LocationInformation]
-== Location Information
+== Location information
 
-If one of the layouts is configured with a location-related attribute
-like HTML link:#HtmlLocationInfo[locationInfo], or one of the patterns
-link:#PatternClass[%C or %class], link:#PatternFile[%F or %file],
-link:#PatternLocation[%l or %location], link:#PatternLine[%L or %line],
-link:#PatternMethod[%M or %method], Log4j will take a snapshot of the
-stack, and walk the stack trace to find the location information.
-
-This is an expensive operation: 1.3 - 5 times slower for synchronous
-loggers. Synchronous loggers wait as long as possible before they take
-this stack snapshot. If no location is required, the snapshot will never
-be taken.
-
-However, asynchronous loggers need to make this decision before passing
-the log message to another thread; the location information will be lost
-after that point. The
-xref:manual/performance.adoc#asyncLoggingWithLocation[performance impact] of
-taking a stack trace snapshot is even higher for asynchronous loggers:
-logging with location is 30-100 times slower than without location. For
-this reason, asynchronous loggers and asynchronous appenders do not
-include location information by default.
-
-You can override the default behaviour in your logger or asynchronous
-appender configuration by specifying `includeLocation="true"`.
+include::partial$manual/layouts-location-information.adoc[]

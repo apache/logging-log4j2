@@ -45,6 +45,7 @@ asciidoc:
     java-target-version: "${maven.compiler.target}"
     java-compiler-version: "${minimalJavaBuildVersion}"
     logging-services-url: "https://logging.apache.org"
+    lmax-disruptor-url: "https://lmax-exchange.github.io/disruptor"
     # Dependency versions
     commons-logging-version: "${site-commons-logging.version}"
     jackson-version: "${site-jackson.version}"
