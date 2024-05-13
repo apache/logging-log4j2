@@ -67,7 +67,7 @@ import org.apache.logging.log4j.util.Strings;
  * with immediateFlush=false, there will never be any items left in the buffer;
  * all log events will all be written to disk in a very efficient manner.
  */
-@Plugin(name = "asyncLogger", category = Node.CATEGORY, printObject = true)
+@Plugin(name = "AsyncLogger", category = Node.CATEGORY, printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
     @PluginBuilderFactory
@@ -320,7 +320,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     /**
      * An asynchronous root Logger.
      */
-    @Plugin(name = "asyncRoot", category = Core.CATEGORY_NAME, printObject = true)
+    @Plugin(name = "AsyncRoot", category = Core.CATEGORY_NAME, printObject = true)
     public static class RootLogger extends LoggerConfig {
 
         @PluginBuilderFactory

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Represents a key/value pair in the configuration.
  */
-@Plugin(name = "property", category = Node.CATEGORY, printObject = true)
+@Plugin(name = "Property", category = Node.CATEGORY, printObject = true)
 public final class Property {
 
     /**

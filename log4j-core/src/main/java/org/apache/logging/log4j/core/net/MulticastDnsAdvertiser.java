@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * will be removed prior to advertisement.
  *
  */
-@Plugin(name = "multicastdns", category = Core.CATEGORY_NAME, elementType = "advertiser", printObject = false)
+@Plugin(name = "MulticastDns", category = Core.CATEGORY_NAME, elementType = "advertiser", printObject = false)
 public class MulticastDnsAdvertiser implements Advertiser {
     /**
      * Status logger.

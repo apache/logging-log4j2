@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * An Appender container.
  */
-@Plugin(name = "appenders", category = Core.CATEGORY_NAME)
+@Plugin(name = "Appenders", category = Core.CATEGORY_NAME)
 public final class AppendersPlugin {
 
     private AppendersPlugin() {}
