@@ -14,60 +14,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+
 = Garbage-free Steady State Logging
-Remko Popma <rpopma@apache.org>
 
-////
-Different applications have different performance requirements.
-Some only need to worry about throughput, but for many
-the most important performance consideration is latency (response time).
-Users of such applications would consider it a serious problem
-if the system becomes unresponsive for more than a few seconds, or even milliseconds in some cases.
-In financial trading for example predictable low latency is so important that it is often considered
-worthwhile to trade off some throughput in return for a consistent response time.
-////
-
-Garbage collection pauses are a common cause of latency spikes and for
-many systems significant effort is spent on controlling these pauses.
-
-Many logging libraries, including previous versions of Log4j, allocate
-temporary objects like log event objects, Strings, char arrays, byte
-arrays and more during steady state logging. This contributes to
-pressure on the garbage collector and increases the frequency with which
-GC pauses occur.
-
-From version 2.6, Log4j runs in "garbage free" mode by default where
-objects and buffers are reused and no temporary objects are allocated as
-much as possible. There is also a "low garbage" mode which is not
-completely garbage free but does not use ThreadLocal fields. This is the
-default mode when Log4j link:#Config[detects] it is running in a web
-application. Finally, it is possible to switch off all garbage-free
-logic and run in "classic mode" instead. For details, see the
-link:#Config[Configuration] section below.
-
-[#jfr]
-== A Contrived Example
-
-To highlight the difference that garbage-free logging can make, we used
-Java Flight Recorder to measure a simple application that does nothing
-but log a simple string as often as possible for about 12 seconds.
-
-The application was configured to use Async Loggers, a RandomAccessFile
-appender and a "%d %p %c{1.} [%t] %m %ex%n" pattern layout. (Async
-Loggers used the Yield WaitStrategy.)
-
-Mission Control shows that with Log4j 2.5 this application allocates
-memory at a rate of about 809 MB/sec, resulting in 141 minor
-collections. Log4j 2.6 does not allocate temporary objects in this
-configuration, and as a result the same application with Log4j 2.6 has a
-memory allocation rate of 1.6 MB/sec and was GC-free with 0 (zero)
-garbage collections.
-
-.Using Log4j 2.5: memory allocation rate 809 MB/sec, 141 minor collections
-image:log4j-2.5-FlightRecording-thumbnail40pct.png[xref=image$log4j-2.5-FlightRecording.png]
-
-.Using Log4j 2.6: no temporary object allocations, 0 (zero) garbage collections
-image:log4j-2.6-FlightRecording-thumbnail40pct.png[xref=image$log4j-2.6-FlightRecording.png]
+include::partial$manual/garbagefree-intro.adoc[]
 
 [#Config]
 == Configuration
@@ -423,116 +373,6 @@ temporary objects.
 * Time calculations are not garbage free when log4j2.usePreciseClock is set to true.
 The default is false.
 ****
-
-[#Performance]
-== Performance
-
-[#Latency]
-=== Response Time Latency
-
-Response time is how long it takes to log a message under a certain
-load. What is often reported as latency is actually _service time_: how
-long it took to perform the operation. This hides the fact that a single
-spike in service time adds queueing delay for many of the subsequent
-operations. Service time is easy to measure (and often looks good on
-paper) but is irrelevant for users since it omits the time spent waiting
-for service. For this reason we report response time: service time plus
-wait time. See the xref:manual/performance.adoc#responseTime[response time
-section] of the performance page for more detail.
-
-The response time test results below were all derived from running the
-ResponseTimeTest class which can be found in the Log4j 2 unit test
-source directory. If you want to run these tests yourself, here are the
-command line options we used:
-
-* -Xms1G -Xmx1G (prevent heap resizing during the test)
-* -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
--DAsyncLogger.WaitStrategy=busyspin (to use Async Loggers. The BusySpin
-wait strategy reduces some jitter.)
-* *classic mode:* -Dlog4j2.enable.direct.encoders=false +
-*garbage-free mode:* -Dlog4j2.enable.direct.encoders=true
-* -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
-* -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
--XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime
--XX:+PrintGCApplicationStoppedTime (to eyeball GC and safepoint pauses)
-
-=== Async Loggers
-
-The graph below compares "classic" logging to garbage-free logging
-response time behaviour for Log4j's Async Loggers. In the graph, "100k"
-means logging at a sustained load of 100,000 messages/second, "800k" is
-a sustained load of 800,000 messages/second.
-
-image:ResponseTimeAsyncClassicVsGcFree-label.png[image]
-
-In *classic* mode we see numerous minor garbage collections which pause
-the application threads for 3 milliseconds or more. This quickly adds up
-to response time delays of almost 10 milliseconds. As you can see in the
-graph, increasing the load shifts the curve to the left (there are more
-spikes). This makes sense: logging more means more pressure on the
-garbage collector resulting in more minor GC pauses. We experimented a
-little with reducing the load to 50,000 or even 5000 messages/second,
-but this did not eliminate the 3 millisecond pauses, it just made them
-occur less frequently. Note that all GC pauses in this test are minor GC
-pauses. We did not see any full garbage collections.
-
-In *garbage-free* mode, maximum response time remains well below 1
-millisecond under a wide range of loads. (Max 780 us at 800,000
-messages/sec, max 407 us at 600,000 messages/sec, with the 99% around 5
-us for all loads up to 800,000 messages/sec.) Increasing or decreasing
-the load does not change the response time behaviour. We did not
-investigate the cause of the 200-300 microsecond pauses we saw in these
-tests.
-
-When we increased the load further we begin to see larger response time
-pauses for both classic and garbage-free logging. At sustained loads of
-1 million messages/second or more we start to approach the maximum
-throughput of the underlying RandomAccessFile Appender (see the
-synchronous logging throughput chart below). At these loads the
-ringbuffer starts to fill up and backpressure kicks in: attempting to
-add another message when the ringbuffer is full will block until a free
-slot becomes available. We start to see response times of tens of
-milliseconds or more; and attempting to increase the load even more
-results in larger and larger response time spikes.
-
-=== Synchronous File Logging
-
-With synchronous file logging, garbage-free logging still performs
-better than classic logging, but the difference is less pronounced.
-
-At a workload of 100,000 messages/second, classic logging max response
-time was a little over 2 milliseconds where garbage-free logging was a
-little over 1 millisecond. When the workload is increased to 300,000
-messages/second, classic logging shows response time pauses of 6
-milliseconds where the garbage-free response times were less than 3
-milliseconds. It may be possible to improve on this, we did not
-investigate further yet.
-
-image:ResponseTimeSyncClassicVsGcFree.png[image]
-
-The above results are obtained with the ResponseTimeTest class which can
-be found in the Log4j 2 unit test source directory, running on JDK
-1.8.0_45 on RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with 10-core Xeon
-CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual
-cores).
-
-[#Throughput]
-=== Classic Logging has Slightly Higher Throughput
-
-Throughput is slightly worse for garbage-free logging, compared to
-classic logging. This is true for both synchronous and asynchronous
-logging. The graph below compares the sustained throughput of
-synchronous logging to a file with Log4j 2.6 in garbage-free mode,
-classic mode and Log4j 2.5.
-
-image:garbage-free2.6-SyncThroughputLinux.png[Throughput of
-Log4j 2.6 in garbage-free mode is slightly worse than in classic mode,
-but on par with 2.5 and much better than alternatives logging libraries]
-
-The results above are obtained with the
-http://openjdk.java.net/projects/code-tools/jmh/[JMH] Java benchmark
-harness. See the FileAppenderBenchmark source code in the log4j-perf-test
-module.
 
 [#UnderTheHood]
 == Under the Hood
