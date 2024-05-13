@@ -86,14 +86,14 @@ The database query (i.e., `db.findUserNameById(userId)`) can be a significant bo
 +
 While this would work for cases where the message can be dropped due to insufficient level, this approach is still prone to other filtering cases; e.g., maybe the associated xref:manual/markers.adoc[marker] is not accepted.
 
-* [x] Use ``Supplier``s to pass arguments:
+* [x] Use ``Supplier``s to pass arguments containing computationally expensive items:
 +
 [source,java]
 ----
 /* GOOD */ LOGGER.info("failed for user ID `{}` and role `{}`", () -> userId, () -> db.findUserRoleById(userId));
 ----
 
-* [x] Use a `Supplier` to pass the message:
+* [x] Use a `Supplier` to pass the message and its arguments containing computationally expensive items:
 +
 [source,java]
 ----
@@ -108,7 +108,7 @@ Below sections walk you through a set of features that can have significant impa
 [IMPORTANT]
 ====
 Extra tuning of any application will deviate you away from defaults and add up to the maintenance load.
-You are strongly advised to measure your application's overall performance and then, if Log4j is found to be an important bottleneck factor, tune it accordingly.
+You are strongly advised to measure your application's overall performance and then, if Log4j is found to be an important bottleneck factor, tune it carefully.
 When this happens, we also recommend you to evaluate your assumptions on a regular basis to check if they still hold.
 Remember, https://en.wikipedia.org/wiki/Program_optimization#When_to_optimize[premature optimization is the root of all evil].
 ====
@@ -116,7 +116,7 @@ Remember, https://en.wikipedia.org/wiki/Program_optimization#When_to_optimize[pr
 [TIP]
 ====
 Remember that a logging API and a logging implementation are two different things.
-You can use Log4j Core in combination with a logging API other than Log4j API (e.g., SLF4J).
+You can use Log4j Core in combination with a logging API other than Log4j API (e.g., SLF4J, JUL, JPL).
 **The tips shared in this section are logging API agnostic.**
 ====
 
