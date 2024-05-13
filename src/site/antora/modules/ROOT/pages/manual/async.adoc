@@ -66,48 +66,9 @@ than synchronous loggers or even queue-based asynchronous appenders.
 
 === Drawbacks
 
-* Error handling. If a problem happens during the logging process and an
-exception is thrown, it is less easy for an asynchronous logger or
-appender to signal this problem to the application. This can partly be
-alleviated by configuring an `ExceptionHandler`, but this may still not
-cover all cases. For this reason, if logging is part of your business
-logic, for example if you are using Log4j as an audit logging framework,
-we would recommend to synchronously log those audit messages. (Note that
-you can still link:#MixedSync-Async[combine] them and use asynchronous
-logging for debug/trace logging in addition to synchronous logging for
-the audit trail.)
-* In some rare cases, care must be taken with mutable messages. Most of
-the time you don't need to worry about this. Log4 will ensure that log
-messages like `logger.debug("My object is {}", myObject)` will use the
-state of the `myObject` parameter at the time of the call to
-`logger.debug()`. The log message will not change even if `myObject` is
-modified later. It is safe to asynchronously log mutable objects because
-most
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
-implementations built-in to Log4j take a snapshot of the parameters.
-There are some exceptions however:
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[`MapMessage`]
-and
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html[`StructuredDataMessage`]
-are mutable by design: fields can be added to these messages after the
-message object was created. These messages should not be modified after
-they are logged with asynchronous loggers or asynchronous appenders; you
-may or may not see the modifications in the resulting log output.
-Similarly, custom
-link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]
-implementations should be designed with asynchronous use in mind, and
-either take a snapshot of their parameters at construction time, or
-document their thread-safety characteristics.
-* If your application is running in an environment where CPU resources
-are scarce, like a machine with one CPU with a single core, starting
-another thread is not likely to give better performance.
-* If the _sustained rate_ at which your application is logging messages
-is faster than the maximum sustained throughput of the underlying
-appender, the queue will fill up and the application will end up logging
-at the speed of the slowest appender. If this happens, consider
-selecting a xref:manual/performance.adoc#whichAppender[faster appender], or
-logging less. If neither of these is an option, you may get better
-throughput and fewer latency spikes by logging synchronously.
+There are certain drawbacks associated with asynchronous logging:
+
+include::partial$manual/async-drawbacks.adoc[]
 
 [#AllAsync]
 == Making All Loggers Asynchronous
