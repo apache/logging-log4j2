@@ -14,8 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Lock-free Asynchronous Loggers for Low-Latency Logging
-Remko Popma <rpopma@apache.org>
+= Asynchronous loggers
 
 Asynchronous logging can improve your application's performance by
 executing the I/O operations in a separate thread. Log4j 2 makes a

@@ -165,9 +165,14 @@ required for using CSV layouts.
 [#GELFLayout]
 == GELF Layout
 
-Lays out events in the Graylog Extended Log Format (GELF) 1.1.
+Encodes log events the https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification[the GELF specification] version `1.1`.
+Compresses JSON to GZIP or ZLIB (`compressionType`) if log event data is larger than 1024 bytes (`compressionThreshold`).
+This layout does not implement chunking.
 
-This layout compresses JSON to GZIP or ZLIB (`compressionType`) if log event data is larger than 1024 bytes (`compressionThreshold`). This layout does not implement chunking.
+[TIP]
+====
+Unless compression is needed, we advise you to use xref:manual/json-template-layout.adoc[JSON Template Layout] instead, which provides GELF layout support out of the box and offers a far richer set of features.
+====
 
 Configure as follows to send to a Graylog 2.x server with UDP:
 
@@ -225,10 +230,7 @@ To include any custom field in the output, use following syntax:
 
 Custom fields are included in the order they are declared. The values support xref:manual/lookups.adoc[lookups].
 
-See also:
-
-* The https://docs.graylog.org/en/latest/pages/gelf.html#gelf[GELF specification]
-
+GELF Layout is garbage-free when used with `compressionType="OFF"` and as long as no additional field contains `${` (variable substitution).
 
 [#HTMLLayout]
 == HTML Layout
@@ -1787,6 +1789,188 @@ should be used.
   </ScriptPatternSelector>
 </PatternLayout>
 ----
+
+[#PatternLayout-gcfree]
+=== Garbage-free configuration
+
+PatternLayout with the following limited set of conversion patterns is
+garbage-free. Format modifiers to control such things as field width,
+padding, left and right justification will not generate garbage.
+
+[cols="1m,2"]
+|===
+|Conversion Pattern |Description
+
+|%c\{precision}, %logger\{precision}
+|Logger name
+
+|%d, %date
+a|
+Note: Only the predefined date formats are garbage-free: (millisecond
+separator may be either a comma ',' or a period '.')
+
+[cols="1m,1"]
+!===
+!Pattern !Example
+
+!%d\{DEFAULT}
+!2012-11-02 14:34:02,781
+
+!%d\{ISO8601}
+!2012-11-02T14:34:02,781
+
+!%d\{ISO8601_BASIC}
+!20121102T143402,781
+
+!%d\{ABSOLUTE}
+!14:34:02,781
+
+!%d\{DATE}
+!02 Nov 2012 14:34:02,781
+
+!%d\{COMPACT}
+!20121102143402781
+
+!%d{HH:mm:ss,SSS}
+!14:34:02,781
+
+!%d{dd MMM yyyy HH:mm:ss,SSS}
+!02 Nov 2012 14:34:02,781
+
+!%d{HH:mm:ss}{GMT+0}
+!18:34:02
+
+!%d\{UNIX}
+!1351866842
+
+!%d\{UNIX_MILLIS}
+!1351866842781
+!===
+
+|%enc\{pattern}, %encode\{pattern}
+|Encodes special characters such as
+'\n' and HTML characters to help prevent log forging and some XSS
+attacks that could occur when displaying logs in a web browser -
+garbage-free since 2.8
+
+|%equals\{pattern}\{test}\{substitution},
+%equalsIgnoreCase\{pattern}\{test}\{substitution}
+|Replaces occurrences
+of 'test', a string, with its replacement 'substitution' in the string
+resulting from evaluation of the pattern - garbage-free since 2.8
+
+|%highlight\{pattern}\{style}
+|Adds ANSI colors - garbage-free since 2.7
+(unless nested pattern is not garbage free)
+
+|%K\{key}, %map\{key}, %MAP\{key}
+|Outputs the entries in a
+link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
+if one is present in the event - garbage-free since 2.8.
+
+|%m, %msg, %message
+|Log message (garbage-free unless message text
+contains '${')
+
+|%marker
+|The full name of the marker (including parents) - garbage-free
+since 2.8
+
+|%markerSimpleName
+|The simple name of the marker (not including
+parents)
+
+|%maxLen, %maxLength
+|Truncates another pattern to some max number of
+characters - garbage-free since 2.8
+
+|%n
+|The platform dependent line separator
+
+|%N, %nano
+|System.nanoTime() when the event was logged
+
+|%notEmpty\{pattern}, %varsNotEmpty\{pattern},
+%variablesNotEmpty\{pattern}
+|Outputs the result of evaluating the
+pattern if and only if all variables in the pattern are not empty -
+garbage-free since 2.8
+
+|%p, %level
+|The level of the logging event
+
+|%r, %relative
+|The number of milliseconds elapsed since the JVM was
+started until the creation of the logging event - garbage-free since 2.8
+
+|%sn, %sequenceNumber
+|A sequence number that will be incremented in
+every event - garbage-free since 2.8
+
+|%style\{pattern}{ANSI style}
+|Style the message - garbage-free since
+2.7 (unless nested pattern is not garbage free)
+
+|%T, %tid, %threadId
+|The ID of the thread that generated the logging
+event
+
+|%t, %tn, %thread, %threadName
+|The name of the thread that generated
+the logging event
+
+|%tp
+|The priority of the thread that generated the logging event
+
+|%X{key[,key2...]}, %mdc{key[,key2...]}, %MDC{key[,key2...]}
+|Outputs
+the Thread Context Map (also known as the Mapped Diagnostic Context or
+MDC) associated with the thread that generated the logging event -
+garbage-free since 2.8
+
+|literal text
+|Garbage-free unless literal contains '${' (variable
+substitution)
+|===
+
+Other PatternLayout conversion patterns, and other Layouts may be
+updated to avoid creating temporary objects in future releases. (Patches
+welcome!)
+
+NOTE: Logging exceptions and stack traces will create temporary
+objects with any layout. (However, Layouts will only create these
+temporary objects when an exception actually occurs.) We haven't figured
+out a way to log exceptions and stack traces without creating temporary
+objects. That is unfortunate, but you probably still want to log them
+when they happen.
+
+[NOTE]
+====
+patterns containing regular expressions and lookups for property
+substitution will result in temporary objects being created during
+steady-state logging.
+
+Including location information is done by walking the stacktrace of an
+exception, which creates temporary objects, so the following patterns
+are not garbage-free:
+
+* %C, %class - Class Name
+* %F, %file - File Location
+* %l, %location - Location
+* %L, %line - Line Location
+* %M, %method - Method Location
+
+Also, the pattern converters for formatting Throwables are not
+garbage-free:
+
+* %ex, %exception, %throwable - The Throwable trace bound to the
+LoggingEvent
+* %rEx, %rException %rThrowable - Same as %ex but with wrapping
+exceptions
+* %xEx, %xException, %xThrowable - Same as %ex but with class packaging
+information
+* %u, %uuid - Creates a new random or time-based UUID while formatting
+====
 
 [#RFC5424Layout]
 == RFC5424 Layout

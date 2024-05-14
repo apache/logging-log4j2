@@ -48,8 +48,6 @@
 * xref:manual/layouts.adoc[]
 ** xref:manual/json-template-layout.adoc[]
 * xref:manual/filters.adoc[]
-* xref:manual/async.adoc[]
-* xref:manual/garbagefree.adoc[]
 * xref:manual/extending.adoc[]
 * xref:manual/plugins.adoc[]
 * xref:manual/customconfig.adoc[]
@@ -57,6 +55,8 @@
 * xref:manual/jmx.adoc[]
 * xref:manual/logsep.adoc[]
 * xref:manual/performance.adoc[]
+** xref:manual/async.adoc[]
+** xref:manual/garbagefree.adoc[]
 
 .References
 * xref:plugin-reference.adoc[Plugin reference]

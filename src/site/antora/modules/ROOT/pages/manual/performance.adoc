@@ -105,13 +105,7 @@ While this would work for cases where the message can be dropped due to insuffic
 
 Below sections walk you through a set of features that can have significant impact on the performance of Log4j Core.
 
-[IMPORTANT]
-====
-Extra tuning of any application will deviate you away from defaults and add up to the maintenance load.
-You are strongly advised to measure your application's overall performance and then, if Log4j is found to be an important bottleneck factor, tune it carefully.
-When this happens, we also recommend you to evaluate your assumptions on a regular basis to check if they still hold.
-Remember, https://en.wikipedia.org/wiki/Program_optimization#When_to_optimize[premature optimization is the root of all evil].
-====
+include::partial$premature-optimization.adoc[]
 
 [TIP]
 ====
