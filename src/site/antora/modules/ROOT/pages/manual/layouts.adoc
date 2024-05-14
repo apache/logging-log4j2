@@ -52,8 +52,7 @@ The CSV layout can be used in two ways: First, using
 `CsvParameterLayout` to log event parameters to create a custom
 database, usually to a logger and file appender uniquely configured for
 this purpose. Second, using `CsvLogEventLayout` to log events to create
-a database, as an alternative to using a full DBMS or using a JDBC
-driver that supports the CSV format.
+a database, as an alternative to using a full DBMS or using a JDBC driver that supports the CSV format.
 
 The `CsvParameterLayout` converts an event's parameters into a CSV
 record, ignoring the message. To log CSV records, you can use the usual
@@ -70,7 +69,7 @@ Which will create the CSV record:
 value1, value2, value3
 ....
 
-Alternatively, you can use a `ObjectArrayMessage`, which only carries
+Alternatively, you can use an `ObjectArrayMessage`, which only carries
 parameters:
 
 [source,java]
@@ -131,7 +130,7 @@ specified value. One of: `ALL`, `MINIMAL`, `NON_NUMERIC`, `NONE`.
 |Desc.
 |===
 
-Logging as a CSV events looks like this:
+Logging as a CSV event looks like this:
 
 [source,java]
 ----
@@ -273,7 +272,7 @@ expensive operation and may impact performance. Use with caution.
 
 |fontSize
 |String
-|The `font-size` to use. The default is "small".
+|The `font size` to use. The default is "small".
 
 |datePattern
 |String
@@ -281,12 +280,12 @@ expensive operation and may impact performance. Use with caution.
 
 |timezone
 |String
-|The timezone id of the logging event. If not specified, this layout uses the https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getDefault()[java.util.TimeZone.getDefault] as default timezone. Like link:#PatternDate[date pattern] of PatternLayout, you can use timezone id from
+|The timezone id of the logging event. If not specified, this layout uses the https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getDefault()[java.util.TimeZone.getDefault] as the default timezone. Like link:#PatternDate[date pattern] of PatternLayout, you can use the timezone id from
 https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[java.util.TimeZone.getTimeZone].
 
 |===
 
-Configure as follows to use dataPattern and timezone in HtmlLayout:
+Configure as follows to use `dataPattern` and timezone in `HtmlLayout`:
 [source,xml]
 ----
 <Appenders>
@@ -371,7 +370,7 @@ Log event follows this pattern:
 
 === Pretty vs. compact JSON
 
-The compact attribute determines whether the output will be "pretty" or not. The default value is "false", which means the appender uses end-of-line characters and indents lines to format the text. If `compact="true"`, then no end-of-line or indentation is used, which will cause the output to take less space. Of course, the message content may contain, escaped end-of-lines.
+The compact attribute determines whether the output will be "pretty" or not. The default value is "false", which means the appender uses end-of-line characters and indent lines to format the text. If `compact="true"`, then no end-of-line or indentation is used, which will cause the output to take less space. Of course, the message content may contain, escaped end-of-lines.
 
 [options="header"]
 |===
@@ -391,7 +390,7 @@ The compact attribute determines whether the output will be "pretty" or not. The
 | objectMessageAsJsonObject | boolean   | If true, ObjectMessage is serialized as JSON object to the "message" field of the output log. Defaults to false.
 |===
 
-To include any custom field in the output, use following syntax:
+To include any custom field in the output, use the following syntax:
 
 [source,xml]
 ----
@@ -409,8 +408,8 @@ Additional xref:runtime-dependencies.adoc[runtime dependencies] are required for
 [#JSONTemplateLayout]
 == JSON Template Layout
 
-`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
-emitting layout. It encodes ``LogEvent``s according to the structure described
+`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON-emitting layout. 
+It encodes ``LogEvent``s according to the structure described
 by the JSON template provided. For instance, given the following JSON template
 modelling https://github.com/logstash/log4j-jsonevent-layout[the official
 Logstash `JSONEventLayoutV1`]
@@ -515,12 +514,12 @@ documentation.
 [id=pattern-layout]
 == [[PatternLayout]] Pattern Layout
 
-A flexible layout configurable with pattern string. The goal of this
+A flexible layout is configurable with a pattern string. The goal of this
 class is to format a LogEvent and return the results. The format of the
 result depends on the _conversion pattern_.
 
 The conversion pattern is closely related to the conversion pattern of
-the printf function in C. A conversion pattern is composed of literal
+the `printf()` function in C. A conversion pattern is composed of literal
 text and format control expressions called _conversion specifiers_.
 
 _Note that any literal text, including *Special Characters*, may be
@@ -531,7 +530,7 @@ Each conversion specifier starts with a percent sign (%) and is followed
 by optional _format modifiers_ and a _conversion character_. The
 conversion character specifies the type of data, e.g. category,
 priority, date, thread name. The format modifiers control such things as
-field width, padding, left and right justification. The following is a
+field width, padding, and left and right justification. The following is a
 simple example.
 
 Let the conversion pattern be *"%-5p [%t]: %m%n"* and assume that the
@@ -558,7 +557,7 @@ logging event should be left justified to a width of five characters.
 
 If the pattern string does not contain a specifier to handle a Throwable
 being logged, parsing of the pattern will act as if the `%xEx` specifier
-had be added to the end of the string. To suppress formatting of the
+had been added to the end of the string. To suppress the formatting of the
 Throwable completely simply add `%ex\{0}` as a specifier in the pattern
 string.
 
@@ -632,7 +631,7 @@ escape codes.
 
 |regex
 |String
-|A Java-compliant regular expression to match in the resulting string. See
+|A Java-compliant regular expression to match the resulting string. See
 https://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html[Pattern].
 
 |replacement
@@ -658,7 +657,7 @@ with a decimal integer.
 
 When the precision specifier is an integer value, it reduces the size of
 the logger name. If the number is positive, the layout prints the
-corresponding number of rightmost logger name components. If negative,
+corresponding number of the rightmost logger name components. If negative,
 the layout removes the corresponding number of leftmost logger name
 components. If the precision contains periods then the number before the first period
 identifies the length to be printed from items that precede tokens in the rest of the pattern.
@@ -824,7 +823,7 @@ You can define custom date formats:
 
 `%d\{UNIX}` outputs the UNIX time in seconds. `%d\{UNIX_MILLIS}` outputs the
 UNIX time in milliseconds. The UNIX time is the difference, in seconds
-for UNIX and in milliseconds for UNIX_MILLIS, between the current time
+for UNIX and milliseconds for UNIX_MILLIS, between the current time
 and midnight, January 1, 1970 UTC. While the time unit is milliseconds,
 the granularity depends on the operating system
 (http://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx[Windows]).
@@ -835,11 +834,11 @@ involved.
 Log4j 2.11 adds limited support for timestamps more precise than
 milliseconds when running on Java 9. Note that not all
 https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html[DateTimeFormatter]
-formats are supported. Only timestamps in the formats mentioned in the
-table above may use the "nano-of-second" pattern letter `n` instead of
+formats are supported. Only timestamps in the formats mentioned in the table 
+above may use the "nano-of-second" pattern letter `n` instead of
 the "fraction-of-second" pattern letter `S`.
 
-Users may revert back to a millisecond-precision clock when running on
+Users may revert to a millisecond-precision clock when running on
 Java 9 by setting system property `log4j2.Clock` to `SystemMillisClock`.
 
 |*enc*\{pattern}{[HTML\|XML\|JSON\|CRLF]} +
@@ -847,9 +846,8 @@ Java 9 by setting system property `log4j2.Clock` to `SystemMillisClock`.
 |Encodes and escapes special characters suitable for output in specific
 markup languages. By default, this encodes for HTML if only one option
 is specified. The second option is used to specify which encoding format
-should be used. This converter is particularly useful for encoding user
-provided data so that the output data is not written improperly or
-insecurely.
+should be used. This converter is particularly useful for encoding user-provided 
+data so that the output data is not written improperly or insecurely.
 
 A typical usage would encode the message `%enc{%m}` but user input could
 come from other locations as well, such as the MDC `%enc{%mdc\{key}}`
@@ -911,9 +909,9 @@ Using the CRLF encoding format, the following characters are replaced:
 |*equals*\{pattern}\{test}\{substitution} +
 *equalsIgnoreCase*\{pattern}\{test}\{substitution}
 |Replaces occurrences of 'test', a string, with its replacement
-'substitution' in the string resulting from evaluation of the pattern.
+'substitution' in the string resulting from the evaluation of the pattern.
 For example, "%equals{[%marker]}{[]}\{}" will replace '[]' strings
-produces by events without markers with an empty string.
+produced by events without markers with an empty string.
 
 The pattern can be arbitrarily complex and in particular can contain
 multiple conversion keywords.
@@ -968,7 +966,7 @@ Use `{filters(packages)}` where _packages_ is a list of package names to
 suppress matching stack frames from stack traces.
 
 Use `{suffix(pattern)}` to add the output of _pattern_ at the end of
-each stack frames.
+each stack frame.
 
 Use a `{separator(...)}` as the end-of-line string. For example:
 `separator(\|)`. The default value is the `line.separator` system
@@ -1014,8 +1012,7 @@ The color names are ANSI names defined in the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/AnsiEscape.html[`AnsiEscape`]
 class.
 
-The color and attribute names and are standard, but the exact shade,
-hue, or value.
+The color and attribute names are standard, but the exact shade, hue, or value.
 
 .Color table
 !===
@@ -1039,14 +1036,13 @@ example:
 %highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}
 ....
 
-You can highlight only the a portion of the log event:
+You can highlight only the portion of the log event:
 
 ....
 %d [%t] %highlight{%-5level: %msg%n%throwable}
 ....
 
-You can style one part of the message and highlight the rest the log
-event:
+You can style one part of the message and highlight the rest of the log event:
 
 ....
 %style{%d [%t]}{black} %highlight{%-5level: %msg%n%throwable}
@@ -1085,16 +1081,16 @@ The STYLE value can be one of:
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
 if one is present in the event. The `K` conversion character can be
 followed by the key for the map placed between braces, as in
-`%K\{clientNumber}` where `clientNumber` is the key. The value in the
-Map corresponding to the key will be output. If no additional sub-option
-is specified, then the entire contents of the Map key value pair set is
+`%K\{clientNumber}` where `clientNumber` is the key. The value of the Map 
+corresponding to the key will be output. If no additional sub-option
+is specified, then the entire contents of the Map key-value pair set is
 output using a format {{key1,val1},{key2,val2}}
 
 |[[PatternLocation]] *l* +
 *location*
-|Outputs location information of the caller which generated the logging event.
+|Outputs location information of the caller which generates the logging event.
 
-The location information depends on the JVM implementation but usually
+The location information depends on the JVM implementation but it usually
 consists of the fully qualified name of the calling method followed by
 the callers source the file name and line number between parentheses.
 
@@ -1112,7 +1108,7 @@ with caution.
 |[[PatternMessage]] *m*\{lookups}\{ansi} +
 *msg*\{lookups}\{ansi} +
 *message\{lookups}\{ansi}
-|Outputs the application supplied message associated with the logging
+|Outputs the application-supplied message associated with the logging
 event.
 
 Add `\{ansi}` to render messages with ANSI escape codes (requires JAnsi,
@@ -1192,7 +1188,7 @@ example: `%maxLen{%m}\{20}` will be limited to 20 characters and no
 trailing ellipsis.
 
 |[[PatternNewLine]] *n*
-|Outputs the platform dependent line separator character or characters.
+|Outputs the platform-dependent line separator character or characters.
 
 This conversion character offers practically the same performance as
 using non-portable line separator strings such as "\n", or "\r\n". Thus,
@@ -1200,8 +1196,7 @@ it is the preferred way of specifying a line separator.
 
 |[[NanoTime]] *N* +
 *nano*
-|Outputs the result of `System.nanoTime()` at the time the log
-event was created.
+|Outputs the result of `System.nanoTime()` at the time the log event was created.
 
 |[[Process_ID]] *pid*{[defaultValue]} +
 *processId*{[defaultValue]}
@@ -1225,7 +1220,7 @@ For example:
 ...} **p**\|*level*{length=_n_}
 **p**\|*level*{lowerCase=__true__\|_false_}
 |Outputs the level of the logging event. You provide a level name map in
-the form "level=value, level=value" where level is the name of the Level
+the form "level=value, level=value" where the level is the name of the Level
 and value is the value that should be displayed instead of the name of
 the Level.
 
@@ -1257,11 +1252,10 @@ You can combine the two kinds of options:
 %level{ERROR=Error, length=2}
 ....
 
-This give you the `Error` level name and all other level names of length
+This gives you the `Error` level name and all other level names of length
 2.
 
-Finally, you can output lower-case level names (the default is
-upper-case):
+Finally, you can output lower-case level names (the default is upper-case):
 
 ....
 %level{lowerCase=true}
@@ -1279,11 +1273,11 @@ For example, "%repeat{\*}\{2}" will result in the string "**".
 
 |[[PatternReplace]] *replace*\{pattern}\{regex}\{substitution}
 |Replaces occurrences of 'regex', a regular expression, with its
-replacement 'substitution' in the string resulting from evaluation of
+replacement 'substitution' in the string resulting from the evaluation of
 the pattern. For example, "%replace{%msg}{\s}\{}" will remove all
 spaces contained in the event message.
 
-The pattern can be arbitrarily complex and in particular can contain
+The pattern can be arbitrarily complex and in particular, can contain
 multiple conversion keywords. For instance, "%replace{%logger
 %msg}{\.}{/}" will replace all dots in the logger or the message of
 the event with a forward slash.
@@ -1329,7 +1323,7 @@ within applications that share the same converter Class object.
 
 |[[PatternStyle]] *style*\{pattern}{ANSI style}
 |Uses ANSI escape sequences to style the result of the enclosed pattern.
-The style can consist of a comma separated list of style names from the
+The style can consist of a comma-separated list of style names from the
 following table. (See Jansi link:#enable-jansi[configuration].)
 
 !===
@@ -1357,55 +1351,55 @@ following table. (See Jansi link:#enable-jansi[configuration].)
 !
 
 !Black or FG_Black
-!Set foreground color to black
+!Set the foreground color to black
 
 !Red or FG_Red
-!Set foreground color to red
+!Set the foreground color to red
 
 !Green or FG_Green
-!Set foreground color to green
+!Set the foreground color to green
 
 !Yellow or FG_Yellow
-!Set foreground color to yellow
+!Set the foreground color to yellow
 
 !Blue or FG_Blue
-!Set foreground color to blue
+!Set the foreground color to blue
 
 !Magenta or FG_Magenta
-!Set foreground color to magenta
+!Set the foreground color to magenta
 
 !Cyan or FG_Cyan
-!Set foreground color to cyan
+!Set the foreground color to cyan
 
 !White or FG_White
-!Set foreground color to white
+!Set the foreground color to white
 
 !Default or FG_Default
-!Set foreground color to default (white)
+!Set the foreground color to default (white)
 
 !BG_Black
-!Set background color to black
+!Set the background color to black
 
 !BG_Red
-!Set background color to red
+!Set the background color to red
 
 !BG_Green
-!Set background color to green
+!Set the background color to green
 
 !BG_Yellow
-!Set background color to yellow
+!Set the background color to yellow
 
 !BG_Blue
-!Set background color to blue
+!Set the background color to blue
 
 !BG_Magenta
-!Set background color to magenta
+!Set the background color to magenta
 
 !BG_Cyan
-!Set background color to cyan
+!Set the background color to cyan
 
 !BG_White
-!Set background color to white
+!Set the background color to white
 !===
 
 For example:
@@ -1464,14 +1458,14 @@ for the map placed between braces, as in *%X\{clientNumber}* where
 `clientNumber` is the key. The value in the MDC corresponding to the key
 will be output.
 
-If a list of keys are provided, such as *%X{name, number}*, then each
+If a list of keys is provided, such as *%X{name, number}*, then each
 key that is present in the ThreadContext will be output using the format
 {name=val1, number=val2}. The key/value pairs will be printed in the
 order they appear in the list.
 
-If no sub-options are specified then the entire contents of the MDC key
-value pair set is output using a format {key1=val1, key2=val2}. The
-key/value pairs will be printed in sorted order.
+If no sub-options are specified then the entire contents of the MDC key-value pair 
+set is output using a format {key1=val1, key2=val2}. 
+The key/value pairs will be printed in sorted order.
 
 See the
 link:../javadoc/log4j-api/org/apache/logging/log4j/ThreadContext.html[ThreadContext]
@@ -1480,10 +1474,10 @@ class for more details.
 |[[PatternUUID]] *u*{"RANDOM" \| "TIME"} +
 *uuid*
 |Includes either a random or a time-based UUID. The time-based
-UUID is a Type 1 UUID that can generate up to 10,000 unique ids per
-millisecond, will use the MAC address of each host, and to try to insure
-uniqueness across multiple JVMs and/or ClassLoaders on the same host a
-random number between 0 and 16,384 will be associated with each instance
+UUID is a Type 1 UUID that can generate up to 10,000 unique IDs per
+millisecond will use the MAC address of each host, and to try to insure
+uniqueness across multiple JVMs and/or ClassLoaders on the same host 
+a random number between 0 and 16,384 will be associated with each instance
 of the UUID generator Class and included in each time-based UUID
 generated. Because time-based UUIDs contain the MAC address and
 timestamp they should be used with care as they can cause a security
@@ -1524,9 +1518,9 @@ Use a `separator` string to separate the lines of a stack trace. For
 example: `separator(\|)`. The default value is the `line.separator`
 system property, which is operating system dependent.
 
-The `ansi` option renders stack traces with ANSI escapes code using the
+The `ansi` option renders stack traces with ANSI escape code using the
 JAnsi library. (See link:#enable-jansi[configuration].) Use `\{ansi}` to
-use the default color mapping. You can specify your own mappings with
+use the default color mapping. You can specify your mappings with
 `key=value` pairs. The keys are:
 
 * Prefix
@@ -1568,8 +1562,8 @@ print.
 |The sequence %% outputs a single percent sign.
 |===
 
-By default the relevant information is output as is. However, with the
-aid of format modifiers it is possible to change the minimum field
+By default, the relevant information is output as is. However, with 
+the aid of format modifiers it is possible to change the minimum field
 width, the maximum field width and justification.
 
 The optional format modifier is placed between the percent sign and the
@@ -1591,9 +1585,9 @@ This behavior can be changed using the _maximum field width_ modifier
 which is designated by a period followed by a decimal constant. If the
 data item is longer than the maximum field, then the extra characters
 are removed from the _beginning_ of the data item and not from the end.
-For example, it the maximum field width is eight and the data item is
+For example, if the maximum field width is eight and the data item is
 ten characters long, then the first two characters of the data item are
-dropped. This behavior deviates from the printf function in C where
+dropped. This behavior deviates from the `printf()` function in C where
 truncation is done from the end.
 
 Truncation from the end is possible by appending a minus character right
@@ -1626,15 +1620,14 @@ less than 20 characters long.
 |NA
 |none
 |30
-|Truncate from the beginning if the category name
-is longer than 30 characters.
+|Truncate from the beginning if the category name is longer than 30 characters.
 
 |%20.30c
 |false
 |20
 |30
 |Left pad with spaces if the category name is
-shorter than 20 characters. However, if category name is longer than 30
+shorter than 20 characters. However, if the category name is longer than 30
 characters, then truncate from the beginning.
 
 |%-20.30c
@@ -1642,7 +1635,7 @@ characters, then truncate from the beginning.
 |20
 |30
 |Right pad with spaces if the category name is
-shorter than 20 characters. However, if category name is longer than 30
+shorter than 20 characters. However, if the category name is longer than 30
 characters, then truncate from the beginning.
 
 |%-20.-30c
@@ -1650,7 +1643,7 @@ characters, then truncate from the beginning.
 |20
 |30
 |Right pad with spaces if the category name is
-shorter than 20 characters. However, if category name is longer than 30
+shorter than 20 characters. However, if the category name is longer than 30
 characters, then truncate from the end.
 |===
 
@@ -1663,9 +1656,9 @@ http://jansi.fusesource.org/[Jansi] jar to your application and set
 property `log4j.skipJansi` to `false`. This allows Log4j to use Jansi to
 add ANSI escape codes when writing to the console.
 
-NOTE: Prior to Log4j 2.10, Jansi was enabled by default. The fact that
+NOTE: Before Log4j 2.10, Jansi was enabled by default. The fact that
 Jansi requires native code means that Jansi can only be loaded by a
-single class loader. For web applications this means the Jansi jar has
+single class loader. For web applications, this means the Jansi jar has
 to be in the web container's classpath. To avoid causing problems for
 web applications, Log4j will no longer automatically try to load Jansi
 without explicit configuration from Log4j 2.10 onward.
@@ -1728,7 +1721,7 @@ that can be selected.
 
 The LevelPatternSelector selects patterns based on the log level of
 the log event. If the Level in the log event is equal to (ignoring case)
- the name specified on the PatternMatch key attribute, then
+the name specified on the PatternMatch key attribute, then
 the pattern specified on that PatternMatch element will be used.
 
 [source,xml]
@@ -1760,11 +1753,11 @@ the pattern specified on that PatternMatch element will be used.
 [#ScriptPatternSelector]
 ==== ScriptPatternSelector
 
-The ScriptPatternSelector executes a script as descibed in the
+The ScriptPatternSelector executes a script as described in the
 xref:manual/configuration.adoc#Scripts[Scripts] section of the Configuration
 chapter. The script is passed all the properties configured in the
 Properties section of the configuration, the StrSubstitutor used by the
-Confguration in the "substitutor" variables, and the log event in the
+Configuration in the "substitutor" variables, and the log event in the
 "logEvent" variable, and is expected to return the value of the
 PatternMatch key that should be used, or null if the default pattern
 should be used.
@@ -1791,9 +1784,8 @@ should be used.
 [#RFC5424Layout]
 == RFC5424 Layout
 
-As the name implies, the Rfc5424Layout formats LogEvents in accordance
-with http://tools.ietf.org/html/rfc5424[RFC 5424], the enhanced Syslog
-specification. Although the specification is primarily directed at
+As the name implies, the Rfc5424Layout formats LogEvents by http://tools.ietf.org/html/rfc5424[RFC 5424], the enhanced Syslog specification. 
+Although the specification is primarily directed at
 sending messages via Syslog, this format is quite useful for other
 purposes since items are passed in the message as self-describing
 key/value pairs.
@@ -1811,7 +1803,7 @@ syslog record.
 |charset
 |String
 |The character set to use when converting the syslog
-String to a byte array. The String must be a valid
+String to a byte array. The String must be valid
 http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html[Charset].
 If not specified, the default system Charset will be used.
 
@@ -1835,21 +1827,20 @@ The facility option must be set to one of "KERN", "USER", "MAIL",
 "DAEMON", "AUTH", "SYSLOG", "LPR", "NEWS", "UUCP", "CRON", "AUTHPRIV",
 "FTP", "NTP", "AUDIT", "ALERT", "CLOCK", "LOCAL0", "LOCAL1", "LOCAL2",
 "LOCAL3", "LOCAL4", "LOCAL5", "LOCAL6", or "LOCAL7". These values may be
-specified as upper or lower case characters.
+specified as upper or lowercase characters.
 
 |format
 |String
-|If set to "RFC5424" the data will be formatted in
-accordance with RFC 5424. Otherwise, it will be formatted as a BSD
+|If set to "RFC5424" the data will be formatted by RFC 5424. 
+Otherwise, it will be formatted as a BSD
 Syslog record. Note that although BSD Syslog records are required to be
 1024 bytes or shorter the SyslogLayout does not truncate them. The
 RFC5424Layout also does not truncate records since the receiver must
-accept records of up to 2048 bytes and may accept records that are
-longer.
+accept records of up to 2048 bytes and may accept longer records.
 
 |id
 |String
-|The default structured data id to use when formatting
+|The default structured data-id to use when formatting
 according to RFC 5424. If the LogEvent contains a StructuredDataMessage
 the id from the Message will be used instead of this value.
 
@@ -1870,29 +1861,28 @@ which specifies the PatternLayout pattern to use as the value.
 
 |mdcExcludes
 |String
-|A comma separated list of mdc keys that should be
+|A comma-separated list of mdc keys that should be
 excluded from the LogEvent. This is mutually exclusive with the
 mdcIncludes attribute. This attribute only applies to RFC 5424 syslog
 records.
 
 |mdcIncludes
 |String
-|A comma separated list of mdc keys that should be
+|A comma-separated list of mdc keys that should be
 included in the FlumeEvent. Any keys in the MDC not found in the list
 will be excluded. This option is mutually exclusive with the mdcExcludes
 attribute. This attribute only applies to RFC 5424 syslog records.
 
 |mdcRequired
 |String
-|A comma separated list of mdc keys that must be
+|A comma-separated list of mdc keys that must be
 present in the MDC. If a key is not present a LoggingException will be
 thrown. This attribute only applies to RFC 5424 syslog records.
 
 |mdcPrefix
 |String
-|A string that should be prepended to each MDC key in
-order to distinguish it from event attributes. The default string is
-"mdc:". This attribute only applies to RFC 5424 syslog records.
+|A string that should be prepended to each MDC key to distinguish it from event attributes. 
+The default string is "mdc:". This attribute only applies to RFC 5424 syslog records.
 
 |mdcId
 |String
@@ -1917,7 +1907,7 @@ order to distinguish it from event attributes. The default string is
 The SerializedLayout simply serializes the LogEvent into a byte array
 using Java Serialization. The SerializedLayout accepts no parameters.
 
-This layout is deprecated since version 2.9. Java Serialization has
+This layout has been deprecated since version 2.9. Java Serialization has
 inherent security weaknesses, using this layout is no longer
 recommended.
 
@@ -1925,7 +1915,7 @@ recommended.
 == Syslog Layout
 
 The SyslogLayout formats the LogEvent as BSD Syslog records matching the
-same format used by Log4j 1.2.
+the same format used by Log4j 1.2.
 
 .SyslogLayout Parameters
 [cols="1m,1,4"]
@@ -1946,7 +1936,7 @@ The facility option must be set to one of "KERN", "USER", "MAIL",
 "DAEMON", "AUTH", "SYSLOG", "LPR", "NEWS", "UUCP", "CRON", "AUTHPRIV",
 "FTP", "NTP", "AUDIT", "ALERT", "CLOCK", "LOCAL0", "LOCAL1", "LOCAL2",
 "LOCAL3", "LOCAL4", "LOCAL5", "LOCAL6", or "LOCAL7". These values may be
-specified as upper or lower case characters.
+specified as upper or lowercase characters.
 
 |newLine
 |boolean
@@ -2025,7 +2015,7 @@ Markers are represented by a `Marker` element within the `Event` element. The `M
 
 === Pretty vs. compact XML
 
-By default, the XML layout is not compact (a.k.a. not "pretty") with `compact="false"`, which means the appender uses end-of-line characters and indents lines to format the XML. If `compact="true"`, then no end-of-line or indentation is used. Message content may contain, of course, end-of-lines.
+By default, the XML layout is not compact (a.k.a. not "pretty") with `compact="false"`, which means the appender uses end-of-line characters and indent lines to format the XML. If `compact="true"`, then no end-of-line or indentation is used. Message content may contain, of course, end-of-lines.
 
 [options="header"]
 |===
@@ -2155,5 +2145,5 @@ logging with location is 30-100 times slower than without location. For
 this reason, asynchronous loggers and asynchronous appenders do not
 include location information by default.
 
-You can override the default behaviour in your logger or asynchronous
+You can override the default behavior in your logger or asynchronous
 appender configuration by specifying `includeLocation="true"`.

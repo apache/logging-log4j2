@@ -75,7 +75,7 @@ If the logger is additive, the filter on the parent logger is applied recursivel
 
 [CAUTION]
 ====
-For performance reasons log events should be filtered as soon as possible in the logging pipeline.
+For performance reasons, log events should be filtered as soon as possible in the logging pipeline.
 This reduces the costs (formatting, transfer through an asynchronous barrier) of disabled log events.
 ====
 
@@ -90,8 +90,7 @@ Using the `level` property of appender references will give a better performance
 == BurstFilter
 
 The BurstFilter provides a mechanism to control the rate at which
-LogEvents are processed by silently discarding events after the maximum
-limit has been reached.
+LogEvents are processed by silently discarding events after the maximum limit has been reached.
 
 .Burst Filter Parameters
 [cols="1m,1,4"]
@@ -117,12 +116,12 @@ times the rate.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -154,8 +153,8 @@ A configuration containing the BurstFilter might look like:
 == CompositeFilter
 
 The CompositeFilter provides a way to specify more than one filter. It
-is added to the configuration as a filters element and contains other
-filters to be evaluated. The filters element accepts no parameters.
+is added to the configuration as a filter element and contains other
+filters to be evaluated. The filter element accepts no parameters.
 
 A configuration containing the CompositeFilter might look like:
 
@@ -218,7 +217,7 @@ specified ThreadContext item NEUTRAL will be returned.
 |String
 |Level of messages to be filtered. The default
 threshold only applies if the log event contains the specified
-ThreadContext Map item and its value does not match any key in the
+ThreadContext Map item and its value do not match any key in the
 key/value pairs.
 
 |keyValuePair
@@ -229,12 +228,12 @@ key matches.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -329,7 +328,7 @@ MapMessage.
 |keyValuePair
 |KeyValuePair[]
 |One or more KeyValuePair elements that
-define the key in the map and the value to match on. If the same key is
+define the key in the map and the value to match. If the same key is
 specified more than once then the check for that key will automatically
 be an "or" since a Map can only contain a single value.
 
@@ -341,12 +340,12 @@ key/value pairs must match.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -458,12 +457,12 @@ matches either the Log Event's Marker or one of its parents.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -495,7 +494,7 @@ appender if the Marker matches:
 [#MutableThreadContextMapFilter]
 == MutableThreadContextMapFilter
 
-The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context. By default this is the ThreadContext Map. The values to compare are defined externally and can be periodically polled for changes.
+The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context. By default, this is the ThreadContext Map. The values to compare are defined externally and can be periodically polled for changes.
 
 .Mutable Context Map Filter Parameters
 [cols="1m,1,4"]
@@ -514,16 +513,16 @@ key/value pairs must match.
 
 |pollInterval
 |int
-|The number of seconds to wait before checking to see if the configuration has been modified. When using HTTP or HTTPS the server must support the If-Modified-Since header and return a Last-Modified header containing the date and time the file was last modified. Note that by default only the https, file, and jar protocols are allowed. Support for other protocols can be enabled by specifying them in the log4j2.Configuration.allowedProtocols system property
+|The number of seconds to wait before checking to see if the configuration has been modified. When using HTTP or HTTPS the server must support the If-Modified-Since header and return a Last-Modified header containing the date and time the file was last modified. Note that by default only the https, file, and jar protocols are allowed. Support for other protocols can be enabled by specifying them in the `log4j2.Configuration.allowedProtocols` system property
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -567,8 +566,8 @@ The configuration file supplied to the filter should look similar to:
 [#NoMarkerFilter]
 == NoMarkerFilter
 
-The NoMarkerFilter checks that there is no marker included in the LogEvent. A match occurs when there is no
-marker in the Log Event.
+The NoMarkerFilter checks that there is no marker included in the LogEvent. 
+A match occurs when there is no marker in the Log Event.
 
 .No Marker Filter Parameters
 [cols="1m,1,3"]
@@ -577,12 +576,12 @@ marker in the Log Event.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -629,17 +628,17 @@ compared against a regular expression.
 |useRawMsg
 |boolean
 |If true the unformatted message will be used,
-otherwise the formatted message will be used. The default value is
+otherwise, the formatted message will be used. The default value is
 false.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -683,12 +682,12 @@ The ScriptFilter executes a script that returns true or false.
 
 |onMatch
 |String
-|Action to take when the script returns true. May be
+|Action to take when the script returns true. Can be
 ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter returns false. May
+|Action to take when the filter returns false. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -741,7 +740,7 @@ Throwable as part of the Message.
 
 |substitutor
 |StrSubstitutor
-|The StrSubstitutor used to replace lookup variables.
+|The StrSubstitutor is used to replace lookup variables.
 |===
 
 The sample below shows how to declare script fields and then reference
@@ -801,7 +800,7 @@ the event id, type and message.
 |KeyValuePair[]
 |One or more KeyValuePair elements that
 define the key in the map and the value to match on. "id", "id.name",
-"type", and "message" should be used to match on the StructuredDataId,
+"type", and "message" should be used to match the StructuredDataId,
 the name portion of the StructuredDataId, the type, and the formatted
 message respectively. If the same key is specified more than once then
 the check for that key will automatically be an "or" since a Map can
@@ -815,12 +814,12 @@ key/value pairs must match.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -857,7 +856,7 @@ particular events:
 == ThreadContextMapFilter
 
 The ThreadContextMapFilter or ContextMapFilter allows filtering against
-data elements that are in the current context. By default this is the
+data elements that are in the current context. By default, this is the
 ThreadContext Map.
 
 .Context Map Filter Parameters
@@ -868,7 +867,7 @@ ThreadContext Map.
 |keyValuePair
 |KeyValuePair[]
 |One or more KeyValuePair elements that
-define the key in the map and the value to match on. If the same key is
+define the key in the map and the value to match. If the same key is
 specified more than once then the check for that key will automatically
 be an "or" since a Map can only contain a single value.
 
@@ -880,12 +879,12 @@ key/value pairs must match.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -950,9 +949,9 @@ The ContextMapFilter can also be applied to a logger for filtering:
 == ThresholdFilter
 
 This filter returns the onMatch result if the level in the LogEvent is
-the same or more specific than the configured level and the onMismatch
+the same or more specific than the configured level and the `onMismatch`
 value otherwise. For example, if the ThresholdFilter is configured with
-Level ERROR and the LogEvent contains Level DEBUG then the onMismatch
+Level ERROR and the LogEvent contains Level DEBUG then the `onMismatch`
 value will be returned since ERROR events are more specific than DEBUG.
 
 .Threshold Filter Parameters
@@ -962,16 +961,16 @@ value will be returned since ERROR events are more specific than DEBUG.
 
 |level
 |String
-|A valid Level name to match on.
+|A valid Level name to match.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
@@ -1003,7 +1002,7 @@ appender if the level matches:
 [#TimeFilter]
 == TimeFilter
 
-The time filter can be used to restrict filter to only a certain portion
+The time filter can be used to restrict the filter to only a certain portion
 of the day.
 
 .Time Filter Parameters
@@ -1027,12 +1026,12 @@ timestamp.
 
 |onMatch
 |String
-|Action to take when the filter matches. May be ACCEPT,
+|Action to take when the filter matches. Can be ACCEPT,
 DENY or NEUTRAL. The default value is NEUTRAL.
 
 |onMismatch
 |String
-|Action to take when the filter does not match. May
+|Action to take when the filter does not match. Can
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
