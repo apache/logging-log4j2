@@ -24,7 +24,7 @@
     <Console name="STDOUT">
       <PatternLayout>
         <ScriptPatternSelector defaultPattern="%d %p %m%n">
-          <ScriptRef ref="selector"/>
+          <ScriptRef ref="SELECTOR_SCRIPT"/>
           <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
           <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
         </ScriptPatternSelector>
@@ -34,7 +34,7 @@
   <Loggers>
     <Logger name="EventLogger">
       <ScriptFilter onMatch="ACCEPT" onMismatch="DENY">
-        <Script name="EventLogger-filter" language="groovy"><![CDATA[
+        <Script name="EVENT_LOGGER_FILTER" language="groovy"><![CDATA[
           if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
               return true;
           } else if (logEvent.getContextMap().containsKey("UserId")) {
@@ -47,13 +47,13 @@
     </Logger>
     <Root level="INFO">
       <ScriptFilter onMatch="ACCEPT" onMismatch="DENY">
-        <ScriptRef ref="Root-filter"/>
+        <ScriptRef ref="ROOT_FILTER"/>
       </ScriptFilter>
       <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
   <Scripts>
-    <Script name="selector" language="javascript"><![CDATA[
+    <Script name="SELECTOR_SCRIPT" language="javascript"><![CDATA[
       var result;
       if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
           result = "NoLocation";
@@ -63,6 +63,6 @@
       result;
       ]]>
     </Script>
-    <ScriptFile name="Root-filter" path="scripts/filter.groovy"/>
+    <ScriptFile name="ROOT_FILTER" path="scripts/filter.groovy"/>
   </Scripts>
 </Configuration>

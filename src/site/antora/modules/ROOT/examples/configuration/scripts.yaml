@@ -22,7 +22,7 @@ Configuration:
         ScriptPatternSelector:
           defaultPattern: "%d %p %m%n"
           ScriptRef:
-            ref: "selector"
+            ref: "SELECTOR_SCRIPT"
           PatternMatch:
             - key: "NoLocation"
               pattern: "[%-5level] %c{1.} %msg%n"
@@ -35,7 +35,7 @@ Configuration:
         onMatch: "ACCEPT"
         onMismatch: "DENY"
         Script:
-          name: "EventLogger-filter"
+          name: "EVENT_LOGGER_FILTER"
           language: "groovy"
           scriptText: |
             if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
@@ -50,12 +50,12 @@ Configuration:
         onMatch: "ACCEPT"
         onMismatch: "DENY"
         ScriptRef:
-          ref: "Root-filter"
+          ref: "ROOT_FILTER"
       AppenderRef:
         ref: "STDOUT"
   Scripts:
     Script:
-      name: "selector"
+      name: "SELECTOR_SCRIPT"
       language: "javascript"
       scriptText: |
         var result;
@@ -66,5 +66,5 @@ Configuration:
         }
         result;
     ScriptFile:
-      name: "Root-filter"
+      name: "ROOT_FILTER"
       path: "scripts/filter.groovy"

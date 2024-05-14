@@ -16,10 +16,10 @@
   ~ limitations under the License.
   -->
 <Appenders>
-  <Console name="StdOut">
+  <Console name="CONSOLE">
     <PatternLayout pattern="%d %m%n"/>
   </Console>
-  <File name="File" fileName="${filename}">
+  <File name="FILE" fileName="${filename}">
     <PatternLayout pattern="%d %p %C{1.} [%t] %m%n"/>
   </File>
 </Appenders>

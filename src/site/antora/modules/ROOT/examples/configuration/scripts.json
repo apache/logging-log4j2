@@ -7,7 +7,7 @@
           "ScriptPatternSelector": {
             "defaultPattern": "%d %p %m%n",
             "ScriptRef": {
-              "ref": "selector",
+              "ref": "SELECTOR_SCRIPT",
               "PatternMatch": [
                 {
                   "key": "NoLocation",
@@ -29,7 +29,7 @@
             "onMatch": "ACCEPT",
             "onMismatch": "DENY",
             "Script": {
-              "name": "EventLogger-filter",
+              "name": "EVENT_LOGGER_FILTER",
               "language": "groovy",
               "scriptText": "if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf('FLOW'))) { return true; } else if (logEvent.getContextMap().containsKey('UserId')) { return true; } return false;"
             }
@@ -41,7 +41,7 @@
             "onMatch": "ACCEPT",
             "onMismatch": "DENY",
             "ScriptRef": {
-              "ref": "Root-filter"
+              "ref": "ROOT_FILTER"
             }
           },
           "AppenderRef": {
@@ -50,12 +50,12 @@
         },
         "Scripts": {
           "Script": {
-            "name": "selector",
+            "name": "SELECTOR_SCRIPT",
             "language": "javascript",
             "scriptText": "var result; if (logEvent.getLoggerName().equals('JavascriptNoLocation')) { result = 'NoLocation'; } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf('FLOW')) { result = 'Flow'; } result;"
           },
           "ScriptFile": {
-            "name": "Root-filter",
+            "name": "ROOT_FILTER",
             "path": "scripts/filter.groovy"
           }
         }
