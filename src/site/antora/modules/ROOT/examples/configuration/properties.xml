@@ -22,5 +22,5 @@
     <Property name="log.dir" value="/var/log"/>
     <Property name="log.file" value="${log.dir}/app.log"/>
   </Properties>
-  <Appenders/>
+  <!-- ... -->
 </Configuration>

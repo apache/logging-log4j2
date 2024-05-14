@@ -31,7 +31,7 @@
             "Script": {
               "name": "EventLogger-filter",
               "language": "groovy",
-              "scriptText": "if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf(\"FLOW\"))) { return true; } else if (logEvent.getContextMap().containsKey(\"UserId\")) { return true; } return false;"
+              "scriptText": "if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf('FLOW'))) { return true; } else if (logEvent.getContextMap().containsKey('UserId')) { return true; } return false;"
             }
           }
         },
@@ -52,7 +52,7 @@
           "Script": {
             "name": "selector",
             "language": "javascript",
-            "scriptText": "var result; if (logEvent.getLoggerName().equals(\"JavascriptNoLocation\")) { result = \"NoLocation\"; } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf(\"FLOW\")) { result = \"Flow\"; } result;"
+            "scriptText": "var result; if (logEvent.getLoggerName().equals('JavascriptNoLocation')) { result = 'NoLocation'; } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf('FLOW')) { result = 'Flow'; } result;"
           },
           "ScriptFile": {
             "name": "Root-filter",

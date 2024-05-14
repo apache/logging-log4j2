@@ -28,11 +28,11 @@ Log4j Core can be configured in two ways:
 * through a <<configuration-file>>.
 Since version 2.0 the configuration file format is considered as part of the public API, and it remains stable even across major version upgrades.
 
-* through xref:manual/customconfig.adoc[Programmatic Configuration], which provides a larger spectrum of possible customizations, but might require code changes even for minor version upgrades, according to https://semver.org/[semantic versioning] rules.
+* through xref:manual/customconfig.adoc[Programmatic Configuration], which provides a larger spectrum of possible customizations, but might require code changes during version upgrades.
 
 [NOTE]
 ====
-To prevent a chicken-and-egg problem some configuration options, such as the location of the configuration file can be supplied only through xref:manual/systemproperties.adoc[System properties].
+To prevent a chicken-and-egg problem some configuration options (e.g., the configuration file location) can only be supplied through xref:manual/systemproperties.adoc[system properties].
 ====
 
 [#configuration-file]
@@ -41,7 +41,7 @@ To prevent a chicken-and-egg problem some configuration options, such as the loc
 TIP: For a quick example of a configuration file see the xref:manual/installation.adoc#impl-core-config[Configuring Log4j Core section].
 
 Log4j Core can be configured using multiple configuration file formats.
-Configuration factories for the XML, JSON, YAML and Java properties format are included in the `log4j-core` artifact.
+Configuration factories for the XML, JSON, YAML and Java properties formats are included in the `log4j-core` artifact.
 
 Some configuration formats require additional dependencies to be present on the classpath, according to the table below.
 
@@ -142,13 +142,10 @@ XML::
 +
 Since XML was the original configuration format developed, the mapping from configuration nodes and XML elements is trivial:
 +
-[id=configuration-with-xml]
-====
 * Each configuration node is represented by an XML element.
 * Each configuration attribute is represented by an XML attribute.
 * The **plugin type** of a node is equal to the name of the XML tag.
 * Each configuration nested element is represented by a nested XML element.
-====
 +
 [NOTE]
 ====
