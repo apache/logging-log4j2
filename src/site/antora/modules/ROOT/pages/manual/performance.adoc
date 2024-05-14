@@ -130,11 +130,11 @@ include::partial$manual/layouts-location-information.adoc[]
 Not all layouts are designed with the same performance considerations in mind.
 Following layouts are known to be well-optimized for performance-sensitive workloads:
 
-xref:manual/json-template-layout.adoc[JSON Template Layout]::
+xref:manual/json-template-layout.adoc#performance[JSON Template Layout]::
 It encodes log events into JSON according to the structure described by the template provided.
 Its output can safely be ingested into several log storage solutions: Elasticsearch, Google Cloud Logging, Graylog, Logstash, etc.
 
-xref:manual/layouts.adoc#PatternLayout[Pattern Layout]::
+xref:manual/layouts.adoc#PatternLayout-performance[Pattern Layout]::
 It encodes log events into human-readable text according to the pattern provided.
 
 [#async]

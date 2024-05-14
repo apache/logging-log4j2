@@ -212,7 +212,7 @@ appender.console.layout.eventTemplateUri = classpath:EcsLayout.json
   separating rendered ``LogEvent``s (defaults to `false` set by
   `log4j.layout.jsonTemplate.nullEventDelimiterEnabled` property)
 
-| maxStringLength
+| [[maxStringLength]] maxStringLength
 | int
 | truncate string values longer than the specified limit (defaults to 16384 set
   by `log4j.layout.jsonTemplate.maxStringLength` property)
@@ -383,7 +383,7 @@ Event template resolvers consume a `LogEvent` and render a certain property of
 it at the point of the JSON where they are declared. For instance, `marker`
 resolver renders the marker of the event, `level` resolver renders the level,
 and so on. An event template resolver is denoted with a special object
-containing a`$resolver` key:
+containing a `$resolver` key:
 
 .Example event template demonstrating the usage of `level` resolver
 [source,json]
@@ -397,9 +397,8 @@ containing a`$resolver` key:
 }
 ----
 
-Here `version` field will be rendered as is, while `level` field will be
-populated by the `level` resolver. That is, this template will generate JSON
-similar to the following:
+Here `version` field will be rendered as is, while `level` field will be populated by xref:#event-template-resolver-level[the `level` resolver].
+That is, this template will generate JSON similar to the following:
 
 .Example JSON generated from the demonstrated event template
 [source,json]
@@ -1158,6 +1157,13 @@ Resolves the fields of the `StackTraceElement` returned by
 Note that this resolver is toggled by
 `log4j.layout.jsonTemplate.locationInfoEnabled` property.
 
+[WARNING]
+====
+Mind that capturing the source location information is an expensive operation, and is not garbage-free.
+Note that xref:#event-template-resolver-logger[the `logger` resolver] can generally be used as a zero-cost substitute for `className`.
+See xref:manual/layouts.adoc#LocationInformation[this section of the layouts page] for details.
+====
+
 ====== Examples
 
 Resolve the line number:
@@ -1846,6 +1852,17 @@ alternatives.
 | ✕
 |===
 
+[#performance]
+== Performance
+
+JSON Template Layout is a heavily optimized piece of software to encode a log event as fast as possible.
+To get the most out of it, mind the following checklist:
+
+* Enable xref:manual/garbagefree.adoc[garbage-free logging]
+* Mind xref:#faq-garbage-free[the garbage footprint of features you use]
+* Choose a xref:#recycling-strategy[recycling strategy] that suits best to your deployment environment
+* Don't give too much slack to xref:#maxStringLength[`maxStringLength`] and try to keep it relatively tight
+
 [#faq]
 == F.A.Q.
 
@@ -1875,9 +1892,8 @@ logging.
 [#faq-garbage-free]
 === Is `JsonTemplateLayout` garbage-free?
 
-Yes, if the garbage-free layout behaviour toggling properties
-`log4j2.enableDirectEncoders` and `log4j2.garbagefreeThreadContextMap` are
-enabled. Take into account the following caveats:
+Yes, if xref:manual/garbagefree.adoc[garbage-free logging] is enabled.
+Take into account the following caveats:
 
 * The configured recycling strategy might not be
   garbage-free.
