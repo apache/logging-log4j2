@@ -47,6 +47,7 @@ asciidoc:
     logging-services-url: "https://logging.apache.org"
     # Dependency versions
     commons-logging-version: "1.2.3-commons-logging"
+    disruptor-version: "1.2.3-disruptor"
     jackson-version: "1.2.3-jackson"
     log4j-api-version: "1.2.3-api"
     log4j-core-version: "1.2.3-core"
