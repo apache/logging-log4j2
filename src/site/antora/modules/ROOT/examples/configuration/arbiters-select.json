@@ -7,9 +7,7 @@
           "SystemPropertyArbiter": { // <1>
             "propertyName": "env",
             "propertyValue": "dev",
-            "PatternLayout": {
-              "pattern": "%d [%t] %p %c - %m%n"
-            }
+            "PatternLayout": {}
           },
           "DefaultArbiter": { // <2>
             "JsonTemplateLayout": {}

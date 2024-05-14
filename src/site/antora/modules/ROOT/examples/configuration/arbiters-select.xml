@@ -22,7 +22,7 @@
     <File name="MAIN" fileName="logs/app.log">
       <Select>
         <SystemPropertyArbiter propertyName="env" propertyValue="dev"> <!--1-->
-          <PatternLayout pattern="%d [%t] %p %c - %m%n"/>
+          <PatternLayout/>
         </SystemPropertyArbiter>
         <DefaultArbiter> <!--2-->
           <JsonTemplateLayout/>
