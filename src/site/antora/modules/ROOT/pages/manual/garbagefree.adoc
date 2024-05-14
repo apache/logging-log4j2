@@ -15,9 +15,6 @@
     limitations under the License.
 ////
 
-// Properties crowd the ToC, hence limit the exposed levels
-:page-toclevels: 2
-
 = Garbage-free logging
 
 include::partial$manual/garbagefree-intro.adoc[]
