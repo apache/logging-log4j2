@@ -3,7 +3,6 @@
     "Appenders": {
       "Console": { // <1>
         "name": "CONSOLE",
-        "target": "SYSTEM_OUT",
         "PatternLayout": {
           "pattern": "%p - %m%n"
         }

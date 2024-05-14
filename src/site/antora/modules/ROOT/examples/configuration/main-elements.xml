@@ -21,7 +21,7 @@
                    https://logging.apache.org/xml/ns
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <Appenders>
-    <Console name="CONSOLE" target="SYSTEM_OUT"> <!--1-->
+    <Console name="CONSOLE"> <!--1-->
       <PatternLayout pattern="%p - %m%n"/>
     </Console>
     <File name="MAIN" fileName="logs/main.log"> <!--2-->
