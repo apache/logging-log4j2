@@ -1972,6 +1972,16 @@ information
 * %u, %uuid - Creates a new random or time-based UUID while formatting
 ====
 
+[#PatternLayout-performance]
+=== Performance
+
+Great effort has been put into the efficiency of Pattern Layout.
+To get the most out of it, mind the following checklist:
+
+* Enable xref:manual/garbagefree.adoc[garbage-free logging]
+* Mind xref:#PatternLayout-gcfree[the garbage footprint of features you use]
+* Don't give too much slack to xref:manual/configuration.adoc#log4j2.layoutStringBuilderMaxSize[`log4j2.layoutStringBuilderMaxSize`] and try to keep it relatively tight
+
 [#RFC5424Layout]
 == RFC5424 Layout
 
