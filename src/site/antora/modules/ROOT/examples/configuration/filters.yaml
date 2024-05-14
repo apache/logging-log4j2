@@ -39,4 +39,3 @@ Configuration:
           level: "TRACE" # <3>
   MarkerFilter: # <1>
     marker: "PRIVATE"
-    onMismatch: "NEUTRAL"

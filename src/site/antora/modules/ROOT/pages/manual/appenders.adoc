@@ -20,49 +20,39 @@ Ralph Goers; Gary Gregory; Nick Williams; Matt Sicker
 Appenders are responsible for delivering LogEvents to their destination.
 Every Appender must implement the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html[`Appender`]
-interface. Most Appenders will extend
+interface.
+Most Appenders will extend
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractAppender.html[`AbstractAppender`]
 which adds
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/LifeCycle.html[`Lifecycle`]
 and
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/filter/Filterable.html[`Filterable`]
-support. `Lifecycle` allows components to finish initialization after
-configuration has been completed and to perform cleanup during shutdown.
-`Filterable` allows the component to have `Filter` attached to it which are
-evaluated during event processing.
+support. `Lifecycle` allows components to finish initialization after configuration has been completed and to perform cleanup during shutdown.
+`Filterable` allows the component to have `Filter` attached to it which are evaluated during event processing.
 
-Appenders usually are only responsible for writing the event data to the
-target destination. In most cases, they delegate responsibility for
-formatting the event to a xref:manual/layouts.adoc[layout]. Some appenders wrap
-other appenders so that they can modify the `LogEvent`, handle a failure
-in an `Appender`, route the event to a subordinate `Appender` based on
-advanced `Filter` criteria or provide similar functionality that does not
-directly format the event for viewing.
+Appenders usually are only responsible for writing the event data to the target destination.
+In most cases, they delegate responsibility for formatting the event to a xref:manual/layouts.adoc[layout].
+Some appenders wrap other appenders so that they can modify the `LogEvent`, handle a failure in an `Appender`, route the event to a subordinate `Appender` based on advanced `Filter` criteria or provide similar functionality that does not directly format the event for viewing.
 
-Appenders always have a name so that they can be referenced from
-Loggers.
+Appenders always have a name so that they can be referenced from Loggers.
 
-In the tables below, the "Type" column corresponds to the Java type
-expected. For non-JDK classes, these should usually be in
-link:../javadoc/log4j-core/index.html[Log4j Core] unless otherwise
-noted.
+In the tables below, the "Type" column corresponds to the Java type expected.
+For non-JDK classes, these should usually be in
+link:../javadoc/log4j-core/index.html[Log4j Core] unless otherwise noted.
 
 [#AsyncAppender]
 == AsyncAppender
 
-The AsyncAppender accepts references to other Appenders and causes
-LogEvents to be written to them on a separate Thread. Note that
-exceptions while writing to those Appenders will be hidden from the
-application. The AsyncAppender should be configured after the appenders
-it references to allow it to shut down properly.
+The AsyncAppender accepts references to other Appenders and causes LogEvents to be written to them on a separate Thread.
+Note that exceptions while writing to those Appenders will be hidden from the application.
+The AsyncAppender should be configured after the appenders it references to allow it to shut down properly.
 
 By default, AsyncAppender uses
 https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html[`java.util.concurrent.ArrayBlockingQueue`]
-which does not require any external libraries. Note that multi-threaded
-applications should exercise care when using this appender as such: the
-blocking queue is susceptible to lock contention and our
-xref:manual/performance.adoc#asyncLogging[tests showed] performance may
-become worse when more threads are logging concurrently. Consider using
+which does not require any external libraries.
+Note that multi-threaded applications should exercise care when using this appender as such: the blocking queue is susceptible to lock contention and our
+xref:manual/performance.adoc#asyncLogging[tests showed] performance may become worse when more threads are logging concurrently.
+Consider using
 xref:manual/async.adoc[lock-free Async Loggers] for optimal performance.
 
 .AsyncAppender Parameters
@@ -116,12 +106,11 @@ type of `BlockingQueue` to use. See link:#BlockingQueueFactory[below
 documentation] for more details.
 |=======================================================================
 
-There are also a few system properties that can be used to maintain
-application throughput even when the underlying appender cannot keep up
-with the logging rate and the queue is filling up. See the details for
-system properties
-xref:manual/systemproperties.adoc#log4j2.asyncQueueFullPolicy[`log4j2.AsyncQueueFullPolicy`
-and `log4j2.DiscardThreshold`].
+There are also a few system properties that can be used to maintain application throughput even when the underlying appender cannot keep up with the logging rate and the queue is filling up.
+See the details for system properties
+xref:manual/systemproperties.adoc#log4j2.asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`]
+and
+xref:manual/systemproperties.adoc#log4j2.discardThreshold[`log4j2.DiscardThreshold`].
 
 A typical AsyncAppender configuration might look like this:
 
@@ -147,11 +136,11 @@ A typical AsyncAppender configuration might look like this:
 </Configuration>
 ----
 
-[[BlockingQueueFactory]] Starting in Log4j 2.7, a custom implementation
-of `BlockingQueue` or `TransferQueue` can be specified using a
+[[BlockingQueueFactory]]
+Starting in Log4j 2.7, a custom implementation of `BlockingQueue` or `TransferQueue` can be specified using a
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/BlockingQueueFactory.html[`BlockingQueueFactory`]
-plugin. To override the default `BlockingQueueFactory`, specify the
-plugin inside an `<Async/>` element like so:
+plugin.
+To override the default `BlockingQueueFactory`, specify the plugin inside an `<Async/>` element like so:
 
 [source,xml]
 ----
@@ -197,22 +186,19 @@ attribute from AsyncAppender as `LinkedTransferQueue` does not support a
 maximum capacity.
 |=======================================================================
 
-
 [#CassandraAppender]
 == CassandraAppender
 
 The CassandraAppender writes its output to an https://cassandra.apache.org/[Apache Cassandra]
-database. A keyspace and table must be configured ahead of time, and the columns of that table are mapped
-in a configuration file. Each column can specify either a https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout[StringLayout] (e.g., a
-PatternLayout) along with an optional conversion type, or only
-a conversion type for `org.apache.logging.log4j.spi.ThreadContextMap` or
-`org.apache.logging.log4j.spi.ThreadContextStack` to store the MDC or NDC
-in a map or list column respectively. A conversion type compatible with `java.util.Date` will
-use the log event timestamp converted to that type (e.g., use `java.util.Date` to fill a
+database.
+A keyspace and table must be configured ahead of time, and the columns of that table are mapped in a configuration file.
+Each column can specify either a https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout[StringLayout] (e.g., a PatternLayout) along with an optional conversion type, or only a conversion type for `org.apache.logging.log4j.spi.ThreadContextMap` or
+`org.apache.logging.log4j.spi.ThreadContextStack` to store the MDC or NDC in a map or list column respectively.
+A conversion type compatible with `java.util.Date` will use the log event timestamp converted to that type (e.g., use `java.util.Date` to fill a
 `timestamp` column type in Cassandra).
 
 .CassandraAppender Parameters
-[cols="1,1,3", options="header"]
+[cols="1,1,3",options="header"]
 |===
 | Parameter Name | Type | Description
 
@@ -343,8 +329,8 @@ CREATE TABLE logs (
 == [[ConsoleAppender]] ConsoleAppender
 
 As one might expect, the ConsoleAppender writes its output to either
-`System.out` or `System.err` with `System.out` being the default target. A
-Layout must be provided to format the LogEvent.
+`System.out` or `System.err` with `System.out` being the default target.
+A Layout must be provided to format the LogEvent.
 
 .ConsoleAppender Parameters
 [cols="20%,20%,60%",options="header",]
@@ -405,9 +391,8 @@ A typical Console configuration might look like:
 [#FailoverAppender]
 == FailoverAppender
 
-The FailoverAppender wraps a set of appenders. If the primary Appender
-fails the secondary appenders will be tried in order until one succeeds
-or there are no more secondaries to try.
+The FailoverAppender wraps a set of appenders.
+If the primary Appender fails the secondary appenders will be tried in order until one succeeds or there are no more secondaries to try.
 
 .FailoverAppender Parameters
 [cols="20%,20%,60%",options="header",]
@@ -469,14 +454,10 @@ A Failover configuration might look like:
 [id=fileappender]
 == [[FileAppender]] FileAppender
 
-The FileAppender is an OutputStreamAppender that writes to the File
-defined in the `fileName` parameter. The FileAppender uses a FileManager
-(which extends OutputStreamManager) to perform the file I/O.
-While FileAppenders from different Configurations cannot be shared, the
-FileManagers can be if the Manager is accessible. For example, two web
-applications in a servlet container can have their configuration and
-safely write to the same file if Log4j is in a ClassLoader that is
-common to both of them.
+The FileAppender is an OutputStreamAppender that writes to the File defined in the `fileName` parameter.
+The FileAppender uses a FileManager (which extends OutputStreamManager) to perform the file I/O.
+While FileAppenders from different Configurations cannot be shared, the FileManagers can be if the Manager is accessible.
+For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
 
 .FileAppender Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
@@ -603,29 +584,19 @@ Here is a sample File configuration:
 
 _This is an optional component supplied in a separate jar._
 
-http://flume.apache.org/index.html[Apache Flume] is a distributed,
-reliable, and available system for efficiently collecting, aggregating,
-and moving large amounts of log data from many different sources to a
-centralized data store. The FlumeAppender takes LogEvents and sends them
-to a Flume agent as serialized Avro events for consumption.
+http://flume.apache.org/index.html[Apache Flume] is a distributed, reliable, and available system for efficiently collecting, aggregating, and moving large amounts of log data from many different sources to a centralized data store.
+The FlumeAppender takes LogEvents and sends them to a Flume agent as serialized Avro events for consumption.
 
 The Flume Appender supports three modes of operation.
 
-1.  It can act as a remote Flume client which sends Flume events via
-Avro to a Flume Agent configured with an Avro Source.
-2.  It can act as an embedded Flume Agent where Flume events pass
-directly into Flume for processing.
-3.  It can persist events to a local BerkeleyDB data store and then
-asynchronously send the events to Flume, similar to the embedded Flume
-Agent but without most of the Flume dependencies.
+1. It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured with an Avro Source.
+2. It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.
+3. It can persist events to a local BerkeleyDB data store and then asynchronously send the events to Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.
 
-Usage as an embedded agent will cause the messages to be directly passed
-to the Flume Channel and then control will be immediately returned to
-the application. All interaction with remote agents will occur
-asynchronously. Setting the "type" attribute to "Embedded" will force
-the use of the embedded agent. In addition, configuring agent properties
-in the appender configuration will also cause the embedded agent to be
-used.
+Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel and then control will be immediately returned to the application.
+All interaction with remote agents will occur asynchronously.
+Setting the "type" attribute to "Embedded" will force the use of the embedded agent.
+In addition, configuring agent properties in the appender configuration will also cause the embedded agent to be used.
 
 .FlumeAppender Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
@@ -725,9 +696,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 indicate which variation of the Appender is desired.
 |=======================================================================
 
-A sample FlumeAppender configuration that is configured with a primary
-and a secondary agent compresses the body and formats the body using
-the RFC5424Layout:
+A sample FlumeAppender configuration that is configured with a primary and a secondary agent compresses the body and formats the body using the RFC5424Layout:
 
 [source,xml]
 ----
@@ -748,9 +717,7 @@ the RFC5424Layout:
 </Configuration>
 ----
 
-A sample FlumeAppender configuration that is configured with a primary
-and a secondary agent compresses the body, formats the body using the
-RFC5424Layout, and persists encrypted events to disk:
+A sample FlumeAppender configuration that is configured with a primary and a secondary agent compresses the body, formats the body using the RFC5424Layout, and persists encrypted events to disk:
 
 [source,xml]
 ----
@@ -772,9 +739,7 @@ RFC5424Layout, and persists encrypted events to disk:
 </Configuration>
 ----
 
-A sample FlumeAppender configuration that is configured with a primary
-and a secondary agent compresses the body, and formats the body using
-RFC5424Layout and passes the events to an embedded Flume Agent.
+A sample FlumeAppender configuration that is configured with a primary and a secondary agent compresses the body, and formats the body using RFC5424Layout and passes the events to an embedded Flume Agent.
 
 [source,xml]
 ----
@@ -801,10 +766,7 @@ RFC5424Layout and passes the events to an embedded Flume Agent.
 </Configuration>
 ----
 
-A sample FlumeAppender configuration that is configured with a primary
-and a secondary agent using Flume configuration properties compresses
-the body, formats the body using RFC5424Layout and passes the events to
-an embedded Flume Agent.
+A sample FlumeAppender configuration that is configured with a primary and a secondary agent using Flume configuration properties compresses the body, formats the body using RFC5424Layout and passes the events to an embedded Flume Agent.
 
 [source,xml]
 ----
@@ -855,27 +817,20 @@ an embedded Flume Agent.
 As of Log4j 2.11.0, JDBC support has moved from the existing module
 `log4j-core` to the new module `log4j-jdbc`.
 
-The JDBC Appender configured with a `DataSource` requires JNDI support so as of release 2.17.1
-this appender will not function unless `log4j2.enableJndiJdbc=true` is configured as a system property
-or environment variable. See the xref:manual/configuration.adoc#enableJndiJdbc[enableJndiJdbc] system property.
+The JDBC Appender configured with a `DataSource` requires JNDI support so as of release 2.17.1 this appender will not function unless `log4j2.enableJndiJdbc=true` is configured as a system property or environment variable.
+See the xref:manual/configuration.adoc#enableJndiJdbc[enableJndiJdbc] system property.
 
-The JDBCAppender writes log events to a relational database table using
-standard JDBC. It can be configured to obtain JDBC connections using a
-JNDI `DataSource` or a custom factory method. Whichever approach you
-take, it *_must_* be backed by a connection pool. Otherwise, logging
-performance will suffer greatly. If batch statements are supported by
-the configured JDBC driver and a `bufferSize` is configured to be a
-positive number, then log events will be batched. Note that as of Log4j
-2.8, there are two ways to configure log event to column mappings: the
-original `ColumnConfig` style that only allows strings and timestamps,
-and the new `ColumnMapping` plugin that uses Log4j's built-in type
-conversion to allow for more data types.
+The JDBCAppender writes log events to a relational database table using standard JDBC.
+It can be configured to obtain JDBC connections using a JNDI `DataSource` or a custom factory method.
+Whichever approach you take, it *_must_* be backed by a connection pool.
+Otherwise, logging performance will suffer greatly.
+If batch statements are supported by the configured JDBC driver and a `bufferSize` is configured to be a positive number, then log events will be batched.
+Note that as of Log4j 2.8, there are two ways to configure log event to column mappings: the original `ColumnConfig` style that only allows strings and timestamps, and the new `ColumnMapping` plugin that uses Log4j's built-in type conversion to allow for more data types.
 
-To get off the ground quickly during development, an alternative to
-using a connection source based on JNDI is to use the non-pooling
-`DriverManager` connection source. This connection source uses a JDBC
-connection string, a username, and a password. Optionally, you can also
-use properties.
+To get off the ground quickly during development, an alternative to using a connection source based on JNDI is to use the non-pooling
+`DriverManager` connection source.
+This connection source uses a JDBC connection string, a username, and a password.
+Optionally, you can also use properties.
 
 .JDBCAppender Parameters
 [cols="20%,20%,60%",options="header",]
@@ -941,16 +896,13 @@ application if `ignoreExceptions` is set to `false`). New in 2.11.2.
 |=======================================================================
 
 When configuring the JDBCAppender, you must specify a `ConnectionSource`
-implementation from which the Appender gets JDBC connections. You must
-use exactly one of the following nested elements:
+implementation from which the Appender gets JDBC connections.
+You must use exactly one of the following nested elements:
 
 * link:#JDBCDataSource[`<DataSource>`]: Uses JNDI.
-* link:#JDBCConnectionFactory[`<ConnectionFactory>`]: Points to a
-class-method pair to provide JDBC connections.
-* link:#JDBCDriverManager[`<DriverManager>`]: A quick and dirty way to
-get off the ground, no connection pooling.
-* link:#JDBCPoolingDriver[`<PoolingDriver>`]: Uses Apache Commons DBCP
-to provide connection pooling.
+* link:#JDBCConnectionFactory[`<ConnectionFactory>`]: Points to a class-method pair to provide JDBC connections.
+* link:#JDBCDriverManager[`<DriverManager>`]: A quick and dirty way to get off the ground, no connection pooling.
+* link:#JDBCPoolingDriver[`<PoolingDriver>`]: Uses Apache Commons DBCP to provide connection pooling.
 
 [#JDBCDataSource]
 .DataSource Parameters
@@ -1042,11 +994,9 @@ a pooled connection elsewhere. For example:
 |validationQueryTimeoutSeconds |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
 |=======================================================================
 
-When configuring the JDBCAppender, use the nested `<Column>` elements to
-specify which columns in the table should be written to and how to write
-to them. The JDBCAppender uses this information to formulate a
-`PreparedStatement` to insert records without SQL injection
-vulnerability.
+When configuring the JDBCAppender, use the nested `<Column>` elements to specify which columns in the table should be written to and how to write to them.
+The JDBCAppender uses this information to formulate a
+`PreparedStatement` to insert records without SQL injection vulnerability.
 
 .Column Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
@@ -1128,9 +1078,7 @@ these.
 |type |String |Conversion type name, a fully qualified class name.
 |=======================================================================
 
-Here are a couple of sample configurations for the JDBCAppender, as well as
-a sample factory implementation that uses Commons Pooling and Commons
-DBCP to pool database connections:
+Here are a couple of sample configurations for the JDBCAppender, as well as a sample factory implementation that uses Commons Pooling and Commons DBCP to pool database connections:
 
 [source,xml]
 ----
@@ -1224,8 +1172,7 @@ public class ConnectionFactory {
 
 This appender is xref:manual/messages.adoc#MapMessage[`MapMessage`]-aware.
 
-The following configuration uses no layout to indicate that the
-appender should match the keys of a `MapMessage` to the names of
+The following configuration uses no layout to indicate that the appender should match the keys of a `MapMessage` to the names of
 `ColumnMapping`s when setting the values of the Appender's SQL INSERT
 statement. This lets you insert rows for custom values in a database
 table based on a Log4j `MapMessage` instead of values from `LogEvent`.
@@ -1263,12 +1210,15 @@ table based on a Log4j `MapMessage` instead of values from `LogEvent`.
 
 The JMS Appender sends the formatted log event to a JMS Destination.
 
-The JMS Appender requires JNDI support so as of release 2.17.0, this appender will not function unless `log4j2.enableJndiJms=true` is configured as a system property or environment variable. See the https://logging.apache.org/log4j/2.x/manual/configuration.html#enableJndiJms[enableJndiJms] system property.
+The JMS Appender requires JNDI support so as of release 2.17.0, this appender will not function unless `log4j2.enableJndiJms=true` is configured as a system property or environment variable.
+See the https://logging.apache.org/log4j/2.x/manual/configuration.html#enableJndiJms[enableJndiJms] system property.
 
-Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender. Starting in Log4j 2.1, these appenders were combined into the JMS Appender, which makes no distinction between queues and topics. However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic/>` elements will continue to work with the new `<JMS/>` configuration element.
+Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender.
+Starting in Log4j 2.1, these appenders were combined into the JMS Appender, which makes no distinction between queues and topics.
+However, configurations written for 2.0 that use the `<JMSQueue/>` or `<JMSTopic/>` elements will continue to work with the new `<JMS/>` configuration element.
 
 .JMS Appender Parameters
-[cols="1,1,1,3", options="header"]
+[cols="1,1,1,3",options="header"]
 |===
 | Parameter Name | Type | Default | Description
 
@@ -1368,8 +1318,7 @@ Here is a sample JMS Appender configuration:
 </Configuration>
 ----
 
-To map your Log4j `MapMessage` to JMS `javax.jms.MapMessage`, set the
-layout of the appender to `MessageLayout` with `&lt;MessageLayout /&gt;` (Since 2.9.):
+To map your Log4j `MapMessage` to JMS `javax.jms.MapMessage`, set the layout of the appender to `MessageLayout` with `&lt;MessageLayout /&gt;` (Since 2.9.):
 
 [source,xml]
 ----
@@ -1394,9 +1343,9 @@ layout of the appender to `MessageLayout` with `&lt;MessageLayout /&gt;` (Since 
 
 As of Log4j 2.11.0, JPA support has moved from the existing module `log4j-core` to the new module `log4j-jpa`.
 
-The JPAAppender writes log events to a relational database table using the Java Persistence API 2.1. 
-It requires the API and a provider implementation to be on the classpath. 
-It also requires a decorated entity configured to persist to the table desired. 
+The JPAAppender writes log events to a relational database table using the Java Persistence API 2.1.
+It requires the API and a provider implementation to be on the classpath.
+It also requires a decorated entity configured to persist to the table desired.
 
 If you want to use the default mappings, you can extend `org.apache.logging.log4j.core.appender.db.jpa.BasicLogEventEntity` and provide an `@Id` property.
 If you want to significantly customize the mappings, you can extend `org.apache.logging.log4j.core.appender.db.jpa.AbstractLogEventWrapperEntity`.
@@ -1432,8 +1381,12 @@ See the Javadoc or source code for these two classes for more information and ex
 |_Required._ The name of the JPA persistence unit that should be used for persisting log events.
 |===
 
-Here is a sample configuration for the JPAAppender. The first XML sample is the Log4j configuration file, the second is the `persistence.xml` file. EclipseLink is assumed here, but any JPA 2.1 or higher provider will do. You should _always_ create a _separate_ persistence unit for logging, for two reasons. First, `<shared-cache-mode>` _must_ be set to "NONE," which is usually not desired in normal JPA usage. 
-Also, for performance reasons the logging entity should be isolated in its persistence unit away from all other entities and you should use a non-JTA data source. 
+Here is a sample configuration for the JPAAppender.
+The first XML sample is the Log4j configuration file, the second is the `persistence.xml` file.
+EclipseLink is assumed here, but any JPA 2.1 or higher provider will do.
+You should _always_ create a _separate_ persistence unit for logging, for two reasons.
+First, `<shared-cache-mode>` _must_ be set to "NONE," which is usually not desired in normal JPA usage.
+Also, for performance reasons the logging entity should be isolated in its persistence unit away from all other entities and you should use a non-JTA data source.
 Note that your persistence unit _must_ also contain `<class>` elements for all of the `org.apache.logging.log4j.core.appender.db.jpa.converter` converter classes.
 
 [source,xml]
@@ -1566,14 +1519,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 [#HttpAppender]
 == HttpAppender
 
-The HttpAppender sends log events over HTTP. A Layout must be provided
-to format the LogEvent.
+The HttpAppender sends log events over HTTP.
+A Layout must be provided to format the LogEvent.
 
-It will set the `Content-Type` header according to the layout. Additional
-headers can be specified with embedded Property elements.
+It will set the `Content-Type` header according to the layout.
+Additional headers can be specified with embedded Property elements.
 
-It will also wait for a response from the server, and throw an error if no 2xx response
-is received.
+It will also wait for a response from the server, and throw an error if no 2xx response is received.
 
 Implemented with
 https://docs.oracle.com/javase/7/docs/api/java/net/HttpURLConnection.html[HttpURLConnection].
@@ -1641,7 +1593,8 @@ Here is a sample HttpAppender configuration snippet:
 [[KafkaAppender]]
 == KafkaAppender
 
-The KafkaAppender logs events to an https://kafka.apache.org/[Apache Kafka] topic. Each log event is sent as a Kafka record.
+The KafkaAppender logs events to an https://kafka.apache.org/[Apache Kafka] topic.
+Each log event is sent as a Kafka record.
 
 [width="100%",options="header"]
 |===
@@ -1697,9 +1650,11 @@ Here is a sample KafkaAppender configuration snippet:
 </Configuration>
 ----
 
-This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server, timeout for this can be set with the `timeout.ms` property (defaults to 30 seconds). Wrap with https://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender[Async appender] and/or set syncSend to `false` to log asynchronously.
+This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server, timeout for this can be set with the `timeout.ms` property (defaults to 30 seconds).
+Wrap with https://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender[Async appender] and/or set syncSend to `false` to log asynchronously.
 
-This appender requires the https://kafka.apache.org/[Kafka client library]. Note that you need to use a version of the Kafka client library matching the Kafka server used.
+This appender requires the https://kafka.apache.org/[Kafka client library].
+Note that you need to use a version of the Kafka client library matching the Kafka server used.
 
 _Note:_ Make sure to not let `org.apache.kafka` log to a Kafka appender on DEBUG level, since that will cause recursive logging:
 
@@ -1718,44 +1673,28 @@ _Note:_ Make sure to not let `org.apache.kafka` log to a Kafka appender on DEBUG
 </Configuration>
 ----
 
-
 [#MemoryMappedFileAppender]
 == MemoryMappedFileAppender
 
-_New since 2.1. Be aware that this is a new addition, and although it
-has been tested on several platforms, it does not have as much track
-record as the other file appenders._
+_New since 2.1. Be aware that this is a new addition, and although it has been tested on several platforms, it does not have as much track record as the other file appenders._
 
-The MemoryMappedFileAppender maps a part of the specified file into
-memory and writes log events to this memory, relying on the operating
-system's virtual memory manager to synchronize the changes to the
-storage device. The main benefit of using memory-mapped files is I/O
-performance. Instead of making system calls to write to disk, this
-appender can simply change the program's local memory, which is orders
-of magnitude faster. Also, in most operating systems the memory region
-mapped is the kernel's
-http://en.wikipedia.org/wiki/Page_cache[page cache] (file cache),
-meaning that no copies need to be created in user space.
+The MemoryMappedFileAppender maps a part of the specified file into memory and writes log events to this memory, relying on the operating system's virtual memory manager to synchronize the changes to the storage device.
+The main benefit of using memory-mapped files is I/O performance.
+Instead of making system calls to write to disk, this appender can simply change the program's local memory, which is orders of magnitude faster.
+Also, in most operating systems the memory region mapped is the kernel's
+http://en.wikipedia.org/wiki/Page_cache[page cache] (file cache), meaning that no copies need to be created in user space.
 
 // TODO:
 // performance tests that compare performance of this appender to
 // RandomAccessFileAppender and FileAppender.)
 
-There is some overhead with mapping a file region into memory,
-especially very large regions (half a gigabyte or more). The default
-region size is 32 MB, which should strike a reasonable balance between
-the frequency and the duration of remap operations.
+There is some overhead with mapping a file region into memory, especially very large regions (half a gigabyte or more).
+The default region size is 32 MB, which should strike a reasonable balance between the frequency and the duration of remap operations.
 
 // (TODO: performance test remapping various sizes.)
 
-Similar to the FileAppender and the RandomAccessFileAppender,
-MemoryMappedFileAppender uses a MemoryMappedFileManager to actually
-perform the file I/O. While MemoryMappedFileAppender from different
-Configurations cannot be shared, the MemoryMappedFileManagers can be if
-the manager is accessible. For example, two web applications in a
-servlet container can have its own configuration and safely write to
-the same file if Log4j is in a ClassLoader that is common to both of
-them.
+Similar to the FileAppender and the RandomAccessFileAppender, MemoryMappedFileAppender uses a MemoryMappedFileManager to actually perform the file I/O. While MemoryMappedFileAppender from different Configurations cannot be shared, the MemoryMappedFileManagers can be if the manager is accessible.
+For example, two web applications in a servlet container can have its own configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
 
 .MemoryMappedFileAppender Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
@@ -1832,10 +1771,8 @@ Here is a sample MemoryMappedFile configuration:
 [#NoSQLAppender]
 == NoSQLAppender
 
-The NoSQLAppender writes log events to a NoSQL database using an
-internal lightweight provider interface. Provider implementations
-currently exist for MongoDB, and writing a custom
-provider is quite simple.
+The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
+Provider implementations currently exist for MongoDB, and writing a custom provider is quite simple.
 
 .NoSQLAppender Parameters
 [cols="20%,20%,60%",options="header",]
@@ -1861,17 +1798,12 @@ NoSQLObject<W>>> |_Required._ The NoSQL provider that provides
 connections to the chosen NoSQL database.
 |=======================================================================
 
-You specify which NoSQL provider to use by specifying the appropriate
-configuration element within the `<NoSql>` element. The only type currently
-supported is `<MongoDb>`. To create your custom
-provider, read the JavaDoc for the `NoSQLProvider`, `NoSQLConnection`,
-and `NoSQLObject` classes and the documentation about creating Log4j
-plugins. 
-We recommend you review the source code for the MongoDB
-providers as a guide for creating your provider.
+You specify which NoSQL provider to use by specifying the appropriate configuration element within the `<NoSql>` element.
+The only type currently supported is `<MongoDb>`.
+To create your custom provider, read the JavaDoc for the `NoSQLProvider`, `NoSQLConnection`, and `NoSQLObject` classes and the documentation about creating Log4j plugins.
+We recommend you review the source code for the MongoDB providers as a guide for creating your provider.
 
-The following example demonstrates how log events are persisted in NoSQL
-databases if represented in a JSON format:
+The following example demonstrates how log events are persisted in NoSQL databases if represented in a JSON format:
 
 [source,json]
 ----
@@ -1937,22 +1869,22 @@ Starting with Log4 2.11.0, we provide the following MongoDB modules:
 * Added in 2.14.0, deprecated in 2.24.0: `log4j-mongodb4` defines the configuration element
 link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver version 4.
 * Added in 2.24.0: `log4j-mongodb` defines the configuration element
-link:#NoSQLAppenderMongoDBCurrent[`MongoDb`] matching the current MongoDB Driver (version 5). This module tracks the current MongoDB Driver.
+link:#NoSQLAppenderMongoDBCurrent[`MongoDb`] matching the current MongoDB Driver (version 5).
+This module tracks the current MongoDB Driver.
 
 [#NoSQLAppenderMongoDBCurrent]
 == NoSQL Appender for MongoDB
 
 This section details specializations of the
-link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
-current MongoDB driver (version 5). The NoSQLAppender Appender writes log events
-to a NoSQL database using an internal lightweight provider interface.
+link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the current MongoDB driver (version 5).
+The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.
 
 .MongoDB Provider Parameters
 [cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
-|connection |String |_Required._ The MongoDB 
-http://mongodb.github.io/mongo-java-driver/5.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"[connection string] 
+|connection |String |_Required._ The MongoDB
+http://mongodb.github.io/mongo-java-driver/5.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"[connection string]
 in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]`.
 
 |capped |boolean |Enable support for
@@ -1967,8 +1899,7 @@ collection documentation linked above for more information.
 
 This appender is xref:manual/messages.adoc#MapMessage[MapMessage]-aware.
 
-Here are a few sample configurations for the NoSQLAppender and MongoDB4
-provider:
+Here are a few sample configurations for the NoSQLAppender and MongoDB4 provider:
 
 [source,xml]
 ----
@@ -2036,16 +1967,14 @@ You can define additional fields to log using KeyValuePair elements, for example
 The `log4j-mongodb4` module is deprecated in favor of link:#NoSQLAppenderMongoDBCurrent[NoSQLAppender for MongoDB].
 
 This section details specializations of the
-link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
-MongoDB driver version 4. The NoSQLAppender Appender writes log events
-to a NoSQL database using an internal lightweight provider interface.
+link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the MongoDB driver version 4. The NoSQLAppender Appender writes log events to a NoSQL database using an internal lightweight provider interface.
 
 .MongoDB Provider Parameters
 [cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
-|connection |String |_Required._ The MongoDB 
-http://mongodb.github.io/mongo-java-driver/4.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"[connection string] 
+|connection |String |_Required._ The MongoDB
+http://mongodb.github.io/mongo-java-driver/4.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"[connection string]
 in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]`.
 
 |capped |boolean |Enable support for
@@ -2060,8 +1989,7 @@ collection documentation linked above for more information.
 
 This appender is xref:manual/messages.adoc#MapMessage[MapMessage]-aware.
 
-Here are a few sample configurations for the NoSQLAppender and MongoDB4
-provider:
+Here are a few sample configurations for the NoSQLAppender and MongoDB4 provider:
 
 [source,xml]
 ----
@@ -2126,7 +2054,8 @@ You can define additional fields to log using KeyValuePair elements, for example
 [[NoSQLAppenderApacheCouchDB]]
 == NoSQLAppender for Apache CouchDB
 
-This section details specializations of the link:#NoSQLAppender[NoSQLAppender] provider for CouchDB. The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
+This section details specializations of the link:#NoSQLAppender[NoSQLAppender] provider for CouchDB.
+The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
 
 [width="100%",options="header"]
 |===
@@ -2185,35 +2114,24 @@ Here are a few sample configurations for the NoSQLAppender and CouchDB provider:
 </Configuration>
 ----
 
-
 [#OutputStreamAppender]
 == OutputStreamAppender
 
-The OutputStreamAppender provides the base for many of the other
-Appenders such as the File and Socket appenders that write the event to
-an Output Stream. It cannot be directly configured. Support for
-immediateFlush and buffering is provided by the OutputStreamAppender.
-The OutputStreamAppender uses an OutputStreamManager to handle the
-actual I/O, allowing the stream to be shared by Appenders in multiple
-configurations.
+The OutputStreamAppender provides the base for many of the other Appenders such as the File and Socket appenders that write the event to an Output Stream.
+It cannot be directly configured.
+Support for immediateFlush and buffering is provided by the OutputStreamAppender.
+The OutputStreamAppender uses an OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple configurations.
 
 [#RandomAccessFileAppender]
 == RandomAccessFileAppender
 
 The RandomAccessFileAppender is similar to the standard
-link:#FileAppender[FileAppender] except it is always buffered (this
-cannot be switched off) and internally it uses a
-`ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`. We
-saw a 20-200% performance improvement compared to FileAppender with
-"bufferedIO=true" in our
-xref:manual/performance.adoc#whichAppender[measurements]. Similar to the
-FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to
-perform the file I/O. While RandomAccessFileAppender from
-different Configurations cannot be shared, the RandomAccessFileManagers
-can be if the Manager is accessible. For example, two web applications
-in a servlet container can have their configuration and safely write
-to the same file if Log4j is in a ClassLoader that is common to both of
-them.
+link:#FileAppender[FileAppender] except it is always buffered (this cannot be switched off) and internally it uses a
+`ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
+We saw a 20-200% performance improvement compared to FileAppender with "bufferedIO=true" in our
+xref:manual/performance.adoc#whichAppender[measurements].
+Similar to the FileAppender, RandomAccessFileAppender uses a RandomAccessFileManager to perform the file I/O. While RandomAccessFileAppender from different Configurations cannot be shared, the RandomAccessFileManagers can be if the Manager is accessible.
+For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
 
 .RandomAccessFileAppender Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
@@ -2287,12 +2205,10 @@ Here is a sample RandomAccessFile configuration:
 [#RewriteAppender]
 == RewriteAppender
 
-The RewriteAppender allows the LogEvent to be manipulated before it is
-processed by another Appender. This can be used to mask sensitive
-information such as passwords or to inject information into each event.
-The RewriteAppender must be configured with a RewritePolicy. The
-RewriteAppender should be configured after any Appenders it references
-to allow it to shut down properly.
+The RewriteAppender allows the LogEvent to be manipulated before it is processed by another Appender.
+This can be used to mask sensitive information such as passwords or to inject information into each event.
+The RewriteAppender must be configured with a RewritePolicy.
+The RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.
 
 .RewriteAppender Parameters
 [cols="20%,20%,60%",options="header",]
@@ -2321,16 +2237,13 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 [#RewritePolicy]
 === RewritePolicy
 
-RewritePolicy is an interface that allows implementations to inspect and
-possibly modify LogEvents before they are passed to Appender.
-RewritePolicy declares a single method named rewrite that must be
-implemented. The method is passed the LogEvent and can return the same
-event or create a new one.
+RewritePolicy is an interface that allows implementations to inspect and possibly modify LogEvents before they are passed to Appender.
+RewritePolicy declares a single method named rewrite that must be implemented.
+The method is passed the LogEvent and can return the same event or create a new one.
 
 ==== MapRewritePolicy
 
-MapRewritePolicy will evaluate LogEvents that contain a MapMessage and
-will add or update elements of the Map.
+MapRewritePolicy will evaluate LogEvents that contain a MapMessage and will add or update elements of the Map.
 
 [cols="20%,20%,60%",options="header",]
 |================================================================
@@ -2339,8 +2252,7 @@ will add or update elements of the Map.
 |keyValuePair |KeyValuePair[] |An array of keys and their values.
 |================================================================
 
-The following configuration shows a RewriteAppender configured to add a
-product key and its value to the MapMessage.:
+The following configuration shows a RewriteAppender configured to add a product key and its value to the MapMessage.:
 
 [source,xml]
 ----
@@ -2367,11 +2279,9 @@ product key and its value to the MapMessage.:
 
 ==== PropertiesRewritePolicy
 
-PropertiesRewritePolicy will add properties configured on the policy to
-the ThreadContext Map being logged. The properties will not be added to
-the actual ThreadContext Map. The property values may contain variables
-that will be evaluated when the configuration is processed as well as
-when the event is logged.
+PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map being logged.
+The properties will not be added to the actual ThreadContext Map.
+The property values may contain variables that will be evaluated when the configuration is processed as well as when the event is logged.
 
 [cols="20%,20%,60%",options="header",]
 |=======================================================================
@@ -2380,8 +2290,7 @@ when the event is logged.
 keys and values to be added to the ThreadContext Map.
 |=======================================================================
 
-The following configuration shows a RewriteAppender configured to add a
-product key and its value to the MapMessage:
+The following configuration shows a RewriteAppender configured to add a product key and its value to the MapMessage:
 
 [source,xml]
 ----
@@ -2409,11 +2318,9 @@ product key and its value to the MapMessage:
 
 ==== LoggerNameLevelRewritePolicy
 
-You can use this policy to make loggers in third-party code less chatty
-by changing event levels. The LoggerNameLevelRewritePolicy will rewrite
-log event levels for a given logger name prefix. You configure a
-LoggerNameLevelRewritePolicy with a logger name prefix and a pair of
-levels, where a pair defines a source level and a target level.
+You can use this policy to make loggers in third-party code less chatty by changing event levels.
+The LoggerNameLevelRewritePolicy will rewrite log event levels for a given logger name prefix.
+You configure a LoggerNameLevelRewritePolicy with a logger name prefix and a pair of levels, where a pair defines a source level and a target level.
 
 [cols="20%,20%,60%",options="header",]
 |=======================================================================
@@ -2425,9 +2332,7 @@ logger name.
 is a source level, each value a target level.
 |=======================================================================
 
-The following configuration shows a RewriteAppender configured to map
-level INFO to DEBUG and level WARN to INFO for all loggers that start
-with `com.foo.bar`.
+The following configuration shows a RewriteAppender configured to map level INFO to DEBUG and level WARN to INFO for all loggers that start with `com.foo.bar`.
 
 [source,xml]
 ----
@@ -2456,33 +2361,26 @@ with `com.foo.bar`.
 [id=rollingfileappender]
 == [[RollingFileAppender]] RollingFileAppender
 
-The RollingFileAppender is an OutputStreamAppender that writes to the
-file named in the fileName parameter and rolls the file over according to
-the `TriggeringPolicy` and the `RolloverPolicy`. The `RollingFileAppender`
-uses a `RollingFileManager` (which extends `OutputStreamManager`) to
-perform the file I/O and perform the rollover. 
-While `RolloverFileAppenders` from different Configurations cannot be shared,
-the `RollingFileManagers` can be if the Manager is accessible. 
-For example, two web applications in a servlet container can have their 
-configuration and safely write to the same file if Log4j is in a
+The RollingFileAppender is an OutputStreamAppender that writes to the file named in the fileName parameter and rolls the file over according to the `TriggeringPolicy` and the `RolloverPolicy`.
+The `RollingFileAppender`
+uses a `RollingFileManager` (which extends `OutputStreamManager`) to perform the file I/O and perform the rollover.
+While `RolloverFileAppenders` from different Configurations cannot be shared, the `RollingFileManagers` can be if the Manager is accessible.
+For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a
 `ClassLoader` that is common to both of them.
 
 A RollingFileAppender requires a
 link:#TriggeringPolicies[TriggeringPolicy] and a
-link:#RolloverStrategies[RolloverStrategy]. The triggering policy
-determines if a rollover should be performed while the `RolloverStrategy`
-defines how the rollover should be done. If no `RolloverStrategy` is
-configured, `RollingFileAppender` will use the
-link:#DefaultRolloverStrategy[DefaultRolloverStrategy]. Since log4j-2.5,
-a link:#CustomDeleteOnRollover[custom delete action] can be configured
-in the DefaultRolloverStrategy to run at rollover. Since 2.8 if no file
-name is configured then
-link:#DirectWriteRolloverStrategy[DirectWriteRolloverStrategy] will be
-used instead of DefaultRolloverStrategy. Since log4j-2.9, a
+link:#RolloverStrategies[RolloverStrategy].
+The triggering policy determines if a rollover should be performed while the `RolloverStrategy`
+defines how the rollover should be done.
+If no `RolloverStrategy` is configured, `RollingFileAppender` will use the
+link:#DefaultRolloverStrategy[DefaultRolloverStrategy].
+Since log4j-2.5, a link:#CustomDeleteOnRollover[custom delete action] can be configured in the DefaultRolloverStrategy to run at rollover.
+Since 2.8 if no file name is configured then
+link:#DirectWriteRolloverStrategy[DirectWriteRolloverStrategy] will be used instead of DefaultRolloverStrategy.
+Since log4j-2.9, a
 link:#CustomPosixViewAttributeOnRollover[custom POSIX file attribute
-view action] can be configured in the DefaultRolloverStrategy to run at
-rollover, if not defined, the inherited POSIX file attribute view from the
-RollingFileAppender will be applied.
+view action] can be configured in the DefaultRolloverStrategy to run at rollover, if not defined, the inherited POSIX file attribute view from the RollingFileAppender will be applied.
 
 File locking is not supported by the RollingFileAppender.
 
@@ -2601,14 +2499,11 @@ file attribute view.
 
 === Composite Triggering Policy
 
-The `CompositeTriggeringPolicy` combines multiple triggering policies
-and returns true if any of the configured policies return true. The
-`CompositeTriggeringPolicy` is configured simply by wrapping other
-policies in a `Policies` element.
+The `CompositeTriggeringPolicy` combines multiple triggering policies and returns true if any of the configured policies return true.
+The
+`CompositeTriggeringPolicy` is configured simply by wrapping other policies in a `Policies` element.
 
-For example, the following XML fragment defines policies that rollover
-the log when the JVM starts when the log size reaches twenty megabytes,
-and when the current date no longer matches the log's start date.
+For example, the following XML fragment defines policies that rollover the log when the JVM starts when the log size reaches twenty megabytes, and when the current date no longer matches the log's start date.
 
 [source,xml]
 ----
@@ -2621,11 +2516,9 @@ and when the current date no longer matches the log's start date.
 
 === Cron Triggering Policy
 
-The `CronTriggeringPolicy` triggers rollover based on a cron expression. This policy
-is controlled by a timer and is asynchronous in processing log events, so it is possible that log events
-from the previous or next period may appear at the beginning or end of the log file.
-The `filePattern` attribute of the Appender should contain a timestamp otherwise the target file will be
-overwritten on each rollover.
+The `CronTriggeringPolicy` triggers rollover based on a cron expression.
+This policy is controlled by a timer and is asynchronous in processing log events, so it is possible that log events from the previous or next period may appear at the beginning or end of the log file.
+The `filePattern` attribute of the Appender should contain a timestamp otherwise the target file will be overwritten on each rollover.
 
 .CronTriggeringPolicy Parameters
 [cols="20%,20%,60%",options="header",]
@@ -2644,9 +2537,7 @@ and the current time the file will be immediately rolled over.
 
 === OnStartup Triggering Policy
 
-The `OnStartupTriggeringPolicy` policy causes a rollover if the log file
-is older than the current JVM's start time and the minimum file size is
-met or exceeded.
+The `OnStartupTriggeringPolicy` policy causes a rollover if the log file is older than the current JVM's start time and the minimum file size is met or exceeded.
 
 .OnStartupTriggeringPolicy Parameters
 [cols="20%,20%,60%",options="header",]
@@ -2658,29 +2549,27 @@ default value is 1, which will prevent rolling over an empty file.
 |=======================================================================
 
 _Google App Engine note:_ +
-When running in Google App Engine, the OnStartup policy causes a
-rollover if the log file is older than _the time when Log4J
-initialized_. (Google App Engine restricts access to certain classes so
-Log4J cannot determine JVM start time with
+When running in Google App Engine, the OnStartup policy causes a rollover if the log file is older than _the time when Log4J initialized_.
+(Google App Engine restricts access to certain classes so Log4J cannot determine JVM start time with
 `java.lang.management.ManagementFactory.getRuntimeMXBean().getStartTime()`
 and falls back to Log4J initialization time instead.)
 
 === SizeBased Triggering Policy
 
-The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size. The size can be
-specified in bytes, with the suffix KB, MB, GB, or TB for example `20MB`.
-size. The size may also contain a fractional value such as `1.5 MB`. The size is evaluated
-using the Java root Locale so a period must always be used for the fractional unit.
+The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size.
+The size can be specified in bytes, with the suffix KB, MB, GB, or TB for example `20MB`.
+size.
+The size may also contain a fractional value such as `1.5 MB`.
+The size is evaluated using the Java root Locale so a period must always be used for the fractional unit.
 When combined with a time-based triggering policy the file pattern must contain a `%i`.
-Otherwise, the target file will be overwritten on every rollover as the SizeBased Triggering Policy will not cause the timestamp value in the file name to change. 
+Otherwise, the target file will be overwritten on every rollover as the SizeBased Triggering Policy will not cause the timestamp value in the file name to change.
 When used without a time-based triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.
 
 === TimeBased Triggering Policy
 
-The `TimeBasedTriggeringPolicy` causes a rollover once the date/time
-pattern no longer applies to the active file. This policy accepts an
-`interval` attribute which indicates how frequently the rollover should
-occur based on the time pattern and a `modulate` boolean attribute.
+The `TimeBasedTriggeringPolicy` causes a rollover once the date/time pattern no longer applies to the active file.
+This policy accepts an
+`interval` attribute which indicates how frequently the rollover should occur based on the time pattern and a `modulate` boolean attribute.
 
 .TimeBasedTriggeringPolicy Parameters
 [cols="20%,20%,60%",options="header",]
@@ -2712,26 +2601,20 @@ load of doing so across time.
 
 Default Rollover Strategy
 
-The default rollover strategy accepts both a date/time pattern and an
-integer from the `filePattern` attribute specified on the
-RollingFileAppender itself. If the date/time pattern is present it will
-be replaced with the current date and time values. If the pattern
-contains an integer it will be incremented on each rollover. If the
-pattern contains both a date/time and integer in the pattern the integer
-will be incremented until the result of the date/time pattern changes.
-If the file pattern ends with ".gz", ".zip", ".bz2", ".deflate",
-".pack200", or ".xz" the resulting archive will be compressed using the
-compression scheme that matches the suffix. The formats bzip2, Deflate,
-Pack200 and XZ require
+The default rollover strategy accepts both a date/time pattern and an integer from the `filePattern` attribute specified on the RollingFileAppender itself.
+If the date/time pattern is present it will be replaced with the current date and time values.
+If the pattern contains an integer it will be incremented on each rollover.
+If the pattern contains both a date/time and integer in the pattern the integer will be incremented until the result of the date/time pattern changes.
+If the file pattern ends with ".gz", ".zip", ".bz2", ".deflate", ".pack200", or ".xz" the resulting archive will be compressed using the compression scheme that matches the suffix.
+The formats bzip2, Deflate, Pack200 and XZ require
 http://commons.apache.org/proper/commons-compress/[Apache Commons
-Compress]. In addition, XZ requires http://tukaani.org/xz/java.html[XZ
-for Java]. The pattern may also contain lookup references that can be
-resolved at runtime such as shown in the example below.
+Compress].
+In addition, XZ requires http://tukaani.org/xz/java.html[XZ
+for Java].
+The pattern may also contain lookup references that can be resolved at runtime such as shown in the example below.
 
-The default rollover strategy supports three variations for incrementing
-the counter. To illustrate how it works, suppose that the min attribute 
-is set to 1, the max attribute is set to 3, the file name is "foo.log", 
-and the file name pattern is "foo-%i.log".
+The default rollover strategy supports three variations for incrementing the counter.
+To illustrate how it works, suppose that the min attribute is set to 1, the max attribute is set to 3, the file name is "foo.log", and the file name pattern is "foo-%i.log".
 
 [cols="15%,15%,15%,55%",options="header",]
 |=======================================================================
@@ -2756,9 +2639,7 @@ foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
 foo-3.log. A new foo.log file is created and starts being written to.
 |=======================================================================
 
-By way of contrast, when the `fileIndex` attribute is set to "min" all
-the other settings are the same the "fixed window" strategy will be 
-performed.
+By way of contrast, when the `fileIndex` attribute is set to "min" all the other settings are the same the "fixed window" strategy will be performed.
 
 [cols="15%,15%,15%,55%",options="header",]
 |=======================================================================
@@ -2785,9 +2666,7 @@ foo-1.log. A new foo.log file is created and starts being written to.
 |=======================================================================
 
 Finally, as of release 2.8, if the `fileIndex` attribute is set to `nomax`
-then the min and max values will be ignored and file numbering will
-increment by 1 and each rollover will have an incrementally higher value
-with no maximum number of files.
+then the min and max values will be ignored and file numbering will increment by 1 and each rollover will have an incrementally higher value with no maximum number of files.
 
 .DefaultRolloverStrategy Parameters
 [cols="20%,20%,60%",options="header",]
@@ -2817,24 +2696,18 @@ archived log file during compression.
 
 DirectWrite Rollover Strategy
 
-The DirectWriteRolloverStrategy causes log events to be written directly
-to files represented by the file pattern. With this strategy file
-renames are not performed. If the size-based triggering policy causes
-multiple files to be written during the specified period they will
-be numbered starting at one and continually incremented until a
-time-based rollover occurs.
+The DirectWriteRolloverStrategy causes log events to be written directly to files represented by the file pattern.
+With this strategy file renames are not performed.
+If the size-based triggering policy causes multiple files to be written during the specified period they will be numbered starting at one and continually incremented until a time-based rollover occurs.
 
-Warning: If the file pattern has a suffix indicating compression should
-take place the current file will not be compressed when the application
-is shut down. Furthermore, if the time changes such that the file
-pattern no longer matches the current file it will not be compressed at
-startup either.
+Warning: If the file pattern has a suffix indicating compression should take place the current file will not be compressed when the application is shut down.
+Furthermore, if the time changes such that the file pattern no longer matches the current file it will not be compressed at startup either.
 
 .DirectWriteRolloverStrategy Parameters
 [cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
-|maxFiles |String |The maximum number of files to allow in the period matching 
+|maxFiles |String |The maximum number of files to allow in the period matching
 the file pattern. If the number of files is exceeded the
 oldest file will be deleted. If specified, the value must be greater
 than 1. If the value is less than zero or omitted then the number of
@@ -2848,10 +2721,7 @@ ZIP files.
 archived log file during compression.
 |=======================================================================
 
-Below is a sample configuration that uses a RollingFileAppender with
-both the time and size-based triggering policies will create up to 7
-archives on the same day (1-7) that are stored in a directory based on
-the current year and month, and will compress each archive using gzip:
+Below is a sample configuration that uses a RollingFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip:
 
 [source,xml]
 ----
@@ -2877,8 +2747,7 @@ the current year and month, and will compress each archive using gzip:
 </Configuration>
 ----
 
-This second example shows a rollover strategy that will keep up to 20
-files before removing them.
+This second example shows a rollover strategy that will keep up to 20 files before removing them.
 
 [source,xml]
 ----
@@ -2905,11 +2774,7 @@ files before removing them.
 </Configuration>
 ----
 
-Below is a sample configuration that uses a RollingFileAppender with
-both the time and size-based triggering policies will create up to 7
-archives on the same day (1-7) that are stored in a directory based on
-the current year and month, and will compress each archive using gzip
-and will roll every 6 hours when the hour is divisible by 6:
+Below is a sample configuration that uses a RollingFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip and will roll every 6 hours when the hour is divisible by 6:
 
 [source,xml]
 ----
@@ -2935,10 +2800,8 @@ and will roll every 6 hours when the hour is divisible by 6:
 </Configuration>
 ----
 
-This sample configuration uses a RollingFileAppender with both the cron
-and size-based triggering policies, and writes directly to an unlimited
-number of archive files. The cron trigger causes a rollover every hour
-while the file size is limited to 250MB:
+This sample configuration uses a RollingFileAppender with both the cron and size-based triggering policies, and writes directly to an unlimited number of archive files.
+The cron trigger causes a rollover every hour while the file size is limited to 250MB:
 
 [source,xml]
 ----
@@ -2963,8 +2826,7 @@ while the file size is limited to 250MB:
 </Configuration>
 ----
 
-This sample configuration is the same as the previous one but limits the
-number of files saved each hour to 10:
+This sample configuration is the same as the previous one but limits the number of files saved each hour to 10:
 
 [source,xml]
 ----
@@ -2995,16 +2857,11 @@ number of files saved each hour to 10:
 
 Log Archive Retention Policy: Delete on Rollover
 
-Log4j-2.5 introduces a `Delete` action that gives users more control
-over what files are deleted at rollover time than what was possible with
-the DefaultRolloverStrategy `max` attribute. The Delete action lets
-users configure one or more conditions that select the files to delete
-relative to a base directory.
+Log4j-2.5 introduces a `Delete` action that gives users more control over what files are deleted at rollover time than what was possible with the DefaultRolloverStrategy `max` attribute.
+The Delete action lets users configure one or more conditions that select the files to delete relative to a base directory.
 
-Note that it is possible to delete any file, not just rolled-over log
-files, so use this action with care! With the `testMode` parameter you
-can test your configuration without accidentally deleting the wrong
-files.
+Note that it is possible to delete any file, not just rolled-over log files, so use this action with care!
+With the `testMode` parameter you can test your configuration without accidentally deleting the wrong files.
 
 .Delete Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
@@ -3162,11 +3019,9 @@ conditions are only evaluated if the outer condition accepts a file (if
 the threshold accumulated file size has been exceeded).
 |=======================================================================
 
-Below is a sample configuration that uses a RollingFileAppender with the
-cron triggering policy configured to trigger every day at midnight.
+Below is a sample configuration that uses a RollingFileAppender with the cron triggering policy configured to trigger every day at midnight.
 Archives are stored in a directory based on the current year and month.
-All files under the base directory that match the "*/app-*.log.gz" glob
-and are 60 days old or older are deleted at rollover time.
+All files under the base directory that match the "*/app-*.log.gz" glob and are 60 days old or older are deleted at rollover time.
 
 [source,xml]
 ----
@@ -3196,14 +3051,8 @@ and are 60 days old or older are deleted at rollover time.
 </Configuration>
 ----
 
-Below is a sample configuration that uses a RollingFileAppender with
-both the time and size-based triggering policies will create up to 100
-archives on the same day (1-100) that are stored in a directory based on
-the current year and month, and will compress each archive using gzip
-and will roll every hour. During every rollover, this configuration will
-delete files that match "*/app-*.log.gz" and are 30 days old or older,
-but keep the most recent 100 GB or the most recent 10 files, whichever
-comes first.
+Below is a sample configuration that uses a RollingFileAppender with both the time and size-based triggering policies will create up to 100 archives on the same day (1-100) that are stored in a directory based on the current year and month, and will compress each archive using gzip and will roll every hour.
+During every rollover, this configuration will delete files that match "*/app-*.log.gz" and are 30 days old or older, but keep the most recent 100 GB or the most recent 10 files, whichever comes first.
 
 [source,xml]
 ----
@@ -3288,12 +3137,10 @@ variables.
 |? |String |Any properties declared in the configuration.
 |=======================================================================
 
-Below is a sample configuration that uses a RollingFileAppender with the
-cron triggering policy configured to trigger every day at midnight.
+Below is a sample configuration that uses a RollingFileAppender with the cron triggering policy configured to trigger every day at midnight.
 Archives are stored in a directory based on the current year and month.
-The script returns a list of rolled-over files under the base directory
-dated Friday the 13th. The Delete action will delete all files returned
-by the script.
+The script returns a list of rolled-over files under the base directory dated Friday the 13th.
+The Delete action will delete all files returned by the script.
 
 [source,xml]
 ----
@@ -3356,13 +3203,10 @@ by the script.
 [#CustomPosixViewAttributeOnRollover]
 == CustomPosixViewAttributeOnRollover
 
-Log Archive File Attribute View Policy: Custom file attribute on
-Rollover
+Log Archive File Attribute View Policy: Custom file attribute on Rollover
 
-Log4j-2.9 introduces a `PosixViewAttribute` action that gives users more
-control over which file attribute permissions, owner and group should be
-applied. The PosixViewAttribute action lets users configure one or more
-conditions that select the eligible files relative to a base directory.
+Log4j-2.9 introduces a `PosixViewAttribute` action that gives users more control over which file attribute permissions, owner and group should be applied.
+The PosixViewAttribute action lets users configure one or more conditions that select the eligible files relative to a base directory.
 
 .PosixViewAttribute Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
@@ -3416,9 +3260,7 @@ file attribute view.
 
 |=======================================================================
 
-Below is a sample configuration that uses a RollingFileAppender and
-defines different POSIX file attribute views for current and rolled log
-files.
+Below is a sample configuration that uses a RollingFileAppender and defines different POSIX file attribute views for current and rolled log files.
 
 [source,xml]
 ----
@@ -3454,32 +3296,24 @@ files.
 == RollingRandomAccessFileAppender
 
 The RollingRandomAccessFileAppender is similar to the standard
-link:#RollingFileAppender[RollingFileAppender] except it is always
-buffered (this cannot be switched off) and internally it uses a
-`ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`. We
-saw a 20-200% performance improvement compared to RollingFileAppender
-with "bufferedIO=true" in our
-xref:manual/performance.adoc#whichAppender[measurements]. The
-`RollingRandomAccessFileAppender` writes to the file named in the fileName
-parameter and rolls the file over according to the TriggeringPolicy and the
-RolloverPolicy. Similar to the RollingFileAppender,
-RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager to
-perform the file I/O and perform the rollover. While
-RollingRandomAccessFileAppender from different Configurations cannot be
-shared, the RollingRandomAccessFileManagers can be if the Manager is
-accessible. For example, two web applications in a servlet container can
-have their configuration and safely write to the same file if Log4j
-is in a ClassLoader that is common to both of them.
+link:#RollingFileAppender[RollingFileAppender] except it is always buffered (this cannot be switched off) and internally it uses a
+`ByteBuffer + RandomAccessFile` instead of a `BufferedOutputStream`.
+We saw a 20-200% performance improvement compared to RollingFileAppender with "bufferedIO=true" in our
+xref:manual/performance.adoc#whichAppender[measurements].
+The
+`RollingRandomAccessFileAppender` writes to the file named in the fileName parameter and rolls the file over according to the TriggeringPolicy and the RolloverPolicy.
+Similar to the RollingFileAppender, RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager to perform the file I/O and perform the rollover.
+While RollingRandomAccessFileAppender from different Configurations cannot be shared, the RollingRandomAccessFileManagers can be if the Manager is accessible.
+For example, two web applications in a servlet container can have their configuration and safely write to the same file if Log4j is in a ClassLoader that is common to both of them.
 
 A RollingRandomAccessFileAppender requires a
 link:#TriggeringPolicies[TriggeringPolicy] and a
-link:#RolloverStrategies[RolloverStrategy]. The triggering policy
-determines if a rollover should be performed while the `RolloverStrategy`
-defines how the rollover should be done. If no RolloverStrategy is
-configured, RollingRandomAccessFileAppender will use the
-link:#DefaultRolloverStrategy[DefaultRolloverStrategy]. Since log4j-2.5,
-a link:#CustomDeleteOnRollover[custom delete action] can be configured
-in the DefaultRolloverStrategy to run at rollover.
+link:#RolloverStrategies[RolloverStrategy].
+The triggering policy determines if a rollover should be performed while the `RolloverStrategy`
+defines how the rollover should be done.
+If no RolloverStrategy is configured, RollingRandomAccessFileAppender will use the
+link:#DefaultRolloverStrategy[DefaultRolloverStrategy].
+Since log4j-2.5, a link:#CustomDeleteOnRollover[custom delete action] can be configured in the DefaultRolloverStrategy to run at rollover.
 
 File locking is not supported by the RollingRandomAccessFileAppender.
 
@@ -3580,11 +3414,7 @@ See xref:#TriggeringPolicies[RollingFileAppender Triggering Policies].
 
 See link:#RolloverStrategies[RollingFileAppender Rollover Strategies].
 
-Below is a sample configuration that uses a
-RollingRandomAccessFileAppender with both the time and size-based
-triggering policies will create up to 7 archives on the same day (1-7)
-that are stored in a directory based on the current year and month, and
-will compress each archive using gzip:
+Below is a sample configuration that uses a RollingRandomAccessFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip:
 
 [source,xml]
 ----
@@ -3610,8 +3440,7 @@ will compress each archive using gzip:
 </Configuration>
 ----
 
-This second example shows a rollover strategy that will keep up to 20
-files before removing them.
+This second example shows a rollover strategy that will keep up to 20 files before removing them.
 
 [source,xml]
 ----
@@ -3638,12 +3467,7 @@ files before removing them.
 </Configuration>
 ----
 
-Below is a sample configuration that uses a
-RollingRandomAccessFileAppender with both the time and size-based
-triggering policies will create up to 7 archives on the same day (1-7)
-that are stored in a directory based on the current year and month, and
-will compress each archive using gzip and will roll every 6 hours when
-the hour is divisible by 6:
+Below is a sample configuration that uses a RollingRandomAccessFileAppender with both the time and size-based triggering policies will create up to 7 archives on the same day (1-7) that are stored in a directory based on the current year and month, and will compress each archive using gzip and will roll every 6 hours when the hour is divisible by 6:
 
 [source,xml]
 ----
@@ -3672,15 +3496,11 @@ the hour is divisible by 6:
 [#RoutingAppender]
 == RoutingAppender
 
-The `RoutingAppender` evaluates LogEvents and then routes them to a
-subordinate Appender. The target Appender may be an appender previously
-configured and may be referenced by its name or the Appender can be
-dynamically created as needed. The `RoutingAppender` should be configured
-after any Appenders it references to allow it to shut down properly.
+The `RoutingAppender` evaluates LogEvents and then routes them to a subordinate Appender.
+The target Appender may be an appender previously configured and may be referenced by its name or the Appender can be dynamically created as needed.
+The `RoutingAppender` should be configured after any Appenders it references to allow it to shut down properly.
 
-You can also configure a `RoutingAppender` with scripts: you can run a
-script when the appender starts and when a route is chosen for an log
-event.
+You can also configure a `RoutingAppender` with scripts: you can run a script when the appender starts and when a route is chosen for an log event.
 
 .RoutingAppender Parameters
 [width="100%",cols="20%,20%,60%",options="header",]
@@ -3707,12 +3527,12 @@ This script is passed the following variables:
 .RoutingAppender Script Parameters
 [cols="20%,20%,60%",options="header",]
 |=======================================================================
-|Parameter Name |Type |Description
-|configuration |Configuration |The active Configuration.
 
-|staticVariables |Map |A Map shared between all script invocations for
-this appender instance. This is the same map passed to the Routes
-Script.
+|Parameter Name |Type |Description |configuration |Configuration |The active Configuration.
+
+|staticVariables |Map |A Map shared between all script invocations for this appender instance.
+This is the same map passed to the Routes Script.
+
 |=======================================================================
 
 |ignoreExceptions |boolean |The default is `true`, causing exceptions
@@ -3722,10 +3542,8 @@ caller, instead. You must set this to `false` when wrapping this
 Appender in a link:#FailoverAppender[FailoverAppender].
 |=======================================================================
 
-In this example, the script causes the "ServiceWindows" route to be the
-default route on Windows and "ServiceOther" on all other operating
-systems. Note that the List Appender is one of our test appenders, any
-appender can be used, it is only used as a shorthand.
+In this example, the script causes the "ServiceWindows" route to be the default route on Windows and "ServiceOther" on all other operating systems.
+Note that the List Appender is one of our test appenders, any appender can be used, it is only used as a shorthand.
 
 [source,xml]
 ----
@@ -3757,26 +3575,24 @@ appender can be used, it is only used as a shorthand.
 [#Routes]
 === Routes
 
-The `Routes` element accepts a single attribute named "pattern". The
-pattern is evaluated against all the registered Lookups and the result
-is used to select a `Route`. Each `Route` may be configured with a key. If
-the key matches the result of evaluating the pattern then that `Route`
-will be selected. If no key is specified on a `Route` then that `Route` is
-the default. Only one `Route` can be configured as the default.
+The `Routes` element accepts a single attribute named "pattern".
+The pattern is evaluated against all the registered Lookups and the result is used to select a `Route`.
+Each `Route` may be configured with a key.
+If the key matches the result of evaluating the pattern then that `Route`
+will be selected.
+If no key is specified on a `Route` then that `Route` is the default.
+Only one `Route` can be configured as the default.
 
-The `Routes` element may contain a `Script` child element. If specified, the
-`Script` is run for each log event and returns the String Route key to
-use.
+The `Routes` element may contain a `Script` child element.
+If specified, the
+`Script` is run for each log event and returns the String Route key to use.
 
-You must specify either the pattern attribute or the `Script` element, but
-not both.
+You must specify either the pattern attribute or the `Script` element, but not both.
 
-Each `Route` must reference an `Appender`. If the `Route` contains a ref
-attribute then the `Route` will reference an `Appender` that was defined in
-the configuration. If the `Route` contains an `Appender` definition then an
-`Appender` will be created within the context of the `RoutingAppender` and
-will be reused each time a matching `Appender` name is referenced through
-a `Route`.
+Each `Route` must reference an `Appender`.
+If the `Route` contains a ref attribute then the `Route` will reference an `Appender` that was defined in the configuration.
+If the `Route` contains an `Appender` definition then an
+`Appender` will be created within the context of the `RoutingAppender` and will be reused each time a matching `Appender` name is referenced through a `Route`.
 
 This script is passed the following variables:
 
@@ -3793,8 +3609,7 @@ Script.
 |logEvent |LogEvent |The log event.
 |=======================================================================
 
-In this example, the script runs for each log event and picks a route
-based on the presence of a Marker named "AUDIT".
+In this example, the script runs for each log event and picks a route based on the presence of a Marker named "AUDIT".
 
 [source,xml]
 ----
@@ -3845,21 +3660,12 @@ based on the presence of a Marker named "AUDIT".
 [#Purge]
 === Purge Policy
 
-The RoutingAppender can be configured with a PurgePolicy whose purpose
-is to stop and remove dormant Appenders that have been dynamically
-created by the RoutingAppender. Log4j currently provides the
-IdlePurgePolicy is the only PurgePolicy available for cleaning up the
-Appenders. The IdlePurgePolicy accepts 2 attributes; timeToLive, which
-is the number of timeUnits the Appender should survive without having
-any events sent to it, and timeUnit, the String representation of
-java.util.concurrent.TimeUnit which is used with the timeToLive
-attribute.
+The RoutingAppender can be configured with a PurgePolicy whose purpose is to stop and remove dormant Appenders that have been dynamically created by the RoutingAppender.
+Log4j currently provides the IdlePurgePolicy is the only PurgePolicy available for cleaning up the Appenders.
+The IdlePurgePolicy accepts 2 attributes; timeToLive, which is the number of timeUnits the Appender should survive without having any events sent to it, and timeUnit, the String representation of java.util.concurrent.TimeUnit which is used with the timeToLive attribute.
 
-Below is a sample configuration that uses a RoutingAppender to route all
-Audit events to a FlumeAppender and all other events will be routed to a
-RollingFileAppender captures only the specific event type. Note
-that the AuditAppender was predefined while the RollingFileAppenders are
-created as needed.
+Below is a sample configuration that uses a RoutingAppender to route all Audit events to a FlumeAppender and all other events will be routed to a RollingFileAppender captures only the specific event type.
+Note that the AuditAppender was predefined while the RollingFileAppenders are created as needed.
 
 [source,xml]
 ----
@@ -3900,9 +3706,15 @@ created as needed.
 
 Sends an e-mail when a specific logging event occurs, typically on errors or fatal errors.
 
-The number of logging events delivered in this e-mail depends on the value of the `BufferSize` option. The `SMTPAppender` keeps only the last `BufferSize` logging events in its cyclic buffer. This keeps memory requirements at a reasonable level while still delivering useful application context. All events in the buffer are included in the email. The buffer will contain the most recent events of level TRACE to WARN preceding the event that triggered the email.
+The number of logging events delivered in this e-mail depends on the value of the `BufferSize` option.
+The `SMTPAppender` keeps only the last `BufferSize` logging events in its cyclic buffer.
+This keeps memory requirements at a reasonable level while still delivering useful application context.
+All events in the buffer are included in the email.
+The buffer will contain the most recent events of level TRACE to WARN preceding the event that triggered the email.
 
-The default behavior is to trigger sending an email whenever an ERROR or higher severity event is logged and to format it as HTML. The circumstances of when the email is sent can be controlled by setting one or more filters on the Appender. As with other Appenders, the formatting can be controlled by specifying a Layout for the Appender.
+The default behavior is to trigger sending an email whenever an ERROR or higher severity event is logged and to format it as HTML.
+The circumstances of when the email is sent can be controlled by setting one or more filters on the Appender.
+As with other Appenders, the formatting can be controlled by specifying a Layout for the Appender.
 
 [width="100%",options="header"]
 |===
@@ -3998,22 +3810,19 @@ The default behavior is to trigger sending an email whenever an ERROR or higher 
 </Configuration>
 ----
 
-
 [#ScriptAppenderSelector]
 == ScriptAppenderSelector
 
-When the configuration is built, the `ScriptAppenderSelector` appender
-calls a `ScriptPlugin` to compute an appender name. Log4j then creates one of
-the appender named listed under `AppenderSet` using the name of the
-`ScriptAppenderSelector`. After configuration, Log4j ignores the
-`ScriptAppenderSelector`. Log4j only builds the one selected appender
-from the configuration tree and ignores other `AppenderSet` child
-nodes.
+When the configuration is built, the `ScriptAppenderSelector` appender calls a `ScriptPlugin` to compute an appender name.
+Log4j then creates one of the appender named listed under `AppenderSet` using the name of the
+`ScriptAppenderSelector`.
+After configuration, Log4j ignores the
+`ScriptAppenderSelector`.
+Log4j only builds the one selected appender from the configuration tree and ignores other `AppenderSet` child nodes.
 
-In the following example, the script returns the name "List2". The
-appender name is recorded under the name of the
-`ScriptAppenderSelector`, not the name of the selected appender, in this
-example, "SelectIt".
+In the following example, the script returns the name "List2".
+The appender name is recorded under the name of the
+`ScriptAppenderSelector`, not the name of the selected appender, in this example, "SelectIt".
 
 [source,xml]
 ----
@@ -4040,16 +3849,12 @@ example, "SelectIt".
 [#SocketAppender]
 == SocketAppender
 
-The `SocketAppender` is an OutputStreamAppender that writes its output
-to a remote destination specified by a host and port. The data can be
-sent over either TCP or UDP and can be sent in any format. You can
-optionally secure communication with link:#SSL[SSL]. Note that the TCP and SSL
-variants write to the socket as a stream and do not expect a response from
-the target destination. Due to limitations in the TCP protocol that
-means that when the target server closes its connection some log events
-may continue to appear to succeed until a closed connection exception
-is raised, causing those events to be lost. If guaranteed delivery is
-required a protocol that requires acknowledgments must be used.
+The `SocketAppender` is an OutputStreamAppender that writes its output to a remote destination specified by a host and port.
+The data can be sent over either TCP or UDP and can be sent in any format.
+You can optionally secure communication with link:#SSL[SSL].
+Note that the TCP and SSL variants write to the socket as a stream and do not expect a response from the target destination.
+Due to limitations in the TCP protocol that means that when the target server closes its connection some log events may continue to appear to succeed until a closed connection exception is raised, causing those events to be lost.
+If guaranteed delivery is required a protocol that requires acknowledgments must be used.
 
 .`SocketAppender` Parameters
 [cols="20%,20%,60%",options="header",]
@@ -4154,9 +3959,8 @@ This is a secured link:#SSL[SSL] configuration:
 [#SSL]
 == SSL
 
-Several appenders can be configured to use either a plain network
-connection or a Secure Socket Layer (SSL) connection. This section
-documents the parameters available for SSL configuration.
+Several appenders can be configured to use either a plain network connection or a Secure Socket Layer (SSL) connection.
+This section documents the parameters available for SSL configuration.
 
 .SSL Configuration Parameters
 [cols="20%,20%,60%",options="header",]
@@ -4178,8 +3982,7 @@ counterparty. Determines whether the remote authentication credentials
 [#KeyStore]
 === KeyStore
 
-The Keystore is meant to contain your private keys and certificates, and
-determines which authentication credentials to send to the remote host.
+The Keystore is meant to contain your private keys and certificates, and determines which authentication credentials to send to the remote host.
 
 .KeyStore Configuration Parameters
 [cols="20%,20%,60%",options="header",]
@@ -4212,14 +4015,10 @@ algorithms].
 [#TrustStore]
 === TrustStore
 
-The trust store is meant to contain the CA certificates you are willing
-to trust when a remote party presents its certificate. Determines
-whether the remote authentication credentials (and thus the connection)
-should be trusted.
+The trust store is meant to contain the CA certificates you are willing to trust when a remote party presents its certificate.
+Determines whether the remote authentication credentials (and thus the connection) should be trusted.
 
-In some cases, they can be the same store, although it is often
-better practice to use distinct stores (especially when they are
-file-based).
+In some cases, they can be the same store, although it is often better practice to use distinct stores (especially when they are file-based).
 
 .TrustStore Configuration Parameters
 [cols="20%,20%,60%",options="header",]
@@ -4263,10 +4062,8 @@ algorithms].
 [#SyslogAppender]
 == SyslogAppender
 
-The `SyslogAppender` is a `SocketAppender` that writes its output to a
-remote destination specified by a host and port in a format that
-conforms with either the BSD Syslog format or the RFC 5424 format. The
-data can be sent over either TCP or UDP.
+The `SyslogAppender` is a `SocketAppender` that writes its output to a remote destination specified by a host and port in a format that conforms with either the BSD Syslog format or the RFC 5424 format.
+The data can be sent over either TCP or UDP.
 
 .`SyslogAppender` Parameters
 [cols="20%,20%,60%",options="header",]
@@ -4300,7 +4097,7 @@ The facility option must be set to one of "KERN", "USER", "MAIL",
 "LOCAL3", "LOCAL4", "LOCAL5", "LOCAL6", or "LOCAL7". These values may be
 specified as upper or lowercase characters.
 
-|format |String |If set to "RFC5424" the data will be formatted by RFC 5424. 
+|format |String |If set to "RFC5424" the data will be formatted by RFC 5424.
 Otherwise, it will be formatted as a BSD
 Syslog record. Note that although BSD Syslog records are required to be
 1024 bytes or shorter the SyslogLayout does not truncate them. The
@@ -4355,7 +4152,7 @@ attribute. This attribute only applies to RFC 5424 syslog records.
 present in the MDC. If a key is not present a LoggingException will be
 thrown. This attribute only applies to RFC 5424 syslog records.
 
-|mdcPrefix |String |A string that should be prepended to each MDC key 
+|mdcPrefix |String |A string that should be prepended to each MDC key
 to distinguish it from event attributes. The default string is
 `mdc:`. This attribute only applies to RFC 5424 syslog records.
 
@@ -4382,8 +4179,7 @@ fails then an exception will be thrown (which can be caught by the
 application if `ignoreExceptions` is set to `false`).
 |=======================================================================
 
-A sample syslogAppender configuration that is configured with two
-`SyslogAppender`s, one using the BSD format and one using RFC 5424.
+A sample syslogAppender configuration that is configured with two `SyslogAppender`s, one using the BSD format and one using RFC 5424.
 
 [source,xml]
 ----
@@ -4407,9 +4203,7 @@ A sample syslogAppender configuration that is configured with two
 </Configuration>
 ----
 
-For link:#SSL[SSL] this appender writes its output to a remote
-destination specified by a host and port over SSL in a format that
-conforms with either the BSD Syslog format or the RFC 5424 format.
+For link:#SSL[SSL] this appender writes its output to a remote destination specified by a host and port over SSL in a format that conforms with either the BSD Syslog format or the RFC 5424 format.
 
 [source,xml]
 ----
@@ -4456,7 +4250,8 @@ This is a simple JeroMQ configuration:
 </Configuration>
 ----
 
-The table below describes all options. Please consult the JeroMQ and ZeroMQ documentation for details.
+The table below describes all options.
+Please consult the JeroMQ and ZeroMQ documentation for details.
 
 [width="100%",options="header"]
 |===

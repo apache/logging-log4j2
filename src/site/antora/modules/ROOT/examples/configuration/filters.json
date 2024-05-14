@@ -31,7 +31,6 @@
     }
   },
   "MarkerFilter": { // <1>
-    "marker": "PRIVATE",
-    "onMismatch": "NEUTRAL"
+    "marker": "PRIVATE"
   }
 }

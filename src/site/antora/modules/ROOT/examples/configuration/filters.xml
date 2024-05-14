@@ -38,5 +38,5 @@
       <ThresholdFilter level="TRACE"/> <!--3-->
     </Logger>
   </Loggers>
-  <MarkerFilter marker="PRIVATE" onMismatch="NEUTRAL"/> <!--1-->
+  <MarkerFilter marker="PRIVATE"/> <!--1-->
 </Configuration>

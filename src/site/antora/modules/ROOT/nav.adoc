@@ -40,7 +40,7 @@
 ** xref:manual/thread-context.adoc[]
 ** xref:manual/scoped-context.adoc[]
 ** xref:manual/resource-logger.adoc[]
-* Backend Configuration
+* Configuration
 ** xref:manual/configuration.adoc[Configuration file]
 ** xref:manual/appenders.adoc[]
 ** xref:manual/layouts.adoc[]
