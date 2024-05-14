@@ -23,7 +23,7 @@ Configuration:
     File:
       - name: "MAIN" # <2>
         fileName: "logs/main.log"
-        JsonTemplateLayout: { }
+        JsonTemplateLayout: {}
       - name: "DEBUG_LOG" # <3>
         fileName: "logs/debug.log"
         PatternLayout:

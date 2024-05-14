@@ -23,9 +23,9 @@ Configuration:
         SystemPropertyArbiter: # <1>
           propertyName: "env"
           propertyValue: "dev"
-          PatternLayout: { }
+          PatternLayout: {}
         DefaultArbiter: # <2>
-          JsonTemplateLayout: { }
+          JsonTemplateLayout: {}
   Loggers:
     Root:
       level: "INFO"

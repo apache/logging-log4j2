@@ -26,7 +26,7 @@ Configuration:
             pattern: "%d [%t] %p %c - %m%n"
         - propertyName: "env" # <2>
           propertyValue: "prod"
-          JsonTemplateLayout: { }
+          JsonTemplateLayout: {}
   Loggers:
     Root:
       level: "INFO"
