@@ -19,7 +19,6 @@
 Ralph Goers <rgoers@apache.org>; Piotr Karwasz <pkarwasz@apache.org>
 
 Since logging is a common way to monitor the health of an application and diagnose problems that occur in it, even moderately sized applications can contain thousands of logging statements.
-
 To decide which of these statements will be logged and where users need to configure Log4j Core.
 
 Log4j Core can be configured in two ways:
@@ -111,8 +110,8 @@ See xref:manual/webapp.adoc#configuration[Log4j
 It is also possible to override the location of the configuration file using the
 xref:manual/systemproperties.adoc#log4j2.configurationFile[log4j2.configurationFile]
 configuration property.
-
 In this case, Log4j will guess the configuration file format from the extension of the provided configuration file or will use the default configuration factory if the extension is unknown.
+
 See xref:manual/systemproperties.adoc#log4j2.configurationFile[log4j2.configurationFile] for details.
 ====
 
