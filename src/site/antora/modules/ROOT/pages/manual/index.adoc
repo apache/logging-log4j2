@@ -66,3 +66,7 @@ Log4j offers numerous advantages, including:
 7. **Modern Syntax**: Log4j supports xref:manual/api.adoc#LambdaSupport[lambda expressions]
 8. **Integration**: Log4j integrates with numerous other frameworks and libraries.
 9. **ASF Standards**: Developed at the Apache Software Foundation, adhering to rigorous standards and best practices.
+
+== How to learn more?
+
+To get started, learn more about the xref:manual/api.adoc[Log4j API] and it's xref:manual/architecture.adoc[architecture.] 
