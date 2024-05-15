@@ -29,13 +29,18 @@ Hence, we will discuss both:
 . xref:#Config[]
 . xref:#api[]
 
-[#impatient]
-== For the impatient
+[#quick]
+== Quick start
 
-If you want to have a garbage-free Log4j setup, but don't want to spend time with associated details, you can start with setting the following system properties to `true`:
+If you want to have a garbage-free Log4j setup, but don't want to spend time with the associated details, you can quickly get started with the following instructions:
 
-* xref:#log4j2.enableThreadlocals[`log4j2.enableThreadlocals`]
-* xref:#log4j2.garbagefreeThreadContextMap[`log4j2.garbagefreeThreadContextMap`]
+. Set the following system properties to `true`:
+** xref:#log4j2.enableThreadlocals[`log4j2.enableThreadlocals`]
+** xref:#log4j2.garbagefreeThreadContextMap[`log4j2.garbagefreeThreadContextMap`]
+. Use garbage-free
+** xref:#Layouts[]
+** xref:#Appenders[]
+** xref:#Filters[]
 
 This should be sufficient for a majority of use cases.
 If not for yours, keep on reading.
