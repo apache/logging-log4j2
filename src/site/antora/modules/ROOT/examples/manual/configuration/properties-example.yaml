@@ -14,20 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-##
-# tag::loggers[]
-rootLogger.level = INFO # <1>
-rootLogger.appenderRef.0.ref = APPENDER1
-
-logger.0.name = org.example.no_additivity # <2>
-logger.0.additivity = false
-logger.0.appenderRef.0.ref = APPENDER2
-
-logger.1.name = org.example.no_location # <3>
-logger.1.includeLocation = false
-logger.1.appenderRef.0.ref = APPENDER3
-
-logger.2.name = org.example.level # <4>
-logger.2.level = DEBUG
-logger.2.appenderRef.0.ref = APPENDER4
-# end::loggers[]
+Properties:
+  Property:
+    - name: "FOO"
+      value: "foo"
+    - name: "BAR"
+      value: "bar"

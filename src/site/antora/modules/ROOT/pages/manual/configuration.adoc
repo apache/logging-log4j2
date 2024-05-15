@@ -489,7 +489,7 @@ Java properties::
 +
 [source,properties]
 ----
-include::example$manual/configuration/loggers.properties[]
+include::example$manual/configuration/loggers.properties[tags=loggers]
 ----
 ====
 
@@ -817,6 +817,107 @@ To prevent the expansion of one of the expressions above, the initial `$` must b
 
 The same rule applies to the `name` parameter: if it contains a `${` sequence, the sequence must be escaped as `$${`.
 ====
+
+.Property substitution example
+=====
+
+If your configuration file contains the following definitions:
+[tabs]
+====
+XML::
++
+[source,xml]
+----
+include::example$manual/configuration/properties-example.xml[lines=18..-1]
+----
+
+JSON::
++
+[source,json]
+----
+include::example$manual/configuration/properties-example.json[]
+----
+
+YAML::
++
+[source,yaml]
+----
+include::example$manual/configuration/properties-example.yaml[lines=17..-1]
+----
+
+Java properties::
++
+[source,properties]
+----
+include::example$manual/configuration/properties-example.properties[lines=17..-1]
+----
+====
+
+and the OS environment variable `FOO` has a value of `environment`, Log4j will evaluate expression as follows
+
+[cols="1m,1m"]
+|===
+| Expression | Value
+
+| $\{FOO}             | foo
+| $\{BAZ}             | $\{BAZ}
+| ${BAR:-$\{FOO}}     | bar
+| ${BAZ:-$\{FOO}}     | foo
+| ${env:FOO}          | environment
+| ${env:BAR}          | bar
+| ${env:BAZ}          | $\{BAZ}
+| ${env:BAR:-$\{FOO}} | bar
+| ${env:BAZ:-$\{FOO}} | foo
+|===
+=====
+
+[CAUTION]
+=====
+For security reasons, if the **expansion** of a `${...}` expression contains other expressions, these will **not** be expanded.
+The only exception to this rule is the expansion of properties in the `Properties` container.
+
+Properties defined in the `Properties` container can depend on each other.
+If your configuration contains, for example:
+
+[tabs]
+====
+XML::
++
+[source,xml]
+----
+include::example$manual/configuration/properties-recursion.xml[lines=18..-1]
+----
+
+JSON::
++
+[source,json]
+----
+include::example$manual/configuration/properties-recursion.json[]
+----
+
+YAML::
++
+[source,yaml]
+----
+include::example$manual/configuration/properties-recursion.yaml[lines=17..-1]
+----
+
+Java properties::
++
+[source,properties]
+----
+include::example$manual/configuration/properties-recursion.properties[lines=17..-1]
+----
+====
+
+the `logging.dir` property will be expanded **before** the `logging.file` property and the expanded value will be substituted in `${logging.dir}/app.log`.
+Therefore, the value of the `logging.file` property will be:
+
+* `./logs/app.log` if the environment variable `APP_BASE` is not defined,
+* `/var/lib/app/logs/app.log` if the environment variable `APP_BASE` has a value of `/var/lib/app`.
+
+
+=====
 
 [id=lazy-property-substitution]
 ==== Lazy property substitution
