@@ -22,6 +22,7 @@
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <Appenders>
     <File name="MAIN" fileName="logs/app.log">
+      <!-- tag::select[] -->
       <Select>
         <SystemPropertyArbiter propertyName="env" propertyValue="dev"> <!--1-->
           <PatternLayout/>
@@ -30,6 +31,7 @@
           <JsonTemplateLayout/>
         </DefaultArbiter>
       </Select>
+      <!-- end::select[] -->
     </File>
   </Appenders>
   <Loggers>

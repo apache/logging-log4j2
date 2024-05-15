@@ -16,8 +16,8 @@
 ////
 [id=filters]
 = Filters
-Ralph Goers <rgoers@apache.org>
-Volkan Yazıcı <vy@apache.org>
+
+Ralph Goers <rgoers@apache.org> Volkan Yazıcı <vy@apache.org>
 
 Log4j supports filtering of log events at each level of the logging pipeline using two features:
 
@@ -40,30 +40,31 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/filters.xml[lines=1;18..-1]
+include::example$manual/filters/filters.xml[lines=1;18..-1]
 ----
 
 JSON::
 +
 [source,json]
 ----
-include::example$configuration/filters.json[]
+include::example$manual/filters/filters.json[]
 ----
 
 YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/filters.yaml[lines=17..-1]
+include::example$manual/filters/filters.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/filters.properties[lines=17..-1]
+include::example$manual/filters/filters.properties[lines=17..-1]
 ----
 ====
+
 <1> First the context-wide filter is consulted.
 If it returns `ACCEPT` the log message goes directly to point 3.
 <2> Then Log4j checks the message against the configured logger level.
@@ -89,8 +90,7 @@ Using the `level` property of appender references will give a better performance
 [#BurstFilter]
 == BurstFilter
 
-The BurstFilter provides a mechanism to control the rate at which
-LogEvents are processed by silently discarding events after the maximum limit has been reached.
+The BurstFilter provides a mechanism to control the rate at which LogEvents are processed by silently discarding events after the maximum limit has been reached.
 
 .Burst Filter Parameters
 [cols="1m,1,4"]
@@ -152,9 +152,9 @@ A configuration containing the BurstFilter might look like:
 [#CompositeFilter]
 == CompositeFilter
 
-The CompositeFilter provides a way to specify more than one filter. It
-is added to the configuration as a filter element and contains other
-filters to be evaluated. The filter element accepts no parameters.
+The CompositeFilter provides a way to specify more than one filter.
+It is added to the configuration as a filter element and contains other filters to be evaluated.
+The filter element accepts no parameters.
 
 A configuration containing the CompositeFilter might look like:
 
@@ -198,11 +198,9 @@ A configuration containing the CompositeFilter might look like:
 [#DynamicThresholdFilter]
 == DynamicThresholdFilter
 
-The DynamicThresholdFilter allows filtering by log level based on
-specific attributes. For example, if the user's loginId is being
-captured in the ThreadContext Map then it is possible to enable debug
-logging for only that user. If the log event does not contain the
-specified ThreadContext item NEUTRAL will be returned.
+The DynamicThresholdFilter allows filtering by log level based on specific attributes.
+For example, if the user's loginId is being captured in the ThreadContext Map then it is possible to enable debug logging for only that user.
+If the log event does not contain the specified ThreadContext item NEUTRAL will be returned.
 
 .Dynamic Threshold Filter Parameters
 [cols="1m,1,4"]
@@ -317,8 +315,7 @@ The filter will return `onMismatch` result (i.e., `DENY`, the default) for log e
 [#MapFilter]
 == MapFilter
 
-The MapFilter allows filtering against data elements that are in a
-MapMessage.
+The MapFilter allows filtering against data elements that are in a MapMessage.
 
 .Map Filter Parameters
 [cols="1m,1,4"]
@@ -349,8 +346,7 @@ DENY or NEUTRAL. The default value is NEUTRAL.
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-As in this configuration, the MapFilter can be used to log particular
-events:
+As in this configuration, the MapFilter can be used to log particular events:
 
 [source,xml]
 ----
@@ -378,8 +374,7 @@ events:
 </Configuration>
 ----
 
-This sample configuration will exhibit the same behavior as the
-preceding example since the only logger configured is the root.
+This sample configuration will exhibit the same behavior as the preceding example since the only logger configured is the root.
 
 [source,xml]
 ----
@@ -408,9 +403,7 @@ preceding example since the only logger configured is the root.
 </Configuration>
 ----
 
-This third sample configuration will exhibit the same behavior as the
-preceding examples since the only logger configured is the root and the
-root is only configured with a single appender reference.
+This third sample configuration will exhibit the same behavior as the preceding examples since the only logger configured is the root and the root is only configured with a single appender reference.
 
 [source,xml]
 ----
@@ -442,9 +435,8 @@ root is only configured with a single appender reference.
 [#MarkerFilter]
 == MarkerFilter
 
-The MarkerFilter compares the configured Marker value against the Marker
-that is included in the LogEvent. A match occurs when the Marker name
-matches either the Log Event's Marker or one of its parents.
+The MarkerFilter compares the configured Marker value against the Marker that is included in the LogEvent.
+A match occurs when the Marker name matches either the Log Event's Marker or one of its parents.
 
 .Marker Filter Parameters
 [cols="1m,1,4"]
@@ -466,8 +458,7 @@ DENY or NEUTRAL. The default value is NEUTRAL.
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-A sample configuration that only allows the event to be written by the
-appender if the Marker matches:
+A sample configuration that only allows the event to be written by the appender if the Marker matches:
 
 [source,xml]
 ----
@@ -494,7 +485,9 @@ appender if the Marker matches:
 [#MutableThreadContextMapFilter]
 == MutableThreadContextMapFilter
 
-The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context. By default, this is the ThreadContext Map. The values to compare are defined externally and can be periodically polled for changes.
+The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context.
+By default, this is the ThreadContext Map.
+The values to compare are defined externally and can be periodically polled for changes.
 
 .Mutable Context Map Filter Parameters
 [cols="1m,1,4"]
@@ -526,8 +519,7 @@ DENY or NEUTRAL. The default value is NEUTRAL.
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-A sample configuration that only allows the event to be written by the
-appender if the Marker matches:
+A sample configuration that only allows the event to be written by the appender if the Marker matches:
 
 [source,xml]
 ----
@@ -553,6 +545,7 @@ appender if the Marker matches:
 ----
 
 The configuration file supplied to the filter should look similar to:
+
 [source,json]
 ----
 {
@@ -566,7 +559,7 @@ The configuration file supplied to the filter should look similar to:
 [#NoMarkerFilter]
 == NoMarkerFilter
 
-The NoMarkerFilter checks that there is no marker included in the LogEvent. 
+The NoMarkerFilter checks that there is no marker included in the LogEvent.
 A match occurs when there is no marker in the Log Event.
 
 .No Marker Filter Parameters
@@ -585,8 +578,7 @@ DENY or NEUTRAL. The default value is NEUTRAL.
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-A sample configuration that only allows the event to be written by the
-appender if no marker is there:
+A sample configuration that only allows the event to be written by the appender if no marker is there:
 
 [source,xml]
 ----
@@ -613,8 +605,7 @@ appender if no marker is there:
 [#RegexFilter]
 == RegexFilter
 
-The RegexFilter allows the formatted or unformatted message to be
-compared against a regular expression.
+The RegexFilter allows the formatted or unformatted message to be compared against a regular expression.
 
 .Regex Filter Parameters
 [cols="1m,1,4"]
@@ -642,8 +633,7 @@ DENY or NEUTRAL. The default value is NEUTRAL.
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-A sample configuration that only allows the event to be written by the
-appender if it contains the word "test":
+A sample configuration that only allows the event to be written by the appender if it contains the word "test":
 
 [source,xml]
 ----
@@ -668,7 +658,6 @@ appender if it contains the word "test":
 ----
 
 [[Script]]
-
 The ScriptFilter executes a script that returns true or false.
 
 .Script Filter Parameters
@@ -743,11 +732,9 @@ Throwable as part of the Message.
 |The StrSubstitutor is used to replace lookup variables.
 |===
 
-The sample below shows how to declare script fields and then reference
-them in specific components. See
-xref:manual/appenders.adoc#ScriptCondition[ScriptCondition] for an example of
-how the `ScriptPlugin` element can be used to embed script code directly in
-the configuration.
+The sample below shows how to declare script fields and then reference them in specific components.
+See
+xref:manual/appenders.adoc#ScriptCondition[ScriptCondition] for an example of how the `ScriptPlugin` element can be used to embed script code directly in the configuration.
 
 [source,xml]
 ----
@@ -788,8 +775,7 @@ the configuration.
 [#StructuredDataFilter]
 == StructuredDataFilter
 
-The StructuredDataFilter is a MapFilter that also allows filtering on
-the event id, type and message.
+The StructuredDataFilter is a MapFilter that also allows filtering on the event id, type and message.
 
 .StructuredData Filter Parameters
 [cols="1m,1,4"]
@@ -823,8 +809,7 @@ DENY or NEUTRAL. The default value is NEUTRAL.
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-As in this configuration, the StructuredDataFilter can be used to log
-particular events:
+As in this configuration, the StructuredDataFilter can be used to log particular events:
 
 [source,xml]
 ----
@@ -855,9 +840,8 @@ particular events:
 [#ThreadContextMapFilter]
 == ThreadContextMapFilter
 
-The ThreadContextMapFilter or ContextMapFilter allows filtering against
-data elements that are in the current context. By default, this is the
-ThreadContext Map.
+The ThreadContextMapFilter or ContextMapFilter allows filtering against data elements that are in the current context.
+By default, this is the ThreadContext Map.
 
 .Context Map Filter Parameters
 [cols="1m,1,4"]
@@ -948,10 +932,9 @@ The ContextMapFilter can also be applied to a logger for filtering:
 [#ThresholdFilter]
 == ThresholdFilter
 
-This filter returns the onMatch result if the level in the LogEvent is
-the same or more specific than the configured level and the `onMismatch`
-value otherwise. For example, if the ThresholdFilter is configured with
-Level ERROR and the LogEvent contains Level DEBUG then the `onMismatch`
+This filter returns the onMatch result if the level in the LogEvent is the same or more specific than the configured level and the `onMismatch`
+value otherwise.
+For example, if the ThresholdFilter is configured with Level ERROR and the LogEvent contains Level DEBUG then the `onMismatch`
 value will be returned since ERROR events are more specific than DEBUG.
 
 .Threshold Filter Parameters
@@ -974,8 +957,7 @@ DENY or NEUTRAL. The default value is NEUTRAL.
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-A sample configuration that only allows the event to be written by the
-appender if the level matches:
+A sample configuration that only allows the event to be written by the appender if the level matches:
 
 [source,xml]
 ----
@@ -1002,8 +984,7 @@ appender if the level matches:
 [#TimeFilter]
 == TimeFilter
 
-The time filter can be used to restrict the filter to only a certain portion
-of the day.
+The time filter can be used to restrict the filter to only a certain portion of the day.
 
 .Time Filter Parameters
 [cols="1m,1,4"]
@@ -1035,8 +1016,7 @@ DENY or NEUTRAL. The default value is NEUTRAL.
 be ACCEPT, DENY or NEUTRAL. The default value is DENY.
 |===
 
-A sample configuration that only allows the event to be written by the
-appender from 5:00 to 5:30 am each day using the default timezone:
+A sample configuration that only allows the event to be written by the appender from 5:00 to 5:30 am each day using the default timezone:
 
 [source,xml]
 ----

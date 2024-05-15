@@ -3,6 +3,7 @@
     "Appenders": {
       "File": {
         "name": "MAIN",
+        // tag::select[]
         "Select": {
           "SystemPropertyArbiter": { // <1>
             "propertyName": "env",
@@ -13,6 +14,7 @@
             "JsonTemplateLayout": {}
           }
         }
+        // end::select[]
       }
     },
     "Loggers": {

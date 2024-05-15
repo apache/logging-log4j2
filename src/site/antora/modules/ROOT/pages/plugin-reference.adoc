@@ -19,6 +19,8 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 This file is a stub.
 Its content will be auto-generated during build.
 
+The purpose of the sections below is to remove IDE errors while editing configuration files.
+
 [#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-AbstractBuilder]
 == `AbstractBuilder`
 [#org-apache-logging-log4j_log4j-1-2-api_org-apache-log4j-builders-appender-AppenderBuilder]

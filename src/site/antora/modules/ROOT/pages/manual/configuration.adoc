@@ -16,7 +16,6 @@
 ////
 [id=configuration]
 = Configuration
-Ralph Goers <rgoers@apache.org>; Piotr Karwasz <pkarwasz@apache.org>
 
 Since logging is a common way to monitor the health of an application and diagnose problems that occur in it, even moderately sized applications can contain thousands of logging statements.
 To decide which of these statements will be logged and where users need to configure Log4j Core.
@@ -30,13 +29,11 @@ Since version 2.0 the configuration file format is considered as part of the pub
 
 [NOTE]
 ====
-To prevent a chicken-and-egg problem some configuration options (e.g., the configuration file location) can only be supplied through xref:manual/systemproperties.adoc[system properties].
+To prevent a chicken-and-egg problem some configuration options (e.g., the configuration file location) can only be supplied through xref:manual/systemproperties.adoc[configuration properties].
 ====
 
 [#configuration-file]
 == Configuration file
-
-TIP: For a quick example of a configuration file see the xref:manual/installation.adoc#impl-core-config[Configuring Log4j Core section].
 
 Log4j Core can be configured using multiple configuration file formats.
 Configuration factories for the XML, JSON, YAML and Java properties formats are included in the `log4j-core` artifact.
@@ -71,10 +68,12 @@ to the console.
 ====
 The configuration files prefixed by `log4j2-test` should only be used on the test classpath.
 
-If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (cf. link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order[@Order]).
-Nevertheless, application developers are advised not to use multiple configuration files that differ only by the extension.
+If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order[@Order]).
+Nevertheless:
 
-Most libraries should not contain Log4j configuration files in their default location to allow applications to define their own.
+* if you are developing an application you should not use configuration files that only differ by the extension,
+* if you are developing a library you should only add configuration files to your test classpath.
+
 ====
 
 The `<contextName>` and `<extension>` placeholders above have the following meaning
@@ -118,10 +117,14 @@ See xref:manual/systemproperties.adoc#log4j2.configurationFile[log4j2.configurat
 [id=configuration-syntax]
 === [[ConfigurationSyntax]] Syntax
 
-All configuration files are parsed into a tree of link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node[Node]s, each representing a different Log4j component.
+The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are analogous to beans in Spring Framework and Java EE.
+Appenders, layouts, filters, configuration loaders, etc. are all accessed as plugins.
+
+All configuration files are represented internally as a tree of
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node[Node]s, which is translated into a tree of Log4j plugins.
 The root of the tree creates a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration[Configuration] object.
 
-A node is a fairly simple structure that represents a single Log4j plugin (cf. xref:plugin-reference.adoc[] for a complete list) such as an appender, layout or logger configuration.
+A node is a fairly simple structure that represents a single Log4j plugin (see xref:plugin-reference.adoc[] for a complete list) such as an appender, layout or logger configuration.
 Each node has:
 
 * a set of simple string key-value pairs called **attributes**.
@@ -147,12 +150,12 @@ Since XML was the original configuration format developed, the mapping from conf
 +
 [NOTE]
 ====
-There is an alternative XML configuration format called "XML strict format" that is activated by setting the `strict` attribute of the main `<Configuration>` element to `true`.
-
+There is an alternative XML configuration format called "XML strict format" that is activated by setting the `strict`
+attribute of the main `<Configuration>` element to `true`.
 It allows users to use arbitrary tag names as long as they provide the plugin type using a `type` property.
-It was conceived as a simplified XML format that can be validated by an XML schema.
 
-Nowadays, the automatically generated schemas published at https://logging.apache.org/xml/ns/ offer a better alternative and allow users to use the more concise syntax.
+The _XML strict format_ was conceived as a simplified XML format that can be validated by an XML schema, but has fallen into disuse: nowadays, the automatically generated schemas published at https://logging.apache.org/xml/ns/
+offer a better alternative and allow users to use a more concise syntax.
 ====
 
 JSON::
@@ -220,7 +223,6 @@ File:
 
 Java properties::
 +
-The Java properties format is not well suited to represent hierarchical structures.
 In the Java properties configuration format:
 +
 [id=configuration-with-properties]
@@ -237,11 +239,10 @@ In the Java properties configuration format:
 [NOTE]
 ====
 The ID assigned to nested components is only used for sorting purposes.
-However, some components assign a special meaning to some IDs.
-See a list of exceptions in <<java-properties-features>>.
 ====
-
 =====
+
+See also <<format-specific-notes>> for exceptions to the rules above.
 
 [id=main-configuration-elements]
 === Main configuration elements
@@ -281,28 +282,28 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/main-elements.xml[lines=1;18..-1]
+include::example$manual/configuration/main-elements.xml[lines=1;18..-1]
 ----
 
 JSON::
 +
 [source,json]
 ----
-include::example$configuration/main-elements.json[]
+include::example$manual/configuration/main-elements.json[]
 ----
 
 YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/main-elements.yaml[lines=17..-1]
+include::example$manual/configuration/main-elements.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/main-elements.properties[lines=17..-1]
+include::example$manual/configuration/main-elements.properties[lines=17..-1]
 ----
 ====
 
@@ -392,14 +393,12 @@ See xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-lo
 |===
 
 Determines the polling interval used by Log4j to check for changes to the configuration file.
-
 If a change in the configuration file is detected, Log4j automatically reconfigures the logger context.
-
 If set to `0`, polling is disabled.
 
 [CAUTION]
 ====
-Unlike other logging backends, Log4j Core is designed with **audit** logging in mind.
+Unlike other logging backends, Log4j Core is designed with reliability in mind.
 
 During a reconfiguration process, no messages are lost.
 
@@ -463,8 +462,11 @@ The logger components can have the following configuration attributes and elemen
 
 [cols="1h,5"]
 |===
-| Type          | `String`
-| Applies to    | `Logger` and `AsyncLogger`
+| Type
+| `String`
+
+| Applies to
+| `Logger` and `AsyncLogger`
 |===
 
 Specifies the name of the logger configuration.
@@ -481,19 +483,24 @@ Since loggers are usually named using fully qualified class names, this value us
 | Applies to    | `Logger` and `AsyncLogger`
 |===
 
-If `true` (default), all the messages received by this logger will also be transmitted to its parent logger.
+If `true` (default), all the messages received by this logger will also be transmitted to its
+xref:manual/architecture.adoc#logger-hierarchy[parent logger]).
 
 [id=logger-attributes-level]
 ==== `level`
 
 [cols="1h,5"]
 |===
-| Type          | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+| Type
+| link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[Level]
+
 | Default value
 a|
 * xref:manual/systemproperties.adoc#log4j2.level[log4j2.level],
 for `Root` and `AsyncRoot`,
-* inherited from the parent logger, for `Logger` and `AsyncLogger`.
+* inherited from the
+xref:manual/architecture.adoc#logger-hierarchy[parent logger],
+for `Logger` and `AsyncLogger`.
 |===
 
 Specifies the level threshold that a log event must have to be logged.
@@ -506,7 +513,9 @@ See also xref:manual/filters.adoc#filters[Filters] if you require additional fil
 
 [cols="1h,5"]
 |===
-| Type          | `boolean`
+| Type
+| `boolean`
+
 | Default value
 a|
 * `false`, if an asynchronous `ContextSelector` is used.
@@ -520,16 +529,12 @@ for more details.
 |===
 
 Specifies whether Log4j is allowed to compute location information.
+If set to `false`, Log4j will make no attempt to infer the location of the logging call, unless said location was provided explicitly using one of the available
+https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html[LogBuilder
+.withLocation()]
+methods.
 
-Computing the location information of a logging statement is an expensive operation (a couple of microseconds).
-While Log4j makes every effort to only compute it if it was requested by a configured layout (cf. xref:manual/layouts.adoc[Layouts]), this setting provides a kill switch to disable it.
-
-[TIP]
-====
-This setting only applies to the computation of location at **runtime**.
-
-If the location is computed at build time using link:/log4j/transform/latest/#log4j-transform-maven-plugin[Log4j Transform Maven Plugin] this setting is ignored and location information will always be available for logging.
-====
+See xref:manual/layouts.adoc#location-information[Location information] for more details.
 
 [id=logger-elements-appenderrefs]
 ==== Appender references
@@ -559,28 +564,28 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/logger-properties.xml[tag=loggers]
+include::example$manual/configuration/logger-properties.xml[tag=loggers]
 ----
 
 JSON::
 +
 [source,json]
 ----
-include::example$configuration/logger-properties.json[tag=loggers]
+include::example$manual/configuration/logger-properties.json[tag=loggers]
 ----
 
 YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/logger-properties.yaml[tag=loggers]
+include::example$manual/configuration/logger-properties.yaml[tag=loggers]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/logger-properties.properties[tag=loggers]
+include::example$manual/configuration/logger-properties.properties[tag=loggers]
 ----
 ====
 
@@ -637,28 +642,28 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/properties.xml[lines=1;18..24;26]
+include::example$manual/configuration/properties.xml[lines=1;18..24;26]
 ----
 
 JSON::
 +
 [source,json]
 ----
-include::example$configuration/properties.json[]
+include::example$manual/configuration/properties.json[]
 ----
 
 YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/properties.yaml[lines=17..-1]
+include::example$manual/configuration/properties.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/properties.properties[lines=17..-1]
+include::example$manual/configuration/properties.properties[lines=17..-1]
 ----
 ====
 
@@ -754,28 +759,28 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/routing.xml[tag=appender]
+include::example$manual/configuration/routing.xml[tag=appender]
 ----
 
 JSON::
 +
 [source,json]
 ----
-include::example$configuration/routing.json[tag=appender]
+include::example$manual/configuration/routing.json[tag=appender]
 ----
 
 YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/routing.yaml[tag=appender]
+include::example$manual/configuration/routing.yaml[tag=appender]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/routing.properties[tag=appender]
+include::example$manual/configuration/routing.properties[tag=appender]
 ----
 ====
 
@@ -810,28 +815,28 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/arbiters.xml[lines=1;18..-1]
+include::example$manual/configuration/arbiters.xml[lines=1;18..-1]
 ----
 
 JSON::
 +
 [source,json]
 ----
-include::example$configuration/arbiters.json[]
+include::example$manual/configuration/arbiters.json[]
 ----
 
 YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/arbiters.yaml[lines=17..-1]
+include::example$manual/configuration/arbiters.yaml[lines=17..-1]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/arbiters.properties[lines=17..-1]
+include::example$manual/configuration/arbiters.properties[lines=17..-1]
 ----
 ====
 
@@ -850,28 +855,28 @@ XML::
 +
 [source,xml]
 ----
-include::example$configuration/arbiters-select.xml[lines=1;18..-1]
+include::example$manual/configuration/arbiters-select.xml[tag=select]
 ----
 
 JSON::
 +
 [source,json]
 ----
-include::example$configuration/arbiters-select.json[]
+include::example$manual/configuration/arbiters-select.json[tag=select]
 ----
 
 YAML::
 +
 [source,yaml]
 ----
-include::example$configuration/arbiters-select.yaml[lines=17..-1]
+include::example$manual/configuration/arbiters-select.yaml[tag=select]
 ----
 
 Java properties::
 +
 [source,properties]
 ----
-include::example$configuration/arbiters-select.properties[lines=17..-1]
+include::example$manual/configuration/arbiters-select.properties[tag=select]
 ----
 ====
 
@@ -964,23 +969,30 @@ Here is an example log4j2.xml file that includes two other files:
 .log4j2.xml
 [source,xml]
 ----
-include::example$configuration/xinclude-main.xml[lines=1;18..-1]
+include::example$manual/configuration/xinclude-main.xml[lines=1;18..-1]
 ----
 
 .xinclude-appenders.xml
 [source,xml]
 ----
-include::example$configuration/xinclude-appenders.xml[lines=1;18..-1]
+include::example$manual/configuration/xinclude-appenders.xml[lines=1;18..-1]
 ----
 
 .xinclude-loggers.xml
 [source,xml]
 ----
-include::example$configuration/xinclude-loggers.xml[lines=1;18..-1]
+include::example$manual/configuration/xinclude-loggers.xml[lines=1;18..-1]
 ----
 
 [id=java-properties-features]
 ==== Java properties format
+
+[TIP]
+====
+The Java properties format is not well suited to represent hierarchical structures.
+
+Consider switching to XML, if you don't want additional dependencies, or YAML, if you are looking for a format similar to Java properties, but less verbose.
+====
 
 The Java properties configuration format is by far the most verbose of the available formats.
 To make it more usable a series of exceptions to the rules in <<configuration-with-properties,Java properties syntax>> have been introduced over time:

@@ -17,25 +17,39 @@
 = Layouts
 Ralph Goers <rgoers@apache.org>; Gary Gregory <ggregory@apache.org>; Volkan Yazıcı <vy@apache.org>
 
-An Appender uses a Layout to format a LogEvent into a form that meets
-the needs of whatever will be consuming the log event. In Log4j 1.x and
-Logback Layouts were expected to transform an event into a String. In
-Log4j 2 Layouts return a byte array. This allows the result of the
-Layout to be useful in many more types of Appenders. However, this means
-you need to configure most Layouts with a
+An Appender uses a Layout to format a LogEvent into a form that meets the needs of whatever will be consuming the log event.
+In Log4j 1.x and Logback Layouts were expected to transform an event into a String.
+In Log4j 2 Layouts return a byte array.
+This allows the result of the Layout to be useful in many more types of Appenders.
+However, this means you need to configure most Layouts with a
 https://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html[`Charset`]
 to ensure the byte array contains correct values.
 
 The root class for layouts that use a Charset is
-`org.apache.logging.log4j.core.layout.AbstractStringLayout` where the
-default is UTF-8. Each layout that extends `AbstractStringLayout` can
-provide its own default. See each layout below.
+`org.apache.logging.log4j.core.layout.AbstractStringLayout` where the default is UTF-8. Each layout that extends `AbstractStringLayout` can provide its own default.
+See each layout below.
 
-A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1
-and US-ASCII charsets, to bring some of the performance improvements
-built-in to Java 8 to Log4j for use on Java 7. For applications that log
-only ISO-8859-1 characters, specifying this charset will improve
-performance significantly.
+A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1 and US-ASCII charsets, to bring some of the performance improvements built-in to Java 8 to Log4j for use on Java 7. For applications that log only ISO-8859-1 characters, specifying this charset will improve performance significantly.
+
+[#common-concerns]
+== Common concerns
+
+[#location-information]
+=== Location information
+
+Computing the location information of a logging statement is an expensive operation.
+For this reason many Log4j components implement the
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LocationAware.html[LocationAware]
+interface to only compute location information when needed.
+
+While the methods of determining if location information is required are specific to each layout, most layouts implement `LocationAware`.
+
+[NOTE]
+====
+Even if a layout is configured not to **request** location information, it might use it if the information is already available.
+This is always the case of information location computed at build time using the
+link:/log4j/transform/latest/#log4j-transform-maven-plugin[Log4j Transform Maven Plugin].
+====
 
 [#CSVLayouts]
 == CSV Layouts
@@ -49,14 +63,11 @@ Value (CSV)] records and requires
 https://commons.apache.org/proper/commons-csv/[Apache Commons CSV] 1.4.
 
 The CSV layout can be used in two ways: First, using
-`CsvParameterLayout` to log event parameters to create a custom
-database, usually to a logger and file appender uniquely configured for
-this purpose. Second, using `CsvLogEventLayout` to log events to create
-a database, as an alternative to using a full DBMS or using a JDBC driver that supports the CSV format.
+`CsvParameterLayout` to log event parameters to create a custom database, usually to a logger and file appender uniquely configured for this purpose.
+Second, using `CsvLogEventLayout` to log events to create a database, as an alternative to using a full DBMS or using a JDBC driver that supports the CSV format.
 
-The `CsvParameterLayout` converts an event's parameters into a CSV
-record, ignoring the message. To log CSV records, you can use the usual
-Logger methods `info()`, `debug()`, and so on:
+The `CsvParameterLayout` converts an event's parameters into a CSV record, ignoring the message.
+To log CSV records, you can use the usual Logger methods `info()`, `debug()`, and so on:
 
 [source,java]
 ----
@@ -69,16 +80,14 @@ Which will create the CSV record:
 value1, value2, value3
 ....
 
-Alternatively, you can use an `ObjectArrayMessage`, which only carries
-parameters:
+Alternatively, you can use an `ObjectArrayMessage`, which only carries parameters:
 
 [source,java]
 ----
 logger.info(new ObjectArrayMessage(value1, value2, value3));
 ----
 
-The layouts `CsvParameterLayout` and `CsvLogEventLayout` are configured
-with the following parameters:
+The layouts `CsvParameterLayout` and `CsvLogEventLayout` are configured with the following parameters:
 
 .CsvParameterLayout and CsvLogEventLayout
 [cols="1m,1,4"]
@@ -139,15 +148,15 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
 
 Produces a CSV record with the following fields:
 
-1.  Time Nanos
-2.  Time Millis
-3.  Level
-4.  Thread ID
-5.  Thread Name
-6.  Thread Priority
-7.  Formatted Message
-8.  Logger FQCN
-9.  Logger Name
+1. Time Nanos
+2. Time Millis
+3. Level
+4. Thread ID
+5. Thread Name
+6. Thread Priority
+7. Formatted Message
+8. Logger FQCN
+9. Logger Name
 10. Marker
 11. Thrown Proxy
 12. Source
@@ -158,15 +167,15 @@ Produces a CSV record with the following fields:
 0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
 ....
 
-Additional xref:runtime-dependencies.adoc[runtime dependencies] are
-required for using CSV layouts.
+Additional xref:runtime-dependencies.adoc[runtime dependencies] are required for using CSV layouts.
 
 [#GELFLayout]
 == GELF Layout
 
 Lays out events in the Graylog Extended Log Format (GELF) 1.1.
 
-This layout compresses JSON to GZIP or ZLIB (`compressionType`) if log event data is larger than 1024 bytes (`compressionThreshold`). This layout does not implement chunking.
+This layout compresses JSON to GZIP or ZLIB (`compressionType`) if log event data is larger than 1024 bytes (`compressionThreshold`).
+This layout does not implement chunking.
 
 Configure as follows to send to a Graylog 2.x server with UDP:
 
@@ -222,18 +231,17 @@ To include any custom field in the output, use following syntax:
 </GelfLayout>
 ----
 
-Custom fields are included in the order they are declared. The values support xref:manual/lookups.adoc[lookups].
+Custom fields are included in the order they are declared.
+The values support xref:manual/lookups.adoc[lookups].
 
 See also:
 
 * The https://docs.graylog.org/en/latest/pages/gelf.html#gelf[GELF specification]
 
-
 [#HTMLLayout]
 == HTML Layout
 
-The HtmlLayout generates an HTML page and adds each LogEvent to a row in
-a table.
+The HtmlLayout generates an HTML page and adds each LogEvent to a row in a table.
 
 .HtmlLayout Parameters
 [cols="1m,1,4"]
@@ -286,6 +294,7 @@ https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(ja
 |===
 
 Configure as follows to use `dataPattern` and timezone in `HtmlLayout`:
+
 [source,xml]
 ----
 <Appenders>
@@ -298,13 +307,15 @@ Configure as follows to use `dataPattern` and timezone in `HtmlLayout`:
 [[JSONLayout]]
 == JSON Layout
 
-NOTE: JsonTemplate is considered deprecated. JsonTemplateLayout provides more capabilities and should be used instead.
+NOTE: JsonTemplate is considered deprecated.
+JsonTemplateLayout provides more capabilities and should be used instead.
 
 Appends a series of JSON events as strings serialized as bytes.
 
 === Complete well-formed JSON vs. fragment JSON
 
-If you configure `complete="true"`, the appender outputs a well-formed JSON document. By default, with `complete="false"`, you should include the output as an _external file_ in a separate file to form a well-formed JSON document.
+If you configure `complete="true"`, the appender outputs a well-formed JSON document.
+By default, with `complete="false"`, you should include the output as an _external file_ in a separate file to form a well-formed JSON document.
 
 If `complete="false"`, the appender does not write the JSON open array character "[" at the start of the document, "]" at the end, nor comma "," between records.
 
@@ -370,7 +381,10 @@ Log event follows this pattern:
 
 === Pretty vs. compact JSON
 
-The compact attribute determines whether the output will be "pretty" or not. The default value is "false", which means the appender uses end-of-line characters and indent lines to format the text. If `compact="true"`, then no end-of-line or indentation is used, which will cause the output to take less space. Of course, the message content may contain, escaped end-of-lines.
+The compact attribute determines whether the output will be "pretty" or not.
+The default value is "false", which means the appender uses end-of-line characters and indent lines to format the text.
+If `compact="true"`, then no end-of-line or indentation is used, which will cause the output to take less space.
+Of course, the message content may contain, escaped end-of-lines.
 
 [options="header"]
 |===
@@ -400,18 +414,17 @@ To include any custom field in the output, use the following syntax:
 </JsonLayout>
 ----
 
-Custom fields are always last, in the order they are declared. The values support xref:manual/lookups.adoc[lookups].
+Custom fields are always last, in the order they are declared.
+The values support xref:manual/lookups.adoc[lookups].
 
 Additional xref:runtime-dependencies.adoc[runtime dependencies] are required for using JsonLayout.
-
 
 [#JSONTemplateLayout]
 == JSON Template Layout
 
-`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON-emitting layout. 
-It encodes ``LogEvent``s according to the structure described
-by the JSON template provided. For instance, given the following JSON template
-modelling https://github.com/logstash/log4j-jsonevent-layout[the official
+`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON-emitting layout.
+It encodes ``LogEvent``s according to the structure described by the JSON template provided.
+For instance, given the following JSON template modelling https://github.com/logstash/log4j-jsonevent-layout[the official
 Logstash `JSONEventLayoutV1`]
 
 [source,json]
@@ -508,33 +521,28 @@ JSON Template Layout will render JSON documents as follows:
 }
 ----
 
-See xref:manual/json-template-layout.adoc[JSON Template Layout] page for the complete
-documentation.
+See xref:manual/json-template-layout.adoc[JSON Template Layout] page for the complete documentation.
 
 [id=pattern-layout]
 == [[PatternLayout]] Pattern Layout
 
-A flexible layout is configurable with a pattern string. The goal of this
-class is to format a LogEvent and return the results. The format of the
-result depends on the _conversion pattern_.
+A flexible layout is configurable with a pattern string.
+The goal of this class is to format a LogEvent and return the results.
+The format of the result depends on the _conversion pattern_.
 
-The conversion pattern is closely related to the conversion pattern of
-the `printf()` function in C. A conversion pattern is composed of literal
-text and format control expressions called _conversion specifiers_.
+The conversion pattern is closely related to the conversion pattern of the `printf()` function in C. A conversion pattern is composed of literal text and format control expressions called _conversion specifiers_.
 
-_Note that any literal text, including *Special Characters*, may be
-included in the conversion pattern._ Special Characters include *\t*,
-*\n*, *\r*, *\f*. Use *\\* to insert a single backslash into the output.
+_Note that any literal text, including *Special Characters*, may be included in the conversion pattern._ Special Characters include *\t*,
+*\n*, *\r*, *\f*.
+Use *\\* to insert a single backslash into the output.
 
-Each conversion specifier starts with a percent sign (%) and is followed
-by optional _format modifiers_ and a _conversion character_. The
-conversion character specifies the type of data, e.g. category,
-priority, date, thread name. The format modifiers control such things as
-field width, padding, and left and right justification. The following is a
-simple example.
+Each conversion specifier starts with a percent sign (%) and is followed by optional _format modifiers_ and a _conversion character_.
+The conversion character specifies the type of data, e.g. category, priority, date, thread name.
+The format modifiers control such things as field width, padding, and left and right justification.
+The following is a simple example.
 
-Let the conversion pattern be *"%-5p [%t]: %m%n"* and assume that the
-Log4j environment was set to use a PatternLayout. Then the statements
+Let the conversion pattern be *"%-5p [%t]: %m%n"* and assume that the Log4j environment was set to use a PatternLayout.
+Then the statements
 
 ....
 Logger logger = LogManager.getLogger("MyLogger");
@@ -549,17 +557,12 @@ DEBUG [main]: Message 1
 WARN  [main]: Message 2
 ....
 
-Note that there is no explicit separator between text and conversion
-specifiers. The pattern parser knows when it has reached the end of a
-conversion specifier when it reads a conversion character. In the
-example above the conversion specifier `%-5p` means the priority of the
-logging event should be left justified to a width of five characters.
+Note that there is no explicit separator between text and conversion specifiers.
+The pattern parser knows when it has reached the end of a conversion specifier when it reads a conversion character.
+In the example above the conversion specifier `%-5p` means the priority of the logging event should be left justified to a width of five characters.
 
-If the pattern string does not contain a specifier to handle a Throwable
-being logged, parsing of the pattern will act as if the `%xEx` specifier
-had been added to the end of the string. To suppress the formatting of the
-Throwable completely simply add `%ex\{0}` as a specifier in the pattern
-string.
+If the pattern string does not contain a specifier to handle a Throwable being logged, parsing of the pattern will act as if the `%xEx` specifier had been added to the end of the string.
+To suppress the formatting of the Throwable completely simply add `%ex\{0}` as a specifier in the pattern string.
 
 .PatternLayout Parameters
 [cols="1m,1,4"]
@@ -834,7 +837,7 @@ involved.
 Log4j 2.11 adds limited support for timestamps more precise than
 milliseconds when running on Java 9. Note that not all
 https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html[DateTimeFormatter]
-formats are supported. Only timestamps in the formats mentioned in the table 
+formats are supported. Only timestamps in the formats mentioned in the table
 above may use the "nano-of-second" pattern letter `n` instead of
 the "fraction-of-second" pattern letter `S`.
 
@@ -846,7 +849,7 @@ Java 9 by setting system property `log4j2.Clock` to `SystemMillisClock`.
 |Encodes and escapes special characters suitable for output in specific
 markup languages. By default, this encodes for HTML if only one option
 is specified. The second option is used to specify which encoding format
-should be used. This converter is particularly useful for encoding user-provided 
+should be used. This converter is particularly useful for encoding user-provided
 data so that the output data is not written improperly or insecurely.
 
 A typical usage would encode the message `%enc{%m}` but user input could
@@ -1081,7 +1084,7 @@ The STYLE value can be one of:
 link:../javadoc/log4j-api/org/apache/logging/log4j/message/MapMessage.html[MapMessage],
 if one is present in the event. The `K` conversion character can be
 followed by the key for the map placed between braces, as in
-`%K\{clientNumber}` where `clientNumber` is the key. The value of the Map 
+`%K\{clientNumber}` where `clientNumber` is the key. The value of the Map
 corresponding to the key will be output. If no additional sub-option
 is specified, then the entire contents of the Map key-value pair set is
 output using a format {{key1,val1},{key2,val2}}
@@ -1463,8 +1466,8 @@ key that is present in the ThreadContext will be output using the format
 {name=val1, number=val2}. The key/value pairs will be printed in the
 order they appear in the list.
 
-If no sub-options are specified then the entire contents of the MDC key-value pair 
-set is output using a format {key1=val1, key2=val2}. 
+If no sub-options are specified then the entire contents of the MDC key-value pair
+set is output using a format {key1=val1, key2=val2}.
 The key/value pairs will be printed in sorted order.
 
 See the
@@ -1476,7 +1479,7 @@ class for more details.
 |Includes either a random or a time-based UUID. The time-based
 UUID is a Type 1 UUID that can generate up to 10,000 unique IDs per
 millisecond will use the MAC address of each host, and to try to insure
-uniqueness across multiple JVMs and/or ClassLoaders on the same host 
+uniqueness across multiple JVMs and/or ClassLoaders on the same host
 a random number between 0 and 16,384 will be associated with each instance
 of the UUID generator Class and included in each time-based UUID
 generated. Because time-based UUIDs contain the MAC address and
@@ -1562,41 +1565,31 @@ print.
 |The sequence %% outputs a single percent sign.
 |===
 
-By default, the relevant information is output as is. However, with 
-the aid of format modifiers it is possible to change the minimum field
-width, the maximum field width and justification.
+By default, the relevant information is output as is.
+However, with the aid of format modifiers it is possible to change the minimum field width, the maximum field width and justification.
 
-The optional format modifier is placed between the percent sign and the
-conversion character.
+The optional format modifier is placed between the percent sign and the conversion character.
 
 The first optional format modifier is the _left justification flag_
-which is just the minus (-) character. Then comes the optional _minimum
-field width_ modifier. This is a decimal constant that represents the
-minimum number of characters to output. If the data item requires fewer
-characters, it is padded on either the left or the right until the
-minimum width is reached. The default is to pad on the left (right
-justify) but you can specify right padding with the left justification
-flag. The padding character is space. If the data item is larger than
-the minimum field width, the field is expanded to accommodate the data.
-The value is never truncated. To use zeros as the padding character prepend
-the _minimum field width_ with a zero.
+which is just the minus (-) character.
+Then comes the optional _minimum field width_ modifier.
+This is a decimal constant that represents the minimum number of characters to output.
+If the data item requires fewer characters, it is padded on either the left or the right until the minimum width is reached.
+The default is to pad on the left (right justify) but you can specify right padding with the left justification flag.
+The padding character is space.
+If the data item is larger than the minimum field width, the field is expanded to accommodate the data.
+The value is never truncated.
+To use zeros as the padding character prepend the _minimum field width_ with a zero.
 
-This behavior can be changed using the _maximum field width_ modifier
-which is designated by a period followed by a decimal constant. If the
-data item is longer than the maximum field, then the extra characters
-are removed from the _beginning_ of the data item and not from the end.
-For example, if the maximum field width is eight and the data item is
-ten characters long, then the first two characters of the data item are
-dropped. This behavior deviates from the `printf()` function in C where
-truncation is done from the end.
+This behavior can be changed using the _maximum field width_ modifier which is designated by a period followed by a decimal constant.
+If the data item is longer than the maximum field, then the extra characters are removed from the _beginning_ of the data item and not from the end.
+For example, if the maximum field width is eight and the data item is ten characters long, then the first two characters of the data item are dropped.
+This behavior deviates from the `printf()` function in C where truncation is done from the end.
 
-Truncation from the end is possible by appending a minus character right
-after the period. In that case, if the maximum field width is eight and
-the data item is ten characters long, then the last two characters of
-the data item are dropped.
+Truncation from the end is possible by appending a minus character right after the period.
+In that case, if the maximum field width is eight and the data item is ten characters long, then the last two characters of the data item are dropped.
 
-Below are various format modifier examples for the category conversion
-specifier.
+Below are various format modifier examples for the category conversion specifier.
 
 .Pattern Converters
 |===
@@ -1650,25 +1643,21 @@ characters, then truncate from the end.
 [#enable-jansi]
 === ANSI Styling on Windows
 
-ANSI escape sequences are supported natively on many platforms but are
-not by default on Windows. To enable ANSI support add the
-http://jansi.fusesource.org/[Jansi] jar to your application and set
-property `log4j.skipJansi` to `false`. This allows Log4j to use Jansi to
-add ANSI escape codes when writing to the console.
+ANSI escape sequences are supported natively on many platforms but are not by default on Windows.
+To enable ANSI support add the
+http://jansi.fusesource.org/[Jansi] jar to your application and set property `log4j.skipJansi` to `false`.
+This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
 
-NOTE: Before Log4j 2.10, Jansi was enabled by default. The fact that
-Jansi requires native code means that Jansi can only be loaded by a
-single class loader. For web applications, this means the Jansi jar has
-to be in the web container's classpath. To avoid causing problems for
-web applications, Log4j will no longer automatically try to load Jansi
-without explicit configuration from Log4j 2.10 onward.
+NOTE: Before Log4j 2.10, Jansi was enabled by default.
+The fact that Jansi requires native code means that Jansi can only be loaded by a single class loader.
+For web applications, this means the Jansi jar has to be in the web container's classpath.
+To avoid causing problems for web applications, Log4j will no longer automatically try to load Jansi without explicit configuration from Log4j 2.10 onward.
 
 === Example Patterns
 
 ==== Filtered Throwables
 
-This example shows how to filter out classes from unimportant packages
-in stack traces.
+This example shows how to filter out classes from unimportant packages in stack traces.
 
 [source,xml]
 ----
@@ -1709,20 +1698,14 @@ All the content that follows the level will be bright green.
 [#PatternSelectors]
 === Pattern Selectors
 
-The PatternLayout can be configured with a PatternSelector to allow it
-to choose a pattern to use based on attributes of the log event or other
-factors. A PatternSelector will normally be configured with a
-defaultPattern attribute, which is used when other criteria don't match,
-and a set of PatternMatch elements that identify the various patterns
-that can be selected.
+The PatternLayout can be configured with a PatternSelector to allow it to choose a pattern to use based on attributes of the log event or other factors.
+A PatternSelector will normally be configured with a defaultPattern attribute, which is used when other criteria don't match, and a set of PatternMatch elements that identify the various patterns that can be selected.
 
 [#LevelPatternSelector]
 ==== LevelPatternSelector
 
-The LevelPatternSelector selects patterns based on the log level of
-the log event. If the Level in the log event is equal to (ignoring case)
-the name specified on the PatternMatch key attribute, then
-the pattern specified on that PatternMatch element will be used.
+The LevelPatternSelector selects patterns based on the log level of the log event.
+If the Level in the log event is equal to (ignoring case) the name specified on the PatternMatch key attribute, then the pattern specified on that PatternMatch element will be used.
 
 [source,xml]
 ----
@@ -1736,10 +1719,8 @@ the pattern specified on that PatternMatch element will be used.
 [#MarkerPatternSelector]
 ==== MarkerPatternSelector
 
-The MarkerPatternSelector selects patterns based on the Marker included
-in the log event. If the Marker in the log event is equal to or is an
-ancestor of the name specified on the PatternMatch key attribute, then
-the pattern specified on that PatternMatch element will be used.
+The MarkerPatternSelector selects patterns based on the Marker included in the log event.
+If the Marker in the log event is equal to or is an ancestor of the name specified on the PatternMatch key attribute, then the pattern specified on that PatternMatch element will be used.
 
 [source,xml]
 ----
@@ -1754,13 +1735,8 @@ the pattern specified on that PatternMatch element will be used.
 ==== ScriptPatternSelector
 
 The ScriptPatternSelector executes a script as described in the
-xref:manual/configuration.adoc#Scripts[Scripts] section of the Configuration
-chapter. The script is passed all the properties configured in the
-Properties section of the configuration, the StrSubstitutor used by the
-Configuration in the "substitutor" variables, and the log event in the
-"logEvent" variable, and is expected to return the value of the
-PatternMatch key that should be used, or null if the default pattern
-should be used.
+xref:manual/configuration.adoc#Scripts[Scripts] section of the Configuration chapter.
+The script is passed all the properties configured in the Properties section of the configuration, the StrSubstitutor used by the Configuration in the "substitutor" variables, and the log event in the "logEvent" variable, and is expected to return the value of the PatternMatch key that should be used, or null if the default pattern should be used.
 
 [source,xml]
 ----
@@ -1784,11 +1760,8 @@ should be used.
 [#RFC5424Layout]
 == RFC5424 Layout
 
-As the name implies, the Rfc5424Layout formats LogEvents by http://tools.ietf.org/html/rfc5424[RFC 5424], the enhanced Syslog specification. 
-Although the specification is primarily directed at
-sending messages via Syslog, this format is quite useful for other
-purposes since items are passed in the message as self-describing
-key/value pairs.
+As the name implies, the Rfc5424Layout formats LogEvents by http://tools.ietf.org/html/rfc5424[RFC 5424], the enhanced Syslog specification.
+Although the specification is primarily directed at sending messages via Syslog, this format is quite useful for other purposes since items are passed in the message as self-describing key/value pairs.
 
 .Rfc5424Layout Parameters
 [cols="1m,1,4"]
@@ -1831,7 +1804,7 @@ specified as upper or lowercase characters.
 
 |format
 |String
-|If set to "RFC5424" the data will be formatted by RFC 5424. 
+|If set to "RFC5424" the data will be formatted by RFC 5424.
 Otherwise, it will be formatted as a BSD
 Syslog record. Note that although BSD Syslog records are required to be
 1024 bytes or shorter the SyslogLayout does not truncate them. The
@@ -1881,7 +1854,7 @@ thrown. This attribute only applies to RFC 5424 syslog records.
 
 |mdcPrefix
 |String
-|A string that should be prepended to each MDC key to distinguish it from event attributes. 
+|A string that should be prepended to each MDC key to distinguish it from event attributes.
 The default string is "mdc:". This attribute only applies to RFC 5424 syslog records.
 
 |mdcId
@@ -1904,18 +1877,15 @@ The default string is "mdc:". This attribute only applies to RFC 5424 syslog rec
 [#SerializedLayout]
 == Serialized Layout
 
-The SerializedLayout simply serializes the LogEvent into a byte array
-using Java Serialization. The SerializedLayout accepts no parameters.
+The SerializedLayout simply serializes the LogEvent into a byte array using Java Serialization.
+The SerializedLayout accepts no parameters.
 
-This layout has been deprecated since version 2.9. Java Serialization has
-inherent security weaknesses, using this layout is no longer
-recommended.
+This layout has been deprecated since version 2.9. Java Serialization has inherent security weaknesses, using this layout is no longer recommended.
 
 [#SyslogLayout]
 == Syslog Layout
 
-The SyslogLayout formats the LogEvent as BSD Syslog records matching the
-the same format used by Log4j 1.2.
+The SyslogLayout formats the LogEvent as BSD Syslog records matching the the same format used by Log4j 1.2.
 
 .SyslogLayout Parameters
 [cols="1m,1,4"]
@@ -1954,7 +1924,8 @@ within the message text.
 
 === Complete well-formed XML vs. fragment XML
 
-If you configure `complete="true"`, the appender outputs a well-formed XML document where the default namespace is the Log4j namespace `https://logging.apache.org/log4j/2.0/events`. By default, with `complete="false"`, you should include the output as an _external entity_ in a separate file to form a well-formed XML document, in which case the appender uses `namespacePrefix` with a default of `log4j`.
+If you configure `complete="true"`, the appender outputs a well-formed XML document where the default namespace is the Log4j namespace `https://logging.apache.org/log4j/2.0/events`.
+By default, with `complete="false"`, you should include the output as an _external entity_ in a separate file to form a well-formed XML document, in which case the appender uses `namespacePrefix` with a default of `log4j`.
 
 A well-formed XML document follows this pattern:
 
@@ -2011,11 +1982,15 @@ If `complete="false"`, the appender does not write the XML processing instructio
 
 === Marker
 
-Markers are represented by a `Marker` element within the `Event` element. The `Marker` element appears only when a marker is used in the log message. The name of the marker's parent will be provided in the `parent` attribute of the `Marker` element.
+Markers are represented by a `Marker` element within the `Event` element.
+The `Marker` element appears only when a marker is used in the log message.
+The name of the marker's parent will be provided in the `parent` attribute of the `Marker` element.
 
 === Pretty vs. compact XML
 
-By default, the XML layout is not compact (a.k.a. not "pretty") with `compact="false"`, which means the appender uses end-of-line characters and indent lines to format the XML. If `compact="true"`, then no end-of-line or indentation is used. Message content may contain, of course, end-of-lines.
+By default, the XML layout is not compact (a.k.a. not "pretty") with `compact="false"`, which means the appender uses end-of-line characters and indent lines to format the XML.
+If `compact="true"`, then no end-of-line or indentation is used.
+Message content may contain, of course, end-of-lines.
 
 [options="header"]
 |===
@@ -2040,7 +2015,8 @@ To include any custom field in the output, use the following syntax:
 </XmlLayout>
 ----
 
-Custom fields are always last, in the order they are declared. The values support xref:manual/lookups.adoc[lookups].
+Custom fields are always last, in the order they are declared.
+The values support xref:manual/lookups.adoc[lookups].
 
 NOTE: Additional xref:runtime-dependencies.adoc[runtime dependencies] are required for using XmlLayout.
 
@@ -2116,34 +2092,27 @@ To include any custom field in the output, use the following syntax:
 </YamlLayout>
 ----
 
-Custom fields are always last, in the order they are declared. The values support xref:manual/lookups.adoc[lookups].
+Custom fields are always last, in the order they are declared.
+The values support xref:manual/lookups.adoc[lookups].
 
 NOTE: Additional xref:runtime-dependencies.adoc[runtime dependencies] are required for using YamlLayout.
-
 
 [#LocationInformation]
 == Location Information
 
-If one of the layouts is configured with a location-related attribute
-like HTML link:#HtmlLocationInfo[locationInfo], or one of the patterns
+If one of the layouts is configured with a location-related attribute like HTML link:#HtmlLocationInfo[locationInfo], or one of the patterns
 link:#PatternClass[%C or %class], link:#PatternFile[%F or %file],
 link:#PatternLocation[%l or %location], link:#PatternLine[%L or %line],
-link:#PatternMethod[%M or %method], Log4j will take a snapshot of the
-stack, and walk the stack trace to find the location information.
+link:#PatternMethod[%M or %method], Log4j will take a snapshot of the stack, and walk the stack trace to find the location information.
 
-This is an expensive operation: 1.3 - 5 times slower for synchronous
-loggers. Synchronous loggers wait as long as possible before they take
-this stack snapshot. If no location is required, the snapshot will never
-be taken.
+This is an expensive operation: 1.3 - 5 times slower for synchronous loggers.
+Synchronous loggers wait as long as possible before they take this stack snapshot.
+If no location is required, the snapshot will never be taken.
 
-However, asynchronous loggers need to make this decision before passing
-the log message to another thread; the location information will be lost
-after that point. The
-xref:manual/performance.adoc#asyncLoggingWithLocation[performance impact] of
-taking a stack trace snapshot is even higher for asynchronous loggers:
-logging with location is 30-100 times slower than without location. For
-this reason, asynchronous loggers and asynchronous appenders do not
-include location information by default.
+However, asynchronous loggers need to make this decision before passing the log message to another thread; the location information will be lost after that point.
+The
+xref:manual/performance.adoc#asyncLoggingWithLocation[performance impact] of taking a stack trace snapshot is even higher for asynchronous loggers:
+logging with location is 30-100 times slower than without location.
+For this reason, asynchronous loggers and asynchronous appenders do not include location information by default.
 
-You can override the default behavior in your logger or asynchronous
-appender configuration by specifying `includeLocation="true"`.
+You can override the default behavior in your logger or asynchronous appender configuration by specifying `includeLocation="true"`.
