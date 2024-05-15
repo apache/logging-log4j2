@@ -37,7 +37,7 @@ You can also specify the full path of the configuration file using a system prop
 That property can also be included in a classpath resource file named `log4j2.component.properties`.
 
 Web applications can specify the Log4j configuration file location with a servlet context parameter.
-See xref:manual/webapp.adoc#ContextParams[the related page on web applications].
+See {logging-services-url}/log4j/jakarta[the Log4j Jakarta project] for details.
 
 Refer to xref:manual/configuration.adoc[the Configuration page] for further details.
 
@@ -65,7 +65,7 @@ Configurator.reconfigure(configSourceUri);
 
 Normally there is no need to do this manually.
 Each `LoggerContext` registers a shutdown hook that takes care of releasing resources when the JVM exits, unless the `log4j.shutdownHookEnabled` system property is set to `false`.
-Likewise, xref:manual/webapp.adoc[Web applications] replace the shutdown hook with their own resource management mechanisms.
+Likewise, {logging-services-url}/log4j/jakarta[Web applications] replace the shutdown hook with their own resource management mechanisms.
 That is, they clean up necessary resources when the web application is stopped.
 However, if you need to manually shut down Log4j, you can use one of the `shutdown()` methods of link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()[`LogManager`].
 
