@@ -152,6 +152,7 @@ Logger name.
 Nevertheless, naming loggers after the class where they are located
 seems to be the best strategy known so far.
 
+[#loggerconfig]
 === LoggerConfig
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html[`LoggerConfig`]

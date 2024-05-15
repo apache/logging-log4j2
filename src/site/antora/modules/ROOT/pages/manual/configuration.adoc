@@ -434,7 +434,7 @@ See xref:manual/filters.adoc#filters[Filters] for additional filtering capabilit
 [id=configuring-loggers]
 === [[Loggers]] Loggers
 
-Log4j 2 contains multiple types of logger components that can be added to the `Loggers` element of the configuration:
+Log4j 2 contains multiple types of logger configurations that can be added to the `Loggers` element of the configuration:
 
 `Root`:: is the logger that receives all events that do not have a more specific logger defined.
 +
@@ -452,10 +452,97 @@ See also xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apac
 +
 See also xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-async-AsyncLoggerConfig[Plugin Reference].
 
-Every configuration **must** have at least a `Root` or `AsyncRoot` element.
+There **must** be at least a `Root` or `AsyncRoot` element in every configuration file.
 The presence of other logger configurations is optional.
 
-The logger components can have the following configuration attributes and elements:
+Every
+link:../javadoc/log4j-api/org/apache/logging/log4j/Logger.html[Logger]
+in your application is assigned to one of these logger configurations (see
+xref:manual/architecture.adoc#loggerconfig[architecture]), which determines the events that will be logged and those which won't.
+
+Let's start with an example of loggers configuration:
+
+[tabs]
+====
+XML::
++
+[source,xml]
+----
+include::example$manual/configuration/loggers.xml[tag=loggers]
+----
+
+JSON::
++
+[source,json]
+----
+include::example$manual/configuration/loggers.json[tag=loggers]
+----
+
+YAML::
++
+[source,yaml]
+----
+include::example$manual/configuration/loggers.yaml[tag=loggers]
+----
+
+Java properties::
++
+[source,properties]
+----
+include::example$manual/configuration/loggers.properties[]
+----
+====
+
+In the example above we have 4 logger configurations.
+They differ between each other regarding the level of log messages that they allow, whether
+xref:manual/layouts.adoc#location-information[location information]
+will be printed and which appenders will be used.
+The effects of each logger configuration are summarized in the table below:
+
+.Logger configurations
+[cols="1,2,2,2,2,5"]
+|===
+|
+| <<logger-attributes-name,Logger name>>
+| <<logger-attributes-level,Level>>
+| <<logger-attributes-additivity,Additivity>>
+| <<logger-attributes-includeLocation,Includes location>>
+h| Appenders used
+
+| 1
+| _empty_
+| `INFO`
+| N/A
+| _default_
+| `APPENDER1`
+
+| 2
+| `org.example.no_additivity`
+| `INFO`
+
+(inherited)
+| `false`
+| _default_
+| `APPENDER2`
+
+| 3
+| `org.example.no_location`
+| `INFO`
+
+(inherited)
+| `true`
+| `false`
+| `APPENDER1` and `APPENDER3`
+
+| 4
+| `org.example.level`
+| `DEBUG`
+| `true`
+| _default_
+| `APPENDER1` and `APPENDER4`
+|===
+
+In the following part of this section we explain in detail all the available option for logger configurations:
 
 [id=logger-attributes-name]
 ==== `name`

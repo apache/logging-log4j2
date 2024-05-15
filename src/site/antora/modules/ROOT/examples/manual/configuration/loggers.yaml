@@ -1,0 +1,21 @@
+Configuration:
+  # tag::loggers[]
+  Loggers:
+    Root: # <1>
+      level: "INFO"
+      AppenderRef:
+        ref: "APPENDER1"
+    Logger:
+      - name: "org.example.no_additivity" # <2>
+        additivity: false
+        AppenderRef:
+          ref: "APPENDER2"
+      - name: "org.example.no_location" # <3>
+        includeLocation: false
+        AppenderRef:
+          ref: "APPENDER3"
+      - name: "org.example.level" # <4>
+        level: "DEBUG"
+        AppenderRef:
+          ref: "APPENDER4"
+  # end::loggers[]
