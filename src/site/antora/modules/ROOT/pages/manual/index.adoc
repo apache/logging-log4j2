@@ -50,9 +50,9 @@ Log4j offers solutions to address these concerns. However, if you are in
 a unique situation where you are concerned about logging overhead or volume, you may wish 
 to consider not using logging at all.
 
-== Benefits of Log4j
+== What does Log4j offer?
 
-Log4j offers numerous advantages, including:
+Log4j offers numerous features, including:
 
 1. **Easy to use**: Log4j is easy to use and configure. You can get started
    with just a few lines of code.
