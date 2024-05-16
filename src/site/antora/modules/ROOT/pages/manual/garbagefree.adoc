@@ -103,8 +103,7 @@ are not garbage-free since they
 cause `java.util.concurrent.locks.AbstractQueuedSynchronizer$Node` objects to be created.
 The default wait strategy used by Log4j uses a synchronized block instead of a ReentrantLock to avoid this problem.
 The Yield and Sleep wait strategies are garbage-free. (For configuring predefined wait strategies, see
-xref:manual/async.adoc#SysPropsAllAsync[here] and
-xref:manual/async.adoc#SysPropsMixedSync-Async[here],
+xref:manual/systemproperties.adoc#properties-log4j-async-logger[here],
 you may also configure a xref:manual/async.adoc#WaitStrategy[custom wait strategy].)
 
 === Disabling Garbage-free Logging
@@ -125,7 +124,7 @@ performance is important, consider using Async Loggers.
 Instead of system properties, the above properties can also be specified
 in a file named `log4j2.component.properties` by including this file in
 the classpath of the application. See the
-xref:manual/configuration.adoc#SystemProperties[manual regarding system
+xref:manual/systemproperties.adoc[manual regarding system
 properties] for more info.
 
 [#Appenders]
@@ -437,7 +436,7 @@ spike in service time adds queueing delay for many of the subsequent
 operations. Service time is easy to measure (and often looks good on
 paper) but is irrelevant for users since it omits the time spent waiting
 for service. For this reason we report response time: service time plus
-wait time. See the xref:manual/performance.adoc#responseTime[response time
+wait time. See the xref:manual/performance.adoc[response time
 section] of the performance page for more detail.
 
 The response time test results below were all derived from running the
