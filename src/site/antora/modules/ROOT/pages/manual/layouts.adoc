@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Layouts
-Ralph Goers <rgoers@apache.org>; Gary Gregory <ggregory@apache.org>; Volkan Yazıcı <vy@apache.org>
 
 An Appender uses a Layout to format a LogEvent into a form that meets the needs of whatever will be consuming the log event.
 In Log4j 1.x and Logback Layouts were expected to transform an event into a String.

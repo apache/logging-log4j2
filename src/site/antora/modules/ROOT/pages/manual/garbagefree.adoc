@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Garbage-free Steady State Logging
-Remko Popma <rpopma@apache.org>
 
 ////
 Different applications have different performance requirements.

@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Lookups
-Ralph Goers <rgoers@apache.org>
 
 Lookups provide a way to add values to the Log4j configuration at
 arbitrary places. They are a particular type of Plugin that implements

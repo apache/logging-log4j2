@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Architecture
-Ralph Goers <rgoers@apache.org>
 
 == Main Components
 

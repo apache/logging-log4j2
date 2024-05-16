@@ -15,7 +15,6 @@
     limitations under the License.
 ////
 = Extending Log4j
-Ralph Goers <rgoers@apache.org>
 
 Log4j provides numerous ways that it can be manipulated and extended.
 This section includes an overview of the various ways that are directly

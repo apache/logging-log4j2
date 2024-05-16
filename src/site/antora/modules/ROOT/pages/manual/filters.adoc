@@ -17,8 +17,6 @@
 [id=filters]
 = Filters
 
-Ralph Goers <rgoers@apache.org> Volkan Yazıcı <vy@apache.org>
-
 Log4j supports filtering of log events at each level of the logging pipeline using two features:
 
 * the `level` attributes that can be set on loggers and appender references,
