@@ -54,18 +54,26 @@ to consider not using logging at all.
 
 Log4j offers numerous features, including:
 
-1. **Easy to use**: Log4j is easy to use and configure. You can get started
-   with just a few lines of code.
-2. **Speed**: Log4j is fast and has a low overhead. For more information see: xref:manual/async.adoc[Asynchronous Loggers]
-3. **Reliable**: Log4j is reliable and has been used in many production applications.
-4. **Audit-ready**: Log4j is designed to be a reliable audit logging framework that 
-   does not lose any events, unlike some competing frameworks.
-5. **Small footprint**: Log4j has a small impact on the garbage collector. For details, see: xref:manual/garbagefree.adoc[garbage-free].
-6. **Extensible**: Log4j is designed to be easily extended using a xref:manual/plugins.adoc[plugin system], 
-   allowing users to customize it to xref:manual/extending.adoc[fit their specific needs].
-7. **Modern Syntax**: Log4j supports xref:manual/api.adoc#LambdaSupport[lambda expressions]
-8. **Integration**: Log4j integrates with numerous other frameworks and libraries.
-9. **ASF Standards**: Developed at the Apache Software Foundation, adhering to rigorous standards and best practices.
+Easy to use::
+Log4j is easy to use and configure.
+You can xref:5min.adoc[get started] with just a few lines of code.
+
+Performance::
+When configured correctly, Log4j excels at speed.
+See the xref:manual/performance.adoc[Performance] page for details.
+
+Reliable::
+Log4j is reliable and has been used in many production applications.
+No messages will be lost even during reconfiguration.
+
+Extensible::
+Log4j is designed to be easily extended using a xref:manual/plugins.adoc[plugin system], allowing users to customize it to xref:manual/extending.adoc[fit their specific needs].
+
+Integration::
+Log4j integrates with numerous other frameworks and libraries.
+
+ASF Standards::
+Developed at the Apache Software Foundation, Log4j adheres to rigorous standards and best practices.
 
 == How to learn more?
 
