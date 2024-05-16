@@ -1,0 +1,29 @@
+{
+  "Configuration": {
+    "Appenders": {
+      "File": {
+        "name": "MAIN",
+        // tag::select[]
+        "Select": {
+          "SystemPropertyArbiter": { // <1>
+            "propertyName": "env",
+            "propertyValue": "dev",
+            "PatternLayout": {}
+          },
+          "DefaultArbiter": { // <2>
+            "JsonTemplateLayout": {}
+          }
+        }
+        // end::select[]
+      }
+    },
+    "Loggers": {
+      "Root": {
+        "level": "INFO",
+        "AppenderRef": {
+          "ref": "MAIN"
+        }
+      }
+    }
+  }
+}

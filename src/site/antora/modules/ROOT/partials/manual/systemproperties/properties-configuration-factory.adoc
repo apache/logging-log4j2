@@ -45,6 +45,8 @@ If a relative URL is provided, it is interpreted as:
 * path to a file, if the file exists,
 * a classpath resource otherwise.
 
+Usage of absolute URLs is restricted by the xref:manual/configuration.adoc#properties-transport-security[Transport Security] configuration options.
+
 See also xref:manual/configuration.adoc#AutomaticConfiguration[Automatic Configuration].
 
 [id=log4j2.level]

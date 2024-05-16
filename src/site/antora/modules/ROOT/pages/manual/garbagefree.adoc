@@ -190,9 +190,17 @@ Objects themselves can implement their own garbage-free encoders by either exten
 [#codeImpact]
 ==== Avoiding autoboxing
 
-We made an effort to make logging garbage-free without requiring code changes in existing applications, but there is one area where this was not possible.
-https://docs.oracle.com/javase/tutorial/java/data/autoboxing.html[When logging primitive values (i.e., `int`, `double`, `boolean`, etc.) the JVM autoboxes these primitive values to their `Object` wrapper equivalents, creating garbage.]
-Log4j provides an `Unbox` utility to prevent autoboxing of primitive parameters:
+We made an effort to make logging garbage-free without requiring code
+changes in existing applications, but there is one area where this was
+not possible. When logging primitive values (i.e. int, double, boolean,
+etc.) the JVM autoboxes these primitive values to their Object wrapper
+equivalents, creating garbage.
+
+Log4j provides an `Unbox` utility to prevent autoboxing of primitive
+parameters. This utility contains a thread-local pool of reused
+`StringBuilder`s. The `Unbox.box(primitive)` methods write directly into
+a StringBuilder, and the resulting text will be copied into the final
+log message text without creating temporary objects.
 
 [source,java]
 ----

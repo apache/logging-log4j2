@@ -30,7 +30,7 @@ A comma separated list of https://docs.oracle.com/javase/{java-target-version}/d
 
 To completely prevent accessing the configuration via the Java `URL` class specify a value of `_none`.
 
-// TODO: What about 'jar:http:'?
+NOTE:: Since Log4j does not use `URL` to access `file:` resources, this protocol can not be effectively disabled.
 
 [id=log4j2.configurationAuthorizationProvider]
 == `log4j2.configurationAuthorizationProvider`

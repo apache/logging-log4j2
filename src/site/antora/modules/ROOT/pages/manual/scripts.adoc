@@ -1,0 +1,127 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+[id=scripts]
+= Scripts
+
+Log4j provides support for
+https://docs.oracle.com/javase/6/docs/technotes/guides/scripting/[JSR
+223] scripting languages to be used in some of its components.
+
+[WARNING]
+====
+In order to enable a scripting language, its name must be included in the
+xref:manual/systemproperties.adoc#log4j2.scriptEnableLanguages[log4j2.scriptEnableLanguages]
+configuration property.
+====
+
+Each component that allows scripts can contain on of the following configuration elements:
+
+Script::
++
+This element specifies the content of the script directly and has:
++
+--
+* a required `language` configuration attribute that specifies the name of the JSR 223 language to use,
+* a required `scriptText` configuration attribute that contains the text of the script.
+In the XML configuration format, the text of the script can also be written as content of the `<Script>` XML element.
+This allows the usage of a `CDATA` block.
+--
++
+The element can be assigned a name using the `name` configuration attribute.
++
+See also
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-Script[Plugin reference].
+
+ScriptFile::
++
+This element points to an external script file and has:
++
+--
+* a required `path` attribute that points to the path to a file name.
+* an optional `language` attribute that specifies the name of the JSR 223 language to use.
+If not provided, the language is deduced from the extension of the file.
+* an optional `isWatched` attribute.
+If set to `true` the script file will be monitored for changes.
+--
++
+The element can be assigned a name using the `name` configuration attribute.
++
+See also
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-ScriptFile[Plugin reference].
+
+ScriptRef::
++
+This element references a **named** script from the global
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-ScriptsPlugin[Scripts]
+container plugin in the configuration file.
++
+See also
+xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-script-ScriptRef[Plugin reference].
+
+The environment in which the script runs is different for each Log4j script-based component.
+
+[tabs]
+====
+XML::
++
+[source,xml]
+----
+include::example$configuration/scripts.xml[lines=1;18..-1]
+----
+
+JSON::
++
+[source,json]
+----
+include::example$configuration/scripts.json[]
+----
+
+YAML::
++
+[source,yaml]
+----
+include::example$configuration/scripts.yaml[lines=17..-1]
+----
+
+Java properties::
++
+[source,properties]
+----
+include::example$configuration/scripts.properties[lines=17..-1]
+----
+====
+
+[id=a-special-note-on-beanshell]
+== A special note on Beanshell
+
+JSR 223 scripting engines are supposed to identify that they support the
+https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/script/Compilable.html[Compilable]
+interface if they support compiling their scripts.
+
+Beanshell does extend the `Compilable` interface, but an attempt to compile a script ends up in an
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/lang/Error.html[Error]
+being thrown.
+Log4j catches the throwable, but issues a warning in the status logger.
+
+----
+2015-09-27 16:13:23,095 main DEBUG Script BeanShellSelector is compilable
+2015-09-27 16:13:23,096 main WARN Error compiling script java.lang.Error: unimplemented
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:175)
+            at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:154)
+            at org.apache.logging.log4j.core.script.ScriptManager$MainScriptRunner.<init>(ScriptManager.java:125)
+            at org.apache.logging.log4j.core.script.ScriptManager.addScript(ScriptManager.java:94)
+----

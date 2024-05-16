@@ -17,11 +17,11 @@
 = Asynchronous loggers
 
 Asynchronous logging can improve your application's performance by
-executing the I/O operations in a separate thread. Log4j 2 makes a
-number of improvements in this area.
+executing the I/O operations in a separate thread.
+Log4j 2 makes several improvements in this area.
 
-* *Asynchronous Loggers* are a new addition in Log4j 2. Their aim is to
-return from the call to Logger.log to the application as soon as
+* *Asynchronous Loggers* are a new addition in Log4j 2. They aim to
+return the call to Logger.log to the application as soon as
 possible. You can choose between making all Loggers asynchronous or
 using a mixture of synchronous and asynchronous Loggers. Making all
 Loggers asynchronous will give the best performance, while mixing gives
@@ -34,8 +34,8 @@ latency.
 been enhanced to flush to disk at the end of a batch (when the queue is
 empty). This produces the same result as configuring
 "immediateFlush=true", that is, all received log events are always
-available on disk, but is more efficient because it does not need to
-touch the disk on each and every log event. (Async Appenders use
+available on disk but are more efficient because it does not need to
+touch the disk on every log event. (Async Appenders use
 ArrayBlockingQueue internally and do not need the disruptor jar on the
 classpath.)
 
@@ -57,7 +57,7 @@ to log bursts of messages. Async logging can help prevent or dampen
 latency spikes by shortening the wait time until the next message can be
 logged. If the queue size is configured large enough to handle the
 burst, asynchronous logging will help prevent your application from
-falling behind (as much) during a sudden increase of activity.
+falling behind (as much) during a sudden increase in activity.
 * Lower logging response time link:#Latency[latency]. Response time
 latency is the time it takes for a call to Logger.log to return under a
 given workload. Asynchronous Loggers have consistently lower latency
@@ -76,8 +76,8 @@ NOTE: _Log4j-2.9 and higher require disruptor-3.3.4.jar or higher on the
 classpath. Prior to Log4j-2.9, disruptor-3.0.0.jar or higher was
 required._
 
-This is simplest to configure and gives the best performance.
-To make all loggers asynchronous, add the disruptor jar to the classpath and set the system property xref:manual/configuration.adoc#log4j2.contextSelector[log4j2.contextSelector] to `org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` or `org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`.
+This is the simplest to configure and gives the best performance.
+To make all loggers asynchronous, add the disruptor jar to the classpath and set the system property xref:manual/systemproperties.adoc#log4j2.contextSelector[log4j2.contextSelector] to `org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` or `org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`.
 
 By default, link:#Location[location] is not passed to the I/O thread by
 asynchronous loggers. If one of your layouts or custom filters needs
@@ -143,24 +143,24 @@ There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
 with the logging rate and the queue is filling up. See the details for
 system properties
-xref:manual/configuration.adoc#log4j2.asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
+xref:manual/systemproperties.adoc#log4j2.asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
 and `log4j2.discardThreshold`].
 
 [#MixedSync-Async]
 == Mixing Synchronous and Asynchronous Loggers
 
 NOTE: _Log4j-2.9 and higher require disruptor-3.3.4.jar or higher on the
-classpath. Prior to Log4j-2.9, disruptor-3.0.0.jar or higher was
-required. There is no need to set system property "Log4jContextSelector"
+classpath. Before Log4j-2.9, disruptor-3.0.0.jar or higher was
+required. There is no need to set the system property "Log4jContextSelector"
 to any value._
 
 Synchronous and asynchronous loggers can be combined in configuration.
 This gives you more flexibility at the cost of a slight loss in
 performance (compared to making all loggers asynchronous). Use the
-`<asyncRoot>` or `<asyncLogger>` configuration elements to specify the
+`<asyncRoot>` or `<asyncLogger>` configuration elements specify the
 loggers that need to be asynchronous. A configuration can contain only
 one root logger (either a `<root>` or an `<asyncRoot>` element), but
-otherwise async and non-async loggers may be combined. For example, a
+otherwise, async and non-async loggers may be combined. For example, a
 configuration file containing `<asyncLogger>` elements can also contain
 `<root>` and `<logger>` elements for the synchronous loggers.
 
@@ -217,7 +217,7 @@ There are also a few system properties that can be used to maintain
 application throughput even when the underlying appender cannot keep up
 with the logging rate and the queue is filling up. See the details for
 system properties
-xref:manual/configuration.adoc#log4j2.asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
+xref:manual/systemproperties.adoc#log4j2.asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
 and `log4j2.discardThreshold`].
 
 [#custom-waitstrategy]
@@ -268,7 +268,7 @@ public interface AsyncWaitStrategyFactory {
 The specified class must also have a public no-argument constructor;
 Log4j will instantiate an instance of the specified factory class and use this factory to create the WaitStrategy used by all Async Loggers.
 
-WaitStrategy-related system properties are ignored if a `AsyncWaitStrategyFactory` is configured.
+WaitStrategy-related system properties are ignored if an `AsyncWaitStrategyFactory` is configured.
 
 
 [#Location]
@@ -298,7 +298,7 @@ logging with location is 30-100 times slower than without location. For
 this reason, asynchronous loggers and asynchronous appenders do not
 include location information by default.
 
-You can override the default behaviour in your logger or asynchronous
+You can override the default behavior in your logger or asynchronous
 appender configuration by specifying `includeLocation="true"`.
 
 [#Performance]
@@ -338,10 +338,10 @@ higher throughput than sync loggers.]
 
 === Asynchronous Throughput Comparison with Other Logging Packages
 
-We also compared peak throughput of asynchronous loggers to the
+We also compared the peak throughput of asynchronous loggers to the
 synchronous loggers and asynchronous appenders available in other
 logging packages, specifically log4j-1.2.17 and logback-1.0.10, with
-similar results. For asynchronous appenders, total logging throughput of
+similar results. For asynchronous appenders, the total logging throughput of
 all threads together remains roughly constant when adding more threads.
 Asynchronous loggers make more effective use of the multiple cores
 available on the machine in multi-threaded scenarios.
@@ -417,14 +417,13 @@ threads
 
 This section has been rewritten with the Log4j 2.6 release. The
 previous version only reported _service time_ instead of _response
-time_. See the xref:manual/performance.adoc#responseTime[response time] side
-bar on the performance page on why this is too optimistic. Furthermore
-the previous version reported average latency, which does not make sense
+time_. See the xref:manual/performance.adoc#responseTime[response time] sidebar on the performance page on why this is too optimistic.
+Furthermore, the previous version reported average latency, which does not make sense
 since latency is not a normal distribution. Finally, the previous
 version of this section only reported the maximum latency of up to
 99.99% of the measurements, which does not tell you how bad the worst
 0.01% were. This is unfortunate because often the "outliers" are all
-that matter when it comes to response time. From this release we will
+that matter when it comes to response time. From this release, we will
 try to do better and report response time latency across the full range
 of percentages, including all the outliers. Our thanks to Gil Tene for
 his http://www.infoq.com/presentations/latency-response-time[How NOT to
@@ -433,11 +432,11 @@ the "Oh s#@t!" presentation.)
 
 xref:manual/performance.adoc#responseTime[Response time] is how long it
 takes to log a message under a certain load. What is often reported as
-latency is actually _service time_: how long it took to perform the
-operation. This hides the fact that a single spike in service time adds
-queueing delay for many of the subsequent operations. Service time is
+latency is _service time_: how long it took to operate.
+This hides the fact that a single spike in service time adds
+a queueing delay for many of the subsequent operations. Service time is
 easy to measure (and often looks good on paper) but is irrelevant for
-users since it omits the time spent waiting for service. For this reason
+users since it omits the time spent waiting for service. For this reason,
 we report response time: service time plus wait time.
 
 The response time test results below were all derived from running the
@@ -454,9 +453,9 @@ wait strategy reduces some jitter.)
 * -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
 * -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
 -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime
--XX:+PrintGCApplicationStoppedTime (to eyeball GC and safepoint pauses)
+-XX:+PrintGCApplicationStoppedTime (to eyeball GC and savepoint pauses)
 
-The graph below compares response time latency of the
+The graph below compares the response time latency of the
 ArrayBlockingQueue-based asynchronous appenders in Logback 1.1.7, Log4j
 1.2.17 to the various options for asynchronous logging that Log4j 2.6
 offers. Under a workload of 128,000 messages per second, using 16
@@ -466,14 +465,14 @@ orders of magnitude larger than Log4j 2.
 
 image:ResponseTimeAsyncLogging16Threads_8kEach.png[When 16
 threads generate a total workload of 128,000 msg/sec, Logback 1.1.7 and
-Log4j 1.2.17 experience latency spikes that are orders of magnitude
+Log4j 1.2.17 experiences latency spikes that are orders of magnitude
 larger than Log4j 2]
 
 The graph below zooms in on the Log4j 2 results for the same test. We
 see that the worst-case response time is highest for the
 ArrayBlockingQueue-based Async Appender.
 xref:manual/garbagefree.adoc[Garbage-free] async loggers have the best response
-time behaviour.
+time behavior.
 
 image:ResponseTimeAsyncLogging16Threads_8kEachLog4j2Only-labeled.png[image]
 
@@ -482,14 +481,14 @@ image:ResponseTimeAsyncLogging16Threads_8kEachLog4j2Only-labeled.png[image]
 
 Asynchronous Loggers are implemented using the
 https://lmax-exchange.github.io/disruptor/[LMAX Disruptor] inter-thread
-messaging library. From the LMAX web site:
+messaging library. From the LMAX website:
 
 ____
 ...using queues to pass data between stages of the system was
-introducing latency, so we focused on optimising this area. The
+introducing latency, so we focused on optimizing this area. The
 Disruptor is the result of our research and testing. We found that cache
-misses at the CPU-level, and locks requiring kernel arbitration are both
-extremely costly, so we created a framework which has "mechanical
+misses at the CPU level, and locks requiring kernel arbitration are both
+extremely costly, so we created a framework that has "mechanical
 sympathy" for the hardware it's running on, and that's lock-free.
 ____
 
