@@ -36,9 +36,8 @@ a factory method to create a Marker object is used to tag log statements.
 Marker SQL_MARKER = MarkerManager.getMarker("SQL");
 ----
 
-Since a Marker is reusable across multiple log statements, it makes sense 
-to store the Marker in a static final field and make it a constant.
-Once done, use it as the first argument in the log statement.
+Since a `Marker` is reusable across multiple log statements, it makes sense to store the `Marker` in a `static final` field and make it a constant.
+Once created, use it as the first argument in the log statement:
 
 [source, java]
 ----
