@@ -321,20 +321,20 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Since logging is a common way to monitor the health of an application and diagnose problems that occur in it, even moderately sized applications can contain thousands of logging statements.
-To decide which of these statements will be logged and where users need to configure Log4j Core.</p>
+<p>Logging is a standard method for monitoring the health of an application and diagnosing problems that may arise within it.
+Even moderately sized applications can contain thousands of logging statements.</p>
 </div>
 <div class="paragraph">
-<p>Log4j Core can be configured in two ways:</p>
+<p>To decide which of these statements will be logged and where, users need to configure Log4j Core in one of two ways:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>through a <a href="#configuration-file">Configuration file</a>.
-Since version 2.0 the configuration file format is considered as part of the public API, and it remains stable even across major version upgrades.</p>
+Since version 2.0, the configuration file format has been considered part of the public API and has remained stable across significant version upgrades.</p>
 </li>
 <li>
-<p>through <a href="customconfig.html" class="xref page">Programmatic Configuration</a>, which provides a larger spectrum of possible customizations, but might require code changes during version upgrades.</p>
+<p>through <a href="customconfig.html" class="xref page">Programmatic Configuration</a>, which provides a larger spectrum of possible customizations but might require code changes during version upgrades.</p>
 </li>
 </ul>
 </div>
@@ -346,7 +346,7 @@ Since version 2.0 the configuration file format is considered as part of the pub
 </td>
 <td class="content">
 <div class="paragraph">
-<p>To prevent a chicken-and-egg problem some configuration options (e.g., the configuration file location) can only be supplied through <a href="systemproperties.html" class="xref page">configuration properties</a>.</p>
+<p>To prevent a chicken-and-egg problem, users can only supply some configuration options (e.g., the configuration file location) through <a href="systemproperties.html" class="xref page">configuration properties</a>.</p>
 </div>
 </td>
 </tr>
@@ -358,11 +358,11 @@ Since version 2.0 the configuration file format is considered as part of the pub
 <h2 id="configuration-file"><a class="anchor" href="#configuration-file"></a>Configuration file</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Log4j Core can be configured using multiple configuration file formats.
-Configuration factories for the XML, JSON, YAML and Java properties formats are included in the <code>log4j-core</code> artifact.</p>
+<p>Users can configure Log4j Core using different file formats.
+The <code>log4j-core</code> artifact includes XML, JSON, YAML, and Java properties formats factories.</p>
 </div>
 <div class="paragraph">
-<p>Some configuration formats require additional dependencies to be present on the classpath, according to the table below.</p>
+<p>As detailed in the table below, some configuration formats require additional dependencies on the classpath.</p>
 </div>
 <div id="_tabs_1" class="openblock tabs is-loading">
 <div class="content">
@@ -492,7 +492,7 @@ Configuration factories for the XML, JSON, YAML and Java properties formats are 
 Files in the Log4j&#160;1 format are ignored by default.</p>
 </div>
 <div class="paragraph">
-<p>To enable partial support for old configuration formats see <a href="migration.html#enabling-the-log4j-1-x-bridge" class="xref page">Enabling the Log4j&#160;1 bridge</a>.</p>
+<p>To enable partial support for old configuration formats, see <a href="migration.html#enabling-the-log4j-1-x-bridge" class="xref page">Enabling the Log4j&#160;1 bridge</a>.</p>
 </div>
 </td>
 </tr>
@@ -518,7 +518,7 @@ Files in the Log4j&#160;1 format are ignored by default.</p>
 <p>Files named <code>log4j2.&lt;extension&gt;</code>,</p>
 </li>
 <li>
-<p>If no configuration file can be located a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration">DefaultConfiguration</a> is used and a warning is printed by the status logger.
+<p>If no configuration file is found, Log4j uses the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/DefaultConfiguration">DefaultConfiguration</a>, and the status logger prints a warning.
 The default configuration prints all messages less specific than
 <a href="systemproperties.html#log4j2.level" class="xref page">log4j2.level</a>
 to the console.</p>
@@ -536,16 +536,18 @@ to the console.</p>
 <p>The configuration files prefixed by <code>log4j2-test</code> should only be used on the test classpath.</p>
 </div>
 <div class="paragraph">
-<p>If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order">@Order</a>).
-Nevertheless:</p>
+<p>If multiple configuration files in the same category are found, Log4j uses a deterministic order to choose one of them (see <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Order">@Order</a>).</p>
+</div>
+<div class="paragraph">
+<p>Nevertheless:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>if you are developing an application you should not use configuration files that only differ by the extension,</p>
+<p>If you&#8217;re developing an app, don&#8217;t use config files with different extensions.</p>
 </li>
 <li>
-<p>if you are developing a library you should only add configuration files to your test classpath.</p>
+<p>If you&#8217;re developing a library, only add config files to your test classpath.</p>
 </li>
 </ul>
 </div>
@@ -564,10 +566,10 @@ Nevertheless:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>for standalone Java SE applications it is a random identifier,</p>
+<p>for standalone Java SE applications, it is a random identifier,</p>
 </li>
 <li>
-<p>for web applications it is derived from the application descriptor.
+<p>for web applications, it is derived from the application descriptor.
 See <a href="webapp.html#configuration" class="xref page">Log4j
  Web application configuration</a> for more details.</p>
 </li>
@@ -621,7 +623,7 @@ See <a href="webapp.html#configuration" class="xref page">Log4j
 <p>It is also possible to override the location of the configuration file using the
 <a href="systemproperties.html#log4j2.configurationFile" class="xref page">log4j2.configurationFile</a>
 configuration property.
-In this case, Log4j will guess the configuration file format from the extension of the provided configuration file or will use the default configuration factory if the extension is unknown.</p>
+In this case, Log4j will guess the configuration file format from the provided configuration file extension or use the default configuration factory if the extension is unknown.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="systemproperties.html#log4j2.configurationFile" class="xref page">log4j2.configurationFile</a> for details.</p>
@@ -634,17 +636,19 @@ In this case, Log4j will guess the configuration file format from the extension 
 <div class="sect2">
 <h3 id="configuration-syntax"><a class="anchor" href="#configuration-syntax"></a><a id="ConfigurationSyntax"></a> Syntax</h3>
 <div class="paragraph">
-<p>The Log4j runtime is composed of <a href="plugins.html" class="xref page">plugins</a>, which are analogous to beans in Spring Framework and Java EE.
-Appenders, layouts, filters, configuration loaders, etc. are all accessed as plugins.</p>
+<p>The Log4j runtime is composed of <a href="plugins.html" class="xref page">plugins</a>, which are like beans in the Spring Framework and Java EE.
+Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.</p>
 </div>
 <div class="paragraph">
 <p>All configuration files are represented internally as a tree of
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Node">Node</a>s, which is translated into a tree of Log4j plugins.
-The root of the tree creates a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration">Configuration</a> object.</p>
+The tree&#8217;s root creates a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration">Configuration</a> object.</p>
 </div>
 <div class="paragraph">
-<p>A node is a fairly simple structure that represents a single Log4j plugin (see <a href="../plugin-reference.html" class="xref page">Plugin reference</a> for a complete list) such as an appender, layout or logger configuration.
-Each node has:</p>
+<p>A node is a relatively simple structure representing a single Log4j plugin (see <a href="../plugin-reference.html" class="xref page">Plugin reference</a> for a complete list), such as an appender, layout, or logger configuration.</p>
+</div>
+<div class="paragraph">
+<p>Each node has:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -653,11 +657,11 @@ Each node has:</p>
 Attributes are <strong>matched by name</strong> against the list of available configuration options of a Log4j plugin.</p>
 </li>
 <li>
-<p>one distinguished attribute called <strong>plugin type</strong> specifies the kind of Log4j plugin we want to instantiate.</p>
+<p>The <strong>plugin type</strong> attribute specifies the kind of Log4j plugin we want to instantiate.</p>
 </li>
 <li>
-<p>a set of child nodes called <strong>nested elements</strong>.
-They are <strong>matched by type</strong> against the list of nested components that a Log4j plugin accepts.</p>
+<p>A set of child nodes called <strong>nested elements</strong>.
+They are <strong>matched by type</strong> against the list of nested components a plugin accepts.</p>
 </li>
 </ul>
 </div>
@@ -707,12 +711,12 @@ They are <strong>matched by type</strong> against the list of nested components 
 </td>
 <td class="content">
 <div class="paragraph">
-<p>There is an alternative XML configuration format called "XML strict format" that is activated by setting the <code>strict</code>
-attribute of the main <code>&lt;Configuration&gt;</code> element to <code>true</code>.
-It allows users to use arbitrary tag names as long as they provide the plugin type using a <code>type</code> property.</p>
+<p>There is an alternative XML configuration format called "XML strict format" that is activated
+by setting the <code>strict</code> attribute of the main <code>&lt;Configuration&gt;</code> element to <code>true</code>.
+It allows users to use any tag names as long as they provide the plugin type using a <code>type</code> property.</p>
 </div>
 <div class="paragraph">
-<p>The <em>XML strict format</em> was conceived as a simplified XML format that can be validated by an XML schema, but has fallen into disuse: nowadays, the automatically generated schemas published at <a href="https://logging.apache.org/xml/ns/" class="bare">https://logging.apache.org/xml/ns/</a>
+<p>The <em>XML strict format</em> was conceived as a simplified XML format that can be validated by an XML schema but has fallen into disuse: nowadays, the automatically generated schemas published at <a href="https://logging.apache.org/xml/ns/" class="bare">https://logging.apache.org/xml/ns/</a>
 offer a better alternative and allow users to use a more concise syntax.</p>
 </div>
 </td>
@@ -735,10 +739,10 @@ offer a better alternative and allow users to use a more concise syntax.</p>
 <p>Each configuration node is represented by a JSON object,</p>
 </li>
 <li>
-<p>JSON properties of type string, number or boolean are mapped to node attributes.</p>
+<p>JSON properties of type string, number, or boolean are mapped to node attributes.</p>
 </li>
 <li>
-<p>JSON properties of type object or array are used to represent nested configuration elements.</p>
+<p>JSON properties of type object or array represent nested configuration elements.</p>
 </li>
 <li>
 <p>The <strong>plugin type</strong> of a JSON object is given by:</p>
@@ -799,7 +803,7 @@ The snippet below represents two plugins of type <code>File</code>.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Each configuration node is represented by a YAML mapping,</p>
+<p>A YAML mapping represents each configuration node,</p>
 </li>
 <li>
 <p>YAML properties of scalar type are mapped to node attributes.</p>
@@ -859,26 +863,26 @@ The snippet below represents two plugins of type <code>File</code>.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Properties that share a common prefix (e.g. <code>appender.foo</code>) are mapped to a subtree of the configuration node tree.</p>
+<p>Properties that share a common prefix (e.g., <code>appender.foo</code>) are mapped to a subtree of the configuration node tree.</p>
 </li>
 <li>
-<p>Configuration attributes are specified by appending the name of the property (e.g. <code>name</code>) to the prefix of the node, separated by a dot (e.g. <code>appender.foo.name</code>).</p>
+<p>Configuration attributes are specified by appending the property&#8217;s name (e.g., <code>name</code>) to the prefix of the node, separated by a dot (e.g., <code>appender.foo.name</code>).</p>
 </li>
 <li>
-<p>The <strong>plugin type</strong> must necessarily be specified as an attribute named <code>type</code>.</p>
+<p>The <strong>plugin type</strong> must be specified as an attribute named <code>type</code>.</p>
 </li>
 <li>
 <p>Nested elements are created by:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Choosing an arbitrary id for the nested component (e.g. <code>&lt;0&gt;</code>)</p>
+<p>Choosing an arbitrary id for the nested component (e.g., <code>&lt;0&gt;</code>)</p>
 </li>
 <li>
-<p>Appending the id to the prefix of the parent component (e.g. <code>appender.foo.&lt;0&gt;</code>)</p>
+<p>Appending the id to the prefix of the parent component (e.g., <code>appender.foo.&lt;0&gt;</code>)</p>
 </li>
 <li>
-<p>Specifying the type of the nested plugin by assigning a <code>type</code> attribute (e.g. <code>appender.foo.&lt;0&gt;.type</code>)</p>
+<p>Specifying the type of the nested plugin by assigning a <code>type</code> attribute (e.g., <code>appender.foo.&lt;0&gt;.type</code>)</p>
 </li>
 </ul>
 </div>
@@ -895,7 +899,7 @@ The snippet below represents two plugins of type <code>File</code>.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The ID assigned to nested components is only used for sorting purposes.</p>
+<p>Nested components use the assigned ID for sorting purposes only.</p>
 </div>
 </td>
 </tr>
@@ -918,7 +922,7 @@ The snippet below represents two plugins of type <code>File</code>.</p>
 <dt class="hdlist1">Loggers</dt>
 <dd>
 <div class="paragraph">
-<p>Loggers are the entry point of the logging pipeline, directly used in code.
+<p>Loggers are the entry point of the logging pipeline, which is directly used in the code.
 Their configuration must specify which level of messages they log and to which appenders they send the messages.</p>
 </div>
 <div class="paragraph">
@@ -933,7 +937,7 @@ Their configuration must specify which level of messages they log and to which a
 <dd>
 <div class="paragraph">
 <p>Appenders are the exit point of the logging pipeline.
-They decide to which resource (console, file, database, etc.) the log event is sent.
+They decide which resource (console, file, database, or similar) the log event is sent to.
 In the examples of this chapter, we will only use the <a href="appenders.html#consoleappender" class="xref page">console appender</a> and the <a href="appenders.html#fileappender" class="xref page">file appender</a>.</p>
 </div>
 <div class="paragraph">
@@ -943,7 +947,7 @@ In the examples of this chapter, we will only use the <a href="appenders.html#co
 <dt class="hdlist1">Layouts</dt>
 <dd>
 <div class="paragraph">
-<p>Layouts tell appenders how they should format the log event: text, JSON, XML, etc.
+<p>Layouts tell appenders how to format the log event: text, JSON, XML, or similar.
 In the examples of this chapter, we will only use the <a href="layouts.html#pattern-layout" class="xref page">textual pattern layout</a>
 and
 <a href="json-template-layout.html" class="xref page">JSON template layout</a>.</p>
@@ -1220,7 +1224,7 @@ The logger is configured to forward messages to its parent (the root appender).<
 <dt class="hdlist1">Filters</dt>
 <dd>
 <div class="paragraph">
-<p>Components that can be added to loggers, appender references, appenders or the global configuration object to provide additional filtering of log events.</p>
+<p>Users can add Components to loggers, appender references, appenders, or the global configuration object to provide additional filtering of log events.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="filters.html" class="xref page">Filter configuration</a> for details.</p>
@@ -1229,7 +1233,7 @@ The logger is configured to forward messages to its parent (the root appender).<
 <dt class="hdlist1">Properties</dt>
 <dd>
 <div class="paragraph">
-<p>A set of reusable configuration values for property substitution.</p>
+<p>Represent a set of reusable configuration values for property substitution.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="#property-substitution">Property substitution</a> for details.</p>
@@ -1238,10 +1242,10 @@ The logger is configured to forward messages to its parent (the root appender).<
 <dt class="hdlist1">Scripts</dt>
 <dd>
 <div class="paragraph">
-<p>A container for JSR 223 scripts that can be used in other Log4j components.</p>
+<p>Scripts are a container for JSR 223 scripts that users can use in other Log4j components.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="scripts.html" class="xref page">Scripts configuration</a> for details.</p>
+<p>For details, see <a href="scripts.html" class="xref page">Scripts configuration</a>.</p>
 </div>
 </dd>
 </dl>
@@ -1250,7 +1254,7 @@ The logger is configured to forward messages to its parent (the root appender).<
 <div class="sect2">
 <h3 id="global-configuration-attributes"><a class="anchor" href="#global-configuration-attributes"></a>Global configuration attributes</h3>
 <div class="paragraph">
-<p>The main <code>Configuration</code> element has a set of attributes that can be used to tune the way the configuration file itself is used.
+<p>The main <code>Configuration</code> element has a set of attributes that can be used to tune how the configuration file is used.
 The principal attributes are listed below.
 See <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Configuration" class="xref page">Plugin reference</a> for a complete list.</p>
 </div>
@@ -1285,19 +1289,20 @@ If set to <code>0</code>, polling is disabled.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Unlike other logging backends, Log4j Core is designed with reliability in mind.</p>
+<p>Log4j Core is designed with reliability in mind, unlike other logging backends.</p>
 </div>
 <div class="paragraph">
 <p>During a reconfiguration process, no messages are lost.</p>
 </div>
 <div class="paragraph">
-<p>Unless the new configuration file removes an appender, the old one continues to work without interruption.</p>
+<p>Unless the new configuration file removes an appender, the old ones work without interruption.</p>
 </div>
 <div class="paragraph">
-<p>Since some appender options (like the append mode used to open a file) can not be changed without closing the resource used by an appender, some attribute changes will be <strong>ignored</strong> during a reconfiguration.</p>
+<p>Some changed appender options will be <strong>ignored</strong> during reconfiguration.
+For example, appenders that need to close resources, like the append mode used to open a file, will ignore such options.</p>
 </div>
 <div class="paragraph">
-<p>To modify these options during a reconfiguration you also need to change the resource used by the appender (e.g. the file name used by a file appender).</p>
+<p>To modify these options during a reconfiguration, you also need to change the resource used by the appender (e.g., the file name used by a file appender).</p>
 </div>
 </td>
 </tr>
@@ -1394,16 +1399,16 @@ configuration property.
 </div>
 <div class="paragraph">
 <p>There <strong>must</strong> be at least a <code>Root</code> or <code>AsyncRoot</code> element in every configuration file.
-The presence of other logger configurations is optional.</p>
+Other logger configurations are optional.</p>
 </div>
 <div class="paragraph">
 <p>Every
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/Logger.html">Logger</a>
 in your application is assigned to one of these logger configurations (see
-<a href="architecture.html#loggerconfig" class="xref page">architecture</a>), which determines the events that will be logged and those which won&#8217;t.</p>
+<a href="architecture.html#loggerconfig" class="xref page">architecture</a>), which determines the events that will be logged and those that won&#8217;t.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s start with an example of loggers configuration:</p>
+<p>Let&#8217;s start with an example of logger configuration:</p>
 </div>
 <div id="_tabs_6" class="openblock tabs is-loading">
 <div class="content">
@@ -1527,11 +1532,11 @@ logger.2.appenderRef.0.ref = APPENDER4</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the example above we have 4 logger configurations.
-They differ between each other regarding the level of log messages that they allow, whether
+<p>In the example above, we have four logger configurations.
+They differ from each other regarding the level of log messages that they allow, whether
 <a href="layouts.html#location-information" class="xref page">location information</a>
-will be printed and which appenders will be used.
-The effects of each logger configuration are summarized in the table below:</p>
+will be printed, and which appenders will be used.
+The table below summarizes the effects of each logger configuration:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Logger configurations</caption>
@@ -1589,7 +1594,7 @@ The effects of each logger configuration are summarized in the table below:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>In the following part of this section we explain in detail all the available option for logger configurations:</p>
+<p>In the following part of this section, we explain in detail all the available options for logger configurations:</p>
 </div>
 <div class="sect3">
 <h4 id="logger-attributes-name"><a class="anchor" href="#logger-attributes-name"></a><code>name</code></h4>
@@ -1639,7 +1644,7 @@ The effects of each logger configuration are summarized in the table below:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code> (default), all the messages received by this logger will also be transmitted to its
+<p>If <code>true</code> (default), all the messages this logger receives will also be transmitted to its
 <a href="architecture.html#logger-hierarchy" class="xref page">parent logger</a>).</p>
 </div>
 </div>
@@ -1675,7 +1680,7 @@ for <code>Logger</code> and <code>AsyncLogger</code>.</p>
 </table>
 <div class="paragraph">
 <p>Specifies the level threshold that a log event must have to be logged.
-Log events more specific than this setting will be filtered out.</p>
+Log events that are more specific than this setting will be filtered out.</p>
 </div>
 <div class="paragraph">
 <p>See also <a href="filters.html#filters" class="xref page">Filters</a> if you require additional filtering.</p>
@@ -1725,7 +1730,7 @@ for more details.</p>
 </table>
 <div class="paragraph">
 <p>Specifies whether Log4j is allowed to compute location information.
-If set to <code>false</code>, Log4j will make no attempt to infer the location of the logging call, unless said location was provided explicitly using one of the available
+If set to <code>false</code>, Log4j will not attempt to infer the location of the logging call unless said location was provided explicitly using one of the available
 <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogBuilder.html">LogBuilder
 .withLocation()</a>
 methods.</p>
@@ -1737,7 +1742,7 @@ methods.</p>
 <div class="sect3">
 <h4 id="logger-elements-appenderrefs"><a class="anchor" href="#logger-elements-appenderrefs"></a>Appender references</h4>
 <div class="paragraph">
-<p>Loggers use appender references to list the appenders to use to deliver log events.</p>
+<p>Loggers use appender references to list the appenders to deliver log events.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="#configuring-appenderrefs">Appender references</a> below for more details.</p>
@@ -1769,7 +1774,7 @@ methods.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Therefore, if you wish to insert a value that changes in time you must double the <code>$</code> sign as in the example below.</p>
+<p>Therefore, if you wish to insert a value that changes in time, you must double the <code>$</code> sign, as shown in the example below.</p>
 </div>
 </td>
 </tr>
@@ -1885,7 +1890,7 @@ logger.1.property.value = Networking</code></pre>
 <div class="sect2">
 <h3 id="configuring-appenderrefs"><a class="anchor" href="#configuring-appenderrefs"></a>Appender references</h3>
 <div class="paragraph">
-<p>Many Log4j components such as loggers use appender references to designate, which appenders will be used to deliver their events.</p>
+<p>Many Log4j components, such as loggers, use appender references to designate which appenders will be used to deliver their events.</p>
 </div>
 <div class="paragraph">
 <p>Unlike in Log4j 1, where appender references were simple pointers, in Log4j 2, they have additional filtering capabilities.</p>
@@ -1927,7 +1932,7 @@ logger.1.property.value = Networking</code></pre>
 </table>
 <div class="paragraph">
 <p>Specifies the level threshold that a log event must have to be logged.
-Log events more specific than this setting will be filtered out.</p>
+Log events that are more specific than this setting will be filtered out.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2027,7 +2032,7 @@ property.log.file = ${log.dir}/app.log
 </div>
 </div>
 <div class="paragraph">
-<p>Reusable configuration values can be also provided by an extensible lookup mechanism.
+<p>An extensible lookup mechanism can also provide reusable configuration values.
 See <a href="lookups.html" class="xref page">Lookup</a>s for more information.</p>
 </div>
 <div class="paragraph">
@@ -2038,7 +2043,7 @@ See <a href="lookups.html" class="xref page">Lookup</a>s for more information.</
 <dt class="hdlist1"><code>${name}</code></dt>
 <dd>
 <div class="paragraph">
-<p>If the <code>Properties</code> element of the configuration file has a property named <code>name</code> its value is substituted.
+<p>If the <code>Properties</code> element of the configuration file has a property named <code>name</code>, its value is substituted.
 Otherwise, the placeholder is not expanded.</p>
 </div>
 <div class="admonitionblock warning">
@@ -2104,7 +2109,7 @@ Otherwise, the expansion of <code>${name}</code> is substituted.</p>
 <dt class="hdlist1"><code>${name:-default}</code></dt>
 <dd>
 <div class="paragraph">
-<p>If the <code>Properties</code> element of the configuration file has a property named <code>name</code> its value is substituted.
+<p>If the <code>Properties</code> element of the configuration file has a property named <code>name,</code> its value is substituted.
 Otherwise, the <strong>expansion</strong> of <code>default</code> is substituted.</p>
 </div>
 <div class="admonitionblock warning">
@@ -2135,14 +2140,14 @@ Otherwise, the <strong>expansion</strong> of <code>default</code> is substituted
 <p><code>lookup</code> is a prefix assigned to a <a href="lookups.html" class="xref page">Lookup</a>,</p>
 </li>
 <li>
-<p>the lookup has a value assigned to <code>name</code>,</p>
+<p>the lookup has a value assigned to <code>name,</code></p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>the value for the lookup is a substituted.
+<p>the value for the lookup is substituted.
 Otherwise, the expansion of <code>${name:-default}</code> is substituted.</p>
 </div>
 </dd>
@@ -2159,7 +2164,7 @@ Otherwise, the expansion of <code>${name:-default}</code> is substituted.</p>
 <p>To prevent the expansion of one of the expressions above, the initial <code>$</code> must be doubled as <code>$$</code>.</p>
 </div>
 <div class="paragraph">
-<p>The same rule applies to the <code>name</code> parameter: if it contains a <code>${</code> sequence, the sequence must be escaped as <code>$${</code>.</p>
+<p>The same rule applies to the <code>name</code> parameter: if it contains a <code>${</code> sequence, it must be escaped as <code>$${</code>.</p>
 </div>
 </td>
 </tr>
@@ -2242,7 +2247,7 @@ property.BAR = bar</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>and the OS environment variable <code>FOO</code> has a value of <code>environment</code>, Log4j will evaluate expression as follows</p>
+<p>and the OS environment variable <code>FOO</code> has a value of <code>environment</code>, Log4j will evaluate the expression as follows</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2390,7 +2395,7 @@ property.APP_BASE = .</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>the <code>logging.dir</code> property will be expanded <strong>before</strong> the <code>logging.file</code> property and the expanded value will be substituted in <code>${logging.dir}/app.log</code>.
+<p>the <code>logging.dir</code> property will be expanded <strong>before</strong> the <code>logging.file</code> property, and the expanded value will be substituted in <code>${logging.dir}/app.log</code>.
 Therefore, the value of the <code>logging.file</code> property will be:</p>
 </div>
 <div class="ulist">
@@ -2410,7 +2415,7 @@ Therefore, the value of the <code>logging.file</code> property will be:</p>
 <div class="sect3">
 <h4 id="lazy-property-substitution"><a class="anchor" href="#lazy-property-substitution"></a>Lazy property substitution</h4>
 <div class="paragraph">
-<p>For most attributes property substitution is performed only once at <strong>configuration time</strong>, but there are two categories of exceptions to this rule:</p>
+<p>For most attributes, property substitution is performed only once at <strong>configuration time</strong>, but there are two categories of exceptions to this rule:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2427,10 +2432,10 @@ is evaluated at each rollover.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>If you want property substitution to happen only once, you use one dollar sign, e.g. <code>${date:HH:mm:ss}</code>.</p>
+<p>If you want property substitution to happen only once, use one dollar sign, e.g., <code>${date:HH:mm:ss}</code>.</p>
 </li>
 <li>
-<p>If you want property substitution to happen at each cyclic event, you use two dollar signs, e.g. <code>$${date:HH:mm:ss}</code></p>
+<p>If you want property substitution to happen at each cyclic event, you use two dollar signs, e.g., <code>$${date:HH:mm:ss}</code></p>
 </li>
 </ul>
 </div>
@@ -2564,20 +2569,20 @@ Therefore, the dollar <code>$</code> sign needs to be escaped.</td>
 <div class="sect2">
 <h3 id="arbiters"><a class="anchor" href="#arbiters"></a><a id="Arbiters"></a> Arbiters</h3>
 <div class="paragraph">
-<p>While property substitution allows to use of the same configuration file in multiple deployment environments, sometimes changing the values of configuration attributes is not enough.</p>
+<p>While property substitution allows using the same configuration file in multiple deployment environments, sometimes changing the values of configuration attributes is not enough.</p>
 </div>
 <div class="paragraph">
 <p>Arbiters are to configuration elements what property substitution is for configuration attributes: they allow to conditionally add a subtree of configuration elements to a configuration file.</p>
 </div>
 <div class="paragraph">
 <p>Arbiters may occur anywhere an element is allowed in the configuration and can be nested.
-So an Arbiter could encapsulate something as simple as a single property declaration or a whole set of appenders, loggers or other arbiters.
+So, an Arbiter could encapsulate something as simple as a single property declaration or a whole set of appenders, loggers, or other arbiters.
 The child elements of an arbiter must be valid elements for whatever element is the parent of the arbiter.</p>
 </div>
 <div class="paragraph">
-<p>For a complete list of available arbiters see
+<p>For a complete list of available arbiters, see
 <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-Arbiter" class="xref page">plugin reference</a>.
-In the examples below we&#8217;ll just use the
+In the examples below, we&#8217;ll use the
 <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-DefaultArbiter" class="xref page">DefaultArbiter</a>,
 <a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-arbiters-SelectArbiter" class="xref page">Select</a>
 and
@@ -2873,8 +2878,8 @@ Appenders with the same name are <strong>replaced</strong> by those in later con
 </li>
 <li>
 <p><a href="#configuring-loggers">Loggers</a> are all aggregated.
-Logger attributes are individually merged with duplicates being replaced by those in later configurations.
-Appender references on a logger are aggregated with duplicates being replaced by those in later configurations.
+Logger attributes are individually merged, and those in later configurations replace duplicates.
+Appender references on a logger are aggregated, and those in later configurations replace duplicates.
 The strategy merges filters on loggers using the rule above.</p>
 </li>
 </ol>
@@ -2930,11 +2935,11 @@ The strategy merges filters on loggers using the rule above.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>If set to <code>true</code> all configuration files will be checked against the XML schema provided by the
+<p>If set to <code>true,</code> all configuration files will be checked against the XML schema provided by the
 <a href="#configuration-attribute-schema"><code>schema</code></a>.</p>
 </div>
 <div class="paragraph">
-<p>This setting also enables "XML strict mode" and allows one to specify the <strong>plugin type</strong> of an element through a <code>type</code> attribute instead of the tag name.</p>
+<p>This setting also enables "XML strict mode" and allows one to specify an element&#8217;s <strong>plugin type</strong> through a <code>type</code> attribute instead of the tag name.</p>
 </div>
 </div>
 </div>
@@ -3021,21 +3026,20 @@ The list of <code>XInclude</code> and <code>XPath</code> features supported depe
 <p>The Java properties format is not well suited to represent hierarchical structures.</p>
 </div>
 <div class="paragraph">
-<p>Consider switching to XML, if you don&#8217;t want additional dependencies, or YAML, if you are looking for a format similar to Java properties, but less verbose.</p>
+<p>Switch to XML to avoid additional dependencies, or choose YAML for a format similar to Java properties but less verbose.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The Java properties configuration format is by far the most verbose of the available formats.
-To make it more usable a series of exceptions to the rules in <a href="#configuration-with-properties">Java properties syntax</a> have been introduced over time:</p>
+<p>The Java properties configuration format is the most verbose of the available formats.
+To make it more usable, a series of exceptions to the rules in <a href="#configuration-with-properties">Java properties syntax</a> have been introduced over time:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>The following direct children of <code>Configuration</code> have predefined prefixes and do not require to specify a <code>type</code>
-attribute:</p>
+<p>The following direct children of <code>Configuration</code> have predefined prefixes and do not require to specify a <code>type</code> attribute:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -3066,7 +3070,7 @@ Their syntax is:</p>
 </div>
 </li>
 <li>
-<p>Properties that start with <code>customLevel</code> are used to define custom levels Their syntax is:</p>
+<p>Properties that start with <code>customLevel</code> are used to define custom levels. Their syntax is:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">customLevel.&lt;name&gt; = &lt;intValue&gt;</code></pre>
